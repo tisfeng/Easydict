@@ -376,9 +376,6 @@ return; \
     self.translateArray = @[
         [YoudaoTranslate new],
         [BaiduTranslate new],
-        [GoogleTranslate mm_anyMake:^(GoogleTranslate *  _Nonnull obj) {
-            obj.isCN = YES;
-        }],
         [GoogleTranslate new],
     ];
     self.translate = [self.translateArray mm_find:^id(Translate * _Nonnull obj, NSUInteger idx) {
