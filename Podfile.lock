@@ -35,7 +35,7 @@ DEPENDENCIES:
   - SSZipArchive (~> 2.2.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AFNetworking
     - CocoaLumberjack
     - Masonry
@@ -57,6 +57,6 @@ SPEC CHECKSUMS:
   Sparkle: 593ac2e677c07bcb6c3b22d621240e7cbedaab57
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
 
-PODFILE CHECKSUM: 376ca1c4215fa644c62666bc72c9a9fce989a990
+PODFILE CHECKSUM: d936ea06d78ba79140188fb605c9fea4c32eef8d
 
-COCOAPODS: 1.7.0
+COCOAPODS: 1.11.2

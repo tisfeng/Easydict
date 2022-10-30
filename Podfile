@@ -1,6 +1,8 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :osx, '10.12'
 
+inhibit_all_warnings!
+
 target 'Bob' do
   use_frameworks!
   
@@ -14,4 +16,14 @@ target 'Bob' do
   pod 'SSZipArchive', '~> 2.2.2'
   pod 'Sparkle', '~> 1.22.0'
   
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      if config.build_settings['MACOSX_DEPLOYMENT_TARGET'].to_f < 10.12
+        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.12'
+      end
+    end
+  end
 end
