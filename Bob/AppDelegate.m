@@ -28,9 +28,7 @@
     TranslateViewController *translateVC = [[TranslateViewController alloc] init];
     window.contentViewController = translateVC;
     [window center];
-    [window makeKeyAndOrderFront:nil];
-    [NSApp activateIgnoringOtherApps:YES]; 
-    
+    [window makeKeyAndOrderFront:nil];    
     
     Configuration.shared.isFold = NO;
     [translateVC updateFoldState:NO];
