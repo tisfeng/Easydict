@@ -20,7 +20,7 @@ PODS:
   - MASShortcut (2.4.0)
   - MJExtension (3.2.1)
   - ReactiveObjC (3.1.1)
-  - Sparkle (1.22.0)
+  - Sparkle (1.24.0)
   - SSZipArchive (2.2.2)
 
 DEPENDENCIES:
@@ -31,7 +31,7 @@ DEPENDENCIES:
   - MASShortcut (~> 2.4.0)
   - MJExtension (~> 3.2.1)
   - ReactiveObjC (~> 3.1.1)
-  - Sparkle (~> 1.22.0)
+  - Sparkle (~> 1.24.0)
   - SSZipArchive (~> 2.2.2)
 
 SPEC REPOS:
@@ -54,9 +54,9 @@ SPEC CHECKSUMS:
   MASShortcut: d9e4909e878661cc42877cc9d6efbe638273ab57
   MJExtension: 635f2c663dcb1bf76fa4b715b2570a5710aec545
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  Sparkle: 593ac2e677c07bcb6c3b22d621240e7cbedaab57
+  Sparkle: 270cd27377bf04e9c128af06e3a22d0f572d6ee3
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
 
-PODFILE CHECKSUM: d936ea06d78ba79140188fb605c9fea4c32eef8d
+PODFILE CHECKSUM: e29738032af109fb48bedb945640975db2253524
 
 COCOAPODS: 1.11.2

@@ -14,7 +14,7 @@ target 'Bob' do
   pod 'MASPreferences', '~> 1.3'
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
-  pod 'Sparkle', '~> 1.22.0'
+  pod 'Sparkle', '~> 1.24.0'
   
 end
 
