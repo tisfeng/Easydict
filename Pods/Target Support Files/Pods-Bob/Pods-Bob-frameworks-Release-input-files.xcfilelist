@@ -1,0 +1,11 @@
+${PODS_ROOT}/Target Support Files/Pods-Bob/Pods-Bob-frameworks.sh
+${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework
+${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework
+${BUILT_PRODUCTS_DIR}/MASPreferences/MASPreferences.framework
+${BUILT_PRODUCTS_DIR}/MASShortcut/MASShortcut.framework
+${BUILT_PRODUCTS_DIR}/MJExtension/MJExtension.framework
+${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework
+${BUILT_PRODUCTS_DIR}/ReactiveObjC/ReactiveObjC.framework
+${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework
+${PODS_ROOT}/Sparkle/Sparkle.framework
+${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM

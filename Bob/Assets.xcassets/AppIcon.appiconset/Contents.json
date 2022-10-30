@@ -1,0 +1,68 @@
+{
+    "info" : {
+        "version" : 1,
+        "author"  : "xcode"
+    },
+    "images" : [
+        {
+            "idiom" : "mac",
+            "size"  : "16x16",
+            "scale" : "1x",
+            "filename" : "mac016pts1x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "16x16",
+            "scale" : "2x",
+            "filename" : "mac016pts2x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "32x32",
+            "scale" : "1x",
+            "filename" : "mac032pts1x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "32x32",
+            "scale" : "2x",
+            "filename" : "mac032pts2x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "128x128",
+            "scale" : "1x",
+            "filename" : "mac128pts1x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "128x128",
+            "scale" : "2x",
+            "filename" : "mac128pts2x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "256x256",
+            "scale" : "1x",
+            "filename" : "mac256pts1x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "256x256",
+            "scale" : "2x",
+            "filename" : "mac256pts2x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "512x512",
+            "scale" : "1x",
+            "filename" : "mac512pts1x.png"
+        },
+        {
+            "idiom" : "mac",
+            "size"  : "512x512",
+            "scale" : "2x",
+            "filename" : "mac512pts2x.png"
+        }
+    ]
+}

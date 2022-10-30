@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="AboutViewController">
+            <connections>
+                <outlet property="githubTextField" destination="6Ba-5D-bHm" id="guQ-r4-BWR"/>
+                <outlet property="versionTextField" destination="eDW-SZ-DEh" id="eqg-vN-oTK"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="360" height="226"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zj5-6j-FJR">
+                    <rect key="frame" x="140" y="116" width="80" height="80"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="80" id="Wqq-Hs-oxs"/>
+                        <constraint firstAttribute="width" constant="80" id="iWg-rd-nWZ"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="logo" id="ABx-Wd-N2E"/>
+                </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HVJ-6s-tzz">
+                    <rect key="frame" x="162" y="77" width="37" height="21"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Bob" id="yae-62-con">
+                        <font key="font" metaFont="systemMedium" size="18"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eDW-SZ-DEh">
+                    <rect key="frame" x="163" y="56" width="34" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="0.0.0" id="hdN-VE-mP8">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="har-FP-PM0">
+                    <rect key="frame" x="55" y="30" width="251" height="16"/>
+                    <subviews>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="J9H-gX-Z2c">
+                            <rect key="frame" x="-2" y="0.0" width="51" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="GitHub:" id="Evh-qa-4AD">
+                                <font key="font" usesAppearanceFont="YES"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6Ba-5D-bHm">
+                            <rect key="frame" x="53" y="0.0" width="200" height="16"/>
+                            <gestureRecognizers>
+                                <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="xR2-hs-GoZ">
+                                    <connections>
+                                        <action selector="githubTextFieldClicked:" target="-2" id="mhq-hC-dcg"/>
+                                    </connections>
+                                </clickGestureRecognizer>
+                            </gestureRecognizers>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="https://github.com/ripperhe/Bob" id="p2x-R8-N2c">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" red="0.098039215686274508" green="0.48627450980392156" blue="0.9882352941176471" alpha="0.84705882352941175" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                    </subviews>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="eDW-SZ-DEh" firstAttribute="centerX" secondItem="HVJ-6s-tzz" secondAttribute="centerX" id="AzR-W3-hrh"/>
+                <constraint firstItem="zj5-6j-FJR" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="BUO-gt-4fP"/>
+                <constraint firstItem="har-FP-PM0" firstAttribute="centerX" secondItem="eDW-SZ-DEh" secondAttribute="centerX" id="JJ0-Zo-Ejp"/>
+                <constraint firstItem="har-FP-PM0" firstAttribute="top" secondItem="eDW-SZ-DEh" secondAttribute="bottom" constant="10" id="OCh-b8-bbo"/>
+                <constraint firstItem="zj5-6j-FJR" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="30" id="RJC-7J-MHv"/>
+                <constraint firstItem="HVJ-6s-tzz" firstAttribute="top" secondItem="zj5-6j-FJR" secondAttribute="bottom" constant="18" id="RvO-7g-C4O"/>
+                <constraint firstItem="HVJ-6s-tzz" firstAttribute="centerX" secondItem="zj5-6j-FJR" secondAttribute="centerX" id="ej8-af-gfC"/>
+                <constraint firstItem="eDW-SZ-DEh" firstAttribute="top" secondItem="HVJ-6s-tzz" secondAttribute="bottom" constant="5" id="uIE-5r-jpL"/>
+            </constraints>
+            <point key="canvasLocation" x="45" y="154"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="logo" width="80" height="80"/>
+    </resources>
+</document>

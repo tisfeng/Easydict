@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="GeneralViewController">
+            <connections>
+                <outlet property="autoCheckUpdateButton" destination="3Ux-D6-rfd" id="sDd-Zj-XRK"/>
+                <outlet property="autoCopyTranslateResultButton" destination="vKL-Rb-7ex" id="nIS-CE-i2e"/>
+                <outlet property="inputShortcutView" destination="29j-qh-lea" id="aox-Rc-wk2"/>
+                <outlet property="launchAtStartup" destination="rdS-e7-tO0" id="JUL-Dw-2Ik"/>
+                <outlet property="launchAtStartupButton" destination="rdS-e7-tO0" id="R8S-B1-tU4"/>
+                <outlet property="selectionShortcutView" destination="eDQ-79-aWx" id="trP-og-aTc"/>
+                <outlet property="snipShortcutView" destination="4dL-3k-Qcg" id="jYb-Ti-BJr"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="360" height="280"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hbv-Im-TzA">
+                    <rect key="frame" x="81" y="232" width="68" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="划词翻译：" id="NhA-v8-r28">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="eDQ-79-aWx" customClass="MASShortcutView">
+                    <rect key="frame" x="155" y="228" width="130" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="25" id="9ll-cB-LQt"/>
+                        <constraint firstAttribute="width" constant="130" id="cOb-Bf-zBC"/>
+                    </constraints>
+                </customView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sCf-ch-6bJ">
+                    <rect key="frame" x="81" y="199" width="68" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="截图翻译：" id="e7R-RC-R3D">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rdS-e7-tO0">
+                    <rect key="frame" x="153" y="56" width="89" height="18"/>
+                    <buttonCell key="cell" type="check" title="开机自启动" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0e5-PT-Ixx">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="launchAtStartupButtonClicked:" target="-2" id="FKO-py-vG2"/>
+                    </connections>
+                </button>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="4dL-3k-Qcg" customClass="MASShortcutView">
+                    <rect key="frame" x="155" y="195" width="130" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="25" id="iZC-KT-oES"/>
+                        <constraint firstAttribute="width" constant="130" id="rzg-5L-sm8"/>
+                    </constraints>
+                </customView>
+                <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="01Q-Sk-Jhp">
+                    <rect key="frame" x="38" y="139" width="284" height="5"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="vR2-yA-k9D"/>
+                    </constraints>
+                </box>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="29j-qh-lea" customClass="MASShortcutView">
+                    <rect key="frame" x="157" y="162" width="130" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="130" id="4J6-bU-vIi"/>
+                        <constraint firstAttribute="height" constant="25" id="6Sz-27-yQi"/>
+                    </constraints>
+                </customView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E7D-SM-ttH">
+                    <rect key="frame" x="81" y="166" width="68" height="16"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="输入翻译：" id="uWf-a6-Vf9">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Ux-D6-rfd">
+                    <rect key="frame" x="153" y="24" width="102" height="18"/>
+                    <buttonCell key="cell" type="check" title="自动检查更新" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6JV-Vl-CaE">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="autoCheckUpdateButtonClicked:" target="-2" id="TZA-Jj-jOt"/>
+                    </connections>
+                </button>
+                <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="JZI-C8-iw8">
+                    <rect key="frame" x="38" y="88" width="284" height="5"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="myv-dM-U5T"/>
+                    </constraints>
+                </box>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vKL-Rb-7ex">
+                    <rect key="frame" x="153" y="107" width="129" height="18"/>
+                    <buttonCell key="cell" type="check" title="自动复制翻译结果" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="3Rf-pg-98U">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="autoCopyTranslateResultButtonClicked:" target="-2" id="Ple-eL-Uhj"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="3Ux-D6-rfd" firstAttribute="leading" secondItem="vKL-Rb-7ex" secondAttribute="leading" id="3Uf-4F-gAp"/>
+                <constraint firstItem="sCf-ch-6bJ" firstAttribute="trailing" secondItem="hbv-Im-TzA" secondAttribute="trailing" id="3yY-sU-y1K"/>
+                <constraint firstItem="E7D-SM-ttH" firstAttribute="top" secondItem="sCf-ch-6bJ" secondAttribute="bottom" constant="17" id="7qy-E7-qrU"/>
+                <constraint firstItem="29j-qh-lea" firstAttribute="centerY" secondItem="E7D-SM-ttH" secondAttribute="centerY" id="83V-uS-gDs"/>
+                <constraint firstItem="4dL-3k-Qcg" firstAttribute="centerY" secondItem="sCf-ch-6bJ" secondAttribute="centerY" id="8p2-vX-SFx"/>
+                <constraint firstItem="rdS-e7-tO0" firstAttribute="top" secondItem="JZI-C8-iw8" secondAttribute="bottom" constant="18" id="Gg7-qR-fpC"/>
+                <constraint firstItem="vKL-Rb-7ex" firstAttribute="top" secondItem="01Q-Sk-Jhp" secondAttribute="bottom" constant="18" id="HID-zs-pdU"/>
+                <constraint firstItem="3Ux-D6-rfd" firstAttribute="top" secondItem="rdS-e7-tO0" secondAttribute="bottom" constant="18" id="K5Q-Zs-kug"/>
+                <constraint firstItem="01Q-Sk-Jhp" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="38" id="L2a-sA-Fov"/>
+                <constraint firstItem="JZI-C8-iw8" firstAttribute="leading" secondItem="01Q-Sk-Jhp" secondAttribute="leading" id="M4q-WD-1dp"/>
+                <constraint firstItem="eDQ-79-aWx" firstAttribute="leading" secondItem="hbv-Im-TzA" secondAttribute="trailing" constant="8" id="Nc5-eH-JdB"/>
+                <constraint firstItem="JZI-C8-iw8" firstAttribute="trailing" secondItem="01Q-Sk-Jhp" secondAttribute="trailing" id="Qin-tY-RsA"/>
+                <constraint firstItem="hbv-Im-TzA" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="32" id="V5K-fQ-SIK"/>
+                <constraint firstItem="sCf-ch-6bJ" firstAttribute="top" secondItem="hbv-Im-TzA" secondAttribute="bottom" constant="17" id="ZEt-3z-G9T"/>
+                <constraint firstItem="29j-qh-lea" firstAttribute="leading" secondItem="E7D-SM-ttH" secondAttribute="trailing" constant="10" id="aWH-OE-ol1"/>
+                <constraint firstItem="rdS-e7-tO0" firstAttribute="leading" secondItem="vKL-Rb-7ex" secondAttribute="leading" id="b6F-td-z0L"/>
+                <constraint firstItem="rdS-e7-tO0" firstAttribute="leading" secondItem="4dL-3k-Qcg" secondAttribute="leading" id="bCp-Jd-PhA"/>
+                <constraint firstItem="JZI-C8-iw8" firstAttribute="top" secondItem="vKL-Rb-7ex" secondAttribute="bottom" constant="18" id="cyq-uC-HC9"/>
+                <constraint firstItem="E7D-SM-ttH" firstAttribute="trailing" secondItem="sCf-ch-6bJ" secondAttribute="trailing" id="hjQ-WX-OIR"/>
+                <constraint firstItem="hbv-Im-TzA" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="83" id="jzN-P9-GVa"/>
+                <constraint firstItem="eDQ-79-aWx" firstAttribute="centerY" secondItem="hbv-Im-TzA" secondAttribute="centerY" id="kyN-KI-QWp"/>
+                <constraint firstItem="01Q-Sk-Jhp" firstAttribute="top" secondItem="29j-qh-lea" secondAttribute="bottom" constant="20" id="mie-mC-RlR"/>
+                <constraint firstItem="4dL-3k-Qcg" firstAttribute="leading" secondItem="sCf-ch-6bJ" secondAttribute="trailing" constant="8" id="sGa-O6-Kkp"/>
+                <constraint firstAttribute="trailing" secondItem="01Q-Sk-Jhp" secondAttribute="trailing" constant="38" id="suk-kU-xqJ"/>
+            </constraints>
+            <point key="canvasLocation" x="126" y="159"/>
+        </customView>
+    </objects>
+</document>
