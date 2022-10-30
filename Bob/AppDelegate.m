@@ -23,7 +23,7 @@
     [Shortcut setup];
     
     
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable |  NSWindowStyleMaskClosable | NSWindowStyleMaskUtilityWindow;
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable |  NSWindowStyleMaskClosable;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
     TranslateViewController *translateVC = [[TranslateViewController alloc] init];
     window.contentViewController = translateVC;
