@@ -148,42 +148,29 @@
 }
 
 - (void)sendTranslateRequestWithText:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(id _Nullable responseObject, NSString * _Nullable signText, NSMutableDictionary *reqDict, NSError * _Nullable error))completion {
-    mm_weakify(self)
-    [self updateTKKWithCompletion:^(NSError * _Nullable error) {
-        mm_strongify(self)
-        if (error) {
-            completion(nil, nil, nil, error);
-            return;
+    NSString *sign = [[self.signFunction callWithArguments:@[text]] toString];
+    
+    NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
+    NSDictionary *params = @{
+        @"q": text,
+        @"sl": [self languageStringFromEnum:from],
+        @"tl": [self languageStringFromEnum:to],
+        @"dt": @"t",
+        @"dj": @"1",
+        @"ie": @"UTF-8",
+        @"client": @"gtx",
+    };
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, TranslateErrorRequestURLKey, params, TranslateErrorRequestParamKey, nil];
+    
+    [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject) {
+            completion(responseObject, sign, reqDict, nil);
+        }else {
+            completion(nil, nil, nil, TranslateError(TranslateErrorTypeAPI, @"翻译失败", reqDict));
         }
-        
-        NSString *sign = [[self.signFunction callWithArguments:@[text]] toString];
-        
-        NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
-        url = [url stringByAppendingString:@"?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"];
-        NSDictionary *params = @{
-            @"client": @"webapp",
-            @"sl": [self languageStringFromEnum:from],
-            @"tl": [self languageStringFromEnum:to],
-            @"hl": @"zh-CN",
-            @"otf": @"2",
-            @"ssel": @"3",
-            @"tsel": @"0",
-            @"kc": @"6",
-            @"tk": sign,
-            @"q": text,
-        };
-        NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, TranslateErrorRequestURLKey, params, TranslateErrorRequestParamKey, nil];
-        
-        [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            if (responseObject) {
-                completion(responseObject, sign, reqDict, nil);
-            }else {
-                completion(nil, nil, nil, TranslateError(TranslateErrorTypeAPI, @"翻译失败", reqDict));
-            }
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [reqDict setObject:error forKey:TranslateErrorRequestErrorKey];
-            completion(nil, nil, nil, TranslateError(TranslateErrorTypeNetwork, @"翻译失败", reqDict));
-        }];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [reqDict setObject:error forKey:TranslateErrorRequestErrorKey];
+        completion(nil, nil, nil, TranslateError(TranslateErrorTypeNetwork, @"翻译失败", reqDict));
     }];
 }
 
@@ -325,12 +312,12 @@
             }
             
             NSString *message = nil;
-            if (responseObject && [responseObject isKindOfClass:NSArray.class]) {
+            if (responseObject && [responseObject isKindOfClass:NSDictionary.class]) {
                 @try {
-                    NSArray *responseArray = responseObject;
+                    NSDictionary *responseDict = responseObject;
                     
                     NSString *textEncode = text.mm_urlencode;
-                    NSString *googleFromString = responseArray[2];
+                    NSString *googleFromString = responseDict[@"src"];
                     Language googleFrom = [self languageEnumFromString:googleFromString];
                     Language googleTo = langTo;
                     
@@ -345,80 +332,16 @@
                                    textEncode];
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                     
-                    // 英文查词 中文查词
-                    NSArray<NSArray *> *dictResult = responseArray[1];
-                    if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
-                        TranslateWordResult *wordResult = [TranslateWordResult new];
-                        
-                        if (googleFrom == Language_en &&
-                            (googleTo == Language_zh_Hans || googleTo == Language_zh_Hant)) {
-                            // 英文查词
-                            NSMutableArray *parts = [NSMutableArray array];
-                            [dictResult enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if (![obj isKindOfClass:NSArray.class]) {
-                                    return;
-                                }
-                                TranslatePart *part = [TranslatePart new];
-                                part.part = [obj firstObject];
-                                part.means = [obj[1] mm_where:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                    return [obj isKindOfClass:NSString.class];
-                                }];
-                                if (part.means) {
-                                    [parts addObject:part];
-                                }
-                            }];
-                            if (parts.count) {
-                                wordResult.parts = parts.copy;
-                            }
-                        }else if ((googleFrom == Language_zh_Hans || googleFrom == Language_zh_Hant) &&
-                                  googleTo == Language_en) {
-                            // 中文查词
-                            NSMutableArray *simpleWords = [NSMutableArray array];
-                            [dictResult enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if (![obj isKindOfClass:NSArray.class]) {
-                                    return;
-                                }
-                                NSString *part = [obj firstObject];
-                                NSArray<NSArray *> *partWords = obj[2];
-                                [partWords enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                    TranslateSimpleWord *word = [TranslateSimpleWord new];
-                                    word.word = obj[0];
-                                    word.means = [obj[1] mm_where:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                        return [obj isKindOfClass:NSString.class];
-                                    }];
-                                    word.part = part;
-                                    [simpleWords addObject:word];
-                                }];
-                            }];
-                            
-                            if (simpleWords.count) {
-                                wordResult.simpleWords = simpleWords.copy;
-                            }
-                        }
-                        
-                        if (wordResult.parts || wordResult.simpleWords) {
-                            result.wordResult = wordResult;
-                        }
-                    }
-                    
                     // 普通释义
-                    NSArray<NSArray *> *normalArray = responseArray[0];
-                    if (normalArray && [normalArray isKindOfClass:NSArray.class]) {
-                        NSArray *normalResults = [normalArray mm_map:^id _Nullable(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([obj isKindOfClass:[NSArray class]]) {
-                                if (obj.count && [obj.firstObject isKindOfClass:[NSString class]]) {
-                                    return obj.firstObject;
-                                }
-                            }
-                            return nil;
-                        }];
-                        if (normalResults.count) {
-                            result.normalResults = normalResults.copy;
-                            
-                            NSString *mergeString = [NSString mm_stringByCombineComponents:normalResults separatedString:@"\n"];
-                            NSString *signTo = [[self.signFunction callWithArguments:@[mergeString]] toString];
-                            result.toSpeakURL = [self getAudioURLWithText:mergeString language:[self languageStringFromEnum:googleTo] sign:signTo];
+                    NSArray *sentences = responseDict[@"sentences"];
+                    if (sentences && [sentences isKindOfClass:NSArray.class]) {
+                        NSString *trans = sentences[0][@"trans"];
+                        if (trans && [trans isKindOfClass:NSString.class]) {
+                            result.normalResults = @[trans];
+                            NSString *signTo = [[self.signFunction callWithArguments:@[trans]] toString];
+                            result.toSpeakURL = [self getAudioURLWithText:trans language:[self languageStringFromEnum:googleTo] sign:signTo];
                         }
+                        
                     }
                     
                     if (result.wordResult || result.normalResults) {
@@ -477,10 +400,10 @@
         
         NSString *message = nil;
         @try {
-            if ([responseObject isKindOfClass:NSArray.class]) {
-                NSArray *responseArray = responseObject;
-                if (responseArray.count >= 3) {
-                    NSString *googleFromString = responseArray[2];
+            if ([responseObject isKindOfClass:NSDictionary.class]) {
+                NSDictionary *responseDict = responseObject;
+                NSString *googleFromString = responseDict[@"src"];
+                if ([googleFromString isKindOfClass:NSString.class]) {
                     Language googleFrom = [self languageEnumFromString:googleFromString];
                     if (googleFrom != Language_auto) {
                         completion(googleFrom, nil);
