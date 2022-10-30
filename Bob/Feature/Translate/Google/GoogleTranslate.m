@@ -54,7 +54,7 @@
 - (AFHTTPSessionManager *)htmlSession {
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
-
+        
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
         htmlSession.requestSerializer = requestSerializer;
@@ -71,7 +71,7 @@
 - (AFHTTPSessionManager *)jsonSession {
     if (!_jsonSession) {
         AFHTTPSessionManager *jsonSession = [AFHTTPSessionManager manager];
-
+        
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
         jsonSession.requestSerializer = requestSerializer;
@@ -97,7 +97,7 @@
 - (void)sendGetTKKRequestWithCompletion:(void (^)(NSString * _Nullable TKK, NSError * _Nullable error))completion {
     NSString *url = kGoogleRootPage(self.isCN);
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:TranslateErrorRequestURLKey];
-
+    
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         __block NSString *tkkResult = nil;
@@ -349,7 +349,7 @@
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
                         TranslateWordResult *wordResult = [TranslateWordResult new];
-                                                
+                        
                         if (googleFrom == Language_en &&
                             (googleTo == Language_zh_Hans || googleTo == Language_zh_Hant)) {
                             // 英文查词
@@ -425,7 +425,7 @@
                         completion(result, nil);
                         return;
                     }
-
+                    
                 } @catch (NSException *exception) {
                     MMLogInfo(@"谷歌翻译接口数据解析异常 %@", exception);
                     message = @"谷歌翻译接口数据解析异常";
@@ -555,7 +555,7 @@
         completion(nil, nil, TranslateError(TranslateErrorTypeParam, @"图片为空", nil));
         return;
     }
-
+    
     mm_weakify(self);
     [self ocr:image from:from to:to completion:^(OCRResult * _Nullable ocrResult, NSError * _Nullable error) {
         mm_strongify(self);
