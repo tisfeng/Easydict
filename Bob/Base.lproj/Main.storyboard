@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -688,7 +688,7 @@
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="jsC-rB-zr4"/>
-                        <menuItem title="划词翻译" enabled="NO" id="lUI-Zn-Bwr">
+                        <menuItem title="划词翻译" id="lUI-Zn-Bwr">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="translateAction:" target="qM9-fT-Fym" id="d5U-cW-GgJ"/>
