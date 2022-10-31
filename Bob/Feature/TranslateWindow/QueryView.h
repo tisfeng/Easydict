@@ -20,6 +20,8 @@ DefineMethodMMMake_h(QueryView, view);
 @property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
 
+@property (nonatomic, copy) NSString *detectLanguage;
+
 @property (nonatomic, copy) void (^audioActionBlock)(QueryView *view);
 @property (nonatomic, copy) void (^copyActionBlock)(QueryView *view);
 @property (nonatomic, copy) void (^enterActionBlock)(QueryView *view);

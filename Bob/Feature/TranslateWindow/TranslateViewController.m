@@ -20,7 +20,9 @@
 #import "TranslateWindowController.h"
 
 #define kMargin 12.0
-#define kQueryMinHeight 120.0
+#define kQueryMinHeight 90.0
+#define kResultMinHeight 120.0
+
 #define increaseSeed               \
     NSUInteger seed = ++self.seed; \
     if (seed == NSUIntegerMax) {   \
@@ -283,6 +285,7 @@
     self.transformButton = [ImageButton mm_make:^(NSButton *_Nonnull button) {
         [self.view addSubview:button];
         button.bordered = NO;
+        button.toolTip = @"交换语言";
         button.imageScaling = NSImageScaleProportionallyDown;
         button.bezelStyle = NSBezelStyleRegularSquare;
         [button setButtonType:NSButtonTypeMomentaryChange];
@@ -343,7 +346,7 @@
             }
             make.left.right.equalTo(self.queryView);
             make.bottom.inset(kMargin);
-            make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
+            make.height.greaterThanOrEqualTo(@(kResultMinHeight));
         }];
         mm_weakify(self)
             [view.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {

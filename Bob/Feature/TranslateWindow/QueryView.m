@@ -10,11 +10,12 @@
 #import "ImageButton.h"
 #import "TextView.h"
 
-#define kMinHeight 120.0
 #define kTextViewBottomInset 36.0
 
 
 @interface QueryView () <NSTextViewDelegate>
+
+@property (nonatomic, strong) NSButton *detectLanguageButton;
 
 @end
 
@@ -42,7 +43,7 @@ DefineMethodMMMake_m(QueryView);
     }];
     self.layer.borderWidth = 1;
     self.layer.cornerRadius = 4;
-
+    
     self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];
         scrollView.wantsLayer = YES;
@@ -66,7 +67,7 @@ DefineMethodMMMake_m(QueryView);
             make.bottom.inset(kTextViewBottomInset);
         }];
     }];
-
+    
     self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
         button.bordered = NO;
@@ -81,14 +82,14 @@ DefineMethodMMMake_m(QueryView);
             make.width.height.equalTo(@26);
         }];
         mm_weakify(self)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                        mm_strongify(self) if (self.audioActionBlock) {
-                            self.audioActionBlock(self);
-                        }
-                        return RACSignal.empty;
-                    }]];
+        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+            mm_strongify(self) if (self.audioActionBlock) {
+                self.audioActionBlock(self);
+            }
+            return RACSignal.empty;
+        }]];
     }];
-
+    
     self.textCopyButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
         button.bordered = NO;
@@ -103,16 +104,68 @@ DefineMethodMMMake_m(QueryView);
             make.width.height.equalTo(self.audioButton);
         }];
         mm_weakify(self)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                        mm_strongify(self) if (self.copyActionBlock) {
-                            self.copyActionBlock(self);
-                        }
-                        return RACSignal.empty;
-                    }]];
+        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+            mm_strongify(self) if (self.copyActionBlock) {
+                self.copyActionBlock(self);
+            }
+            return RACSignal.empty;
+        }]];
     }];
-
+    
+    self.detectLanguageButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
+        [self addSubview:button];
+        button.wantsLayer = YES;
+        button.bezelStyle = NSBezelStyleRounded;
+        [button setButtonType:NSButtonTypeMomentaryChange];
+        button.title = @"识别为 ";
+        
+        NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithAttributedString:button.attributedTitle];
+        NSRange range = NSMakeRange(0, attrTitle.length);
+        [attrTitle addAttributes:@{
+            NSForegroundColorAttributeName : NSColor.grayColor,
+            NSFontAttributeName : [NSFont systemFontOfSize:10],
+        }
+                           range:range];
+        
+        button.attributedTitle = attrTitle;
+        
+        button.toolTip = @"检测语言";
+        [button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.textCopyButton.mas_right).offset(5);
+            make.centerY.equalTo(self.textCopyButton);
+            make.height.equalTo(self.textCopyButton).offset(0);
+        }];
+        
+        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+            NSLog(@"detectLanguageActionBlock");
+            
+            return RACSignal.empty;
+        }]];
+    }];
+    
+    [self setDetectLanguage:@"英语"];
+    
+    
     // 将scrollview放到最上层
     [self addSubview:self.scrollView];
+}
+
+- (void)setDetectLanguage:(NSString *)detectLanguage {
+    _detectLanguage = detectLanguage;
+    
+    NSAttributedString *mString = [[NSAttributedString alloc] initWithString:detectLanguage];
+    NSMutableAttributedString *detectTitle = [[NSMutableAttributedString alloc] initWithAttributedString:mString];
+    NSRange range = NSMakeRange(0, detectTitle.length);
+    [detectTitle addAttributes:@{
+        NSForegroundColorAttributeName : NSColor.blueColor,
+        NSFontAttributeName : [NSFont systemFontOfSize:11],
+    }
+                         range:range];
+
+    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithAttributedString:self.detectLanguageButton.attributedTitle];
+    [attrTitle appendAttributedString:detectTitle];
+    
+    self.detectLanguageButton.attributedTitle = attrTitle;
 }
 
 #pragma mark - NSTextViewDelegate
