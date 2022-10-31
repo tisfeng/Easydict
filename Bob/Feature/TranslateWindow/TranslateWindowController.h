@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)inputTranslate;
 
+- (void)showTranslateWindow;
+
 - (void)rerty;
 
 - (void)activeLastFrontmostApplication;

@@ -706,6 +706,12 @@
                                 <action selector="inputTranslate:" target="qM9-fT-Fym" id="o4F-Fg-ALf"/>
                             </connections>
                         </menuItem>
+                        <menuItem title="显示翻译窗口" id="PmP-cO-1HF">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="showTranslateWindow:" target="qM9-fT-Fym" id="tpb-oQ-dVA"/>
+                            </connections>
+                        </menuItem>
                         <menuItem isSeparatorItem="YES" id="ch8-gu-f7X"/>
                         <menuItem title="翻译网站" id="tmm-RJ-RnR">
                             <modifierMask key="keyEquivalentModifierMask"/>

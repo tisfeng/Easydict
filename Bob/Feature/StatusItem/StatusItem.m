@@ -90,6 +90,12 @@ static StatusItem *_instance;
     [TranslateWindowController.shared inputTranslate];
 }
 
+- (IBAction)showTranslateWindow:(NSMenuItem *)sender {
+    NSLog(@"显示翻译窗口");
+    [TranslateWindowController.shared showTranslateWindow];
+}
+
+
 - (IBAction)baiduTranslationWebsite:(id)sender {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://fanyi.baidu.com/"]];
 }

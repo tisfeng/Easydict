@@ -187,6 +187,18 @@ static TranslateWindowController *_instance;
     }
 }
 
+- (void)showTranslateWindow {
+    [self saveFrontmostApplication];
+    if (Snip.shared.isSnapshotting) {
+        return;
+    }
+    
+    [self.window makeKeyAndOrderFront:nil];
+    if (!self.window.isKeyWindow) {
+        // fail to make key window, then force activate application for key window
+        [NSApp activateIgnoringOtherApps:YES];
+    }}
+
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {
         return;
