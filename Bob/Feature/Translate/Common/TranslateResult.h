@@ -11,6 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface TranslatePhonetic : NSObject
 
 /// 语种的中文名称
@@ -22,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface TranslatePart : NSObject
 
 /// 单词属性，例如 'n.'、'vi.' 等
@@ -31,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface TranslateExchange : NSObject
 
 /// 形式的名字
@@ -39,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray<NSString *> *words;
 
 @end
+
 
 @interface TranslateSimpleWord : NSObject
 
@@ -50,6 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSArray<NSString *> *means;
 
 @end
+
 
 @interface TranslateWordResult : NSObject
 
@@ -63,6 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSArray<TranslateSimpleWord *> *simpleWords;
 
 @end
+
 
 @interface TranslateResult : NSObject
 

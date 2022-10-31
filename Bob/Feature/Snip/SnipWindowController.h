@@ -12,10 +12,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface SnipWindowController : NSWindowController
 
-@property (nonatomic, copy) void(^startBlock)(SnipWindowController *windowController);
-@property (nonatomic, copy) void(^endBlock)(SnipWindowController *windowController, NSImage * _Nullable image);
+@property (nonatomic, copy) void (^startBlock)(SnipWindowController *windowController);
+@property (nonatomic, copy) void (^endBlock)(SnipWindowController *windowController, NSImage *_Nullable image);
 @property (nonatomic, readonly) SnipViewController *snipViewController;
 
 - (void)captureWithScreen:(NSScreen *)screen;

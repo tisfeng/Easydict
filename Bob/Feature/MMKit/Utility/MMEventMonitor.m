@@ -14,6 +14,7 @@ typedef NS_ENUM(NSUInteger, MMEventMonitorType) {
     MMEventMonitorTypeBoth,
 };
 
+
 @interface MMEventMonitor ()
 
 @property (nonatomic, assign) MMEventMonitorType type;
@@ -22,9 +23,10 @@ typedef NS_ENUM(NSUInteger, MMEventMonitorType) {
 
 @end
 
+
 @implementation MMEventMonitor
 
-+ (instancetype)monitorWithType:(MMEventMonitorType)type event:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull))handler {
++ (instancetype)monitorWithType:(MMEventMonitorType)type event:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     MMEventMonitor *monitor = [self new];
     monitor.type = type;
     monitor.mask = mask;
@@ -32,15 +34,15 @@ typedef NS_ENUM(NSUInteger, MMEventMonitorType) {
     return monitor;
 }
 
-+ (instancetype)localMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull))handler {
++ (instancetype)localMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     return [self monitorWithType:MMEventMonitorTypeLocal event:mask handler:handler];
 }
 
-+ (instancetype)globalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull))handler {
++ (instancetype)globalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     return [self monitorWithType:MMEventMonitorTypeGlobal event:mask handler:handler];
 }
 
-+ (instancetype)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull))handler {
++ (instancetype)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     return [self monitorWithType:MMEventMonitorTypeBoth event:mask handler:handler];
 }
 
@@ -48,16 +50,16 @@ typedef NS_ENUM(NSUInteger, MMEventMonitorType) {
     [self stop];
     if (self.type == MMEventMonitorTypeLocal) {
         mm_weakify(self)
-        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent * _Nullable(NSEvent * _Nonnull event) {
+            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;
         }];
-    }else if(self.type == MMEventMonitorTypeGlobal) {
+    } else if (self.type == MMEventMonitorTypeGlobal) {
         self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
-    }else {
+    } else {
         mm_weakify(self)
-        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent * _Nullable(NSEvent * _Nonnull event) {
+            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;

@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface YoudaoTranslateResponseWeb : NSObject
 
 /// 原文
@@ -18,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSArray<NSString *> *value;
 
 @end
+
 
 @interface YoudaoTranslateResponseBasic : NSObject
 
@@ -35,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSArray *explains;
 
 @end
+
 
 @interface YoudaoTranslateResponse : NSObject
 

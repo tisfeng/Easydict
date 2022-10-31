@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface TranslateWindowController : NSWindowController
 
 + (instancetype)shared;

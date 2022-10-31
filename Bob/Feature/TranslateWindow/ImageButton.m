@@ -8,9 +8,10 @@
 
 #import "ImageButton.h"
 
+
 @implementation ImageButton
 
-DefineMethodMMMake_m(ImageButton)
+DefineMethodMMMake_m(ImageButton);
 
 //- (void)updateTrackingAreas {
 //    [super updateTrackingAreas];

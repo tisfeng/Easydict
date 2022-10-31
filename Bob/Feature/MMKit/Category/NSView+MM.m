@@ -8,6 +8,7 @@
 
 #import "NSView+MM.h"
 
+
 @implementation NSView (MM)
 
 - (CGFloat)x {
@@ -53,7 +54,7 @@
 - (CGFloat)top {
     if (self.isFlipped) {
         return self.frame.origin.y;
-    }else {
+    } else {
         return self.frame.origin.y + self.frame.size.height;
     }
 }
@@ -62,7 +63,7 @@
     NSRect newFrame = self.frame;
     if (self.isFlipped) {
         newFrame.origin.y = top;
-    }else {
+    } else {
         newFrame.origin.y = top - self.frame.size.height;
     }
     self.frame = newFrame;
@@ -81,7 +82,7 @@
 - (CGFloat)bottom {
     if (self.isFlipped) {
         return self.frame.origin.y + self.frame.size.height;
-    }else {
+    } else {
         return self.frame.origin.y;
     }
 }
@@ -90,7 +91,7 @@
     NSRect newFrame = self.frame;
     if (self.isFlipped) {
         newFrame.origin.y = bottom - self.frame.size.height;
-    }else {
+    } else {
         newFrame.origin.y = bottom;
     }
     self.frame = newFrame;
@@ -160,7 +161,7 @@
 - (NSPoint)topLeft {
     if (self.isFlipped) {
         return self.frame.origin;
-    }else {
+    } else {
         return NSMakePoint(self.frame.origin.x, self.frame.origin.y + self.frame.size.height);
     }
 }
@@ -169,7 +170,7 @@
     NSRect newFrame = self.frame;
     if (self.isFlipped) {
         newFrame.origin = topLeft;
-    }else {
+    } else {
         newFrame.origin.x = topLeft.x;
         newFrame.origin.y = topLeft.y - self.frame.size.height;
     }
@@ -179,7 +180,7 @@
 - (NSPoint)leftBottom {
     if (self.isFlipped) {
         return NSMakePoint(self.frame.origin.x, self.frame.origin.y + self.frame.size.height);
-    }else {
+    } else {
         return self.frame.origin;
     }
 }
@@ -189,7 +190,7 @@
     if (self.isFlipped) {
         newFrame.origin.x = leftBottom.x;
         newFrame.origin.y = leftBottom.y - self.frame.size.height;
-    }else {
+    } else {
         newFrame.origin = leftBottom;
     }
     self.frame = newFrame;
@@ -198,7 +199,7 @@
 - (NSPoint)bottomRight {
     if (self.isFlipped) {
         return NSMakePoint(self.frame.origin.x + self.frame.size.width, self.frame.origin.y + self.frame.size.height);
-    }else {
+    } else {
         return NSMakePoint(self.frame.origin.x + self.frame.size.width, self.frame.origin.y);
     }
 }
@@ -208,7 +209,7 @@
     if (self.isFlipped) {
         newFrame.origin.x = bottomRight.x - self.frame.size.width;
         newFrame.origin.y = bottomRight.y - self.frame.size.height;
-    }else {
+    } else {
         newFrame.origin.x = bottomRight.x - self.frame.size.width;
         newFrame.origin.y = bottomRight.y;
     }
@@ -218,7 +219,7 @@
 - (NSPoint)topRight {
     if (self.isFlipped) {
         return NSMakePoint(self.frame.origin.x + self.frame.size.width, self.frame.origin.y);
-    }else {
+    } else {
         return NSMakePoint(self.frame.origin.x + self.frame.size.width, self.frame.origin.y + self.frame.size.height);
     }
 }
@@ -228,7 +229,7 @@
     if (self.isFlipped) {
         newFrame.origin.x = topRight.x - self.frame.size.width;
         newFrame.origin.y = topRight.y;
-    }else {
+    } else {
         newFrame.origin.x = topRight.x - self.frame.size.width;
         newFrame.origin.y = topRight.y - self.frame.size.height;
     }

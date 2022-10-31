@@ -11,11 +11,12 @@
 
 #import "TranslateWindow.h"
 
+
 @implementation TranslateWindow
 
 - (instancetype)init {
     if (self = [super initWithContentRect:CGRectZero
-                                styleMask: NSWindowStyleMaskClosable | NSWindowStyleMaskResizable | NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel
+                                styleMask:NSWindowStyleMaskClosable | NSWindowStyleMaskResizable | NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel
                                   backing:NSBackingStoreBuffered
                                     defer:YES]) {
         self.movableByWindowBackground = YES;

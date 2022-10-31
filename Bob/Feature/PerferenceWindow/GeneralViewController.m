@@ -10,6 +10,7 @@
 #import "Shortcut.h"
 #import "Configuration.h"
 
+
 @interface GeneralViewController ()
 
 @property (weak) IBOutlet MASShortcutView *selectionShortcutView;
@@ -21,6 +22,7 @@
 
 @end
 
+
 @implementation GeneralViewController
 
 - (instancetype)init {
@@ -30,13 +32,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-    
+
     self.selectionShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.selectionShortcutView setAssociatedUserDefaultsKey:SelectionShortcutKey];
-    
+
     self.snipShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.snipShortcutView setAssociatedUserDefaultsKey:SnipShortcutKey];
-    
+
     self.inputShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.inputShortcutView setAssociatedUserDefaultsKey:InputShortcutKey];
 

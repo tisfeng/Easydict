@@ -8,12 +8,14 @@
 
 #import "AboutViewController.h"
 
+
 @interface AboutViewController ()
 
 @property (weak) IBOutlet NSTextField *versionTextField;
 @property (weak) IBOutlet NSTextField *githubTextField;
 
 @end
+
 
 @implementation AboutViewController
 
@@ -23,7 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.versionTextField.stringValue = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 }
 

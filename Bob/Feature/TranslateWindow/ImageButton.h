@@ -10,9 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface ImageButton : NSButton
 
-DefineMethodMMMake_h(ImageButton, button)
+DefineMethodMMMake_h(ImageButton, button);
 
 @end
 

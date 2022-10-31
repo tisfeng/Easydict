@@ -8,17 +8,19 @@
 
 #import "DarkModeManager.h"
 
-@interface DarkModeManager()
+
+@interface DarkModeManager ()
 
 @property (nonatomic, assign) BOOL systemDarkMode;
 
 @end
 
+
 @implementation DarkModeManager
 
 singleton_m(DarkModeManager)
 
-+ (void)load {
+    + (void)load {
     [[self manager] fetch];
     [[self manager] monitor];
 }
@@ -27,8 +29,8 @@ singleton_m(DarkModeManager)
     return [self shared];
 }
 
-- (void)excuteLight:(void(^)(void))light dark:(void(^)(void))dark {
-    [RACObserve([DarkModeManager manager], systemDarkMode) subscribeNext:^(id  _Nullable x) {
+- (void)excuteLight:(void (^)(void))light dark:(void (^)(void))dark {
+    [RACObserve([DarkModeManager manager], systemDarkMode) subscribeNext:^(id _Nullable x) {
         if ([x boolValue]) {
             !dark ?: dark();
         } else {
@@ -40,18 +42,18 @@ singleton_m(DarkModeManager)
 - (void)fetch {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:NSGlobalDomain];
     id style = [dict objectForKey:@"AppleInterfaceStyle"];
-    self.systemDarkMode = ( style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"] );
+    self.systemDarkMode = (style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"]);
 }
 
 - (void)monitor {
-    NSString * const darkModeNotificationName = @"AppleInterfaceThemeChangedNotification";
+    NSString *const darkModeNotificationName = @"AppleInterfaceThemeChangedNotification";
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDarkMode) name:darkModeNotificationName object:nil];
 }
 
 - (void)updateDarkMode {
     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:NSGlobalDomain];
     id style = [dict objectForKey:@"AppleInterfaceStyle"];
-    BOOL isDarkMode = ( style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"] );
+    BOOL isDarkMode = (style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"]);
     if (isDarkMode) {
         NSLog(@"黑夜模式");
     } else {
@@ -61,4 +63,3 @@ singleton_m(DarkModeManager)
 }
 
 @end
-

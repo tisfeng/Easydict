@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSColor (MM)
 
 + (NSColor *)mm_randomColor;

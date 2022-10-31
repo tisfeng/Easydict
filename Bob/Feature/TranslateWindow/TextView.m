@@ -8,26 +8,27 @@
 
 #import "TextView.h"
 
+
 @implementation TextView
 
-DefineMethodMMMake_m(TextView)
+DefineMethodMMMake_m(TextView);
 
 - (instancetype)init {
     self = [super init];
     if (self) {
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
-        [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *  _Nonnull style) {
-            style.lineHeightMultiple = 1.2;
-            style.paragraphSpacing = 5;
-        }]];
+        [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
+                  style.lineHeightMultiple = 1.2;
+                  style.paragraphSpacing = 5;
+              }]];
         self.font = [NSFont systemFontOfSize:14];
-        [self excuteLight:^(id  _Nonnull x) {
+        [self excuteLight:^(id _Nonnull x) {
             [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
-        } drak:^(id  _Nonnull x) {
+        } drak:^(id _Nonnull x) {
             [x setTextColor:[NSColor whiteColor]];
         }];
         self.alignment = NSTextAlignmentLeft;
-        self.textContainerInset  = CGSizeMake(8, 12);
+        self.textContainerInset = CGSizeMake(8, 12);
     }
     return self;
 }

@@ -10,12 +10,14 @@
 
 #define kMargin 12.0
 
+
 @interface ResultView ()
 
 @property (nonatomic, strong) MASConstraint *actionButtonBottomConstraint;
-@property (nonatomic, copy) void(^actionBlock)(void);
+@property (nonatomic, copy) void (^actionBlock)(void);
 
 @end
+
 
 @implementation ResultView
 
@@ -23,21 +25,21 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.wantsLayer = YES;
-        [self.layer excuteLight:^(id  _Nonnull x) {
+        [self.layer excuteLight:^(id _Nonnull x) {
             [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-        } drak:^(id  _Nonnull x) {
+        } drak:^(id _Nonnull x) {
             [x setBackgroundColor:DarkGrayColor.CGColor];
         }];
         self.layer.cornerRadius = 4;
         self.layer.masksToBounds = YES;
         self.normalResultView = [NormalResultView new];
         self.wordResultView = [WordResultView new];
-        self.stateTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField * _Nonnull textField) {
+        self.stateTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.font = [NSFont systemFontOfSize:14];
-            [textField excuteLight:^(id  _Nonnull x) {
+            [textField excuteLight:^(id _Nonnull x) {
                 [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
-            } drak:^(id  _Nonnull x) {
+            } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -47,7 +49,7 @@
                 make.bottom.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
-        self.actionButton = [NSButton mm_make:^(NSButton * _Nonnull button) {
+        self.actionButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
             [self addSubview:button];
             button.hidden = YES;
             button.bordered = NO;
@@ -59,15 +61,15 @@
                 self.actionButtonBottomConstraint = make.bottom.lessThanOrEqualTo(self).offset(-kMargin);
             }];
             mm_weakify(self)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-                mm_strongify(self)
-                NSLog(@"点击 action");
-                if (self.actionBlock) {
-                    void(^block)(void) = self.actionBlock;
-                    block();
-                }
-                return RACSignal.empty;
-            }]];
+                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                            mm_strongify(self)
+                                NSLog(@"点击 action");
+                            if (self.actionBlock) {
+                                void (^block)(void) = self.actionBlock;
+                                block();
+                            }
+                            return RACSignal.empty;
+                        }]];
         }];
     }
     return self;
@@ -83,18 +85,18 @@
         // 显示word
         [self.normalResultView removeFromSuperview];
         self.normalResultView.hidden = YES;
-        
+
         [self addSubview:self.wordResultView];
         self.wordResultView.hidden = NO;
         [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.edges.inset(0);
         }];
         [self.wordResultView refreshWithResult:result];
-    }else {
+    } else {
         // 显示普通的
         [self.wordResultView removeFromSuperview];
         self.wordResultView.hidden = YES;
-        
+
         [self addSubview:self.normalResultView];
         self.normalResultView.hidden = NO;
         [self.normalResultView refreshWithStrings:result.normalResults];
@@ -108,12 +110,12 @@
     [self refreshWithStateString:string actionTitle:nil action:nil];
 }
 
-- (void)refreshWithStateString:(NSString *)string actionTitle:(NSString * _Nullable)actionTitle action:(void (^ _Nullable)(void))action {
+- (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action {
     [self.normalResultView removeFromSuperview];
     self.normalResultView.hidden = YES;
     [self.wordResultView removeFromSuperview];
     self.wordResultView.hidden = YES;
-    
+
     self.stateTextField.hidden = NO;
     self.stateTextField.stringValue = string;
     if (actionTitle.length) {
@@ -121,7 +123,7 @@
         self.actionButton.attributedTitle = [NSAttributedString mm_attributedStringWithString:actionTitle font:[NSFont systemFontOfSize:14] color:[NSColor mm_colorWithHexString:@"#007AFF"]];
         self.actionBlock = action;
         [self.actionButtonBottomConstraint install];
-    }else {
+    } else {
         self.actionButton.hidden = YES;
         self.actionBlock = nil;
         [self.actionButtonBottomConstraint uninstall];

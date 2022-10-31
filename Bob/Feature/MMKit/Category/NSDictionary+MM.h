@@ -10,9 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSDictionary (MM)
 
-- (NSDictionary * _Nullable)mm_reverseKeysAndObjectsDictionary;
+- (NSDictionary *_Nullable)mm_reverseKeysAndObjectsDictionary;
 
 @end
 

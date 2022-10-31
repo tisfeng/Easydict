@@ -14,7 +14,8 @@
 #import "Configuration.h"
 #import <SSZipArchive/SSZipArchive.h>
 
-@interface StatusItem ()<NSMenuDelegate>
+
+@interface StatusItem () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
 @property (weak) IBOutlet NSMenuItem *bobItem;
@@ -23,6 +24,7 @@
 @property (weak) IBOutlet NSMenuItem *inputItem;
 
 @end
+
 
 @implementation StatusItem
 
@@ -60,7 +62,7 @@ static StatusItem *_instance;
     [item.button setImageScaling:NSImageScaleProportionallyUpOrDown];
     [item setMenu:self.menu];
     self.statusItem = item;
-    
+
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.bobItem.title = [NSString stringWithFormat:@"Bob %@", version];
 }
@@ -135,7 +137,7 @@ static StatusItem *_instance;
     BOOL result = [SSZipArchive createZipFileAtPath:zipPath withContentsOfDirectory:logPath keepParentDirectory:NO];
     if (result) {
         [[NSWorkspace sharedWorkspace] selectFile:zipPath inFileViewerRootedAtPath:@""];
-    }else {
+    } else {
         MMLogInfo(@"导出日志失败");
     }
 }
@@ -156,7 +158,7 @@ static StatusItem *_instance;
     NSLog(@"关闭 Window");
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
-    }else {
+    } else {
         [[[NSApplication sharedApplication] keyWindow] close];
         [TranslateWindowController.shared activeLastFrontmostApplication];
     }
@@ -170,13 +172,13 @@ static StatusItem *_instance;
 #pragma mark -
 
 - (void)menuWillOpen:(NSMenu *)menu {
-    void(^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
+    void (^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
         @try {
-            [Shortcut readShortcutForKey:key completion:^(MASShortcut * _Nullable shorcut) {
+            [Shortcut readShortcutForKey:key completion:^(MASShortcut *_Nullable shorcut) {
                 if (shorcut) {
                     item.keyEquivalent = shorcut.keyCodeStringForKeyEquivalent;
                     item.keyEquivalentModifierMask = shorcut.modifierFlags;
-                }else {
+                } else {
                     item.keyEquivalent = @"";
                     item.keyEquivalentModifierMask = 0;
                 }
@@ -186,7 +188,7 @@ static StatusItem *_instance;
             item.keyEquivalentModifierMask = 0;
         }
     };
-    
+
     configItemShortcut(self.selectionItem, SelectionShortcutKey);
     configItemShortcut(self.snipItem, SnipShortcutKey);
     configItemShortcut(self.inputItem, InputShortcutKey);

@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSString (MM)
 
 - (NSString *)mm_urlencode;

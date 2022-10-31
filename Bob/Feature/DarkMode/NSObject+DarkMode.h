@@ -11,9 +11,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSObject (DarkMode)
 
-- (void)excuteLight:(void(^)(id x))light drak:(void(^)(id x))dark;
+- (void)excuteLight:(void (^)(id x))light drak:(void (^)(id x))dark;
 
 @end
 

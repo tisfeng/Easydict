@@ -8,15 +8,17 @@
 
 #import "YoudaoOCRResponse.h"
 
+
 @implementation YoudaoOCRResponseLine
 
 @end
+
 
 @implementation YoudaoOCRResponse
 
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"lines": YoudaoOCRResponseLine.class,
+        @"lines" : YoudaoOCRResponseLine.class,
     };
 }
 

@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSWindow (MM)
 
 @property (nonatomic, assign) CGFloat x;

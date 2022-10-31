@@ -11,6 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface OCRText : NSObject
 
 /// 识别的文本
@@ -19,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *translatedText;
 
 @end
+
 
 @interface OCRResult : NSObject
 

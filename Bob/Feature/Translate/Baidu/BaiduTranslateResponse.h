@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface BaiduTranslateResponsePart : NSObject
 
 /// 单词属性，例如 'n.'、'vi.' 等
@@ -21,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface BaiduTranslateResponseSymbol : NSObject
 
 /// 词性及释义
@@ -31,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *ph_en;
 
 @end
+
 
 @interface BaiduTranslateResponseExchange : NSObject
 
@@ -53,6 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface BaiduTranslateResponseSimpleMean : NSObject
 
 /// 虽然这是一个数组，但是它一直都只有一个元素
@@ -64,11 +68,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface BaiduTranslateResponseDictResult : NSObject
 
 @property (nonatomic, strong, nullable) BaiduTranslateResponseSimpleMean *simple_means;
 
 @end
+
 
 @interface BaiduTranslateResponseData : NSObject
 
@@ -79,6 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 @interface BaiduTranslateResponseTransResult : NSObject
 
 @property (nonatomic, strong) NSArray<BaiduTranslateResponseData *> *data;
@@ -86,6 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *to;
 
 @end
+
 
 @interface BaiduTranslateResponse : NSObject
 

@@ -11,6 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface Configuration : NSObject
 
 @property (nonatomic, assign) BOOL autoCopyTranslateResult;

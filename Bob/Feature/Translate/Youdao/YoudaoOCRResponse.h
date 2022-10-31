@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface YoudaoOCRResponseLine : NSObject
 
 /// 原文
@@ -18,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *tranContent;
 
 @end
+
 
 @interface YoudaoOCRResponse : NSObject
 

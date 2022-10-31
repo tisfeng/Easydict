@@ -21,17 +21,18 @@
 
 #define kMargin 12.0
 #define kQueryMinHeight 120.0
-#define increaseSeed \
-NSUInteger seed = ++self.seed; \
-if (seed == NSUIntegerMax) { \
-    seed = 0; \
-    self.seed = 0; \
-}
-#define checkSeed \
-if (seed != self.seed) { \
-MMLogInfo(@"过滤失效的网络回调 %zd", seed); \
-return; \
-}
+#define increaseSeed               \
+    NSUInteger seed = ++self.seed; \
+    if (seed == NSUIntegerMax) {   \
+        seed = 0;                  \
+        self.seed = 0;             \
+    }
+#define checkSeed                                   \
+    if (seed != self.seed) {                        \
+        MMLogInfo(@"过滤失效的网络回调 %zd", seed); \
+        return;                                     \
+    }
+
 
 @interface TranslateViewController ()
 
@@ -59,6 +60,7 @@ return; \
 
 @end
 
+
 @implementation TranslateViewController
 
 - (BOOL)acceptsFirstResponder {
@@ -71,10 +73,10 @@ return; \
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
-    [self.view excuteLight:^(NSView *  _Nonnull x) {
+    [self.view excuteLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.whiteColor.CGColor;
         x.layer.borderWidth = 0;
-    } drak:^(NSView *  _Nonnull x) {
+    } drak:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = DeepDarkColor.CGColor;
         x.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.15].CGColor;
         x.layer.borderWidth = 1;
@@ -83,7 +85,7 @@ return; \
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self setupMonitor];
     [self setupTranslate];
     [self setupViews];
@@ -91,7 +93,7 @@ return; \
 
 - (void)viewDidAppear {
     [super viewDidAppear];
-    
+
     if (!Configuration.shared.isPin) {
         [self.monitor start];
     }
@@ -102,7 +104,7 @@ return; \
 
 - (void)viewDidDisappear {
     [super viewDidDisappear];
-    
+
     [self.monitor stop];
     [self.player pause];
 }
@@ -111,7 +113,7 @@ return; \
 
 - (void)setupViews {
     self.view.wantsLayer = YES;
-    self.pinButton = [NSButton mm_make:^(NSButton * button) {
+    self.pinButton = [NSButton mm_make:^(NSButton *button) {
         [self.view addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -126,20 +128,20 @@ return; \
             make.width.height.mas_equalTo(32);
         }];
         mm_weakify(button)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(button)
-            Configuration.shared.isPin = button.mm_isOn;
-            if (button.mm_isOn) {
-                [self.monitor stop];
-            }else {
-                [self.monitor start];
-            }
-            button.toolTip = button.mm_isOn ? @"取消钉住" : @"钉住";
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(button)
+                            Configuration.shared.isPin = button.mm_isOn;
+                        if (button.mm_isOn) {
+                            [self.monitor stop];
+                        } else {
+                            [self.monitor start];
+                        }
+                        button.toolTip = button.mm_isOn ? @"取消钉住" : @"钉住";
+                        return RACSignal.empty;
+                    }]];
     }];
-    
-    self.foldButton = [NSButton mm_make:^(NSButton * _Nonnull button) {
+
+    self.foldButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
         [self.view addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -155,16 +157,16 @@ return; \
             make.width.height.mas_equalTo(26);
         }];
         mm_weakify(button)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(button)
-            Configuration.shared.isFold = button.mm_isOn;
-            [self updateFoldState:button.mm_isOn];
-            button.toolTip = button.mm_isOn ? @"展开" : @"折叠";
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(button)
+                            Configuration.shared.isFold = button.mm_isOn;
+                        [self updateFoldState:button.mm_isOn];
+                        button.toolTip = button.mm_isOn ? @"展开" : @"折叠";
+                        return RACSignal.empty;
+                    }]];
     }];
-    
-    self.linkButton = [NSButton mm_make:^(NSButton * _Nonnull button) {
+
+    self.linkButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
         [self.view addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -178,53 +180,53 @@ return; \
             make.width.height.equalTo(self.foldButton);
         }];
         mm_weakify(self)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(self)
-            NSString *link = self.translate.link;
-            if (self.currentResult.link && [self.queryView.textView.string isEqualToString:self.currentResult.text]) {
-                link = self.currentResult.link;
-            }
-            NSLog(@"%@", link);
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:link]];
-            if (!Configuration.shared.isPin) {
-                [TranslateWindowController.shared close];
-            }
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self)
+                            NSString *link = self.translate.link;
+                        if (self.currentResult.link && [self.queryView.textView.string isEqualToString:self.currentResult.text]) {
+                            link = self.currentResult.link;
+                        }
+                        NSLog(@"%@", link);
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:link]];
+                        if (!Configuration.shared.isPin) {
+                            [TranslateWindowController.shared close];
+                        }
+                        return RACSignal.empty;
+                    }]];
     }];
-    
-    self.queryView = [QueryView mm_make:^(QueryView * _Nonnull view) {
+
+    self.queryView = [QueryView mm_make:^(QueryView *_Nonnull view) {
         [self.view addSubview:view];
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.pinButton.mas_bottom).offset(2);
             make.left.right.inset(kMargin);
             self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
         }];
-        [view setCopyActionBlock:^(QueryView * _Nonnull view) {
+        [view setCopyActionBlock:^(QueryView *_Nonnull view) {
             [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
         }];
         mm_weakify(self)
-        [view setAudioActionBlock:^(QueryView * _Nonnull view) {
-            mm_strongify(self);
-            if ([self.currentResult.text isEqualToString:view.textView.string]) {
-                if (self.currentResult.fromSpeakURL) {
-                    [self playAudioWithURL:self.currentResult.fromSpeakURL];
-                }else {
-                    [self playAudioWithText:self.currentResult.text lang:self.currentResult.from];
+            [view setAudioActionBlock:^(QueryView *_Nonnull view) {
+                mm_strongify(self);
+                if ([self.currentResult.text isEqualToString:view.textView.string]) {
+                    if (self.currentResult.fromSpeakURL) {
+                        [self playAudioWithURL:self.currentResult.fromSpeakURL];
+                    } else {
+                        [self playAudioWithText:self.currentResult.text lang:self.currentResult.from];
+                    }
+                } else {
+                    [self playAudioWithText:view.textView.string lang:Configuration.shared.from];
                 }
-            }else {
-                [self playAudioWithText:view.textView.string lang:Configuration.shared.from];
-            }
-        }];
-        [view setEnterActionBlock:^(QueryView * _Nonnull view) {
+            }];
+        [view setEnterActionBlock:^(QueryView *_Nonnull view) {
             mm_strongify(self);
             if (view.textView.string.length) {
                 [self translateText:view.textView.string];
             }
         }];
     }];
-    
-    self.translateButton = [PopUpButton mm_make:^(PopUpButton * _Nonnull button) {
+
+    self.translateButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
         [self.view addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.queryView.mas_bottom).offset(12);
@@ -233,12 +235,12 @@ return; \
             make.width.mas_lessThanOrEqualTo(200);
             make.height.mas_equalTo(25);
         }];
-        [button updateMenuWithTitleArray:[self.translateArray mm_map:^id _Nullable(Translate * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            return obj.name;
-        }]];
-        [button updateWithIndex:[[self.translateArray mm_find:^id _Nullable(Translate * _Nonnull obj, NSUInteger idx) {
-            return obj == self.translate ? @(idx): nil;
-        }] integerValue]];
+        [button updateMenuWithTitleArray:[self.translateArray mm_map:^id _Nullable(Translate *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    return obj.name;
+                }]];
+        [button updateWithIndex:[[self.translateArray mm_find:^id _Nullable(Translate *_Nonnull obj, NSUInteger idx) {
+                    return obj == self.translate ? @(idx) : nil;
+                }] integerValue]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
             mm_strongify(self);
@@ -250,8 +252,8 @@ return; \
             }
         }];
     }];
-   
-    self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton * _Nonnull button) {
+
+    self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
         [self.view addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.translateButton.mas_bottom).offset(12);
@@ -259,12 +261,12 @@ return; \
             make.width.mas_equalTo(100);
             make.height.mas_equalTo(25);
         }];
-        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj integerValue] == Language_auto) {
-                return @"自动检测";
-            }
-            return LanguageDescFromEnum([obj integerValue]);
-        }]];
+        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    if ([obj integerValue] == Language_auto) {
+                        return @"自动检测";
+                    }
+                    return LanguageDescFromEnum([obj integerValue]);
+                }]];
         [button updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
@@ -277,8 +279,8 @@ return; \
             }
         }];
     }];
-    
-    self.transformButton = [ImageButton mm_make:^(NSButton * _Nonnull button) {
+
+    self.transformButton = [ImageButton mm_make:^(NSButton *_Nonnull button) {
         [self.view addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -292,19 +294,19 @@ return; \
             make.height.equalTo(@40);
         }];
         mm_weakify(self)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(self)
-            Language from = Configuration.shared.from;
-            Configuration.shared.from = Configuration.shared.to;
-            Configuration.shared.to = from;
-            [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
-            [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
-            [self retry];
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self)
+                            Language from = Configuration.shared.from;
+                        Configuration.shared.from = Configuration.shared.to;
+                        Configuration.shared.to = from;
+                        [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
+                        [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
+                        [self retry];
+                        return RACSignal.empty;
+                    }]];
     }];
-    
-    self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton * _Nonnull button) {
+
+    self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
         [self.view addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.transformButton.mas_right).offset(20);
@@ -312,12 +314,12 @@ return; \
             make.width.height.equalTo(self.fromLanguageButton);
             make.right.lessThanOrEqualTo(self.view.mas_right).offset(-kMargin);
         }];
-        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj integerValue] == Language_auto) {
-                return @"自动选择";
-            }
-            return LanguageDescFromEnum([obj integerValue]);
-        }]];
+        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    if ([obj integerValue] == Language_auto) {
+                        return @"自动选择";
+                    }
+                    return LanguageDescFromEnum([obj integerValue]);
+                }]];
         [button updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
@@ -330,13 +332,13 @@ return; \
             }
         }];
     }];
-    
-    self.resultView = [ResultView mm_anyMake:^(ResultView *  _Nonnull view) {
+
+    self.resultView = [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
         [self.view addSubview:view];
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
             if (Configuration.shared.isFold) {
                 self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-            }else {
+            } else {
                 self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
             }
             make.left.right.equalTo(self.queryView);
@@ -344,31 +346,31 @@ return; \
             make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
         }];
         mm_weakify(self)
-        [view.normalResultView setAudioActionBlock:^(NormalResultView * _Nonnull view) {
-            mm_strongify(self);
-            if (!self.currentResult) return;
-            if (self.currentResult.toSpeakURL) {
-                [self playAudioWithURL:self.currentResult.toSpeakURL];
-            }else {
-                [self playAudioWithText:[NSString mm_stringByCombineComponents:self.currentResult.normalResults separatedString:@"\n"] lang:self.currentResult.to];
-            }
-        }];
-        [view.normalResultView setCopyActionBlock:^(NormalResultView * _Nonnull view) {
+            [view.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
+                mm_strongify(self);
+                if (!self.currentResult) return;
+                if (self.currentResult.toSpeakURL) {
+                    [self playAudioWithURL:self.currentResult.toSpeakURL];
+                } else {
+                    [self playAudioWithText:[NSString mm_stringByCombineComponents:self.currentResult.normalResults separatedString:@"\n"] lang:self.currentResult.to];
+                }
+            }];
+        [view.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
             mm_strongify(self);
             if (!self.currentResult) return;
             [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
         }];
-        [view.wordResultView setPlayAudioBlock:^(WordResultView * _Nonnull view, NSString * _Nonnull url) {
+        [view.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
             mm_strongify(self);
             [self playAudioWithURL:url];
         }];
-        [view.wordResultView setSelectWordBlock:^(WordResultView * _Nonnull view, NSString * _Nonnull word) {
+        [view.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
             mm_strongify(self);
             [NSPasteboard mm_generalPasteboardSetString:word];
             [self translateText:word];
         }];
     }];
-    
+
     [self updateFoldState:Configuration.shared.isFold];
 }
 
@@ -378,7 +380,7 @@ return; \
         [BaiduTranslate new],
         [GoogleTranslate new],
     ];
-    self.translate = [self.translateArray mm_find:^id(Translate * _Nonnull obj, NSUInteger idx) {
+    self.translate = [self.translateArray mm_find:^id(Translate *_Nonnull obj, NSUInteger idx) {
         return [obj.identifier isEqualToString:Configuration.shared.translateIdentifier] ? obj : nil;
     }];
     if (!self.translate) {
@@ -389,7 +391,7 @@ return; \
 
 - (void)setupMonitor {
     mm_weakify(self)
-    self.monitor = [MMEventMonitor globalMonitorWithEvent:NSEventMaskLeftMouseDown | NSEventMaskRightMouseDown handler:^(NSEvent * _Nonnull event) {
+        self.monitor = [MMEventMonitor globalMonitorWithEvent:NSEventMaskLeftMouseDown | NSEventMaskRightMouseDown handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         if (NSPointInRect([NSEvent mouseLocation], TranslateWindowController.shared.window.frame)) {
             // TODO: 这个问题偶然出现，原因暂未找到
@@ -429,42 +431,42 @@ return; \
     self.isTranslating = YES;
     [self resetWithState:@"翻译中..." query:text];
     increaseSeed
-    mm_weakify(self)
-    [self.translate translate:text
-                         from:Configuration.shared.from
-                           to:Configuration.shared.to
-                   completion:^(TranslateResult * _Nullable result, NSError * _Nullable error) {
-        mm_strongify(self);
-        checkSeed
-        self.isTranslating = NO;
-        [self refreshWithTranslateResult:result error:error];
-    }];
+        mm_weakify(self)
+            [self.translate translate:text
+                                 from:Configuration.shared.from
+                                   to:Configuration.shared.to
+                           completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
+                               mm_strongify(self);
+                               checkSeed
+                                   self.isTranslating = NO;
+                               [self refreshWithTranslateResult:result error:error];
+                           }];
 }
 
 - (void)translateImage:(NSImage *)image {
     self.isTranslating = YES;
     [self resetWithState:@"图片文本识别中..."];
     increaseSeed
-    mm_weakify(self)
-    [self.translate ocrAndTranslate:image
-                               from:Configuration.shared.from
-                                 to:Configuration.shared.to
-                         ocrSuccess:^(OCRResult * _Nonnull result, BOOL willInvokeTranslateAPI) {
-        mm_strongify(self)
-        checkSeed
-        [NSPasteboard mm_generalPasteboardSetString:result.mergedText];
-        self.queryView.textView.string = result.mergedText;
-        if (!willInvokeTranslateAPI) {
-            [self.resultView refreshWithStateString:@"翻译中..."];
-        }
-    }
-                         completion:^(OCRResult * _Nullable ocrResult, TranslateResult * _Nullable result, NSError * _Nullable error) {
-        mm_strongify(self)
-        checkSeed
-        self.isTranslating = NO;
-        NSLog(@"识别到的文本:\n%@", ocrResult.mergedText);
-        [self refreshWithTranslateResult:result error:error];
-    }];
+        mm_weakify(self)
+            [self.translate ocrAndTranslate:image
+                from:Configuration.shared.from
+                to:Configuration.shared.to
+                ocrSuccess:^(OCRResult *_Nonnull result, BOOL willInvokeTranslateAPI) {
+                    mm_strongify(self)
+                    checkSeed
+                        [NSPasteboard mm_generalPasteboardSetString:result.mergedText];
+                    self.queryView.textView.string = result.mergedText;
+                    if (!willInvokeTranslateAPI) {
+                        [self.resultView refreshWithStateString:@"翻译中..."];
+                    }
+                }
+                completion:^(OCRResult *_Nullable ocrResult, TranslateResult *_Nullable result, NSError *_Nullable error) {
+                    mm_strongify(self)
+                        checkSeed
+                            self.isTranslating = NO;
+                    NSLog(@"识别到的文本:\n%@", ocrResult.mergedText);
+                    [self refreshWithTranslateResult:result error:error];
+                }];
 }
 
 - (void)refreshWithTranslateResult:(TranslateResult *)result error:(NSError *)error {
@@ -476,16 +478,16 @@ return; \
         [self.resultView refreshWithStateString:error.localizedDescription];
         NSString *errorInfo = [NSString stringWithFormat:@"%@\n%@", error.localizedDescription, [error.userInfo objectForKey:TranslateErrorRequestKey]];
         MMLogInfo(@"%@", errorInfo);
-    }else {
+    } else {
         self.currentResult = result;
         [self.resultView refreshWithResult:result];
     }
     mm_weakify(self)
-    dispatch_async(dispatch_get_main_queue(), ^{
-        mm_strongify(self);
-        [self moveWindowToScreen];
-        [self resetQueryViewHeightConstraint];
-    });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            mm_strongify(self);
+            [self moveWindowToScreen];
+            [self resetQueryViewHeightConstraint];
+        });
 }
 
 - (void)retry {
@@ -494,32 +496,32 @@ return; \
     }
     if (self.currentResult) {
         [self translateText:self.currentResult.text];
-    }else if (self.queryView.textView.string.length) {
+    } else if (self.queryView.textView.string.length) {
         [self translateText:self.queryView.textView.string];
     }
 }
 
 - (void)refreshForSwitchTranslate {
-    [self.fromLanguageButton updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj integerValue] == Language_auto) {
-            return @"自动检测";
-        }
-        return LanguageDescFromEnum([obj integerValue]);
-    }]];
+    [self.fromLanguageButton updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                                 if ([obj integerValue] == Language_auto) {
+                                     return @"自动检测";
+                                 }
+                                 return LanguageDescFromEnum([obj integerValue]);
+                             }]];
     NSInteger fromIndex = [self.translate indexForLanguage:Configuration.shared.from];
     Configuration.shared.from = [[self.translate.languages objectAtIndex:fromIndex] integerValue];
     [self.fromLanguageButton updateWithIndex:fromIndex];
-    
-    [self.toLanguageButton updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj integerValue] == Language_auto) {
-            return @"自动选择";
-        }
-        return LanguageDescFromEnum([obj integerValue]);
-    }]];
+
+    [self.toLanguageButton updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                               if ([obj integerValue] == Language_auto) {
+                                   return @"自动选择";
+                               }
+                               return LanguageDescFromEnum([obj integerValue]);
+                           }]];
     NSInteger toIndex = [self.translate indexForLanguage:Configuration.shared.to];
     Configuration.shared.to = [[self.translate.languages objectAtIndex:toIndex] integerValue];
     [self.toLanguageButton updateWithIndex:toIndex];
-    
+
     // 强制重刷
     self.isTranslating = NO;
     [self retry];
@@ -528,14 +530,14 @@ return; \
 - (void)playAudioWithText:(NSString *)text lang:(Language)lang {
     if (text.length) {
         mm_weakify(self)
-        [self.translate audio:text from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
-            mm_strongify(self);
-            if (!error) {
-                [self playAudioWithURL:url];
-            }else {
-                MMLogInfo(@"获取音频 URL 失败 %@", error);
-            }
-        }];
+            [self.translate audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+                mm_strongify(self);
+                if (!error) {
+                    [self playAudioWithURL:url];
+                } else {
+                    MMLogInfo(@"获取音频 URL 失败 %@", error);
+                }
+            }];
     }
 }
 
@@ -575,7 +577,7 @@ return; \
     [self.resultView mas_updateConstraints:^(MASConstraintMaker *make) {
         if (isFold) {
             self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-        }else {
+        } else {
             self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
         }
     }];

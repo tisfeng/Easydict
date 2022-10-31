@@ -8,30 +8,32 @@
 
 #import "YoudaoTranslateResponse.h"
 
+
 @implementation YoudaoTranslateResponseWeb
 
-+(NSDictionary *)mj_objectClassInArray {
++ (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"value": NSString.class,
+        @"value" : NSString.class,
     };
 }
 
 @end
 
+
 @implementation YoudaoTranslateResponseBasic
 
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"explains": NSString.class,
+        @"explains" : NSString.class,
     };
 }
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
     return @{
-        @"us_phonetic": @"us-phonetic",
-        @"uk_phonetic": @"uk-phonetic",
-        @"us_speech": @"us-speech",
-        @"uk_speech": @"uk-speech",
+        @"us_phonetic" : @"us-phonetic",
+        @"uk_phonetic" : @"uk-phonetic",
+        @"us_speech" : @"us-speech",
+        @"uk_speech" : @"uk-speech",
     };
 }
 
@@ -42,8 +44,8 @@
 
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"translation": NSString.class,
-        @"web": YoudaoTranslateResponseWeb.class,
+        @"translation" : NSString.class,
+        @"web" : YoudaoTranslateResponseWeb.class,
     };
 }
 

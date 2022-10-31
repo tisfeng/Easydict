@@ -8,41 +8,48 @@
 
 #import "BaiduTranslateResponse.h"
 
+
 @implementation BaiduTranslateResponsePart
 
 @end
+
 
 @implementation BaiduTranslateResponseSymbol
 
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"parts": BaiduTranslateResponsePart.class,
+        @"parts" : BaiduTranslateResponsePart.class,
     };
 }
 
 @end
+
 
 @implementation BaiduTranslateResponseExchange
 
 @end
 
+
 @implementation BaiduTranslateResponseSimpleMean
 
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"symbols": BaiduTranslateResponseSymbol.class,
+        @"symbols" : BaiduTranslateResponseSymbol.class,
     };
 }
 
 @end
 
+
 @implementation BaiduTranslateResponseDictResult
 
 @end
 
+
 @implementation BaiduTranslateResponseData
 
 @end
+
 
 @implementation BaiduTranslateResponseTransResult
 
@@ -53,6 +60,7 @@
 }
 
 @end
+
 
 @implementation BaiduTranslateResponse
 

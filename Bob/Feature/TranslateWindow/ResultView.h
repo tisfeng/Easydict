@@ -13,6 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface ResultView : NSView
 
 @property (nonatomic, strong) NormalResultView *normalResultView;
@@ -22,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)refreshWithResult:(TranslateResult *)result;
 - (void)refreshWithStateString:(NSString *)string;
-- (void)refreshWithStateString:(NSString *)string actionTitle:(NSString * _Nullable)actionTitle action:(void (^ _Nullable )(void))action;
+- (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action;
 
 @end
 

@@ -10,9 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface SnipFocusView : NSView
 
-DefineMethodMMMake_h(SnipFocusView, view)
+DefineMethodMMMake_h(SnipFocusView, view);
 
 @property (nonatomic, strong) NSImageView *imageView;
 @property (nonatomic, strong) NSTextField *locationTextField;

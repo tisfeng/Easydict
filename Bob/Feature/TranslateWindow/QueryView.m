@@ -13,13 +13,15 @@
 #define kMinHeight 120.0
 #define kTextViewBottomInset 36.0
 
-@interface QueryView ()<NSTextViewDelegate>
+
+@interface QueryView () <NSTextViewDelegate>
 
 @end
 
+
 @implementation QueryView
 
-DefineMethodMMMake_m(QueryView)
+DefineMethodMMMake_m(QueryView);
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -31,27 +33,27 @@ DefineMethodMMMake_m(QueryView)
 
 - (void)setup {
     self.wantsLayer = YES;
-    [self.layer excuteLight:^(id  _Nonnull x) {
+    [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.whiteColor.CGColor];
         [x setBorderColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-    } drak:^(id  _Nonnull x) {
+    } drak:^(id _Nonnull x) {
         [x setBackgroundColor:DeepDarkColor.CGColor];
         [x setBorderColor:DarkBorderColor.CGColor];
     }];
     self.layer.borderWidth = 1;
     self.layer.cornerRadius = 4;
 
-    self.scrollView = [NSScrollView mm_make:^(NSScrollView *  _Nonnull scrollView) {
+    self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];
         scrollView.wantsLayer = YES;
         scrollView.hasVerticalScroller = YES;
         scrollView.hasHorizontalScroller = NO;
         scrollView.autohidesScrollers = YES;
-        self.textView = [TextView mm_make:^(TextView * _Nonnull textView) {
-            [textView excuteLight:^(id  _Nonnull x) {
+        self.textView = [TextView mm_make:^(TextView *_Nonnull textView) {
+            [textView excuteLight:^(id _Nonnull x) {
                 [x setBackgroundColor:NSColor.whiteColor];
                 [x setTextColor:[NSColor mm_colorWithHexString:@"#000000"]];
-            } drak:^(id  _Nonnull x) {
+            } drak:^(id _Nonnull x) {
                 [x setBackgroundColor:DeepDarkColor];
                 [x setTextColor:[NSColor whiteColor]];
             }];
@@ -64,8 +66,8 @@ DefineMethodMMMake_m(QueryView)
             make.bottom.inset(kTextViewBottomInset);
         }];
     }];
-    
-    self.audioButton = [ImageButton mm_make:^(ImageButton * _Nonnull button) {
+
+    self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -79,16 +81,15 @@ DefineMethodMMMake_m(QueryView)
             make.width.height.equalTo(@26);
         }];
         mm_weakify(self)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(self)
-            if (self.audioActionBlock) {
-                self.audioActionBlock(self);
-            }
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self) if (self.audioActionBlock) {
+                            self.audioActionBlock(self);
+                        }
+                        return RACSignal.empty;
+                    }]];
     }];
-    
-    self.textCopyButton = [ImageButton mm_make:^(ImageButton * _Nonnull button) {
+
+    self.textCopyButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
         button.bordered = NO;
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -102,15 +103,14 @@ DefineMethodMMMake_m(QueryView)
             make.width.height.equalTo(self.audioButton);
         }];
         mm_weakify(self)
-        [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            mm_strongify(self)
-            if (self.copyActionBlock) {
-                self.copyActionBlock(self);
-            }
-            return RACSignal.empty;
-        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self) if (self.copyActionBlock) {
+                            self.copyActionBlock(self);
+                        }
+                        return RACSignal.empty;
+                    }]];
     }];
-    
+
     // 将scrollview放到最上层
     [self addSubview:self.scrollView];
 }
@@ -120,9 +120,9 @@ DefineMethodMMMake_m(QueryView)
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     if (commandSelector == @selector(insertNewline:)) {
         NSEventModifierFlags flags = NSApplication.sharedApplication.currentEvent.modifierFlags;
-        if(flags & NSEventModifierFlagShift) {
+        if (flags & NSEventModifierFlagShift) {
             return NO;
-        }else {
+        } else {
             if (self.enterActionBlock) {
                 self.enterActionBlock(self);
             }

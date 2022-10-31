@@ -10,9 +10,11 @@
 #import "GeneralViewController.h"
 #import "AboutViewController.h"
 
+
 @interface PreferencesWindowController ()
 
 @end
+
 
 @implementation PreferencesWindowController
 

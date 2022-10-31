@@ -8,6 +8,7 @@
 
 #import "NSAttributedString+MM.h"
 
+
 @implementation NSAttributedString (MM)
 
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color {
@@ -15,12 +16,12 @@
         NSAssert(0, @"mm_attributedStringWithString: 参数不对");
         return nil;
     }
-    
+
     NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:text
                                                                  attributes:@{
-                                                                              NSFontAttributeName:font,
-                                                                              NSForegroundColorAttributeName:color,
-                                                                              }];
+                                                                     NSFontAttributeName : font,
+                                                                     NSForegroundColorAttributeName : color,
+                                                                 }];
     return attStr;
 }
 

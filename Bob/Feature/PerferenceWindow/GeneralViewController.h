@@ -11,7 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface GeneralViewController : NSViewController<MASPreferencesViewController>
+
+@interface GeneralViewController : NSViewController <MASPreferencesViewController>
 
 @end
 

@@ -8,6 +8,7 @@
 
 #import "NSPasteboard+MM.h"
 
+
 @implementation NSPasteboard (MM)
 
 + (BOOL)mm_generalPasteboardSetString:(NSString *)string {

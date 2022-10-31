@@ -8,16 +8,17 @@
 
 #import "TranslateError.h"
 
-NSString * const TranslateErrorRequestKey = @"TranslateErrorRequestKey";
-NSString * const TranslateErrorRequestURLKey = @"URL";
-NSString * const TranslateErrorRequestParamKey = @"Param";
-NSString * const TranslateErrorRequestResponseKey = @"Response";
-NSString * const TranslateErrorRequestErrorKey = @"Error";
+NSString *const TranslateErrorRequestKey = @"TranslateErrorRequestKey";
+NSString *const TranslateErrorRequestURLKey = @"URL";
+NSString *const TranslateErrorRequestParamKey = @"Param";
+NSString *const TranslateErrorRequestResponseKey = @"Response";
+NSString *const TranslateErrorRequestErrorKey = @"Error";
+
 
 @implementation TranslateError
 
 + (NSError *)errorWithType:(TranslateErrorType)type
-                   message:(NSString * _Nullable)message
+                   message:(NSString *_Nullable)message
                    request:(id _Nullable)request {
     NSString *errorString = nil;
     switch (type) {
@@ -39,7 +40,7 @@ NSString * const TranslateErrorRequestErrorKey = @"Error";
     if (message.length) {
         if (errorString.length) {
             errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
-        }else {
+        } else {
             errorString = message;
         }
     }

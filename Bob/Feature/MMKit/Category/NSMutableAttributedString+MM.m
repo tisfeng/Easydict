@@ -9,6 +9,7 @@
 #import "NSMutableAttributedString+MM.h"
 #import "NSAttributedString+MM.h"
 
+
 @implementation NSMutableAttributedString (MM)
 
 + (NSMutableAttributedString *)mm_mutableAttributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color {

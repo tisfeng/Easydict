@@ -10,16 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface MMEventMonitor : NSObject
 
 @property (nonatomic, assign) NSEventMask mask;
-@property (nonatomic, copy) void(^handler)(NSEvent *event);
+@property (nonatomic, copy) void (^handler)(NSEvent *event);
 
-+ (instancetype)localMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull event))handler;
++ (instancetype)localMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull event))handler;
 
-+ (instancetype)globalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull event))handler;
++ (instancetype)globalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull event))handler;
 
-+ (instancetype)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent * _Nonnull event))handler;
++ (instancetype)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull event))handler;
 
 - (void)start;
 

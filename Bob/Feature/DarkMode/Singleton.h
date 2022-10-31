@@ -10,17 +10,16 @@
 
 #define kInstanceName _instance##name
 
-#define singleton_m(name)                               \
-    static id kInstanceName;                            \
-                                                        \
-    +(instancetype)shared {                             \
-        static dispatch_once_t onceToken;               \
-        dispatch_once(&onceToken, ^{                    \
-            kInstanceName = [[self alloc] init];        \
-        });                                             \
-        return kInstanceName;                           \
-    }                                                   \
-    +(id)copy {        \
-        return kInstanceName;                           \
+#define singleton_m(name)                        \
+    static id kInstanceName;                     \
+                                                 \
+    +(instancetype)shared {                      \
+        static dispatch_once_t onceToken;        \
+        dispatch_once(&onceToken, ^{             \
+            kInstanceName = [[self alloc] init]; \
+        });                                      \
+        return kInstanceName;                    \
+    }                                            \
+    +(id)copy {                                  \
+        return kInstanceName;                    \
     }
-

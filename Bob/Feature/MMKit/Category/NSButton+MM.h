@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSButton (MM)
 
 @property (nonatomic, assign) BOOL mm_isOn;

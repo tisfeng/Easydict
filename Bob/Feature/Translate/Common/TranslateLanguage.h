@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, Language) {
     Language_hy,
     /// 阿塞拜疆语
     Language_az,
-    /// 孟加拉语    
+    /// 孟加拉语
     Language_bn,
     /// 巴斯克语
     Language_eu,
@@ -163,7 +163,7 @@ typedef NS_ENUM(NSUInteger, Language) {
     Language_fy,
     /// 加利西亚语
     Language_gl,
-    /// 格鲁吉亚语    
+    /// 格鲁吉亚语
     Language_ka,
     /// 古吉拉特语
     Language_gu,
@@ -177,7 +177,7 @@ typedef NS_ENUM(NSUInteger, Language) {
     Language_ig,
     /// 爱尔兰语
     Language_ga,
-    /// 爪哇语    
+    /// 爪哇语
     Language_jw,
     /// 卡纳达语
     Language_kn,
@@ -256,6 +256,6 @@ typedef NS_ENUM(NSUInteger, Language) {
 };
 
 /// 根据枚举获取语言描述
-NSString * _Nullable LanguageDescFromEnum(Language lang);
+NSString *_Nullable LanguageDescFromEnum(Language lang);
 
 NS_ASSUME_NONNULL_END

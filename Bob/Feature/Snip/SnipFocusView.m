@@ -8,12 +8,12 @@
 
 #import "SnipFocusView.h"
 
+
 @implementation SnipFocusView
 
-DefineMethodMMMake_m(SnipFocusView)
+DefineMethodMMMake_m(SnipFocusView);
 
-- (instancetype)initWithFrame:(NSRect)frame
-{
+- (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self setup];
@@ -30,8 +30,8 @@ DefineMethodMMMake_m(SnipFocusView)
     self.layer.shadowColor = [NSColor blackColor].CGColor;
     self.layer.shadowRadius = 4;
     self.layer.shadowOpacity = 0.2;
-    
-    self.imageView = [NSImageView mm_make:^(NSImageView * _Nonnull imageView) {
+
+    self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
         [self addSubview:imageView];
         imageView.wantsLayer = YES;
         imageView.layer.backgroundColor = NSColor.whiteColor.CGColor;
@@ -41,8 +41,8 @@ DefineMethodMMMake_m(SnipFocusView)
             make.width.height.equalTo(@100);
         }];
     }];
-    
-    [NSView mm_make:^(NSView * _Nonnull view) {
+
+    [NSView mm_make:^(NSView *_Nonnull view) {
         [self.imageView addSubview:view];
         view.wantsLayer = YES;
         view.layer.backgroundColor = self.layer.backgroundColor;
@@ -53,7 +53,7 @@ DefineMethodMMMake_m(SnipFocusView)
         }];
     }];
 
-    [NSView mm_make:^(NSView * _Nonnull view) {
+    [NSView mm_make:^(NSView *_Nonnull view) {
         [self.imageView addSubview:view];
         view.wantsLayer = YES;
         view.layer.backgroundColor = self.layer.backgroundColor;
@@ -63,8 +63,8 @@ DefineMethodMMMake_m(SnipFocusView)
             make.width.equalTo(@1);
         }];
     }];
-    
-    self.locationTextField = [NSTextField mm_make:^(NSTextField * _Nonnull textField) {
+
+    self.locationTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
         [self addSubview:textField];
         textField.stringValue = @"坐标: (0, 0)";
         textField.editable = NO;
@@ -77,8 +77,8 @@ DefineMethodMMMake_m(SnipFocusView)
             make.top.equalTo(self.imageView.mas_bottom).offset(2);
         }];
     }];
-    
-    self.sizeTextFiled = [NSTextField mm_make:^(NSTextField * _Nonnull textField) {
+
+    self.sizeTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
         [self addSubview:textField];
         textField.stringValue = @"尺寸: (0, 0)";
         textField.editable = NO;
@@ -91,7 +91,6 @@ DefineMethodMMMake_m(SnipFocusView)
             make.top.equalTo(self.locationTextField.mas_bottom);
         }];
     }];
-
 }
 
 - (CGSize)expectSize {

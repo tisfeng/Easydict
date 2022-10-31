@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSMutableAttributedString (MM)
 
 + (NSMutableAttributedString *)mm_mutableAttributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color;

@@ -8,6 +8,7 @@
 
 #import "NSButton+MM.h"
 
+
 @implementation NSButton (MM)
 
 - (BOOL)mm_isOn {
@@ -17,7 +18,7 @@
 - (void)setMm_isOn:(BOOL)mm_isOn {
     if (mm_isOn) {
         self.state = NSControlStateValueOn;
-    }else {
+    } else {
         self.state = NSControlStateValueOff;
     }
 }

@@ -10,12 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface DarkModeManager : NSObject
 
 @property (nonatomic, assign, readonly) BOOL systemDarkMode;
 
 + (instancetype)manager;
-- (void)excuteLight:(void(^)(void))light dark:(void(^)(void))dark;
+- (void)excuteLight:(void (^)(void))light dark:(void (^)(void))dark;
 
 @end
 

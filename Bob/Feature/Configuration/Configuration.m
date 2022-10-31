@@ -19,6 +19,7 @@
 #define kPinKey @"configuration_pin"
 #define kFoldKey @"configuration_fold"
 
+
 @implementation Configuration
 
 static Configuration *_instance;

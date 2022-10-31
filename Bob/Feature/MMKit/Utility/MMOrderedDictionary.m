@@ -23,6 +23,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     return objectString;
 }
 
+
 @interface MMOrderedDictionary ()
 
 // 存储key-value
@@ -31,6 +32,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 @property (nonatomic, strong) NSMutableArray *array;
 
 @end
+
 
 @implementation MMOrderedDictionary
 
@@ -73,7 +75,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
                 i++;
             }
             va_end(argumentList);
-            
+
             if (self.array.count != self.dictionary.count) {
                 NSAssert(0, @"MMOrderedDictionary: key 值和 value 必须一一对应!");
                 return nil;
@@ -96,7 +98,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone {
-    MMOrderedDictionary * copy = [[[self class] alloc] init];
+    MMOrderedDictionary *copy = [[[self class] alloc] init];
     if (copy) {
         // 单层深拷贝
         copy.dictionary = [self.dictionary mutableCopy];
@@ -120,14 +122,14 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     NSAssert(self.array.count == self.dictionary.count, @"MMOrderedDictionary: 内部 dictionary 和 array 值数量不一致");
     if (![self.dictionary objectForKey:aKey]) {
         [self.array addObject:aKey];
-    }else {
+    } else {
         if (self.moveToLastWhenUpdateValue) {
             // 移动到最后
             [self.array removeObject:aKey];
             [self.array addObject:aKey];
         }
     }
-    
+
     [self.dictionary setObject:anObject forKey:aKey];
 }
 
@@ -142,7 +144,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     if ([self.dictionary objectForKey:aKey]) {
         [self removeObjectForKey:aKey];
     }
-    
+
     [self.array insertObject:aKey atIndex:anIndex];
     [self.dictionary setObject:anObject forKey:aKey];
 }
@@ -198,7 +200,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 
 - (NSArray *)reverseSortedKeys {
     NSMutableArray *reverseKeys = [NSMutableArray arrayWithCapacity:self.array.count];
-    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         [reverseKeys addObject:obj];
     }];
     return reverseKeys;
@@ -206,7 +208,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 
 - (NSArray *)sortedValues {
     NSMutableArray *values = [NSMutableArray arrayWithCapacity:self.array.count];
-    [self.array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.array enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         id value = [self.dictionary objectForKey:obj];
         [values addObject:value];
     }];
@@ -215,7 +217,7 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 
 - (NSArray *)reverseSortedValues {
     NSMutableArray *reverseValues = [NSMutableArray arrayWithCapacity:self.array.count];
-    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         id value = [self.dictionary objectForKey:obj];
         [reverseValues addObject:value];
     }];
@@ -230,15 +232,15 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     return [self.array reverseObjectEnumerator];
 }
 
-- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, NSUInteger idx, BOOL *stop))block {
-    [self.array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+- (void)enumerateKeysAndObjectsUsingBlock:(void(NS_NOESCAPE ^)(id key, id obj, NSUInteger idx, BOOL *stop))block {
+    [self.array enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         id value = [self.dictionary objectForKey:obj];
         block(obj, value, idx, stop);
     }];
 }
 
-- (void)reverseEnumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, NSUInteger idx, BOOL *stop))block {
-    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+- (void)reverseEnumerateKeysAndObjectsUsingBlock:(void(NS_NOESCAPE ^)(id key, id obj, NSUInteger idx, BOOL *stop))block {
+    [self.array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         id value = [self.dictionary objectForKey:obj];
         block(obj, value, idx, stop);
     }];
@@ -258,21 +260,20 @@ NSString *DGDescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 - (NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level {
     NSMutableString *indentString = [NSMutableString string];
     NSUInteger i, count = level;
-    for (i = 0; i < count; i++)
-    {
+    for (i = 0; i < count; i++) {
         [indentString appendFormat:@"\t"];
     }
-    
+
     NSMutableString *description = [NSMutableString string];
     [description appendFormat:@"%@{\n", indentString];
-    [self.array enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.array enumerateObjectsUsingBlock:^(id _Nonnull key, NSUInteger idx, BOOL *_Nonnull stop) {
         [description appendFormat:@"%@\t[%zd] %@ = %@;\n",
-         indentString,
-         idx,
-         DGDescriptionForObject(key, locale, level + 1),
-         DGDescriptionForObject([self.dictionary objectForKey:key], locale, level + 1)];
+                                  indentString,
+                                  idx,
+                                  DGDescriptionForObject(key, locale, level + 1),
+                                  DGDescriptionForObject([self.dictionary objectForKey:key], locale, level + 1)];
     }];
-    [description appendFormat:@"%@}", indentString];    
+    [description appendFormat:@"%@}", indentString];
     return description;
 }
 

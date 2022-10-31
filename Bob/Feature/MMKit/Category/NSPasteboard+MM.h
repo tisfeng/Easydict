@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface NSPasteboard (MM)
 
 + (BOOL)mm_generalPasteboardSetString:(NSString *)string;

@@ -11,13 +11,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface Snip : NSObject
 
 @property (nonatomic, assign) BOOL isSnapshotting;
 
 + (instancetype)shared;
 
-- (void)startWithCompletion:(void (^)(NSImage * _Nullable image))completion;
+- (void)startWithCompletion:(void (^)(NSImage *_Nullable image))completion;
 
 - (void)stop;
 

@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSArray<__covariant ObjectType> (MM)
+
+@interface NSArray <__covariant ObjectType>(MM)
 
 /// 遍历处理元素并将返回的数据组成新数组
 - (NSArray *)mm_map:(id _Nullable (^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
@@ -22,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)mm_find:(id _Nullable (^)(ObjectType obj, NSUInteger idx))block;
 
 /// 遍历处理元素并将返回的数组组成一个大数组
-- (NSArray *)mm_combine:(NSArray * _Nullable (^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
+- (NSArray *)mm_combine:(NSArray *_Nullable (^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
 
 /// 生成一个从元素获取 index 的字典，元素必须唯一
 - (NSDictionary<ObjectType, NSNumber *> *)mm_objectToIndexDictionary;

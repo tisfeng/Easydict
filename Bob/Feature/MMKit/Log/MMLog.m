@@ -20,6 +20,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
 
 #define kDefaultLogName @"Default"
 
+
 @implementation MMManagerForLog
 
 + (void)load {
@@ -29,7 +30,7 @@ BOOL MMDefaultLogAsyncEnabled = YES;
         MMConsoleLogFormatter *consoleFormatter = [MMConsoleLogFormatter new];
         if (@available(macOS 10.12, *)) {
             [DDOSLogger sharedInstance].logFormatter = consoleFormatter;
-        }else{
+        } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [DDASLLogger sharedInstance].logFormatter = consoleFormatter;
@@ -41,17 +42,17 @@ BOOL MMDefaultLogAsyncEnabled = YES;
 + (void)configDDLog:(DDLog *)ddlog name:(NSString *)name {
     // https://github.com/CocoaLumberjack/CocoaLumberjack/blob/master/Documentation/GettingStarted.md
     NSCAssert(name.length, @"MMLog: 日志 name 不能为空");
-    
+
     // 系统日志、控制台
     if (@available(iOS 10.0, *)) {
         [ddlog addLogger:[DDOSLogger sharedInstance]];
-    }else{
+    } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [ddlog addLogger:[DDASLLogger sharedInstance]];
 #pragma clang diagnostic pop
     }
-    
+
     // 文件输出
     MMFileLogFormatter *fileFormatter = [MMFileLogFormatter new];
     DDLogFileManagerDefault *fileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:[self logDirectoryWithName:name]];
@@ -117,4 +118,3 @@ BOOL MMDefaultLogAsyncEnabled = YES;
 }
 
 @end
-

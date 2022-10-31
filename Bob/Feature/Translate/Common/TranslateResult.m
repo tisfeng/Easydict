@@ -8,25 +8,31 @@
 
 #import "TranslateResult.h"
 
+
 @implementation TranslatePhonetic
 
 @end
+
 
 @implementation TranslatePart
 
 @end
 
+
 @implementation TranslateExchange
 
 @end
+
 
 @implementation TranslateSimpleWord
 
 @end
 
+
 @implementation TranslateWordResult
 
 @end
+
 
 @implementation TranslateResult
 

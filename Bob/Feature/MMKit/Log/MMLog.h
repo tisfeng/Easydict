@@ -26,6 +26,7 @@
 
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
+
 @interface MMManagerForLog : NSObject
 
 /** 默认的DDLog对象，日志存储于Default文件夹 */
@@ -50,41 +51,41 @@ extern DDLogLevel MMDefaultLogLevel;
 extern BOOL MMDefaultLogAsyncEnabled;
 
 
-#define MMLogInfo(frmt, ...)    LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo,    0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define MMLogInfo(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMLogVerbose(frmt, ...) LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagVerbose, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
-#define MMDDLogInfo(ddlog, frmt, ...)    LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo,    0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define MMDDLogInfo(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagInfo, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define MMDDLogVerbose(ddlog, frmt, ...) LOG_MAYBE_TO_DDLOG(ddlog, MMDefaultLogAsyncEnabled, MMDefaultLogLevel, DDLogFlagVerbose, 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 
-#define MMAssert(condition, desc, ...)    \
-    do {                \
-        if(!(condition)) {  \
-            LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__);  \
-        }   \
-        NSAssert(condition, desc, ##__VA_ARGS__);   \
-    } while(0)
+#define MMAssert(condition, desc, ...)                                                                                                              \
+    do {                                                                                                                                            \
+        if (!(condition)) {                                                                                                                         \
+            LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__); \
+        }                                                                                                                                           \
+        NSAssert(condition, desc, ##__VA_ARGS__);                                                                                                   \
+    } while (0)
 
-#define MMCAssert(condition, desc, ...)    \
-    do {                \
-        if(!(condition)) {  \
-            LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__);  \
-        }   \
-        NSCAssert(condition, desc, ##__VA_ARGS__);   \
-    } while(0)
+#define MMCAssert(condition, desc, ...)                                                                                                             \
+    do {                                                                                                                                            \
+        if (!(condition)) {                                                                                                                         \
+            LOG_MAYBE_TO_DDLOG([MMManagerForLog sharedDDLog], NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__); \
+        }                                                                                                                                           \
+        NSCAssert(condition, desc, ##__VA_ARGS__);                                                                                                  \
+    } while (0)
 
-#define MMDDAssert(ddlog, condition, desc, ...)    \
-    do {                \
-        if(!(condition)) {  \
-            LOG_MAYBE_TO_DDLOG(ddlog, NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__);  \
-        }   \
-        NSAssert(condition, desc, ##__VA_ARGS__);   \
-    } while(0)
+#define MMDDAssert(ddlog, condition, desc, ...)                                                                             \
+    do {                                                                                                                    \
+        if (!(condition)) {                                                                                                 \
+            LOG_MAYBE_TO_DDLOG(ddlog, NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__); \
+        }                                                                                                                   \
+        NSAssert(condition, desc, ##__VA_ARGS__);                                                                           \
+    } while (0)
 
-#define MMDDCAssert(ddlog, condition, desc, ...)    \
-    do {                \
-        if(!(condition)) {  \
-            LOG_MAYBE_TO_DDLOG(ddlog, NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__);  \
-        }   \
-        NSCAssert(condition, desc, ##__VA_ARGS__);   \
-    } while(0)
+#define MMDDCAssert(ddlog, condition, desc, ...)                                                                            \
+    do {                                                                                                                    \
+        if (!(condition)) {                                                                                                 \
+            LOG_MAYBE_TO_DDLOG(ddlog, NO, DDLogLevelAll, DDLogFlagError, 0, nil, __PRETTY_FUNCTION__, desc, ##__VA_ARGS__); \
+        }                                                                                                                   \
+        NSCAssert(condition, desc, ##__VA_ARGS__);                                                                          \
+    } while (0)

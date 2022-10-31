@@ -10,9 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface Selection : NSObject
 
-+ (void)getText:(void (^)(NSString * _Nullable text))completion;
++ (void)getText:(void (^)(NSString *_Nullable text))completion;
 
 @end
 

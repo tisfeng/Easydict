@@ -8,6 +8,7 @@
 
 #import "NSImage+MM.h"
 
+
 @implementation NSImage (MM)
 
 /// https://stackoverflow.com/questions/10627557/mac-os-x-drawing-into-an-offscreen-nsgraphicscontext-using-cgcontextref-c-funct
@@ -23,9 +24,9 @@
                                                                   bitmapFormat:NSAlphaFirstBitmapFormat
                                                                    bytesPerRow:0
                                                                   bitsPerPixel:0];
-    
+
     NSGraphicsContext *g = [NSGraphicsContext graphicsContextWithBitmapImageRep:rep];
-    
+
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:g];
 
@@ -34,7 +35,7 @@
     } else {
         block(g.graphicsPort);
     }
-    
+
     [NSGraphicsContext restoreGraphicsState];
 
     NSImage *newImage = [[NSImage alloc] initWithSize:size];
@@ -54,7 +55,7 @@
     NSData *tiffData = [self TIFFRepresentation];
     NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:tiffData];
     NSData *data = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG
-                                          properties:@{NSImageCompressionFactor: @1.0}];
+                                          properties:@{NSImageCompressionFactor : @1.0}];
     return data;
 }
 

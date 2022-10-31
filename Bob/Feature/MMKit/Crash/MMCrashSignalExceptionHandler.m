@@ -14,13 +14,14 @@
 typedef void (*SignalHandler)(int signal, siginfo_t *info, void *context);
 
 static SignalHandler previousABRTSignalHandler = NULL;
-static SignalHandler previousBUSSignalHandler  = NULL;
-static SignalHandler previousFPESignalHandler  = NULL;
-static SignalHandler previousILLSignalHandler  = NULL;
+static SignalHandler previousBUSSignalHandler = NULL;
+static SignalHandler previousFPESignalHandler = NULL;
+static SignalHandler previousILLSignalHandler = NULL;
 static SignalHandler previousPIPESignalHandler = NULL;
 static SignalHandler previousSEGVSignalHandler = NULL;
-static SignalHandler previousSYSSignalHandler  = NULL;
+static SignalHandler previousSYSSignalHandler = NULL;
 static SignalHandler previousTRAPSignalHandler = NULL;
+
 
 @implementation MMCrashSignalExceptionHandler
 
@@ -29,7 +30,7 @@ static SignalHandler previousTRAPSignalHandler = NULL;
 + (void)registerHandler {
     // Backup original handler
     [self backupOriginalHandler];
-    
+
     [self signalRegister];
 }
 
@@ -39,43 +40,43 @@ static SignalHandler previousTRAPSignalHandler = NULL;
     if (old_action_abrt.sa_sigaction) {
         previousABRTSignalHandler = old_action_abrt.sa_sigaction;
     }
-    
+
     struct sigaction old_action_bus;
     sigaction(SIGBUS, NULL, &old_action_bus);
     if (old_action_bus.sa_sigaction) {
         previousBUSSignalHandler = old_action_bus.sa_sigaction;
     }
-    
+
     struct sigaction old_action_fpe;
     sigaction(SIGFPE, NULL, &old_action_fpe);
     if (old_action_fpe.sa_sigaction) {
         previousFPESignalHandler = old_action_fpe.sa_sigaction;
     }
-    
+
     struct sigaction old_action_ill;
     sigaction(SIGILL, NULL, &old_action_ill);
     if (old_action_ill.sa_sigaction) {
         previousILLSignalHandler = old_action_ill.sa_sigaction;
     }
-    
+
     struct sigaction old_action_pipe;
     sigaction(SIGPIPE, NULL, &old_action_pipe);
     if (old_action_pipe.sa_sigaction) {
         previousPIPESignalHandler = old_action_pipe.sa_sigaction;
     }
-    
+
     struct sigaction old_action_segv;
     sigaction(SIGSEGV, NULL, &old_action_segv);
     if (old_action_segv.sa_sigaction) {
         previousSEGVSignalHandler = old_action_segv.sa_sigaction;
     }
-    
+
     struct sigaction old_action_sys;
     sigaction(SIGSYS, NULL, &old_action_sys);
     if (old_action_sys.sa_sigaction) {
         previousSYSSignalHandler = old_action_sys.sa_sigaction;
     }
-    
+
     struct sigaction old_action_trap;
     sigaction(SIGTRAP, NULL, &old_action_trap);
     if (old_action_trap.sa_sigaction) {
@@ -108,37 +109,37 @@ static void MMSignalRegister(int signal) {
 
 #pragma mark SignalCrash Handler
 
-static void MMSignalHandler(int signal, siginfo_t* info, void* context) {
+static void MMSignalHandler(int signal, siginfo_t *info, void *context) {
     NSMutableString *mstr = [[NSMutableString alloc] init];
     [mstr appendString:@"Signal Exception:\n"];
     [mstr appendString:[NSString stringWithFormat:@"Signal %@ was raised.\n", signalName(signal)]];
     [mstr appendString:@"Call Stack:\n"];
-    
+
     //    void* callstack[128];
     //    int i, frames = backtrace(callstack, 128);
     //    char** strs = backtrace_symbols(callstack, frames);
     //    for (i = 0; i <frames; ++i) {
     //        [mstr appendFormat:@"%s\n", strs[i]];
     //    }
-    
+
     // 这里过滤掉第一行日志
     // 因为注册了信号崩溃回调方法，系统会来调用，将记录在调用堆栈上，因此此行日志需要过滤掉
     for (NSUInteger index = 1; index < NSThread.callStackSymbols.count; index++) {
         NSString *str = [NSThread.callStackSymbols objectAtIndex:index];
         [mstr appendString:[str stringByAppendingString:@"\n"]];
     }
-    
+
     [mstr appendString:@"threadInfo:\n"];
     [mstr appendString:[[NSThread currentThread] description]];
-    
+
     // 保存崩溃日志到沙盒cache目录
     [MMCrashFileTool saveCrashLog:[NSString stringWithString:mstr] fileName:@"Crash(Signal)"];
-    
+
     MMClearSignalRigister();
-    
+
     // 调用之前崩溃的回调函数
     previousSignalHandler(signal, info, context);
-    
+
     kill(getpid(), SIGKILL);
 }
 
@@ -209,7 +210,7 @@ static void previousSignalHandler(int signal, siginfo_t *info, void *context) {
         default:
             break;
     }
-    
+
     if (previousSignalHandler) {
         previousSignalHandler(signal, info, context);
     }
@@ -218,14 +219,14 @@ static void previousSignalHandler(int signal, siginfo_t *info, void *context) {
 #pragma mark Clear
 
 static void MMClearSignalRigister() {
-    signal(SIGSEGV,SIG_DFL);
-    signal(SIGFPE,SIG_DFL);
-    signal(SIGBUS,SIG_DFL);
-    signal(SIGTRAP,SIG_DFL);
-    signal(SIGABRT,SIG_DFL);
-    signal(SIGILL,SIG_DFL);
-    signal(SIGPIPE,SIG_DFL);
-    signal(SIGSYS,SIG_DFL);
+    signal(SIGSEGV, SIG_DFL);
+    signal(SIGFPE, SIG_DFL);
+    signal(SIGBUS, SIG_DFL);
+    signal(SIGTRAP, SIG_DFL);
+    signal(SIGABRT, SIG_DFL);
+    signal(SIGILL, SIG_DFL);
+    signal(SIGPIPE, SIG_DFL);
+    signal(SIGSYS, SIG_DFL);
 }
 
 @end

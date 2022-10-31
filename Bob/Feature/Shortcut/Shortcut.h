@@ -15,11 +15,12 @@ static NSString *const SelectionShortcutKey = @"SelectionShortcutKey";
 static NSString *const SnipShortcutKey = @"SnipShortcutKey";
 static NSString *const InputShortcutKey = @"InputShortcutKey";
 
+
 @interface Shortcut : NSObject
 
 + (void)setup;
 
-+ (void)readShortcutForKey:(NSString *)key completion:(void (^NS_NOESCAPE)(MASShortcut * _Nullable shorcut))completion;
++ (void)readShortcutForKey:(NSString *)key completion:(void (^NS_NOESCAPE)(MASShortcut *_Nullable shorcut))completion;
 
 @end
 

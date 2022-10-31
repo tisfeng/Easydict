@@ -8,11 +8,12 @@
 
 #import "NSArray+MM.h"
 
+
 @implementation NSArray (MM)
 
 - (NSArray *)mm_map:(id (^)(id obj, NSUInteger idx, BOOL *stop))block {
     __block NSMutableArray *newArray = [NSMutableArray array];
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSObject *newObj = block(obj, idx, stop);
         if (newObj) {
             [newArray addObject:newObj];
@@ -23,7 +24,7 @@
 
 - (NSArray *)mm_where:(BOOL (^)(id obj, NSUInteger idx, BOOL *stop))block {
     __block NSMutableArray *newArray = [NSMutableArray array];
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         if (block(obj, idx, stop)) {
             [newArray addObject:obj];
         }
@@ -33,7 +34,7 @@
 
 - (id)mm_find:(id (^)(id _Nonnull, NSUInteger))block {
     __block id target = nil;
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         id result = block(obj, idx);
         if (result) {
             target = result;
@@ -45,7 +46,7 @@
 
 - (NSArray *)mm_combine:(NSArray * (^)(id obj, NSUInteger idx, BOOL *stop))block {
     __block NSMutableArray *newArray = [NSMutableArray array];
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSArray *oneArray = block(obj, idx, stop);
         if (oneArray.count) {
             [newArray addObjectsFromArray:oneArray];
@@ -56,7 +57,7 @@
 
 - (NSDictionary *)mm_objectToIndexDictionary {
     __block NSMutableDictionary *newDict = [NSMutableDictionary dictionary];
-    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         MMAssert(![newDict objectForKey:obj], @"数组不能包含相同元素");
         [newDict setObject:@(idx) forKey:obj];
     }];

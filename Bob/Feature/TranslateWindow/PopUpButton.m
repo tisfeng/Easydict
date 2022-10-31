@@ -8,15 +8,17 @@
 
 #import "PopUpButton.h"
 
+
 @interface PopUpButton ()
 
 @property (nonatomic, strong) NSArray<NSString *> *titles;
 
 @end
 
+
 @implementation PopUpButton
 
-DefineMethodMMMake_m(PopUpButton)
+DefineMethodMMMake_m(PopUpButton);
 
 - (instancetype)init {
     self = [super init];
@@ -28,9 +30,9 @@ DefineMethodMMMake_m(PopUpButton)
 
 - (void)setup {
     self.wantsLayer = YES;
-    [self.layer excuteLight:^(id  _Nonnull x) {
+    [self.layer excuteLight:^(id _Nonnull x) {
         [x setBorderColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-    } drak:^(id  _Nonnull x) {
+    } drak:^(id _Nonnull x) {
         [x setBorderColor:DarkBorderColor.CGColor];
     }];
     self.layer.borderWidth = 1;
@@ -41,17 +43,17 @@ DefineMethodMMMake_m(PopUpButton)
     [self setButtonType:NSButtonTypeToggle];
     self.title = @"";
     mm_weakify(self)
-    [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-        mm_strongify(self)
-        // 显示menu
-        if (self.titles.count) {
-            [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
-        }
-        return RACSignal.empty;
-    }]];
-    
-    [NSView mm_make:^(NSView * _Nonnull titleContainerView) {
+        [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                  mm_strongify(self)
+                      // 显示menu
+                      if (self.titles.count) {
+                      [self setupMenu];
+                      [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+                  }
+                  return RACSignal.empty;
+              }]];
+
+    [NSView mm_make:^(NSView *_Nonnull titleContainerView) {
         [self addSubview:titleContainerView];
         titleContainerView.layer.backgroundColor = [NSColor redColor].CGColor;
         titleContainerView.wantsLayer = YES;
@@ -60,17 +62,17 @@ DefineMethodMMMake_m(PopUpButton)
             make.left.mas_greaterThanOrEqualTo(5);
             make.right.mas_lessThanOrEqualTo(5);
         }];
-        
-        self.textField = [NSTextField mm_make:^(NSTextField * _Nonnull textField) {
+
+        self.textField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [titleContainerView addSubview:textField];
             textField.stringValue = @"";
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
             textField.font = [NSFont systemFontOfSize:12];
-            [textField excuteLight:^(id  _Nonnull x) {
+            [textField excuteLight:^(id _Nonnull x) {
                 textField.textColor = [NSColor mm_colorWithHexString:@"#333333"];
-            } drak:^(id  _Nonnull x) {
+            } drak:^(id _Nonnull x) {
                 textField.textColor = [NSColor whiteColor];
             }];
             textField.maximumNumberOfLines = 1;
@@ -79,8 +81,8 @@ DefineMethodMMMake_m(PopUpButton)
                 make.top.left.bottom.equalTo(titleContainerView);
             }];
         }];
-        
-        self.imageView = [NSImageView mm_make:^(NSImageView * _Nonnull imageView) {
+
+        self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
             [titleContainerView addSubview:imageView];
             imageView.image = [NSImage imageNamed:@"arrow_down"];
             [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -100,7 +102,7 @@ DefineMethodMMMake_m(PopUpButton)
         self.customMenu = [NSMenu new];
     }
     [self.customMenu removeAllItems];
-    [self.titles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.titles enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
         item.target = self;
@@ -118,7 +120,7 @@ DefineMethodMMMake_m(PopUpButton)
 
 - (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles {
     self.titles = titles;
-    
+
     if (self.customMenu) {
         [self setupMenu];
     }

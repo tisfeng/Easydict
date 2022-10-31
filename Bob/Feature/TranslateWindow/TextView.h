@@ -10,9 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface TextView : NSTextView
 
-DefineMethodMMMake_h(TextView, textView)
+DefineMethodMMMake_h(TextView, textView);
 
 @end
 

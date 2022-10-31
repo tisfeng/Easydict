@@ -11,7 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MMConsoleLogFormatter : NSObject<DDLogFormatter>
+
+@interface MMConsoleLogFormatter : NSObject <DDLogFormatter>
 
 @end
 

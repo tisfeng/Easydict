@@ -8,6 +8,7 @@
 
 #import "NSWindow+MM.h"
 
+
 @implementation NSWindow (MM)
 
 - (CGFloat)x {

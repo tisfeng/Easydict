@@ -14,6 +14,7 @@
 #import "TranslateViewController.h"
 #import "Configuration.h"
 
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -21,15 +22,15 @@
     [MMCrash registerHandler];
     [StatusItem.shared setup];
     [Shortcut setup];
-    
-    
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable |  NSWindowStyleMaskClosable;
+
+
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable | NSWindowStyleMaskClosable;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
     TranslateViewController *translateVC = [[TranslateViewController alloc] init];
     window.contentViewController = translateVC;
     [window center];
-    [window makeKeyAndOrderFront:nil];    
-    
+    [window makeKeyAndOrderFront:nil];
+
     Configuration.shared.isFold = NO;
     [translateVC updateFoldState:NO];
     [translateVC resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];

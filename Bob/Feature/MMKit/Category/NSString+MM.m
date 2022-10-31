@@ -8,6 +8,7 @@
 
 #import "NSString+MM.h"
 
+
 @implementation NSString (MM)
 
 // https://stackoverflow.com/questions/8088473/how-do-i-url-encode-a-string
@@ -17,7 +18,7 @@
     unsigned long sourceLen = strlen((const char *)source);
     for (int i = 0; i < sourceLen; ++i) {
         const unsigned char thisChar = source[i];
-        if (thisChar == ' '){
+        if (thisChar == ' ') {
             [output appendString:@"+"];
         } else if (thisChar == '.' || thisChar == '-' || thisChar == '_' || thisChar == '~' ||
                    (thisChar >= 'a' && thisChar <= 'z') ||
@@ -36,7 +37,7 @@
         return nil;
     }
     NSMutableString *string = [NSMutableString string];
-    [components enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [components enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSAssert([obj isKindOfClass:NSString.class], @"参数必须为 NSString");
         [string appendString:obj];
         if (separatedString.length && idx != components.count - 1) {

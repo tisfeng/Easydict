@@ -8,10 +8,11 @@
 
 #import "Translate.h"
 
-#define MethodNotImplemented() \
-@throw [NSException exceptionWithName:NSInternalInconsistencyException \
-reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
-userInfo:nil]
+#define MethodNotImplemented()                                                                                                           \
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
+                                 userInfo:nil]
+
 
 @interface Translate ()
 
@@ -22,6 +23,7 @@ userInfo:nil]
 @property (nonatomic, strong) NSDictionary<NSNumber *, NSNumber *> *langIndexDict;
 
 @end
+
 
 @implementation Translate
 
@@ -39,21 +41,21 @@ userInfo:nil]
     return _languages;
 }
 
-- (NSDictionary<NSNumber *,NSString *> *)langStringFromEnumDict {
+- (NSDictionary<NSNumber *, NSString *> *)langStringFromEnumDict {
     if (!_langStringFromEnumDict) {
         _langStringFromEnumDict = [self.langDict keysAndObjects];
     }
     return _langStringFromEnumDict;
 }
 
-- (NSDictionary<NSString *,NSNumber *> *)langEnumFromStringDict {
+- (NSDictionary<NSString *, NSNumber *> *)langEnumFromStringDict {
     if (!_langEnumFromStringDict) {
         _langEnumFromStringDict = [[self.langDict keysAndObjects] mm_reverseKeysAndObjectsDictionary];
     }
     return _langEnumFromStringDict;
 }
 
-- (NSDictionary<NSNumber *,NSNumber *> *)langIndexDict {
+- (NSDictionary<NSNumber *, NSNumber *> *)langIndexDict {
     if (!_langIndexDict) {
         _langIndexDict = [self.languages mm_objectToIndexDictionary];
     }
@@ -93,23 +95,23 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (void)translate:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(TranslateResult * _Nullable, NSError * _Nullable))completion {
+- (void)translate:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(TranslateResult *_Nullable, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
-- (void)detect:(NSString *)text completion:(void (^)(Language, NSError * _Nullable))completion {
+- (void)detect:(NSString *)text completion:(void (^)(Language, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
-- (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+- (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
-- (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult * _Nullable, NSError * _Nullable))completion {
+- (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
-- (void)ocrAndTranslate:(NSImage *)image from:(Language)from to:(Language)to ocrSuccess:(void (^)(OCRResult * _Nonnull, BOOL))ocrSuccess completion:(void (^)(OCRResult * _Nullable, TranslateResult * _Nullable, NSError * _Nullable))completion {
+- (void)ocrAndTranslate:(NSImage *)image from:(Language)from to:(Language)to ocrSuccess:(void (^)(OCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(OCRResult *_Nullable, TranslateResult *_Nullable, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
