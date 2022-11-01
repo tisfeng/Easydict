@@ -28,7 +28,7 @@
         [self.layer excuteLight:^(id _Nonnull x) {
             [x setBackgroundColor: LightBgColor.CGColor];
         } drak:^(id _Nonnull x) {
-            [x setBackgroundColor:DarkGrayColor.CGColor];
+            [x setBackgroundColor:DarkBgColor.CGColor];
         }];
         self.layer.cornerRadius = 10;
         self.layer.masksToBounds = YES;

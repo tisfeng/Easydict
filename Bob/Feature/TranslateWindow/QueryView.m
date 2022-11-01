@@ -15,6 +15,9 @@
 
 @interface QueryView () <NSTextViewDelegate>
 
+@property (nonatomic, strong) NSScrollView *scrollView;
+@property (nonatomic, strong) NSButton *audioButton;
+@property (nonatomic, strong) NSButton *textCopyButton;
 @property (nonatomic, strong) NSButton *detectLanguageButton;
 
 @end
@@ -32,34 +35,35 @@ DefineMethodMMMake_m(QueryView);
     return self;
 }
 
+- (NSString *)queryText {
+    return self.textView.string;
+}
+
+
 - (void)setup {
     NSColor *blackColor = [NSColor blackColor];
+    NSColor *whiteColor = [NSColor whiteColor];
     
     self.wantsLayer = YES;
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:LightBgColor.CGColor];
-        [x setBorderColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
     } drak:^(id _Nonnull x) {
-        [x setBackgroundColor:DeepDarkColor.CGColor];
-        [x setBorderColor:DarkBorderColor.CGColor];
+        [x setBackgroundColor:DarkBgColor.CGColor];
     }];
-    self.layer.borderWidth = 0.5;
     self.layer.cornerRadius = 8;
     
     self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];
-        scrollView.wantsLayer = YES;
-        scrollView.layer.backgroundColor = NSColor.clearColor.CGColor;
         scrollView.hasVerticalScroller = YES;
         scrollView.hasHorizontalScroller = NO;
         scrollView.autohidesScrollers = YES;
-        self.textView = [TextView mm_make:^(TextView *_Nonnull textView) {
-            [textView excuteLight:^(id _Nonnull x) {
-                [x setBackgroundColor:LightBgColor];
-                [x setTextColor:LightTextColor];
-            } drak:^(id _Nonnull x) {
-                [x setBackgroundColor:LightBgColor];
-                [x setTextColor:[NSColor whiteColor]];
+        self.textView = [TextView mm_make:^(TextView *textView) {
+            [textView excuteLight:^(TextView *textView) {
+                textView.backgroundColor = LightBgColor; // must set a non-clear color
+                [textView setTextColor:LightTextColor];
+            } drak:^(TextView *textView) {
+                textView.backgroundColor = DarkBgColor; // NSColor.orangeColor;  //DarkBgColor;
+                [textView setTextColor:DarkTextColor];
             }];
             [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
             textView.delegate = self;
@@ -83,14 +87,22 @@ DefineMethodMMMake_m(QueryView);
         [button setButtonType:NSButtonTypeMomentaryChange];
         
         NSImage *image = [NSImage imageNamed:@"audio"];
+        button.image = image;
         
-        if (@available(macOS 10.14, *)) {
-            button.image = image;
-            button.contentTintColor = NSColor.blackColor;
-        } else {
-            NSImage *image = [NSImage imageNamed:@"audio"];
-            button.image = [self changeColor:blackColor oldImage:image];
-        }
+        [button.layer excuteLight:^(id _Nonnull x) {
+            if (@available(macOS 10.14, *)) {
+                button.contentTintColor = blackColor;
+            } else {
+                button.image = [self changeColor:whiteColor oldImage:image];
+            }
+        } drak:^(id _Nonnull x) {
+            if (@available(macOS 10.14, *)) {
+                button.contentTintColor = whiteColor;
+            } else {
+                button.image = [self changeColor:whiteColor oldImage:image];
+            }
+        }];
+        
         button.toolTip = @"播放音频";
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(6);
@@ -114,13 +126,22 @@ DefineMethodMMMake_m(QueryView);
         button.layer.masksToBounds = YES;
         
         NSImage *image = [NSImage imageNamed:@"copy"];
+        button.image = image;
         
-        if (@available(macOS 10.14, *)) {
-            button.image = image;
-            button.contentTintColor = NSColor.blackColor;
-        } else {
-            button.image = [self changeColor:blackColor oldImage:image];
-        }
+        [button excuteLight:^(NSButton *button) {
+            if (@available(macOS 10.14, *)) {
+                button.contentTintColor = blackColor;
+            } else {
+                button.image = [self changeColor:whiteColor oldImage:image];
+            }
+        } drak:^(NSButton *button) {
+            if (@available(macOS 10.14, *)) {
+                button.contentTintColor = whiteColor;
+            } else {
+                button.image = [self changeColor:whiteColor oldImage:image];
+            }
+        }];
+        
         button.imageScaling = NSImageScaleProportionallyDown;
         button.bezelStyle = NSBezelStyleRegularSquare;
         [button setButtonType:NSButtonTypeMomentaryChange];
@@ -184,13 +205,22 @@ DefineMethodMMMake_m(QueryView);
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
     CGPoint point = theEvent.locationInWindow;
     point = [self convertPoint:point fromView:nil];
+    
+    [self excuteLight:^(id x) {
+        NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
+        [self hightlightCopyButtonBgColor:highlightBgColor point:point];
+    } drak:^(id x) {
+        [self hightlightCopyButtonBgColor:DarkBorderColor point:point];
+    }];
+}
+
+- (void)hightlightCopyButtonBgColor:(NSColor *)color point:(CGPoint)point {
     if (CGRectContainsPoint(self.textCopyButton.frame, point)) {
-        [[self.textCopyButton cell] setBackgroundColor:highlightBgColor];
+        [[self.textCopyButton cell] setBackgroundColor:color];
     } else if (CGRectContainsPoint(self.audioButton.frame, point)) {
-        [[self.audioButton cell] setBackgroundColor:highlightBgColor];
+        [[self.audioButton cell] setBackgroundColor:color];
     }
 }
 

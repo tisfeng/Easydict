@@ -79,7 +79,7 @@ return;                                     \
         x.layer.backgroundColor = NSColor.whiteColor.CGColor;
         x.layer.borderWidth = 0;
     } drak:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = DeepDarkColor.CGColor;
+        x.layer.backgroundColor = DarkBorderColor.CGColor;
         x.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.15].CGColor;
         x.layer.borderWidth = 1;
     }];
@@ -185,7 +185,7 @@ return;                                     \
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
             mm_strongify(self)
             NSString *link = self.translate.link;
-            if (self.currentResult.link && [self.queryView.textView.string isEqualToString:self.currentResult.text]) {
+            if (self.currentResult.link && [ self.queryView.queryText isEqualToString:self.currentResult.text]) {
                 link = self.currentResult.link;
             }
             NSLog(@"%@", link);
@@ -205,25 +205,25 @@ return;                                     \
             self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
         }];
         [view setCopyActionBlock:^(QueryView *_Nonnull view) {
-            [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
+            [NSPasteboard mm_generalPasteboardSetString:view.queryText];
         }];
         mm_weakify(self)
         [view setAudioActionBlock:^(QueryView *_Nonnull view) {
             mm_strongify(self);
-            if ([self.currentResult.text isEqualToString:view.textView.string]) {
+            if ([self.currentResult.text isEqualToString:view.queryText]) {
                 if (self.currentResult.fromSpeakURL) {
                     [self playAudioWithURL:self.currentResult.fromSpeakURL];
                 } else {
                     [self playAudioWithText:self.currentResult.text lang:self.currentResult.from];
                 }
             } else {
-                [self playAudioWithText:view.textView.string lang:Configuration.shared.from];
+                [self playAudioWithText:view.queryText lang:Configuration.shared.from];
             }
         }];
         [view setEnterActionBlock:^(QueryView *_Nonnull view) {
             mm_strongify(self);
-            if (view.textView.string.length) {
-                [self translateText:view.textView.string];
+            if (view.queryText.length) {
+                [self translateText:view.queryText];
             }
         }];
     }];
@@ -413,7 +413,7 @@ return;                                     \
 
 - (void)resetWithState:(NSString *)stateString query:(NSString *)query actionTitle:(NSString *)actionTitle action:(void (^)(void))action {
     self.currentResult = nil;
-    self.queryView.textView.string = query ?: @"";
+     self.queryView.queryText = query ?: @"";
     [self.resultView refreshWithStateString:stateString actionTitle:actionTitle action:action];
     [self resizeWindowWithQueryViewExpectHeight:0];
 }
@@ -461,7 +461,7 @@ return;                                     \
         mm_strongify(self)
         checkSeed
         [NSPasteboard mm_generalPasteboardSetString:result.mergedText];
-        self.queryView.textView.string = result.mergedText;
+         self.queryView.queryText = result.mergedText;
         if (!willInvokeTranslateAPI) {
             [self.resultView refreshWithStateString:@"翻译中..."];
         }
@@ -502,8 +502,8 @@ return;                                     \
     }
     if (self.currentResult) {
         [self translateText:self.currentResult.text];
-    } else if (self.queryView.textView.string.length) {
-        [self translateText:self.queryView.textView.string];
+    } else if ( self.queryView.queryText.length) {
+        [self translateText: self.queryView.queryText];
     }
 }
 
