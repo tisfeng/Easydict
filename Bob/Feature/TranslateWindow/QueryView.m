@@ -76,13 +76,16 @@ DefineMethodMMMake_m(QueryView);
         [self addSubview:button];
         button.bordered = NO;
         button.wantsLayer = YES;
-        button.layer.backgroundColor = NSColor.clearColor.CGColor;
+        button.layer.cornerRadius = 5;
+        button.layer.masksToBounds = YES;
         button.imageScaling = NSImageScaleProportionallyDown;
         button.bezelStyle = NSBezelStyleRegularSquare;
         [button setButtonType:NSButtonTypeMomentaryChange];
-        button.image = [NSImage imageNamed:@"audio"];
+        
+        NSImage *image = [NSImage imageNamed:@"audio"];
         
         if (@available(macOS 10.14, *)) {
+            button.image = image;
             button.contentTintColor = NSColor.blackColor;
         } else {
             NSImage *image = [NSImage imageNamed:@"audio"];
@@ -106,17 +109,22 @@ DefineMethodMMMake_m(QueryView);
     self.textCopyButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
         button.bordered = NO;
+        button.wantsLayer = YES;
+        button.layer.cornerRadius = 5;
+        button.layer.masksToBounds = YES;
+        
+        NSImage *image = [NSImage imageNamed:@"copy"];
+        
+        if (@available(macOS 10.14, *)) {
+            button.image = image;
+            button.contentTintColor = NSColor.blackColor;
+        } else {
+            button.image = [self changeColor:blackColor oldImage:image];
+        }
         button.imageScaling = NSImageScaleProportionallyDown;
         button.bezelStyle = NSBezelStyleRegularSquare;
         [button setButtonType:NSButtonTypeMomentaryChange];
         
-        button.image = [NSImage imageNamed:@"copy"];
-        if (@available(macOS 10.14, *)) {
-            button.contentTintColor = NSColor.blackColor;
-        } else {
-            NSImage *image = [NSImage imageNamed:@"copy"];
-            button.image = [self changeColor:blackColor oldImage:image];
-        }
         button.toolTip = @"复制";
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.audioButton.mas_right);
@@ -124,6 +132,7 @@ DefineMethodMMMake_m(QueryView);
             make.width.height.equalTo(self.audioButton);
         }];
         mm_weakify(self)
+        
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
             mm_strongify(self) if (self.copyActionBlock) {
                 self.copyActionBlock(self);
@@ -134,18 +143,10 @@ DefineMethodMMMake_m(QueryView);
     
     self.detectLanguageButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
         [self addSubview:button];
+        button.hidden = YES;
         button.bezelStyle = NSBezelStyleInline;
         [button setButtonType:NSButtonTypeMomentaryChange];
-        button.title = @"识别为 ";
         
-        NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithAttributedString:button.attributedTitle];
-        NSRange range = NSMakeRange(0, attrTitle.length);
-        [attrTitle addAttributes:@{
-            NSForegroundColorAttributeName : NSColor.grayColor,
-            NSFontAttributeName : [NSFont systemFontOfSize:9],
-        }
-                           range:range];
-        button.attributedTitle = attrTitle;
         button.toolTip = @"检测语言";
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.textCopyButton.mas_right).offset(5);
@@ -160,11 +161,42 @@ DefineMethodMMMake_m(QueryView);
         }]];
     }];
     
-    [self setDetectLanguage:@"英语"];
-    
     
     // 将scrollview放到最上层
     [self addSubview:self.scrollView];
+    
+    [self layoutSubtreeIfNeeded];
+    
+    NSTrackingArea *copyTrackingArea = [[NSTrackingArea alloc]
+                                        initWithRect:[self.textCopyButton bounds]
+                                        options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+                                        owner:self
+                                        userInfo:nil];
+    [self.textCopyButton addTrackingArea:copyTrackingArea];
+    
+    NSTrackingArea *playTrackingArea = [[NSTrackingArea alloc]
+                                        initWithRect:[self.audioButton bounds]
+                                        options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+                                        owner:self
+                                        userInfo:nil];
+    
+    [self.audioButton addTrackingArea:playTrackingArea];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
+    CGPoint point = theEvent.locationInWindow;
+    point = [self convertPoint:point fromView:nil];
+    if (CGRectContainsPoint(self.textCopyButton.frame, point)) {
+        [[self.textCopyButton cell] setBackgroundColor:highlightBgColor];
+    } else if (CGRectContainsPoint(self.audioButton.frame, point)) {
+        [[self.audioButton cell] setBackgroundColor:highlightBgColor];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    [[self.textCopyButton cell] setBackgroundColor:NSColor.clearColor];
+    [[self.audioButton cell] setBackgroundColor:NSColor.clearColor];
 }
 
 // Change NSImage tint color
@@ -183,25 +215,32 @@ DefineMethodMMMake_m(QueryView);
 - (void)setDetectLanguage:(NSString *)detectLanguage {
     _detectLanguage = detectLanguage;
     
-    NSAttributedString *mString = [[NSAttributedString alloc] initWithString:detectLanguage];
-    NSMutableAttributedString *detectTitle = [[NSMutableAttributedString alloc] initWithAttributedString:mString];
-    NSRange range = NSMakeRange(0, detectTitle.length);
-    [detectTitle addAttributes:@{
+    NSString *title = @"识别为 ";
+    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
+    [attrTitle addAttributes:@{
+        NSForegroundColorAttributeName : NSColor.grayColor,
+        NSFontAttributeName : [NSFont systemFontOfSize:10],
+    }
+                       range:NSMakeRange(0, attrTitle.length)];
+    
+    
+    NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguage];
+    [detectAttrTitle addAttributes:@{
         NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
-                         range:range];
+                             range:NSMakeRange(0, detectAttrTitle.length)];
     
-    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithAttributedString:self.detectLanguageButton.attributedTitle];
-    [attrTitle appendAttributedString:detectTitle];
+    [attrTitle appendAttributedString:detectAttrTitle];
     
     CGFloat width = [self widthForAttributeString:attrTitle];
-    NSLog(@"width: %@", @(width));
-    
+    self.detectLanguageButton.hidden = NO;
     self.detectLanguageButton.attributedTitle = attrTitle;
-    [self.detectLanguageButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.detectLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(width + 10);
     }];
+    
+    [self layoutSubtreeIfNeeded];
 }
 
 // Get attribute string width.

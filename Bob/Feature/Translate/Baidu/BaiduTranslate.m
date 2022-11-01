@@ -136,6 +136,8 @@
         @"to" : [self languageStringFromEnum:to],
         @"query" : text,
         @"simple_means_flag" : @3,
+        @"transtype" : @"realtime",
+        @"domain" : @"common",
         @"sign" : sign,
         @"token" : self.token,
     };
@@ -156,8 +158,8 @@
                         TranslateResult *result = [TranslateResult new];
                         result.text = text;
                         result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduRootPage, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
-                        result.from = [self languageEnumFromString:response.trans_result.from];
-                        result.to = [self languageEnumFromString:response.trans_result.to];
+                        result.from = [self languageEnumFromString:response.trans_result.from] ?: from;
+                        result.to = [self languageEnumFromString:response.trans_result.to] ?: to;
                         
                         // 解析单词释义
                         [response.dict_result.simple_means mm_anyPut:^(BaiduTranslateResponseSimpleMean *_Nonnull simple_means) {

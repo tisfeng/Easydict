@@ -443,6 +443,9 @@ return;                                     \
         checkSeed
         self.isTranslating = NO;
         [self refreshWithTranslateResult:result error:error];
+        
+        NSString *lang = LanguageDescFromEnum(result.from);
+        self.queryView.detectLanguage = lang;
     }];
 }
 

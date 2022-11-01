@@ -30,7 +30,7 @@
         } drak:^(id _Nonnull x) {
             [x setBackgroundColor:DarkGrayColor.CGColor];
         }];
-        self.layer.cornerRadius = 4;
+        self.layer.cornerRadius = 10;
         self.layer.masksToBounds = YES;
         self.normalResultView = [NormalResultView new];
         self.wordResultView = [WordResultView new];

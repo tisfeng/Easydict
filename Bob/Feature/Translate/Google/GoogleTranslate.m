@@ -383,7 +383,7 @@
                               }];
     };
 
-    if (to == Language_auto) {
+    if (from == Language_auto) {
         // 需要先识别语言，用于指定目标语言
         [self detect:text
             completion:^(Language lang, NSError *_Nullable error) {
@@ -392,17 +392,24 @@
                     return;
                 }
 
-                Language langTo = Language_auto;
-                if (lang == Language_zh_Hans || lang == Language_zh_Hant) {
-                    langTo = Language_en;
-                } else {
-                    langTo = Language_zh_Hans;
-                }
+            Language langTo = [self getTargetLanguageWithSourceLanguage:lang];
                 translateBlock(text, lang, langTo);
             }];
     } else {
+        to = [self getTargetLanguageWithSourceLanguage:from];
         translateBlock(text, from, to);
     }
+}
+
+// Get target language with source language
+- (Language)getTargetLanguageWithSourceLanguage:(Language)sourceLanguage {
+    Language targetLanguage = Language_auto;
+    if (sourceLanguage == Language_zh_Hans || sourceLanguage == Language_zh_Hant) {
+        targetLanguage = Language_en;
+    } else {
+        targetLanguage = Language_zh_Hans;
+    }
+    return targetLanguage;
 }
 
 - (void)detect:(NSString *)text

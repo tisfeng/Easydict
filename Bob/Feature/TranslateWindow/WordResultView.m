@@ -24,12 +24,12 @@
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.wantsLayer = YES;
-        [self.layer excuteLight:^(id _Nonnull x) {
-            [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-        } drak:^(id _Nonnull x) {
-            [x setBackgroundColor:DarkGrayColor.CGColor];
-        }];
+//        self.wantsLayer = YES;
+//        [self.layer excuteLight:^(id _Nonnull x) {
+//            [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
+//        } drak:^(id _Nonnull x) {
+//            [x setBackgroundColor:DarkGrayColor.CGColor];
+//        }];
     }
     return self;
 }
