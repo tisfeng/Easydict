@@ -35,16 +35,6 @@ DefineMethodMMMake_m(NormalResultView);
 }
 
 - (void)setup {
-    self.wantsLayer = YES;
-    [self.layer excuteLight:^(id _Nonnull x) {
-        [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-        [x setBorderColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-    } drak:^(id _Nonnull x) {
-        [x setBackgroundColor:DarkGrayColor.CGColor];
-        [x setBorderColor:DarkGrayColor.CGColor];
-    }];
-    self.layer.borderWidth = 1;
-
     self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];
         scrollView.hasHorizontalScroller = NO;
@@ -56,7 +46,7 @@ DefineMethodMMMake_m(NormalResultView);
                 [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"]];
                 [x setTextColor:[NSColor mm_colorWithHexString:@"#000000"]];
             } drak:^(id _Nonnull x) {
-                [x setBackgroundColor:DarkGrayColor];
+                [x setBackgroundColor:DarkBgColor];
                 [x setTextColor:[NSColor whiteColor]];
             }];
             [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];

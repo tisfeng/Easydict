@@ -115,6 +115,7 @@ return;                                     \
 
 - (void)setupViews {
     self.view.wantsLayer = YES;
+    self.view.layer.cornerRadius = 10;
     self.pinButton = [NSButton mm_make:^(NSButton *button) {
         [self.view addSubview:button];
         button.bordered = NO;

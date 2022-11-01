@@ -26,7 +26,7 @@
     if (self) {
         self.wantsLayer = YES;
         [self.layer excuteLight:^(id _Nonnull x) {
-            [x setBackgroundColor: LightBgColor.CGColor];
+            [x setBackgroundColor:LightBgColor.CGColor];
         } drak:^(id _Nonnull x) {
             [x setBackgroundColor:DarkBgColor.CGColor];
         }];
