@@ -26,7 +26,7 @@
     if (self) {
         self.wantsLayer = YES;
         [self.layer excuteLight:^(id _Nonnull x) {
-            [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
+            [x setBackgroundColor: LightBgColor.CGColor];
         } drak:^(id _Nonnull x) {
             [x setBackgroundColor:DarkGrayColor.CGColor];
         }];
@@ -38,7 +38,7 @@
             [self addSubview:textField];
             textField.font = [NSFont systemFontOfSize:14];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
