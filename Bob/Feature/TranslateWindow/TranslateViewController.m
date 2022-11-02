@@ -18,6 +18,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ImageButton.h"
 #import "TranslateWindowController.h"
+#import "FlippedView.h"
 
 #define kMargin 12.0
 #define kQueryMinHeight 90.0
@@ -55,10 +56,12 @@ return;                                     \
 @property (nonatomic, strong) ImageButton *transformButton;
 @property (nonatomic, strong) PopUpButton *toLanguageButton;
 @property (nonatomic, strong) ResultView *resultView;
+@property (strong, nonatomic) NSScrollView *scrollView;
+@property (nonatomic, strong) NSMutableArray<ResultView *> *resultViewArray;
 
 @property (nonatomic, assign) CGFloat queryHeightWhenFold;
 @property (nonatomic, strong) MASConstraint *queryHeightConstraint;
-@property (nonatomic, strong) MASConstraint *resultTopConstraint;
+//@property (nonatomic, strong) MASConstraint *resultTopConstraint;
 
 @end
 
@@ -83,6 +86,7 @@ return;                                     \
         x.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.15].CGColor;
         x.layer.borderWidth = 1;
     }];
+    self.resultViewArray = [NSMutableArray array];
 }
 
 - (void)viewDidLoad {
@@ -339,43 +343,101 @@ return;                                     \
         }];
     }];
     
-    self.resultView = [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
-        [self.view addSubview:view];
-        [view mas_makeConstraints:^(MASConstraintMaker *make) {
-            if (Configuration.shared.isFold) {
-                self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-            } else {
-                self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
-            }
-            make.left.right.equalTo(self.queryView);
-            make.bottom.inset(kMargin);
-            make.height.greaterThanOrEqualTo(@(kResultMinHeight));
-        }];
-        mm_weakify(self)
-        [view.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
-            mm_strongify(self);
-            if (!self.currentResult) return;
-            if (self.currentResult.toSpeakURL) {
-                [self playAudioWithURL:self.currentResult.toSpeakURL];
-            } else {
-                [self playAudioWithText:[NSString mm_stringByCombineComponents:self.currentResult.normalResults separatedString:@"\n"] lang:self.currentResult.to];
-            }
-        }];
-        [view.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
-            mm_strongify(self);
-            if (!self.currentResult) return;
-            [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
-        }];
-        [view.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
-            mm_strongify(self);
-            [self playAudioWithURL:url];
-        }];
-        [view.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
-            mm_strongify(self);
-            [NSPasteboard mm_generalPasteboardSetString:word];
-            [self translateText:word];
-        }];
+    NSScrollView *scrollView = NSScrollView.new;
+    scrollView.translatesAutoresizingMaskIntoConstraints = YES;
+    scrollView.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
+    scrollView.hasVerticalScroller = YES;
+    scrollView.hasVerticalRuler = YES;
+
+    scrollView.wantsLayer = YES;
+    scrollView.layer.cornerRadius = 10;
+    scrollView.layer.masksToBounds = YES;
+    self.scrollView = scrollView;
+    [self.view addSubview:scrollView];
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
+        make.left.right.equalTo(self.queryView);
+        make.bottom.inset(kMargin);
     }];
+    
+    
+    FlippedView *contentView = [[FlippedView alloc] init];
+    contentView.translatesAutoresizingMaskIntoConstraints = YES;
+    contentView.identifier = @"Content container";
+
+    contentView.wantsLayer = YES;
+    self.scrollView.documentView = contentView;
+//    self.scrollView.contentView = contentView;
+    
+    
+    [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.scrollView);
+        make.width.greaterThanOrEqualTo(self.scrollView);
+    }];
+    
+
+    __block NSView *lastView;
+    for ( Translate *translate in self.translateArray) {
+        NSLog(@"translate: %@", translate.name);
+        
+        [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
+            [contentView addSubview:view];
+            view.wantsLayer = YES;
+//            view.layer.backgroundColor = NSColor.redColor.CGColor;
+            
+            [view mas_makeConstraints:^(MASConstraintMaker *make) {
+//                if (Configuration.shared.isFold) {
+//                    self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
+//                } else {
+//                    self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
+//                }
+                                
+                if (lastView == nil) {
+                    make.top.equalTo(self.scrollView).offset(0);
+                } else {
+                    make.top.equalTo(  lastView.mas_bottom).offset(12);
+                }
+                
+                make.left.right.width.equalTo(self.scrollView);
+                make.height.greaterThanOrEqualTo(@(kResultMinHeight));
+            }];
+            mm_weakify(self)
+            [view.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
+                mm_strongify(self);
+                if (!self.currentResult) return;
+                if (self.currentResult.toSpeakURL) {
+                    [self playAudioWithURL:self.currentResult.toSpeakURL];
+                } else {
+                    [self playAudioWithText:[NSString mm_stringByCombineComponents:self.currentResult.normalResults separatedString:@"\n"] lang:self.currentResult.to];
+                }
+            }];
+            [view.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
+                mm_strongify(self);
+                if (!self.currentResult) return;
+                [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
+            }];
+            [view.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
+                mm_strongify(self);
+                [self playAudioWithURL:url];
+            }];
+            [view.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
+                mm_strongify(self);
+                [NSPasteboard mm_generalPasteboardSetString:word];
+                [self translateText:word];
+            }];
+            
+            [self.resultViewArray addObject:view];
+            lastView = view;
+        }];
+    }
+    
+    [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(lastView).offset(0);
+    }];
+    
+    contentView.wantsLayer = YES;
+    self.scrollView.documentView = contentView;
+//    self.scrollView.contentView = contentView;
     
     [self updateFoldState:Configuration.shared.isFold];
 }
@@ -446,6 +508,10 @@ return;                                     \
         checkSeed
         self.isTranslating = NO;
         [self refreshWithTranslateResult:result error:error];
+        
+        for (ResultView *resultView in self.resultViewArray) {
+            [resultView refreshWithResult:result];
+        }
         
         NSString *lang = LanguageDescFromEnum(result.from);
         self.queryView.detectLanguage = lang;
@@ -566,7 +632,16 @@ return;                                     \
     }
 }
 
+
+
 #pragma mark - window frame
+
+- (void)viewDidLayout {
+    [super viewDidLayout];
+    
+    NSLog(@"viewDidLayout");
+}
+
 
 - (void)resetQueryViewHeightConstraint {
     self.queryHeightConstraint.equalTo(@(kQueryMinHeight));
@@ -582,14 +657,14 @@ return;                                     \
     self.fromLanguageButton.hidden = isFold;
     self.transformButton.hidden = isFold;
     self.toLanguageButton.hidden = isFold;
-    [self.resultTopConstraint uninstall];
-    [self.resultView mas_updateConstraints:^(MASConstraintMaker *make) {
-        if (isFold) {
-            self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-        } else {
-            self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
-        }
-    }];
+//    [self.resultTopConstraint uninstall];
+//    [self.resultView mas_updateConstraints:^(MASConstraintMaker *make) {
+//        if (isFold) {
+//            self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
+//        } else {
+//            self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
+//        }
+//    }];
     [self resizeWindowWithQueryViewExpectHeight:self.queryHeightWhenFold];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!isFold) {

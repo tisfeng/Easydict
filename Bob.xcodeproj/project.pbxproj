@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03252D0B2912A39100DA2932 /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D0A2912A39100DA2932 /* FlippedView.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -98,6 +99,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03252D092912A39100DA2932 /* FlippedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlippedView.h; sourceTree = "<group>"; };
+		03252D0A2912A39100DA2932 /* FlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -476,6 +479,8 @@
 				C99EEBA42385799D00FEE666 /* TranslateWindow.m */,
 				C99EEB982385799D00FEE666 /* TranslateViewController.h */,
 				C99EEBA22385799D00FEE666 /* TranslateViewController.m */,
+				03252D092912A39100DA2932 /* FlippedView.h */,
+				03252D0A2912A39100DA2932 /* FlippedView.m */,
 				C99EEB9F2385799D00FEE666 /* PopUpButton.h */,
 				C99EEBA62385799D00FEE666 /* PopUpButton.m */,
 				C99EEBA32385799D00FEE666 /* ImageButton.h */,
@@ -802,6 +807,7 @@
 				C99EEBC42385799D00FEE666 /* Configuration.m in Sources */,
 				C99EEBC62385799D00FEE666 /* TranslateError.m in Sources */,
 				C98C17A1239E3F4A00BD02DB /* PreferencesWindowController.m in Sources */,
+				03252D0B2912A39100DA2932 /* FlippedView.m in Sources */,
 				C9C3BDC7238E76B000D5F1C1 /* SnipWindowController.m in Sources */,
 				C9986E1C2393B06C0016F569 /* NSView+MM.m in Sources */,
 				C99EEBD12385799D00FEE666 /* PopUpButton.m in Sources */,

@@ -43,6 +43,7 @@
 
 - (void)windowDidResize:(NSNotification *)aNotification {
     NSLog(@"窗口拉伸, (%.2f, %.2f)", self.width, self.height);
+    
 }
 
 - (void)resizeSubviewsWithOldSize:(NSSize)oldSize {

@@ -337,4 +337,14 @@
     }];
 }
 
+//+ (BOOL)requiresConstraintBasedLayout {
+//    return YES;
+//}
+
+- (void)updateConstraints {
+    [super updateConstraints];
+    
+    NSLog(@"updateConstraints");
+}
+
 @end

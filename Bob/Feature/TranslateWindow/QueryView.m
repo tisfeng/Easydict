@@ -58,6 +58,11 @@ DefineMethodMMMake_m(QueryView);
         scrollView.hasHorizontalScroller = NO;
         scrollView.autohidesScrollers = YES;
         self.textView = [TextView mm_make:^(TextView *textView) {
+//            [textView mas_makeConstraints:^(MASConstraintMaker *make) {
+//                [scrollView addSubview:textView];
+//                make.edges.equalTo(scrollView);
+//            }];
+            
             [textView excuteLight:^(TextView *textView) {
                 textView.backgroundColor = LightBgColor; // must set a non-clear color
                 [textView setTextColor:LightTextColor];
@@ -188,19 +193,21 @@ DefineMethodMMMake_m(QueryView);
     
     [self layoutSubtreeIfNeeded];
     
-    NSTrackingArea *copyTrackingArea = [[NSTrackingArea alloc]
-                                        initWithRect:[self.textCopyButton bounds]
-                                        options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
-                                        owner:self
-                                        userInfo:nil];
-    [self.textCopyButton addTrackingArea:copyTrackingArea];
-    
-    NSTrackingArea *playTrackingArea = [[NSTrackingArea alloc]
-                                        initWithRect:[self.audioButton bounds]
-                                        options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
-                                        owner:self
-                                        userInfo:nil];
-    [self.audioButton addTrackingArea:playTrackingArea];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSTrackingArea *copyTrackingArea = [[NSTrackingArea alloc]
+                                            initWithRect:[self.textCopyButton bounds]
+                                            options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+                                            owner:self
+                                            userInfo:nil];
+        [self.textCopyButton addTrackingArea:copyTrackingArea];
+        
+        NSTrackingArea *playTrackingArea = [[NSTrackingArea alloc]
+                                            initWithRect:[self.audioButton bounds]
+                                            options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
+                                            owner:self
+                                            userInfo:nil];
+        [self.audioButton addTrackingArea:playTrackingArea];
+    });
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
