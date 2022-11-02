@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)mm_writeToFileAsJPEG:(NSString *)path;
 
+- (NSImage *)imageWithTintColor:(NSColor *)tintColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

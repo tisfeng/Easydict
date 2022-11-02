@@ -93,13 +93,13 @@ DefineMethodMMMake_m(QueryView);
             if (@available(macOS 10.14, *)) {
                 button.contentTintColor = blackColor;
             } else {
-                button.image = [self changeColor:whiteColor oldImage:image];
+                button.image = [image imageWithTintColor:blackColor];
             }
         } drak:^(id _Nonnull x) {
             if (@available(macOS 10.14, *)) {
                 button.contentTintColor = whiteColor;
             } else {
-                button.image = [self changeColor:whiteColor oldImage:image];
+                button.image = [image imageWithTintColor:whiteColor];
             }
         }];
         
@@ -132,13 +132,13 @@ DefineMethodMMMake_m(QueryView);
             if (@available(macOS 10.14, *)) {
                 button.contentTintColor = blackColor;
             } else {
-                button.image = [self changeColor:whiteColor oldImage:image];
+                button.image = [image imageWithTintColor:whiteColor];
             }
         } drak:^(NSButton *button) {
             if (@available(macOS 10.14, *)) {
                 button.contentTintColor = whiteColor;
             } else {
-                button.image = [self changeColor:whiteColor oldImage:image];
+                button.image = [image imageWithTintColor:whiteColor];
             }
         }];
         
@@ -200,7 +200,6 @@ DefineMethodMMMake_m(QueryView);
                                         options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
                                         owner:self
                                         userInfo:nil];
-    
     [self.audioButton addTrackingArea:playTrackingArea];
 }
 
@@ -228,19 +227,6 @@ DefineMethodMMMake_m(QueryView);
     [[self.textCopyButton cell] setBackgroundColor:NSColor.clearColor];
     [[self.audioButton cell] setBackgroundColor:NSColor.clearColor];
 }
-
-// Change NSImage tint color
-- (NSImage *)changeColor:(NSColor *)color oldImage:(NSImage *)oldImage {
-    NSImage *newImage = [oldImage copy];
-    [newImage lockFocus];
-    [color set];
-    NSRect imageRect = NSMakeRect(0, 0, newImage.size.width, newImage.size.height);
-    NSRectFillUsingOperation(imageRect, NSCompositingOperationSourceAtop);
-    [newImage unlockFocus];
-    [newImage setTemplate:NO];
-    return newImage;
-}
-
 
 - (void)setDetectLanguage:(NSString *)detectLanguage {
     _detectLanguage = detectLanguage;

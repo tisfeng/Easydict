@@ -203,7 +203,9 @@ return;                                     \
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.pinButton.mas_bottom).offset(2);
             make.left.right.inset(kMargin);
-            self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
+//            self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
+            self.queryHeightConstraint = make.height.equalTo(@(kQueryMinHeight));
+
         }];
         [view setCopyActionBlock:^(QueryView *_Nonnull view) {
             [NSPasteboard mm_generalPasteboardSetString:view.queryText];
@@ -567,7 +569,7 @@ return;                                     \
 #pragma mark - window frame
 
 - (void)resetQueryViewHeightConstraint {
-    self.queryHeightConstraint.greaterThanOrEqualTo(@(kQueryMinHeight));
+    self.queryHeightConstraint.equalTo(@(kQueryMinHeight));
 }
 
 - (void)updateFoldState:(BOOL)isFold {
@@ -601,7 +603,7 @@ return;                                     \
 - (void)resizeWindowWithQueryViewExpectHeight:(CGFloat)expectHeight {
     NSPoint topLeft = self.window.topLeft;
     CGFloat height = expectHeight > 0 ? expectHeight : self.queryView.frame.size.height;
-    self.queryHeightConstraint.greaterThanOrEqualTo(@(height > kQueryMinHeight ? height : kQueryMinHeight));
+    self.queryHeightConstraint.equalTo(@(height > kQueryMinHeight ? height : kQueryMinHeight));
     [self.window setContentSize:CGSizeMake(self.window.frame.size.width, 0)];
     [self.window setTopLeft:topLeft];
     // 等待合适的时机重置查询视图最小高度

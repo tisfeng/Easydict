@@ -97,5 +97,17 @@
     return result;
 }
 
+// Image with tint color.
+- (NSImage *)imageWithTintColor:(NSColor *)tintColor {
+    NSImage *newImage = [self copy];
+    [newImage lockFocus];
+    [tintColor set];
+    NSRect imageRect = NSMakeRect(0, 0, newImage.size.width, newImage.size.height);
+    NSRectFillUsingOperation(imageRect, NSCompositingOperationSourceAtop);
+    [newImage unlockFocus];
+    [newImage setTemplate:NO];
+    return newImage;
+}
+
 
 @end
