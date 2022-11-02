@@ -133,6 +133,7 @@
 
         self.normalResultView = [NormalResultView new];
         self.wordResultView = [WordResultView new];
+
         self.stateTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.font = [NSFont systemFontOfSize:14];

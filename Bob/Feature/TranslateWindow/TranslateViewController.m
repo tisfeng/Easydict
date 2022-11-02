@@ -344,10 +344,10 @@ return;                                     \
     }];
     
     NSScrollView *scrollView = NSScrollView.new;
-    scrollView.translatesAutoresizingMaskIntoConstraints = YES;
     scrollView.autoresizingMask = NSViewHeightSizable | NSViewWidthSizable;
     scrollView.hasVerticalScroller = YES;
     scrollView.hasVerticalRuler = YES;
+    scrollView.autohidesScrollers = NO;
 
     scrollView.wantsLayer = YES;
     scrollView.layer.cornerRadius = 10;
@@ -362,36 +362,24 @@ return;                                     \
     
     
     FlippedView *contentView = [[FlippedView alloc] init];
-    contentView.translatesAutoresizingMaskIntoConstraints = YES;
     contentView.identifier = @"Content container";
-
     contentView.wantsLayer = YES;
     self.scrollView.documentView = contentView;
-//    self.scrollView.contentView = contentView;
-    
     
     [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.scrollView);
-        make.width.greaterThanOrEqualTo(self.scrollView);
+        make.width.equalTo(self.scrollView);
     }];
-    
 
     __block NSView *lastView;
-    for ( Translate *translate in self.translateArray) {
+    for (Translate *translate in self.translateArray) {
         NSLog(@"translate: %@", translate.name);
         
         [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
-            [contentView addSubview:view];
+            [contentView addSubview:view];            
             view.wantsLayer = YES;
-//            view.layer.backgroundColor = NSColor.redColor.CGColor;
-            
             [view mas_makeConstraints:^(MASConstraintMaker *make) {
-//                if (Configuration.shared.isFold) {
-//                    self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-//                } else {
-//                    self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
-//                }
-                                
+           
                 if (lastView == nil) {
                     make.top.equalTo(self.scrollView).offset(0);
                 } else {
@@ -432,7 +420,7 @@ return;                                     \
     }
     
     [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(lastView).offset(0);
+        make.bottom.greaterThanOrEqualTo(lastView).offset(0);
     }];
     
     contentView.wantsLayer = YES;
@@ -640,6 +628,8 @@ return;                                     \
     [super viewDidLayout];
     
     NSLog(@"viewDidLayout");
+    
+    [self.scrollView.contentView scrollPoint:CGPointMake(0, 1300)];
 }
 
 
