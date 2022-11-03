@@ -120,6 +120,11 @@ return;                                     \
 - (void)setupViews {
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 10;
+    
+    [self.view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_lessThanOrEqualTo(800);
+    }];
+    
     self.pinButton = [NSButton mm_make:^(NSButton *button) {
         [self.view addSubview:button];
         button.bordered = NO;
@@ -190,7 +195,7 @@ return;                                     \
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
             mm_strongify(self)
             NSString *link = self.translate.link;
-            if (self.currentResult.link && [ self.queryView.queryText isEqualToString:self.currentResult.text]) {
+            if (self.currentResult.link && [self.queryView.queryText isEqualToString:self.currentResult.text]) {
                 link = self.currentResult.link;
             }
             NSLog(@"%@", link);
@@ -207,9 +212,8 @@ return;                                     \
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.pinButton.mas_bottom).offset(2);
             make.left.right.inset(kMargin);
-//            self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
+            //            self.queryHeightConstraint = make.height.greaterThanOrEqualTo(@(kQueryMinHeight));
             self.queryHeightConstraint = make.height.equalTo(@(kQueryMinHeight));
-
         }];
         [view setCopyActionBlock:^(QueryView *_Nonnull view) {
             [NSPasteboard mm_generalPasteboardSetString:view.queryText];
@@ -348,7 +352,7 @@ return;                                     \
     scrollView.hasVerticalScroller = YES;
     scrollView.hasVerticalRuler = YES;
     scrollView.autohidesScrollers = NO;
-
+    
     scrollView.wantsLayer = YES;
     scrollView.layer.cornerRadius = 10;
     scrollView.layer.masksToBounds = YES;
@@ -358,6 +362,7 @@ return;                                     \
         make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
         make.left.right.equalTo(self.queryView);
         make.bottom.inset(kMargin);
+//        make.height.mas_equalTo(800);
     }];
     
     
@@ -369,25 +374,27 @@ return;                                     \
     [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.scrollView);
         make.width.equalTo(self.scrollView);
+        
+//        make.top.left.right.equalTo(self.scrollView);
+//        make.height.mas_greaterThanOrEqualTo(400);
     }];
-
+    
     __block NSView *lastView;
     for (Translate *translate in self.translateArray) {
         NSLog(@"translate: %@", translate.name);
         
         [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
-            [contentView addSubview:view];            
+            [contentView addSubview:view];
             view.wantsLayer = YES;
             [view mas_makeConstraints:^(MASConstraintMaker *make) {
-           
                 if (lastView == nil) {
                     make.top.equalTo(self.scrollView).offset(0);
                 } else {
-                    make.top.equalTo(  lastView.mas_bottom).offset(12);
+                    make.top.equalTo(lastView.mas_bottom).offset(12);
                 }
-                
                 make.left.right.width.equalTo(self.scrollView);
-                make.height.greaterThanOrEqualTo(@(kResultMinHeight));
+//                make.height.greaterThanOrEqualTo(@(kResultMinHeight));
+//                make.height.mas_equalTo(500);
             }];
             mm_weakify(self)
             [view.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
@@ -420,12 +427,10 @@ return;                                     \
     }
     
     [contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.greaterThanOrEqualTo(lastView).offset(0);
+//        make.bottom.greaterThanOrEqualTo(lastView).offset(0);
+        make.bottom.equalTo(lastView).offset(10);
+
     }];
-    
-    contentView.wantsLayer = YES;
-    self.scrollView.documentView = contentView;
-//    self.scrollView.contentView = contentView;
     
     [self updateFoldState:Configuration.shared.isFold];
 }
@@ -466,7 +471,7 @@ return;                                     \
 
 - (void)resetWithState:(NSString *)stateString query:(NSString *)query actionTitle:(NSString *)actionTitle action:(void (^)(void))action {
     self.currentResult = nil;
-     self.queryView.queryText = query ?: @"";
+    self.queryView.queryText = query ?: @"";
     [self.resultView refreshWithStateString:stateString actionTitle:actionTitle action:action];
     [self resizeWindowWithQueryViewExpectHeight:0];
 }
@@ -518,7 +523,7 @@ return;                                     \
         mm_strongify(self)
         checkSeed
         [NSPasteboard mm_generalPasteboardSetString:result.mergedText];
-         self.queryView.queryText = result.mergedText;
+        self.queryView.queryText = result.mergedText;
         if (!willInvokeTranslateAPI) {
             [self.resultView refreshWithStateString:@"翻译中..."];
         }
@@ -559,8 +564,8 @@ return;                                     \
     }
     if (self.currentResult) {
         [self translateText:self.currentResult.text];
-    } else if ( self.queryView.queryText.length) {
-        [self translateText: self.queryView.queryText];
+    } else if (self.queryView.queryText.length) {
+        [self translateText:self.queryView.queryText];
     }
 }
 
@@ -621,7 +626,6 @@ return;                                     \
 }
 
 
-
 #pragma mark - window frame
 
 - (void)viewDidLayout {
@@ -647,14 +651,14 @@ return;                                     \
     self.fromLanguageButton.hidden = isFold;
     self.transformButton.hidden = isFold;
     self.toLanguageButton.hidden = isFold;
-//    [self.resultTopConstraint uninstall];
-//    [self.resultView mas_updateConstraints:^(MASConstraintMaker *make) {
-//        if (isFold) {
-//            self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
-//        } else {
-//            self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
-//        }
-//    }];
+    //    [self.resultTopConstraint uninstall];
+    //    [self.resultView mas_updateConstraints:^(MASConstraintMaker *make) {
+    //        if (isFold) {
+    //            self.resultTopConstraint = make.top.equalTo(self.pinButton.mas_bottom).offset(2);
+    //        } else {
+    //            self.resultTopConstraint = make.top.equalTo(self.fromLanguageButton.mas_bottom).offset(12);
+    //        }
+    //    }];
     [self resizeWindowWithQueryViewExpectHeight:self.queryHeightWhenFold];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!isFold) {

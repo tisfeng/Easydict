@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		03252D0B2912A39100DA2932 /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D0A2912A39100DA2932 /* FlippedView.m */; };
+		03252D352912F3C900DA2932 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D342912F3C900DA2932 /* MainViewController.m */; };
+		03252D392912FB5400DA2932 /* TableRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D382912FB5400DA2932 /* TableRow.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -101,6 +103,10 @@
 /* Begin PBXFileReference section */
 		03252D092912A39100DA2932 /* FlippedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlippedView.h; sourceTree = "<group>"; };
 		03252D0A2912A39100DA2932 /* FlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
+		03252D332912F3C900DA2932 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		03252D342912F3C900DA2932 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		03252D372912FB5400DA2932 /* TableRow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableRow.h; sourceTree = "<group>"; };
+		03252D382912FB5400DA2932 /* TableRow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableRow.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -273,6 +279,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03252D362912FB2200DA2932 /* TableView */ = {
+			isa = PBXGroup;
+			children = (
+				03252D332912F3C900DA2932 /* MainViewController.h */,
+				03252D342912F3C900DA2932 /* MainViewController.m */,
+				03252D372912FB5400DA2932 /* TableRow.h */,
+				03252D382912FB5400DA2932 /* TableRow.m */,
+			);
+			path = TableView;
+			sourceTree = "<group>";
+		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -473,6 +490,7 @@
 		C99EEB972385799D00FEE666 /* TranslateWindow */ = {
 			isa = PBXGroup;
 			children = (
+				03252D362912FB2200DA2932 /* TableView */,
 				C99EEB9A2385799D00FEE666 /* TranslateWindowController.h */,
 				C99EEBA52385799D00FEE666 /* TranslateWindowController.m */,
 				C99EEB9B2385799D00FEE666 /* TranslateWindow.h */,
@@ -795,6 +813,7 @@
 				C99EEBD32385799D00FEE666 /* WordResultView.m in Sources */,
 				C99EEBDE2385799D00FEE666 /* NSArray+MM.m in Sources */,
 				C9676F2B23A0908F007DD023 /* NSPasteboard+MM.m in Sources */,
+				03252D352912F3C900DA2932 /* MainViewController.m in Sources */,
 				C99EEBD92385799D00FEE666 /* NSUserDefaults+MM.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
@@ -816,6 +835,7 @@
 				C99EEBCD2385799D00FEE666 /* QueryView.m in Sources */,
 				C98CFA28239F8CDB00FB7EC4 /* MMLog.swift in Sources */,
 				C910457023A3AF44001D5211 /* Translate.m in Sources */,
+				03252D392912FB5400DA2932 /* TableRow.m in Sources */,
 				C9C3BDCA238E76C800D5F1C1 /* SnipWindow.m in Sources */,
 				C99EEBD52385799D00FEE666 /* Selection.m in Sources */,
 				C99EEBCE2385799D00FEE666 /* TranslateViewController.m in Sources */,

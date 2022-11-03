@@ -13,7 +13,7 @@
 #import "TranslateWindowController.h"
 #import "TranslateViewController.h"
 #import "Configuration.h"
-
+#import "MainViewController.h"
 
 @implementation AppDelegate
 
@@ -28,12 +28,18 @@
     NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
     TranslateViewController *translateVC = [[TranslateViewController alloc] init];
     window.contentViewController = translateVC;
+    
+    MainViewController *vc = [[MainViewController alloc] init];
+    window.contentViewController = vc;
+    
     [window center];
     [window makeKeyAndOrderFront:nil];
     
-    Configuration.shared.isFold = NO;
-    [translateVC updateFoldState:NO];
-    [translateVC resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
+
+    
+//    Configuration.shared.isFold = NO;
+//    [translateVC updateFoldState:NO];
+//    [translateVC resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

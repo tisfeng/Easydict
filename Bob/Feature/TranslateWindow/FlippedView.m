@@ -11,7 +11,7 @@
 @implementation FlippedView
 
 - (BOOL)isFlipped {
-    return YES;
+    return NO;
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
