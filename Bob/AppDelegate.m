@@ -13,7 +13,7 @@
 #import "TranslateWindowController.h"
 #import "TranslateViewController.h"
 #import "Configuration.h"
-#import "MainViewController.h"
+#import "MainWindow.h"
 
 @implementation AppDelegate
 
@@ -25,12 +25,14 @@
     
     
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-    NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
-    TranslateViewController *translateVC = [[TranslateViewController alloc] init];
-    window.contentViewController = translateVC;
+//    NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
+//    TranslateViewController *translateVC = [[TranslateViewController alloc] init];
+//    window.contentViewController = translateVC;
+//
+//    MainViewController *vc = [[MainViewController alloc] init];
+//    window.contentViewController = vc;
     
-    MainViewController *vc = [[MainViewController alloc] init];
-    window.contentViewController = vc;
+    MainWindow *window = [[MainWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
     
     [window center];
     [window makeKeyAndOrderFront:nil];

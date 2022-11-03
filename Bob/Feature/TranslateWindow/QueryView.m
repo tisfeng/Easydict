@@ -137,7 +137,7 @@ DefineMethodMMMake_m(QueryView);
             if (@available(macOS 10.14, *)) {
                 button.contentTintColor = blackColor;
             } else {
-                button.image = [image imageWithTintColor:whiteColor];
+                button.image = [image imageWithTintColor:blackColor];
             }
         } drak:^(NSButton *button) {
             if (@available(macOS 10.14, *)) {

@@ -8,11 +8,14 @@
 
 #import "WordResultView.h"
 #import "ImageButton.h"
+#import "NSColor+MyColors.h"
 
-#define kMargin 12.0
+//#define kMargin 12.0
+static const CGFloat kMargin = 10;
+
 /// wrappingLabel的约束需要偏移2,不知道是什么神设计
-#define kFixWrappingLabelMargin 2.0
-
+//#define kFixWrappingLabelMargin 2.0
+static const CGFloat kFixWrappingLabelMargin = 10;
 
 @interface WordResultView ()
 
@@ -44,15 +47,14 @@
     
     NSFont *textFont = [NSFont systemFontOfSize:14];
     
-    
     [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = obj.name;
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.whiteColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
             textField.editable = NO;
@@ -75,9 +77,9 @@
                 [self addSubview:textField];
                 textField.stringValue = [NSString stringWithFormat:@"[%@]", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
-                    [x setTextColor:LightTextColor];
+                    [x setTextColor:NSColor.resultTextLightColor];
                 } drak:^(id _Nonnull x) {
-                    [x setTextColor:NSColor.whiteColor];
+                    [x setTextColor:NSColor.resultTextDarkColor];
                 }];
                 textField.font = textFont;
                 textField.editable = NO;
@@ -145,9 +147,9 @@
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.whiteColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
@@ -180,9 +182,9 @@
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@: ", obj.name];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.whiteColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
             textField.editable = NO;
@@ -292,9 +294,9 @@
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.whiteColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
@@ -314,9 +316,9 @@
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.whiteColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
@@ -338,16 +340,6 @@
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(kMargin);
     }];
-}
-
-//+ (BOOL)requiresConstraintBasedLayout {
-//    return YES;
-//}
-
-- (void)updateConstraints {
-    [super updateConstraints];
-    
-    NSLog(@"updateConstraints");
 }
 
 @end

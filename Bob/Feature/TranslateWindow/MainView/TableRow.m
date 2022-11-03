@@ -32,6 +32,7 @@
 - (void)updateConstraints {
     [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self);
+        make.height.mas_greaterThanOrEqualTo(kResultViewMiniHeight);
     }];
     
     [super updateConstraints];

@@ -13,6 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static const CGFloat kResultViewMiniHeight = 25;
 
 @interface ResultView : NSView
 

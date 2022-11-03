@@ -20,7 +20,7 @@
 #import "ImageButton.h"
 #import "TranslateWindowController.h"
 #import "FlippedView.h"
-
+#import "NSColor+MyColors.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -42,12 +42,15 @@
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
     [self.view excuteLight:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = NSColor.whiteColor.CGColor;
-        x.layer.borderWidth = 0;
+        x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
+//        x.layer.borderWidth = 0;
     } drak:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = DarkBorderColor.CGColor;
-        x.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.15].CGColor;
-        x.layer.borderWidth = 1;
+        x.layer.backgroundColor = NSColor.mainViewBgDarkColor.CGColor;
+
+//        x.layer.borderColor = [NSColor mm_colorWithHexString:@"#515253"].CGColor;
+
+//        x.layer.borderColor = [[NSColor mm_colorWithHexString:@"#515253"] colorWithAlphaComponent:0.15].CGColor;
+//        x.layer.borderWidth = 0.5;
     }];
 }
 
@@ -67,7 +70,7 @@
     
     [self.view addSubview:scrollView];
     
-    CGSize screenSize = NSScreen.mainScreen.frame.size;
+//    CGSize screenSize = NSScreen.mainScreen.frame.size;
     
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self.view);
@@ -96,8 +99,15 @@
     _tableView.intercellSpacing = CGSizeMake(0, 10);
     _tableView.gridColor = NSColor.clearColor;
     _tableView.gridStyleMask = NSTableViewGridNone;
+
+    [_tableView excuteLight:^(NSTableView *tableView) {
+        tableView.backgroundColor = NSColor.mainViewBgLightColor;
+        } drak:^(NSTableView *tableView) {
+            tableView.backgroundColor = NSColor.mainViewBgDarkColor;
+        }];
     
     [_tableView reloadData];
+    
     [_tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask|NSTableViewSolidHorizontalGridLineMask];
     [_tableView setAutoresizesSubviews:YES];
     [_tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
@@ -119,6 +129,11 @@
         self.result = result;
         [self.tableView reloadData];
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(windowDidResize:)
+                                                 name:NSWindowDidResizeNotification
+                                               object:self];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -159,10 +174,22 @@
 
 - (void)viewDidLayout {
     
+    [super viewDidLayout];
+    
     NSLog(@"viewDidLayout, MainViewController");
     
     [self.tableView reloadData];
 }
 
+- (void)windowDidResize:(NSNotification *)aNotification {
+    NSLog(@"窗口拉伸, (%.2f, %.2f)", self.view.width, self.view.height);
+}
+
+- (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize
+{
+    // 根据需要调整NSView上面的别的控件和视图的frame
+    NSLog(@"resizeSubviewsWithOldSize: %@", @(oldBoundsSize));
+
+}
 
 @end
