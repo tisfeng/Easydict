@@ -37,7 +37,7 @@
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 300, 500)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 500, 800)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -61,13 +61,18 @@
     NSScrollView *scrollView = [[NSScrollView alloc] init];
     scrollView.hasVerticalScroller = YES;
     scrollView.frame = self.view.bounds;
+    [scrollView setAutomaticallyAdjustsContentInsets:NO];
+    CGFloat padding = -10;
+    [scrollView setContentInsets:NSEdgeInsetsMake(padding, padding, padding, padding)];
+    
     [self.view addSubview:scrollView];
     
     CGSize screenSize = NSScreen.mainScreen.frame.size;
     
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self.view);
-        make.height.mas_equalTo(screenSize.height *2/3);
+//        make.height.mas_equalTo(screenSize.height *2/3);
+        make.bottom.equalTo(self.view);
     }];
     
     _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
@@ -87,12 +92,20 @@
     [_tableView addTableColumn:column];
     _tableView.delegate = self;
     _tableView.dataSource = self;
-//    _tableView.rowHeight = 200;
+    _tableView.rowHeight = 200;
+    _tableView.intercellSpacing = CGSizeMake(0, 10);
+    _tableView.gridColor = NSColor.clearColor;
+    _tableView.gridStyleMask = NSTableViewGridNone;
+    
     [_tableView reloadData];
     [_tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask|NSTableViewSolidHorizontalGridLineMask];
     [_tableView setAutoresizesSubviews:YES];
-    [_tableView setColumnAutoresizingStyle:NSTableViewNoColumnAutoresizing];
+    [_tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
     scrollView.contentView.documentView = _tableView;
+    
+    [_tableView sizeLastColumnToFit];
+    
+    
     
 //    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.edges.equalTo(scrollView);
@@ -140,8 +153,15 @@
 //    return rowView;
 //}
 
-- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
-    return 300;
+//- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
+//    return 300;
+//}
+
+- (void)viewDidLayout {
+    
+    NSLog(@"viewDidLayout, MainViewController");
+    
+    [self.tableView reloadData];
 }
 
 

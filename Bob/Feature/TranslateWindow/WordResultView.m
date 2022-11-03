@@ -24,12 +24,12 @@
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-//        self.wantsLayer = YES;
-//        [self.layer excuteLight:^(id _Nonnull x) {
-//            [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
-//        } drak:^(id _Nonnull x) {
-//            [x setBackgroundColor:DarkGrayColor.CGColor];
-//        }];
+        //        self.wantsLayer = YES;
+        //        [self.layer excuteLight:^(id _Nonnull x) {
+        //            [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"].CGColor];
+        //        } drak:^(id _Nonnull x) {
+        //            [x setBackgroundColor:DarkGrayColor.CGColor];
+        //        }];
     }
     return self;
 }
@@ -37,21 +37,24 @@
 - (void)refreshWithResult:(TranslateResult *)result {
     self.result = result;
     TranslateWordResult *wordResult = result.wordResult;
-
+    
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
+    
     __block NSView *lastView = nil;
-
+    
+    NSFont *textFont = [NSFont systemFontOfSize:14];
+    
+    
     [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = obj.name;
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
-            textField.font = [NSFont systemFontOfSize:13];
+            textField.font = textFont;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
@@ -64,7 +67,7 @@
                 }
             }];
         }];
-
+        
         // 部分没有音标文本
         NSTextField *valueTextField = nil;
         if (obj.value.length) {
@@ -72,11 +75,11 @@
                 [self addSubview:textField];
                 textField.stringValue = [NSString stringWithFormat:@"[%@]", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
-                    [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                    [x setTextColor:LightTextColor];
                 } drak:^(id _Nonnull x) {
                     [x setTextColor:NSColor.whiteColor];
                 }];
-                textField.font = [NSFont systemFontOfSize:13];
+                textField.font = textFont;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
@@ -86,7 +89,7 @@
                 }];
             }];
         }
-
+        
         NSButton *audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
             [self addSubview:button];
             button.bordered = NO;
@@ -101,17 +104,17 @@
                 make.width.height.equalTo(@26);
             }];
             mm_weakify(self, obj)
-                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                            mm_strongify(self, obj) if (self.playAudioBlock) {
-                                self.playAudioBlock(self, obj.speakURL);
-                            }
-                            return RACSignal.empty;
-                        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                mm_strongify(self, obj) if (self.playAudioBlock) {
+                    self.playAudioBlock(self, obj.speakURL);
+                }
+                return RACSignal.empty;
+            }]];
         }];
-
+        
         lastView = audioButton;
     }];
-
+    
     [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length) {
@@ -119,7 +122,7 @@
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = [NSColor mm_colorWithHexString:@"#999999"];
-                textField.font = [NSFont systemFontOfSize:13];
+                textField.font = textFont;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
@@ -137,16 +140,16 @@
                 }];
             }];
         }
-
+        
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
-            textField.font = [NSFont systemFontOfSize:13];
+            textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
             textField.alignment = NSTextAlignmentLeft;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -168,20 +171,20 @@
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
-
+        
         lastView = meanTextField;
     }];
-
+    
     [wordResult.exchanges enumerateObjectsUsingBlock:^(TranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@: ", obj.name];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
-            textField.font = [NSFont systemFontOfSize:13];
+            textField.font = textFont;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
@@ -198,7 +201,7 @@
                 }
             }];
         }];
-
+        
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
                 [self addSubview:button];
@@ -217,20 +220,20 @@
                     make.centerY.equalTo(nameTextFiled);
                 }];
                 mm_weakify(self, obj)
-                    [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                                mm_strongify(self, obj) if (self.selectWordBlock) {
-                                    self.selectWordBlock(self, obj);
-                                }
-                                return RACSignal.empty;
-                            }]];
+                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                    mm_strongify(self, obj) if (self.selectWordBlock) {
+                        self.selectWordBlock(self, obj);
+                    }
+                    return RACSignal.empty;
+                }]];
             }];
-
+            
             lastView = wordButton;
         }];
     }];
-
+    
     __block NSString *lastSimpleWordPart = nil;
-
+    
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(TranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
@@ -239,7 +242,7 @@
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = [NSColor mm_colorWithHexString:@"#999999"];
-                textField.font = [NSFont systemFontOfSize:13];
+                textField.font = textFont;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
@@ -252,10 +255,10 @@
                     }
                 }];
             }];
-
+            
             lastSimpleWordPart = obj.part;
         }
-
+        
         NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
             [self addSubview:button];
             button.bordered = NO;
@@ -277,23 +280,23 @@
                 }
             }];
             mm_weakify(self, obj)
-                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                            mm_strongify(self, obj) if (self.selectWordBlock) {
-                                self.selectWordBlock(self, obj.word);
-                            }
-                            return RACSignal.empty;
-                        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                mm_strongify(self, obj) if (self.selectWordBlock) {
+                    self.selectWordBlock(self, obj.word);
+                }
+                return RACSignal.empty;
+            }]];
         }];
-
+        
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
-            textField.font = [NSFont systemFontOfSize:13];
+            textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
             textField.alignment = NSTextAlignmentLeft;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -302,20 +305,20 @@
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
-
+        
         lastView = meanTextField;
     }];
-
+    
     if (result.normalResults.count) {
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#333333"]];
+                [x setTextColor:LightTextColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
-            textField.font = [NSFont systemFontOfSize:13];
+            textField.font = textFont;
             textField.backgroundColor = NSColor.clearColor;
             textField.alignment = NSTextAlignmentLeft;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -328,10 +331,10 @@
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
-
+        
         lastView = meanTextField;
     }
-
+    
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(kMargin);
     }];

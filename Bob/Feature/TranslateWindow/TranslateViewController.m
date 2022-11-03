@@ -631,7 +631,7 @@ return;                                     \
 - (void)viewDidLayout {
     [super viewDidLayout];
     
-    NSLog(@"viewDidLayout");
+    NSLog(@"viewDidLayout, TranslateViewController");
     
     [self.scrollView.contentView scrollPoint:CGPointMake(0, 1300)];
 }

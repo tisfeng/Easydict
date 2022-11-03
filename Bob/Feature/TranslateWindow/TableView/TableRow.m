@@ -17,12 +17,24 @@
         self.resultView = resultView;
         [self addSubview:resultView];
         
-        [resultView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self);
-        }];
-
+//        [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//            make.edges.equalTo(self);
+//        }];
     }
     return  self;
+}
+
+// tell UIKit that you are using AutoLayout
++ (BOOL)requiresConstraintBasedLayout {
+    return YES;
+}
+
+- (void)updateConstraints {
+    [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self);
+    }];
+    
+    [super updateConstraints];
 }
 
 - (void)setResult:(TranslateResult *)result {
@@ -43,7 +55,7 @@
 //绘制背景
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
     [super drawBackgroundInRect:dirtyRect];
-    [[NSColor orangeColor] setFill];
+    [[NSColor clearColor] setFill];
     NSRectFill(dirtyRect);
 }
 
