@@ -11,12 +11,14 @@
 
 @implementation MainWindow
 
-- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
+- (instancetype)init {
+//- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
 
-    if (self = [super initWithContentRect:contentRect
-                                styleMask:style
-                                  backing:backingStoreType
-                                    defer:flag]) {
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+
+//    MainWindow *window = [[MainWindow alloc] initWithContentRect:CGRectMake(0, 0, 150, 200) styleMask:style backing:NSBackingStoreBuffered defer:YES];
+
+    if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel; //NSModalPanelWindowLevel;
         self.backgroundColor = [NSColor clearColor];

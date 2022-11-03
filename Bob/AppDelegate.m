@@ -23,8 +23,6 @@
     [StatusItem.shared setup];
     [Shortcut setup];
     
-    
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
 //    NSWindow *window = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
 //    TranslateViewController *translateVC = [[TranslateViewController alloc] init];
 //    window.contentViewController = translateVC;
@@ -32,13 +30,11 @@
 //    MainViewController *vc = [[MainViewController alloc] init];
 //    window.contentViewController = vc;
     
-    MainWindow *window = [[MainWindow alloc] initWithContentRect:CGRectMake(0, 0, 300, 400) styleMask:style backing:NSBackingStoreBuffered defer:YES];
-    
+    MainWindow *window = [[MainWindow alloc] init];
     [window center];
     [window makeKeyAndOrderFront:nil];
     
 
-    
 //    Configuration.shared.isFold = NO;
 //    [translateVC updateFoldState:NO];
 //    [translateVC resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];

@@ -190,9 +190,7 @@ DefineMethodMMMake_m(QueryView);
     
     // 将scrollview放到最上层
     [self addSubview:self.scrollView];
-    
-    [self layoutSubtreeIfNeeded];
-    
+        
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSTrackingArea *copyTrackingArea = [[NSTrackingArea alloc]
                                             initWithRect:[self.textCopyButton bounds]
@@ -263,7 +261,8 @@ DefineMethodMMMake_m(QueryView);
         make.width.mas_equalTo(width + 10);
     }];
     
-    [self layoutSubtreeIfNeeded];
+//    [self setNeedsLayout:YES];
+//    [self layoutSubtreeIfNeeded];
 }
 
 // Get attribute string width.

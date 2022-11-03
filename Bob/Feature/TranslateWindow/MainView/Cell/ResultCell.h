@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TableRow : NSTableRowView
+@interface ResultCell : NSTableRowView
 
 @property (nonatomic, strong) TranslateResult *result;
 @property (nonatomic, strong) ResultView *resultView;

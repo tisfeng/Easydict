@@ -234,7 +234,8 @@ static const CGFloat kMargin = 10;
         [self addSubview:self.wordResultView];
         self.wordResultView.hidden = NO;
         [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.topBarView.mas_bottom).offset(-kMargin);
+//            make.top.equalTo(self.topBarView.mas_bottom).offset(-kMargin);
+            make.top.equalTo(self).offset(kResultViewMiniHeight);
             make.left.right.equalTo(self);
             make.bottom.equalTo(self);
         }];

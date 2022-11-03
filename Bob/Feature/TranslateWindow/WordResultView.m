@@ -15,7 +15,7 @@ static const CGFloat kMargin = 10;
 
 /// wrappingLabel的约束需要偏移2,不知道是什么神设计
 //#define kFixWrappingLabelMargin 2.0
-static const CGFloat kFixWrappingLabelMargin = 10;
+static const CGFloat kFixWrappingLabelMargin = 2;
 
 @interface WordResultView ()
 

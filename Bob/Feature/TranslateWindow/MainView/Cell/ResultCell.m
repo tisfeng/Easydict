@@ -6,9 +6,9 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "TableRow.h"
+#import "ResultCell.h"
 
-@implementation TableRow
+@implementation ResultCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
@@ -16,10 +16,6 @@
         ResultView *resultView = [[ResultView alloc] init];
         self.resultView = resultView;
         [self addSubview:resultView];
-        
-//        [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.edges.equalTo(self);
-//        }];
     }
     return  self;
 }

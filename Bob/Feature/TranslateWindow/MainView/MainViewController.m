@@ -7,20 +7,15 @@
 //
 
 #import "MainViewController.h"
-#import "TableRow.h"
+#import "ResultCell.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
-#import "Selection.h"
-#import "PopUpButton.h"
 #import "QueryView.h"
 #import "ResultView.h"
 #import "Configuration.h"
-#import <AVFoundation/AVFoundation.h>
-#import "ImageButton.h"
-#import "TranslateWindowController.h"
-#import "FlippedView.h"
 #import "NSColor+MyColors.h"
+#import "QueryCell.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -31,26 +26,28 @@
 @property (nonatomic, strong) TranslateResult *result;
 @property (nonatomic, strong) ResultView *resultView;
 
+@property (nonatomic, copy) NSString *queryText;
+
 @end
 
 @implementation MainViewController
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 500, 800)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
     [self.view excuteLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
-//        x.layer.borderWidth = 0;
+        //        x.layer.borderWidth = 0;
     } drak:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgDarkColor.CGColor;
-
-//        x.layer.borderColor = [NSColor mm_colorWithHexString:@"#515253"].CGColor;
-
-//        x.layer.borderColor = [[NSColor mm_colorWithHexString:@"#515253"] colorWithAlphaComponent:0.15].CGColor;
-//        x.layer.borderWidth = 0.5;
+        
+        //        x.layer.borderColor = [NSColor mm_colorWithHexString:@"#515253"].CGColor;
+        
+        //        x.layer.borderColor = [[NSColor mm_colorWithHexString:@"#515253"] colorWithAlphaComponent:0.15].CGColor;
+        //        x.layer.borderWidth = 0.5;
     }];
 }
 
@@ -70,11 +67,11 @@
     
     [self.view addSubview:scrollView];
     
-//    CGSize screenSize = NSScreen.mainScreen.frame.size;
+    //    CGSize screenSize = NSScreen.mainScreen.frame.size;
     
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self.view);
-//        make.height.mas_equalTo(screenSize.height *2/3);
+        //        make.height.mas_equalTo(screenSize.height *2/3);
         make.bottom.equalTo(self.view);
     }];
     
@@ -82,7 +79,7 @@
     
     NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
     column.width = 400;
-//    column.minWidth = 200;
+    //    column.minWidth = 200;
     column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
     
     if (@available(macOS 10.13, *)) {
@@ -99,16 +96,16 @@
     _tableView.intercellSpacing = CGSizeMake(0, 10);
     _tableView.gridColor = NSColor.clearColor;
     _tableView.gridStyleMask = NSTableViewGridNone;
-
+    
     [_tableView excuteLight:^(NSTableView *tableView) {
         tableView.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSTableView *tableView) {
-            tableView.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
+    } drak:^(NSTableView *tableView) {
+        tableView.backgroundColor = NSColor.mainViewBgDarkColor;
+    }];
     
     [_tableView reloadData];
     
-    [_tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask|NSTableViewSolidHorizontalGridLineMask];
+    [_tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
     [_tableView setAutoresizesSubviews:YES];
     [_tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
     scrollView.contentView.documentView = _tableView;
@@ -116,24 +113,28 @@
     [_tableView sizeLastColumnToFit];
     
     
-    
-//    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(scrollView);
-//    }];
+    //    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.edges.equalTo(scrollView);
+    //    }];
     
     self.translate = [[BaiduTranslate alloc] init];
-    [self.translate translate:@"good"
+    [self translateText:@"good"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(windowDidResize:)
+                                                 name:NSWindowDidResizeNotification
+                                               object:self];
+}
+
+- (void)translateText:(NSString *)text {
+    self.queryText = text;
+    [self.translate translate:text
                          from:Configuration.shared.from
                            to:Configuration.shared.to
                    completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
         self.result = result;
         [self.tableView reloadData];
     }];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(windowDidResize:)
-                                                 name:NSWindowDidResizeNotification
-                                               object:self];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -143,28 +144,59 @@
     return 0;
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return _dataArray[row];
-}
+//- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+//    return _dataArray[row];
+//}
 
 // View-base
 //设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    //根据ID取视图
-    NSString *cellID = tableColumn.identifier;
-    TableRow *rowView = [tableView makeViewWithIdentifier:cellID owner:self];
-    if (!rowView) {
-        rowView = [[TableRow alloc] init];
-        rowView.identifier = cellID;
+    if (row == 0) {
+        NSString *queryCellID = @"queryCellID";
+//        QueryCell *queryCell = [tableView makeViewWithIdentifier:queryCellID owner:self];
+        QueryCell *queryCell;
+
+        if (!queryCell) {
+            queryCell = [[QueryCell alloc] init];
+            [queryCell.queryView.textView setString:self.queryText] ;
+            
+            mm_weakify(self)
+            [queryCell setEnterActionBlock:^(QueryView *view) {
+                mm_strongify(self);
+                
+                if (view.queryText.length) {
+                    [self translateText:view.queryText];
+                }
+            }];
+            queryCell.identifier = queryCellID;
+        }
+        return queryCell;
     }
     
-    rowView.result = self.result;
+    //    NSString *queryCellID = @"queryCellID";
+    //    QueryCell *queryCell = [tableView makeViewWithIdentifier:queryCellID owner:self];
+    //    if (!queryCell) {
+    //        queryCell = [[QueryCell alloc] init];
+    //        queryCell.identifier = queryCellID;
+    //    }
+    //    return queryCell;
+    
+    NSString *resultCellID = @"resultCellID";
+//    ResultCell *resultView = [tableView makeViewWithIdentifier:resultCellID owner:self];
+    ResultCell *resultView;
 
-    return rowView;
+    if (!resultView) {
+        resultView = [[ResultCell alloc] init];
+        resultView.identifier = resultCellID;
+    }
+    
+    resultView.result = self.result;
+    
+    return resultView;
 }
 //设置每行容器视图
 //- (nullable NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-//    TableRow *rowView = [[TableRow alloc] init];
+//    ResultCell *rowView = [[ResultCell alloc] init];
 //    return rowView;
 //}
 
@@ -173,7 +205,6 @@
 //}
 
 - (void)viewDidLayout {
-    
     [super viewDidLayout];
     
     NSLog(@"viewDidLayout, MainViewController");
@@ -185,11 +216,9 @@
     NSLog(@"窗口拉伸, (%.2f, %.2f)", self.view.width, self.view.height);
 }
 
-- (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize
-{
+- (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize {
     // 根据需要调整NSView上面的别的控件和视图的frame
     NSLog(@"resizeSubviewsWithOldSize: %@", @(oldBoundsSize));
-
 }
 
 @end
