@@ -16,7 +16,6 @@
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
 #import "QueryCell.h"
-#import "MyScroller.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -92,7 +91,7 @@ static const CGFloat kPadding = 12;
     [self.view addSubview:scrollView];
 
     scrollView.hasVerticalScroller = YES;
-    scrollView.verticalScroller = [[MyScroller alloc] init];
+    scrollView.verticalScroller.controlSize = NSControlSizeSmall;
     scrollView.frame = self.view.bounds;
     [scrollView setAutomaticallyAdjustsContentInsets:NO];
     
