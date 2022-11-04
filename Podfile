@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :osx, '10.12'
+platform :osx, '10.14'
 
 inhibit_all_warnings!
 
@@ -21,8 +21,8 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      if config.build_settings['MACOSX_DEPLOYMENT_TARGET'].to_f < 10.12
-        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.12'
+      if config.build_settings['MACOSX_DEPLOYMENT_TARGET'].to_f < 10.14
+        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.14'
       end
     end
   end
