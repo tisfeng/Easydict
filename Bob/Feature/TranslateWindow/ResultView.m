@@ -148,10 +148,10 @@ static const CGFloat kMargin = 10;
                        });
 
 
-        self.normalResultView = [NormalResultView new];
+        self.normalResultView = [[NormalResultView alloc] initWithFrame:frame];;
         self.normalResultView.mas_key = @"normalResultView";
 
-        self.wordResultView = [WordResultView new];
+        self.wordResultView = [[WordResultView alloc] initWithFrame:frame];
         self.wordResultView.mas_key = @"wordResultView";
 
         self.stateTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {

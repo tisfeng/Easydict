@@ -146,12 +146,6 @@ static const CGFloat kPadding = 12;
     scrollView.contentView.documentView = _tableView;
     
     [_tableView sizeLastColumnToFit];
-    
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(windowDidResize:)
-                                                 name:NSWindowDidResizeNotification
-                                               object:self];
 }
 
 - (void)translateText:(NSString *)text {
@@ -183,7 +177,7 @@ static const CGFloat kPadding = 12;
         QueryCell *queryCell;
 
         if (!queryCell) {
-            queryCell = [[QueryCell alloc] init];
+            queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
             queryCell.queryView.queryText = self.queryText;
             
             mm_weakify(self)
@@ -204,7 +198,7 @@ static const CGFloat kPadding = 12;
     ResultCell *resultView;
 
     if (!resultView) {
-        resultView = [[ResultCell alloc] init];
+        resultView = [[ResultCell alloc] initWithFrame:self.view.bounds];
         resultView.identifier = resultCellID;
     }
     
@@ -224,19 +218,8 @@ static const CGFloat kPadding = 12;
 
 - (void)viewDidLayout {
     [super viewDidLayout];
-    
-    NSLog(@"viewDidLayout, MainViewController");
-    
+        
     [self.tableView reloadData];
-}
-
-- (void)windowDidResize:(NSNotification *)aNotification {
-    NSLog(@"窗口拉伸, (%.2f, %.2f)", self.view.width, self.view.height);
-}
-
-- (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize {
-    // 根据需要调整NSView上面的别的控件和视图的frame
-    NSLog(@"resizeSubviewsWithOldSize: %@", @(oldBoundsSize));
 }
 
 @end

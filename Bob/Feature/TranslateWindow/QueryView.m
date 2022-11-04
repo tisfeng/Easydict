@@ -66,7 +66,7 @@ DefineMethodMMMake_m(QueryView);
         scrollView.hasVerticalScroller = YES;
         scrollView.hasHorizontalScroller = NO;
         scrollView.autohidesScrollers = YES;
-        self.textView = [[TextView alloc] init];
+        self.textView = [[TextView alloc] initWithFrame:self.bounds];
         self.textView = [TextView mm_make:^(TextView *textView) {
             [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
             textView.delegate = self;

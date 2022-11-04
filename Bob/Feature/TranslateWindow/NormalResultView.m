@@ -36,26 +36,23 @@ DefineMethodMMMake_m(NormalResultView);
 }
 
 - (void)setup {
- 
-    self.textView = [TextView mm_make:^(TextView *textView) {
-        [self addSubview:textView];
-        
-        [textView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.right.inset(0);
-            make.bottom.inset(kTextViewBottomInset);
-            self.textViewHeightConstraint = make.height.equalTo(@(kMinHeight - kTextViewBottomInset));
-        }];
-        textView.editable = NO;
-        [textView excuteLight:^(id _Nonnull x) {
-            [x setBackgroundColor:NSColor.resultViewBgLightColor];
-            [x setTextColor:NSColor.resultTextLightColor];
-        } drak:^(id _Nonnull x) {
-            [x setBackgroundColor:NSColor.resultViewBgDarkColor];
-            [x setTextColor:NSColor.resultTextDarkColor];
-        }];
-        [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+    TextView *textView = [[TextView alloc] initWithFrame:self.bounds];
+    [self addSubview:textView];
+    [textView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.inset(0);
+        make.bottom.inset(kTextViewBottomInset);
+        self.textViewHeightConstraint = make.height.greaterThanOrEqualTo(@(kMinHeight - kTextViewBottomInset));
     }];
-
+    textView.editable = NO;
+    [textView excuteLight:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.resultViewBgLightColor];
+        [x setTextColor:NSColor.resultTextLightColor];
+    } drak:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.resultViewBgDarkColor];
+        [x setTextColor:NSColor.resultTextDarkColor];
+    }];
+    [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+    self.textView = textView;
 
     self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
@@ -134,7 +131,7 @@ DefineMethodMMMake_m(NormalResultView);
         // self.scrollView.hasVerticalScroller = NO;
     }
 
-    self.textViewHeightConstraint.equalTo(@(height));
+    self.textViewHeightConstraint.greaterThanOrEqualTo(@(height));
 }
 
 - (CGFloat)heightForString:(NSAttributedString *)string width:(CGFloat)width {

@@ -13,7 +13,7 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        QueryView *queryView = [[QueryView alloc] init];
+        QueryView *queryView = [[QueryView alloc] initWithFrame:frameRect];
         self.queryView = queryView;
         [self addSubview:queryView];
     }
