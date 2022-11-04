@@ -63,3 +63,5 @@ fastlane/test_output
 iOSInjectionProject/
 
 #.clang-format
+
+node_modules/
