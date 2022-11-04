@@ -8,26 +8,25 @@
 
 #import "MainWindow.h"
 #import "MainViewController.h"
+#import "NSColor+MyColors.h"
 
 @implementation MainWindow
 
 - (instancetype)init {
-//- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
-
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-
-//    MainWindow *window = [[MainWindow alloc] initWithContentRect:CGRectMake(0, 0, 150, 200) styleMask:style backing:NSBackingStoreBuffered defer:YES];
-
+    
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.movableByWindowBackground = YES;
-        self.level = NSNormalWindowLevel; //NSModalPanelWindowLevel;
-        self.backgroundColor = [NSColor clearColor];
-        self.hasShadow = YES;
-        self.opaque = NO;
+        self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
+        
+        [self excuteLight:^(NSWindow *window) {
+            window.backgroundColor = NSColor.mainViewBgLightColor;
+        } drak:^(NSWindow *window) {
+            window.backgroundColor = NSColor.mainViewBgDarkColor;
+        }];
         
         MainViewController *vc = [[MainViewController alloc] init];
         self.contentViewController = vc;
-        
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
@@ -47,7 +46,6 @@
 
 - (void)windowDidResize:(NSNotification *)aNotification {
     NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
 }
 
 - (void)resizeSubviewsWithOldSize:(NSSize)oldSize {

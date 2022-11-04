@@ -69,6 +69,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 }
             }];
         }];
+        nameTextFiled.mas_key = @"nameTextFiled_phonetics";
         
         // 部分没有音标文本
         NSTextField *valueTextField = nil;
@@ -90,7 +91,10 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                     make.centerY.equalTo(nameTextFiled);
                 }];
             }];
+            valueTextField.mas_key = @"valueTextField_phonetics";
+
         }
+
         
         NSButton *audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
             [self addSubview:button];
@@ -113,6 +117,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 return RACSignal.empty;
             }]];
         }];
+        audioButton.mas_key = @"audioButton_phonetics";
         
         lastView = audioButton;
     }];
@@ -141,6 +146,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                     }
                 }];
             }];
+            partTextFiled.mas_key = @"partTextFiled_parts";
+
         }
         
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
@@ -173,6 +180,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
+        meanTextField.mas_key = @"meanTextField_parts";
+
         
         lastView = meanTextField;
     }];
@@ -203,6 +212,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 }
             }];
         }];
+        nameTextFiled.mas_key = @"nameTextFiled_exchanges";
+
         
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
@@ -229,6 +240,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                     return RACSignal.empty;
                 }]];
             }];
+            wordButton.mas_key = @"wordButton_words";
+
             
             lastView = wordButton;
         }];
@@ -257,6 +270,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                     }
                 }];
             }];
+            partTextFiled.mas_key = @"partTextFiled_simpleWords";
+
             
             lastSimpleWordPart = obj.part;
         }
@@ -289,6 +304,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 return RACSignal.empty;
             }]];
         }];
+        wordButton.mas_key = @"wordButton_simpleWords";
+
         
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
@@ -307,6 +324,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
+        meanTextField.mas_key = @"meanTextField_simpleWords";
+
         
         lastView = meanTextField;
     }];
@@ -333,6 +352,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 make.right.lessThanOrEqualTo(self).offset(-kMargin);
             }];
         }];
+        meanTextField.mas_key = @"meanTextField_normalResults";
+
         
         lastView = meanTextField;
     }

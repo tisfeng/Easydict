@@ -16,6 +16,7 @@
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
 #import "QueryCell.h"
+#import "MyScroller.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -40,42 +41,42 @@
     self.view.layer.masksToBounds = YES;
     [self.view excuteLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
-        //        x.layer.borderWidth = 0;
     } drak:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgDarkColor.CGColor;
-        
-        //        x.layer.borderColor = [NSColor mm_colorWithHexString:@"#515253"].CGColor;
-        
-        //        x.layer.borderColor = [[NSColor mm_colorWithHexString:@"#515253"] colorWithAlphaComponent:0.15].CGColor;
-        //        x.layer.borderWidth = 0.5;
     }];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.queryText = @"";
+    
     _dataArray = [NSMutableArray array];
     for (int i = 0; i < 10; i++) {
         [_dataArray addObject:[NSString stringWithFormat:@"%d行数据", i]];
     }
     NSScrollView *scrollView = [[NSScrollView alloc] init];
+    [self.view addSubview:scrollView];
+
     scrollView.hasVerticalScroller = YES;
+    scrollView.verticalScroller = [[MyScroller alloc] init];
     scrollView.frame = self.view.bounds;
     [scrollView setAutomaticallyAdjustsContentInsets:NO];
-    CGFloat padding = -10;
-    [scrollView setContentInsets:NSEdgeInsetsMake(padding, padding, padding, padding)];
-    
-    [self.view addSubview:scrollView];
     
     //    CGSize screenSize = NSScreen.mainScreen.frame.size;
     
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self.view);
-        //        make.height.mas_equalTo(screenSize.height *2/3);
         make.bottom.equalTo(self.view);
     }];
     
     _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
+    
+    if (@available(macOS 11.0, *)) {
+        _tableView.style = NSTableViewStylePlain;
+    } else {
+        // Fallback on earlier versions
+    }
     
     NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
     column.width = 400;
@@ -93,7 +94,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.rowHeight = 200;
-    _tableView.intercellSpacing = CGSizeMake(0, 10);
+    _tableView.intercellSpacing = CGSizeMake(24, 10);
     _tableView.gridColor = NSColor.clearColor;
     _tableView.gridStyleMask = NSTableViewGridNone;
     
@@ -112,13 +113,7 @@
     
     [_tableView sizeLastColumnToFit];
     
-    
-    //    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.edges.equalTo(scrollView);
-    //    }];
-    
     self.translate = [[BaiduTranslate alloc] init];
-    [self translateText:@"good"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(windowDidResize:)
@@ -138,10 +133,7 @@
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    if (self.result) {
-        return _dataArray.count;
-    }
-    return 0;
+    return _dataArray.count;
 }
 
 //- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -158,7 +150,7 @@
 
         if (!queryCell) {
             queryCell = [[QueryCell alloc] init];
-            [queryCell.queryView.textView setString:self.queryText] ;
+            queryCell.queryView.queryText = self.queryText;
             
             mm_weakify(self)
             [queryCell setEnterActionBlock:^(QueryView *view) {
@@ -172,14 +164,6 @@
         }
         return queryCell;
     }
-    
-    //    NSString *queryCellID = @"queryCellID";
-    //    QueryCell *queryCell = [tableView makeViewWithIdentifier:queryCellID owner:self];
-    //    if (!queryCell) {
-    //        queryCell = [[QueryCell alloc] init];
-    //        queryCell.identifier = queryCellID;
-    //    }
-    //    return queryCell;
     
     NSString *resultCellID = @"resultCellID";
 //    ResultCell *resultView = [tableView makeViewWithIdentifier:resultCellID owner:self];

@@ -13,6 +13,7 @@
 		03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */; };
 		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
+		03252D482914DC2400DA2932 /* MyScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D472914DC2400DA2932 /* MyScroller.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -116,6 +117,8 @@
 		03252D3F2914068B00DA2932 /* MainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
 		03252D422914262C00DA2932 /* QueryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryCell.h; sourceTree = "<group>"; };
 		03252D432914262C00DA2932 /* QueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryCell.m; sourceTree = "<group>"; };
+		03252D462914DC2400DA2932 /* MyScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyScroller.h; sourceTree = "<group>"; };
+		03252D472914DC2400DA2932 /* MyScroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyScroller.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -291,6 +294,7 @@
 		03252D362912FB2200DA2932 /* MainView */ = {
 			isa = PBXGroup;
 			children = (
+				03252D452914DC0600DA2932 /* View */,
 				03252D41291425E900DA2932 /* Cell */,
 				03252D332912F3C900DA2932 /* MainViewController.h */,
 				03252D342912F3C900DA2932 /* MainViewController.m */,
@@ -318,6 +322,15 @@
 				03252D432914262C00DA2932 /* QueryCell.m */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		03252D452914DC0600DA2932 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				03252D462914DC2400DA2932 /* MyScroller.h */,
+				03252D472914DC2400DA2932 /* MyScroller.m */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -857,6 +870,7 @@
 				C99EEBC42385799D00FEE666 /* Configuration.m in Sources */,
 				03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */,
 				C99EEBC62385799D00FEE666 /* TranslateError.m in Sources */,
+				03252D482914DC2400DA2932 /* MyScroller.m in Sources */,
 				C98C17A1239E3F4A00BD02DB /* PreferencesWindowController.m in Sources */,
 				03252D0B2912A39100DA2932 /* FlippedView.m in Sources */,
 				C9C3BDC7238E76B000D5F1C1 /* SnipWindowController.m in Sources */,

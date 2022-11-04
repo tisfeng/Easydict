@@ -25,4 +25,28 @@
     return attStr;
 }
 
+// Get attribute string width.
+- (CGFloat)mm_getTextWidth {
+    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX)];
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    [layoutManager addTextContainer:textContainer];
+    [textStorage addLayoutManager:layoutManager];
+    [layoutManager glyphRangeForTextContainer:textContainer];
+    CGSize size = [layoutManager usedRectForTextContainer:textContainer].size;
+    return size.width;
+}
+
+// Get attribute string height.
+- (CGFloat)mm_getTextHeight:(CGFloat)width {
+    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, CGFLOAT_MAX)];
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    [layoutManager addTextContainer:textContainer];
+    [textStorage addLayoutManager:layoutManager];
+    [layoutManager glyphRangeForTextContainer:textContainer];
+    CGSize size = [layoutManager usedRectForTextContainer:textContainer].size;
+    return size.height;
+}
+
 @end

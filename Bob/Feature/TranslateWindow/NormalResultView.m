@@ -10,6 +10,7 @@
 #import "ImageButton.h"
 #import "TranslateWindowController.h"
 #import "TextView.h"
+#import "NSColor+MyColors.h"
 
 #define kMinHeight 120.0
 #define kTextViewBottomInset 36.0
@@ -43,11 +44,11 @@ DefineMethodMMMake_m(NormalResultView);
         self.textView = [TextView mm_make:^(TextView *_Nonnull textView) {
             textView.editable = NO;
             [textView excuteLight:^(id _Nonnull x) {
-                [x setBackgroundColor:[NSColor mm_colorWithHexString:@"#EEEEEE"]];
-                [x setTextColor:[NSColor mm_colorWithHexString:@"#000000"]];
+                [x setBackgroundColor:NSColor.resultViewBgLightColor];
+                [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
-                [x setBackgroundColor:DarkBgColor];
-                [x setTextColor:[NSColor whiteColor]];
+                [x setBackgroundColor:NSColor.resultViewBgDarkColor];
+                [x setTextColor:NSColor.resultTextDarkColor];
             }];
             [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
         }];
@@ -109,7 +110,7 @@ DefineMethodMMMake_m(NormalResultView);
 
 - (void)refreshWithStrings:(NSArray<NSString *> *)strings {
     NSString *string = [NSString mm_stringByCombineComponents:strings separatedString:@"\n"];
-    self.textView.string = string;
+    self.textView.string = string ?: @"";
 
     CGFloat textViewWidth = 0;
     if (self.textView.width > 10) {

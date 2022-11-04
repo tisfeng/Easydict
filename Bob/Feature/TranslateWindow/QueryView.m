@@ -23,7 +23,10 @@
 @end
 
 
+
 @implementation QueryView
+
+@synthesize queryText = _queryText;
 
 DefineMethodMMMake_m(QueryView);
 
@@ -37,6 +40,12 @@ DefineMethodMMMake_m(QueryView);
 
 - (NSString *)queryText {
     return self.textView.string;
+}
+
+- (void)setQueryText:(NSString *)queryText {
+    _queryText = queryText ?: @"";
+    
+    self.textView.string = _queryText;
 }
 
 
@@ -57,19 +66,8 @@ DefineMethodMMMake_m(QueryView);
         scrollView.hasVerticalScroller = YES;
         scrollView.hasHorizontalScroller = NO;
         scrollView.autohidesScrollers = YES;
+        self.textView = [[TextView alloc] init];
         self.textView = [TextView mm_make:^(TextView *textView) {
-//            [textView mas_makeConstraints:^(MASConstraintMaker *make) {
-//                [scrollView addSubview:textView];
-//                make.edges.equalTo(scrollView);
-//            }];
-            
-            [textView excuteLight:^(TextView *textView) {
-                textView.backgroundColor = LightBgColor; // must set a non-clear color
-                [textView setTextColor:LightTextColor];
-            } drak:^(TextView *textView) {
-                textView.backgroundColor = DarkBgColor; // NSColor.orangeColor;  //DarkBgColor;
-                [textView setTextColor:DarkTextColor];
-            }];
             [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
             textView.delegate = self;
         }];
@@ -254,7 +252,7 @@ DefineMethodMMMake_m(QueryView);
     
     [attrTitle appendAttributedString:detectAttrTitle];
     
-    CGFloat width = [self widthForAttributeString:attrTitle];
+    CGFloat width = [attrTitle mm_getTextWidth];
     self.detectLanguageButton.hidden = NO;
     self.detectLanguageButton.attributedTitle = attrTitle;
     [self.detectLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -263,33 +261,6 @@ DefineMethodMMMake_m(QueryView);
     
 //    [self setNeedsLayout:YES];
 //    [self layoutSubtreeIfNeeded];
-}
-
-// Get attribute string width.
-- (CGFloat)widthForAttributeString:(NSAttributedString *)attributeString {
-    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:attributeString];
-    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX)];
-    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-    [layoutManager addTextContainer:textContainer];
-    [textStorage addLayoutManager:layoutManager];
-    [layoutManager glyphRangeForTextContainer:textContainer];
-    CGSize size = [layoutManager usedRectForTextContainer:textContainer].size;
-    return size.width;
-}
-
-- (CGFloat)widthForAttributeString2:(NSAttributedString *)attributeString {
-    __block CGFloat width;
-    [attributeString enumerateAttributesInRange:NSMakeRange(0, attributeString.length) options:1 usingBlock:^(NSDictionary<NSString *, id> *_Nonnull attrs, NSRange range, BOOL *_Nonnull stop) {
-        NSAttributedString *mString = [attributeString attributedSubstringFromRange:range];
-        NSLog(@"%@, %lu", mString.string, (unsigned long)mString.string.length);
-        
-        CGSize rect = [mString.string sizeWithAttributes:attrs];
-        NSLog(@"rect: %@", @(rect));
-        
-        width += rect.width;
-    }];
-    NSLog(@"width: %@", @(width));
-    return width;
 }
 
 

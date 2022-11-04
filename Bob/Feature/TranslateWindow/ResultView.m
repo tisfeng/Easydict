@@ -249,7 +249,7 @@ static const CGFloat kMargin = 10;
         self.normalResultView.hidden = NO;
         [self.normalResultView refreshWithStrings:result.normalResults];
         [self.normalResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.topBarView.mas_bottom).offset(-kMargin);
+            make.top.equalTo(self.topBarView.mas_bottom);
             make.left.right.equalTo(self);
             make.bottom.equalTo(self);
         }];
