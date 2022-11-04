@@ -90,18 +90,21 @@ static const CGFloat kPadding = 12;
     NSScrollView *scrollView = [[NSScrollView alloc] init];
     [self.view addSubview:scrollView];
 
+    [scrollView excuteLight:^(NSScrollView *scrollView) {
+        scrollView.backgroundColor = NSColor.mainViewBgLightColor;
+        } drak:^(NSScrollView *scrollView) {
+            scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
+        }];
     scrollView.hasVerticalScroller = YES;
     scrollView.verticalScroller.controlSize = NSControlSizeSmall;
     scrollView.frame = self.view.bounds;
     [scrollView setAutomaticallyAdjustsContentInsets:NO];
-    
-    //    CGSize screenSize = NSScreen.mainScreen.frame.size;
-    
+        
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
     
-    scrollView.contentInsets = NSEdgeInsetsMake(kPadding, 0, kPadding, 0);
+    scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kPadding, 0);
     
     _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
     if (@available(macOS 11.0, *)) {

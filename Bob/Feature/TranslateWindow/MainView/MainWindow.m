@@ -18,7 +18,9 @@
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
-        
+        self.titlebarAppearsTransparent = YES;
+        self.titleVisibility = NSWindowTitleHidden;
+
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSWindow *window) {
