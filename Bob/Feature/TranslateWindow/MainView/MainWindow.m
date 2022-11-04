@@ -13,7 +13,7 @@
 @implementation MainWindow
 
 - (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    NSWindowStyleMask style = NSWindowStyleMaskTitled |  NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.movableByWindowBackground = YES;

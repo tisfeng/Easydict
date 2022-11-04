@@ -105,23 +105,19 @@ static const CGFloat kPadding = 12;
     scrollView.contentInsets = NSEdgeInsetsMake(kPadding, 0, kPadding, 0);
     
     _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
-    
     if (@available(macOS 11.0, *)) {
         _tableView.style = NSTableViewStylePlain;
     } else {
         // Fallback on earlier versions
     }
+
     
     NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
     column.width = 400;
     //    column.minWidth = 200;
     column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
-    
-    if (@available(macOS 10.13, *)) {
-        _tableView.usesAutomaticRowHeights = YES;
-    } else {
-        // Fallback on earlier versions
-    }
+    _tableView.usesAutomaticRowHeights = YES;
+
     column.title = @"title";
     _tableView.headerView = nil;
     [_tableView addTableColumn:column];

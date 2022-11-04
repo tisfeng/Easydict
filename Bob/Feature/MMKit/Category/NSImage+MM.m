@@ -21,7 +21,7 @@
                                                                       hasAlpha:YES
                                                                       isPlanar:NO
                                                                 colorSpaceName:NSDeviceRGBColorSpace
-                                                                  bitmapFormat:NSAlphaFirstBitmapFormat
+                                                                  bitmapFormat:NSBitmapFormatAlphaFirst
                                                                    bytesPerRow:0
                                                                   bitsPerPixel:0];
 
@@ -30,11 +30,8 @@
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:g];
 
-    if (@available(macOS 10.14, *)) {
-        block(g.CGContext);
-    } else {
-        block(g.graphicsPort);
-    }
+    block(g.CGContext);
+
 
     [NSGraphicsContext restoreGraphicsState];
 
