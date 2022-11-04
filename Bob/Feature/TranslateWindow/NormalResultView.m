@@ -18,7 +18,7 @@
 
 @interface NormalResultView ()
 
-@property (nonatomic, strong) MASConstraint *scrollViewHeightConstraint;
+@property (nonatomic, strong) MASConstraint *textViewHeightConstraint;
 
 @end
 
@@ -36,29 +36,26 @@ DefineMethodMMMake_m(NormalResultView);
 }
 
 - (void)setup {
-    self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
-        [self addSubview:scrollView];
-        scrollView.hasHorizontalScroller = NO;
-        scrollView.hasVerticalScroller = YES;
-        scrollView.autohidesScrollers = YES;
-        self.textView = [TextView mm_make:^(TextView *_Nonnull textView) {
-            textView.editable = NO;
-            [textView excuteLight:^(id _Nonnull x) {
-                [x setBackgroundColor:NSColor.resultViewBgLightColor];
-                [x setTextColor:NSColor.resultTextLightColor];
-            } drak:^(id _Nonnull x) {
-                [x setBackgroundColor:NSColor.resultViewBgDarkColor];
-                [x setTextColor:NSColor.resultTextDarkColor];
-            }];
-            [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
-        }];
-        scrollView.documentView = self.textView;
-        [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+ 
+    self.textView = [TextView mm_make:^(TextView *textView) {
+        [self addSubview:textView];
+        
+        [textView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.left.right.inset(0);
             make.bottom.inset(kTextViewBottomInset);
-            self.scrollViewHeightConstraint = make.height.equalTo(@(kMinHeight - kTextViewBottomInset));
+            self.textViewHeightConstraint = make.height.equalTo(@(kMinHeight - kTextViewBottomInset));
         }];
+        textView.editable = NO;
+        [textView excuteLight:^(id _Nonnull x) {
+            [x setBackgroundColor:NSColor.resultViewBgLightColor];
+            [x setTextColor:NSColor.resultTextLightColor];
+        } drak:^(id _Nonnull x) {
+            [x setBackgroundColor:NSColor.resultViewBgDarkColor];
+            [x setTextColor:NSColor.resultTextDarkColor];
+        }];
+        [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     }];
+
 
     self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
         [self addSubview:button];
@@ -103,9 +100,6 @@ DefineMethodMMMake_m(NormalResultView);
                         return RACSignal.empty;
                     }]];
     }];
-
-    // 将scrollview放到最上层
-    [self addSubview:self.scrollView];
 }
 
 - (void)refreshWithStrings:(NSArray<NSString *> *)strings {
@@ -140,7 +134,7 @@ DefineMethodMMMake_m(NormalResultView);
         // self.scrollView.hasVerticalScroller = NO;
     }
 
-    self.scrollViewHeightConstraint.equalTo(@(height));
+    self.textViewHeightConstraint.equalTo(@(height));
 }
 
 - (CGFloat)heightForString:(NSAttributedString *)string width:(CGFloat)width {

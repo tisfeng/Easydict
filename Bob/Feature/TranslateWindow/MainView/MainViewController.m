@@ -26,12 +26,16 @@
 @property (nonatomic, strong) Translate *translate;
 @property (nonatomic, strong) TranslateResult *result;
 @property (nonatomic, strong) ResultView *resultView;
+@property (nonatomic, strong) QueryView *queryView;
 
 @property (nonatomic, copy) NSString *queryText;
 
 @end
 
 @implementation MainViewController
+
+static const CGFloat kPadding = 12;
+
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
@@ -46,13 +50,42 @@
     }];
 }
 
+- (void)setup {
+    QueryView *queryView = [[QueryView alloc] init];
+    [self.view addSubview:queryView];
+    self.queryView = queryView;
+    queryView.queryText = @"'NSKeyedUnarchiveFromData' should not be used to for un-archiving and will be removed in a future release.\nMainViewController";
+    
+    [queryView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.equalTo(self.view);
+        make.height.mas_equalTo(100);
+    }];
+    
+    ResultView *resultView = [[ResultView alloc] init];
+    [self.view addSubview:resultView];
+    self.resultView = resultView;
+    
+    [resultView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(queryView.mas_bottom);
+        make.bottom.left.right.equalTo(self.view);
+    }];
+    
+    [self translateText:@"good"];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.translate = [[BaiduTranslate alloc] init];
+
+    
+//    [self setup];
+//    return;
     
     self.queryText = @"";
     
     _dataArray = [NSMutableArray array];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 4; i++) {
         [_dataArray addObject:[NSString stringWithFormat:@"%d行数据", i]];
     }
     NSScrollView *scrollView = [[NSScrollView alloc] init];
@@ -66,9 +99,10 @@
     //    CGSize screenSize = NSScreen.mainScreen.frame.size;
     
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.view);
+        make.edges.equalTo(self.view);
     }];
+    
+    scrollView.contentInsets = NSEdgeInsetsMake(kPadding, 0, kPadding, 0);
     
     _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
     
@@ -113,7 +147,6 @@
     
     [_tableView sizeLastColumnToFit];
     
-    self.translate = [[BaiduTranslate alloc] init];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(windowDidResize:)
@@ -129,6 +162,7 @@
                    completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
         self.result = result;
         [self.tableView reloadData];
+        [self.resultView refreshWithResult:result];
     }];
 }
 
