@@ -37,12 +37,12 @@
 static const CGFloat kVerticalMargin = 10;
 static const CGFloat kHorizontalMargin = 12;
 
-static const CGFloat kMiniMainViewWidth = 200;
+static const CGFloat kMiniMainViewWidth = 300;
 static const CGFloat kMiniMainViewHeight = 300;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, kMiniMainViewWidth * 1.5, kMiniMainViewHeight * 1.5)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, kMiniMainViewWidth, kMiniMainViewHeight * 1.5)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;

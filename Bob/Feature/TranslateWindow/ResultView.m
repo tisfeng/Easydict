@@ -38,7 +38,7 @@ static const CGFloat kMargin = 10;
         } drak:^(id _Nonnull x) {
             [x setBackgroundColor:DarkBgColor.CGColor];
         }];
-        self.layer.cornerRadius = 10;
+        self.layer.cornerRadius = 8;
         self.layer.masksToBounds = YES;
 
         self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {

@@ -99,7 +99,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         audioButton.imageScaling = NSImageScaleProportionallyDown;
         audioButton.bezelStyle = NSBezelStyleRegularSquare;
         [audioButton setButtonType:NSButtonTypeMomentaryChange];
-        audioButton.image = [[NSImage imageNamed:@"audio"] imageWithTintColor:NSColor.blackColor];
+        audioButton.image = [NSImage imageNamed:@"audio"];
+        [audioButton excuteLight:^(id _Nonnull x) {
+            audioButton.contentTintColor = NSColor.blackColor;
+        } drak:^(id _Nonnull x) {
+            audioButton.contentTintColor = NSColor.whiteColor;
+        }];
         audioButton.toolTip = @"播放音频";
         [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
           make.left
@@ -115,12 +120,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSTrackingArea *copyTrackingArea = [[NSTrackingArea alloc]
+            NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
                                                 initWithRect:audioButton.frame
                                                 options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways 
                                                 owner:self
                                                 userInfo:nil];
-            [self addTrackingArea:copyTrackingArea];
+            [self addTrackingArea:trackingArea];
         });
         
         audioButton.mas_key = @"audioButton_phonetics";
@@ -394,7 +399,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         [[button cell] setBackgroundColor:NSColor.clearColor];
         [[button cell] setBackgroundColor:NSColor.clearColor];
     }
-
 }
 
 @end

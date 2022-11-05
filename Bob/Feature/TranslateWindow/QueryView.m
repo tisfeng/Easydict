@@ -110,7 +110,7 @@ DefineMethodMMMake_m(QueryView);
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(6);
             make.bottom.inset(6);
-            make.width.height.equalTo(@26);
+            make.width.height.mas_equalTo(23);
         }];
         mm_weakify(self)
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
