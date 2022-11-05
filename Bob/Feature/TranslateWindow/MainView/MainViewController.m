@@ -19,6 +19,7 @@
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
+@property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
 
@@ -72,78 +73,90 @@ static const CGFloat kPadding = 12;
     [self translateText:@"good"];
 }
 
+- (NSScrollView *)scrollView {
+    if (!_scrollView) {
+        NSScrollView *scrollView = [[NSScrollView alloc] init];
+        [self.view addSubview:scrollView];
+        self.scrollView = scrollView;
+
+        [scrollView excuteLight:^(NSScrollView *scrollView) {
+            scrollView.backgroundColor = NSColor.mainViewBgLightColor;
+            } drak:^(NSScrollView *scrollView) {
+                scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
+            }];
+        scrollView.hasVerticalScroller = YES;
+        scrollView.verticalScroller.controlSize = NSControlSizeSmall;
+        scrollView.frame = self.view.bounds;
+        [scrollView setAutomaticallyAdjustsContentInsets:NO];
+            
+        [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.view);
+        }];
+        
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kPadding, 0);
+    }
+    return _scrollView;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.translate = [[BaiduTranslate alloc] init];
 
-    
-//    [self setup];
-//    return;
-    
     self.queryText = @"";
     
     _dataArray = [NSMutableArray array];
     for (int i = 0; i < 4; i++) {
         [_dataArray addObject:[NSString stringWithFormat:@"%d行数据", i]];
     }
-    NSScrollView *scrollView = [[NSScrollView alloc] init];
-    [self.view addSubview:scrollView];
+    
+    [self tableView];
+    
+//    self.scrollView.contentView.documentView = self.tableView;
+//    self.scrollView.documentView = self.tableView;
+}
 
-    [scrollView excuteLight:^(NSScrollView *scrollView) {
-        scrollView.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSScrollView *scrollView) {
-            scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-    scrollView.hasVerticalScroller = YES;
-    scrollView.verticalScroller.controlSize = NSControlSizeSmall;
-    scrollView.frame = self.view.bounds;
-    [scrollView setAutomaticallyAdjustsContentInsets:NO];
+- (NSTableView *)tableView {
+    if (!_tableView) {
+        NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
+        if (@available(macOS 11.0, *)) {
+            tableView.style = NSTableViewStylePlain;
+        } else {
+            // Fallback on earlier versions
+        }
+
         
-    [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
-    
-    scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kPadding, 0);
-    
-    _tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
-    if (@available(macOS 11.0, *)) {
-        _tableView.style = NSTableViewStylePlain;
-    } else {
-        // Fallback on earlier versions
+        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
+        column.width = 400;
+        //    column.minWidth = 200;
+        column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
+        tableView.usesAutomaticRowHeights = YES;
+
+        column.title = @"title";
+        tableView.headerView = nil;
+        [tableView addTableColumn:column];
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.rowHeight = 200;
+        tableView.intercellSpacing = CGSizeMake(24, 10);
+        tableView.gridColor = NSColor.clearColor;
+        tableView.gridStyleMask = NSTableViewGridNone;
+        
+        [tableView excuteLight:^(NSTableView *tableView) {
+            tableView.backgroundColor = NSColor.mainViewBgLightColor;
+        } drak:^(NSTableView *tableView) {
+            tableView.backgroundColor = NSColor.mainViewBgDarkColor;
+        }];
+                
+        [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
+        [tableView setAutoresizesSubviews:YES];
+        [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
+        
+        self.scrollView.documentView = tableView;
+        
+        [tableView sizeLastColumnToFit];
     }
-
-    
-    NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
-    column.width = 400;
-    //    column.minWidth = 200;
-    column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
-    _tableView.usesAutomaticRowHeights = YES;
-
-    column.title = @"title";
-    _tableView.headerView = nil;
-    [_tableView addTableColumn:column];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.rowHeight = 200;
-    _tableView.intercellSpacing = CGSizeMake(24, 10);
-    _tableView.gridColor = NSColor.clearColor;
-    _tableView.gridStyleMask = NSTableViewGridNone;
-    
-    [_tableView excuteLight:^(NSTableView *tableView) {
-        tableView.backgroundColor = NSColor.mainViewBgLightColor;
-    } drak:^(NSTableView *tableView) {
-        tableView.backgroundColor = NSColor.mainViewBgDarkColor;
-    }];
-    
-    [_tableView reloadData];
-    
-    [_tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
-    [_tableView setAutoresizesSubviews:YES];
-    [_tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
-    scrollView.contentView.documentView = _tableView;
-    
-    [_tableView sizeLastColumnToFit];
+    return _tableView;;
 }
 
 - (void)translateText:(NSString *)text {
