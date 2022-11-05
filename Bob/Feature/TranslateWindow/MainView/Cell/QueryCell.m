@@ -93,7 +93,9 @@ static const CGFloat kVerticalMargin = 10;
             Configuration.shared.to = from;
             [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
             [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
-            [self retry];
+            
+            [self typeEnter];
+            
             return RACSignal.empty;
         }]];
         
@@ -133,7 +135,7 @@ static const CGFloat kVerticalMargin = 10;
             NSLog(@"from 选中语言 %zd %@", from, LanguageDescFromEnum(from));
             if (from != Configuration.shared.from) {
                 Configuration.shared.from = from;
-                [self retry];
+                [self typeEnter];
             }
         }];
     }];
@@ -161,12 +163,17 @@ static const CGFloat kVerticalMargin = 10;
             NSLog(@"to 选中语言 %zd %@", to, LanguageDescFromEnum(to));
             if (to != Configuration.shared.to) {
                 Configuration.shared.to = to;
-                [self retry];
+                [self typeEnter];
             }
         }];
     }];
 }
 
+- (void)typeEnter {
+    if (self.enterActionBlock) {
+        self.enterActionBlock(self.queryView);
+    }
+}
 
 - (void)mouseEntered:(NSEvent *)theEvent {
     CGPoint point = theEvent.locationInWindow;
@@ -192,17 +199,6 @@ static const CGFloat kVerticalMargin = 10;
     [[self.transformButton cell] setBackgroundColor:NSColor.clearColor];
 }
 
-
-- (void)retry {
-    if (self.isTranslating) {
-        return;
-    }
-//    if (self.currentResult) {
-//        [self translateText:self.currentResult.text];
-//    } else if (self.queryView.queryText.length) {
-//        [self translateText:self.queryView.queryText];
-//    }
-}
 
 - (void)setEnterActionBlock:(void (^)(QueryView * _Nonnull))enterActionBlock {
     _enterActionBlock = enterActionBlock;

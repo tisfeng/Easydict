@@ -14,6 +14,7 @@
 		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
 		03C504A229160A93007626F8 /* RoundRectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* RoundRectButton.m */; };
+		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -119,6 +120,8 @@
 		03252D432914262C00DA2932 /* QueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryCell.m; sourceTree = "<group>"; };
 		03C504A029160A93007626F8 /* RoundRectButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoundRectButton.h; sourceTree = "<group>"; };
 		03C504A129160A93007626F8 /* RoundRectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoundRectButton.m; sourceTree = "<group>"; };
+		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
+		03C504A42916768E007626F8 /* DetectText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectText.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -675,6 +678,8 @@
 				C99EEB932385799D00FEE666 /* TranslateResult.m */,
 				C959D338238809B800DD8808 /* OCRResult.h */,
 				C959D339238809B800DD8808 /* OCRResult.m */,
+				03C504A32916768E007626F8 /* DetectText.h */,
+				03C504A42916768E007626F8 /* DetectText.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -867,6 +872,7 @@
 				C9676F2B23A0908F007DD023 /* NSPasteboard+MM.m in Sources */,
 				03252D352912F3C900DA2932 /* MainViewController.m in Sources */,
 				C99EEBD92385799D00FEE666 /* NSUserDefaults+MM.m in Sources */,
+				03C504A52916768E007626F8 /* DetectText.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
 				C91C153823AB8B0600CCAEC0 /* MMTool.m in Sources */,
