@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "Translate.h"
+#import "TranslateLanguage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetectText : NSObject
+
+@property (nonatomic, assign) Language language;
 
 - (void)detect:(NSString *)text completion:(nonnull void (^)(Language language, NSError *_Nullable))completion;
 

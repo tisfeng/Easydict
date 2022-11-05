@@ -26,7 +26,10 @@
 
 
 - (void)detect:(NSString *)text completion:(nonnull void (^)(Language, NSError *_Nullable))completion {
-    return [self.translate detect:text completion:completion];
+    [self.translate detect:text completion:^(Language lang, NSError * _Nullable error) {
+        self.language = lang;
+        completion(lang, error);
+    }];
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "NSColor+MyColors.h"
 #import "QueryCell.h"
 #import "DetectText.h"
+#import "TranslateLanguage.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -185,17 +186,23 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)querySeriveFromLang:(Language)fromLang {
+    NSString *language = LanguageDescFromEnum(fromLang);
+    [self.queryView setDetectLanguage:language];
+    
     [self.translateDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, Translate *translate, BOOL *stop) {
         [self querySerive:translate language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
             self.translateResultDict[key] = translateResult;
             
-            [self.tableView reloadData];
+            [self updateUI];
         }];
     }];
 }
 
+- (void)updateUI {
+    [self.tableView reloadData];
+}
+
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-//    return 4;
     return self.translateResultDict.count + 1;
 }
 
@@ -206,6 +213,12 @@ static const CGFloat kMiniMainViewHeight = 300;
         QueryCell *queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
         queryCell.identifier = @"queryCell";
         queryCell.queryView.queryText = self.inputText;
+        self.queryView = queryCell.queryView;
+        
+        Language detectLang = self.detectManager.language;
+        if (detectLang != Language_auto) {
+            self.queryView.detectLanguage = LanguageDescFromEnum(detectLang);
+        }
         
         mm_weakify(self)
         [queryCell setEnterActionBlock:^(QueryView *view) {
@@ -218,19 +231,19 @@ static const CGFloat kMiniMainViewHeight = 300;
     }
     
 
-    ResultCell *resultView = [[ResultCell alloc] initWithFrame:self.view.bounds];
-    resultView.identifier = @"resultView";
+    ResultCell *resultCell = [[ResultCell alloc] initWithFrame:self.view.bounds];
+    resultCell.identifier = @"resultView";
     NSString *name = [self.translateServices[row - 1] name];
     TranslateResult *result = self.translateResultDict[name];
-    resultView.result = result;
+    resultCell.result = result;
     
-    return resultView;
+    return resultCell;
 }
 
 - (void)viewDidLayout {
     [super viewDidLayout];
     
-//    [self.tableView reloadData];
+    [self updateUI];
 }
 
 @end

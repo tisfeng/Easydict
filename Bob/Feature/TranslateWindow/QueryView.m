@@ -259,7 +259,7 @@ DefineMethodMMMake_m(QueryView);
     }];
     
 //    [self setNeedsLayout:YES];
-//    [self layoutSubtreeIfNeeded];
+    [self layoutSubtreeIfNeeded];
 }
 
 
