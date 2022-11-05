@@ -12,9 +12,8 @@
 #import "TextView.h"
 #import "NSColor+MyColors.h"
 
-#define kMinHeight 120.0
+#define kMinHeight 0
 #define kTextViewBottomInset 36.0
-
 
 @interface NormalResultView ()
 
@@ -117,9 +116,15 @@ DefineMethodMMMake_m(NormalResultView);
     }
 
     CGFloat height = [self heightForString:self.textView.attributedString width:textViewWidth];
-    height += self.textView.textContainerInset.height * 2;
+    
     // TODO: 有时候高度计算会显示出滚动条，没解决之前先加个10吧
     height += 10;
+    
+    if (string.length == 0) {
+        height = 0;
+    }
+    
+    height += self.textView.textContainerInset.height * 2;
 
     if (height < kMinHeight - kTextViewBottomInset) {
         height = kMinHeight - kTextViewBottomInset;
