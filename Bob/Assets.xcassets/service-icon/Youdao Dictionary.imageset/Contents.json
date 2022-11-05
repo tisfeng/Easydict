@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Youdao Dictionary.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Youdao Dictionary.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

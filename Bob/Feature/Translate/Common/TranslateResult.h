@@ -11,6 +11,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class Translate;
+
+typedef NSString *EDQueryType NS_STRING_ENUM;
+
+FOUNDATION_EXPORT EDQueryType const EDQueryTypeGoogle;
+FOUNDATION_EXPORT EDQueryType const EDQueryTypeBaidu;
+FOUNDATION_EXPORT EDQueryType const EDQueryTypeYoudao;
 
 @interface TranslatePhonetic : NSObject
 
@@ -71,6 +78,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface TranslateResult : NSObject
+
+@property (nonatomic, copy) EDQueryType queryType;
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;

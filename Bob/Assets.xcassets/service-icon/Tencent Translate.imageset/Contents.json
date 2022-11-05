@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Tencent Translate.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Tencent Translate.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

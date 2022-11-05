@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Caiyun Translate.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Caiyun Translate.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -156,6 +156,8 @@
                         self.error997Count = 0;
                         
                         TranslateResult *result = [TranslateResult new];
+                        result.queryType = self.queryType;
+                        
                         result.text = text;
                         result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduRootPage, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
                         result.from = [self languageEnumFromString:response.trans_result.from] ?: from;
@@ -352,8 +354,12 @@
 
 #pragma mark - 重写父类方法
 
+- (EDQueryType)queryType {
+    return EDQueryTypeBaidu;
+}
+
 - (NSString *)identifier {
-    return @"baidu";
+    return @"Baidu";
 }
 
 - (NSString *)name {

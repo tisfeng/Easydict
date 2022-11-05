@@ -61,7 +61,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.translateServices = @[BaiduTranslate.new, GoogleTranslate.new, YoudaoTranslate.new];
+    self.translateServices = @[ GoogleTranslate.new, BaiduTranslate.new, YoudaoTranslate.new];
     
     NSMutableDictionary<NSString *, Translate *> *serviceDict = [NSMutableDictionary dictionary];
     NSMutableDictionary<NSString *, TranslateResult *> *translateResultDict = [NSMutableDictionary dictionary];
@@ -71,6 +71,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         serviceDict[name] = translate;
         
         TranslateResult *result = [[TranslateResult alloc] init];
+        result.queryType = translate.queryType;
         result.text = self.inputText;
         result.normalResults = @[@""];
         

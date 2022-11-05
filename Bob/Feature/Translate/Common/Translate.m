@@ -27,6 +27,8 @@
 
 @implementation Translate
 
+
+
 - (MMOrderedDictionary *)langDict {
     if (!_langDict) {
         _langDict = [self supportLanguagesDictionary];
@@ -75,6 +77,11 @@
 }
 
 #pragma mark - 子类重写
+
+- (EDQueryType)queryType {
+    MethodNotImplemented();
+    return nil;
+}
 
 - (NSString *)identifier {
     MethodNotImplemented();

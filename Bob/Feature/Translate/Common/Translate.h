@@ -34,6 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 以下方法供子类重写，且必须重写
 @interface Translate ()
 
+- (EDQueryType)queryType;
+
+//- (NSDictionary<EDQueryType, Translate *> *)typeDict;
+
 /// 当前翻译对象唯一标识符
 - (NSString *)identifier;
 

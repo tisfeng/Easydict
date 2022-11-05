@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "DeepL Translate.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "DeepL Translate.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

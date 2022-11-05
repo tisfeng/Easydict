@@ -15,6 +15,7 @@
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
 		03C504A229160A93007626F8 /* RoundRectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* RoundRectButton.m */; };
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
+		03C504AA2916BC56007626F8 /* TranslateTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* TranslateTypeMap.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -122,6 +123,8 @@
 		03C504A129160A93007626F8 /* RoundRectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoundRectButton.m; sourceTree = "<group>"; };
 		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
 		03C504A42916768E007626F8 /* DetectText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectText.m; sourceTree = "<group>"; };
+		03C504A82916BC56007626F8 /* TranslateTypeMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TranslateTypeMap.h; sourceTree = "<group>"; };
+		03C504A92916BC56007626F8 /* TranslateTypeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TranslateTypeMap.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -319,10 +322,10 @@
 		03252D41291425E900DA2932 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				03252D372912FB5400DA2932 /* ResultCell.h */,
-				03252D382912FB5400DA2932 /* ResultCell.m */,
 				03252D422914262C00DA2932 /* QueryCell.h */,
 				03252D432914262C00DA2932 /* QueryCell.m */,
+				03252D372912FB5400DA2932 /* ResultCell.h */,
+				03252D382912FB5400DA2932 /* ResultCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -680,6 +683,8 @@
 				C959D339238809B800DD8808 /* OCRResult.m */,
 				03C504A32916768E007626F8 /* DetectText.h */,
 				03C504A42916768E007626F8 /* DetectText.m */,
+				03C504A82916BC56007626F8 /* TranslateTypeMap.h */,
+				03C504A92916BC56007626F8 /* TranslateTypeMap.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -923,6 +928,7 @@
 				C91DF6B723A390A7009CB158 /* YoudaoOCRResponse.m in Sources */,
 				C988B28823B1F12D007C8108 /* DarkModeManager.m in Sources */,
 				C9F7E87C23A2165F0025ADF6 /* YoudaoTranslate.m in Sources */,
+				03C504AA2916BC56007626F8 /* TranslateTypeMap.m in Sources */,
 				C99EEBCC2385799D00FEE666 /* NormalResultView.m in Sources */,
 				C99142742390FCBD0025E75E /* NSImage+MM.m in Sources */,
 				C99EEBD62385799D00FEE666 /* MMEventMonitor.m in Sources */,

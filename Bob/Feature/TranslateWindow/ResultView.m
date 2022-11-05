@@ -7,8 +7,7 @@
 //
 
 #import "ResultView.h"
-
-//#define kMargin 10
+#import "TranslateTypeMap.h"
 
 static const CGFloat kMargin = 10;
 
@@ -226,6 +225,13 @@ static const CGFloat kMargin = 10;
     self.actionButton.hidden = YES;
     self.actionButton.attributedTitle = [NSAttributedString new];
 
+    EDQueryType type = result.queryType;
+    NSString *imageName = [NSString stringWithFormat:@"%@ Translate", type];
+    self.typeImageView.image = [NSImage imageNamed:imageName];
+    
+    Translate *translate = [TranslateTypeMap translateWithType:type];
+    self.typeLabel.attributedStringValue = [[NSAttributedString alloc] initWithString:translate.name];
+    
     if (result.wordResult) {
         // 显示word
         [self.normalResultView removeFromSuperview];
@@ -234,8 +240,7 @@ static const CGFloat kMargin = 10;
         [self addSubview:self.wordResultView];
         self.wordResultView.hidden = NO;
         [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(self.topBarView.mas_bottom).offset(-kMargin);
-            make.top.equalTo(self).offset(kResultViewMiniHeight);
+            make.top.equalTo(self.topBarView.mas_bottom);
             make.left.right.equalTo(self);
             make.bottom.equalTo(self);
         }];

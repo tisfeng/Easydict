@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Iciba Dictionary.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Iciba Dictionary.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

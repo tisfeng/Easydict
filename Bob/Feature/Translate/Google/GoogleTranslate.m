@@ -230,8 +230,12 @@
 
 #pragma mark - 重写父类方法
 
+- (EDQueryType)queryType {
+    return EDQueryTypeGoogle;
+}
+
 - (NSString *)identifier {
-    return self.isCN ? @"google_cn" : @"google";
+    return self.isCN ? @"google_cn" : @"Google";
 }
 
 - (NSString *)name {
@@ -325,6 +329,8 @@
                                           Language googleTo = langTo;
 
                                           TranslateResult *result = [TranslateResult new];
+                                          result.queryType = self.queryType;
+
                                           result.text = text;
                                           result.from = googleFrom;
                                           result.to = googleTo;

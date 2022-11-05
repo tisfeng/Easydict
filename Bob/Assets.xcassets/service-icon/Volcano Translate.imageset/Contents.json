@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Volcano Translate.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Volcano Translate.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

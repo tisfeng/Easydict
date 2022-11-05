@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Bing Translate.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Bing Translate.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
