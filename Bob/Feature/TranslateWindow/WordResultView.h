@@ -11,7 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @interface WordResultView : NSView
 
 @property (nonatomic, strong) TranslateResult *result;

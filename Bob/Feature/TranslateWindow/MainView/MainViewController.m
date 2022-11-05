@@ -34,8 +34,8 @@
 
 @implementation MainViewController
 
-static const CGFloat kVerticalPadding = 10;
-static const CGFloat kHorizontalPadding = 12;
+static const CGFloat kVerticalMargin = 10;
+static const CGFloat kHorizontalMargin = 12;
 
 static const CGFloat kMiniMainViewWidth = 200;
 static const CGFloat kMiniMainViewHeight = 300;
@@ -91,7 +91,7 @@ static const CGFloat kMiniMainViewHeight = 300;
             make.height.mas_greaterThanOrEqualTo(kMiniMainViewHeight);
         }];
         
-        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kVerticalPadding, 0);
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kVerticalMargin, 0);
     }
     return _scrollView;
 }
@@ -123,7 +123,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(kHorizontalPadding * 2, kVerticalPadding);
+        tableView.intercellSpacing = CGSizeMake(kHorizontalMargin * 2, kVerticalMargin);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];

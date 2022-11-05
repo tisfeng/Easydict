@@ -156,7 +156,6 @@ DefineMethodMMMake_m(QueryView);
             make.width.height.equalTo(self.audioButton);
         }];
         mm_weakify(self)
-        
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
             mm_strongify(self) if (self.copyActionBlock) {
                 self.copyActionBlock(self);
