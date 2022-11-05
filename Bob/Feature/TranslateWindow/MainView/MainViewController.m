@@ -34,12 +34,15 @@
 
 @implementation MainViewController
 
-static const CGFloat kPadding = 12;
+static const CGFloat kVerticalPadding = 10;
+static const CGFloat kHorizontalPadding = 12;
 
+static const CGFloat kMiniMainViewWidth = 200;
+static const CGFloat kMiniMainViewHeight = 300;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 300, 400)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, kMiniMainViewWidth * 1.5, kMiniMainViewHeight * 1.5)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -50,27 +53,20 @@ static const CGFloat kPadding = 12;
     }];
 }
 
-- (void)setup {
-    QueryView *queryView = [[QueryView alloc] init];
-    [self.view addSubview:queryView];
-    self.queryView = queryView;
-    queryView.queryText = @"'NSKeyedUnarchiveFromData' should not be used to for un-archiving and will be removed in a future release.\nMainViewController";
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
-    [queryView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
-        make.height.mas_equalTo(100);
-    }];
+    self.translate = [[BaiduTranslate alloc] init];
+
+    self.queryText = @"good";
+    [self startTranslate];
     
-    ResultView *resultView = [[ResultView alloc] init];
-    [self.view addSubview:resultView];
-    self.resultView = resultView;
+    _dataArray = [NSMutableArray array];
+    for (int i = 0; i < 4; i++) {
+        [_dataArray addObject:[NSString stringWithFormat:@"%d行数据", i]];
+    }
     
-    [resultView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(queryView.mas_bottom);
-        make.bottom.left.right.equalTo(self.view);
-    }];
-    
-    [self translateText:@"good"];
+    [self tableView];
 }
 
 - (NSScrollView *)scrollView {
@@ -91,77 +87,54 @@ static const CGFloat kPadding = 12;
             
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self.view);
+            make.width.mas_greaterThanOrEqualTo(kMiniMainViewWidth);
+            make.height.mas_greaterThanOrEqualTo(kMiniMainViewHeight);
         }];
         
-        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kPadding, 0);
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, kVerticalPadding, 0);
     }
     return _scrollView;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.translate = [[BaiduTranslate alloc] init];
-
-    self.queryText = @"";
-    
-    _dataArray = [NSMutableArray array];
-    for (int i = 0; i < 4; i++) {
-        [_dataArray addObject:[NSString stringWithFormat:@"%d行数据", i]];
-    }
-    
-    [self tableView];
-    
-//    self.scrollView.contentView.documentView = self.tableView;
-//    self.scrollView.documentView = self.tableView;
 }
 
 - (NSTableView *)tableView {
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
+        [tableView excuteLight:^(NSTableView *tableView) {
+            tableView.backgroundColor = NSColor.mainViewBgLightColor;
+        } drak:^(NSTableView *tableView) {
+            tableView.backgroundColor = NSColor.mainViewBgDarkColor;
+        }];
+        
         if (@available(macOS 11.0, *)) {
             tableView.style = NSTableViewStylePlain;
         } else {
             // Fallback on earlier versions
         }
 
-        
-        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"resultView"];
-        column.width = 400;
-        //    column.minWidth = 200;
+        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"column"];
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
-        tableView.usesAutomaticRowHeights = YES;
-
-        column.title = @"title";
-        tableView.headerView = nil;
         [tableView addTableColumn:column];
+
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.rowHeight = 200;
-        tableView.intercellSpacing = CGSizeMake(24, 10);
-        tableView.gridColor = NSColor.clearColor;
-        tableView.gridStyleMask = NSTableViewGridNone;
-        
-        [tableView excuteLight:^(NSTableView *tableView) {
-            tableView.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSTableView *tableView) {
-            tableView.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-                
-        [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
+        tableView.usesAutomaticRowHeights = YES;
+        tableView.rowHeight = 100;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
+        tableView.headerView = nil;
+        tableView.intercellSpacing = CGSizeMake(kHorizontalPadding * 2, kVerticalPadding);
+        tableView.gridColor = NSColor.clearColor;
+        tableView.gridStyleMask = NSTableViewGridNone;
+        [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
         self.scrollView.documentView = tableView;
-        
-        [tableView sizeLastColumnToFit];
+        [tableView sizeLastColumnToFit]; // must put in the end
     }
     return _tableView;;
 }
 
-- (void)translateText:(NSString *)text {
-    self.queryText = text;
-    [self.translate translate:text
+- (void)startTranslate {
+    [self.translate translate:self.queryText
                          from:Configuration.shared.from
                            to:Configuration.shared.to
                    completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
@@ -174,10 +147,6 @@ static const CGFloat kPadding = 12;
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return _dataArray.count;
 }
-
-//- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-//    return _dataArray[row];
-//}
 
 // View-base
 //设置某个元素的具体视图
@@ -194,10 +163,8 @@ static const CGFloat kPadding = 12;
             mm_weakify(self)
             [queryCell setEnterActionBlock:^(QueryView *view) {
                 mm_strongify(self);
-                
-                if (view.queryText.length) {
-                    [self translateText:view.queryText];
-                }
+                self.queryText = view.queryText;
+                [self startTranslate];
             }];
             queryCell.identifier = queryCellID;
         }
@@ -217,15 +184,6 @@ static const CGFloat kPadding = 12;
     
     return resultView;
 }
-//设置每行容器视图
-//- (nullable NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-//    ResultCell *rowView = [[ResultCell alloc] init];
-//    return rowView;
-//}
-
-//- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
-//    return 300;
-//}
 
 - (void)viewDidLayout {
     [super viewDidLayout];
