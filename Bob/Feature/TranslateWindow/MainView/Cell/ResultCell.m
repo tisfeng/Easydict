@@ -13,12 +13,19 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        ResultView *resultView = [[ResultView alloc] initWithFrame:frameRect];
-        self.resultView = resultView;
-        [self addSubview:resultView];
+        [self setup];
     }
     return  self;
 }
+
+- (void)setup {
+    ResultView *resultView = [[ResultView alloc] initWithFrame:self.bounds];
+    self.resultView = resultView;
+    [self addSubview:resultView];
+    
+    
+}
+
 
 // tell UIKit that you are using AutoLayout
 + (BOOL)requiresConstraintBasedLayout {

@@ -14,8 +14,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface TranslateService : NSObject
 
-@interface Translate : NSObject
+/// 翻译结果
+@property (nonatomic, strong) TranslateResult * _Nullable translateResult;
 
 /// 支持的语言
 - (NSArray<NSNumber *> *)languages;
@@ -29,14 +31,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(Language)lang;
 
+
+
 @end
 
+
 /// 以下方法供子类重写，且必须重写
-@interface Translate ()
+@interface TranslateService ()
 
-- (EDQueryType)queryType;
-
-//- (NSDictionary<EDQueryType, Translate *> *)typeDict;
+- (EDServiceType)serviceType;
 
 /// 当前翻译对象唯一标识符
 - (NSString *)identifier;

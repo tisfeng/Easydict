@@ -11,7 +11,7 @@
 
 @interface DetectText ()
 
-@property (nonatomic, strong) Translate *translate;
+@property (nonatomic, strong) TranslateService *translate;
 
 @end
 

@@ -6,15 +6,15 @@
 //  Copyright © 2019 ripperhe. All rights reserved.
 //
 
-#import "Translate.h"
+#import "TranslateService.h"
 
-#define MethodNotImplemented()                                                                                                           \
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
+#define MethodNotImplemented()    \
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException    \
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
                                  userInfo:nil]
 
 
-@interface Translate ()
+@interface TranslateService ()
 
 @property (nonatomic, strong) MMOrderedDictionary *langDict;
 @property (nonatomic, strong) NSArray *languages;
@@ -25,9 +25,13 @@
 @end
 
 
-@implementation Translate
+@implementation TranslateService
 
-
+- (void)setTranslateResult:(TranslateResult *)translateResult {
+    _translateResult = translateResult;
+       
+    _translateResult.queryType = [self serviceType];
+}
 
 - (MMOrderedDictionary *)langDict {
     if (!_langDict) {
@@ -78,7 +82,7 @@
 
 #pragma mark - 子类重写
 
-- (EDQueryType)queryType {
+- (EDServiceType)serviceType {
     MethodNotImplemented();
     return nil;
 }

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Translate.h"
+#import "TranslateService.h"
 #import "TranslateLanguage.h"
 
 NS_ASSUME_NONNULL_BEGIN

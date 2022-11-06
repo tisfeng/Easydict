@@ -42,17 +42,8 @@
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    NSLog(@"窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
+//    NSLog(@"窗口拉伸, (%.2f, %.2f)", self.width, self.height);
 }
 
-- (void)resizeSubviewsWithOldSize:(NSSize)oldSize {
-    NSLog(@"oldSize: %@", @(oldSize));
-    // 根据需要调整NSView上面的别的控件和视图的frame
-}
-
-//- (NSSize)resizeIncrements {
-//    return CGSizeMake(300, 300);
-//}
 
 @end

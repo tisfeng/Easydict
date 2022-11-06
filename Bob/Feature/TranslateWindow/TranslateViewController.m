@@ -39,8 +39,8 @@ return;                                     \
 
 @interface TranslateViewController ()
 
-@property (nonatomic, strong) NSArray<Translate *> *translateArray;
-@property (nonatomic, strong) Translate *translate;
+@property (nonatomic, strong) NSArray<TranslateService *> *translateArray;
+@property (nonatomic, strong) TranslateService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) TranslateResult *currentResult;
@@ -248,16 +248,16 @@ return;                                     \
             make.width.mas_lessThanOrEqualTo(200);
             make.height.mas_equalTo(25);
         }];
-        [button updateMenuWithTitleArray:[self.translateArray mm_map:^id _Nullable(Translate *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        [button updateMenuWithTitleArray:[self.translateArray mm_map:^id _Nullable(TranslateService *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             return obj.name;
         }]];
-        [button updateWithIndex:[[self.translateArray mm_find:^id _Nullable(Translate *_Nonnull obj, NSUInteger idx) {
+        [button updateWithIndex:[[self.translateArray mm_find:^id _Nullable(TranslateService *_Nonnull obj, NSUInteger idx) {
             return obj == self.translate ? @(idx) : nil;
         }] integerValue]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
             mm_strongify(self);
-            Translate *t = [self.translateArray objectAtIndex:index];
+            TranslateService *t = [self.translateArray objectAtIndex:index];
             if (t != self.translate) {
                 Configuration.shared.translateIdentifier = t.identifier;
                 self.translate = t;
@@ -380,7 +380,7 @@ return;                                     \
     }];
     
     __block NSView *lastView;
-    for (Translate *translate in self.translateArray) {
+    for (TranslateService *translate in self.translateArray) {
         NSLog(@"translate: %@", translate.name);
         
         [ResultView mm_anyMake:^(ResultView *_Nonnull view) {
@@ -441,7 +441,7 @@ return;                                     \
         [BaiduTranslate new],
         [GoogleTranslate new],
     ];
-    self.translate = [self.translateArray mm_find:^id(Translate *_Nonnull obj, NSUInteger idx) {
+    self.translate = [self.translateArray mm_find:^id(TranslateService *_Nonnull obj, NSUInteger idx) {
         return [obj.identifier isEqualToString:Configuration.shared.translateIdentifier] ? obj : nil;
     }];
     if (!self.translate) {

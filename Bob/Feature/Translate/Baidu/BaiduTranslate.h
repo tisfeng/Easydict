@@ -12,12 +12,12 @@
 * http://api.fanyi.baidu.com/api/trans/product/apidoc#languageList
 */
 
-#import "Translate.h"
+#import "TranslateService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 
-@interface BaiduTranslate : Translate
+@interface BaiduTranslate : TranslateService
 
 @end
 

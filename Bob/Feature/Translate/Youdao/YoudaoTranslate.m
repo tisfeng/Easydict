@@ -39,8 +39,8 @@
 
 #pragma mark - 重写父类方法
 
-- (EDQueryType)queryType {
-    return EDQueryTypeYoudao;
+- (EDServiceType)serviceType {
+    return EDServiceTypeYoudao;
 }
 
 - (NSString *)identifier {
@@ -83,7 +83,7 @@
                 YoudaoTranslateResponse *response = [YoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
                     TranslateResult *result = [TranslateResult new];
-                    result.queryType = self.queryType;
+                    self.translateResult = result;
 
                     result.text = text;
                     result.fromSpeakURL = response.speakUrl;

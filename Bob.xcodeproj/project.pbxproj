@@ -15,7 +15,7 @@
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
 		03C504A229160A93007626F8 /* RoundRectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* RoundRectButton.m */; };
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
-		03C504AA2916BC56007626F8 /* TranslateTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* TranslateTypeMap.m */; };
+		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -24,7 +24,7 @@
 		C90BE315239F38EC00ADE88B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90BE313239F38EC00ADE88B /* Main.storyboard */; };
 		C90BE318239F38EC00ADE88B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE317239F38EC00ADE88B /* main.m */; };
 		C90C77852391188400A65E42 /* SnipFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90C77842391188400A65E42 /* SnipFocusView.m */; };
-		C910457023A3AF44001D5211 /* Translate.m in Sources */ = {isa = PBXBuildFile; fileRef = C910456F23A3AF44001D5211 /* Translate.m */; };
+		C910457023A3AF44001D5211 /* TranslateService.m in Sources */ = {isa = PBXBuildFile; fileRef = C910456F23A3AF44001D5211 /* TranslateService.m */; };
 		C91C153823AB8B0600CCAEC0 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = C91C153723AB8B0600CCAEC0 /* MMTool.m */; };
 		C91DF6B023A35E07009CB158 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = C91DF6AE23A35E07009CB158 /* MMOrderedDictionary.m */; };
 		C91DF6B323A375E5009CB158 /* YoudaoTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C91DF6B223A375E5009CB158 /* YoudaoTranslateResponse.m */; };
@@ -123,8 +123,8 @@
 		03C504A129160A93007626F8 /* RoundRectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoundRectButton.m; sourceTree = "<group>"; };
 		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
 		03C504A42916768E007626F8 /* DetectText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectText.m; sourceTree = "<group>"; };
-		03C504A82916BC56007626F8 /* TranslateTypeMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TranslateTypeMap.h; sourceTree = "<group>"; };
-		03C504A92916BC56007626F8 /* TranslateTypeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TranslateTypeMap.m; sourceTree = "<group>"; };
+		03C504A82916BC56007626F8 /* ServiceTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceTypes.h; sourceTree = "<group>"; };
+		03C504A92916BC56007626F8 /* ServiceTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -143,8 +143,8 @@
 		C90BE319239F38EC00ADE88B /* BobHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BobHelper.entitlements; sourceTree = "<group>"; };
 		C90C77832391188400A65E42 /* SnipFocusView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnipFocusView.h; sourceTree = "<group>"; };
 		C90C77842391188400A65E42 /* SnipFocusView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SnipFocusView.m; sourceTree = "<group>"; };
-		C910456E23A3AF44001D5211 /* Translate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Translate.h; sourceTree = "<group>"; };
-		C910456F23A3AF44001D5211 /* Translate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Translate.m; sourceTree = "<group>"; };
+		C910456E23A3AF44001D5211 /* TranslateService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TranslateService.h; sourceTree = "<group>"; };
+		C910456F23A3AF44001D5211 /* TranslateService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TranslateService.m; sourceTree = "<group>"; };
 		C91C153623AB8B0600CCAEC0 /* MMTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMTool.h; sourceTree = "<group>"; };
 		C91C153723AB8B0600CCAEC0 /* MMTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMTool.m; sourceTree = "<group>"; };
 		C91DF6AE23A35E07009CB158 /* MMOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMOrderedDictionary.m; sourceTree = "<group>"; };
@@ -671,8 +671,10 @@
 		C9F7E87723A212050025ADF6 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				C910456E23A3AF44001D5211 /* Translate.h */,
-				C910456F23A3AF44001D5211 /* Translate.m */,
+				03C504A82916BC56007626F8 /* ServiceTypes.h */,
+				03C504A92916BC56007626F8 /* ServiceTypes.m */,
+				C910456E23A3AF44001D5211 /* TranslateService.h */,
+				C910456F23A3AF44001D5211 /* TranslateService.m */,
 				C99EEB902385799D00FEE666 /* TranslateLanguage.h */,
 				C99EEB962385799D00FEE666 /* TranslateLanguage.m */,
 				C99EEB8C2385799D00FEE666 /* TranslateError.h */,
@@ -683,8 +685,6 @@
 				C959D339238809B800DD8808 /* OCRResult.m */,
 				03C504A32916768E007626F8 /* DetectText.h */,
 				03C504A42916768E007626F8 /* DetectText.m */,
-				03C504A82916BC56007626F8 /* TranslateTypeMap.h */,
-				03C504A92916BC56007626F8 /* TranslateTypeMap.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -899,7 +899,7 @@
 				C99EEBDD2385799D00FEE666 /* NSMutableAttributedString+MM.m in Sources */,
 				C99EEBCD2385799D00FEE666 /* QueryView.m in Sources */,
 				C98CFA28239F8CDB00FB7EC4 /* MMLog.swift in Sources */,
-				C910457023A3AF44001D5211 /* Translate.m in Sources */,
+				C910457023A3AF44001D5211 /* TranslateService.m in Sources */,
 				03252D392912FB5400DA2932 /* ResultCell.m in Sources */,
 				C9C3BDCA238E76C800D5F1C1 /* SnipWindow.m in Sources */,
 				03252D402914068B00DA2932 /* MainWindow.m in Sources */,
@@ -928,7 +928,7 @@
 				C91DF6B723A390A7009CB158 /* YoudaoOCRResponse.m in Sources */,
 				C988B28823B1F12D007C8108 /* DarkModeManager.m in Sources */,
 				C9F7E87C23A2165F0025ADF6 /* YoudaoTranslate.m in Sources */,
-				03C504AA2916BC56007626F8 /* TranslateTypeMap.m in Sources */,
+				03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */,
 				C99EEBCC2385799D00FEE666 /* NormalResultView.m in Sources */,
 				C99142742390FCBD0025E75E /* NSImage+MM.m in Sources */,
 				C99EEBD62385799D00FEE666 /* MMEventMonitor.m in Sources */,

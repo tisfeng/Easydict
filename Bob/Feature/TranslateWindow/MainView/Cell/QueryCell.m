@@ -8,7 +8,7 @@
 
 #import "QueryCell.h"
 #import "PopUpButton.h"
-#import "Translate.h"
+#import "TranslateService.h"
 #import "GoogleTranslate.h"
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
@@ -21,7 +21,7 @@ static const CGFloat kVerticalMargin = 10;
 @property (nonatomic, strong) PopUpButton *fromLanguageButton;
 @property (nonatomic, strong) NSButton *transformButton;
 @property (nonatomic, strong) PopUpButton *toLanguageButton;
-@property (nonatomic, strong) Translate *translate;
+@property (nonatomic, strong) TranslateService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
 

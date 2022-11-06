@@ -7,7 +7,7 @@
 //
 
 #import "ResultView.h"
-#import "TranslateTypeMap.h"
+#import "ServiceTypes.h"
 
 static const CGFloat kMargin = 10;
 
@@ -225,11 +225,11 @@ static const CGFloat kMargin = 10;
     self.actionButton.hidden = YES;
     self.actionButton.attributedTitle = [NSAttributedString new];
 
-    EDQueryType type = result.queryType;
+    EDServiceType type = result.queryType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", type];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
-    Translate *translate = [TranslateTypeMap translateWithType:type];
+    TranslateService *translate = [ServiceTypes serviceWithType:type];
     self.typeLabel.attributedStringValue = [[NSAttributedString alloc] initWithString:translate.name];
     
     if (result.wordResult) {

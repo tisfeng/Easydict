@@ -118,7 +118,7 @@ DefineMethodMMMake_m(NormalResultView);
     CGFloat height = [self heightForString:self.textView.attributedString width:textViewWidth];
     
     // TODO: 有时候高度计算会显示出滚动条，没解决之前先加个10吧
-    height += 10;
+//    height += 10;
     
     if (string.length == 0) {
         height = 0;
