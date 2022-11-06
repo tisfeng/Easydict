@@ -28,14 +28,11 @@
 
 @property (nonatomic, strong) NSArray<EDServiceType> *services;
 @property (nonatomic, strong) NSArray<TranslateService *> *translateServices;
-//@property (nonatomic, copy) NSDictionary<NSString *, TranslateService *> *translateDict;
-//@property (nonatomic, strong) NSMutableDictionary<NSString *, TranslateResult *> *translateResultDict;
+@property (nonatomic, copy) NSString *inputText;
 
 @property (nonatomic, strong) DetectText *detectManager;
 @property (nonatomic, strong) QueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
-
-@property (nonatomic, copy) NSString *inputText;
 
 @end
 
@@ -66,13 +63,19 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self setup];
     
 //    self.inputText = @"good";
-//    [self startTranslate];
+//    [self startQuery];
 }
 
 - (void)setup {
     self.inputText = @"";
-    self.services = [ServiceTypes allServiceTypes];
-    self.translateServices = @[GoogleTranslate.new, BaiduTranslate.new, YoudaoTranslate.new];
+    
+    self.services = @[EDServiceTypeGoogle, EDServiceTypeBaidu, EDServiceTypeYoudao];
+    NSMutableArray *translateServices = [NSMutableArray array];
+    for (EDServiceType type in self.services) {
+        TranslateService *service = [ServiceTypes serviceWithType:type];
+        [translateServices addObject:service];
+    }
+    self.translateServices = translateServices;
    
     self.detectManager = [[DetectText alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -147,6 +150,37 @@ static const CGFloat kMiniMainViewHeight = 300;
     return _tableView;
 }
 
+- (void)startQuery {
+    [self startQueryText:self.inputText];
+}
+
+- (void)startQueryText:(NSString *)text {
+    __block Language fromLang = Configuration.shared.from;
+    
+    if (fromLang != Language_auto) {
+        [self queryText:text fromLangunage:fromLang];
+        return;
+    }
+    
+    [self.detectManager detect:self.inputText completion:^(Language language, NSError *error) {
+        if (!error) {
+            fromLang = language;
+            NSLog(@"detect language: %ld", language);
+        }
+        [self queryText:text fromLangunage:fromLang];
+    }];
+}
+
+- (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
+    for (TranslateService *service in self.translateServices) {
+        [self queryText:text
+          serive:service language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
+              service.translateResult = translateResult;
+            
+            [self updateUI];
+        }];
+    }
+}
 
 - (void)queryText:(NSString *)text
            serive:(TranslateService *)service
@@ -158,46 +192,6 @@ static const CGFloat kMiniMainViewHeight = 300;
               completion:completion];
 }
 
-- (void)startQueryText:(NSString *)text {
-    __block Language fromLang = Configuration.shared.from;
-    
-    if (fromLang != Language_auto) {
-        [self queryText:text fromLangunage:fromLang];;
-        return;
-    }
-    
-    [self.detectManager detect:self.inputText completion:^(Language language, NSError *error) {
-        if (!error) {
-            fromLang = language;
-            NSLog(@"detect language: %ld", language);
-        }
-        [self queryText:text fromLangunage:fromLang];;
-    }];
-}
-
-- (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
-    NSString *language = LanguageDescFromEnum(fromLang);
-    [self.queryView setDetectLanguage:language];
-    
-    for (TranslateService *service in self.translateServices) {
-        [self queryText:text
-          serive:service language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
-              service.translateResult = translateResult;
-            
-            [self updateUI];
-        }];
-    }
-    
-//    [self.translateDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, TranslateService *service, BOOL *stop) {
-//
-//        [self queryText:text
-//          serive:service language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
-//            self.translateResultDict[key] = translateResult;
-//
-//            [self updateUI];
-//        }];
-//    }];
-}
 
 - (void)updateUI {
     [self.tableView reloadData];
@@ -208,14 +202,13 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 // View-base
-//设置某个元素的具体视图
+// 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row == 0) {
         QueryCell *queryCell = [self queryCell];
         return queryCell;
     }
     
-
     ResultCell *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
@@ -235,7 +228,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     [queryCell setEnterActionBlock:^(QueryView *view) {
         mm_strongify(self);
         self.inputText = view.queryText;
-        [self startQueryText:self.inputText];
+        [self startQuery];
     }];
     
     return queryCell;
@@ -243,12 +236,15 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 - (ResultCell *)resultCellAtRow:(NSInteger)row {
     ResultCell *resultCell = [[ResultCell alloc] initWithFrame:self.view.bounds];
-    resultCell.identifier = @"resultView";
-    TranslateResult *result = self.translateServices[row - 1].translateResult;
-    if (result) {
-        resultCell.result = result;
-    }
+    resultCell.identifier = @"resultCell";
     
+    NSInteger index = row - 1;
+    TranslateResult *result = self.translateServices[index].translateResult;
+    if (!result) {
+        result = [[TranslateResult alloc] init];
+        result.queryType = self.services[index];
+    }
+    resultCell.result = result;
     [self setupResultView:resultCell.resultView];
     
     return resultCell;
