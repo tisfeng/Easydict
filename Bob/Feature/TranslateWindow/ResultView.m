@@ -225,7 +225,7 @@ static const CGFloat kMargin = 10;
     self.actionButton.hidden = YES;
     self.actionButton.attributedTitle = [NSAttributedString new];
 
-    EDServiceType type = result.queryType;
+    EDServiceType type = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", type];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     

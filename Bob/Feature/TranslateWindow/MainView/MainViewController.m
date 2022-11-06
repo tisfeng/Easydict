@@ -26,7 +26,7 @@
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 
-@property (nonatomic, strong) NSArray<EDServiceType> *services;
+@property (nonatomic, strong) NSArray<EDServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *translateServices;
 @property (nonatomic, copy) NSString *inputText;
 
@@ -62,24 +62,23 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-//    self.inputText = @"good";
-//    [self startQuery];
+//    [self startQueryText:@"good"];
 }
 
 - (void)setup {
     self.inputText = @"";
     
-    self.services = @[EDServiceTypeGoogle, EDServiceTypeBaidu, EDServiceTypeYoudao];
+    self.serviceTypes = @[ EDServiceTypeGoogle, EDServiceTypeBaidu, EDServiceTypeYoudao ];
     NSMutableArray *translateServices = [NSMutableArray array];
-    for (EDServiceType type in self.services) {
+    for (EDServiceType type in self.serviceTypes) {
         TranslateService *service = [ServiceTypes serviceWithType:type];
         [translateServices addObject:service];
     }
     self.translateServices = translateServices;
-   
+    
     self.detectManager = [[DetectText alloc] init];
     self.player = [[AVPlayer alloc] init];
-
+    
     [self tableView];
 }
 
@@ -155,6 +154,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)startQueryText:(NSString *)text {
+    self.inputText = text;
+    
     __block Language fromLang = Configuration.shared.from;
     
     if (fromLang != Language_auto) {
@@ -174,8 +175,9 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
     for (TranslateService *service in self.translateServices) {
         [self queryText:text
-          serive:service language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
-              service.translateResult = translateResult;
+                 serive:service
+               language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
+            service.translateResult = translateResult;
             
             [self updateUI];
         }];
@@ -184,12 +186,12 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 - (void)queryText:(NSString *)text
            serive:(TranslateService *)service
-           language:(Language)fromLang
-         completion:(nonnull void (^)(TranslateResult *_Nullable translateResult, NSError *_Nullable error))completion {
+         language:(Language)fromLang
+       completion:(nonnull void (^)(TranslateResult *_Nullable translateResult, NSError *_Nullable error))completion {
     [service translate:self.inputText
-                    from:fromLang
-                      to:Configuration.shared.to
-              completion:completion];
+                  from:fromLang
+                    to:Configuration.shared.to
+            completion:completion];
 }
 
 
@@ -242,53 +244,63 @@ static const CGFloat kMiniMainViewHeight = 300;
     TranslateResult *result = self.translateServices[index].translateResult;
     if (!result) {
         result = [[TranslateResult alloc] init];
-        result.queryType = self.services[index];
+        result.serviceType = self.serviceTypes[index];
     }
     resultCell.result = result;
-    [self setupResultView:resultCell.resultView];
+    [self setupResultCell:resultCell];
     
     return resultCell;
 }
 
-- (void)setupResultView:(ResultView *)resultView {
-//    mm_weakify(self)
-//    [resultView.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
-//        mm_strongify(self);
-//        if (!self.result) {
-//            return;
-//        }
-//        if (self.result.toSpeakURL) {
-//            [self playAudioWithURL:self.result.toSpeakURL];
-//        } else {
-//            [self playAudioWithText:[NSString mm_stringByCombineComponents:self.result.normalResults separatedString:@"\n"] lang:self.result.to];
-//        }
-//    }];
-//    [resultView.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
-//        mm_strongify(self);
-//        if (!self.result) return;
-//        [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
-//    }];
-//    [resultView.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
-//        mm_strongify(self);
-//        [self playAudioWithURL:url];
-//    }];
-//    [resultView.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
-//        [NSPasteboard mm_generalPasteboardSetString:word];
-//    }];
+- (TranslateService *)translateServicesWithType:(EDServiceType)serviceType {
+    NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+    return self.translateServices[index];
 }
 
-- (void)playAudioWithText:(NSString *)text lang:(Language)lang {
-//    if (text.length) {
-//        mm_weakify(self)
-//        [self.translate audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-//            mm_strongify(self);
-//            if (!error) {
-//                [self playAudioWithURL:url];
-//            } else {
-//                MMLogInfo(@"获取音频 URL 失败 %@", error);
-//            }
-//        }];
-//    }
+- (void)setupResultCell:(ResultCell *)resultCell {
+    ResultView *resultView = resultCell.resultView;
+    TranslateResult *result = resultCell.result;
+    TranslateService *serive = [self translateServicesWithType:result.serviceType];
+    
+    mm_weakify(self)
+    [resultView.normalResultView setAudioActionBlock:^(NormalResultView *_Nonnull view) {
+        mm_strongify(self);
+        if (!result) {
+            return;
+        }
+        if (result.toSpeakURL) {
+            [self playAudioWithURL:result.toSpeakURL];
+        } else {
+            [self playSeriveAudio:serive
+                             text:[NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"]
+                             lang:result.to];
+        }
+    }];
+    [resultView.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
+        if (!result) return;
+        [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
+    }];
+    [resultView.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
+        mm_strongify(self);
+        [self playAudioWithURL:url];
+    }];
+    [resultView.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
+        [NSPasteboard mm_generalPasteboardSetString:word];
+    }];
+}
+
+- (void)playSeriveAudio:(TranslateService *)service text:(NSString *)text lang:(Language)lang {
+    if (text.length) {
+        mm_weakify(self)
+        [service audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+            mm_strongify(self);
+            if (!error) {
+                [self playAudioWithURL:url];
+            } else {
+                MMLogInfo(@"获取音频 URL 失败 %@", error);
+            }
+        }];
+    }
 }
 
 - (void)playAudioWithURL:(NSString *)url {

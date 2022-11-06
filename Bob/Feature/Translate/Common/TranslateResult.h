@@ -79,7 +79,7 @@ FOUNDATION_EXPORT EDServiceType const EDServiceTypeYoudao;
 
 @interface TranslateResult : NSObject
 
-@property (nonatomic, copy, getter=serviceType) EDServiceType queryType;
+@property (nonatomic, copy) EDServiceType serviceType;
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;

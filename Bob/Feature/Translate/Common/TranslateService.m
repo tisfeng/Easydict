@@ -30,7 +30,7 @@
 - (void)setTranslateResult:(TranslateResult *)translateResult {
     _translateResult = translateResult;
        
-    _translateResult.queryType = [self serviceType];
+    _translateResult.serviceType = [self serviceType];
 }
 
 - (MMOrderedDictionary *)langDict {
