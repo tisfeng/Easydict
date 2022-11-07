@@ -15,6 +15,7 @@
 #import "MMTool.h"
 #import "MMMake.h"
 #import "NSColor+MM.h"
+#import "NSColor+MyColors.h"
 #import "NSAttributedString+MM.h"
 #import "NSMutableAttributedString+MM.h"
 #import "NSString+MM.h"

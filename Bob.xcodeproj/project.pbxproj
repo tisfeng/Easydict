@@ -13,6 +13,7 @@
 		03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */; };
 		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
+		033022A02918C5FE00B63F68 /* EDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EDTextField.m */; };
 		03C504A229160A93007626F8 /* RoundRectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* RoundRectButton.m */; };
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
 		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
@@ -119,6 +120,8 @@
 		03252D3F2914068B00DA2932 /* MainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
 		03252D422914262C00DA2932 /* QueryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryCell.h; sourceTree = "<group>"; };
 		03252D432914262C00DA2932 /* QueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryCell.m; sourceTree = "<group>"; };
+		0330229E2918C5FE00B63F68 /* EDTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDTextField.h; sourceTree = "<group>"; };
+		0330229F2918C5FE00B63F68 /* EDTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDTextField.m; sourceTree = "<group>"; };
 		03C504A029160A93007626F8 /* RoundRectButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoundRectButton.h; sourceTree = "<group>"; };
 		03C504A129160A93007626F8 /* RoundRectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoundRectButton.m; sourceTree = "<group>"; };
 		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
@@ -333,9 +336,19 @@
 		03252D452914DC0600DA2932 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0330229D2918C40900B63F68 /* EDTextField */,
 				03C5049F29160A42007626F8 /* HoverButton */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		0330229D2918C40900B63F68 /* EDTextField */ = {
+			isa = PBXGroup;
+			children = (
+				0330229E2918C5FE00B63F68 /* EDTextField.h */,
+				0330229F2918C5FE00B63F68 /* EDTextField.m */,
+			);
+			path = EDTextField;
 			sourceTree = "<group>";
 		};
 		03C5049F29160A42007626F8 /* HoverButton */ = {
@@ -880,6 +893,7 @@
 				03C504A52916768E007626F8 /* DetectText.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
+				033022A02918C5FE00B63F68 /* EDTextField.m in Sources */,
 				C91C153823AB8B0600CCAEC0 /* MMTool.m in Sources */,
 				C99EEBCF2385799D00FEE666 /* TranslateWindow.m in Sources */,
 				C9C3BDD3238EA0EF00D5F1C1 /* Snip.m in Sources */,

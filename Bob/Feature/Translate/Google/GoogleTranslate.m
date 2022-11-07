@@ -431,7 +431,6 @@
     }
     
     void(^translateBlock)(NSString *, Language, Language) = ^(NSString *text, Language langFrom, Language langTo) {
-        langFrom = Language_auto;
         [self sendTranslateTKKText:text from:langFrom to:langTo completion:^(id  _Nullable responseObject, NSString * _Nullable signText, NSMutableDictionary *reqDict, NSError * _Nullable error) {
             if (error) {
                 completion(nil, error);

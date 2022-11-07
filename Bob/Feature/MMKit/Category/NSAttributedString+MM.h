@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGFloat)mm_getTextHeight:(CGFloat)width;
 
 
++ (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font;
+
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color;
 
 @end

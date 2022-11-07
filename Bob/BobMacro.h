@@ -10,8 +10,6 @@
 
 #define DeepDarkColor [NSColor mm_colorWithHexString:@"#26292C"]
 #define DarkGrayColor [NSColor mm_colorWithHexString:@"#333435"]
-//#define DarkBorderColor [NSColor mm_colorWithHexString:@"#464748"]
-
 
 #define LightBorderColor [NSColor mm_colorWithHexString:@"#FFFFFF"]
 

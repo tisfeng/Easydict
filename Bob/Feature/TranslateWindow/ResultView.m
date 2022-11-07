@@ -58,7 +58,7 @@ static const CGFloat kMargin = 10;
         }];
         self.topBarView.mas_key = @"topBarView";
 
-        CGSize iconSize = CGSizeMake(15, 15);
+        CGSize iconSize = CGSizeMake(18, 18);
 
         self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
             [self addSubview:imageView];
@@ -82,7 +82,7 @@ static const CGFloat kMargin = 10;
             label.attributedStringValue = [[NSAttributedString alloc] initWithString:title];
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(self.typeImageView.mas_right).offset(5);
-                make.centerY.equalTo(self.topBarView).offset(-1);
+                make.centerY.equalTo(self.topBarView).offset(0);
             }];
         }];
         self.typeLabel.mas_key = @"typeLabel";
@@ -119,7 +119,7 @@ static const CGFloat kMargin = 10;
             [button mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.right.equalTo(self.topBarView.mas_right).offset(-kMargin);
                 make.centerY.equalTo(self.topBarView);
-                make.size.mas_equalTo(CGSizeMake(20, 20));
+                make.size.mas_equalTo(iconSize);
             }];
             mm_weakify(self)
                 [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
@@ -230,7 +230,7 @@ static const CGFloat kMargin = 10;
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
     TranslateService *translate = [ServiceTypes serviceWithType:type];
-    self.typeLabel.attributedStringValue = [[NSAttributedString alloc] initWithString:translate.name];
+    self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:12]];
     
     if (result.wordResult) {
         // 显示word
