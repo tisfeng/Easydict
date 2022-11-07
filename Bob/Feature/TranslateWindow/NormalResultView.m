@@ -53,49 +53,49 @@ DefineMethodMMMake_m(NormalResultView);
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     self.textView = textView;
 
-//    self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
-//        [self addSubview:button];
-//        button.bordered = NO;
-//        button.imageScaling = NSImageScaleProportionallyDown;
-//        button.bezelStyle = NSBezelStyleRegularSquare;
-//        [button setButtonType:NSButtonTypeMomentaryChange];
-//        button.image = [NSImage imageNamed:@"audio"];
-//        button.toolTip = @"播放音频";
-//        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.left.offset(12);
-//            make.bottom.inset(6);
-//            make.width.height.equalTo(@26);
-//        }];
-//        mm_weakify(self)
-//            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-//                        mm_strongify(self) if (self.audioActionBlock) {
-//                            self.audioActionBlock(self);
-//                        }
-//                        return RACSignal.empty;
-//                    }]];
-//    }];
-//
-//    self.textCopyButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
-//        [self addSubview:button];
-//        button.bordered = NO;
-//        button.imageScaling = NSImageScaleProportionallyDown;
-//        button.bezelStyle = NSBezelStyleRegularSquare;
-//        [button setButtonType:NSButtonTypeMomentaryChange];
-//        button.image = [NSImage imageNamed:@"copy"];
-//        button.toolTip = @"复制";
-//        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.left.equalTo(self.audioButton.mas_right);
-//            make.bottom.equalTo(self.audioButton);
-//            make.width.height.equalTo(self.audioButton);
-//        }];
-//        mm_weakify(self)
-//            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-//                        mm_strongify(self) if (self.copyActionBlock) {
-//                            self.copyActionBlock(self);
-//                        }
-//                        return RACSignal.empty;
-//                    }]];
-//    }];
+    self.audioButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
+        [self addSubview:button];
+        button.bordered = NO;
+        button.imageScaling = NSImageScaleProportionallyDown;
+        button.bezelStyle = NSBezelStyleRegularSquare;
+        [button setButtonType:NSButtonTypeMomentaryChange];
+        button.image = [NSImage imageNamed:@"audio"];
+        button.toolTip = @"播放音频";
+        [button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(12);
+            make.bottom.inset(6);
+            make.width.height.equalTo(@26);
+        }];
+        mm_weakify(self)
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self) if (self.audioActionBlock) {
+                            self.audioActionBlock(self);
+                        }
+                        return RACSignal.empty;
+                    }]];
+    }];
+
+    self.textCopyButton = [ImageButton mm_make:^(ImageButton *_Nonnull button) {
+        [self addSubview:button];
+        button.bordered = NO;
+        button.imageScaling = NSImageScaleProportionallyDown;
+        button.bezelStyle = NSBezelStyleRegularSquare;
+        [button setButtonType:NSButtonTypeMomentaryChange];
+        button.image = [NSImage imageNamed:@"copy"];
+        button.toolTip = @"复制";
+        [button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.audioButton.mas_right);
+            make.bottom.equalTo(self.audioButton);
+            make.width.height.equalTo(self.audioButton);
+        }];
+        mm_weakify(self)
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                        mm_strongify(self) if (self.copyActionBlock) {
+                            self.copyActionBlock(self);
+                        }
+                        return RACSignal.empty;
+                    }]];
+    }];
 }
 
 - (void)refreshWithStrings:(NSArray<NSString *> *)strings {

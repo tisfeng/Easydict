@@ -30,7 +30,6 @@ static const CGFloat kMargin = 10;
 @property (nonatomic, copy) void (^audioActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
 
-
 @end
 
 
@@ -47,27 +46,27 @@ static const CGFloat kMargin = 10;
         }];
         self.layer.cornerRadius = 8;
         self.layer.masksToBounds = YES;
-
+        
         self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
             [self addSubview:view];
             view.wantsLayer = YES;
             view.layer.backgroundColor = DarkBarBgColor.CGColor;
-
+            
             [view.layer excuteLight:^(CALayer *layer) {
                 layer.backgroundColor = LightBarBgColor.CGColor;
             } drak:^(CALayer *layer) {
                 layer.backgroundColor = DarkBarBgColor.CGColor;
             }];
-
+            
             [view mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.left.right.equalTo(self);
                 make.height.mas_equalTo(kResultViewMiniHeight);
             }];
         }];
         self.topBarView.mas_key = @"topBarView";
-
+        
         CGSize iconSize = CGSizeMake(18, 18);
-
+        
         self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
             [self addSubview:imageView];
             [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
@@ -78,8 +77,7 @@ static const CGFloat kMargin = 10;
             }];
         }];
         self.typeImageView.mas_key = @"typeImageView";
-
-
+        
         self.typeLabel = [NSTextField mm_make:^(NSTextField *label) {
             [self addSubview:label];
             label.editable = NO;
@@ -94,13 +92,12 @@ static const CGFloat kMargin = 10;
             }];
         }];
         self.typeLabel.mas_key = @"typeLabel";
-
-
+        
         self.disableImageView = [NSImageView mm_make:^(NSImageView *imageView) {
             [self addSubview:imageView];
             NSImage *image = [NSImage imageNamed:@"disabled"];
             [imageView setImage:image];
-
+            
             [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(self.typeLabel.mas_right).offset(5);
                 make.centerY.equalTo(self.topBarView);
@@ -108,7 +105,7 @@ static const CGFloat kMargin = 10;
             }];
         }];
         self.disableImageView.mas_key = @"disableImageView";
-
+        
         self.arrowButton = [NSButton mm_make:^(NSButton *button) {
             [self addSubview:button];
             button.wantsLayer = YES;
@@ -122,7 +119,7 @@ static const CGFloat kMargin = 10;
             } drak:^(NSButton *button) {
                 button.image = [image imageWithTintColor:NSColor.whiteColor];
             }];
-
+            
             button.imageScaling = NSImageScaleAxesIndependently;
             [button mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.right.equalTo(self.topBarView.mas_right).offset(-kMargin);
@@ -130,37 +127,33 @@ static const CGFloat kMargin = 10;
                 make.size.mas_equalTo(iconSize);
             }];
             mm_weakify(self)
-                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                            mm_strongify(self)
-                                NSLog(@"点击 arrowButton");
-                            if (self.actionBlock) {
-                                void (^block)(void) = self.actionBlock;
-                                block();
-                            }
-                            return RACSignal.empty;
-                        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                mm_strongify(self)
+                NSLog(@"点击 arrowButton");
+                if (self.actionBlock) {
+                    void (^block)(void) = self.actionBlock;
+                    block();
+                }
+                return RACSignal.empty;
+            }]];
         }];
         self.arrowButton.mas_key = @"arrowButton";
-
-
+        
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)),
                        dispatch_get_main_queue(), ^{
-                           NSTrackingArea *playTrackingArea = [[NSTrackingArea alloc]
-                               initWithRect:[self.arrowButton bounds]
-                                    options:NSTrackingMouseEnteredAndExited |
-                                    NSTrackingActiveAlways
-                                      owner:self
-                                   userInfo:nil];
-                           [self.arrowButton addTrackingArea:playTrackingArea];
-                       });
-
-
-//        self.normalResultView = [[NormalResultView alloc] initWithFrame:frame];;
-//        self.normalResultView.mas_key = @"normalResultView";
-
+            NSTrackingArea *playTrackingArea = [[NSTrackingArea alloc]
+                                                initWithRect:[self.arrowButton bounds]
+                                                options:NSTrackingMouseEnteredAndExited |
+                                                NSTrackingActiveAlways
+                                                owner:self
+                                                userInfo:nil];
+            [self.arrowButton addTrackingArea:playTrackingArea];
+        });
+        
         self.wordResultView = [[WordResultView alloc] initWithFrame:frame];
         self.wordResultView.mas_key = @"wordResultView";
-
+        
         self.stateTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.font = [NSFont systemFontOfSize:14];
@@ -177,7 +170,7 @@ static const CGFloat kMargin = 10;
             }];
         }];
         self.stateTextField.mas_key = @"stateTextField";
-
+        
         self.actionButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
             [self addSubview:button];
             button.hidden = YES;
@@ -190,15 +183,15 @@ static const CGFloat kMargin = 10;
                 self.actionButtonBottomConstraint = make.bottom.lessThanOrEqualTo(self).offset(-kMargin);
             }];
             mm_weakify(self)
-                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                            mm_strongify(self)
-                                NSLog(@"点击 action");
-                            if (self.actionBlock) {
-                                void (^block)(void) = self.actionBlock;
-                                block();
-                            }
-                            return RACSignal.empty;
-                        }]];
+            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+                mm_strongify(self)
+                NSLog(@"点击 action");
+                if (self.actionBlock) {
+                    void (^block)(void) = self.actionBlock;
+                    block();
+                }
+                return RACSignal.empty;
+            }]];
         }];
         self.actionButton.mas_key = @"actionButton";
     }
@@ -208,7 +201,7 @@ static const CGFloat kMargin = 10;
 - (void)mouseEntered:(NSEvent *)theEvent {
     CGPoint point = theEvent.locationInWindow;
     point = [self convertPoint:point fromView:nil];
-
+    
     [self excuteLight:^(id x) {
         NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
         [self hightlightCopyButtonBgColor:highlightBgColor point:point];
@@ -234,7 +227,7 @@ static const CGFloat kMargin = 10;
     self.stateTextField.stringValue = @"";
     self.actionButton.hidden = YES;
     self.actionButton.attributedTitle = [NSAttributedString new];
-
+    
     EDServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
@@ -245,7 +238,7 @@ static const CGFloat kMargin = 10;
     // 显示word
     [self.normalResultView removeFromSuperview];
     self.normalResultView.hidden = YES;
-
+    
     [self addSubview:self.wordResultView];
     self.wordResultView.hidden = NO;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -254,23 +247,6 @@ static const CGFloat kMargin = 10;
         make.bottom.equalTo(self);
     }];
     [self.wordResultView refreshWithResult:result];
-    
-//    if (result.wordResult) {
-//       
-//    } else {
-//        // 显示普通的
-//        [self.wordResultView removeFromSuperview];
-//        self.wordResultView.hidden = YES;
-//
-//        [self addSubview:self.normalResultView];
-//        self.normalResultView.hidden = NO;
-//        [self.normalResultView refreshWithStrings:result.normalResults];
-//        [self.normalResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(self.topBarView.mas_bottom);
-//            make.left.right.equalTo(self);
-//            make.bottom.equalTo(self);
-//        }];
-//    }
 }
 
 - (void)refreshWithStateString:(NSString *)string {
@@ -280,11 +256,9 @@ static const CGFloat kMargin = 10;
 - (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action {
     _copiedText = string;
     
-//    [self.normalResultView removeFromSuperview];
-//    self.normalResultView.hidden = YES;
     [self.wordResultView removeFromSuperview];
     self.wordResultView.hidden = YES;
-
+    
     self.stateTextField.hidden = NO;
     self.stateTextField.stringValue = string;
     if (actionTitle.length) {

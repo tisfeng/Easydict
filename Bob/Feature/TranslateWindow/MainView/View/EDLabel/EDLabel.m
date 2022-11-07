@@ -31,14 +31,6 @@
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     
     //    self.textContainerInset = CGSizeMake(8, 12);
-    
-    //    [self excuteLight:^(NSTextView *textView) {
-    //        textView.backgroundColor = NSColor.queryViewBgLightColor;
-    //        [textView setTextColor:NSColor.queryTextLightColor];
-    //    } drak:^(NSTextView *textView) {
-    //        textView.backgroundColor = NSColor.queryViewBgDarkColor;
-    //        [textView setTextColor:NSColor.queryTextDarkColor];
-    //    }];
 }
 
 - (void)setText:(NSString *)text {
@@ -58,17 +50,14 @@
     [attributedString addAttributes:@{
         NSParagraphStyleAttributeName : paragraphStyle,
         NSFontAttributeName : [NSFont systemFontOfSize:14],
-        //        NSStrokeColorAttributeName:NSColor.resultTextLightColor,
     }
                               range:range];
     
-    
+    [self.textStorage deleteCharactersInRange:NSMakeRange(0, self.textStorage.length)];
+
     [self excuteLight:^(NSTextView *textView) {
-        [textView.textStorage deleteCharactersInRange:NSMakeRange(0, textView.textStorage.length)];
         
         [attributedString addAttributes:@{
-            //            NSParagraphStyleAttributeName : paragraphStyle,
-            //            NSFontAttributeName : [NSFont systemFontOfSize:14],
             NSForegroundColorAttributeName : NSColor.resultTextLightColor,
         }
                                   range:range];
@@ -77,8 +66,6 @@
         [textView.textStorage deleteCharactersInRange:NSMakeRange(0, textView.textStorage.length)];
         
         [attributedString addAttributes:@{
-            //            NSParagraphStyleAttributeName : paragraphStyle,
-            //            NSFontAttributeName : [NSFont systemFontOfSize:14],
             NSForegroundColorAttributeName : NSColor.resultTextDarkColor,
         }
                                   range:range];

@@ -176,48 +176,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
 
         
-//                TextView *textView = [[TextView alloc] initWithFrame:self.bounds];
-//                [self addSubview:textView];
-//
-//                textView.editable = NO;
-//                textView.string = text;
-//
-//                NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:text font:textFont];
-//
-//
-//                [textView mas_makeConstraints:^(MASConstraintMaker *make) {
-//                    make.right.equalTo(self).offset(-kHorizontalMargin);
-//                    if (typeTextField) {
-//                        make.top.equalTo(typeTextField).offset(0);
-//                        make.left.equalTo(typeTextField.mas_right).offset(3);
-//                        self.textViewHeightConstraint = make.height.greaterThanOrEqualTo(@(10));
-//                    } else {
-//                        if (lastView) {
-//                            make.top.equalTo(lastView.mas_bottom).offset(10);
-//                        } else {
-//                            make.top.offset(kHorizontalMargin);
-//                        }
-//                        make.left.equalTo(self).offset(0);
-//                    }
-//                }];
-//
-//        CGSize textContainerInset = textView.textContainerInset;
-//        CGFloat width = textView.width - textContainerInset.width * 2;
-//         CGFloat height = [attributedString mm_getTextHeightWithWidth:width];
-//        height += textContainerInset.height * 2;
-//        self.textViewHeightConstraint.greaterThanOrEqualTo(@(height));
-//
-//                [textView excuteLight:^(id _Nonnull x) {
-//                    [x setBackgroundColor:NSColor.resultViewBgLightColor];
-//                    [x setTextColor:NSColor.resultTextLightColor];
-//                } drak:^(id _Nonnull x) {
-//                    [x setBackgroundColor:NSColor.resultViewBgDarkColor];
-//                    [x setTextColor:NSColor.resultTextDarkColor];
-//                }];
-//                [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
-//        lastView = textView;
-
-        
         EDLabel *resultLabel = [EDLabel new];
         [self addSubview:resultLabel];
         resultLabel.text = text;
@@ -250,33 +208,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
 
         lastView = resultLabel;
-
-        
-//        EDTextField *meanTextField = [EDTextField wrappingLabelWithString:@""];
-//        [self addSubview:meanTextField];
-//
-//        NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
-////        meanTextField.text = text;
-//        meanTextField.stringValue = text;
-//
-//        [meanTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-//            if (typeTextField) {
-//                make.top.equalTo(typeTextField).offset(0);
-//                make.left.equalTo(typeTextField.mas_right).offset(3);
-//            } else {
-//                if (lastView) {
-//                    make.top.equalTo(lastView.mas_bottom).offset(10);
-//                } else {
-//                    make.top.offset(kHorizontalMargin);
-//                }
-//                make.left.offset(kHorizontalMargin);
-//            }
-//            make.right.lessThanOrEqualTo(self).offset(-kHorizontalMargin);
-//        }];
-//        meanTextField.mas_key = @"meanTextField_normalResults";
-//        lastView = meanTextField;
     }
-//
+
     [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length) {
