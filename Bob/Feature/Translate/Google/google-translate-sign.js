@@ -1,5 +1,5 @@
 var window = {
-  TKK: '0'
+  TKK: '444000.1270171236'
 }
 
 var yr = null

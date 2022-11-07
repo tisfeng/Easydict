@@ -206,20 +206,19 @@ static const CGFloat kVerticalMargin = 10;
     self.queryView.enterActionBlock = enterActionBlock;
 }
 
-// tell UIKit that you are using AutoLayout
-+ (BOOL)requiresConstraintBasedLayout {
-    return YES;
-}
-
-- (void)updateConstraints {
-
+- (void)setAudioActionBlock:(void (^)(QueryView * _Nonnull))audioActionBlock {
+    _audioActionBlock = audioActionBlock;
     
-    [super updateConstraints];
+    self.queryView.audioActionBlock = audioActionBlock;
 }
 
+- (void)setCopyActionBlock:(void (^)(QueryView * _Nonnull))copyActionBlock {
+    _copyActionBlock = copyActionBlock;
+    
+    self.queryView.copyActionBlock = copyActionBlock;
+}
 
-
-//绘制选中状态的背景
+// 绘制选中状态的背景
 - (void)drawSelectionInRect:(NSRect)dirtyRect {
     NSRect selectionRect = NSInsetRect(self.bounds, 5.5, 5.5);
     [[NSColor colorWithCalibratedWhite:.72 alpha:1.0] setStroke];
@@ -228,7 +227,7 @@ static const CGFloat kVerticalMargin = 10;
     [selectionPath fill];
     [selectionPath stroke];
 }
-//绘制背景
+// 绘制背景
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
     [super drawBackgroundInRect:dirtyRect];
     [[NSColor clearColor] setFill];

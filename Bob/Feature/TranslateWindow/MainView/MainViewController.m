@@ -62,7 +62,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-//    [self startQueryText:@"good"];
+    [self startQueryText:@"good"];
 }
 
 - (void)setup {
@@ -233,7 +233,33 @@ static const CGFloat kMiniMainViewHeight = 300;
         [self startQuery];
     }];
     
+    [queryCell setAudioActionBlock:^(QueryView * _Nonnull view) {
+        mm_strongify(self);
+        TranslateService *service = [self firstTranslateService];
+        if (service) {
+            NSString *text = self.inputText;
+            Language lang = self.detectManager.language;
+            [service audio:text from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
+                if (url.length) {
+                    [self playAudioWithURL:url];
+                }
+            }];
+        }
+    }];
+    
+    [queryCell setCopyActionBlock:^(QueryView * _Nonnull view) {
+        mm_strongify(self);
+        [self copyTextToPasteboard:view.textView.string];
+    }];
+    
     return queryCell;
+}
+
+- (TranslateService * _Nullable)firstTranslateService {
+    for (TranslateService *service in self.translateServices) {
+        return service;
+    }
+    return nil;
 }
 
 - (ResultCell *)resultCellAtRow:(NSInteger)row {
@@ -271,22 +297,32 @@ static const CGFloat kMiniMainViewHeight = 300;
         if (result.toSpeakURL) {
             [self playAudioWithURL:result.toSpeakURL];
         } else {
-            [self playSeriveAudio:serive
-                             text:[NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"]
-                             lang:result.to];
+            [self playSeriveAudio:serive textArray:result.normalResults lang:result.to];
         }
     }];
+    
     [resultView.normalResultView setCopyActionBlock:^(NormalResultView *_Nonnull view) {
-        if (!result) return;
-        [NSPasteboard mm_generalPasteboardSetString:view.textView.string];
+        mm_strongify(self);
+        if (!result) {
+            return;
+        }
+        [self copyTextToPasteboard:view.textView.string];
     }];
+    
     [resultView.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
         mm_strongify(self);
         [self playAudioWithURL:url];
     }];
+    
     [resultView.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
-        [NSPasteboard mm_generalPasteboardSetString:word];
+        mm_strongify(self);
+        [self copyTextToPasteboard:word];
     }];
+}
+
+- (void)playSeriveAudio:(TranslateService *)service textArray:(NSArray<NSString *> *)textArray lang:(Language)lang {
+    NSString *text = [NSString mm_stringByCombineComponents:textArray separatedString:@"\n"];
+    [self playSeriveAudio:service text:text lang:lang];
 }
 
 - (void)playSeriveAudio:(TranslateService *)service text:(NSString *)text lang:(Language)lang {
@@ -303,10 +339,17 @@ static const CGFloat kMiniMainViewHeight = 300;
     }
 }
 
+- (void)copyTextToPasteboard:(NSString *)text {
+    [NSPasteboard mm_generalPasteboardSetString:text];
+}
+
 - (void)playAudioWithURL:(NSString *)url {
     MMLogInfo(@"播放音频 %@", url);
     [self.player pause];
-    if (!url.length) return;
+    if (!url.length) {
+        return;
+    }
+    
     [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]]];
     [self.player play];
 }

@@ -20,16 +20,8 @@
 
 - (void)setup {
     ResultView *resultView = [[ResultView alloc] initWithFrame:self.bounds];
-    self.resultView = resultView;
     [self addSubview:resultView];
-    
-    
-}
-
-
-// tell UIKit that you are using AutoLayout
-+ (BOOL)requiresConstraintBasedLayout {
-    return YES;
+    self.resultView = resultView;
 }
 
 - (void)updateConstraints {
@@ -47,7 +39,7 @@
     [self.resultView refreshWithResult:result];
 }
 
-//绘制选中状态的背景
+// 绘制选中状态的背景
 - (void)drawSelectionInRect:(NSRect)dirtyRect {
     NSRect selectionRect = NSInsetRect(self.bounds, 5.5, 5.5);
     [[NSColor colorWithCalibratedWhite:.72 alpha:1.0] setStroke];
@@ -56,7 +48,7 @@
     [selectionPath fill];
     [selectionPath stroke];
 }
-//绘制背景
+// 绘制背景
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
     [super drawBackgroundInRect:dirtyRect];
     [[NSColor clearColor] setFill];
