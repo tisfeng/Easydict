@@ -188,7 +188,7 @@
     }];
 }
 
-- (void)sendTranslateRequestWithText:(NSString *)text
+- (void)sendTranslateSingleText:(NSString *)text
                                 from:(Language)from
                                   to:(Language)to
                           completion:
@@ -299,6 +299,16 @@
                to:(Language)to
        completion:(nonnull void (^)(TranslateResult *_Nullable,
                                     NSError *_Nullable))completion {
+//    [self translateSingleText:text from:from to:to completion:completion];
+    [self translateTKKText:text from:from to:to completion:completion];
+}
+
+
+- (void)translateSingleText:(NSString *)text
+             from:(Language)from
+               to:(Language)to
+       completion:(nonnull void (^)(TranslateResult *_Nullable,
+                                    NSError *_Nullable))completion {
     if (!text.length) {
         completion(nil,
                    TranslateError(TranslateErrorTypeParam, @"翻译的文本为空", nil));
@@ -309,7 +319,7 @@
     ^(
       NSString *text, Language langFrom, Language langTo) {
           [self
-           sendTranslateRequestWithText:text
+           sendTranslateSingleText:text
            from:langFrom
            to:langTo
            completion:^(id _Nullable responseObject,
@@ -414,6 +424,203 @@
     }
 }
 
+- (void)translateTKKText:(NSString *)text from:(Language)from to:(Language)to completion:(nonnull void (^)(TranslateResult * _Nullable, NSError * _Nullable))completion {
+    if (!text.length) {
+        completion(nil, TranslateError(TranslateErrorTypeParam, @"翻译的文本为空", nil));
+        return;
+    }
+    
+    void(^translateBlock)(NSString *, Language, Language) = ^(NSString *text, Language langFrom, Language langTo) {
+        langFrom = Language_auto;
+        [self sendTranslateTKKText:text from:langFrom to:langTo completion:^(id  _Nullable responseObject, NSString * _Nullable signText, NSMutableDictionary *reqDict, NSError * _Nullable error) {
+            if (error) {
+                completion(nil, error);
+                return;
+            }
+            
+            NSString *message = nil;
+            if (responseObject && [responseObject isKindOfClass:NSArray.class]) {
+                @try {
+                    NSArray *responseArray = responseObject;
+                    
+                    NSString *textEncode = text.mm_urlencode;
+                    NSString *googleFromString = responseArray[2];
+                    Language googleFrom = [self languageEnumFromString:googleFromString];
+                    Language googleTo = langTo;
+                    
+                    TranslateResult *result = [TranslateResult new];
+                    result.text = text;
+                    result.from = googleFrom;
+                    result.to = googleTo;
+                    result.link = [NSString stringWithFormat:@"%@/#view=home&op=translate&sl=%@&tl=%@&text=%@",
+                                   kGoogleRootPage(self.isCN),
+                                   googleFromString,
+                                   [self languageStringFromEnum:googleTo],
+                                   textEncode];
+                    result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
+                    
+                    // 英文查词 中文查词
+                    NSArray<NSArray *> *dictResult = responseArray[1];
+                    if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
+                        TranslateWordResult *wordResult = [TranslateWordResult new];
+                                                
+                        if (googleFrom == Language_en &&
+                            (googleTo == Language_zh_Hans || googleTo == Language_zh_Hant)) {
+                            // 英文查词
+                            NSMutableArray *parts = [NSMutableArray array];
+                            [dictResult enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                if (![obj isKindOfClass:NSArray.class]) {
+                                    return;
+                                }
+                                TranslatePart *part = [TranslatePart new];
+                                part.part = [obj firstObject];
+                                part.means = [obj[1] mm_where:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                    return [obj isKindOfClass:NSString.class];
+                                }];
+                                if (part.means) {
+                                    [parts addObject:part];
+                                }
+                            }];
+                            if (parts.count) {
+                                wordResult.parts = parts.copy;
+                            }
+                        }else if ((googleFrom == Language_zh_Hans || googleFrom == Language_zh_Hant) &&
+                                  googleTo == Language_en) {
+                            // 中文查词
+                            NSMutableArray *simpleWords = [NSMutableArray array];
+                            [dictResult enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                if (![obj isKindOfClass:NSArray.class]) {
+                                    return;
+                                }
+                                NSString *part = [obj firstObject];
+                                NSArray<NSArray *> *partWords = obj[2];
+                                [partWords enumerateObjectsUsingBlock:^(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                    TranslateSimpleWord *word = [TranslateSimpleWord new];
+                                    word.word = obj[0];
+                                    word.means = [obj[1] mm_where:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                        return [obj isKindOfClass:NSString.class];
+                                    }];
+                                    word.part = part;
+                                    [simpleWords addObject:word];
+                                }];
+                            }];
+                            
+                            if (simpleWords.count) {
+                                wordResult.simpleWords = simpleWords.copy;
+                            }
+                        }
+                        
+                        if (wordResult.parts || wordResult.simpleWords) {
+                            result.wordResult = wordResult;
+                        }
+                    }
+                    
+                    // 普通释义
+                    NSArray<NSArray *> *normalArray = responseArray[0];
+                    if (normalArray && [normalArray isKindOfClass:NSArray.class]) {
+                        NSArray *normalResults = [normalArray mm_map:^id _Nullable(NSArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if ([obj isKindOfClass:[NSArray class]]) {
+                                if (obj.count && [obj.firstObject isKindOfClass:[NSString class]]) {
+                                    return obj.firstObject;
+                                }
+                            }
+                            return nil;
+                        }];
+                        if (normalResults.count) {
+                            result.normalResults = normalResults.copy;
+                            
+                            NSString *mergeString = [NSString mm_stringByCombineComponents:normalResults separatedString:@"\n"];
+                            NSString *signTo = [[self.signFunction callWithArguments:@[mergeString]] toString];
+                            result.toSpeakURL = [self getAudioURLWithText:mergeString language:[self languageStringFromEnum:googleTo] sign:signTo];
+                        }
+                    }
+                    
+                    if (result.wordResult || result.normalResults) {
+                        completion(result, nil);
+                        return;
+                    }
+
+                } @catch (NSException *exception) {
+                    MMLogInfo(@"谷歌翻译接口数据解析异常 %@", exception);
+                    message = @"谷歌翻译接口数据解析异常";
+                }
+            }
+            [reqDict setObject:responseObject ?: [NSNull null] forKey:TranslateErrorRequestResponseKey];
+            completion(nil, TranslateError(TranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+        }];
+    };
+    
+    if (from == Language_auto) {
+        // 需要先识别语言，用于指定目标语言
+        [self detect:text
+          completion:^(Language lang, NSError *_Nullable error) {
+            if (error) {
+                completion(nil, error);
+                return;
+            }
+            
+            Language langTo = [self getTargetLanguageWithSourceLanguage:lang];
+            translateBlock(text, lang, langTo);
+        }];
+    } else {
+        to = [self getTargetLanguageWithSourceLanguage:from];
+        translateBlock(text, from, to);
+    }
+    
+//    if (to == Language_auto) {
+//        // 需要先识别语言，用于指定目标语言
+//        [self detect:text completion:^(Language lang, NSError * _Nullable error) {
+//            if (error) {
+//                completion(nil, error);
+//                return;
+//            }
+//
+//            Language langTo = Language_auto;
+//            if (lang == Language_zh_Hans || lang == Language_zh_Hant) {
+//                langTo = Language_en;
+//            }else {
+//                langTo = Language_zh_Hans;
+//            }
+//            translateBlock(text, lang, langTo);
+//        }];
+//    }else {
+//        translateBlock(text, from, to);
+//    }
+}
+
+- (void)sendTranslateTKKText:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(id _Nullable responseObject, NSString * _Nullable signText, NSMutableDictionary *reqDict, NSError * _Nullable error))completion {
+
+    NSString *sign = [[self.signFunction callWithArguments:@[text]] toString];
+    
+    NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
+    url = [url stringByAppendingString:@"?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"];
+    NSDictionary *params = @{
+        @"client": @"webapp",
+        @"sl": [self languageStringFromEnum:from],
+        @"tl": [self languageStringFromEnum:to],
+        @"hl": @"zh-CN",
+        @"otf": @"2",
+        @"ssel": @"3",
+        @"tsel": @"0",
+        @"kc": @"6",
+        @"tk": sign,
+        @"q": text,
+    };
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, TranslateErrorRequestURLKey, params, TranslateErrorRequestParamKey, nil];
+    
+    [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject) {
+            completion(responseObject, sign, reqDict, nil);
+        }else {
+            completion(nil, nil, nil, TranslateError(TranslateErrorTypeAPI, @"翻译失败", reqDict));
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [reqDict setObject:error forKey:TranslateErrorRequestErrorKey];
+        completion(nil, nil, nil, TranslateError(TranslateErrorTypeNetwork, @"翻译失败", reqDict));
+    }];
+}
+
+
 // Get target language with source language
 - (Language)getTargetLanguageWithSourceLanguage:(Language)sourceLanguage {
     Language targetLanguage = Language_auto;
@@ -425,7 +632,12 @@
     return targetLanguage;
 }
 
-- (void)detect:(NSString *)text
+- (void)detect:(NSString *)text  completion:(nonnull void (^)(Language, NSError *_Nullable))completion {
+//    [self detectSingleText:text completion:completion];
+    [self detectTKKText:text completion:completion];
+}
+
+- (void)detectSingleText:(NSString *)text
     completion:(nonnull void (^)(Language, NSError *_Nullable))completion {
     if (!text.length) {
         completion(Language_auto, TranslateError(TranslateErrorTypeParam, @"识别语言的文本为空", nil));
@@ -438,8 +650,7 @@
         queryString = [queryString substringToIndex:73];
     }
     
-    [self
-     sendTranslateRequestWithText:queryString
+    [self sendTranslateSingleText:queryString
      from:Language_auto
      to:Language_auto
      completion:^(id _Nullable responseObject,
@@ -477,6 +688,45 @@
                    TranslateError(TranslateErrorTypeAPI,
                                   message ?: @"识别语言失败",
                                   reqDict));
+    }];
+}
+
+- (void)detectTKKText:(NSString *)text completion:(nonnull void (^)(Language, NSError * _Nullable))completion {
+    if (!text.length) {
+        completion(Language_auto, TranslateError(TranslateErrorTypeParam, @"识别语言的文本为空", nil));
+        return;
+    }
+    
+    // 截取一部分识别语言就行
+    NSString *queryString = text;
+    if (queryString.length >= 73) {
+        queryString = [queryString substringToIndex:73];
+    }
+    
+    [self sendTranslateTKKText:queryString from:Language_auto to:Language_auto completion:^(id  _Nullable responseObject, NSString * _Nullable signText, NSMutableDictionary *reqDict, NSError * _Nullable error) {
+        if (error) {
+            completion(Language_auto, error);
+            return;
+        }
+        
+        NSString *message = nil;
+        @try {
+            if ([responseObject isKindOfClass:NSArray.class]) {
+                NSArray *responseArray = responseObject;
+                if (responseArray.count >= 3) {
+                    NSString *googleFromString = responseArray[2];
+                    Language googleFrom = [self languageEnumFromString:googleFromString];
+                    if (googleFrom != Language_auto) {
+                        completion(googleFrom, nil);
+                        return;
+                    }
+                }
+            }
+        } @catch (NSException *exception) {
+            MMLogInfo(@"谷歌翻译接口语言解析失败 %@", exception);
+        }
+        [reqDict setObject:responseObject forKey:TranslateErrorRequestResponseKey];
+        completion(Language_auto, TranslateError(TranslateErrorTypeAPI, message ?: @"识别语言失败", reqDict));
     }];
 }
 
