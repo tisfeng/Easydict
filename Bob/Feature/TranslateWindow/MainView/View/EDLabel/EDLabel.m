@@ -23,8 +23,8 @@
     self.backgroundColor = NSColor.clearColor;
     
     [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
-//        style.lineHeightMultiple = 1.2;
-        style.lineSpacing = 5;
+        style.lineHeightMultiple = 1.2;
+//        style.lineSpacing = 5;
         style.paragraphSpacing = 5;
     }]];
     self.font = [NSFont systemFontOfSize:14];

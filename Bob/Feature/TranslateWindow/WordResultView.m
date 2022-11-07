@@ -17,7 +17,7 @@
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
-static const CGFloat kVerticalPadding = 5;
+static const CGFloat kVerticalPadding = 8;
 
 /// wrappingLabel的约束需要偏移2,不知道是什么神设计
 static const CGFloat kFixWrappingLabelMargin = 2;
@@ -55,7 +55,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
-    NSFont *typeTextFont = [NSFont systemFontOfSize:13];
+    NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -151,25 +151,23 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         if (result.wordResult) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
-                textField.stringValue = @"释义";
+                textField.stringValue = @"释义：";
                 textField.font = typeTextFont;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.textColor = typeTextColor;
                 textField.backgroundColor = NSColor.clearColor;
+
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     if (lastView) {
                         make.top.equalTo(lastView.mas_bottom).offset(10);
                     } else {
                         make.top.offset(kHorizontalMargin);
                     }
-                    make.left.offset(kHorizontalMargin);
-                    CGFloat width = [textField.attributedStringValue mm_getTextWidth];
-                    make.width.mas_equalTo(width);
+                    make.left.mas_equalTo(kHorizontalMargin);
                 }];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
-            
             [self layoutSubtreeIfNeeded];
         }
        
@@ -204,7 +202,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             CGFloat width = MainWindow.shared.width - leading;
             resultLabel.width = width;
             CGFloat height = [resultLabel getHeight];
-            make.height.greaterThanOrEqualTo(@(height));
+            make.height.equalTo(@(height));
         }];
 
         lastView = resultLabel;
@@ -221,6 +219,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
+
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin);
                     if (lastView) {
@@ -276,7 +275,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             CGFloat width = MainWindow.shared.width - leading;
             meanLabel.width = width;
             CGFloat height = [meanLabel getHeight];
-            make.height.greaterThanOrEqualTo(@(height));
+            make.height.equalTo(@(height));
         }];
 
         lastView = meanLabel;
