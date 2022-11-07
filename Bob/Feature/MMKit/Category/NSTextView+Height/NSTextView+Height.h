@@ -1,8 +1,8 @@
 //
-//  MainWindow.h
+//  NSTextView+AutoHeight.h
 //  Bob
 //
-//  Created by tisfeng on 2022/11/3.
+//  Created by tisfeng on 2022/11/7.
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
@@ -10,9 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MainWindow : NSWindow
+@interface NSTextView (Height)
 
-+ (instancetype)shared;
+- (CGFloat)getHeight;
 
 @end
 

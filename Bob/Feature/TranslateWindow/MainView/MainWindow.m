@@ -12,6 +12,26 @@
 
 @implementation MainWindow
 
+static MainWindow *_instance;
+
++ (instancetype)shared {
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [[self alloc] init];
+        });
+    }
+    return _instance;
+}
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instance = [super allocWithZone:zone];
+    });
+    return _instance;
+}
+
 - (instancetype)init {
     NSWindowStyleMask style = NSWindowStyleMaskTitled |  NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     

@@ -8,6 +8,7 @@
 
 #import "ResultView.h"
 #import "ServiceTypes.h"
+#import "EDButton.h"
 
 static const CGFloat kMargin = 10;
 
@@ -22,6 +23,13 @@ static const CGFloat kMargin = 10;
 @property (nonatomic, strong) NSImageView *disableImageView;
 
 @property (nonatomic, strong) NSButton *arrowButton;
+
+@property (nonatomic, strong) EDButton *audioButton;
+@property (nonatomic, strong) EDButton *textCopyButton;
+
+@property (nonatomic, copy) void (^audioActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
+
 
 @end
 
@@ -147,8 +155,8 @@ static const CGFloat kMargin = 10;
                        });
 
 
-        self.normalResultView = [[NormalResultView alloc] initWithFrame:frame];;
-        self.normalResultView.mas_key = @"normalResultView";
+//        self.normalResultView = [[NormalResultView alloc] initWithFrame:frame];;
+//        self.normalResultView.mas_key = @"normalResultView";
 
         self.wordResultView = [[WordResultView alloc] initWithFrame:frame];
         self.wordResultView.mas_key = @"wordResultView";
@@ -220,45 +228,49 @@ static const CGFloat kMargin = 10;
 }
 
 - (void)refreshWithResult:(TranslateResult *)result {
+    _result = result;
+    
     self.stateTextField.hidden = YES;
     self.stateTextField.stringValue = @"";
     self.actionButton.hidden = YES;
     self.actionButton.attributedTitle = [NSAttributedString new];
 
-    EDServiceType type = result.serviceType;
-    NSString *imageName = [NSString stringWithFormat:@"%@ Translate", type];
+    EDServiceType serviceType = result.serviceType;
+    NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
-    TranslateService *translate = [ServiceTypes serviceWithType:type];
+    TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:12]];
     
-    if (result.wordResult) {
-        // 显示word
-        [self.normalResultView removeFromSuperview];
-        self.normalResultView.hidden = YES;
+    // 显示word
+    [self.normalResultView removeFromSuperview];
+    self.normalResultView.hidden = YES;
 
-        [self addSubview:self.wordResultView];
-        self.wordResultView.hidden = NO;
-        [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.topBarView.mas_bottom);
-            make.left.right.equalTo(self);
-            make.bottom.equalTo(self);
-        }];
-        [self.wordResultView refreshWithResult:result];
-    } else {
-        // 显示普通的
-        [self.wordResultView removeFromSuperview];
-        self.wordResultView.hidden = YES;
-
-        [self addSubview:self.normalResultView];
-        self.normalResultView.hidden = NO;
-        [self.normalResultView refreshWithStrings:result.normalResults];
-        [self.normalResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.topBarView.mas_bottom);
-            make.left.right.equalTo(self);
-            make.bottom.equalTo(self);
-        }];
-    }
+    [self addSubview:self.wordResultView];
+    self.wordResultView.hidden = NO;
+    [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.topBarView.mas_bottom);
+        make.left.right.equalTo(self);
+        make.bottom.equalTo(self);
+    }];
+    [self.wordResultView refreshWithResult:result];
+    
+//    if (result.wordResult) {
+//       
+//    } else {
+//        // 显示普通的
+//        [self.wordResultView removeFromSuperview];
+//        self.wordResultView.hidden = YES;
+//
+//        [self addSubview:self.normalResultView];
+//        self.normalResultView.hidden = NO;
+//        [self.normalResultView refreshWithStrings:result.normalResults];
+//        [self.normalResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(self.topBarView.mas_bottom);
+//            make.left.right.equalTo(self);
+//            make.bottom.equalTo(self);
+//        }];
+//    }
 }
 
 - (void)refreshWithStateString:(NSString *)string {
@@ -266,8 +278,10 @@ static const CGFloat kMargin = 10;
 }
 
 - (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action {
-    [self.normalResultView removeFromSuperview];
-    self.normalResultView.hidden = YES;
+    _copiedText = string;
+    
+//    [self.normalResultView removeFromSuperview];
+//    self.normalResultView.hidden = YES;
     [self.wordResultView removeFromSuperview];
     self.wordResultView.hidden = YES;
 

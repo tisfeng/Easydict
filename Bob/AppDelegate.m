@@ -30,7 +30,7 @@
 //    MainViewController *vc = [[MainViewController alloc] init];
 //    window.contentViewController = vc;
     
-    MainWindow *window = [[MainWindow alloc] init];
+    MainWindow *window = [MainWindow shared];
     [window center];
     [window makeKeyAndOrderFront:nil];
     

@@ -10,10 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RoundRectButton : NSButton
+@interface EDButton : NSButton
 
 @property (nonatomic, assign) CGFloat cornerRadius; // default 5
-@property (nonatomic, copy) void (^actionBlock)(RoundRectButton *button);
+@property (nonatomic, copy) void (^actionBlock)(EDButton *button);
 
 @end
 

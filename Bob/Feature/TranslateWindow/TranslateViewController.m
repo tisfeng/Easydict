@@ -415,7 +415,7 @@ return;                                     \
                 mm_strongify(self);
                 [self playAudioWithURL:url];
             }];
-            [view.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
+            [view.wordResultView setClickTextBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
                 mm_strongify(self);
                 [NSPasteboard mm_generalPasteboardSetString:word];
                 [self translateText:word];

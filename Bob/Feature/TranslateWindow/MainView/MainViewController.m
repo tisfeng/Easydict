@@ -215,6 +215,10 @@ static const CGFloat kMiniMainViewHeight = 300;
     return resultCell;
 }
 
+- (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
+    return NO;
+}
+
 - (QueryCell *)queryCell {
     QueryCell *queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = @"queryCell";
@@ -314,7 +318,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [self playAudioWithURL:url];
     }];
     
-    [resultView.wordResultView setSelectWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
+    [resultView.wordResultView setClickTextBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
         mm_strongify(self);
         [self copyTextToPasteboard:word];
     }];

@@ -13,10 +13,11 @@
 		03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */; };
 		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
-		033022A02918C5FE00B63F68 /* EDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EDTextField.m */; };
-		03C504A229160A93007626F8 /* RoundRectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* RoundRectButton.m */; };
+		033022A02918C5FE00B63F68 /* EDLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EDLabel.m */; };
+		03C504A229160A93007626F8 /* EDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* EDButton.m */; };
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
 		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
+		03F59760291942B200620CCC /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5975F291942B200620CCC /* NSTextView+Height.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -120,14 +121,16 @@
 		03252D3F2914068B00DA2932 /* MainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
 		03252D422914262C00DA2932 /* QueryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryCell.h; sourceTree = "<group>"; };
 		03252D432914262C00DA2932 /* QueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryCell.m; sourceTree = "<group>"; };
-		0330229E2918C5FE00B63F68 /* EDTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDTextField.h; sourceTree = "<group>"; };
-		0330229F2918C5FE00B63F68 /* EDTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDTextField.m; sourceTree = "<group>"; };
-		03C504A029160A93007626F8 /* RoundRectButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoundRectButton.h; sourceTree = "<group>"; };
-		03C504A129160A93007626F8 /* RoundRectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RoundRectButton.m; sourceTree = "<group>"; };
+		0330229E2918C5FE00B63F68 /* EDLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDLabel.h; sourceTree = "<group>"; };
+		0330229F2918C5FE00B63F68 /* EDLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDLabel.m; sourceTree = "<group>"; };
+		03C504A029160A93007626F8 /* EDButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDButton.h; sourceTree = "<group>"; };
+		03C504A129160A93007626F8 /* EDButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDButton.m; sourceTree = "<group>"; };
 		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
 		03C504A42916768E007626F8 /* DetectText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectText.m; sourceTree = "<group>"; };
 		03C504A82916BC56007626F8 /* ServiceTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceTypes.h; sourceTree = "<group>"; };
 		03C504A92916BC56007626F8 /* ServiceTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
+		03F5975E291942B200620CCC /* NSTextView+Height.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
+		03F5975F291942B200620CCC /* NSTextView+Height.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+Height.m"; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -336,28 +339,37 @@
 		03252D452914DC0600DA2932 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0330229D2918C40900B63F68 /* EDTextField */,
-				03C5049F29160A42007626F8 /* HoverButton */,
+				0330229D2918C40900B63F68 /* EDLabel */,
+				03C5049F29160A42007626F8 /* EDButton */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		0330229D2918C40900B63F68 /* EDTextField */ = {
+		0330229D2918C40900B63F68 /* EDLabel */ = {
 			isa = PBXGroup;
 			children = (
-				0330229E2918C5FE00B63F68 /* EDTextField.h */,
-				0330229F2918C5FE00B63F68 /* EDTextField.m */,
+				0330229E2918C5FE00B63F68 /* EDLabel.h */,
+				0330229F2918C5FE00B63F68 /* EDLabel.m */,
 			);
-			path = EDTextField;
+			path = EDLabel;
 			sourceTree = "<group>";
 		};
-		03C5049F29160A42007626F8 /* HoverButton */ = {
+		03C5049F29160A42007626F8 /* EDButton */ = {
 			isa = PBXGroup;
 			children = (
-				03C504A029160A93007626F8 /* RoundRectButton.h */,
-				03C504A129160A93007626F8 /* RoundRectButton.m */,
+				03C504A029160A93007626F8 /* EDButton.h */,
+				03C504A129160A93007626F8 /* EDButton.m */,
 			);
-			path = HoverButton;
+			path = EDButton;
+			sourceTree = "<group>";
+		};
+		03F5975D2919427F00620CCC /* NSTextView+Height */ = {
+			isa = PBXGroup;
+			children = (
+				03F5975E291942B200620CCC /* NSTextView+Height.h */,
+				03F5975F291942B200620CCC /* NSTextView+Height.m */,
+			);
+			path = "NSTextView+Height";
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -641,6 +653,7 @@
 		C9D9ED7723B73A83005803A4 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				03F5975D2919427F00620CCC /* NSTextView+Height */,
 				03252D3A2913EAF800DA2932 /* NSColor+MyColors */,
 				C99EEBB42385799D00FEE666 /* NSColor+MM.h */,
 				C99EEBBD2385799D00FEE666 /* NSColor+MM.m */,
@@ -893,13 +906,14 @@
 				03C504A52916768E007626F8 /* DetectText.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
-				033022A02918C5FE00B63F68 /* EDTextField.m in Sources */,
+				033022A02918C5FE00B63F68 /* EDLabel.m in Sources */,
 				C91C153823AB8B0600CCAEC0 /* MMTool.m in Sources */,
 				C99EEBCF2385799D00FEE666 /* TranslateWindow.m in Sources */,
 				C9C3BDD3238EA0EF00D5F1C1 /* Snip.m in Sources */,
 				C9C3BDCD238E78BA00D5F1C1 /* SnipViewController.m in Sources */,
 				C90C77852391188400A65E42 /* SnipFocusView.m in Sources */,
 				C99EEB282385796900FEE666 /* main.m in Sources */,
+				03F59760291942B200620CCC /* NSTextView+Height.m in Sources */,
 				C99EEBC42385799D00FEE666 /* Configuration.m in Sources */,
 				03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */,
 				C99EEBC62385799D00FEE666 /* TranslateError.m in Sources */,
@@ -909,7 +923,7 @@
 				C9986E1C2393B06C0016F569 /* NSView+MM.m in Sources */,
 				C99EEBD12385799D00FEE666 /* PopUpButton.m in Sources */,
 				C98CFA38239FA8E500FB7EC4 /* MMCrash.m in Sources */,
-				03C504A229160A93007626F8 /* RoundRectButton.m in Sources */,
+				03C504A229160A93007626F8 /* EDButton.m in Sources */,
 				C99EEBDD2385799D00FEE666 /* NSMutableAttributedString+MM.m in Sources */,
 				C99EEBCD2385799D00FEE666 /* QueryView.m in Sources */,
 				C98CFA28239F8CDB00FB7EC4 /* MMLog.swift in Sources */,

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) TranslateResult *result;
 @property (nonatomic, copy) void (^playAudioBlock)(WordResultView *view, NSString *url);
-@property (nonatomic, copy) void (^selectWordBlock)(WordResultView *view, NSString *word);
+@property (nonatomic, copy) void (^clickTextBlock)(WordResultView *view, NSString *word);
 
 - (void)refreshWithResult:(TranslateResult *)result;
 

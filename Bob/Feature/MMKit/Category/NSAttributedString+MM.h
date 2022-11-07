@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGFloat)mm_getTextWidth;
 
 // Get attribute string height.
-- (CGFloat)mm_getTextHeight:(CGFloat)width;
+- (CGFloat)mm_getTextHeightWithWidth:(CGFloat)width;
 
 
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font;

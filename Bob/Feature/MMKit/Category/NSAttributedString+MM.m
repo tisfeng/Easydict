@@ -50,7 +50,7 @@
 }
 
 // Get attribute string height.
-- (CGFloat)mm_getTextHeight:(CGFloat)width {
+- (CGFloat)mm_getTextHeightWithWidth:(CGFloat)width {
     NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
     NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, CGFLOAT_MAX)];
     NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];

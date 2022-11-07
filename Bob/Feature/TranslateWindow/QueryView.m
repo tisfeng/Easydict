@@ -54,6 +54,7 @@ DefineMethodMMMake_m(QueryView);
     NSColor *whiteColor = [NSColor whiteColor];
     
     self.wantsLayer = YES;
+    
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:LightBgColor.CGColor];
     } drak:^(id _Nonnull x) {

@@ -6,9 +6,9 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "RoundRectButton.h"
+#import "EDButton.h"
 
-@implementation RoundRectButton
+@implementation EDButton
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
@@ -24,7 +24,7 @@
     self.layer.cornerRadius = cornerRadius;
 }
 
-- (void)setActionBlock:(void (^)(RoundRectButton *_Nonnull))actionBlock {
+- (void)setActionBlock:(void (^)(EDButton *_Nonnull))actionBlock {
     _actionBlock = actionBlock;
     
     mm_weakify(self)
