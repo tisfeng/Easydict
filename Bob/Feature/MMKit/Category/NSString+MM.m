@@ -11,6 +11,34 @@
 
 @implementation NSString (MM)
 
+// get string width
+- (CGFloat)mm_widthWithFont:(NSFont *)font {
+    return [self mm_widthWithFont:font constrainedToHeight:CGFLOAT_MAX];
+}
+
+- (CGFloat)mm_widthWithFont:(NSFont *)font constrainedToHeight:(CGFloat)height {
+    return [self mm_sizeWithFont:font constrainedToSize:CGSizeMake(CGFLOAT_MAX, height)].width;
+}
+
+// get string height
+- (CGFloat)mm_heightWithFont:(NSFont *)font {
+    return [self mm_heightWithFont:font constrainedToWidth:CGFLOAT_MAX];
+}
+
+- (CGFloat)mm_heightWithFont:(NSFont *)font constrainedToWidth:(CGFloat)width {
+    return [self mm_sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)].height;
+}
+
+// get string size
+- (CGSize)mm_sizeWithFont:(NSFont *)font {
+    return [self mm_sizeWithFont:font constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
+}
+
+- (CGSize)mm_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size {
+    return [self boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : font} context:nil].size;
+}
+
+
 // https://stackoverflow.com/questions/8088473/how-do-i-url-encode-a-string
 - (NSString *)mm_urlencode {
     NSMutableString *output = [NSMutableString string];

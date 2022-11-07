@@ -13,6 +13,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (MM)
 
+// get string width
+- (CGFloat)mm_widthWithFont:(NSFont *)font;
+- (CGFloat)mm_widthWithFont:(NSFont *)font constrainedToHeight:(CGFloat)height;
+
+// get string height
+- (CGFloat)mm_heightWithFont:(NSFont *)font;
+- (CGFloat)mm_heightWithFont:(NSFont *)font constrainedToWidth:(CGFloat)width;
+
+// get string size
+- (CGSize)mm_sizeWithFont:(NSFont *)font;
+- (CGSize)mm_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size;
+
+
 - (NSString *)mm_urlencode;
 
 + (NSString *)mm_stringByCombineComponents:(NSArray<NSString *> *)components separatedString:(nullable NSString *)separatedString;
