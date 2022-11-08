@@ -39,7 +39,6 @@
     self.string = text;
     NSRange range = NSMakeRange(0, text.length);
     
-    
     // Character spacing
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSKernAttributeName : @(0.5)}];
     
@@ -52,24 +51,22 @@
         NSFontAttributeName : [NSFont systemFontOfSize:14],
     }
                               range:range];
-    
-    [self.textStorage deleteCharactersInRange:NSMakeRange(0, self.textStorage.length)];
 
     [self excuteLight:^(NSTextView *textView) {
-        
         [attributedString addAttributes:@{
             NSForegroundColorAttributeName : NSColor.resultTextLightColor,
         }
                                   range:range];
-        [textView.textStorage appendAttributedString:attributedString];
+        [textView.textStorage setAttributedString:attributedString];
     } drak:^(NSTextView *textView) {
+        
         [textView.textStorage deleteCharactersInRange:NSMakeRange(0, textView.textStorage.length)];
         
         [attributedString addAttributes:@{
             NSForegroundColorAttributeName : NSColor.resultTextDarkColor,
         }
                                   range:range];
-        [textView.textStorage appendAttributedString:attributedString];
+        [textView.textStorage setAttributedString:attributedString];
     }];
 }
 
