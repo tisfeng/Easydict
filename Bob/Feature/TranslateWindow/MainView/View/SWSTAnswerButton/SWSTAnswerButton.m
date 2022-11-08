@@ -46,6 +46,9 @@
 
 - (void)updateTrackingAreas {
     [super updateTrackingAreas];
+    
+    self.buttonState = SWSTAnswerButtonNormalState;
+
     if (self.trackingArea) {
         [self removeTrackingArea:self.trackingArea];
         self.trackingArea = nil;
