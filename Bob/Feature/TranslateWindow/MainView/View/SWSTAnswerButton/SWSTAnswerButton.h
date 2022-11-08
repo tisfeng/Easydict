@@ -9,15 +9,15 @@
 #import <Cocoa/Cocoa.h>
 
 typedef NS_ENUM(NSUInteger, SWSTAnswerButtonState) {
-    SWSTAnswerButtonNormalState      = 0,
-    SWSTAnswerButtonHoverState       = 1,
-    SWSTAnswerButtonHighlightState   = 2,
-    SWSTAnswerButtonSelectedState    = 3
+    SWSTAnswerButtonNormalState = 0,
+    SWSTAnswerButtonHoverState = 1,
+    SWSTAnswerButtonHighlightState = 2,
+    SWSTAnswerButtonSelectedState = 3
 };
 
 @interface SWSTAnswerButton : NSButton
 
-@property (nonatomic, assign) BOOL canSelected; //default YES.
+@property (nonatomic, assign) BOOL canSelected; // default YES.
 @property (nonatomic, assign) BOOL hasBorder;
 
 @property (nonatomic, assign) SWSTAnswerButtonState buttonState;

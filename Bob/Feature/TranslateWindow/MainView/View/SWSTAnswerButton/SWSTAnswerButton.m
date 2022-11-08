@@ -24,7 +24,6 @@
 @implementation SWSTAnswerButton
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
-    
     self = [super initWithFrame:frameRect];
     if (self) {
         [self commonInitialize];
@@ -33,7 +32,6 @@
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-    
     self = [super initWithCoder:coder];
     if (self) {
         [self commonInitialize];
@@ -42,26 +40,23 @@
 }
 
 - (void)viewWillMoveToSuperview:(NSView *)newSuperview {
-    
     [super viewWillMoveToSuperview:newSuperview];
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)updateTrackingAreas {
-    
     [super updateTrackingAreas];
-    if(self.trackingArea) {
+    if (self.trackingArea) {
         [self removeTrackingArea:self.trackingArea];
         self.trackingArea = nil;
     }
-    NSTrackingAreaOptions options = NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveAlways;
+    NSTrackingAreaOptions options = NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways;
     self.trackingArea = [[NSTrackingArea alloc] initWithRect:CGRectZero options:options owner:self userInfo:nil];
     
     [self addTrackingArea:self.trackingArea];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    
     self.hover = YES;
     if (!self.selected) {
         self.buttonState = SWSTAnswerButtonHoverState;
@@ -69,7 +64,6 @@
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    
     self.hover = NO;
     if (!self.selected) {
         [self setButtonState:SWSTAnswerButtonNormalState];
@@ -77,7 +71,6 @@
 }
 
 - (void)mouseDown:(NSEvent *)event {
-    
     self.mouseUp = NO;
     if (self.enabled && !self.selected) {
         self.buttonState = SWSTAnswerButtonHighlightState;
@@ -85,7 +78,6 @@
 }
 
 - (void)mouseUp:(NSEvent *)event {
-    
     self.mouseUp = YES;
     if (self.enabled) {
         if (self.canSelected && self.hover) {
@@ -113,7 +105,6 @@
 #pragma mark - Private Methods
 
 - (void)commonInitialize {
-    
     self.borderNormalWidth = (_borderNormalWidth == 0.f) ? 1.f : _borderNormalWidth;
     self.borderHoverWidth = (_borderHoverWidth == 0.f) ? 1.f : _borderHoverWidth;
     self.borderHighlightWidth = (_borderHighlightWidth == 0.f) ? 1.f : _borderHighlightWidth;
@@ -139,7 +130,6 @@
 }
 
 - (void)initializeUI {
-    
     self.wantsLayer = YES;
     [self setButtonType:NSButtonTypeMomentaryPushIn];
     self.bezelStyle = NSBezelStyleTexturedSquare;
@@ -148,13 +138,12 @@
 }
 
 - (void)setFontColor:(NSColor *)color {
-    
     NSMutableAttributedString *colorTitle = [[NSMutableAttributedString alloc] initWithAttributedString:[self attributedTitle]];
     if (colorTitle.length == 0) {
         return;
     }
     NSDictionary *attributes = [colorTitle attributesAtIndex:0 effectiveRange:nil];
-    if ( [attributes[NSForegroundColorAttributeName] isEqual:color]) {
+    if ([attributes[NSForegroundColorAttributeName] isEqual:color]) {
         return;
     }
     NSRange titleRange = NSMakeRange(0, [colorTitle length]);
@@ -163,7 +152,6 @@
 }
 
 - (void)updateButtonApperaceWithState:(SWSTAnswerButtonState)state {
-    
     CGFloat cornerRadius = 0.f;
     CGFloat borderWidth = 0.f;
     NSColor *borderColor = nil;
@@ -190,8 +178,7 @@
             if (self.hoverImage != nil) {
                 self.defaultImage = self.hoverImage;
             }
-        }
-            break;
+        } break;
         case SWSTAnswerButtonHighlightState: {
             cornerRadius = self.cornerHighlightRadius;
             borderWidth = self.borderHighlightWidth;
@@ -201,8 +188,7 @@
             if (self.highlightImage != nil) {
                 self.defaultImage = self.highlightImage;
             }
-        }
-            break;
+        } break;
         case SWSTAnswerButtonSelectedState: {
             cornerRadius = self.cornerSelectedRadius;
             borderWidth = self.borderSelectedWidth;
@@ -212,8 +198,7 @@
             if (self.selectedImage != nil) {
                 self.defaultImage = self.selectedImage;
             }
-        }
-            break;
+        } break;
     }
     if (self.defaultImage != nil) {
         self.image = self.defaultImage;
@@ -235,19 +220,16 @@
 #pragma mark - Setter
 
 - (void)setCanSelected:(BOOL)canSelected {
-    
     _canSelected = canSelected;
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setHasBorder:(BOOL)hasBorder {
-    
     _hasBorder = hasBorder;
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setButtonState:(SWSTAnswerButtonState)state {
-    
     if (_buttonState == state) {
         return;
     }
@@ -257,7 +239,6 @@
 }
 
 - (void)setTitle:(NSString *)title {
-    
     [super setTitle:title];
     [self setFontColor:self.normalColor];
 }

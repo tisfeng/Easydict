@@ -10,8 +10,8 @@
 
 @interface NSColor (hex)
 
-+ (NSColor*)colorWithRGB:(uint32_t)rgbValue;
-+ (NSColor*)colorWithRGB:(uint32_t)rgbValue alpha:(CGFloat)alpha;
++ (NSColor *)colorWithRGB:(uint32_t)rgbValue;
++ (NSColor *)colorWithRGB:(uint32_t)rgbValue alpha:(CGFloat)alpha;
 + (NSColor *)colorWithRGBA:(uint32_t)rgbaValue;
 
 @end
