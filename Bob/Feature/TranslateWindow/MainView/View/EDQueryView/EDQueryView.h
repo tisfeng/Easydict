@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *detectLanguage;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
-@property (nonatomic, copy) void (^detectActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
 
 @end
 

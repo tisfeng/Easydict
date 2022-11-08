@@ -7,13 +7,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "SWSTAnswerButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EDButton : NSButton
+/// Auto show highlight background color when hover button.
+@interface EDHoverButton : SWSTAnswerButton
 
-@property (nonatomic, assign) CGFloat cornerRadius; // default 5
-@property (nonatomic, copy) void (^actionBlock)(EDButton *button);
+@property (nonatomic, copy) void (^actionBlock)(EDHoverButton *button);
 
 @end
 

@@ -12,7 +12,7 @@
 #import "GoogleTranslate.h"
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
-#import "EDButton.h"
+#import "EDHoverButton.h"
 
 static const CGFloat kVerticalMargin = 10;
 
@@ -73,7 +73,7 @@ static const CGFloat kVerticalMargin = 10;
     }];
     
     CGFloat transformButtonWidth = 20;
-    self.transformButton = [EDButton mm_make:^(NSButton *_Nonnull button) {
+    self.transformButton = [EDHoverButton mm_make:^(NSButton *_Nonnull button) {
         [serviceBarView addSubview:button];
         button.bordered = NO;
         button.toolTip = @"交换语言";

@@ -7,13 +7,13 @@
 //
 
 #import "EDQueryView.h"
-#import "EDButton.h"
+#import "EDHoverButton.h"
 
 @interface EDQueryView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 
-@property (nonatomic, strong) EDButton *detectButton;
+@property (nonatomic, strong) NSButton *detectButton;
 
 @end
 
@@ -52,7 +52,7 @@
     }];
     
     
-    EDButton *detectButton = [[EDButton alloc] init];
+    NSButton *detectButton = [[NSButton alloc] init];
     detectButton.hidden = YES;
     detectButton.bordered = YES;
     detectButton.bezelStyle = NSBezelStyleInline;
@@ -67,13 +67,16 @@
     }];
     
     mm_weakify(self)
-    [detectButton setActionBlock:^(EDButton * _Nonnull button) {
+    [detectButton setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+        NSLog(@"detectActionBlock");
+
         mm_strongify(self)
         if (self.detectActionBlock) {
-            NSLog(@"audioActionBlock");
-            self.detectActionBlock(@"");
+            self.detectActionBlock(input);
         }
-    }];
+        return RACSignal.empty;
+    }]];
+    
     detectButton.mas_key = @"detectButton";
 }
 

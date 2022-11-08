@@ -9,7 +9,7 @@
 #import "WordResultView.h"
 #import "ImageButton.h"
 #import "NSColor+MyColors.h"
-#import "EDButton.h"
+#import "EDHoverButton.h"
 #import "EDLabel.h"
 #import "TextView.h"
 #import "NSTextView+Height.h"
@@ -105,7 +105,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             valueTextField.mas_key = @"valueTextField_phonetics";
         }
         
-        EDButton *audioButton = [[EDButton alloc] init];
+        EDHoverButton *audioButton = [[EDHoverButton alloc] init];
         [self addSubview:audioButton];
         [self.audioButtons addObject:audioButton];
         audioButton.bordered = NO;
@@ -127,7 +127,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.width.height.mas_equalTo(23);
         }];
         
-        [audioButton setActionBlock:^(EDButton *_Nonnull button) {
+        [audioButton setActionBlock:^(EDHoverButton *_Nonnull button) {
             NSLog(@"click audioButton");
         }];
         
@@ -428,7 +428,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     }];
     
     if (result.wordResult || result.normalResults.count) {
-        self.audioButton = [EDButton mm_make:^(NSButton *_Nonnull button) {
+        self.audioButton = [EDHoverButton mm_make:^(NSButton *_Nonnull button) {
             [self addSubview:button];
             button.bordered = NO;
             button.imageScaling = NSImageScaleProportionallyDown;
@@ -450,7 +450,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }]];
         }];
         
-        self.textCopyButton = [EDButton mm_make:^(NSButton *_Nonnull button) {
+        self.textCopyButton = [EDHoverButton mm_make:^(NSButton *_Nonnull button) {
             [self addSubview:button];
             button.bordered = NO;
             button.imageScaling = NSImageScaleProportionallyDown;

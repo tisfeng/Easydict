@@ -8,7 +8,7 @@
 
 #import "ResultView.h"
 #import "ServiceTypes.h"
-#import "EDButton.h"
+#import "EDHoverButton.h"
 
 static const CGFloat kMargin = 10;
 
@@ -24,8 +24,8 @@ static const CGFloat kMargin = 10;
 
 @property (nonatomic, strong) NSButton *arrowButton;
 
-@property (nonatomic, strong) EDButton *audioButton;
-@property (nonatomic, strong) EDButton *textCopyButton;
+@property (nonatomic, strong) EDHoverButton *audioButton;
+@property (nonatomic, strong) EDHoverButton *textCopyButton;
 
 @property (nonatomic, copy) void (^audioActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
@@ -122,7 +122,7 @@ static const CGFloat kMargin = 10;
             
             button.imageScaling = NSImageScaleAxesIndependently;
             [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.right.equalTo(self.topBarView.mas_right).offset(-kMargin);
+                make.right.equalTo(self.topBarView.mas_right).offset(-8);
                 make.centerY.equalTo(self.topBarView);
                 make.size.mas_equalTo(iconSize);
             }];
