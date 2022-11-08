@@ -39,25 +39,33 @@ static const CGFloat kVerticalMargin = 10;
 }
 
 - (void)setup {
-    QueryView *queryView = [[QueryView alloc] initWithFrame:self.bounds];
-    self.queryView = queryView;
-    [self addSubview:queryView];
-    [self.queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//    QueryView *queryView = [[QueryView alloc] initWithFrame:self.bounds];
+//    self.queryView = queryView;
+//    [self addSubview:queryView];
+//    [queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.top.left.right.equalTo(self);
+//        make.height.mas_greaterThanOrEqualTo(90);
+//    }];
+    
+    EDQueryView *inputView = [[EDQueryView alloc] initWithFrame:self.bounds];
+    self.queryView = inputView;
+    [self addSubview:inputView];
+    [inputView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_greaterThanOrEqualTo(90);
     }];
-    
-    NSView *barView = [[NSView alloc] init];
-    [self addSubview:barView];
-    barView.wantsLayer = YES;
-    barView.layer.cornerRadius = 8;
-    [barView excuteLight:^(NSView *barView) {
+
+    NSView *serviceBarView = [[NSView alloc] init];
+    [self addSubview:serviceBarView];
+    serviceBarView.wantsLayer = YES;
+    serviceBarView.layer.cornerRadius = 8;
+    [serviceBarView excuteLight:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
         } drak:^(NSView *barView) {
             barView.layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
         }];
     
-    [barView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [serviceBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.queryView.mas_bottom).offset(kVerticalMargin);
         make.left.right.equalTo(self);
         make.height.mas_greaterThanOrEqualTo(30);
@@ -66,7 +74,7 @@ static const CGFloat kVerticalMargin = 10;
     
     CGFloat transformButtonWidth = 20;
     self.transformButton = [EDButton mm_make:^(NSButton *_Nonnull button) {
-        [barView addSubview:button];
+        [serviceBarView addSubview:button];
         button.bordered = NO;
         button.toolTip = @"交换语言";
         button.imageScaling = NSImageScaleProportionallyDown;
@@ -81,7 +89,7 @@ static const CGFloat kVerticalMargin = 10;
         }];
         
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(barView);
+            make.center.equalTo(serviceBarView);
             make.width.height.mas_equalTo(transformButtonWidth);
         }];
         
@@ -94,14 +102,14 @@ static const CGFloat kVerticalMargin = 10;
             [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
             [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
             
-            [self typeEnter];
+            [self typeEnterKey];
             
             return RACSignal.empty;
         }]];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             // Note: need to convertRect!
-            CGRect rect = [self convertRect:button.frame fromView:barView];
+            CGRect rect = [self convertRect:button.frame fromView:serviceBarView];
             NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
                                                 initWithRect:rect
                                                 options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
@@ -115,9 +123,9 @@ static const CGFloat kVerticalMargin = 10;
     CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
 
     self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [barView addSubview:button];
+        [serviceBarView addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(barView);
+            make.centerY.equalTo(serviceBarView);
                 make.height.mas_equalTo(25);
             make.left.equalTo(self).offset(padding);
         }];
@@ -135,14 +143,14 @@ static const CGFloat kVerticalMargin = 10;
             NSLog(@"from 选中语言 %zd %@", from, LanguageDescFromEnum(from));
             if (from != Configuration.shared.from) {
                 Configuration.shared.from = from;
-                [self typeEnter];
+                [self typeEnterKey];
             }
         }];
     }];
     
     
     self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [barView addSubview:button];
+        [serviceBarView addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.fromLanguageButton);
             make.width.height.equalTo(self.fromLanguageButton);
@@ -163,15 +171,15 @@ static const CGFloat kVerticalMargin = 10;
             NSLog(@"to 选中语言 %zd %@", to, LanguageDescFromEnum(to));
             if (to != Configuration.shared.to) {
                 Configuration.shared.to = to;
-                [self typeEnter];
+                [self typeEnterKey];
             }
         }];
     }];
 }
 
-- (void)typeEnter {
+- (void)typeEnterKey {
     if (self.enterActionBlock) {
-        self.enterActionBlock(self.queryView);
+        self.enterActionBlock(self.queryView.queryText);
     }
 }
 
@@ -200,19 +208,19 @@ static const CGFloat kVerticalMargin = 10;
 }
 
 
-- (void)setEnterActionBlock:(void (^)(QueryView * _Nonnull))enterActionBlock {
+- (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
     _enterActionBlock = enterActionBlock;
     
     self.queryView.enterActionBlock = enterActionBlock;
 }
 
-- (void)setAudioActionBlock:(void (^)(QueryView * _Nonnull))audioActionBlock {
+- (void)setAudioActionBlock:(void (^)(NSString * _Nonnull))audioActionBlock {
     _audioActionBlock = audioActionBlock;
     
     self.queryView.audioActionBlock = audioActionBlock;
 }
 
-- (void)setCopyActionBlock:(void (^)(QueryView * _Nonnull))copyActionBlock {
+- (void)setCopyActionBlock:(void (^)(NSString * _Nonnull))copyActionBlock {
     _copyActionBlock = copyActionBlock;
     
     self.queryView.copyActionBlock = copyActionBlock;

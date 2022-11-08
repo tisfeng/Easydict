@@ -8,21 +8,28 @@
 
 #import <Cocoa/Cocoa.h>
 #import "QueryView.h"
+#import "EDQueryView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QueryCell : NSTableRowView
 
-@property (nonatomic, strong) QueryView *queryView;
-
-@property (nonatomic, strong) NSTextView *textView;
+//@property (nonatomic, strong) QueryView *queryView;
+@property (nonatomic, strong) EDQueryView *queryView;
 
 @property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, copy) NSString *detectLanguage;
 
-@property (nonatomic, copy) void (^audioActionBlock)(QueryView *view);
-@property (nonatomic, copy) void (^copyActionBlock)(QueryView *view);
-@property (nonatomic, copy) void (^enterActionBlock)(QueryView *view);
+
+@property (nonatomic, copy) void (^audioActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
+
+@property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^detectActionBlock)(NSString *text);
+
+//@property (nonatomic, copy) void (^audioActionBlock)(QueryView *view);
+//@property (nonatomic, copy) void (^copyActionBlock)(QueryView *view);
+//@property (nonatomic, copy) void (^enterActionBlock)(QueryView *view);
 @end
 
 NS_ASSUME_NONNULL_END

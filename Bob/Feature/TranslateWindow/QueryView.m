@@ -23,7 +23,6 @@
 @end
 
 
-
 @implementation QueryView
 
 @synthesize queryText = _queryText;

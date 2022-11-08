@@ -18,6 +18,8 @@
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
 		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
 		03F59760291942B200620CCC /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5975F291942B200620CCC /* NSTextView+Height.m */; };
+		03F597672919F79C00620CCC /* EDCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F597662919F79C00620CCC /* EDCommonView.m */; };
+		03F5976B2919FFEE00620CCC /* EDQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5976A2919FFEE00620CCC /* EDQueryView.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -131,6 +133,10 @@
 		03C504A92916BC56007626F8 /* ServiceTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
 		03F5975E291942B200620CCC /* NSTextView+Height.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
 		03F5975F291942B200620CCC /* NSTextView+Height.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+Height.m"; sourceTree = "<group>"; };
+		03F597652919F79C00620CCC /* EDCommonView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDCommonView.h; sourceTree = "<group>"; };
+		03F597662919F79C00620CCC /* EDCommonView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDCommonView.m; sourceTree = "<group>"; };
+		03F597692919FFEE00620CCC /* EDQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDQueryView.h; sourceTree = "<group>"; };
+		03F5976A2919FFEE00620CCC /* EDQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDQueryView.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -339,6 +345,8 @@
 		03252D452914DC0600DA2932 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				03F597682919FFCD00620CCC /* EDQueryView */,
+				03F597642919F76A00620CCC /* EDCommonView */,
 				0330229D2918C40900B63F68 /* EDLabel */,
 				03C5049F29160A42007626F8 /* EDButton */,
 			);
@@ -370,6 +378,24 @@
 				03F5975F291942B200620CCC /* NSTextView+Height.m */,
 			);
 			path = "NSTextView+Height";
+			sourceTree = "<group>";
+		};
+		03F597642919F76A00620CCC /* EDCommonView */ = {
+			isa = PBXGroup;
+			children = (
+				03F597652919F79C00620CCC /* EDCommonView.h */,
+				03F597662919F79C00620CCC /* EDCommonView.m */,
+			);
+			path = EDCommonView;
+			sourceTree = "<group>";
+		};
+		03F597682919FFCD00620CCC /* EDQueryView */ = {
+			isa = PBXGroup;
+			children = (
+				03F597692919FFEE00620CCC /* EDQueryView.h */,
+				03F5976A2919FFEE00620CCC /* EDQueryView.m */,
+			);
+			path = EDQueryView;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -947,9 +973,11 @@
 				C9D679CC23A3403F0073957C /* NSDictionary+MM.m in Sources */,
 				C91DF6B323A375E5009CB158 /* YoudaoTranslateResponse.m in Sources */,
 				C9889F6123AA0FDA00C2D127 /* GoogleTranslate.m in Sources */,
+				03F5976B2919FFEE00620CCC /* EDQueryView.m in Sources */,
 				C99EEBD22385799D00FEE666 /* ResultView.m in Sources */,
 				C99EEBDC2385799D00FEE666 /* NSColor+MM.m in Sources */,
 				C99EEBD02385799D00FEE666 /* TranslateWindowController.m in Sources */,
+				03F597672919F79C00620CCC /* EDCommonView.m in Sources */,
 				C99EEBD82385799D00FEE666 /* NSString+MM.m in Sources */,
 				C99EEBDB2385799D00FEE666 /* NSAttributedString+MM.m in Sources */,
 				C959D33A238809B800DD8808 /* OCRResult.m in Sources */,

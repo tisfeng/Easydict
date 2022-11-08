@@ -12,10 +12,25 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        self.wantsLayer = YES;
-        self.cornerRadius = 5;
+        [self setup];
     }
     return self;
+}
+
+- (void)setup {
+    self.wantsLayer = YES;
+    self.cornerRadius = 5;
+    
+    self.bordered = NO;
+    self.imageScaling = NSImageScaleProportionallyDown;
+    self.bezelStyle = NSBezelStyleRegularSquare;
+    [self setButtonType:NSButtonTypeMomentaryChange];
+    
+    [self excuteLight:^(NSButton *button) {
+        button.contentTintColor = NSColor.blackColor;
+    } drak:^(NSButton *button) {
+        button.contentTintColor = NSColor.whiteColor;
+    }];
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
@@ -29,7 +44,8 @@
     
     mm_weakify(self)
     [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-        mm_strongify(self) if (self.actionBlock) {
+        mm_strongify(self)
+        if (self.actionBlock) {
             self.actionBlock(self);
         }
         return RACSignal.empty;

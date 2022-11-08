@@ -20,6 +20,7 @@
 #import "TranslateLanguage.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ServiceTypes.h"
+#import "EDQueryView.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -31,7 +32,7 @@
 @property (nonatomic, copy) NSString *inputText;
 
 @property (nonatomic, strong) DetectText *detectManager;
-@property (nonatomic, strong) QueryView *queryView;
+@property (nonatomic, strong) EDQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
 @end
@@ -219,6 +220,8 @@ static const CGFloat kMiniMainViewHeight = 300;
     return NO;
 }
 
+
+
 - (QueryCell *)queryCell {
     QueryCell *queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = @"queryCell";
@@ -231,13 +234,13 @@ static const CGFloat kMiniMainViewHeight = 300;
     }
     
     mm_weakify(self)
-    [queryCell setEnterActionBlock:^(QueryView *view) {
+    [queryCell setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        self.inputText = view.queryText;
+        self.inputText = text;
         [self startQuery];
     }];
     
-    [queryCell setAudioActionBlock:^(QueryView * _Nonnull view) {
+    [queryCell setAudioActionBlock:^(NSString *text) {
         mm_strongify(self);
         TranslateService *service = [self firstTranslateService];
         if (service) {
@@ -251,9 +254,9 @@ static const CGFloat kMiniMainViewHeight = 300;
         }
     }];
     
-    [queryCell setCopyActionBlock:^(QueryView * _Nonnull view) {
+    [queryCell setCopyActionBlock:^(NSString *text) {
         mm_strongify(self);
-        [self copyTextToPasteboard:view.textView.string];
+        [self copyTextToPasteboard:text];
     }];
     
     return queryCell;
