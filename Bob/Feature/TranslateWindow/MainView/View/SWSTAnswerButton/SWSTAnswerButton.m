@@ -95,6 +95,9 @@
             if (!self.selected) {
                 self.buttonState = SWSTAnswerButtonNormalState;
             }
+            if (self.hover) {
+                self.buttonState = SWSTAnswerButtonHoverState;
+            }
         }
         if (self.hover && self.enabled) {
             NSString *selString = NSStringFromSelector(self.action);
