@@ -6,10 +6,9 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EDLabel.h"
+#import "EZLabel.h"
 
-
-@implementation EDLabel
+@implementation EZLabel
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {

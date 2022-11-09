@@ -21,7 +21,7 @@
 - (void)setup {
     self.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
     
-    ResultView *resultView = [[ResultView alloc] initWithFrame:self.bounds];
+    EZResultView *resultView = [[EZResultView alloc] initWithFrame:self.bounds];
     [self addSubview:resultView];
     self.resultView = resultView;
 }

@@ -6,10 +6,10 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EDQueryView.h"
+#import "EZQueryView.h"
 #import "EZHoverButton.h"
 
-@interface EDQueryView () <NSTextViewDelegate>
+@interface EZQueryView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 
@@ -17,7 +17,7 @@
 
 @end
 
-@implementation EDQueryView
+@implementation EZQueryView
 
 @synthesize queryText = _queryText;
 

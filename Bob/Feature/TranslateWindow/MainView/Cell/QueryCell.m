@@ -47,7 +47,7 @@ static const CGFloat kVerticalMargin = 10;
     //        make.height.mas_greaterThanOrEqualTo(90);
     //    }];
     
-    EDQueryView *inputView = [[EDQueryView alloc] initWithFrame:self.bounds];
+    EZQueryView *inputView = [[EZQueryView alloc] initWithFrame:self.bounds];
     self.queryView = inputView;
     [self addSubview:inputView];
     [inputView mas_remakeConstraints:^(MASConstraintMaker *make) {

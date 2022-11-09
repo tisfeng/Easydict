@@ -9,13 +9,16 @@
 #import <Cocoa/Cocoa.h>
 #import "TranslateResult.h"
 #import "ResultView.h"
+#import "EZResultView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ResultCell : NSTableRowView
 
 @property (nonatomic, strong) TranslateResult *result;
-@property (nonatomic, strong) ResultView *resultView;
+
+//@property (nonatomic, strong) ResultView *resultView;
+@property (nonatomic, strong) EZResultView *resultView;
 
 @end
 

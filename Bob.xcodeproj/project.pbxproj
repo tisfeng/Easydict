@@ -13,14 +13,16 @@
 		03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */; };
 		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
-		033022A02918C5FE00B63F68 /* EDLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EDLabel.m */; };
+		033022A02918C5FE00B63F68 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EZLabel.m */; };
+		0390D9CA291BF63300FB9426 /* EZResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9C9291BF63300FB9426 /* EZResultView.m */; };
+		0390D9CE291BF7CA00FB9426 /* EZCommonResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */; };
 		03B7CAB4291BE758008E3874 /* EZButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B7CAB2291BE758008E3874 /* EZButton.m */; };
 		03C504A229160A93007626F8 /* EZHoverButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* EZHoverButton.m */; };
 		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
 		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
 		03F59760291942B200620CCC /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5975F291942B200620CCC /* NSTextView+Height.m */; };
-		03F597672919F79C00620CCC /* EDCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F597662919F79C00620CCC /* EDCommonView.m */; };
-		03F5976B2919FFEE00620CCC /* EDQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5976A2919FFEE00620CCC /* EDQueryView.m */; };
+		03F597672919F79C00620CCC /* EZCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F597662919F79C00620CCC /* EZCommonView.m */; };
+		03F5976B2919FFEE00620CCC /* EZQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5976A2919FFEE00620CCC /* EZQueryView.m */; };
 		C90007F323B3BA710002B6A0 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */; };
 		C90007F623B3C5BB0002B6A0 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
@@ -124,8 +126,12 @@
 		03252D3F2914068B00DA2932 /* MainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
 		03252D422914262C00DA2932 /* QueryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryCell.h; sourceTree = "<group>"; };
 		03252D432914262C00DA2932 /* QueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryCell.m; sourceTree = "<group>"; };
-		0330229E2918C5FE00B63F68 /* EDLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDLabel.h; sourceTree = "<group>"; };
-		0330229F2918C5FE00B63F68 /* EDLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDLabel.m; sourceTree = "<group>"; };
+		0330229E2918C5FE00B63F68 /* EZLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLabel.h; sourceTree = "<group>"; };
+		0330229F2918C5FE00B63F68 /* EZLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLabel.m; sourceTree = "<group>"; };
+		0390D9C8291BF63300FB9426 /* EZResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZResultView.h; sourceTree = "<group>"; };
+		0390D9C9291BF63300FB9426 /* EZResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZResultView.m; sourceTree = "<group>"; };
+		0390D9CC291BF7CA00FB9426 /* EZCommonResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCommonResultView.h; sourceTree = "<group>"; };
+		0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCommonResultView.m; sourceTree = "<group>"; };
 		03B7CAB2291BE758008E3874 /* EZButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZButton.m; sourceTree = "<group>"; };
 		03B7CAB3291BE758008E3874 /* EZButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZButton.h; sourceTree = "<group>"; };
 		03C504A029160A93007626F8 /* EZHoverButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZHoverButton.h; sourceTree = "<group>"; };
@@ -136,10 +142,10 @@
 		03C504A92916BC56007626F8 /* ServiceTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
 		03F5975E291942B200620CCC /* NSTextView+Height.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
 		03F5975F291942B200620CCC /* NSTextView+Height.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+Height.m"; sourceTree = "<group>"; };
-		03F597652919F79C00620CCC /* EDCommonView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDCommonView.h; sourceTree = "<group>"; };
-		03F597662919F79C00620CCC /* EDCommonView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDCommonView.m; sourceTree = "<group>"; };
-		03F597692919FFEE00620CCC /* EDQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDQueryView.h; sourceTree = "<group>"; };
-		03F5976A2919FFEE00620CCC /* EDQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDQueryView.m; sourceTree = "<group>"; };
+		03F597652919F79C00620CCC /* EZCommonView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCommonView.h; sourceTree = "<group>"; };
+		03F597662919F79C00620CCC /* EZCommonView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCommonView.m; sourceTree = "<group>"; };
+		03F597692919FFEE00620CCC /* EZQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryView.h; sourceTree = "<group>"; };
+		03F5976A2919FFEE00620CCC /* EZQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryView.m; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90007F123B3BA710002B6A0 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
@@ -348,22 +354,42 @@
 		03252D452914DC0600DA2932 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				03F597682919FFCD00620CCC /* EZQueryView */,
+				0390D9C7291BF5F200FB9426 /* EZResultView */,
+				0390D9CB291BF7A800FB9426 /* EZCommonResultView */,
 				03B7CAB1291BE758008E3874 /* EZButton */,
-				03F597682919FFCD00620CCC /* EDQueryView */,
-				03F597642919F76A00620CCC /* EDCommonView */,
-				0330229D2918C40900B63F68 /* EDLabel */,
+				03F597642919F76A00620CCC /* EZCommonView */,
+				0330229D2918C40900B63F68 /* EZLabel */,
 				03C5049F29160A42007626F8 /* EZHoverButton */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		0330229D2918C40900B63F68 /* EDLabel */ = {
+		0330229D2918C40900B63F68 /* EZLabel */ = {
 			isa = PBXGroup;
 			children = (
-				0330229E2918C5FE00B63F68 /* EDLabel.h */,
-				0330229F2918C5FE00B63F68 /* EDLabel.m */,
+				0330229E2918C5FE00B63F68 /* EZLabel.h */,
+				0330229F2918C5FE00B63F68 /* EZLabel.m */,
 			);
-			path = EDLabel;
+			path = EZLabel;
+			sourceTree = "<group>";
+		};
+		0390D9C7291BF5F200FB9426 /* EZResultView */ = {
+			isa = PBXGroup;
+			children = (
+				0390D9C8291BF63300FB9426 /* EZResultView.h */,
+				0390D9C9291BF63300FB9426 /* EZResultView.m */,
+			);
+			path = EZResultView;
+			sourceTree = "<group>";
+		};
+		0390D9CB291BF7A800FB9426 /* EZCommonResultView */ = {
+			isa = PBXGroup;
+			children = (
+				0390D9CC291BF7CA00FB9426 /* EZCommonResultView.h */,
+				0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */,
+			);
+			path = EZCommonResultView;
 			sourceTree = "<group>";
 		};
 		03B7CAB1291BE758008E3874 /* EZButton */ = {
@@ -393,22 +419,22 @@
 			path = "NSTextView+Height";
 			sourceTree = "<group>";
 		};
-		03F597642919F76A00620CCC /* EDCommonView */ = {
+		03F597642919F76A00620CCC /* EZCommonView */ = {
 			isa = PBXGroup;
 			children = (
-				03F597652919F79C00620CCC /* EDCommonView.h */,
-				03F597662919F79C00620CCC /* EDCommonView.m */,
+				03F597652919F79C00620CCC /* EZCommonView.h */,
+				03F597662919F79C00620CCC /* EZCommonView.m */,
 			);
-			path = EDCommonView;
+			path = EZCommonView;
 			sourceTree = "<group>";
 		};
-		03F597682919FFCD00620CCC /* EDQueryView */ = {
+		03F597682919FFCD00620CCC /* EZQueryView */ = {
 			isa = PBXGroup;
 			children = (
-				03F597692919FFEE00620CCC /* EDQueryView.h */,
-				03F5976A2919FFEE00620CCC /* EDQueryView.m */,
+				03F597692919FFEE00620CCC /* EZQueryView.h */,
+				03F5976A2919FFEE00620CCC /* EZQueryView.m */,
 			);
-			path = EDQueryView;
+			path = EZQueryView;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -945,7 +971,7 @@
 				03C504A52916768E007626F8 /* DetectText.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
-				033022A02918C5FE00B63F68 /* EDLabel.m in Sources */,
+				033022A02918C5FE00B63F68 /* EZLabel.m in Sources */,
 				C91C153823AB8B0600CCAEC0 /* MMTool.m in Sources */,
 				C99EEBCF2385799D00FEE666 /* TranslateWindow.m in Sources */,
 				C9C3BDD3238EA0EF00D5F1C1 /* Snip.m in Sources */,
@@ -977,6 +1003,7 @@
 				C99EEBDA2385799D00FEE666 /* NSButton+MM.m in Sources */,
 				C98CFA29239F8CDB00FB7EC4 /* MMFileLogFormatter.m in Sources */,
 				C98C17B0239E516A00BD02DB /* Shortcut.m in Sources */,
+				0390D9CA291BF63300FB9426 /* EZResultView.m in Sources */,
 				C98C17AA239E410300BD02DB /* AboutViewController.m in Sources */,
 				C98CFA35239FA6F400FB7EC4 /* MMCrashFileTool.m in Sources */,
 				C99EEBC52385799D00FEE666 /* BaiduTranslate.m in Sources */,
@@ -987,11 +1014,11 @@
 				C9D679CC23A3403F0073957C /* NSDictionary+MM.m in Sources */,
 				C91DF6B323A375E5009CB158 /* YoudaoTranslateResponse.m in Sources */,
 				C9889F6123AA0FDA00C2D127 /* GoogleTranslate.m in Sources */,
-				03F5976B2919FFEE00620CCC /* EDQueryView.m in Sources */,
+				03F5976B2919FFEE00620CCC /* EZQueryView.m in Sources */,
 				C99EEBD22385799D00FEE666 /* ResultView.m in Sources */,
 				C99EEBDC2385799D00FEE666 /* NSColor+MM.m in Sources */,
 				C99EEBD02385799D00FEE666 /* TranslateWindowController.m in Sources */,
-				03F597672919F79C00620CCC /* EDCommonView.m in Sources */,
+				03F597672919F79C00620CCC /* EZCommonView.m in Sources */,
 				C99EEBD82385799D00FEE666 /* NSString+MM.m in Sources */,
 				C99EEBDB2385799D00FEE666 /* NSAttributedString+MM.m in Sources */,
 				C959D33A238809B800DD8808 /* OCRResult.m in Sources */,
@@ -1001,6 +1028,7 @@
 				03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */,
 				C99EEBCC2385799D00FEE666 /* NormalResultView.m in Sources */,
 				C99142742390FCBD0025E75E /* NSImage+MM.m in Sources */,
+				0390D9CE291BF7CA00FB9426 /* EZCommonResultView.m in Sources */,
 				C99EEBD62385799D00FEE666 /* MMEventMonitor.m in Sources */,
 				C9986E1F2393B09E0016F569 /* NSWindow+MM.m in Sources */,
 			);

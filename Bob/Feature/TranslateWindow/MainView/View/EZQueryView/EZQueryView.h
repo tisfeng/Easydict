@@ -6,12 +6,12 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EDCommonView.h"
+#import "EZCommonView.h"
 #import "TextView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EDQueryView : EDCommonView
+@interface EZQueryView : EZCommonView
 
 @property (nonatomic, strong) TextView *textView;
 @property (nonatomic, copy) NSString *detectLanguage;

@@ -10,9 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-
-@interface EDCommonView : NSView
+@interface EZCommonView : NSView
 
 @property (nonatomic, copy) NSString *queryText;
 

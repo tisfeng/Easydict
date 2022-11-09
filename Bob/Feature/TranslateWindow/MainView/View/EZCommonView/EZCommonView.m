@@ -6,19 +6,17 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EDCommonView.h"
+#import "EZCommonView.h"
 #import "EZHoverButton.h"
 
-static const CGFloat kLeftMargin = 8;
-static const CGFloat kBottomMargin = 8;
+static const CGFloat ktMargin = 5;
 
-@interface EDCommonView ()
+@interface EZCommonView ()
 
 @end
 
 
-@implementation EDCommonView
-
+@implementation EZCommonView
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -31,24 +29,22 @@ static const CGFloat kBottomMargin = 8;
 
 - (void)setupUI {
     self.wantsLayer = YES;
-    [self.layer excuteLight:^(id _Nonnull x) {
-        [x setBackgroundColor:LightBgColor.CGColor];
-    } drak:^(id _Nonnull x) {
-        [x setBackgroundColor:DarkBgColor.CGColor];
-    }];
     self.layer.cornerRadius = 8;
+    [self.layer excuteLight:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
+    } drak:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
+    }];
     
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
-    
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"播放音频";
     
     
     mm_weakify(self)
-    
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"audioActionBlock");
         
@@ -80,13 +76,13 @@ static const CGFloat kBottomMargin = 8;
 
 - (void)updateConstraints {
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-kBottomMargin);
-        make.left.offset(kLeftMargin);
+        make.bottom.offset(-ktMargin);
+        make.left.offset(ktMargin);
         make.width.height.equalTo(@25);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right).offset(3);
+        make.left.equalTo(self.audioButton.mas_right).offset(0);
         make.bottom.equalTo(self.audioButton);
         make.width.height.equalTo(self.audioButton);
     }];

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EDLabel : NSTextView
+@interface EZLabel : NSTextView
 
 @property (nonatomic, copy) NSString *text;
 

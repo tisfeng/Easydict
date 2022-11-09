@@ -8,14 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 #import "QueryView.h"
-#import "EDQueryView.h"
+#import "EZQueryView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QueryCell : NSTableRowView
 
 //@property (nonatomic, strong) QueryView *queryView;
-@property (nonatomic, strong) EDQueryView *queryView;
+@property (nonatomic, strong) EZQueryView *queryView;
 
 @property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, copy) NSString *detectLanguage;
