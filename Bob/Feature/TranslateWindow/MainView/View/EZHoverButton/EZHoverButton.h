@@ -7,14 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "SWSTAnswerButton.h"
+#import "EZButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// Auto show highlight background color when hover button.
-@interface EDHoverButton : SWSTAnswerButton
-
-@property (nonatomic, copy) void (^actionBlock)(EDHoverButton *button);
+@interface EZHoverButton : EZButton
 
 @end
 

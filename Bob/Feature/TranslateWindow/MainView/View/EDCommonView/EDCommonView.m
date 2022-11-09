@@ -7,7 +7,7 @@
 //
 
 #import "EDCommonView.h"
-#import "EDHoverButton.h"
+#import "EZHoverButton.h"
 
 static const CGFloat kLeftMargin = 8;
 static const CGFloat kBottomMargin = 8;
@@ -39,7 +39,7 @@ static const CGFloat kBottomMargin = 8;
     self.layer.cornerRadius = 8;
     
     
-    EDHoverButton *audioButton = [[EDHoverButton alloc] init];
+    EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
     
@@ -48,7 +48,8 @@ static const CGFloat kBottomMargin = 8;
     
     
     mm_weakify(self)
-    [audioButton setActionBlock:^(EDHoverButton * _Nonnull button) {
+    
+    [audioButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"audioActionBlock");
         
         mm_strongify(self)
@@ -59,17 +60,14 @@ static const CGFloat kBottomMargin = 8;
     audioButton.mas_key = @"audioButton";
     
     
-    EDHoverButton *textCopyButton = [[EDHoverButton alloc] init];
+    EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
     [self addSubview:textCopyButton];
     self.textCopyButton = textCopyButton;
     
-    NSImage *copyImage = [NSImage imageNamed:@"copy"];
-    textCopyButton.title = @"";
-    textCopyButton.image = copyImage;
+    textCopyButton.image = [NSImage imageNamed:@"copy"];
     textCopyButton.toolTip = @"复制";
-    textCopyButton.normalImage = copyImage;
     
-    [textCopyButton setActionBlock:^(EDHoverButton * _Nonnull button) {
+    [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"copyActionBlock");
         
         mm_strongify(self)

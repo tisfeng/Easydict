@@ -9,7 +9,7 @@
 #import "WordResultView.h"
 #import "ImageButton.h"
 #import "NSColor+MyColors.h"
-#import "EDHoverButton.h"
+#import "EZHoverButton.h"
 #import "EDLabel.h"
 #import "TextView.h"
 #import "NSTextView+Height.h"
@@ -23,8 +23,6 @@ static const CGFloat kVerticalPadding = 8;
 static const CGFloat kFixWrappingLabelMargin = 2;
 
 @interface WordResultView ()
-
-@property (nonatomic, strong) NSMutableArray<NSButton *> *audioButtons;
 
 @property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
@@ -42,7 +40,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        _audioButtons = [NSMutableArray array];
+
     }
     return self;
 }
@@ -105,9 +103,9 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             valueTextField.mas_key = @"valueTextField_phonetics";
         }
         
-        EDHoverButton *audioButton = [[EDHoverButton alloc] init];
+        EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+        self.audioButton = audioButton;
         [self addSubview:audioButton];
-        [self.audioButtons addObject:audioButton];
         audioButton.bordered = NO;
         audioButton.imageScaling = NSImageScaleProportionallyDown;
         audioButton.bezelStyle = NSBezelStyleRegularSquare;
@@ -127,19 +125,10 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.width.height.mas_equalTo(23);
         }];
         
-        [audioButton setActionBlock:^(EDHoverButton *_Nonnull button) {
+        [audioButton setClickBlock:^(EZButton *_Nonnull button) {
             NSLog(@"click audioButton");
         }];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
-                                            initWithRect:audioButton.frame
-                                            options:NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways
-                                            owner:self
-                                            userInfo:nil];
-            [self addTrackingArea:trackingArea];
-        });
-        
+       
         audioButton.mas_key = @"audioButton_phonetics";
         
         lastView = audioButton;
@@ -428,48 +417,51 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     }];
     
     if (result.wordResult || result.normalResults.count) {
-        self.audioButton = [EDHoverButton mm_make:^(NSButton *_Nonnull button) {
-            [self addSubview:button];
-            button.bordered = NO;
-            button.imageScaling = NSImageScaleProportionallyDown;
-            button.bezelStyle = NSBezelStyleRegularSquare;
-            [button setButtonType:NSButtonTypeMomentaryChange];
-            button.image = [NSImage imageNamed:@"audio"];
-            button.toolTip = @"播放音频";
-            [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
-                make.left.offset(kHorizontalMargin);
-                make.width.height.equalTo(@26);
-            }];
-            mm_weakify(self)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                mm_strongify(self) if (self.audioActionBlock) {
-                    self.audioActionBlock(self);
-                }
-                return RACSignal.empty;
-            }]];
+        EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+        self.audioButton = audioButton;
+        [self addSubview:audioButton];
+        audioButton.bordered = NO;
+        audioButton.imageScaling = NSImageScaleProportionallyDown;
+        audioButton.bezelStyle = NSBezelStyleRegularSquare;
+        [audioButton setButtonType:NSButtonTypeMomentaryChange];
+        audioButton.image = [NSImage imageNamed:@"audio"];
+        audioButton.toolTip = @"播放音频";
+        [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
+            make.left.offset(kHorizontalMargin);
+            make.width.height.equalTo(@26);
+        }];
+        mm_weakify(self);
+        [audioButton setClickBlock:^(EZButton * _Nonnull button) {
+            NSLog(@"click audioButton");
+
+            mm_strongify(self);
+            if (self.audioActionBlock) {
+                self.audioActionBlock(self);
+            }
         }];
         
-        self.textCopyButton = [EDHoverButton mm_make:^(NSButton *_Nonnull button) {
-            [self addSubview:button];
-            button.bordered = NO;
-            button.imageScaling = NSImageScaleProportionallyDown;
-            button.bezelStyle = NSBezelStyleRegularSquare;
-            [button setButtonType:NSButtonTypeMomentaryChange];
-            button.image = [NSImage imageNamed:@"copy"];
-            button.toolTip = @"复制";
-            [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.equalTo(self.audioButton.mas_right);
-                make.bottom.equalTo(self.audioButton);
-                make.width.height.equalTo(self.audioButton);
-            }];
-            mm_weakify(self)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                mm_strongify(self) if (self.copyActionBlock) {
-                    self.copyActionBlock(self);
-                }
-                return RACSignal.empty;
-            }]];
+        EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
+        self.textCopyButton = textCopyButton;
+        [self addSubview:textCopyButton];
+        textCopyButton.bordered = NO;
+        textCopyButton.imageScaling = NSImageScaleProportionallyDown;
+        textCopyButton.bezelStyle = NSBezelStyleRegularSquare;
+        [textCopyButton setButtonType:NSButtonTypeMomentaryChange];
+        textCopyButton.image = [NSImage imageNamed:@"copy"];
+        textCopyButton.toolTip = @"复制";
+        [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.audioButton.mas_right);
+            make.bottom.equalTo(self.audioButton);
+            make.width.height.equalTo(self.audioButton);
+        }];
+        [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
+            NSLog(@"click textCopyButton");
+            
+            mm_strongify(self);
+            if (self.copyActionBlock) {
+                self.copyActionBlock(self);
+            }
         }];
         
         lastView = self.textCopyButton;
@@ -480,33 +472,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(kHorizontalMargin);
         }
     }];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    CGPoint point = theEvent.locationInWindow;
-    point = [self convertPoint:point fromView:nil];
-    
-    [self excuteLight:^(NSButton *button) {
-        NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
-        [self hightlightCopyButtonBgColor:highlightBgColor point:point];
-    } drak:^(NSButton *button) {
-        [self hightlightCopyButtonBgColor:DarkBorderColor point:point];
-    }];
-}
-
-- (void)hightlightCopyButtonBgColor:(NSColor *)color point:(CGPoint)point {
-    for (NSButton *button in self.audioButtons) {
-        if (CGRectContainsPoint(button.frame, point)) {
-            [[button cell] setBackgroundColor:color];
-        }
-    }
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    for (NSButton *button in self.audioButtons) {
-        [[button cell] setBackgroundColor:NSColor.clearColor];
-        [[button cell] setBackgroundColor:NSColor.clearColor];
-    }
 }
 
 @end

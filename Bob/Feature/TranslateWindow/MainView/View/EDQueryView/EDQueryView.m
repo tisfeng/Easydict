@@ -7,7 +7,7 @@
 //
 
 #import "EDQueryView.h"
-#import "EDHoverButton.h"
+#import "EZHoverButton.h"
 
 @interface EDQueryView () <NSTextViewDelegate>
 
