@@ -39,14 +39,6 @@ static const CGFloat kVerticalMargin = 10;
 }
 
 - (void)setup {
-    //    QueryView *queryView = [[QueryView alloc] initWithFrame:self.bounds];
-    //    self.queryView = queryView;
-    //    [self addSubview:queryView];
-    //    [queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
-    //        make.top.left.right.equalTo(self);
-    //        make.height.mas_greaterThanOrEqualTo(90);
-    //    }];
-    
     EZQueryView *inputView = [[EZQueryView alloc] initWithFrame:self.bounds];
     self.queryView = inputView;
     [self addSubview:inputView];
@@ -55,27 +47,27 @@ static const CGFloat kVerticalMargin = 10;
         make.height.mas_greaterThanOrEqualTo(90);
     }];
     
-    NSView *serviceBarView = [[NSView alloc] init];
-    [self addSubview:serviceBarView];
-    serviceBarView.wantsLayer = YES;
-    serviceBarView.layer.cornerRadius = 8;
-    [serviceBarView excuteLight:^(NSView *barView) {
+    NSView *selectLanguageBarView = [[NSView alloc] init];
+    [self addSubview:selectLanguageBarView];
+    selectLanguageBarView.wantsLayer = YES;
+    selectLanguageBarView.layer.cornerRadius = 8;
+    [selectLanguageBarView excuteLight:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
     } drak:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
     
-    [serviceBarView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [selectLanguageBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.queryView.mas_bottom).offset(kVerticalMargin);
         make.left.right.equalTo(self);
-        make.height.mas_greaterThanOrEqualTo(30);
+        make.height.mas_greaterThanOrEqualTo(35);
         make.bottom.equalTo(self);
     }];
     
     CGFloat transformButtonWidth = 20;
     EZHoverButton *transformButton = [[EZHoverButton alloc] init];
     self.transformButton = transformButton;
-    [serviceBarView addSubview:transformButton];
+    [selectLanguageBarView addSubview:transformButton];
     transformButton.bordered = NO;
     transformButton.toolTip = @"交换语言";
     transformButton.imageScaling = NSImageScaleProportionallyDown;
@@ -90,7 +82,7 @@ static const CGFloat kVerticalMargin = 10;
     }];
     
     [transformButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(serviceBarView);
+        make.center.equalTo(selectLanguageBarView);
         make.width.height.mas_equalTo(transformButtonWidth);
     }];
     
@@ -110,9 +102,9 @@ static const CGFloat kVerticalMargin = 10;
     CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
     
     self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [serviceBarView addSubview:button];
+        [selectLanguageBarView addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(serviceBarView);
+            make.centerY.equalTo(selectLanguageBarView);
             make.height.mas_equalTo(25);
             make.left.equalTo(self).offset(padding);
         }];
@@ -137,7 +129,7 @@ static const CGFloat kVerticalMargin = 10;
     
     
     self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [serviceBarView addSubview:button];
+        [selectLanguageBarView addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.fromLanguageButton);
             make.width.height.equalTo(self.fromLanguageButton);
@@ -166,7 +158,7 @@ static const CGFloat kVerticalMargin = 10;
 
 - (void)enterAction {
     if (self.enterActionBlock) {
-        self.enterActionBlock(self.queryView.queryText);
+        self.enterActionBlock(self.queryView.copiedText);
     }
 }
 
@@ -180,7 +172,7 @@ static const CGFloat kVerticalMargin = 10;
 - (void)setAudioActionBlock:(void (^)(NSString * _Nonnull))audioActionBlock {
     _audioActionBlock = audioActionBlock;
     
-    self.queryView.audioActionBlock = audioActionBlock;
+    self.queryView.playAudioBlock = audioActionBlock;
 }
 
 - (void)setCopyActionBlock:(void (^)(NSString * _Nonnull))copyActionBlock {

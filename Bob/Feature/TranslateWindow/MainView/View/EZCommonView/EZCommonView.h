@@ -12,12 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZCommonView : NSView
 
-@property (nonatomic, copy) NSString *queryText;
+@property (nonatomic, copy) NSString *copiedText;
 
 @property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
 
-@property (nonatomic, copy) void (^audioActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
 
 @end

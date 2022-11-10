@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZCommonResultView.h"
+#import "EZWordResultView.h"
 #import "ImageButton.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
@@ -22,14 +22,14 @@ static const CGFloat kVerticalPadding = 8;
 /// wrappingLabel的约束需要偏移2,不知道是什么神设计
 static const CGFloat kFixWrappingLabelMargin = 2;
 
-@interface EZCommonResultView ()
+@interface EZWordResultView ()
 
 @property (nonatomic, strong) MASConstraint *textViewHeightConstraint;
 
 @end
 
 
-@implementation EZCommonResultView
+@implementation EZWordResultView
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -79,7 +79,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         if (obj.value.length) {
             valueTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
-                textField.stringValue = [NSString stringWithFormat:@"[%@]", obj.value];
+                textField.stringValue = [NSString stringWithFormat:@"/%@/", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
                     [x setTextColor:NSColor.resultTextLightColor];
                 } drak:^(id _Nonnull x) {
@@ -99,16 +99,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         
         EZHoverButton *audioButton = [[EZHoverButton alloc] init];
         [self addSubview:audioButton];
-        audioButton.bordered = NO;
-        audioButton.imageScaling = NSImageScaleProportionallyDown;
-        audioButton.bezelStyle = NSBezelStyleRegularSquare;
-        [audioButton setButtonType:NSButtonTypeMomentaryChange];
         audioButton.image = [NSImage imageNamed:@"audio"];
-        [audioButton excuteLight:^(id _Nonnull x) {
-            audioButton.contentTintColor = NSColor.blackColor;
-        } drak:^(id _Nonnull x) {
-            audioButton.contentTintColor = NSColor.whiteColor;
-        }];
         audioButton.toolTip = @"播放音频";
         [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left
@@ -118,8 +109,15 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.width.height.mas_equalTo(23);
         }];
         
+        mm_weakify(self);
         [audioButton setClickBlock:^(EZButton *_Nonnull button) {
             NSLog(@"click audioButton");
+            
+            mm_strongify(self);
+            if (self.playAudioBlock) {
+                self.playAudioBlock(self, result.text);
+            }
+            
         }];
        
         audioButton.mas_key = @"audioButton_phonetics";
@@ -313,8 +311,10 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 
                 mm_weakify(self, obj)
                 [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                    mm_strongify(self, obj) if (self.clickTextBlock) {
-                        self.clickTextBlock(self, obj);
+                    mm_strongify(self, obj);
+                    
+                    if (self.copyTextBlock) {
+                        self.copyTextBlock(self, obj);
                     }
                     return RACSignal.empty;
                 }]];
@@ -377,8 +377,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }];
             mm_weakify(self, obj)
             [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                mm_strongify(self, obj) if (self.clickTextBlock) {
-                    self.clickTextBlock(self, obj.word);
+                mm_strongify(self, obj) if (self.copyTextBlock) {
+                    self.copyTextBlock(self, obj.word);
                 }
                 return RACSignal.empty;
             }]];

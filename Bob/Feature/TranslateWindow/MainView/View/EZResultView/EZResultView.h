@@ -18,14 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZResultView : EZCommonView
 
 @property (nonatomic, strong) TranslateResult *result;
-@property (nonatomic, copy) NSString *copiedText;
+//@property (nonatomic, copy) NSString *copiedText;
 
-//@property (nonatomic, strong) WordResultView *wordResultView;
-//@property (nonatomic, strong) NSTextField *stateTextField;
-//@property (nonatomic, strong) NSButton *actionButton;
-
-@property (nonatomic, copy) void (^playAudioBlock)( NSString *url);
-@property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
+//@property (nonatomic, copy) void (^playAudioBlock)(EZCommonView *view, NSString *url);
+//@property (nonatomic, copy) void (^copyTextBlock)(EZCommonView *view, NSString *word);
 
 - (void)refreshWithResult:(TranslateResult *)result;
 - (void)refreshWithStateString:(NSString *)string;

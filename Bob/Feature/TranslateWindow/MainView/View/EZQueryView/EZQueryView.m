@@ -19,7 +19,7 @@
 
 @implementation EZQueryView
 
-@synthesize queryText = _queryText;
+@synthesize copiedText = _copiedText;
 
 #pragma mark - NSTextViewDelegate
 
@@ -31,7 +31,7 @@
 }
 
 - (void)setup {
-    self.queryText = @"";
+    self.copiedText = @"";
     
     self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];
@@ -80,14 +80,14 @@
     detectButton.mas_key = @"detectButton";
 }
 
-- (NSString *)queryText {
+- (NSString *)copiedText {
     return self.textView.string;
 }
 
-- (void)setQueryText:(NSString *)queryText {
-    _queryText = queryText ?: @"";
+- (void)setCopiedText:(NSString *)queryText {
+    _copiedText = queryText ?: @"";
     
-    self.textView.string = _queryText;
+    self.textView.string = _copiedText;
 }
 
 - (void)setDetectLanguage:(NSString *)detectLanguage {
@@ -130,7 +130,7 @@
         } else {
             if (self.enterActionBlock) {
                 NSLog(@"enterActionBlock");
-                self.enterActionBlock(self.queryText);
+                self.enterActionBlock(self.copiedText);
             }
             return YES;
         }

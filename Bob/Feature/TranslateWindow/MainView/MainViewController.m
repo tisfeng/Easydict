@@ -7,16 +7,14 @@
 //
 
 #import "MainViewController.h"
-#import "ResultCell.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
-#import "ResultView.h"
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
 #import "QueryCell.h"
-#import "DetectText.h"
-#import "TranslateLanguage.h"
+#import "ResultCell.h"
+#import "DetectManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ServiceTypes.h"
 #import "EZQueryView.h"
@@ -31,7 +29,7 @@
 @property (nonatomic, strong) NSArray<TranslateService *> *translateServices;
 @property (nonatomic, copy) NSString *inputText;
 
-@property (nonatomic, strong) DetectText *detectManager;
+@property (nonatomic, strong) DetectManager *detectManager;
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
@@ -77,7 +75,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     }
     self.translateServices = translateServices;
     
-    self.detectManager = [[DetectText alloc] init];
+    self.detectManager = [[DetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
     
     [self tableView];
@@ -220,12 +218,10 @@ static const CGFloat kMiniMainViewHeight = 300;
     return NO;
 }
 
-
-
 - (QueryCell *)queryCell {
     QueryCell *queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = @"queryCell";
-    queryCell.queryView.queryText = self.inputText;
+    queryCell.queryView.copiedText = self.inputText;
     self.queryView = queryCell.queryView;
     
     Language detectLang = self.detectManager.language;
@@ -296,7 +292,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     TranslateService *serive = [self translateServicesWithType:result.serviceType];
     
     mm_weakify(self)
-    [resultView setAudioActionBlock:^(NSString *_Nonnull text) {
+    [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         if (!result) {
             return;
@@ -304,7 +300,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         if (result.toSpeakURL) {
             [self playAudioWithURL:result.toSpeakURL];
         } else {
-            [self playSeriveAudio:serive textArray:result.normalResults lang:result.to];
+            [self playSeriveAudio:serive text:text lang:result.from];
         }
     }];
     
@@ -315,16 +311,6 @@ static const CGFloat kMiniMainViewHeight = 300;
         }
         [self copyTextToPasteboard:text];
     }];
-    
-//    [resultView.wordResultView setPlayAudioBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull url) {
-//        mm_strongify(self);
-//        [self playAudioWithURL:url];
-//    }];
-//
-//    [resultView.wordResultView setClickWordBlock:^(WordResultView *_Nonnull view, NSString *_Nonnull word) {
-//        mm_strongify(self);
-//        [self copyTextToPasteboard:word];
-//    }];
 }
 
 - (void)playSeriveAudio:(TranslateService *)service textArray:(NSArray<NSString *> *)textArray lang:(Language)lang {

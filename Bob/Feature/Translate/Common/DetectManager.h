@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DetectText : NSObject
+@interface DetectManager : NSObject
 
 @property (nonatomic, assign) Language language;
 

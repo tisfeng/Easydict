@@ -9,7 +9,7 @@
 #import "EZResultView.h"
 #import "ServiceTypes.h"
 #import "EZHoverButton.h"
-#import "EZCommonResultView.h"
+#import "EZWordResultView.h"
 
 static const CGFloat kResultViewMiniHeight = 25;
 
@@ -22,7 +22,7 @@ static const CGFloat kResultViewMiniHeight = 25;
 
 @property (nonatomic, strong) NSButton *arrowButton;
 
-@property (nonatomic, strong) EZCommonResultView *commonResultView;
+@property (nonatomic, strong) EZWordResultView *wordResultView;
 
 @end
 
@@ -125,16 +125,29 @@ static const CGFloat kResultViewMiniHeight = 25;
       
     self.arrowButton.mas_key = @"arrowButton";
     
-    EZCommonResultView *commonResultView = [[EZCommonResultView alloc] initWithFrame:self.bounds];
-    [self addSubview:commonResultView];
-    self.commonResultView = commonResultView;
+    EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
+    [self addSubview:wordResultView];
+    self.wordResultView = wordResultView;
     
-    [commonResultView mas_makeConstraints:^(MASConstraintMaker *make) {
+    mm_weakify(self);
+    [wordResultView setPlayAudioBlock:^(EZWordResultView * _Nonnull view, NSString * _Nonnull word) {
+        mm_strongify(self);
+        if (self.playAudioBlock) {
+            self.playAudioBlock(word);
+        }
+    }];
+    
+    [wordResultView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.inset(0);
 //            make.bottom.inset(kVerticalMargin);
         make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
     }];
+}
+
+- (NSString *)copiedText {
+    NSString *text = [NSString mm_stringByCombineComponents:self.result.normalResults separatedString:@"\n"] ?: @"";
+    return text;
 }
 
 - (void)refreshWithResult:(TranslateResult *)result {
@@ -147,7 +160,7 @@ static const CGFloat kResultViewMiniHeight = 25;
     TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:12]];
     
-    [self.commonResultView refreshWithResult:result];
+    [self.wordResultView refreshWithResult:result];
 }
 
 - (void)refreshWithStateString:(NSString *)string {

@@ -49,8 +49,8 @@ static const CGFloat ktMargin = 5;
         NSLog(@"audioActionBlock");
         
         mm_strongify(self)
-        if (self.audioActionBlock) {
-            self.audioActionBlock(self.queryText);
+        if (self.playAudioBlock) {
+            self.playAudioBlock(self.copiedText);
         }
     }];
     audioButton.mas_key = @"audioButton";
@@ -68,8 +68,8 @@ static const CGFloat ktMargin = 5;
         
         mm_strongify(self)
         if (self.copyActionBlock) {
-            self.copyActionBlock(self.queryText);
-        }
+            self.copyActionBlock(self.copiedText);
+        }        
     }];
     textCopyButton.mas_key = @"copyButton";
 }

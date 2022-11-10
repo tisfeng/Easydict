@@ -6,16 +6,16 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "DetectText.h"
+#import "DetectManager.h"
 #import "BaiduTranslate.h"
 
-@interface DetectText ()
+@interface DetectManager ()
 
 @property (nonatomic, strong) TranslateService *translate;
 
 @end
 
-@implementation DetectText
+@implementation DetectManager
 
 - (instancetype)init {
     if (self = [super init]) {

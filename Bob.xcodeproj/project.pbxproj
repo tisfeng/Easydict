@@ -15,10 +15,10 @@
 		03252D442914262C00DA2932 /* QueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* QueryCell.m */; };
 		033022A02918C5FE00B63F68 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EZLabel.m */; };
 		0390D9CA291BF63300FB9426 /* EZResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9C9291BF63300FB9426 /* EZResultView.m */; };
-		0390D9CE291BF7CA00FB9426 /* EZCommonResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */; };
+		0390D9CE291BF7CA00FB9426 /* EZWordResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9CD291BF7CA00FB9426 /* EZWordResultView.m */; };
 		03B7CAB4291BE758008E3874 /* EZButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B7CAB2291BE758008E3874 /* EZButton.m */; };
 		03C504A229160A93007626F8 /* EZHoverButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A129160A93007626F8 /* EZHoverButton.m */; };
-		03C504A52916768E007626F8 /* DetectText.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectText.m */; };
+		03C504A52916768E007626F8 /* DetectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A42916768E007626F8 /* DetectManager.m */; };
 		03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C504A92916BC56007626F8 /* ServiceTypes.m */; };
 		03F59760291942B200620CCC /* NSTextView+Height.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F5975F291942B200620CCC /* NSTextView+Height.m */; };
 		03F597672919F79C00620CCC /* EZCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F597662919F79C00620CCC /* EZCommonView.m */; };
@@ -130,14 +130,14 @@
 		0330229F2918C5FE00B63F68 /* EZLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLabel.m; sourceTree = "<group>"; };
 		0390D9C8291BF63300FB9426 /* EZResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZResultView.h; sourceTree = "<group>"; };
 		0390D9C9291BF63300FB9426 /* EZResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZResultView.m; sourceTree = "<group>"; };
-		0390D9CC291BF7CA00FB9426 /* EZCommonResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCommonResultView.h; sourceTree = "<group>"; };
-		0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCommonResultView.m; sourceTree = "<group>"; };
+		0390D9CC291BF7CA00FB9426 /* EZWordResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWordResultView.h; sourceTree = "<group>"; };
+		0390D9CD291BF7CA00FB9426 /* EZWordResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWordResultView.m; sourceTree = "<group>"; };
 		03B7CAB2291BE758008E3874 /* EZButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZButton.m; sourceTree = "<group>"; };
 		03B7CAB3291BE758008E3874 /* EZButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZButton.h; sourceTree = "<group>"; };
 		03C504A029160A93007626F8 /* EZHoverButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZHoverButton.h; sourceTree = "<group>"; };
 		03C504A129160A93007626F8 /* EZHoverButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZHoverButton.m; sourceTree = "<group>"; };
-		03C504A32916768E007626F8 /* DetectText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectText.h; sourceTree = "<group>"; };
-		03C504A42916768E007626F8 /* DetectText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectText.m; sourceTree = "<group>"; };
+		03C504A32916768E007626F8 /* DetectManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetectManager.h; sourceTree = "<group>"; };
+		03C504A42916768E007626F8 /* DetectManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetectManager.m; sourceTree = "<group>"; };
 		03C504A82916BC56007626F8 /* ServiceTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceTypes.h; sourceTree = "<group>"; };
 		03C504A92916BC56007626F8 /* ServiceTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
 		03F5975E291942B200620CCC /* NSTextView+Height.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTextView+Height.h"; sourceTree = "<group>"; };
@@ -356,7 +356,7 @@
 			children = (
 				03F597682919FFCD00620CCC /* EZQueryView */,
 				0390D9C7291BF5F200FB9426 /* EZResultView */,
-				0390D9CB291BF7A800FB9426 /* EZCommonResultView */,
+				0390D9CB291BF7A800FB9426 /* EZWordResultView */,
 				03B7CAB1291BE758008E3874 /* EZButton */,
 				03F597642919F76A00620CCC /* EZCommonView */,
 				0330229D2918C40900B63F68 /* EZLabel */,
@@ -383,13 +383,13 @@
 			path = EZResultView;
 			sourceTree = "<group>";
 		};
-		0390D9CB291BF7A800FB9426 /* EZCommonResultView */ = {
+		0390D9CB291BF7A800FB9426 /* EZWordResultView */ = {
 			isa = PBXGroup;
 			children = (
-				0390D9CC291BF7CA00FB9426 /* EZCommonResultView.h */,
-				0390D9CD291BF7CA00FB9426 /* EZCommonResultView.m */,
+				0390D9CC291BF7CA00FB9426 /* EZWordResultView.h */,
+				0390D9CD291BF7CA00FB9426 /* EZWordResultView.m */,
 			);
-			path = EZCommonResultView;
+			path = EZWordResultView;
 			sourceTree = "<group>";
 		};
 		03B7CAB1291BE758008E3874 /* EZButton */ = {
@@ -774,8 +774,8 @@
 				C99EEB932385799D00FEE666 /* TranslateResult.m */,
 				C959D338238809B800DD8808 /* OCRResult.h */,
 				C959D339238809B800DD8808 /* OCRResult.m */,
-				03C504A32916768E007626F8 /* DetectText.h */,
-				03C504A42916768E007626F8 /* DetectText.m */,
+				03C504A32916768E007626F8 /* DetectManager.h */,
+				03C504A42916768E007626F8 /* DetectManager.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -968,7 +968,7 @@
 				C9676F2B23A0908F007DD023 /* NSPasteboard+MM.m in Sources */,
 				03252D352912F3C900DA2932 /* MainViewController.m in Sources */,
 				C99EEBD92385799D00FEE666 /* NSUserDefaults+MM.m in Sources */,
-				03C504A52916768E007626F8 /* DetectText.m in Sources */,
+				03C504A52916768E007626F8 /* DetectManager.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
 				C99EEBC72385799D00FEE666 /* TranslateResult.m in Sources */,
 				033022A02918C5FE00B63F68 /* EZLabel.m in Sources */,
@@ -1028,7 +1028,7 @@
 				03C504AA2916BC56007626F8 /* ServiceTypes.m in Sources */,
 				C99EEBCC2385799D00FEE666 /* NormalResultView.m in Sources */,
 				C99142742390FCBD0025E75E /* NSImage+MM.m in Sources */,
-				0390D9CE291BF7CA00FB9426 /* EZCommonResultView.m in Sources */,
+				0390D9CE291BF7CA00FB9426 /* EZWordResultView.m in Sources */,
 				C99EEBD62385799D00FEE666 /* MMEventMonitor.m in Sources */,
 				C9986E1F2393B09E0016F569 /* NSWindow+MM.m in Sources */,
 			);
