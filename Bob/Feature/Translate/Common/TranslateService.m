@@ -82,7 +82,7 @@
 
 #pragma mark - 子类重写
 
-- (EDServiceType)serviceType {
+- (EZServiceType)serviceType {
     MethodNotImplemented();
     return nil;
 }

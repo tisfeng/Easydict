@@ -354,8 +354,8 @@
 
 #pragma mark - 重写父类方法
 
-- (EDServiceType)serviceType {
-    return EDServiceTypeBaidu;
+- (EZServiceType)serviceType {
+    return EZServiceTypeBaidu;
 }
 
 - (NSString *)identifier {

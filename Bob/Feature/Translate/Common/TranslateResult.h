@@ -13,11 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class TranslateService;
 
-typedef NSString *EDServiceType NS_STRING_ENUM;
+typedef NSString *EZServiceType NS_STRING_ENUM;
 
-FOUNDATION_EXPORT EDServiceType const EDServiceTypeGoogle;
-FOUNDATION_EXPORT EDServiceType const EDServiceTypeBaidu;
-FOUNDATION_EXPORT EDServiceType const EDServiceTypeYoudao;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
 
 @interface TranslatePhonetic : NSObject
 
@@ -79,7 +79,7 @@ FOUNDATION_EXPORT EDServiceType const EDServiceTypeYoudao;
 
 @interface TranslateResult : NSObject
 
-@property (nonatomic, copy) EDServiceType serviceType;
+@property (nonatomic, copy) EZServiceType serviceType;
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;

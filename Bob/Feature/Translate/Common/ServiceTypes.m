@@ -13,20 +13,20 @@
 
 @implementation ServiceTypes
 
-+ (NSArray<EDServiceType> *)allServiceTypes {
++ (NSArray<EZServiceType> *)allServiceTypes {
     return [[self serviceDict] allKeys];
 }
 
-+ (NSDictionary<EDServiceType, TranslateService *> *)serviceDict {
++ (NSDictionary<EZServiceType, TranslateService *> *)serviceDict {
     NSDictionary *dict = @{
-        EDServiceTypeGoogle : GoogleTranslate.new,
-        EDServiceTypeBaidu : BaiduTranslate.new,
-        EDServiceTypeYoudao : YoudaoTranslate.new
+        EZServiceTypeGoogle : GoogleTranslate.new,
+        EZServiceTypeBaidu : BaiduTranslate.new,
+        EZServiceTypeYoudao : YoudaoTranslate.new
     };
     return dict;
 }
 
-+ (TranslateService *)serviceWithType:(EDServiceType)type {
++ (TranslateService *)serviceWithType:(EZServiceType)type {
     return [self serviceDict][type];
 }
 

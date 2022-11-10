@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSButton *textCopyButton;
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
-@property (nonatomic, copy) void (^copyActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
 
 @end
 

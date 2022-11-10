@@ -8,9 +8,9 @@
 
 #import "TranslateResult.h"
 
-NSString *const EDServiceTypeGoogle = @"Google";
-NSString *const EDServiceTypeBaidu = @"Baidu";
-NSString *const EDServiceTypeYoudao = @"Youdao";
+NSString *const EZServiceTypeGoogle = @"Google";
+NSString *const EZServiceTypeBaidu = @"Baidu";
+NSString *const EZServiceTypeYoudao = @"Youdao";
 
 
 @implementation TranslatePhonetic

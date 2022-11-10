@@ -169,16 +169,16 @@ static const CGFloat kVerticalMargin = 10;
     self.queryView.enterActionBlock = enterActionBlock;
 }
 
-- (void)setAudioActionBlock:(void (^)(NSString * _Nonnull))audioActionBlock {
-    _audioActionBlock = audioActionBlock;
+- (void)setPlayAudioBlock:(void (^)(NSString * _Nonnull))audioActionBlock {
+    _playAudioBlock = audioActionBlock;
     
     self.queryView.playAudioBlock = audioActionBlock;
 }
 
-- (void)setCopyActionBlock:(void (^)(NSString * _Nonnull))copyActionBlock {
-    _copyActionBlock = copyActionBlock;
+- (void)setCopyTextBlock:(void (^)(NSString * _Nonnull))copyActionBlock {
+    _copyTextBlock = copyActionBlock;
     
-    self.queryView.copyActionBlock = copyActionBlock;
+    self.queryView.copyTextBlock = copyActionBlock;
 }
 
 @end

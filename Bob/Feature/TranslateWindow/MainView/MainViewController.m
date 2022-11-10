@@ -25,7 +25,7 @@
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 
-@property (nonatomic, strong) NSArray<EDServiceType> *serviceTypes;
+@property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *translateServices;
 @property (nonatomic, copy) NSString *inputText;
 
@@ -67,9 +67,11 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (void)setup {
     self.inputText = @"";
     
-    self.serviceTypes = @[ EDServiceTypeGoogle, EDServiceTypeBaidu, EDServiceTypeYoudao ];
+    self.serviceTypes = @[EZServiceTypeGoogle, EZServiceTypeBaidu, EZServiceTypeYoudao];
+//    self.serviceTypes = @[EZServiceTypeGoogle];
+
     NSMutableArray *translateServices = [NSMutableArray array];
-    for (EDServiceType type in self.serviceTypes) {
+    for (EZServiceType type in self.serviceTypes) {
         TranslateService *service = [ServiceTypes serviceWithType:type];
         [translateServices addObject:service];
     }
@@ -236,7 +238,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [self startQuery];
     }];
     
-    [queryCell setAudioActionBlock:^(NSString *text) {
+    [queryCell setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         TranslateService *service = [self firstTranslateService];
         if (service) {
@@ -250,7 +252,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         }
     }];
     
-    [queryCell setCopyActionBlock:^(NSString *text) {
+    [queryCell setCopyTextBlock:^(NSString *text) {
         mm_strongify(self);
         [self copyTextToPasteboard:text];
     }];
@@ -281,7 +283,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     return resultCell;
 }
 
-- (TranslateService *)translateServicesWithType:(EDServiceType)serviceType {
+- (TranslateService *)translateServicesWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
     return self.translateServices[index];
 }
@@ -297,14 +299,11 @@ static const CGFloat kMiniMainViewHeight = 300;
         if (!result) {
             return;
         }
-        if (result.toSpeakURL) {
-            [self playAudioWithURL:result.toSpeakURL];
-        } else {
-            [self playSeriveAudio:serive text:text lang:result.from];
-        }
+        
+        [self playSeriveAudio:serive text:text lang:result.from];
     }];
     
-    [resultView setCopyActionBlock:^(NSString *_Nonnull text) {
+    [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         if (!result) {
             return;

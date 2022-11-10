@@ -50,81 +50,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
     
-    [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-        NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-            [self addSubview:textField];
-            textField.stringValue = obj.name;
-            [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextLightColor];
-            } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextDarkColor];
-            }];
-            textField.font = textFont;
-            textField.editable = NO;
-            textField.bordered = NO;
-            textField.backgroundColor = NSColor.clearColor;
-            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.offset(kHorizontalMargin);
-                if (idx == 0) {
-                    make.top.offset(kHorizontalMargin);
-                } else {
-                    make.top.equalTo(lastView.mas_bottom).offset(5);
-                }
-            }];
-        }];
-        nameTextFiled.mas_key = @"nameTextFiled_phonetics";
-        
-        // 部分没有音标文本
-        NSTextField *valueTextField = nil;
-        if (obj.value.length) {
-            valueTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-                [self addSubview:textField];
-                textField.stringValue = [NSString stringWithFormat:@"/%@/", obj.value];
-                [textField excuteLight:^(id _Nonnull x) {
-                    [x setTextColor:NSColor.resultTextLightColor];
-                } drak:^(id _Nonnull x) {
-                    [x setTextColor:NSColor.resultTextDarkColor];
-                }];
-                textField.font = textFont;
-                textField.editable = NO;
-                textField.bordered = NO;
-                textField.backgroundColor = NSColor.clearColor;
-                [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.left.equalTo(nameTextFiled.mas_right).offset(8);
-                    make.centerY.equalTo(nameTextFiled);
-                }];
-            }];
-            valueTextField.mas_key = @"valueTextField_phonetics";
-        }
-        
-        EZHoverButton *audioButton = [[EZHoverButton alloc] init];
-        [self addSubview:audioButton];
-        audioButton.image = [NSImage imageNamed:@"audio"];
-        audioButton.toolTip = @"播放音频";
-        [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left
-                .equalTo(valueTextField ? valueTextField.mas_right : nameTextFiled.mas_right)
-                .offset(6);
-            make.centerY.equalTo(valueTextField ?: nameTextFiled);
-            make.width.height.mas_equalTo(23);
-        }];
-        
-        mm_weakify(self);
-        [audioButton setClickBlock:^(EZButton *_Nonnull button) {
-            NSLog(@"click audioButton");
-            
-            mm_strongify(self);
-            if (self.playAudioBlock) {
-                self.playAudioBlock(self, result.text);
-            }
-            
-        }];
-       
-        audioButton.mas_key = @"audioButton_phonetics";
-        
-        lastView = audioButton;
-    }];
-    
     if (result.normalResults.count) {
         NSTextField *typeTextField;
         
@@ -140,9 +65,9 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(10);
+                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
                     } else {
-                        make.top.offset(kHorizontalMargin);
+                        make.top.offset(kVerticalMargin);
                     }
                     make.left.mas_equalTo(kHorizontalMargin);
                 }];
@@ -169,7 +94,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 leading += typeTextField.width + leftLeading;
             } else {
                 if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(10);
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
                 } else {
                     make.top.offset(kVerticalMargin);
                 }
@@ -187,6 +112,81 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 
         lastView = resultLabel;
     }
+    
+    [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            [self addSubview:textField];
+            textField.stringValue = obj.name;
+            textField.textColor = typeTextColor;
+            textField.font = textFont;
+            textField.editable = NO;
+            textField.bordered = NO;
+            textField.backgroundColor = NSColor.clearColor;
+            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.offset(kHorizontalMargin);
+                if (idx == 0) {
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
+                    } else {
+                        make.top.offset(kHorizontalMargin);
+                    }
+                } else {
+                    make.top.equalTo(lastView.mas_bottom).offset(5);
+                }
+            }];
+        }];
+        nameTextFiled.mas_key = @"nameTextFiled_phonetics";
+        
+        // 部分没有音标文本
+        NSTextField *valueTextField = nil;
+        if (obj.value.length) {
+            valueTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+                [self addSubview:textField];
+                textField.stringValue = [NSString stringWithFormat:@"/%@/", obj.value];
+                [textField excuteLight:^(id _Nonnull x) {
+                    [x setTextColor:NSColor.resultTextLightColor];
+                } drak:^(id _Nonnull x) {
+                    [x setTextColor:NSColor.resultTextDarkColor];
+                }];
+                textField.font = textFont;
+                textField.editable = NO;
+                textField.bordered = NO;
+                textField.backgroundColor = NSColor.clearColor;
+                [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.left.equalTo(nameTextFiled.mas_right).offset(5);
+                    make.centerY.equalTo(nameTextFiled);
+                }];
+            }];
+            valueTextField.mas_key = @"valueTextField_phonetics";
+        }
+        
+        EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+        [self addSubview:audioButton];
+        audioButton.image = [NSImage imageNamed:@"audio"];
+        audioButton.toolTip = @"播放音频";
+        [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            NSView *leftView = valueTextField ?: nameTextFiled;
+            make.left.equalTo(leftView.mas_right).offset(4);
+            make.centerY.equalTo(valueTextField ?: nameTextFiled);
+            make.width.height.mas_equalTo(23);
+        }];
+        
+        mm_weakify(self);
+        [audioButton setClickBlock:^(EZButton *_Nonnull button) {
+            NSLog(@"click audioButton");
+            
+            mm_strongify(self);
+            if (self.playAudioBlock) {
+                self.playAudioBlock(self, result.text);
+            }
+            
+        }];
+       
+        audioButton.mas_key = @"audioButton_phonetics";
+        
+        lastView = audioButton;
+    }];
+
 
     [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;

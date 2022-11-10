@@ -13,12 +13,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//static const CGFloat kResultViewMiniHeight = 25;
-
 @interface EZResultView : EZCommonView
 
 @property (nonatomic, strong) TranslateResult *result;
-//@property (nonatomic, copy) NSString *copiedText;
+
 
 //@property (nonatomic, copy) void (^playAudioBlock)(EZCommonView *view, NSString *url);
 //@property (nonatomic, copy) void (^copyTextBlock)(EZCommonView *view, NSString *word);

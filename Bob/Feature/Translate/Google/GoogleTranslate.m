@@ -236,8 +236,8 @@
 
 #pragma mark - 重写父类方法
 
-- (EDServiceType)serviceType {
-    return EDServiceTypeGoogle;
+- (EZServiceType)serviceType {
+    return EZServiceTypeGoogle;
 }
 
 - (NSString *)identifier {
@@ -462,7 +462,17 @@
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
                         TranslateWordResult *wordResult = [TranslateWordResult new];
-                                                
+                              
+                        NSString *phoneticText = responseArray[0][1][3];
+                        if (phoneticText) {
+                            TranslatePhonetic *phonetic = [TranslatePhonetic new];
+                            phonetic.name = @"美";
+                            phonetic.value = phoneticText;
+                            phonetic.speakURL = result.fromSpeakURL;
+                            
+                            wordResult.phonetics = @[phonetic];
+                        }
+                        
                         if (googleFrom == Language_en &&
                             (googleTo == Language_zh_Hans || googleTo == Language_zh_Hant)) {
                             // 英文查词

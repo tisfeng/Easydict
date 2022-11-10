@@ -67,8 +67,8 @@ static const CGFloat ktMargin = 5;
         NSLog(@"copyActionBlock");
         
         mm_strongify(self)
-        if (self.copyActionBlock) {
-            self.copyActionBlock(self.copiedText);
+        if (self.copyTextBlock) {
+            self.copyTextBlock(self.copiedText);
         }        
     }];
     textCopyButton.mas_key = @"copyButton";
@@ -77,7 +77,7 @@ static const CGFloat ktMargin = 5;
 - (void)updateConstraints {
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-ktMargin);
-        make.left.offset(ktMargin);
+        make.left.offset(ktMargin + 2);
         make.width.height.equalTo(@25);
     }];
     

@@ -153,7 +153,7 @@ static const CGFloat kResultViewMiniHeight = 25;
 - (void)refreshWithResult:(TranslateResult *)result {
     _result = result;
     
-    EDServiceType serviceType = result.serviceType;
+    EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     

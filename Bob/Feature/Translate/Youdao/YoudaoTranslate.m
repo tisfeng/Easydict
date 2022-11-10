@@ -39,8 +39,8 @@
 
 #pragma mark - 重写父类方法
 
-- (EDServiceType)serviceType {
-    return EDServiceTypeYoudao;
+- (EZServiceType)serviceType {
+    return EZServiceTypeYoudao;
 }
 
 - (NSString *)identifier {
