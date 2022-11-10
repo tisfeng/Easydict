@@ -10,7 +10,7 @@
 #import "EZHoverButton.h"
 #import "NSTextView+Height.h"
 
-static CGFloat kTextViewMiniHeight = 65;
+static CGFloat kTextViewMiniHeight = 60;
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -29,7 +29,6 @@ static CGFloat kTextViewMiniHeight = 65;
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         [self setup];
-        self.copiedText = @"";
     }
     return self;
 }
@@ -41,22 +40,22 @@ static CGFloat kTextViewMiniHeight = 65;
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
-
+    
     TextView *textView = [[TextView alloc] initWithFrame:self.bounds];
     self.textView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
     textView.textStorage.delegate = self;
-
+    
     scrollView.documentView = self.textView;
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         //            make.bottom.inset(kVerticalMargin);
         make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
-        make.height.mas_greaterThanOrEqualTo(kTextViewMiniHeight);
+        make.height.mas_equalTo(kTextViewMiniHeight);
     }];
-
-
+    
+    
     NSButton *detectButton = [[NSButton alloc] init];
     detectButton.hidden = YES;
     detectButton.bordered = YES;
@@ -64,23 +63,23 @@ static CGFloat kTextViewMiniHeight = 65;
     [detectButton setButtonType:NSButtonTypeMomentaryChange];
     [self addSubview:detectButton];
     self.detectButton = detectButton;
-
+    
     [detectButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(8);
         make.centerY.equalTo(self.textCopyButton);
         make.height.mas_equalTo(20);
     }];
-
+    
     mm_weakify(self)
-        [detectButton setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                          NSLog(@"detectActionBlock");
-
-                          mm_strongify(self) if (self.detectActionBlock) {
-                              self.detectActionBlock(input);
-                          }
-                          return RACSignal.empty;
-                      }]];
-
+    [detectButton setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+        NSLog(@"detectActionBlock");
+        
+        mm_strongify(self) if (self.detectActionBlock) {
+            self.detectActionBlock(input);
+        }
+        return RACSignal.empty;
+    }]];
+    
     detectButton.mas_key = @"detectButton";
 }
 
@@ -90,17 +89,17 @@ static CGFloat kTextViewMiniHeight = 65;
 
 - (void)setCopiedText:(NSString *)queryText {
     _copiedText = queryText ?: @"";
-
+    
     if (!_copiedText.length) {
         self.detectButton.hidden = YES;
     }
-
+    
     self.textView.string = _copiedText;
 }
 
 - (void)setDetectLanguage:(NSString *)detectLanguage {
     _detectLanguage = detectLanguage;
-
+    
     NSString *title = @"识别为 ";
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
     [attrTitle addAttributes:@{
@@ -108,24 +107,24 @@ static CGFloat kTextViewMiniHeight = 65;
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
                        range:NSMakeRange(0, attrTitle.length)];
-
-
+    
+    
     NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguage];
     [detectAttrTitle addAttributes:@{
         NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
                              range:NSMakeRange(0, detectAttrTitle.length)];
-
+    
     [attrTitle appendAttributedString:detectAttrTitle];
-
+    
     CGFloat width = [attrTitle mm_getTextWidth];
     self.detectButton.hidden = NO;
     self.detectButton.attributedTitle = attrTitle;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(width + 10);
     }];
-
+    
     [self layoutSubtreeIfNeeded];
 }
 
@@ -153,11 +152,9 @@ static CGFloat kTextViewMiniHeight = 65;
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
     self.copiedText = text;
-    NSLog(@"text: %@", text);
-
     CGFloat height = [self.textView getHeight];
-    NSLog(@"height: %@", @(height));
-
+    NSLog(@"text: %@, height: %@", text, @(height));
+        
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3;
     if (height < kTextViewMiniHeight) {
         height = kTextViewMiniHeight;
@@ -165,9 +162,12 @@ static CGFloat kTextViewMiniHeight = 65;
     if (height > maxHeight) {
         height = maxHeight;
     }
-
+    
+    // Avoiding show scroller
+    height += 1;
+    
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_greaterThanOrEqualTo(height);
+        make.height.mas_equalTo(height);
     }];
 }
 

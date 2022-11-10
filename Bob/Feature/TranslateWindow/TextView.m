@@ -19,7 +19,7 @@ DefineMethodMMMake_m(TextView);
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
                   style.lineHeightMultiple = 1.2;
-                  style.paragraphSpacing = 5;
+                  style.paragraphSpacing = 3;
               }]];
         self.font = [NSFont systemFontOfSize:14];
 
@@ -31,7 +31,7 @@ DefineMethodMMMake_m(TextView);
             [textView setTextColor:NSColor.queryTextDarkColor];
         }];
         self.alignment = NSTextAlignmentLeft;
-        self.textContainerInset = CGSizeMake(8, 12);
+        self.textContainerInset = CGSizeMake(8, 8);
     }
     return self;
 }

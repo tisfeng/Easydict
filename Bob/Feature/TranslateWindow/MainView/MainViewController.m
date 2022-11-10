@@ -62,6 +62,8 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self setup];
     
     [self startQueryText:@"good"];
+//    [self startQueryText:@"你好\n世界"];
+
 }
 
 - (void)setup {
