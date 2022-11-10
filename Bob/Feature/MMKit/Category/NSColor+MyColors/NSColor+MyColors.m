@@ -28,7 +28,7 @@
 
 // Query view background color
 + (NSColor *)queryViewBgLightColor {
-    return [NSColor mm_colorWithHexString:@"#F6F6F6"];
+    return [NSColor mm_colorWithHexString:@"#F9F9F9"];
 }
 + (NSColor *)queryViewBgDarkColor {
     return [NSColor mm_colorWithHexString:@"#252627"];

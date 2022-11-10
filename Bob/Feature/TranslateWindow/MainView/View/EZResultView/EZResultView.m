@@ -81,6 +81,12 @@ static const CGFloat kResultViewMiniHeight = 25;
             make.left.equalTo(self.typeImageView.mas_right).offset(5);
             make.centerY.equalTo(self.topBarView).offset(0);
         }];
+        
+        [label excuteLight:^(NSTextField *label) {
+            label.textColor = NSColor.resultTextLightColor;
+        } drak:^(NSTextField *label) {
+            label.textColor = NSColor.resultTextDarkColor;
+        }];
     }];
     self.typeLabel.mas_key = @"typeLabel";
     
@@ -142,6 +148,7 @@ static const CGFloat kResultViewMiniHeight = 25;
         make.left.right.inset(0);
 //            make.bottom.inset(kVerticalMargin);
         make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
+        
     }];
 }
 

@@ -24,10 +24,12 @@
         button.contentTintColor = NSColor.blackColor;
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
         button.backgroundHighlightColor = NSColor.lightGrayColor;
+        button.titleColor = NSColor.resultTextLightColor;
     } drak:^(EZButton *button) {
         button.contentTintColor = NSColor.whiteColor;
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#353535"];
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#454545"];
+        button.titleColor = NSColor.resultTextDarkColor;
     }];
 }
 

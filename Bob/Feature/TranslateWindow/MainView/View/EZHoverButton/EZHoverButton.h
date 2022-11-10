@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Auto show highlight background color when hover button.
+/// An button that show round corner and highlight background color when hover button automatically.
 @interface EZHoverButton : EZButton
 
 @end

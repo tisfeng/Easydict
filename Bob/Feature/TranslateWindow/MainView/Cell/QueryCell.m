@@ -44,7 +44,6 @@ static const CGFloat kVerticalMargin = 10;
     [self addSubview:inputView];
     [inputView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
-        make.height.mas_greaterThanOrEqualTo(90);
     }];
     
     NSView *selectLanguageBarView = [[NSView alloc] init];
@@ -60,7 +59,7 @@ static const CGFloat kVerticalMargin = 10;
     [selectLanguageBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.queryView.mas_bottom).offset(kVerticalMargin);
         make.left.right.equalTo(self);
-        make.height.mas_greaterThanOrEqualTo(35);
+        make.height.mas_equalTo(35);
         make.bottom.equalTo(self);
     }];
     

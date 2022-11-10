@@ -36,16 +36,16 @@ DefineMethodMMMake_m(PopUpButton);
     [self setButtonType:NSButtonTypeToggle];
     self.title = @"";
     mm_weakify(self)
-        [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                  mm_strongify(self)
-                      // 显示menu
-                      if (self.titles.count) {
-                      [self setupMenu];
-                      [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
-                  }
-                  return RACSignal.empty;
-              }]];
-
+    [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+        mm_strongify(self)
+        // 显示menu
+        if (self.titles.count) {
+            [self setupMenu];
+            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
+        }
+        return RACSignal.empty;
+    }]];
+    
     [NSView mm_make:^(NSView *_Nonnull titleContainerView) {
         [self addSubview:titleContainerView];
         titleContainerView.layer.backgroundColor = [NSColor redColor].CGColor;
@@ -55,7 +55,7 @@ DefineMethodMMMake_m(PopUpButton);
             make.left.mas_greaterThanOrEqualTo(5);
             make.right.mas_lessThanOrEqualTo(5);
         }];
-
+        
         self.textField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [titleContainerView addSubview:textField];
             textField.stringValue = @"";
@@ -68,8 +68,13 @@ DefineMethodMMMake_m(PopUpButton);
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.left.bottom.equalTo(titleContainerView);
             }];
+            [textField excuteLight:^(NSTextField *label) {
+                label.textColor = NSColor.resultTextLightColor;
+            } drak:^(NSTextField *label) {
+                label.textColor = NSColor.resultTextDarkColor;
+            }];
         }];
-
+        
         self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
             [titleContainerView addSubview:imageView];
             imageView.image = [NSImage imageNamed:@"arrow_down"];
@@ -108,7 +113,7 @@ DefineMethodMMMake_m(PopUpButton);
 
 - (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles {
     self.titles = titles;
-
+    
     if (self.customMenu) {
         [self setupMenu];
     }

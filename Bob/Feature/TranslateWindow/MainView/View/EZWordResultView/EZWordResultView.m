@@ -77,7 +77,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }
        
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
-
         
         EZLabel *resultLabel = [EZLabel new];
         [self addSubview:resultLabel];

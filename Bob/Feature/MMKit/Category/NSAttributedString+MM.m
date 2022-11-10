@@ -39,26 +39,27 @@
 
 // Get attribute string width.
 - (CGFloat)mm_getTextWidth {
-    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
-    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX)];
-    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-    [layoutManager addTextContainer:textContainer];
-    [textStorage addLayoutManager:layoutManager];
-    [layoutManager glyphRangeForTextContainer:textContainer];
-    CGSize size = [layoutManager usedRectForTextContainer:textContainer].size;
-    return size.width;
+    return [self mm_getTextSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].width;
 }
 
 // Get attribute string height.
 - (CGFloat)mm_getTextHeightWithWidth:(CGFloat)width {
+    return [self mm_getTextSize:CGSizeMake(width, CGFLOAT_MAX)].height;
+}
+
+- (CGSize)mm_getTextSize:(CGSize)designatedSize {
+    if (!designatedSize.width || !designatedSize.height) {
+        return CGSizeZero;
+    }
+    
     NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
-    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, CGFLOAT_MAX)];
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:designatedSize];
     NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
     [layoutManager addTextContainer:textContainer];
     [textStorage addLayoutManager:layoutManager];
     [layoutManager glyphRangeForTextContainer:textContainer];
     CGSize size = [layoutManager usedRectForTextContainer:textContainer].size;
-    return size.height;
+    return size;
 }
 
 @end

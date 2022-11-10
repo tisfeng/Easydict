@@ -40,4 +40,11 @@ NSString *const EZServiceTypeYoudao = @"Youdao";
 
 @implementation TranslateResult
 
+- (instancetype)init {
+    if (self = [super init]) {
+        _normalResults = @[@""];
+    }
+    return self;
+}
+
 @end
