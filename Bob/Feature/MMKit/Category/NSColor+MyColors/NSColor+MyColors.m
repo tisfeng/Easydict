@@ -74,4 +74,12 @@
     return [NSColor mainBorderDarkColor];
 }
 
+// Image tint color
++ (NSColor *)imageTintLightColor {
+    return [NSColor blackColor];
+}
++ (NSColor *)imageTintDarkColor {
+    return [NSColor whiteColor];
+}
+
 @end

@@ -115,9 +115,9 @@ static const CGFloat kMargin = 10;
             [button setButtonType:NSButtonTypeMomentaryChange];
             NSImage *image = [NSImage imageNamed:@"arrow-down-slim"];
             [button excuteLight:^(NSButton *button) {
-                button.image = [image imageWithTintColor:NSColor.blackColor];
+                button.image = [image imageWithTintColor:NSColor.imageTintLightColor];
             } drak:^(NSButton *button) {
-                button.image = [image imageWithTintColor:NSColor.whiteColor];
+                button.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
             }];
             
             button.imageScaling = NSImageScaleProportionallyDown;

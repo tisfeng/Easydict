@@ -125,6 +125,7 @@ static CGFloat kTextViewMiniHeight = 60;
         make.width.mas_equalTo(width + 10);
     }];
     
+    
     [self layoutSubtreeIfNeeded];
 }
 

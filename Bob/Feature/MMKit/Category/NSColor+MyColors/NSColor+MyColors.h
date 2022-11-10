@@ -44,6 +44,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSColor *)buttonHoverLightColor;
 + (NSColor *)buttonHoverDarkColor;
 
+// Image tint color
++ (NSColor *)imageTintLightColor;
++ (NSColor *)imageTintDarkColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

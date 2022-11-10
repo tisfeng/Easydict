@@ -77,12 +77,17 @@ DefineMethodMMMake_m(PopUpButton);
         
         self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
             [titleContainerView addSubview:imageView];
-            imageView.image = [NSImage imageNamed:@"arrow_down"];
+            NSImage *image = [NSImage imageNamed:@"arrow_down"];
             [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(self.textField.mas_right).offset(3);
                 make.centerY.equalTo(self.textField).offset(1);
                 make.right.equalTo(titleContainerView);
                 make.width.height.equalTo(@8);
+            }];
+            [imageView excuteLight:^(NSImageView *imageView) {
+                imageView.image = [image imageWithTintColor:NSColor.imageTintLightColor];
+            } drak:^(NSTextField *label) {
+                imageView.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
             }];
         }];
     }];

@@ -113,9 +113,9 @@ static const CGFloat kResultViewMiniHeight = 25;
         [arrowButton setButtonType:NSButtonTypeMomentaryChange];
         NSImage *image = [NSImage imageNamed:@"arrow-down-slim"];
         [arrowButton excuteLight:^(NSButton *button) {
-            button.image = [image imageWithTintColor:NSColor.blackColor];
+            button.image = [image imageWithTintColor:NSColor.imageTintLightColor];
         } drak:^(NSButton *button) {
-            button.image = [image imageWithTintColor:NSColor.whiteColor];
+            button.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
         }];
         
         arrowButton.imageScaling = NSImageScaleProportionallyDown;

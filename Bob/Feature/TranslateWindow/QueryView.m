@@ -49,11 +49,7 @@ DefineMethodMMMake_m(QueryView);
 
 
 - (void)setup {
-    NSColor *blackColor = [NSColor blackColor];
-    NSColor *whiteColor = [NSColor whiteColor];
-    
     self.wantsLayer = YES;
-    
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:LightBgColor.CGColor];
     } drak:^(id _Nonnull x) {
@@ -92,18 +88,10 @@ DefineMethodMMMake_m(QueryView);
         NSImage *image = [NSImage imageNamed:@"audio"];
         button.image = image;
         
-        [button.layer excuteLight:^(id _Nonnull x) {
-            if (@available(macOS 10.14, *)) {
-                button.contentTintColor = blackColor;
-            } else {
-                button.image = [image imageWithTintColor:blackColor];
-            }
-        } drak:^(id _Nonnull x) {
-            if (@available(macOS 10.14, *)) {
-                button.contentTintColor = whiteColor;
-            } else {
-                button.image = [image imageWithTintColor:whiteColor];
-            }
+        [button.layer excuteLight:^(NSButton *button) {
+            button.contentTintColor = NSColor.imageTintLightColor;
+        } drak:^(NSButton *button) {
+            button.contentTintColor = NSColor.imageTintDarkColor;
         }];
         
         button.toolTip = @"播放音频";
@@ -131,18 +119,10 @@ DefineMethodMMMake_m(QueryView);
         NSImage *image = [NSImage imageNamed:@"copy"];
         button.image = image;
         
-        [button excuteLight:^(NSButton *button) {
-            if (@available(macOS 10.14, *)) {
-                button.contentTintColor = blackColor;
-            } else {
-                button.image = [image imageWithTintColor:blackColor];
-            }
+        [button.layer excuteLight:^(NSButton *button) {
+            button.contentTintColor = NSColor.imageTintLightColor;
         } drak:^(NSButton *button) {
-            if (@available(macOS 10.14, *)) {
-                button.contentTintColor = whiteColor;
-            } else {
-                button.image = [image imageWithTintColor:whiteColor];
-            }
+            button.contentTintColor = NSColor.imageTintDarkColor;
         }];
         
         button.imageScaling = NSImageScaleProportionallyDown;
