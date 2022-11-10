@@ -38,15 +38,19 @@ static const CGFloat kResultViewMiniHeight = 25;
 }
 
 - (void)setup {
+    [self.layer excuteLight:^(CALayer *layer) {
+        layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+    } drak:^(CALayer *layer) {
+        layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+    }];
+    
     self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
         [self addSubview:view];
         view.wantsLayer = YES;
-        view.layer.backgroundColor = DarkBarBgColor.CGColor;
-        
         [view.layer excuteLight:^(CALayer *layer) {
-            layer.backgroundColor = LightBarBgColor.CGColor;
+            layer.backgroundColor = NSColor.topBarBgLightColor.CGColor;
         } drak:^(CALayer *layer) {
-            layer.backgroundColor = DarkBarBgColor.CGColor;
+            layer.backgroundColor = NSColor.topBarBgDarkColor.CGColor;
         }];
         
         [view mas_makeConstraints:^(MASConstraintMaker *make) {

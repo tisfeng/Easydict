@@ -40,9 +40,9 @@ static const CGFloat kMargin = 10;
     if (self) {
         self.wantsLayer = YES;
         [self.layer excuteLight:^(id _Nonnull x) {
-            [x setBackgroundColor:LightBgColor.CGColor];
+            [x setBackgroundColor:NSColor.resultViewBgLightColor.CGColor];
         } drak:^(id _Nonnull x) {
-            [x setBackgroundColor:DarkBgColor.CGColor];
+            [x setBackgroundColor:NSColor.resultViewBgDarkColor.CGColor];
         }];
         self.layer.cornerRadius = 8;
         self.layer.masksToBounds = YES;
@@ -50,12 +50,10 @@ static const CGFloat kMargin = 10;
         self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
             [self addSubview:view];
             view.wantsLayer = YES;
-            view.layer.backgroundColor = DarkBarBgColor.CGColor;
-            
             [view.layer excuteLight:^(CALayer *layer) {
-                layer.backgroundColor = LightBarBgColor.CGColor;
+                layer.backgroundColor = NSColor.topBarBgLightColor.CGColor;
             } drak:^(CALayer *layer) {
-                layer.backgroundColor = DarkBarBgColor.CGColor;
+                layer.backgroundColor = NSColor.topBarBgDarkColor.CGColor;
             }];
             
             [view mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -158,7 +156,7 @@ static const CGFloat kMargin = 10;
             [self addSubview:textField];
             textField.font = [NSFont systemFontOfSize:14];
             [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:LightTextColor];
+                [x setTextColor:NSColor.resultViewBgLightColor];
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.whiteColor];
             }];
@@ -206,7 +204,7 @@ static const CGFloat kMargin = 10;
         NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
         [self hightlightCopyButtonBgColor:highlightBgColor point:point];
     } drak:^(id x) {
-        [self hightlightCopyButtonBgColor:DarkBorderColor point:point];
+        [self hightlightCopyButtonBgColor:NSColor.mainBorderDarkColor point:point];
     }];
 }
 

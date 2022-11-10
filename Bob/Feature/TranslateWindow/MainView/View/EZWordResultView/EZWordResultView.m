@@ -34,7 +34,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-
+        self.wantsLayer = YES;
+        [self.layer excuteLight:^(CALayer *layer) {
+            layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+        } drak:^(CALayer *layer) {
+            layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+        }];
     }
     return self;
 }

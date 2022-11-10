@@ -139,7 +139,6 @@
 #pragma mark - Private Methods
 
 - (void)commonInitialize {
-    self.titleColor = NSColor.textColor;
     self.titleSelectedColor = NSColor.selectedTextColor;
     self.titleHighlightColor = NSColor.highlightColor;
     

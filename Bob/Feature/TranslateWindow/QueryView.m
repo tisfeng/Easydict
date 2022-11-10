@@ -51,9 +51,9 @@ DefineMethodMMMake_m(QueryView);
 - (void)setup {
     self.wantsLayer = YES;
     [self.layer excuteLight:^(id _Nonnull x) {
-        [x setBackgroundColor:LightBgColor.CGColor];
+        [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
     } drak:^(id _Nonnull x) {
-        [x setBackgroundColor:DarkBgColor.CGColor];
+        [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
     }];
     self.layer.cornerRadius = 8;
     
@@ -193,7 +193,7 @@ DefineMethodMMMake_m(QueryView);
         NSColor *highlightBgColor = [NSColor mm_colorWithHexString:@"#E2E2E2"];
         [self hightlightCopyButtonBgColor:highlightBgColor point:point];
     } drak:^(id x) {
-        [self hightlightCopyButtonBgColor:DarkBorderColor point:point];
+        [self hightlightCopyButtonBgColor:NSColor.mainBorderDarkColor point:point];
     }];
 }
 

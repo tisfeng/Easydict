@@ -56,29 +56,32 @@ static CGFloat kTextViewMiniHeight = 60;
     }];
     
     
-    NSButton *detectButton = [[NSButton alloc] init];
-    detectButton.hidden = YES;
-    detectButton.bordered = YES;
-    detectButton.bezelStyle = NSBezelStyleInline;
-    [detectButton setButtonType:NSButtonTypeMomentaryChange];
+    EZButton *detectButton = [[EZButton alloc] init];
     [self addSubview:detectButton];
     self.detectButton = detectButton;
-    
+    detectButton.hidden = YES;
+    detectButton.cornerRadius = 10;
+
     [detectButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(8);
         make.centerY.equalTo(self.textCopyButton);
         make.height.mas_equalTo(20);
     }];
+    [detectButton excuteLight:^(EZButton *detectButton) {
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
+    } drak:^(EZButton *button) {
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#313233"];
+    }];
     
-    mm_weakify(self)
-    [detectButton setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-        NSLog(@"detectActionBlock");
+    mm_weakify(self);
+    [detectButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"detectButton");
         
-        mm_strongify(self) if (self.detectActionBlock) {
-            self.detectActionBlock(input);
+        mm_strongify(self);
+        if (self.detectActionBlock) {
+            self.detectActionBlock(button);
         }
-        return RACSignal.empty;
-    }]];
+    }];
     
     detectButton.mas_key = @"detectButton";
 }
@@ -155,7 +158,7 @@ static CGFloat kTextViewMiniHeight = 60;
     self.copiedText = text;
     CGFloat height = [self.textView getHeight];
     NSLog(@"text: %@, height: %@", text, @(height));
-        
+    
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3;
     if (height < kTextViewMiniHeight) {
         height = kTextViewMiniHeight;
