@@ -16,7 +16,7 @@
     
     CGSize textContainerInset = self.textContainerInset;
     CGFloat width = self.width - textContainerInset.width * 2;
-     CGFloat height = [self.attributedString mm_getTextHeightWithWidth:width];
+    CGFloat height = [self.attributedString mm_getTextHeightWithWidth:width];
     height += textContainerInset.height * 2;
     
     return height;

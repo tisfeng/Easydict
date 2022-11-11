@@ -19,6 +19,7 @@
 #import "ServiceTypes.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
+#import "EZConst.h"
 
 @interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -36,9 +37,6 @@
 @end
 
 @implementation MainViewController
-
-static const CGFloat kVerticalMargin = 10;
-static const CGFloat kHorizontalMargin = 12;
 
 static const CGFloat kMiniMainViewWidth = 300;
 static const CGFloat kMiniMainViewHeight = 300;
@@ -142,7 +140,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(kHorizontalMargin * 2, kVerticalMargin);
+        tableView.intercellSpacing = CGSizeMake(kMainHorizontalMargin * 2, kMainVerticalMargin);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];

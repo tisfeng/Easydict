@@ -14,6 +14,7 @@
 #import "TextView.h"
 #import "NSTextView+Height.h"
 #import "MainWindow.h"
+#import "EZConst.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -56,46 +57,43 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
     
     if (result.normalResults.count) {
-        NSTextField *typeTextField;
-        
-        if (result.wordResult) {
-            typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
-                [self addSubview:textField];
-                textField.stringValue = @"释义：";
-                textField.font = typeTextFont;
-                textField.editable = NO;
-                textField.bordered = NO;
-                textField.textColor = typeTextColor;
-                textField.backgroundColor = NSColor.clearColor;
-
-                [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                    if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
-                    } else {
-                        make.top.offset(kVerticalMargin);
-                    }
-                    make.left.mas_equalTo(kHorizontalMargin);
-                }];
+        NSTextField *typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
+            [self addSubview:textField];
+            textField.stringValue = @"释义：";
+            textField.font = typeTextFont;
+            textField.editable = NO;
+            textField.bordered = NO;
+            textField.textColor = typeTextColor;
+            textField.backgroundColor = NSColor.clearColor;
+            
+            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                if (lastView) {
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
+                } else {
+                    make.top.offset(kVerticalMargin);
+                }
+                make.left.mas_equalTo(kHorizontalMargin);
             }];
-            typeTextField.mas_key = @"typeTextField_normalResults";
-            [self layoutSubtreeIfNeeded];
-        }
-       
+        }];
+        typeTextField.mas_key = @"typeTextField_normalResults";
+        [self layoutSubtreeIfNeeded];
+        
+        
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
         
         EZLabel *resultLabel = [EZLabel new];
         [self addSubview:resultLabel];
         resultLabel.text = text;
 
-       __block CGFloat leading = typeTextField.x;
+        __block CGFloat leftMargin = CGRectGetMaxX(typeTextField.frame);
+        
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
             if (typeTextField) {
                 make.top.equalTo(typeTextField).offset(0);
                 CGFloat leftLeading = 0;
                 make.left.equalTo(typeTextField.mas_right).offset(leftLeading);
-                make.height.greaterThanOrEqualTo(@(15));
-                leading += typeTextField.width + leftLeading;
+                leftMargin += leftLeading;
             } else {
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
@@ -106,15 +104,9 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }
         }];
         resultLabel.mas_key = @"meanTextField_parts";
-
-        [resultLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            CGFloat width = MainWindow.shared.width - leading;
-            resultLabel.width = width;
-            CGFloat height = [resultLabel getHeight];
-            make.height.equalTo(@(height));
-        }];
-
         lastView = resultLabel;
+
+        [self updateLabelHeight:resultLabel leftMargin:leftMargin];
     }
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -227,21 +219,20 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
 
-        __block CGFloat leading = partTextFiled.x;
+        __block CGFloat leftMargin = CGRectGetMaxX(partTextFiled.frame);
 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.greaterThanOrEqualTo(@(15));
             make.right.equalTo(self).offset(-kHorizontalMargin);
 
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled).offset(0);
                 CGFloat leftLeading = 5;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
-                leading += partTextFiled.width + leftLeading;
+                leftMargin += leftLeading;
             } else {
                 CGFloat leftLeading = kHorizontalMargin + kFixWrappingLabelMargin;
                 make.left.equalTo(self).offset(leftLeading);
-                leading += leftLeading;
+                leftMargin += leftLeading;
                 if (lastView) {
                     if (idx == 0) {
                         make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
@@ -254,15 +245,9 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }
         }];
         meanLabel.mas_key = @"meanTextField_parts";
-        
-        [meanLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            CGFloat width = MainWindow.shared.width - leading;
-            meanLabel.width = width;
-            CGFloat height = [meanLabel getHeight];
-            make.height.equalTo(@(height));
-        }];
-
         lastView = meanLabel;
+        
+        [self updateLabelHeight:meanLabel leftMargin:leftMargin];
     }];
     
     [wordResult.exchanges enumerateObjectsUsingBlock:^(TranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -417,6 +402,22 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
         }
     }];
+}
+
+- (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
+    CGFloat rightMargin = kHorizontalMargin;
+    CGFloat width = MainWindow.shared.width - leftMargin - rightMargin - 2 * kMainHorizontalMargin;
+//    NSLog(@"text: %@, width: %@", label.text, @(width));
+
+    // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
+    label.width = width;
+    CGFloat height = [label getHeight];
+    [label mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@(height));
+        make.width.equalTo(@(label.width));
+    }];
+    
+//    NSLog(@"height: %@", @(height));
 }
 
 @end

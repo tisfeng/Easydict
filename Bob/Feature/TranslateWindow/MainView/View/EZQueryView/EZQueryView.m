@@ -163,7 +163,7 @@ static CGFloat kTextViewMiniHeight = 60;
     NSString *text = textStorage.string;
     self.copiedText = text;
     CGFloat height = [self.textView getHeight];
-    NSLog(@"text: %@, height: %@", text, @(height));
+//    NSLog(@"text: %@, height: %@", text, @(height));
     
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3;
     if (height < kTextViewMiniHeight) {

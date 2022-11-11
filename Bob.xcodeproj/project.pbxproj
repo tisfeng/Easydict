@@ -132,6 +132,7 @@
 		0390D9C9291BF63300FB9426 /* EZResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZResultView.m; sourceTree = "<group>"; };
 		0390D9CC291BF7CA00FB9426 /* EZWordResultView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWordResultView.h; sourceTree = "<group>"; };
 		0390D9CD291BF7CA00FB9426 /* EZWordResultView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWordResultView.m; sourceTree = "<group>"; };
+		0390D9D2291E4FE500FB9426 /* EZConst.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZConst.h; sourceTree = "<group>"; };
 		03B7CAB2291BE758008E3874 /* EZButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZButton.m; sourceTree = "<group>"; };
 		03B7CAB3291BE758008E3874 /* EZButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZButton.h; sourceTree = "<group>"; };
 		03C504A029160A93007626F8 /* EZHoverButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZHoverButton.h; sourceTree = "<group>"; };
@@ -283,7 +284,6 @@
 		C99EEBDF238585E700FEE666 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		C9AEF96923A0D57A003BE95C /* TextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextView.h; sourceTree = "<group>"; };
 		C9AEF96A23A0D57A003BE95C /* TextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextView.m; sourceTree = "<group>"; };
-		C9B5CA3F23B72C580038EE98 /* BobMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BobMacro.h; sourceTree = "<group>"; };
 		C9C3BDC5238E76B000D5F1C1 /* SnipWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnipWindowController.h; sourceTree = "<group>"; };
 		C9C3BDC6238E76B000D5F1C1 /* SnipWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SnipWindowController.m; sourceTree = "<group>"; };
 		C9C3BDC8238E76C800D5F1C1 /* SnipWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnipWindow.h; sourceTree = "<group>"; };
@@ -584,7 +584,7 @@
 				C99EEB872385799D00FEE666 /* Feature */,
 				C99EEB1B2385796700FEE666 /* AppDelegate.h */,
 				C99EEB1C2385796700FEE666 /* AppDelegate.m */,
-				C9B5CA3F23B72C580038EE98 /* BobMacro.h */,
+				0390D9D2291E4FE500FB9426 /* EZConst.h */,
 				C99EEBDF238585E700FEE666 /* PrefixHeader.pch */,
 				C98CFA20239F8CDA00FB7EC4 /* Bob-Bridging-Header.h */,
 				C99EEB212385796900FEE666 /* Assets.xcassets */,

@@ -749,8 +749,8 @@
     
     if (from == Language_auto) {
         // 判断语言
-        mm_weakify(
-                   self)[self detect:text
+        mm_weakify(self)
+        [self detect:text
                           completion:^(Language lang, NSError *_Nullable error) {
                        mm_strongify(self) if (error) {
                            completion(nil, error);

@@ -14,6 +14,7 @@
 #import "TextView.h"
 #import "NSTextView+Height.h"
 #import "MainWindow.h"
+#import "EZConst.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -232,7 +233,8 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
 
-        __block CGFloat leading = partTextFiled.x;
+       
+        __block CGFloat leftMargin = CGRectGetMaxX(partTextFiled.frame);
 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.greaterThanOrEqualTo(@(15));
@@ -242,11 +244,11 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 make.top.equalTo(partTextFiled).offset(0);
                 CGFloat leftLeading = 5;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
-                leading += partTextFiled.width + leftLeading;
+                leftMargin += leftLeading;
             } else {
                 CGFloat leftLeading = kHorizontalMargin + kFixWrappingLabelMargin;
                 make.left.equalTo(self).offset(leftLeading);
-                leading += leftLeading;
+                leftMargin += leftLeading;
                 if (lastView) {
                     if (idx == 0) {
                         make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
@@ -260,10 +262,13 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         
+        CGFloat width = MainWindow.shared.width - leftMargin - kHorizontalMargin - 2 * kMainHorizontalMargin;
+//        NSLog(@"text: %@, width: %@", text, @(width));
+
+        // ⚠️ 很奇特，比如实际计算结果为 364，但界面渲染却是 364.5。这样显示会有点问题，所以暂时宽度+1
+        meanLabel.width = width + 1;
+        CGFloat height = [meanLabel getHeight];
         [meanLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            CGFloat width = MainWindow.shared.width - leading;
-            meanLabel.width = width;
-            CGFloat height = [meanLabel getHeight];
             make.height.equalTo(@(height));
         }];
 
