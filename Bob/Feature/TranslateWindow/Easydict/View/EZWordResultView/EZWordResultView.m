@@ -92,7 +92,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
             if (typeTextField) {
-                make.top.equalTo(typeTextField).offset(0);
+                make.top.equalTo(typeTextField);
                 CGFloat leftLeading = 0;
                 make.left.equalTo(typeTextField.mas_right).offset(leftLeading);
                 leftMargin += leftLeading;
@@ -100,12 +100,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
                 } else {
-                    make.top.offset(kVerticalMargin);
+                    make.top.equalTo(self).offset(kVerticalMargin);
                 }
                 make.left.equalTo(self).offset(kHorizontalMargin);
             }
         }];
-        resultLabel.mas_key = @"meanTextField_parts";
+        resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
 
         [self updateLabelHeight:resultLabel leftMargin:leftMargin];
@@ -227,7 +227,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             make.right.equalTo(self).offset(-kHorizontalMargin);
 
             if (partTextFiled) {
-                make.top.equalTo(partTextFiled).offset(0);
+                make.top.equalTo(partTextFiled);
                 CGFloat leftLeading = 5;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
                 leftMargin += leftLeading;
@@ -236,11 +236,11 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 make.left.equalTo(self).offset(leftLeading);
                 leftMargin += leftLeading;
                 if (lastView) {
+                    CGFloat topPadding = kVerticalPadding;
                     if (idx == 0) {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
-                    } else {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding);
+                        topPadding = kVerticalMargin;
                     }
+                    make.top.equalTo(lastView.mas_bottom).offset(topPadding);
                 } else {
                     make.top.offset(kHorizontalMargin);
                 }
@@ -416,7 +416,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     CGFloat height = [label getHeight];
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
-        make.width.equalTo(@(label.width));
+        make.width.mas_greaterThanOrEqualTo(label.width);
     }];
     
 //    NSLog(@"height: %@", @(height));

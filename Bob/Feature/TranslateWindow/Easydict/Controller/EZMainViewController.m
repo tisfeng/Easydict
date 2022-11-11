@@ -244,11 +244,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
-    NSView *cellView = [tableView makeViewWithIdentifier:EZResultCellId owner:self];
-    
-    EZResultCell *resultCell = (EZResultCell *)[self tableView:self.tableView viewForTableColumn:self.column row:row];
-    CGSize size = [resultCell fittingSize];
-    
+    NSView *cell = [self tableView:self.tableView viewForTableColumn:self.column row:row];
+    CGSize size = [cell fittingSize];
     return size.height;
 }
 

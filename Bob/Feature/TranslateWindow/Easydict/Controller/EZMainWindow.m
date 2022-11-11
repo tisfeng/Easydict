@@ -33,22 +33,22 @@ static EZMainWindow *_instance;
 }
 
 - (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled |  NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.movableByWindowBackground = YES;
         self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
         self.titlebarAppearsTransparent = YES;
         self.titleVisibility = NSWindowTitleHidden;
-
+        
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        EZMainViewController *vc = [[EZMainViewController alloc] init];
-        self.contentViewController = vc;
+        EZMainViewController *mainVC = [[EZMainViewController alloc] init];
+        self.contentViewController = mainVC;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
@@ -67,7 +67,7 @@ static EZMainWindow *_instance;
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-//    NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
+    //    NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
 }
 
 @end
