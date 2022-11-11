@@ -78,7 +78,7 @@ static const CGFloat ktMargin = 5;
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-ktMargin);
         make.left.offset(ktMargin + 2);
-        make.width.height.equalTo(@25);
+        make.width.height.equalTo(@23);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {

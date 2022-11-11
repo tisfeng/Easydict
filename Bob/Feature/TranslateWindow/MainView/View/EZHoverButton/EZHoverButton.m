@@ -23,7 +23,7 @@
     [self excuteLight:^(EZButton *button) {
         button.contentTintColor = NSColor.blackColor;
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
-        button.backgroundHighlightColor = NSColor.lightGrayColor;
+        button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#DADADA"]; 
         button.titleColor = NSColor.resultTextLightColor;
     } drak:^(EZButton *button) {
         button.contentTintColor = NSColor.whiteColor;
