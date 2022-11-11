@@ -68,9 +68,15 @@ static CGFloat kTextViewMiniHeight = 60;
         make.height.mas_equalTo(20);
     }];
     [detectButton excuteLight:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
+        NSColor *bgColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
+        detectButton.backgroundColor = bgColor;
+        detectButton.backgroundHoverColor = bgColor;
+        detectButton.backgroundHighlightColor = [NSColor lightGrayColor];
     } drak:^(EZButton *button) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#313233"];
+        NSColor *bgColor = [NSColor mm_colorWithHexString:@"#313233"];
+        detectButton.backgroundColor = bgColor;
+        detectButton.backgroundHoverColor = bgColor;
+        detectButton.backgroundHighlightColor = [NSColor lightGrayColor];
     }];
     
     mm_weakify(self);
