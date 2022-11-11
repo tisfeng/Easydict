@@ -257,11 +257,9 @@ static const CGFloat kMiniMainViewHeight = 300;
 #pragma mark -
 
 - (EZQueryCell *)queryCellForTableView:(NSTableView *)tableView  {
-    EZQueryCell *queryCell = [tableView makeViewWithIdentifier:EZQueryCellId owner:self];
-    if (!queryCell) {
-        queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
-        queryCell.identifier = EZQueryCellId;
-    }
+    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+    queryCell.identifier = EZQueryCellId;
+    
     queryCell.queryView.copiedText = self.inputText; // need to check
     self.queryView = queryCell.queryView;
     
@@ -307,11 +305,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (EZResultCell *)resultCellForTableView:(NSTableView *)tableView row:(NSInteger)row {
-    EZResultCell *resultCell = [tableView makeViewWithIdentifier:EZResultCellId owner:self];
-    if (!resultCell) {
-        resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
-        resultCell.identifier = EZResultCellId;
-    }
+    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
+    resultCell.identifier = EZResultCellId;
 
     NSInteger index = row - 1;
     
