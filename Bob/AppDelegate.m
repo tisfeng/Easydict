@@ -13,7 +13,7 @@
 #import "TranslateWindowController.h"
 #import "TranslateViewController.h"
 #import "Configuration.h"
-#import "MainWindow.h"
+#import "EZMainWindow.h"
 
 @implementation AppDelegate
 
@@ -23,7 +23,7 @@
     [StatusItem.shared setup];
     [Shortcut setup];
     
-    MainWindow *window = [MainWindow shared];
+    EZMainWindow *window = [EZMainWindow shared];
     [window center];
     [window makeKeyAndOrderFront:nil];
 }

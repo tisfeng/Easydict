@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "MainViewController.h"
+#import "EZMainViewController.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
@@ -21,7 +21,7 @@
 #import "EZResultView.h"
 #import "EZConst.h"
 
-@interface MainViewController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface EZMainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation MainViewController
+@implementation EZMainViewController
 
 static const CGFloat kMiniMainViewWidth = 300;
 static const CGFloat kMiniMainViewHeight = 300;

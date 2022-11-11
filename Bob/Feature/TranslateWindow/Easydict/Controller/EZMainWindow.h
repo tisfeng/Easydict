@@ -1,5 +1,5 @@
 //
-//  MainTabViewController.h
+//  MainWindow.h
 //  Bob
 //
 //  Created by tisfeng on 2022/11/3.
@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MainViewController : NSViewController
+@interface EZMainWindow : NSWindow
+
++ (instancetype)shared;
 
 @end
 

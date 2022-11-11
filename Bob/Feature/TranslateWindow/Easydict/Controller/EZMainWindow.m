@@ -6,13 +6,13 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "MainWindow.h"
-#import "MainViewController.h"
+#import "EZMainWindow.h"
+#import "EZMainViewController.h"
 #import "NSColor+MyColors.h"
 
-@implementation MainWindow
+@implementation EZMainWindow
 
-static MainWindow *_instance;
+static EZMainWindow *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -47,7 +47,7 @@ static MainWindow *_instance;
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        MainViewController *vc = [[MainViewController alloc] init];
+        EZMainViewController *vc = [[EZMainViewController alloc] init];
         self.contentViewController = vc;
         
         [[NSNotificationCenter defaultCenter] addObserver:self

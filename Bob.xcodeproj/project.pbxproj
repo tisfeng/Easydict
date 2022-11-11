@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		03252D0B2912A39100DA2932 /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D0A2912A39100DA2932 /* FlippedView.m */; };
-		03252D352912F3C900DA2932 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D342912F3C900DA2932 /* MainViewController.m */; };
+		03252D352912F3C900DA2932 /* EZMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D342912F3C900DA2932 /* EZMainViewController.m */; };
 		03252D392912FB5400DA2932 /* EZResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D382912FB5400DA2932 /* EZResultCell.m */; };
 		03252D3D2913EB2700DA2932 /* NSColor+MyColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */; };
-		03252D402914068B00DA2932 /* MainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* MainWindow.m */; };
+		03252D402914068B00DA2932 /* EZMainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D3F2914068B00DA2932 /* EZMainWindow.m */; };
 		03252D442914262C00DA2932 /* EZQueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03252D432914262C00DA2932 /* EZQueryCell.m */; };
 		033022A02918C5FE00B63F68 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0330229F2918C5FE00B63F68 /* EZLabel.m */; };
 		0390D9CA291BF63300FB9426 /* EZResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0390D9C9291BF63300FB9426 /* EZResultView.m */; };
@@ -116,14 +116,14 @@
 /* Begin PBXFileReference section */
 		03252D092912A39100DA2932 /* FlippedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlippedView.h; sourceTree = "<group>"; };
 		03252D0A2912A39100DA2932 /* FlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
-		03252D332912F3C900DA2932 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		03252D342912F3C900DA2932 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		03252D332912F3C900DA2932 /* EZMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainViewController.h; sourceTree = "<group>"; };
+		03252D342912F3C900DA2932 /* EZMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMainViewController.m; sourceTree = "<group>"; };
 		03252D372912FB5400DA2932 /* EZResultCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZResultCell.h; sourceTree = "<group>"; };
 		03252D382912FB5400DA2932 /* EZResultCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZResultCell.m; sourceTree = "<group>"; };
 		03252D3B2913EB2700DA2932 /* NSColor+MyColors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSColor+MyColors.h"; sourceTree = "<group>"; };
 		03252D3C2913EB2700DA2932 /* NSColor+MyColors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSColor+MyColors.m"; sourceTree = "<group>"; };
-		03252D3E2914068B00DA2932 /* MainWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindow.h; sourceTree = "<group>"; };
-		03252D3F2914068B00DA2932 /* MainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindow.m; sourceTree = "<group>"; };
+		03252D3E2914068B00DA2932 /* EZMainWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainWindow.h; sourceTree = "<group>"; };
+		03252D3F2914068B00DA2932 /* EZMainWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMainWindow.m; sourceTree = "<group>"; };
 		03252D422914262C00DA2932 /* EZQueryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryCell.h; sourceTree = "<group>"; };
 		03252D432914262C00DA2932 /* EZQueryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryCell.m; sourceTree = "<group>"; };
 		0330229E2918C5FE00B63F68 /* EZLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLabel.h; sourceTree = "<group>"; };
@@ -318,19 +318,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		03252D362912FB2200DA2932 /* MainView */ = {
-			isa = PBXGroup;
-			children = (
-				03252D452914DC0600DA2932 /* View */,
-				03252D41291425E900DA2932 /* Cell */,
-				03252D332912F3C900DA2932 /* MainViewController.h */,
-				03252D342912F3C900DA2932 /* MainViewController.m */,
-				03252D3E2914068B00DA2932 /* MainWindow.h */,
-				03252D3F2914068B00DA2932 /* MainWindow.m */,
-			);
-			path = MainView;
-			sourceTree = "<group>";
-		};
 		03252D3A2913EAF800DA2932 /* NSColor+MyColors */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +377,27 @@
 				0390D9CD291BF7CA00FB9426 /* EZWordResultView.m */,
 			);
 			path = EZWordResultView;
+			sourceTree = "<group>";
+		};
+		0390D9D3291E787500FB9426 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				03252D332912F3C900DA2932 /* EZMainViewController.h */,
+				03252D342912F3C900DA2932 /* EZMainViewController.m */,
+				03252D3E2914068B00DA2932 /* EZMainWindow.h */,
+				03252D3F2914068B00DA2932 /* EZMainWindow.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		0390D9D4291E78B400FB9426 /* Easydict */ = {
+			isa = PBXGroup;
+			children = (
+				0390D9D3291E787500FB9426 /* Controller */,
+				03252D452914DC0600DA2932 /* View */,
+				03252D41291425E900DA2932 /* Cell */,
+			);
+			path = Easydict;
 			sourceTree = "<group>";
 		};
 		03B7CAB1291BE758008E3874 /* EZButton */ = {
@@ -637,7 +645,7 @@
 		C99EEB972385799D00FEE666 /* TranslateWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03252D362912FB2200DA2932 /* MainView */,
+				0390D9D4291E78B400FB9426 /* Easydict */,
 				C99EEB9A2385799D00FEE666 /* TranslateWindowController.h */,
 				C99EEBA52385799D00FEE666 /* TranslateWindowController.m */,
 				C99EEB9B2385799D00FEE666 /* TranslateWindow.h */,
@@ -966,7 +974,7 @@
 				C99EEBD32385799D00FEE666 /* WordResultView.m in Sources */,
 				C99EEBDE2385799D00FEE666 /* NSArray+MM.m in Sources */,
 				C9676F2B23A0908F007DD023 /* NSPasteboard+MM.m in Sources */,
-				03252D352912F3C900DA2932 /* MainViewController.m in Sources */,
+				03252D352912F3C900DA2932 /* EZMainViewController.m in Sources */,
 				C99EEBD92385799D00FEE666 /* NSUserDefaults+MM.m in Sources */,
 				03C504A52916768E007626F8 /* DetectManager.m in Sources */,
 				C99EEBCB2385799D00FEE666 /* ImageButton.m in Sources */,
@@ -996,7 +1004,7 @@
 				C910457023A3AF44001D5211 /* TranslateService.m in Sources */,
 				03252D392912FB5400DA2932 /* EZResultCell.m in Sources */,
 				C9C3BDCA238E76C800D5F1C1 /* SnipWindow.m in Sources */,
-				03252D402914068B00DA2932 /* MainWindow.m in Sources */,
+				03252D402914068B00DA2932 /* EZMainWindow.m in Sources */,
 				C99EEBD52385799D00FEE666 /* Selection.m in Sources */,
 				C99EEBCE2385799D00FEE666 /* TranslateViewController.m in Sources */,
 				C99EEBC82385799D00FEE666 /* BaiduTranslateResponse.m in Sources */,
