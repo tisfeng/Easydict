@@ -346,7 +346,7 @@
                       Language googleTo = langTo;
                       
                       TranslateResult *result = [TranslateResult new];
-                      self.translateResult = result;
+                      self.result = result;
                       
                       result.text = text;
                       result.from = googleFrom;
@@ -448,6 +448,8 @@
                     Language googleTo = langTo;
                     
                     TranslateResult *result = [TranslateResult new];
+                    self.result = result;
+                    
                     result.text = text;
                     result.from = googleFrom;
                     result.to = googleTo;

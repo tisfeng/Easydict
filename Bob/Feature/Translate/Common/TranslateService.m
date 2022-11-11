@@ -27,10 +27,10 @@
 
 @implementation TranslateService
 
-- (void)setTranslateResult:(TranslateResult *)translateResult {
-    _translateResult = translateResult;
+- (void)setResult:(TranslateResult *)translateResult {
+    _result = translateResult;
        
-    _translateResult.serviceType = [self serviceType];
+    _result.serviceType = self.serviceType;;
 }
 
 - (MMOrderedDictionary *)langDict {

@@ -57,28 +57,30 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
     
     if (result.normalResults.count) {
-        NSTextField *typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
-            [self addSubview:textField];
-            textField.stringValue = @"释义：";
-            textField.font = typeTextFont;
-            textField.editable = NO;
-            textField.bordered = NO;
-            textField.textColor = typeTextColor;
-            textField.backgroundColor = NSColor.clearColor;
-            
-            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
-                } else {
-                    make.top.offset(kVerticalMargin);
-                }
-                make.left.mas_equalTo(kHorizontalMargin);
+        NSTextField *typeTextField;
+        if (result.wordResult) {
+            typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
+                [self addSubview:textField];
+                textField.stringValue = @"释义：";
+                textField.font = typeTextFont;
+                textField.editable = NO;
+                textField.bordered = NO;
+                textField.textColor = typeTextColor;
+                textField.backgroundColor = NSColor.clearColor;
+                
+                [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin);
+                    } else {
+                        make.top.offset(kVerticalMargin);
+                    }
+                    make.left.mas_equalTo(kHorizontalMargin);
+                }];
             }];
-        }];
-        typeTextField.mas_key = @"typeTextField_normalResults";
-        [self layoutSubtreeIfNeeded];
-        
-        
+            typeTextField.mas_key = @"typeTextField_normalResults";
+            [self layoutSubtreeIfNeeded];
+        }
+                
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
         
         EZLabel *resultLabel = [EZLabel new];

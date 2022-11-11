@@ -156,7 +156,7 @@
                             self.error997Count = 0;
 
                             TranslateResult *result = [TranslateResult new];
-                            self.translateResult = result;
+                            self.result = result;
 
                             result.text = text;
                             result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduRootPage, response.trans_result.from, response.trans_result.to, text.mm_urlencode];

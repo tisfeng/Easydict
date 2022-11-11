@@ -83,7 +83,7 @@
                 YoudaoTranslateResponse *response = [YoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
                     TranslateResult *result = [TranslateResult new];
-                    self.translateResult = result;
+                    self.result = result;
 
                     result.text = text;
                     result.fromSpeakURL = response.speakUrl;

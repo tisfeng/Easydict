@@ -21,13 +21,19 @@
 #import "EZResultView.h"
 #import "EZConst.h"
 
+
+static NSString *EZColumnId = @"EZColumnId";
+static NSString *EZQueryCellId = @"EZQueryCellId";
+static NSString *EZResultCellId = @"EZResultCellId";
+
 @interface EZMainViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
+@property (nonatomic, strong) NSTableColumn *column;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
-@property (nonatomic, strong) NSArray<TranslateService *> *translateServices;
+@property (nonatomic, strong) NSArray<TranslateService *> *services;
 @property (nonatomic, copy) NSString *inputText;
 
 @property (nonatomic, strong) DetectManager *detectManager;
@@ -75,7 +81,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         TranslateService *service = [ServiceTypes serviceWithType:type];
         [translateServices addObject:service];
     }
-    self.translateServices = translateServices;
+    self.services = translateServices;
     
     self.detectManager = [[DetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -128,13 +134,13 @@ static const CGFloat kMiniMainViewHeight = 300;
             // Fallback on earlier versions
         }
         
-        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:@"column"];
+        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
+        self.column = column;
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
         [tableView addTableColumn:column];
         
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.usesAutomaticRowHeights = YES;
         tableView.rowHeight = 100;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
@@ -174,13 +180,15 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
-    for (TranslateService *service in self.translateServices) {
+    for (TranslateService *service in self.services) {
         [self queryText:text
                  serive:service
                language:fromLang completion:^(TranslateResult *_Nullable translateResult, NSError *_Nullable error) {
-            service.translateResult = translateResult;
-            
-            [self updateUI];
+            if (!translateResult) {
+                NSLog(@"translateResult is nil, error: %@", error);
+                return;
+            }
+            [self updateTranslateResult:translateResult];
         }];
     }
 }
@@ -200,30 +208,64 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self.tableView reloadData];
 }
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return self.translateServices.count + 1;
+- (void)updateTranslateResult:(TranslateResult *)result {
+    [self updateServiceResults:@[result]];
 }
 
-// View-base
-// 设置某个元素的具体视图
+- (void)updateServiceResults:(NSArray<TranslateResult *> *)results {
+    NSMutableIndexSet *rowSet = [NSMutableIndexSet indexSet];
+    for (TranslateResult *result in results) {
+        EZServiceType serviceType = result.serviceType;
+        NSInteger row = [self.serviceTypes indexOfObject:serviceType];
+        [rowSet addIndex:row + 1];
+    }
+    [self.tableView reloadDataForRowIndexes:rowSet columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    [self.tableView noteHeightOfRowsWithIndexesChanged:rowSet];
+}
+
+
+#pragma mark - NSTableViewDataSource
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return self.services.count + 1;
+}
+
+#pragma mark - NSTableViewDelegate
+
+// View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row == 0) {
-        EZQueryCell *queryCell = [self queryCell];
+        EZQueryCell *queryCell = [self queryCellForTableView:tableView];
         return queryCell;
     }
     
-    EZResultCell *resultCell = [self resultCellAtRow:row];
+    EZResultCell *resultCell = [self resultCellForTableView:tableView row:row];
     return resultCell;
 }
+
+- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
+    NSView *cellView = [tableView makeViewWithIdentifier:EZResultCellId owner:self];
+    
+    EZResultCell *resultCell = (EZResultCell *)[self tableView:self.tableView viewForTableColumn:self.column row:row];
+    CGSize size = [resultCell fittingSize];
+    
+    return size.height;
+}
+
 
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
     return NO;
 }
 
-- (EZQueryCell *)queryCell {
-    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
-    queryCell.identifier = @"queryCell";
-    queryCell.queryView.copiedText = self.inputText;
+#pragma mark -
+
+- (EZQueryCell *)queryCellForTableView:(NSTableView *)tableView  {
+    EZQueryCell *queryCell = [tableView makeViewWithIdentifier:EZQueryCellId owner:self];
+    if (!queryCell) {
+        queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+        queryCell.identifier = EZQueryCellId;
+    }
+    queryCell.queryView.copiedText = self.inputText; // need to check
     self.queryView = queryCell.queryView;
     
     Language detectLang = self.detectManager.language;
@@ -261,21 +303,26 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (TranslateService * _Nullable)firstTranslateService {
-    for (TranslateService *service in self.translateServices) {
+    for (TranslateService *service in self.services) {
         return service;
     }
     return nil;
 }
 
-- (EZResultCell *)resultCellAtRow:(NSInteger)row {
-    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
-    resultCell.identifier = @"resultCell";
-    
+- (EZResultCell *)resultCellForTableView:(NSTableView *)tableView row:(NSInteger)row {
+    EZResultCell *resultCell = [tableView makeViewWithIdentifier:EZResultCellId owner:self];
+    if (!resultCell) {
+        resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
+        resultCell.identifier = EZResultCellId;
+    }
+
     NSInteger index = row - 1;
-    TranslateResult *result = self.translateServices[index].translateResult;
+    
+    TranslateService *service = self.services[index];
+    TranslateResult *result = service.result;
     if (!result) {
         result = [[TranslateResult alloc] init];
-        result.serviceType = self.serviceTypes[index];
+        service.result = result;
     }
     resultCell.result = result;
     [self setupResultCell:resultCell];
@@ -283,15 +330,15 @@ static const CGFloat kMiniMainViewHeight = 300;
     return resultCell;
 }
 
-- (TranslateService *)translateServicesWithType:(EZServiceType)serviceType {
+- (TranslateService *)servicesWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
-    return self.translateServices[index];
+    return self.services[index];
 }
 
 - (void)setupResultCell:(EZResultCell *)resultCell {
     EZResultView *resultView = resultCell.resultView;
     TranslateResult *result = resultCell.result;
-    TranslateService *serive = [self translateServicesWithType:result.serviceType];
+    TranslateService *serive = [self servicesWithType:result.serviceType];
     
     mm_weakify(self)
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {

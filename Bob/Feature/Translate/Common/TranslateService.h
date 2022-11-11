@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface TranslateService : NSObject
 
 /// 翻译结果
-@property (nonatomic, strong) TranslateResult * _Nullable translateResult;
+@property (nonatomic, strong) TranslateResult * _Nullable result;
 
 /// 支持的语言
 - (NSArray<NSNumber *> *)languages;
