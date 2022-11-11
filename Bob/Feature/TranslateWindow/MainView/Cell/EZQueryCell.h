@@ -7,14 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "QueryView.h"
 #import "EZQueryView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface QueryCell : NSTableRowView
+@interface EZQueryCell : NSTableRowView
 
-//@property (nonatomic, strong) QueryView *queryView;
 @property (nonatomic, strong) EZQueryView *queryView;
 
 @property (nonatomic, copy) NSString *queryText;
@@ -27,9 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSString *text);
 
-//@property (nonatomic, copy) void (^audioActionBlock)(QueryView *view);
-//@property (nonatomic, copy) void (^copyActionBlock)(QueryView *view);
-//@property (nonatomic, copy) void (^enterActionBlock)(QueryView *view);
 @end
 
 NS_ASSUME_NONNULL_END

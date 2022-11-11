@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "QueryCell.h"
+#import "EZQueryCell.h"
 #import "PopUpButton.h"
 #import "TranslateService.h"
 #import "GoogleTranslate.h"
@@ -16,7 +16,7 @@
 
 static const CGFloat kVerticalMargin = 10;
 
-@interface QueryCell ()
+@interface EZQueryCell ()
 
 @property (nonatomic, strong) PopUpButton *fromLanguageButton;
 @property (nonatomic, strong) NSButton *transformButton;
@@ -24,10 +24,9 @@ static const CGFloat kVerticalMargin = 10;
 @property (nonatomic, strong) TranslateService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
-
 @end
 
-@implementation QueryCell
+@implementation EZQueryCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
@@ -67,11 +66,7 @@ static const CGFloat kVerticalMargin = 10;
     EZHoverButton *transformButton = [[EZHoverButton alloc] init];
     self.transformButton = transformButton;
     [selectLanguageBarView addSubview:transformButton];
-    transformButton.bordered = NO;
     transformButton.toolTip = @"交换语言";
-    transformButton.imageScaling = NSImageScaleProportionallyDown;
-    transformButton.bezelStyle = NSBezelStyleRegularSquare;
-    [transformButton setButtonType:NSButtonTypeMomentaryChange];
     transformButton.image = [NSImage imageNamed:@"transform"];
     
     [transformButton excuteLight:^(id _Nonnull x) {

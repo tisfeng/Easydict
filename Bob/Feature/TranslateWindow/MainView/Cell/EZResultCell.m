@@ -6,9 +6,9 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "ResultCell.h"
+#import "EZResultCell.h"
 
-@implementation ResultCell
+@implementation EZResultCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
@@ -29,7 +29,6 @@
 - (void)updateConstraints {
     [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self);
-        make.height.mas_greaterThanOrEqualTo(kResultViewMiniHeight);
     }];
     
     [super updateConstraints];

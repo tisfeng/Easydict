@@ -12,8 +12,8 @@
 #import "GoogleTranslate.h"
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
-#import "QueryCell.h"
-#import "ResultCell.h"
+#import "EZQueryCell.h"
+#import "EZResultCell.h"
 #import "DetectManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ServiceTypes.h"
@@ -210,11 +210,11 @@ static const CGFloat kMiniMainViewHeight = 300;
 // 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row == 0) {
-        QueryCell *queryCell = [self queryCell];
+        EZQueryCell *queryCell = [self queryCell];
         return queryCell;
     }
     
-    ResultCell *resultCell = [self resultCellAtRow:row];
+    EZResultCell *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
 
@@ -222,8 +222,8 @@ static const CGFloat kMiniMainViewHeight = 300;
     return NO;
 }
 
-- (QueryCell *)queryCell {
-    QueryCell *queryCell = [[QueryCell alloc] initWithFrame:self.view.bounds];
+- (EZQueryCell *)queryCell {
+    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = @"queryCell";
     queryCell.queryView.copiedText = self.inputText;
     self.queryView = queryCell.queryView;
@@ -269,8 +269,8 @@ static const CGFloat kMiniMainViewHeight = 300;
     return nil;
 }
 
-- (ResultCell *)resultCellAtRow:(NSInteger)row {
-    ResultCell *resultCell = [[ResultCell alloc] initWithFrame:self.view.bounds];
+- (EZResultCell *)resultCellAtRow:(NSInteger)row {
+    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
     resultCell.identifier = @"resultCell";
     
     NSInteger index = row - 1;
@@ -290,7 +290,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     return self.translateServices[index];
 }
 
-- (void)setupResultCell:(ResultCell *)resultCell {
+- (void)setupResultCell:(EZResultCell *)resultCell {
     EZResultView *resultView = resultCell.resultView;
     TranslateResult *result = resultCell.result;
     TranslateService *serive = [self translateServicesWithType:result.serviceType];
