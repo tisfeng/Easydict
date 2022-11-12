@@ -310,6 +310,10 @@ static const CGFloat kMiniMainViewHeight = 300;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self.view.window makeFirstResponder:self.queryView.textView];
+                
+                NSScrollView *scrollView = self.queryView.scrollView;
+                CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;   
+                [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
             });
         }
     }];

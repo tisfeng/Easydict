@@ -14,8 +14,6 @@ static CGFloat kTextViewMiniHeight = 60;
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
-@property (nonatomic, strong) NSScrollView *scrollView;
-
 @property (nonatomic, strong) EZButton *detectButton;
 
 @end

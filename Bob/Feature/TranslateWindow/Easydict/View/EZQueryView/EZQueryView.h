@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZQueryView : EZCommonView
 
 @property (nonatomic, strong) TextView *textView;
+@property (nonatomic, strong) NSScrollView *scrollView;
+
 @property (nonatomic, copy) NSString *detectLanguage;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
