@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CGFloat)getHeight;
 
+- (CGFloat)getHeightWithWidth:(CGFloat)width;
+
+- (CGFloat)getTextViewHeightWithWidth:(CGFloat)width;
+
 @end
 
 NS_ASSUME_NONNULL_END

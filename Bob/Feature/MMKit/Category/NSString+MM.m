@@ -29,13 +29,24 @@
     return [self mm_sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX)].height;
 }
 
+
+
 // get string size
 - (CGSize)mm_sizeWithFont:(NSFont *)font {
     return [self mm_sizeWithFont:font constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
 }
 
 - (CGSize)mm_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size {
-    return [self boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : font} context:nil].size;
+    return [self mm_sizetWithAttributes:@{NSFontAttributeName : font} constrainedToSize:size];
+}
+
+- (CGSize)mm_sizetWithAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes
+               constrainedToSize:(CGSize)size {
+    return [self boundingRectWithSize:size
+                              options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                           attributes:attributes
+                              context:nil].size;
+    
 }
 
 

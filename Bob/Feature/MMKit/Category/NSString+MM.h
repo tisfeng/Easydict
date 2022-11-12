@@ -24,7 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 // get string size
 - (CGSize)mm_sizeWithFont:(NSFont *)font;
 - (CGSize)mm_sizeWithFont:(NSFont *)font constrainedToSize:(CGSize)size;
-
+- (CGSize)mm_sizetWithAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes
+               constrainedToSize:(CGSize)size;
 
 - (NSString *)mm_urlencode;
 

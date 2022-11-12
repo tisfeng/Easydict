@@ -46,11 +46,11 @@ static const CGFloat kVerticalMargin = 10;
     }];
     
     mm_weakify(self);
-    [queryView setUpdateQueryTextBlock:^(NSString * _Nonnull text) {
+    [queryView setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
         self->_queryText = text;
         
         if (self.updateQueryTextBlock) {
-            self.updateQueryTextBlock(text);
+            self.updateQueryTextBlock(text, textViewHeight);
         }
         
 //        [self.window makeFirstResponder:self.queryView.textView];
@@ -172,7 +172,9 @@ static const CGFloat kVerticalMargin = 10;
 - (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
     
-    self.queryView.copiedText = queryText;
+    if (queryText) {
+        self.queryView.queryText = queryText;
+    }
 }
 
 - (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {

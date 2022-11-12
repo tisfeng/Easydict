@@ -18,11 +18,12 @@ DefineMethodMMMake_m(TextView);
     if (self) {
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
-                  style.lineHeightMultiple = 1.2;
-                  style.paragraphSpacing = 0;
-              }]];
+            style.lineHeightMultiple = 1.2;
+            style.paragraphSpacing = 0;
+            style.lineBreakMode = NSLineBreakByWordWrapping;
+        }]];
         self.font = [NSFont systemFontOfSize:14];
-
+        
         [self excuteLight:^(TextView *textView) {
             textView.backgroundColor = NSColor.queryViewBgLightColor;
             [textView setTextColor:NSColor.queryTextLightColor];

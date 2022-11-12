@@ -15,11 +15,11 @@
         NSAssert(0, @"mm_attributedStringWithString: 参数不对");
         return nil;
     }
-    
+
     NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:text
                                                                  attributes:@{
-        NSFontAttributeName : font,
-    }];
+                                                                     NSFontAttributeName : font,
+                                                                 }];
     return attStr;
 }
 
@@ -28,7 +28,7 @@
         NSAssert(0, @"mm_attributedStringWithString: 参数不对");
         return nil;
     }
-    
+
     NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:text
                                                                  attributes:@{
         NSFontAttributeName : font,
@@ -51,7 +51,7 @@
     if (!designatedSize.width || !designatedSize.height) {
         return CGSizeZero;
     }
-    
+
     NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:self];
     NSTextContainer *textContainer = [[NSTextContainer alloc] initWithContainerSize:designatedSize];
     NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];

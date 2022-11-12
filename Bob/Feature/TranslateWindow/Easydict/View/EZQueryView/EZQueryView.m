@@ -9,6 +9,8 @@
 #import "EZQueryView.h"
 #import "EZHoverButton.h"
 #import "NSTextView+Height.h"
+#import "EZConst.h"
+#import "EZMainWindow.h"
 
 static CGFloat kTextViewMiniHeight = 60;
 
@@ -20,8 +22,6 @@ static CGFloat kTextViewMiniHeight = 60;
 
 @implementation EZQueryView
 
-@synthesize copiedText = _copiedText;
-
 #pragma mark - NSTextViewDelegate
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
@@ -32,14 +32,17 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (void)setup {
+    CGFloat width = EZMainWindow.shared.width - 2 * kMainHorizontalMargin;
+    
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
+    scrollView.width = width;
     self.scrollView = scrollView;
     [self addSubview:scrollView];
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
     
-    TextView *textView = [[TextView alloc] initWithFrame:self.bounds];
+    TextView *textView = [[TextView alloc] initWithFrame:scrollView.bounds];
     self.textView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
@@ -60,7 +63,7 @@ static CGFloat kTextViewMiniHeight = 60;
     detectButton.hidden = YES;
     detectButton.cornerRadius = 10;
     detectButton.title = @"";
-
+    
     [detectButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(8);
         make.centerY.equalTo(self.textCopyButton);
@@ -79,7 +82,7 @@ static CGFloat kTextViewMiniHeight = 60;
     }];
     
     mm_weakify(self);
-    [detectButton setClickBlock:^(EZButton * _Nonnull button) {
+    [detectButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"detectButton");
         
         mm_strongify(self);
@@ -91,13 +94,19 @@ static CGFloat kTextViewMiniHeight = 60;
     detectButton.mas_key = @"detectButton";
 }
 
-#pragma mark - Setter
-
-- (void)setCopiedText:(NSString *)queryText {
-    _copiedText = queryText ?: @"";
-    
-    self.textView.string = _copiedText;
+- (void)setQueryText:(NSString *)queryText {
+    if (queryText) {
+        self.textView.string = queryText;
+    }
 }
+
+#pragma mark - Getter
+
+- (NSString *)copiedText {
+    return self.textView.string;
+}
+
+#pragma mark - Setter
 
 - (void)setDetectLanguage:(NSString *)detectLanguage {
     _detectLanguage = detectLanguage;
@@ -151,33 +160,33 @@ static CGFloat kTextViewMiniHeight = 60;
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
-    _copiedText = text;
-    if (_copiedText.length == 0) {
+    if (text.length == 0) {
         self.detectButton.hidden = YES;
     }
+    
+    CGFloat height = [self heightOfTextView];
+    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(height);
+    }];
+    
+    if (self.updateQueryTextBlock) {
+        self.updateQueryTextBlock(text, height);
+    }
+}
 
+- (CGFloat)heightOfTextView {
     CGFloat height = [self.textView getHeight];
-//    NSLog(@"text: %@, height: %@", text, @(height));
-
-    CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3;
+    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
+    
+    CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
     if (height < kTextViewMiniHeight) {
         height = kTextViewMiniHeight;
     }
     if (height > maxHeight) {
         height = maxHeight;
-        NSLog(@"text maxHeight");
+        NSLog(@"reached maxHeight");
     }
-
-    // Avoiding show scroller
-    height += 1;
-
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(height);
-    }];
-
-    if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock(text);
-    }
+    return ceil(height);
 }
 
 @end

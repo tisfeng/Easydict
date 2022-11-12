@@ -41,6 +41,8 @@ static NSString *EZResultCellId = @"EZResultCellId";
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
+@property (nonatomic, assign) CGFloat textViewHeight;
+
 @end
 
 @implementation EZMainViewController
@@ -72,10 +74,9 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)setup {
-    self.queryText = @"";
+//    self.queryText = @"";
     
     self.serviceTypes = @[EZServiceTypeGoogle, EZServiceTypeBaidu, EZServiceTypeYoudao];
-    //    self.serviceTypes = @[EZServiceTypeGoogle];
     
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
@@ -248,6 +249,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSLog(@"tableView for row: %ld", row);
+    
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
         queryCell.queryText = self.queryText;
@@ -270,8 +273,10 @@ static const CGFloat kMiniMainViewHeight = 300;
         cellView = [self resultCellAtRow:row];
     }
     
-    CGSize size = [cellView fittingSize];
-    return size.height;
+    CGFloat height = [cellView fittingSize].height;
+//    NSLog(@"row: %ld, height: %@", row, @(height));
+    
+    return height;
 }
 
 // Disable select cell
@@ -295,26 +300,37 @@ static const CGFloat kMiniMainViewHeight = 300;
     return size.height;
 }
 
-- (EZQueryCell *)createQueryCell  {
+- (EZQueryCell *)createQueryCell {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = EZQueryCellId;
         
     mm_weakify(self);
-    [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text) {
+    [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
         mm_strongify(self);
-        if (![text isEqualToString:self.queryText]) {
-            self->_queryText = text;
+        self->_queryText = text;
+        
+        if (textViewHeight != self.textViewHeight) {
+            self.textViewHeight = textViewHeight;
             
-            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            [self updateTableViewRowIndexes:firstIndexSet];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [CATransaction begin];
+            NSLog(@"begin");
+            [CATransaction setCompletionBlock:^{
+                NSLog(@"completion");
+
                 [self.view.window makeFirstResponder:self.queryView.textView];
                 
                 NSScrollView *scrollView = self.queryView.scrollView;
-                CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;   
+                CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
                 [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
-            });
+            }];
+            
+            NSLog(@"before update");
+            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+            [self updateTableViewRowIndexes:firstIndexSet];
+            NSLog(@"after update");
+
+            [CATransaction commit];
+            NSLog(@"commit");
         }
     }];
     
