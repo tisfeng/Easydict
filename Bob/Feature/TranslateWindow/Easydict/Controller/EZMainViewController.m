@@ -326,7 +326,7 @@ static const CGFloat kMiniMainViewHeight = 300;
             
             NSLog(@"before update");
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            [self updateTableViewRowIndexes:firstIndexSet];
+            [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
             NSLog(@"after update");
 
             [CATransaction commit];
