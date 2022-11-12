@@ -9,11 +9,11 @@
 
 @interface EZButton ()
 
-@property(nonatomic, assign) BOOL selected;
-@property(nonatomic, assign) BOOL hover;
-@property(nonatomic, assign) BOOL mouseUp;
+@property (nonatomic, assign) BOOL selected;
+@property (nonatomic, assign) BOOL hover;
+@property (nonatomic, assign) BOOL mouseUp;
 
-@property(nonatomic, strong) NSTrackingArea *trackingArea;
+@property (nonatomic, strong) NSTrackingArea *trackingArea;
 
 @end
 
@@ -45,27 +45,27 @@
 
 - (void)updateTrackingAreas {
     [super updateTrackingAreas];
-    
+
     self.buttonState = EZButtonNormalState;
-    
+
     if (self.trackingArea) {
         [self removeTrackingArea:self.trackingArea];
         self.trackingArea = nil;
     }
     NSTrackingAreaOptions options =
-    NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
-    NSTrackingEnabledDuringMouseDrag | NSTrackingActiveAlways;
+        NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
+        NSTrackingEnabledDuringMouseDrag | NSTrackingActiveAlways;
     self.trackingArea = [[NSTrackingArea alloc] initWithRect:CGRectZero
                                                      options:options
                                                        owner:self
                                                     userInfo:nil];
-    
+
     [self addTrackingArea:self.trackingArea];
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-//    NSLog(@"mouseEntered");
-    
+    //    NSLog(@"mouseEntered");
+
     self.hover = YES;
     if (!self.selected) {
         self.buttonState = EZButtonHoverState;
@@ -73,8 +73,8 @@
 }
 
 - (void)mouseExited:(NSEvent *)event {
-//    NSLog(@"mouseExited");
-    
+    //    NSLog(@"mouseExited");
+
     self.hover = NO;
     if (!self.selected) {
         [self setButtonState:EZButtonNormalState];
@@ -82,8 +82,8 @@
 }
 
 - (void)mouseDown:(NSEvent *)event {
-//    NSLog(@"mouseDown");
-    
+    //    NSLog(@"mouseDown");
+
     self.mouseUp = NO;
     if (self.enabled && self.hover) {
         self.buttonState = EZButtonHighlightState;
@@ -91,19 +91,19 @@
 }
 
 - (void)mouseUp:(NSEvent *)event {
-//    NSLog(@"mouseUp");
-    
+    //    NSLog(@"mouseUp");
+
     self.mouseUp = YES;
     if (self.enabled && self.hover) {
         if (self.canSelected) {
             self.selected = !self.selected;
             self.buttonState =
-            self.selected ? EZButtonSelectedState : EZButtonNormalState;
+                self.selected ? EZButtonSelectedState : EZButtonNormalState;
         } else {
             self.buttonState = EZButtonHoverState;
         }
-        
-//        NSLog(@"send action");
+
+        //        NSLog(@"send action");
 
         NSString *selString = NSStringFromSelector(self.action);
         if ([selString hasSuffix:@":"]) {
@@ -117,18 +117,18 @@
 }
 
 - (void)mouseDragged:(NSEvent *)event {
-//    NSLog(@"mouseDragged");
-    
+    //    NSLog(@"mouseDragged");
+
     CGPoint point = event.locationInWindow;
     if (CGRectContainsPoint(self.frame, point)) {
         self.hover = YES;
     } else {
-//        NSLog(@"mouse out");
-        
+        //        NSLog(@"mouse out");
+
         self.hover = NO;
         if (self.canSelected) {
             self.buttonState =
-            self.selected ? EZButtonSelectedState : EZButtonNormalState;
+                self.selected ? EZButtonSelectedState : EZButtonNormalState;
         } else {
             [self setButtonState:EZButtonNormalState];
         }
@@ -141,9 +141,9 @@
 - (void)commonInitialize {
     self.backgroundHighlightColor = NSColor.highlightColor;
     self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
-    
+
     [self initializeUI];
-    
+
     [self setTarget:self];
     [self setAction:@selector(click:)];
 }
@@ -155,7 +155,7 @@
     self.bezelStyle = NSBezelStyleTexturedSquare;
     self.bordered = NO;
     self.imageScaling = NSImageScaleProportionallyDown;
-        
+
     [self setupTitle];
 }
 
@@ -173,12 +173,12 @@
         attributedTitle = [[NSAttributedString alloc] initWithString:title];
     }
     NSMutableAttributedString *attributedString =
-    [[NSMutableAttributedString alloc]
-     initWithAttributedString:attributedTitle];
+        [[NSMutableAttributedString alloc]
+            initWithAttributedString:attributedTitle];
     if (attributedString.length == 0) {
         return;
     }
-    
+
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     if (titleColor) {
         attributes[NSForegroundColorAttributeName] = titleColor;
@@ -188,23 +188,24 @@
     }
     NSRange titleRange = NSMakeRange(0, attributedString.length);
     [attributedString addAttributes:attributes range:titleRange];
-    [self setAttributedTitle:attributedString];
+        
+    self.attributedTitle = attributedString;
 }
 
 - (void)updateButtonApperaceWithState:(EZButtonState)state {
-//    NSLog(@"button state: %@", @(state));
-    
+    //    NSLog(@"button state: %@", @(state));
+
     CGFloat cornerRadius = 0.f;
     CGFloat borderWidth = 0.f;
     NSColor *borderColor = nil;
-    
+
     NSString *title = nil;
     NSColor *titleColor = nil;
     NSFont *titleFont = nil;
-    
+
     NSColor *backgroundColor = nil;
     NSImage *image = nil;
-    
+
     switch (state) {
         case EZButtonNormalState: {
             cornerRadius = self.cornerRadius;
@@ -251,9 +252,9 @@
     if (image != nil) {
         self.image = image;
     }
-    
+
     [self setTitle:title titleColor:titleColor titleFont:titleFont];
-    
+
     self.layer.cornerRadius = cornerRadius;
     self.layer.borderWidth = borderWidth;
     self.layer.borderColor = borderColor.CGColor;
@@ -265,7 +266,7 @@
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
     _cornerRadius = cornerRadius;
-    
+
     if (!_cornerHoverRadius) {
         _cornerHoverRadius = cornerRadius;
     }
@@ -275,13 +276,13 @@
     if (!_cornerSelectedRadius) {
         _cornerSelectedRadius = cornerRadius;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setBorderWidth:(CGFloat)borderWidth {
     _borderWidth = borderWidth;
-    
+
     if (!_borderHoverWidth) {
         _borderHoverWidth = borderWidth;
     }
@@ -291,13 +292,13 @@
     if (!_borderSelectedWidth) {
         _borderSelectedWidth = borderWidth;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setBorderColor:(NSColor *)borderColor {
     _borderColor = borderColor;
-    
+
     if (!_borderHoverColor) {
         _borderHoverColor = borderColor;
     }
@@ -307,13 +308,13 @@
     if (!_borderSelectedColor) {
         _borderSelectedColor = borderColor;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setNormalTitle:(NSString *)normalTitle {
     _normalTitle = normalTitle;
-    
+
     if (!_hoverTitle) {
         _hoverTitle = normalTitle;
     }
@@ -323,13 +324,13 @@
     if (!_selectedTitle) {
         _selectedTitle = normalTitle;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setTitleColor:(NSColor *)titleColor {
     _titleColor = titleColor;
-    
+
     if (!_titleHoverColor) {
         _titleHoverColor = titleColor;
     }
@@ -339,13 +340,13 @@
     if (!_titleSelectedColor) {
         _titleSelectedColor = titleColor;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setTitleFont:(NSFont *)titleFont {
     _titleFont = titleFont;
-    
+
     if (!_titleHoverFont) {
         _titleHoverFont = titleFont;
     }
@@ -355,13 +356,13 @@
     if (!_titleSelectedFont) {
         _titleSelectedFont = titleFont;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setNormalImage:(NSImage *)normalImage {
     _normalImage = normalImage;
-    
+
     if (!_hoverImage) {
         _hoverImage = normalImage;
     }
@@ -371,13 +372,13 @@
     if (!_selectedImage) {
         _selectedImage = normalImage;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setBackgroundColor:(NSColor *)backgroundColor {
     _backgroundColor = backgroundColor;
-    
+
     if (!_backgroundHoverColor) {
         _backgroundHoverColor = backgroundColor;
     }
@@ -387,13 +388,13 @@
     if (!_backgroundSelectedColor) {
         _backgroundSelectedColor = backgroundColor;
     }
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
 - (void)setCanSelected:(BOOL)canSelected {
     _canSelected = canSelected;
-    
+
     [self updateButtonApperaceWithState:self.buttonState];
 }
 
@@ -401,29 +402,38 @@
     if (_buttonState == state) {
         return;
     }
-    
+
     _buttonState = state;
-    
+
     [self updateButtonApperaceWithState:state];
 }
 
+- (void)setAttrTitle:(NSAttributedString *)attrTitle {
+    _attrTitle = attrTitle;
+    
+    self.attributedTitle = attrTitle;
+    
+    [self updateButtonApperaceWithState:self.buttonState];
+}
+
+#pragma mark - Rewrite
 - (void)setTitle:(NSString *)title {
     [super setTitle:title];
-    
+
     self.normalTitle = title;
     [self setupTitle];
 }
 
 - (void)setFont:(NSFont *)font {
     [super setFont:font];
-    
+
     self.titleFont = font;
     [self setupTitle];
 }
 
 - (void)setImage:(NSImage *)image {
     [super setImage:image];
-        
+
     // We don't want to show up the default button title when an image is set.
     NSString *defaultButtonTitle = NSButton.new.title;
     if ([self.title isEqualToString:defaultButtonTitle]) {
@@ -435,8 +445,8 @@
 #pragma mark - Click Action
 
 - (void)click:(EZButton *)button {
-//    NSLog(@"click");
-    
+    //    NSLog(@"click");
+
     if (self.clickBlock) {
         self.clickBlock(self);
     }

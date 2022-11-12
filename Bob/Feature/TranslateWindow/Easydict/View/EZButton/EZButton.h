@@ -62,6 +62,8 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 @property (nonatomic, strong, nonnull) NSColor *backgroundHighlightColor;
 @property (nonatomic, strong, nonnull) NSColor *backgroundSelectedColor;
 
+@property (nonatomic, copy) NSAttributedString *attrTitle;
+
 @property (nonatomic, copy) void (^clickBlock)(EZButton *button);
 
 @end

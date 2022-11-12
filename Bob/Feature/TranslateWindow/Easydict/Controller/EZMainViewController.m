@@ -182,6 +182,10 @@ static const CGFloat kMiniMainViewHeight = 300;
             fromLang = language;
             NSLog(@"detect language: %ld", language);
         }
+        
+        if (fromLang != Language_auto) {
+            self.queryView.detectLanguage = LanguageDescFromEnum(fromLang);
+        }
         [self queryText:text fromLangunage:fromLang];
     }];
 }
@@ -294,12 +298,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (EZQueryCell *)createQueryCell  {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = EZQueryCellId;
-    
-    Language detectLang = self.detectManager.language;
-    if (detectLang != Language_auto) {
-        self.queryView.detectLanguage = LanguageDescFromEnum(detectLang);
-    }
-    
+        
     mm_weakify(self);
     [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);

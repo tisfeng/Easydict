@@ -16,7 +16,7 @@ static CGFloat kTextViewMiniHeight = 60;
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 
-@property (nonatomic, strong) NSButton *detectButton;
+@property (nonatomic, strong) EZButton *detectButton;
 
 @end
 
@@ -61,6 +61,7 @@ static CGFloat kTextViewMiniHeight = 60;
     self.detectButton = detectButton;
     detectButton.hidden = YES;
     detectButton.cornerRadius = 10;
+    detectButton.title = @"";
 
     [detectButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(8);
@@ -125,10 +126,8 @@ static CGFloat kTextViewMiniHeight = 60;
     self.detectButton.hidden = NO;
     self.detectButton.attributedTitle = attrTitle;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(width + 10);
+        make.width.mas_equalTo(width + 8);
     }];
-    
-    [self layoutSubtreeIfNeeded];
 }
 
 
