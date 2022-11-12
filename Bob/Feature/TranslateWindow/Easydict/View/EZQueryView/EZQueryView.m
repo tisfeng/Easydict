@@ -92,16 +92,10 @@ static CGFloat kTextViewMiniHeight = 60;
     detectButton.mas_key = @"detectButton";
 }
 
-- (NSString *)copiedText {
-    return self.textView.string;
-}
+#pragma mark - Setter
 
 - (void)setCopiedText:(NSString *)queryText {
     _copiedText = queryText ?: @"";
-    
-    if (!_copiedText.length) {
-        self.detectButton.hidden = YES;
-    }
     
     self.textView.string = _copiedText;
 }
@@ -161,24 +155,33 @@ static CGFloat kTextViewMiniHeight = 60;
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
-    self.copiedText = text;
+    _copiedText = text;
+    if (_copiedText.length == 0) {
+        self.detectButton.hidden = YES;
+    }
+
     CGFloat height = [self.textView getHeight];
 //    NSLog(@"text: %@, height: %@", text, @(height));
-    
+
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3;
     if (height < kTextViewMiniHeight) {
         height = kTextViewMiniHeight;
     }
     if (height > maxHeight) {
         height = maxHeight;
+        NSLog(@"text maxHeight");
     }
-    
+
     // Avoiding show scroller
     height += 1;
-    
+
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(height);
     }];
+
+    if (self.updateQueryTextBlock) {
+        self.updateQueryTextBlock(text);
+    }
 }
 
 @end

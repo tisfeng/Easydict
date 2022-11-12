@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, copy) NSString *detectLanguage;
 
+@property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);

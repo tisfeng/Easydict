@@ -31,10 +31,11 @@ static NSString *EZResultCellId = @"EZResultCellId";
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
+@property (nonatomic, strong) EZQueryCell *queryCell;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
-@property (nonatomic, copy) NSString *inputText;
+@property (nonatomic, copy) NSString *queryText;
 
 @property (nonatomic, strong) DetectManager *detectManager;
 @property (nonatomic, strong) EZQueryView *queryView;
@@ -66,16 +67,16 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self setup];
     
     [self startQueryText:@"good"];
-//    [self startQueryText:@"你好\n世界"];
-
+    //    [self startQueryText:@"你好\n世界"];
+    
 }
 
 - (void)setup {
-    self.inputText = @"";
+    self.queryText = @"";
     
     self.serviceTypes = @[EZServiceTypeGoogle, EZServiceTypeBaidu, EZServiceTypeYoudao];
-//    self.serviceTypes = @[EZServiceTypeGoogle];
-
+    //    self.serviceTypes = @[EZServiceTypeGoogle];
+    
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
         TranslateService *service = [ServiceTypes serviceWithType:type];
@@ -89,7 +90,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self tableView];
 }
 
-
+#pragma mark - Getter
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
         NSScrollView *scrollView = [[NSScrollView alloc] init];
@@ -156,12 +157,18 @@ static const CGFloat kMiniMainViewHeight = 300;
     return _tableView;
 }
 
+- (void)setQueryText:(NSString *)queryText {
+    _queryText = queryText;
+    
+    self.queryCell.queryText = queryText;
+}
+
 - (void)startQuery {
-    [self startQueryText:self.inputText];
+    [self startQueryText:self.queryText];
 }
 
 - (void)startQueryText:(NSString *)text {
-    self.inputText = text;
+    self.queryText = text;
     
     __block Language fromLang = Configuration.shared.from;
     
@@ -170,7 +177,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         return;
     }
     
-    [self.detectManager detect:self.inputText completion:^(Language language, NSError *error) {
+    [self.detectManager detect:self.queryText completion:^(Language language, NSError *error) {
         if (!error) {
             fromLang = language;
             NSLog(@"detect language: %ld", language);
@@ -197,7 +204,7 @@ static const CGFloat kMiniMainViewHeight = 300;
            serive:(TranslateService *)service
          language:(Language)fromLang
        completion:(nonnull void (^)(TranslateResult *_Nullable translateResult, NSError *_Nullable error))completion {
-    [service translate:self.inputText
+    [service translate:self.queryText
                   from:fromLang
                     to:Configuration.shared.to
             completion:completion];
@@ -213,16 +220,19 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)updateServiceResults:(NSArray<TranslateResult *> *)results {
-    NSMutableIndexSet *rowSet = [NSMutableIndexSet indexSet];
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
-        [rowSet addIndex:row + 1];
+        [rowIndexes addIndex:row + 1];
     }
-    [self.tableView reloadDataForRowIndexes:rowSet columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-    [self.tableView noteHeightOfRowsWithIndexesChanged:rowSet];
+    [self updateTableViewRowIndexes:rowIndexes];
 }
 
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes {
+    [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+}
 
 #pragma mark - NSTableViewDataSource
 
@@ -235,7 +245,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     if (row == 0) {
-        EZQueryCell *queryCell = [self queryCellForTableView:tableView];
+        EZQueryCell *queryCell = [self createQueryCell];
+        queryCell.queryText = self.queryText;
         return queryCell;
     }
     
@@ -249,18 +260,16 @@ static const CGFloat kMiniMainViewHeight = 300;
     return size.height;
 }
 
-
+// Disable select cell
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
     return NO;
 }
 
 #pragma mark -
 
-- (EZQueryCell *)queryCellForTableView:(NSTableView *)tableView  {
+- (EZQueryCell *)createQueryCell  {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = EZQueryCellId;
-    
-    queryCell.queryView.copiedText = self.inputText; // need to check
     self.queryView = queryCell.queryView;
     
     Language detectLang = self.detectManager.language;
@@ -268,10 +277,20 @@ static const CGFloat kMiniMainViewHeight = 300;
         self.queryView.detectLanguage = LanguageDescFromEnum(detectLang);
     }
     
-    mm_weakify(self)
+    mm_weakify(self);
+    [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text) {
+        mm_strongify(self);
+        if (![text isEqualToString:self.queryText]) {
+            self->_queryText = text;
+            
+            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+            [self updateTableViewRowIndexes:firstIndexSet];
+        }
+    }];
+    
     [queryCell setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        self.inputText = text;
+        self.queryText = text;
         [self startQuery];
     }];
     
@@ -279,7 +298,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         mm_strongify(self);
         TranslateService *service = [self firstTranslateService];
         if (service) {
-            NSString *text = self.inputText;
+            NSString *text = self.queryText;
             Language lang = self.detectManager.language;
             [service audio:text from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
                 if (url.length) {
@@ -307,7 +326,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (EZResultCell *)resultCellForTableView:(NSTableView *)tableView row:(NSInteger)row {
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
     resultCell.identifier = EZResultCellId;
-
+    
     NSInteger index = row - 1;
     
     TranslateService *service = self.services[index];

@@ -38,11 +38,20 @@ static const CGFloat kVerticalMargin = 10;
 }
 
 - (void)setup {
-    EZQueryView *inputView = [[EZQueryView alloc] initWithFrame:self.bounds];
-    self.queryView = inputView;
-    [self addSubview:inputView];
-    [inputView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    EZQueryView *queryView = [[EZQueryView alloc] initWithFrame:self.bounds];
+    self.queryView = queryView;
+    [self addSubview:queryView];
+    [queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
+    }];
+    
+    mm_weakify(self);
+    [queryView setUpdateQueryTextBlock:^(NSString * _Nonnull text) {
+        self->_queryText = text;
+        
+        if (self.updateQueryTextBlock) {
+            self.updateQueryTextBlock(text);
+        }
     }];
     
     NSView *selectLanguageBarView = [[NSView alloc] init];
@@ -80,7 +89,6 @@ static const CGFloat kVerticalMargin = 10;
         make.width.height.mas_equalTo(transformButtonWidth);
     }];
     
-    mm_weakify(self);
     [transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self)
         Language from = Configuration.shared.from;
@@ -156,6 +164,14 @@ static const CGFloat kVerticalMargin = 10;
     }
 }
 
+
+#pragma mark - Setter
+
+- (void)setQueryText:(NSString *)queryText {
+    _queryText = queryText;
+    
+    self.queryView.copiedText = queryText;
+}
 
 - (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
     _enterActionBlock = enterActionBlock;
