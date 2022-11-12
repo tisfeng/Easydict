@@ -247,16 +247,26 @@ static const CGFloat kMiniMainViewHeight = 300;
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
         queryCell.queryText = self.queryText;
+        self.queryView = queryCell.queryView;
+
         return queryCell;
     }
     
-    EZResultCell *resultCell = [self resultCellForTableView:tableView row:row];
+    EZResultCell *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
-    NSView *cell = [self tableView:self.tableView viewForTableColumn:self.column row:row];
-    CGSize size = [cell fittingSize];
+    NSView *cellView;
+    if (row == 0) {
+        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+        queryCell.queryText = self.queryText;
+        cellView = queryCell;
+    } else {
+        cellView = [self resultCellAtRow:row];
+    }
+    
+    CGSize size = [cellView fittingSize];
     return size.height;
 }
 
@@ -267,10 +277,23 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 #pragma mark -
 
+- (CGFloat)heightOfRow:(NSInteger)row {
+    NSView *cellView;
+    if (row == 0) {
+        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+        queryCell.queryText = self.queryText;
+        cellView = queryCell;
+    } else {
+        cellView = [self resultCellAtRow:row];
+    }
+    
+    CGSize size = [cellView fittingSize];
+    return size.height;
+}
+
 - (EZQueryCell *)createQueryCell  {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = EZQueryCellId;
-    self.queryView = queryCell.queryView;
     
     Language detectLang = self.detectManager.language;
     if (detectLang != Language_auto) {
@@ -285,22 +308,24 @@ static const CGFloat kMiniMainViewHeight = 300;
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             [self updateTableViewRowIndexes:firstIndexSet];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.view.window makeFirstResponder:self.queryView.textView];
+            });
         }
     }];
     
     [queryCell setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        self.queryText = text;
-        [self startQuery];
+        [self startQueryText:text];
     }];
     
     [queryCell setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         TranslateService *service = [self firstTranslateService];
         if (service) {
-            NSString *text = self.queryText;
             Language lang = self.detectManager.language;
-            [service audio:text from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
+            [service audio:self.queryText from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
                 if (url.length) {
                     [self playAudioWithURL:url];
                 }
@@ -323,7 +348,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     return nil;
 }
 
-- (EZResultCell *)resultCellForTableView:(NSTableView *)tableView row:(NSInteger)row {
+- (EZResultCell *)resultCellAtRow:(NSInteger)row {
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
     resultCell.identifier = EZResultCellId;
     
