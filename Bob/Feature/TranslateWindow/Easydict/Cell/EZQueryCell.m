@@ -52,8 +52,6 @@ static const CGFloat kVerticalMargin = 10;
         if (self.updateQueryTextBlock) {
             self.updateQueryTextBlock(text, textViewHeight);
         }
-        
-//        [self.window makeFirstResponder:self.queryView.textView];
     }];
     
     NSView *selectLanguageBarView = [[NSView alloc] init];

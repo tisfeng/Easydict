@@ -146,7 +146,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(kMainHorizontalMargin * 2, kMainVerticalMargin);
+        tableView.intercellSpacing = CGSizeMake(EZMainHorizontalMargin_12 * 2, EZMainVerticalMargin_10);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];

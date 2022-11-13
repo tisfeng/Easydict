@@ -8,6 +8,7 @@
 
 #import "EZCommonView.h"
 #import "EZHoverButton.h"
+#import "EZConst.h"
 
 static const CGFloat ktMargin = 5;
 

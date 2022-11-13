@@ -409,7 +409,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-    CGFloat width = self.width - leftMargin - rightMargin - 2 * kMainHorizontalMargin;
+    CGFloat width = self.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
 //    NSLog(@"text: %@, width: %@", label.text, @(width));
 
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
