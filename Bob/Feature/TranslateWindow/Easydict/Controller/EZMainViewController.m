@@ -74,8 +74,6 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (void)setup {
-//    self.queryText = @"";
-    
     self.serviceTypes = @[EZServiceTypeGoogle, EZServiceTypeBaidu, EZServiceTypeYoudao];
     
     NSMutableArray *translateServices = [NSMutableArray array];
@@ -200,7 +198,7 @@ static const CGFloat kMiniMainViewHeight = 300;
                 NSLog(@"translateResult is nil, error: %@", error);
                 return;
             }
-            [self updateTranslateResult:translateResult];
+            [self updateTranslateResult:translateResult reloadData:YES];
         }];
     }
 }
@@ -220,22 +218,24 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self.tableView reloadData];
 }
 
-- (void)updateTranslateResult:(TranslateResult *)result {
-    [self updateServiceResults:@[result]];
+- (void)updateTranslateResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+    [self updateServiceResults:@[result]reloadData:reloadData];
 }
 
-- (void)updateServiceResults:(NSArray<TranslateResult *> *)results {
+- (void)updateServiceResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
         [rowIndexes addIndex:row + 1];
     }
-    [self updateTableViewRowIndexes:rowIndexes];
+    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData];
 }
 
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes {
-    [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData {
+    if (reloadData) {
+        [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    }
     [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
 }
 
@@ -249,7 +249,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSLog(@"tableView for row: %ld", row);
+//    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
@@ -266,7 +266,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     NSView *cellView;
     if (row == 0) {
-        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.tableView.bounds];
         queryCell.queryText = self.queryText;
         cellView = queryCell;
     } else {
@@ -287,7 +287,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 #pragma mark -
 
 - (EZQueryCell *)createQueryCell {
-    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
+    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.tableView.bounds];
     queryCell.identifier = EZQueryCellId;
         
     mm_weakify(self);
@@ -299,24 +299,19 @@ static const CGFloat kMiniMainViewHeight = 300;
             self.textViewHeight = textViewHeight;
             
             [CATransaction begin];
-            NSLog(@"begin");
             [CATransaction setCompletionBlock:^{
-                NSLog(@"completion");
-
+                // recover input focus
                 [self.view.window makeFirstResponder:self.queryView.textView];
                 
+                // scroll to input view bottom
                 NSScrollView *scrollView = self.queryView.scrollView;
                 CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
                 [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
             }];
             
-            NSLog(@"before update");
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
-            NSLog(@"after update");
-
+            [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
             [CATransaction commit];
-            NSLog(@"commit");
         }
     }];
     
@@ -354,7 +349,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 }
 
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
-    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.view.bounds];
+    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.tableView.bounds];
     resultCell.identifier = EZResultCellId;
     
     NSInteger index = row - 1;
@@ -400,7 +395,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     }];
     
     [resultView setClickArrowBlock:^(BOOL isShowing) {
-        [self updateTranslateResult:result];
+        [self updateTranslateResult:result reloadData:NO];
     }];
 }
 

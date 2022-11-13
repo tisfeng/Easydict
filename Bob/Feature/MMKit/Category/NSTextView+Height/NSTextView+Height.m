@@ -22,7 +22,6 @@
 }
 
 - (CGFloat)getHeightWithWidth:(CGFloat)width {
-    self.width = width;
     CGSize textContainerInset = self.textContainerInset;
     CGFloat renderWidth = width - textContainerInset.width * 2;
     CGFloat height = [self.attributedString mm_getTextHeightWithWidth:renderWidth];

@@ -1,5 +1,5 @@
 //
-//  EZCommonResultView.m
+//  EZWordResultView.m
 //  Bob
 //
 //  Created by tisfeng on 2022/11/9.
@@ -24,8 +24,6 @@ static const CGFloat kVerticalPadding = 8;
 static const CGFloat kFixWrappingLabelMargin = 2;
 
 @interface EZWordResultView ()
-
-@property (nonatomic, strong) MASConstraint *textViewHeightConstraint;
 
 @end
 
@@ -91,7 +89,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         [self addSubview:resultLabel];
         resultLabel.text = text;
 
-        __block CGFloat leftMargin = CGRectGetMaxX(typeTextField.frame);
+        __block CGFloat leftMargin = kHorizontalMargin + typeTextField.width;
         
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
@@ -225,7 +223,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
 
-        __block CGFloat leftMargin = CGRectGetMaxX(partTextFiled.frame);
+        __block CGFloat leftMargin = kHorizontalMargin + partTextFiled.width;
 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
@@ -412,12 +410,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-    CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * kMainHorizontalMargin;
+    CGFloat width = self.width - leftMargin - rightMargin - 2 * kMainHorizontalMargin;
 //    NSLog(@"text: %@, width: %@", label.text, @(width));
 
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-    label.width = width;
-    CGFloat height = [label getHeight];
+//    label.width = width;
+    CGFloat height = [label getHeightWithWidth:width];
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
         make.width.mas_greaterThanOrEqualTo(label.width);

@@ -55,7 +55,6 @@ static const CGFloat kResultViewMiniHeight = 30;
     }];
     self.topBarView.mas_key = @"topBarView";
     
-    
     self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
@@ -100,7 +99,6 @@ static const CGFloat kResultViewMiniHeight = 30;
         }
     }];
     
-
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
@@ -123,29 +121,29 @@ static const CGFloat kResultViewMiniHeight = 30;
 - (void)updateConstraints {
     CGSize iconSize = CGSizeMake(20, 20);
 
-    [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_equalTo(kResultViewMiniHeight);
     }];
     
-    [self.typeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.typeImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topBarView).offset(10);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
-    [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.typeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeImageView.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
-    [self.disableImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.disableImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
-    [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(20, 20));
@@ -153,8 +151,8 @@ static const CGFloat kResultViewMiniHeight = 30;
     
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
-        make.left.right.inset(0);
-        
+        make.left.right.equalTo(self);
+
         if (self.result.isShowing) {
             make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
         } else {
@@ -172,9 +170,7 @@ static const CGFloat kResultViewMiniHeight = 30;
 
 - (void)refreshWithResult:(TranslateResult *)result {
     _result = result;
-    [self setNeedsUpdateConstraints:YES];
 
-    
     EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
