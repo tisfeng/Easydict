@@ -113,20 +113,19 @@
         BOOL preIsShowing = self.result.isShowing;
         BOOL newIsShowing = !preIsShowing;
         self.result.isShowing = newIsShowing;
-        
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
-        
-        if (self.clickArrowBlock) {
-            self.clickArrowBlock(newIsShowing);
-        }
-        
+                
         CGFloat cornerRadius = newIsShowing ? 0 : EZCornerRadius_8;
         self.topBarView.layer.cornerRadius = cornerRadius;
         [self updateArrowButton];
 
         if (!self.result.isShowing) {
             self.height = kResultViewMiniHeight;
-            [self setNeedsUpdateConstraints:YES];
+        }
+        [self setNeedsUpdateConstraints:YES];
+        
+        if (self.clickArrowBlock) {
+            self.clickArrowBlock(newIsShowing);
         }
     }];
 }
