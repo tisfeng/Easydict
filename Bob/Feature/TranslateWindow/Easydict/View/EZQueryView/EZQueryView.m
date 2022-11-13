@@ -32,10 +32,10 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (void)setup {
-    CGFloat width = EZMainWindow.shared.width - 2 * kMainHorizontalMargin;
     
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
-    scrollView.width = width;
+//    CGFloat width = EZMainWindow.shared.width - 2 * kMainHorizontalMargin;
+//    scrollView.width = width;
     self.scrollView = scrollView;
     [self addSubview:scrollView];
     scrollView.hasVerticalScroller = YES;
@@ -175,9 +175,10 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView getHeight];
+    CGFloat width = EZMainWindow.shared.width - 2 * kMainHorizontalMargin;
+    CGFloat height = [self.textView getHeightWithWidth:width];
 //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
-    
+
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
     if (height < kTextViewMiniHeight) {
         height = kTextViewMiniHeight;

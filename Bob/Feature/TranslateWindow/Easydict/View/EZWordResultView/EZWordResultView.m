@@ -13,7 +13,6 @@
 #import "EZLabel.h"
 #import "TextView.h"
 #import "NSTextView+Height.h"
-#import "EZMainWindow.h"
 #import "EZConst.h"
 
 static const CGFloat kHorizontalMargin = 10;
