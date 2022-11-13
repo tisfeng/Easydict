@@ -122,7 +122,8 @@
         
         CGFloat cornerRadius = newIsShowing ? 0 : EZCornerRadius_8;
         self.topBarView.layer.cornerRadius = cornerRadius;
-        
+        [self updateArrowButton];
+
         if (!self.result.isShowing) {
             self.height = kResultViewMiniHeight;
             [self setNeedsUpdateConstraints:YES];
@@ -190,9 +191,14 @@
     TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:13]];
     
-    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
+    [self updateArrowButton];
+    
+    [self.wordResultView refreshWithResult:result];
+}
 
-    if (result.isShowing) {
+- (void)updateArrowButton {
+    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
+    if (self.result.isShowing) {
         arrowImage = [NSImage imageNamed:@"arrow-down"];
     }
     [self.arrowButton excuteLight:^(NSButton *button) {
@@ -200,8 +206,6 @@
     } drak:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
     }];
-    
-    [self.wordResultView refreshWithResult:result];
 }
 
 - (void)refreshWithStateString:(NSString *)string {
