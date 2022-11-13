@@ -132,7 +132,7 @@
 }
 
 - (void)updateConstraints {
-    CGSize iconSize = CGSizeMake(20, 20);
+    CGSize iconSize = CGSizeMake(18, 18);
 
     [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
@@ -146,7 +146,7 @@
     }];
     
     [self.typeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.typeImageView.mas_right).offset(5);
+        make.left.equalTo(self.typeImageView.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
@@ -159,7 +159,7 @@
     [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
-        make.size.mas_equalTo(CGSizeMake(20, 20));
+        make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
