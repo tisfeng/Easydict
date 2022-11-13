@@ -86,6 +86,12 @@ static const CGFloat kMiniMainViewHeight = 300;
     self.player = [[AVPlayer alloc] init];
     
     [self tableView];
+    
+    mm_weakify(self);
+    [self setResizeWindowBlock:^{
+        mm_strongify(self);
+        [self.tableView reloadData];
+    }];
 }
 
 #pragma mark - Getter
@@ -214,11 +220,6 @@ static const CGFloat kMiniMainViewHeight = 300;
                   from:fromLang
                     to:Configuration.shared.to
             completion:completion];
-}
-
-
-- (void)updateUI {
-    [self.tableView reloadData];
 }
 
 - (void)updateTranslateResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
@@ -435,12 +436,6 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]]];
     [self.player play];
-}
-
-- (void)viewDidLayout {
-    [super viewDidLayout];
-    
-    [self updateUI];
 }
 
 @end

@@ -67,7 +67,12 @@ static EZMainWindow *_instance;
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-    //    NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
+//   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
+    
+    EZMainViewController *mainVC = (EZMainViewController *)self.contentViewController;
+    if (mainVC.resizeWindowBlock) {
+        mainVC.resizeWindowBlock();
+    }
 }
 
 @end

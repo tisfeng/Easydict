@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZMainViewController : NSViewController
 
+@property (nonatomic, copy) void (^resizeWindowBlock)(void);
+
 @end
 
 NS_ASSUME_NONNULL_END
