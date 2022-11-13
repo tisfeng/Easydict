@@ -110,18 +110,13 @@
     self.arrowButton.mas_key = @"arrowButton";
     
     [arrowButton setClickBlock:^(EZButton * _Nonnull button) {
-        BOOL preIsShowing = self.result.isShowing;
-        BOOL newIsShowing = !preIsShowing;
+        mm_strongify(self);
+
+        BOOL oldIsShowing = self.result.isShowing;
+        BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
                 
-        CGFloat cornerRadius = newIsShowing ? 0 : EZCornerRadius_8;
-        self.topBarView.layer.cornerRadius = cornerRadius;
-        [self updateArrowButton];
-
-        if (!self.result.isShowing) {
-            self.height = kResultViewMiniHeight;
-        }
         [self setNeedsUpdateConstraints:YES];
         
         if (self.clickArrowBlock) {
@@ -132,6 +127,11 @@
 
 - (void)updateConstraints {
     CGSize iconSize = CGSizeMake(18, 18);
+    BOOL isShowing = self.result.isShowing;
+    
+    CGFloat cornerRadius = isShowing ? 0 : EZCornerRadius_8;
+    self.topBarView.layer.cornerRadius = cornerRadius;
+    [self updateArrowButton];
 
     [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
@@ -165,7 +165,7 @@
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
 
-        if (self.result.isShowing) {
+        if (isShowing) {
             make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
         } else {
             make.bottom.equalTo(self).offset(0);
