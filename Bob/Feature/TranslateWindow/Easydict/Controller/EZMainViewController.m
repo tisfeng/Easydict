@@ -21,7 +21,6 @@
 #import "EZResultView.h"
 #import "EZConst.h"
 
-
 static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
@@ -146,7 +145,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(EZMainHorizontalMargin_12 * 2, EZMainVerticalMargin_10);
+        tableView.intercellSpacing = CGSizeMake(EZMainHorizontalMargin_12 * 2, EZMainVerticalMargin_8);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];

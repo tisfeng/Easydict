@@ -15,8 +15,6 @@
 #import "EZHoverButton.h"
 #import "EZConst.h"
 
-static const CGFloat kVerticalMargin = 10;
-
 @interface EZQueryCell ()
 
 @property (nonatomic, strong) PopUpButton *fromLanguageButton;
@@ -66,7 +64,7 @@ static const CGFloat kVerticalMargin = 10;
     }];
     
     [selectLanguageBarView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.queryView.mas_bottom).offset(kVerticalMargin);
+        make.top.equalTo(self.queryView.mas_bottom).offset(EZMainVerticalMargin_8);
         make.left.right.equalTo(self);
         make.height.mas_equalTo(35);
         make.bottom.equalTo(self);

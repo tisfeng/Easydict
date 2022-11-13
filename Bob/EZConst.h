@@ -9,8 +9,8 @@
 #ifndef EZConst_h
 #define EZConst_h
 
-static const CGFloat EZMainVerticalMargin_10 = 10;
 static const CGFloat EZMainHorizontalMargin_12 = 12;
+static const CGFloat EZMainVerticalMargin_8 = 8;
 
 static const CGFloat EZCornerRadius_8 = 8;
 
