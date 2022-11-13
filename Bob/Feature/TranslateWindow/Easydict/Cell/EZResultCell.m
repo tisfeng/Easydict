@@ -24,6 +24,15 @@
     EZResultView *resultView = [[EZResultView alloc] initWithFrame:self.bounds];
     [self addSubview:resultView];
     self.resultView = resultView;
+    
+    mm_weakify(self);
+    [resultView setClickArrowBlock:^(BOOL isShowing) {
+        mm_strongify(self);
+        
+        if (self.clickArrowBlock) {
+            self.clickArrowBlock(isShowing);
+        }
+    }];
 }
 
 - (void)updateConstraints {

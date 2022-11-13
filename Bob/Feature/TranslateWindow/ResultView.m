@@ -111,7 +111,7 @@ static const CGFloat kMargin = 10;
             button.bordered = NO;
             button.bezelStyle = NSBezelStyleRegularSquare;
             [button setButtonType:NSButtonTypeMomentaryChange];
-            NSImage *image = [NSImage imageNamed:@"arrow-down-slim"];
+            NSImage *image = [NSImage imageNamed:@"arrow-down"];
             [button excuteLight:^(NSButton *button) {
                 button.image = [image imageWithTintColor:NSColor.imageTintLightColor];
             } drak:^(NSButton *button) {

@@ -43,6 +43,7 @@ NSString *const EZServiceTypeYoudao = @"Youdao";
 - (instancetype)init {
     if (self = [super init]) {
         _normalResults = @[@""];
+        _isShowing = YES;
     }
     return self;
 }

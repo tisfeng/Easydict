@@ -11,7 +11,7 @@
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
 
-static const CGFloat kResultViewMiniHeight = 25;
+static const CGFloat kResultViewMiniHeight = 30;
 
 @interface EZResultView ()
 
@@ -52,24 +52,14 @@ static const CGFloat kResultViewMiniHeight = 25;
         } drak:^(CALayer *layer) {
             layer.backgroundColor = NSColor.topBarBgDarkColor.CGColor;
         }];
-        
-        [view mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.right.equalTo(self);
-            make.height.mas_equalTo(kResultViewMiniHeight);
-        }];
     }];
     self.topBarView.mas_key = @"topBarView";
     
-    CGSize iconSize = CGSizeMake(18, 18);
     
     self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
-        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.topBarView).offset(10);
-            make.centerY.equalTo(self.topBarView);
-            make.size.mas_equalTo(iconSize);
-        }];
+
     }];
     self.typeImageView.mas_key = @"typeImageView";
     
@@ -81,10 +71,6 @@ static const CGFloat kResultViewMiniHeight = 25;
         label.alignment = NSTextAlignmentCenter;
         NSString *title = @"系统翻译";
         label.attributedStringValue = [[NSAttributedString alloc] initWithString:title];
-        [label mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.typeImageView.mas_right).offset(5);
-            make.centerY.equalTo(self.topBarView).offset(0);
-        }];
         
         [label excuteLight:^(NSTextField *label) {
             label.textColor = NSColor.resultTextLightColor;
@@ -98,43 +84,10 @@ static const CGFloat kResultViewMiniHeight = 25;
         [self addSubview:imageView];
         NSImage *image = [NSImage imageNamed:@"disabled"];
         [imageView setImage:image];
-        
-        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.typeLabel.mas_right).offset(5);
-            make.centerY.equalTo(self.topBarView);
-            make.size.mas_equalTo(iconSize);
-        }];
     }];
     self.disableImageView.mas_key = @"disableImageView";
     
-    EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
-    self.arrowButton = arrowButton;
-        [self addSubview:arrowButton];
-        arrowButton.wantsLayer = YES;
-        arrowButton.layer.cornerRadius = 3;
-        arrowButton.bordered = NO;
-        arrowButton.bezelStyle = NSBezelStyleRegularSquare;
-        [arrowButton setButtonType:NSButtonTypeMomentaryChange];
-        NSImage *image = [NSImage imageNamed:@"arrow-down-slim"];
-        [arrowButton excuteLight:^(NSButton *button) {
-            button.image = [image imageWithTintColor:NSColor.imageTintLightColor];
-        } drak:^(NSButton *button) {
-            button.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
-        }];
         
-        arrowButton.imageScaling = NSImageScaleProportionallyDown;
-        [arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self.topBarView.mas_right).offset(-8);
-            make.centerY.equalTo(self.topBarView);
-            make.size.mas_equalTo(iconSize);
-        }];
-    
-        [arrowButton setClickBlock:^(EZButton * _Nonnull button) {
-            NSLog(@"点击 arrowButton");
-        }];
-      
-    self.arrowButton.mas_key = @"arrowButton";
-    
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
@@ -147,13 +100,69 @@ static const CGFloat kResultViewMiniHeight = 25;
         }
     }];
     
-    [wordResultView mas_makeConstraints:^(MASConstraintMaker *make) {
+
+    EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
+    self.arrowButton = arrowButton;
+    [self addSubview:arrowButton];
+    NSImage *image = [NSImage imageNamed:@"arrow-down"];
+    arrowButton.image = image;
+    self.arrowButton.mas_key = @"arrowButton";
+    
+    [arrowButton setClickBlock:^(EZButton * _Nonnull button) {
+        BOOL isShowing = self.result.isShowing;
+        self.result.isShowing = !isShowing;
+        
+        NSLog(@"点击 arrowButton, show: %@", @(!isShowing));
+        
+        if (self.clickArrowBlock) {
+            self.clickArrowBlock(isShowing);
+        }
+    }];
+}
+
+- (void)updateConstraints {
+    CGSize iconSize = CGSizeMake(20, 20);
+
+    [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.equalTo(self);
+        make.height.mas_equalTo(kResultViewMiniHeight);
+    }];
+    
+    [self.typeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.topBarView).offset(10);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(iconSize);
+    }];
+    
+    [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.typeImageView.mas_right).offset(5);
+        make.centerY.equalTo(self.topBarView).offset(0);
+    }];
+    
+    [self.disableImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.typeLabel.mas_right).offset(5);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(iconSize);
+    }];
+    
+    [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.topBarView.mas_right).offset(-5);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(CGSizeMake(20, 20));
+    }];
+    
+    [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.inset(0);
-//            make.bottom.inset(kVerticalMargin);
-        make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
         
+        if (self.result.isShowing) {
+            make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
+        } else {
+            make.bottom.equalTo(self).offset(0);
+        }
     }];
+    
+    [super updateConstraints];
 }
 
 - (NSString *)copiedText {
@@ -163,13 +172,26 @@ static const CGFloat kResultViewMiniHeight = 25;
 
 - (void)refreshWithResult:(TranslateResult *)result {
     _result = result;
+    [self setNeedsUpdateConstraints:YES];
+
     
     EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
     TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
-    self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:12]];
+    self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:13]];
+    
+    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
+
+    if (result.isShowing) {
+        arrowImage = [NSImage imageNamed:@"arrow-down"];
+    }
+    [self.arrowButton excuteLight:^(NSButton *button) {
+        button.image = [arrowImage imageWithTintColor:NSColor.imageTintLightColor];
+    } drak:^(NSButton *button) {
+        button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
+    }];
     
     [self.wordResultView refreshWithResult:result];
 }
@@ -179,7 +201,7 @@ static const CGFloat kResultViewMiniHeight = 25;
 }
 
 - (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action {
-   
+    
 }
 
 @end

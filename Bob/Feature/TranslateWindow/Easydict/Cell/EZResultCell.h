@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) TranslateResult *result;
 @property (nonatomic, strong) EZResultView *resultView;
 
+@property (nonatomic, copy) void (^clickArrowBlock)(BOOL isShowing);
+
 @end
 
 NS_ASSUME_NONNULL_END

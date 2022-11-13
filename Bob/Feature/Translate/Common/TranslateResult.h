@@ -81,6 +81,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
 
 @property (nonatomic, copy) EZServiceType serviceType;
 
+@property (nonatomic, assign) BOOL isShowing;
+
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;
 /// 此翻译接口的在线查询地址

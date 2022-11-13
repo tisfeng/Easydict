@@ -286,20 +286,6 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 #pragma mark -
 
-- (CGFloat)heightOfRow:(NSInteger)row {
-    NSView *cellView;
-    if (row == 0) {
-        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
-        queryCell.queryText = self.queryText;
-        cellView = queryCell;
-    } else {
-        cellView = [self resultCellAtRow:row];
-    }
-    
-    CGSize size = [cellView fittingSize];
-    return size.height;
-}
-
 - (EZQueryCell *)createQueryCell {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.view.bounds];
     queryCell.identifier = EZQueryCellId;
@@ -411,6 +397,10 @@ static const CGFloat kMiniMainViewHeight = 300;
             return;
         }
         [self copyTextToPasteboard:text];
+    }];
+    
+    [resultView setClickArrowBlock:^(BOOL isShowing) {
+        [self updateTranslateResult:result];
     }];
 }
 

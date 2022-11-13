@@ -77,7 +77,7 @@ DefineMethodMMMake_m(PopUpButton);
         
         self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
             [titleContainerView addSubview:imageView];
-            NSImage *image = [NSImage imageNamed:@"arrow_down"];
+            NSImage *image = [NSImage imageNamed:@"arrow_down_filling"];
             [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(self.textField.mas_right).offset(3);
                 make.centerY.equalTo(self.textField).offset(1);

@@ -17,9 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) TranslateResult *result;
 
-
-//@property (nonatomic, copy) void (^playAudioBlock)(EZCommonView *view, NSString *url);
-//@property (nonatomic, copy) void (^copyTextBlock)(EZCommonView *view, NSString *word);
+@property (nonatomic, copy) void (^clickArrowBlock)(BOOL isShowing);
 
 - (void)refreshWithResult:(TranslateResult *)result;
 - (void)refreshWithStateString:(NSString *)string;

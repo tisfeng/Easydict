@@ -51,6 +51,10 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
+    if (!result.isShowing) {
+        return;
+    }
+    
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
     NSFont *typeTextFont = textFont;
