@@ -393,9 +393,9 @@
 		0390D9D4291E78B400FB9426 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				03252D41291425E900DA2932 /* Cell */,
 				0390D9D3291E787500FB9426 /* Controller */,
 				03252D452914DC0600DA2932 /* View */,
-				03252D41291425E900DA2932 /* Cell */,
 			);
 			path = Easydict;
 			sourceTree = "<group>";

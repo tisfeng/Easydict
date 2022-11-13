@@ -33,6 +33,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     self = [super initWithFrame:frame];
     if (self) {
         self.wantsLayer = YES;
+        self.layer.cornerRadius = EZCornerRadius_8;
         [self.layer excuteLight:^(CALayer *layer) {
             layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
         } drak:^(CALayer *layer) {

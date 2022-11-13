@@ -13,6 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static const CGFloat kResultViewMiniHeight = 30;
+
 @interface EZResultView : EZCommonView
 
 @property (nonatomic, strong) TranslateResult *result;

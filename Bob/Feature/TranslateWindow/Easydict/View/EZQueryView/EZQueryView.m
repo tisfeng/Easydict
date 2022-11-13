@@ -32,10 +32,7 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (void)setup {
-    
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
-//    CGFloat width = EZMainWindow.shared.width - 2 * kMainHorizontalMargin;
-//    scrollView.width = width;
     self.scrollView = scrollView;
     [self addSubview:scrollView];
     scrollView.hasVerticalScroller = YES;

@@ -13,6 +13,7 @@
 #import "Configuration.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
+#import "EZConst.h"
 
 static const CGFloat kVerticalMargin = 10;
 
@@ -57,7 +58,7 @@ static const CGFloat kVerticalMargin = 10;
     NSView *selectLanguageBarView = [[NSView alloc] init];
     [self addSubview:selectLanguageBarView];
     selectLanguageBarView.wantsLayer = YES;
-    selectLanguageBarView.layer.cornerRadius = 8;
+    selectLanguageBarView.layer.cornerRadius = EZCornerRadius_8;
     [selectLanguageBarView excuteLight:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
     } drak:^(NSView *barView) {

@@ -9,6 +9,7 @@
 #import "ResultView.h"
 #import "ServiceTypes.h"
 #import "EZHoverButton.h"
+#import "EZConst.h"
 
 static const CGFloat kMargin = 10;
 
@@ -44,7 +45,7 @@ static const CGFloat kMargin = 10;
         } drak:^(id _Nonnull x) {
             [x setBackgroundColor:NSColor.resultViewBgDarkColor.CGColor];
         }];
-        self.layer.cornerRadius = 8;
+        self.layer.cornerRadius = EZCornerRadius_8;
         self.layer.masksToBounds = YES;
         
         self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {

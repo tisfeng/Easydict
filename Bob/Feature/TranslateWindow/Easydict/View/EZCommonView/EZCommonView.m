@@ -10,7 +10,7 @@
 #import "EZHoverButton.h"
 #import "EZConst.h"
 
-static const CGFloat ktMargin = 5;
+static const CGFloat kMargin = 5;
 
 @interface EZCommonView ()
 
@@ -27,16 +27,15 @@ static const CGFloat ktMargin = 5;
     return self;
 }
 
-
 - (void)setupUI {
     self.wantsLayer = YES;
-    self.layer.cornerRadius = 8;
+    self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
     } drak:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
     }];
-    
+
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
@@ -77,8 +76,8 @@ static const CGFloat ktMargin = 5;
 
 - (void)updateConstraints {
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-ktMargin);
-        make.left.offset(ktMargin + 2);
+        make.bottom.offset(-kMargin);
+        make.left.offset(kMargin + 2);
         make.width.height.equalTo(@23);
     }];
     

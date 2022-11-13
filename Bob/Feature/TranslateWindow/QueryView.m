@@ -9,6 +9,7 @@
 #import "QueryView.h"
 #import "ImageButton.h"
 #import "TextView.h"
+#import "EZConst.h"
 
 #define kTextViewBottomInset 36.0
 
@@ -50,12 +51,12 @@ DefineMethodMMMake_m(QueryView);
 
 - (void)setup {
     self.wantsLayer = YES;
+    self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
     } drak:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
     }];
-    self.layer.cornerRadius = 8;
     
     self.scrollView = [NSScrollView mm_make:^(NSScrollView *_Nonnull scrollView) {
         [self addSubview:scrollView];

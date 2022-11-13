@@ -10,8 +10,8 @@
 #import "ServiceTypes.h"
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
+#import "EZConst.h"
 
-static const CGFloat kResultViewMiniHeight = 30;
 
 @interface EZResultView ()
 
@@ -38,6 +38,9 @@ static const CGFloat kResultViewMiniHeight = 30;
 }
 
 - (void)setup {
+    self.wantsLayer = YES;
+    self.layer.cornerRadius = EZCornerRadius_8;
+
     [self.layer excuteLight:^(CALayer *layer) {
         layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
     } drak:^(CALayer *layer) {
@@ -107,13 +110,22 @@ static const CGFloat kResultViewMiniHeight = 30;
     self.arrowButton.mas_key = @"arrowButton";
     
     [arrowButton setClickBlock:^(EZButton * _Nonnull button) {
-        BOOL isShowing = self.result.isShowing;
-        self.result.isShowing = !isShowing;
+        BOOL preIsShowing = self.result.isShowing;
+        BOOL newIsShowing = !preIsShowing;
+        self.result.isShowing = newIsShowing;
         
-        NSLog(@"点击 arrowButton, show: %@", @(!isShowing));
+        NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
         
         if (self.clickArrowBlock) {
-            self.clickArrowBlock(isShowing);
+            self.clickArrowBlock(newIsShowing);
+        }
+        
+        CGFloat cornerRadius = newIsShowing ? 0 : EZCornerRadius_8;
+        self.topBarView.layer.cornerRadius = cornerRadius;
+        
+        if (!self.result.isShowing) {
+            self.height = kResultViewMiniHeight;
+            [self setNeedsUpdateConstraints:YES];
         }
     }];
 }
