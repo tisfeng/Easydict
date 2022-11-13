@@ -70,12 +70,12 @@ static CGFloat kTextViewMiniHeight = 60;
         NSColor *bgColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
         detectButton.backgroundColor = bgColor;
         detectButton.backgroundHoverColor = bgColor;
-        detectButton.backgroundHighlightColor = [NSColor lightGrayColor];
+        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
     } drak:^(EZButton *button) {
         NSColor *bgColor = [NSColor mm_colorWithHexString:@"#313233"];
         detectButton.backgroundColor = bgColor;
         detectButton.backgroundHoverColor = bgColor;
-        detectButton.backgroundHighlightColor = [NSColor lightGrayColor];
+        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
     }];
     
     mm_weakify(self);
