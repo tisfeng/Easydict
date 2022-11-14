@@ -21,9 +21,6 @@ static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
 static const CGFloat kVerticalPadding = 8;
 
-/// wrappingLabel的约束需要偏移2,不知道是什么神设计
-static const CGFloat kFixWrappingLabelMargin = 0;
-
 @interface EZWordResultView ()
 
 @end
@@ -78,6 +75,8 @@ static const CGFloat kFixWrappingLabelMargin = 0;
                 }];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
+            
+            [typeTextField layoutSubtreeIfNeeded];
         }
         
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
@@ -86,8 +85,7 @@ static const CGFloat kFixWrappingLabelMargin = 0;
         [self addSubview:resultLabel];
         resultLabel.text = text;
         
-        CGFloat typeTextFieldWidth = [typeTextField.stringValue mm_widthWithFont:typeTextField.font];
-        __block CGFloat leftMargin = kHorizontalMargin + typeTextFieldWidth;
+        __block CGFloat leftMargin = kHorizontalMargin + ceil(typeTextField.width);
         
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
@@ -206,6 +204,9 @@ static const CGFloat kFixWrappingLabelMargin = 0;
                 }];
             }];
             partTextFiled.mas_key = @"partTextFiled_parts";
+            
+            // Since use string calculate textField width incorrectly 😓
+            [partTextFiled layoutSubtreeIfNeeded];
         }
                 
         EZLabel *meanLabel = [EZLabel new];
@@ -213,8 +214,8 @@ static const CGFloat kFixWrappingLabelMargin = 0;
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
         
-        CGFloat partTextFiledWidth = [partTextFiled.stringValue mm_widthWithFont:partTextFiled.font];
-        __block CGFloat leftMargin = kHorizontalMargin + partTextFiledWidth;
+        NSLog(@"partTextFiled width: %@", @(partTextFiled.width));
+        __block CGFloat leftMargin = kHorizontalMargin + ceil(partTextFiled.width);
                 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
@@ -225,9 +226,7 @@ static const CGFloat kFixWrappingLabelMargin = 0;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
                 leftMargin += leftLeading;
             } else {
-                CGFloat leftLeading = kHorizontalMargin + kFixWrappingLabelMargin;
-                make.left.equalTo(self).offset(leftLeading);
-                leftMargin += leftLeading;
+                make.left.equalTo(self).offset(leftMargin);
                 if (lastView) {
                     CGFloat topPadding = kVerticalPadding;
                     if (idx == 0) {
@@ -444,17 +443,24 @@ static const CGFloat kFixWrappingLabelMargin = 0;
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
     CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
-//    NSLog(@"text: %@, width: %@", label.text, @(width));
+    
+    if (width < 0) {
+        width = 100;
+    }
+    
+    NSLog(@"text: %@, width: %@", label.text, @(width));
     
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     //    label.width = width;
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
-    height = [label getTextViewHeightWithWidth:width]; // 377
+    NSLog(@"height: %@", @(height));
+
+//    height = [label getTextViewHeightWithWidth:width]; // 377
 //    NSLog(@"height: %@", @(height));
     
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
-        //        make.width.mas_greaterThanOrEqualTo(label.width);
+        make.width.mas_equalTo(width);
     }];
 }
 
