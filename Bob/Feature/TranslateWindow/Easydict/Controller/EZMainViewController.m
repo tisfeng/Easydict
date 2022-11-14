@@ -240,7 +240,13 @@ static const CGFloat kMiniMainViewHeight = 300;
     if (reloadData) {
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
-    [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        context.duration = 0.5;
+        [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    } completionHandler:^{
+        
+    }];
 }
 
 #pragma mark - NSTableViewDataSource
