@@ -464,6 +464,4 @@ static const CGFloat kFixWrappingLabelMargin = 0;
     return text;
 }
 
-
-
 @end

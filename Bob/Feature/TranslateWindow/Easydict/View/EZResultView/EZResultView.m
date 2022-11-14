@@ -103,6 +103,12 @@
         }
     }];
     
+    [wordResultView setCopyTextBlock:^(EZWordResultView * _Nonnull view, NSString * _Nonnull word) {
+        if (self.copyTextBlock) {
+            self.copyTextBlock(word);
+        }
+    }];
+    
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
