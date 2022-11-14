@@ -67,14 +67,14 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-    [self startQueryText:@"good"];
+//    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
     
 }
 
 - (void)setup {
     self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
-//    self.serviceTypes = @[EZServiceTypeYoudao, ];
+//    self.serviceTypes = @[EZServiceTypeGoogle, ];
 
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {

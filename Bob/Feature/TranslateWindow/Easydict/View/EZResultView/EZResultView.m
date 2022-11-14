@@ -167,8 +167,8 @@
     
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
-        make.left.right.equalTo(self);
-        make.bottom.lessThanOrEqualTo(self);
+        make.left.equalTo(self);
+        make.bottom.right.lessThanOrEqualTo(self);
     }];
     
     [super updateConstraints];
