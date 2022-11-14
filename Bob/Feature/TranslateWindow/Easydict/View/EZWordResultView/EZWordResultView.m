@@ -14,6 +14,7 @@
 #import "TextView.h"
 #import "NSTextView+Height.h"
 #import "EZConst.h"
+#import "EZMainWindow.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -183,7 +184,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         lastView = audioButton;
     }];
 
-
     [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length) {
@@ -279,7 +279,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         
-        
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
                 [self addSubview:button];
@@ -339,7 +338,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 }];
             }];
             partTextFiled.mas_key = @"partTextFiled_simpleWords";
-            
             
             lastSimpleWordPart = obj.part;
         }
@@ -410,15 +408,18 @@ static const CGFloat kFixWrappingLabelMargin = 2;
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-    CGFloat width = self.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
+    CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
 //    NSLog(@"text: %@, width: %@", label.text, @(width));
 
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
 //    label.width = width;
-    CGFloat height = [label getHeightWithWidth:width];
+    CGFloat height = [label getHeightWithWidth:width]; // 397 ?
+    
+    height = [label getTextViewHeightWithWidth:width]; // 377
+    
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
-        make.width.mas_greaterThanOrEqualTo(label.width);
+//        make.width.mas_greaterThanOrEqualTo(label.width);
     }];
     
 //    NSLog(@"height: %@", @(height));

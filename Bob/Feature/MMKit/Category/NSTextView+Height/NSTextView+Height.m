@@ -28,11 +28,13 @@
     height += textContainerInset.height * 2;
     
     return ceil(height);
-    
 }
 
-- (CGFloat)getTextViewHeightWithWidth:(CGFloat)width {
-    NSDictionary *attr = [self.attributedString attributesAtIndex:0 effectiveRange:nil];
+- (CGFloat)getTextViewHeightWithWidth:(CGFloat)width {    
+    NSDictionary *attr;
+    if (self.string.length) {
+        attr = [self.attributedString attributesAtIndex:0 effectiveRange:nil];
+    }
     CGSize textContainerInset = self.textContainerInset;
     CGFloat renderWidth = width - textContainerInset.width * 2;
     CGFloat height = [self.string mm_sizetWithAttributes:attr constrainedToSize:CGSizeMake(renderWidth, CGFLOAT_MAX)].height;
