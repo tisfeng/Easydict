@@ -49,10 +49,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    if (!result.isShowing) {
-        return;
-    }
-    
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
     NSFont *typeTextFont = textFont;
@@ -403,7 +399,11 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
+            if (self.result.isShowing) {
+                make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
+            } else {
+                make.bottom.equalTo(self);
+            }
         }
     }];
 }

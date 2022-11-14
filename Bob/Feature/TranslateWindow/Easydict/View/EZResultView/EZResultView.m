@@ -12,7 +12,6 @@
 #import "EZWordResultView.h"
 #import "EZConst.h"
 
-
 @interface EZResultView ()
 
 @property (nonatomic, strong) NSView *topBarView;
@@ -40,7 +39,7 @@
 - (void)setup {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-
+    
     [self.layer excuteLight:^(CALayer *layer) {
         layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
     } drak:^(CALayer *layer) {
@@ -61,7 +60,7 @@
     self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
-
+        
     }];
     self.typeImageView.mas_key = @"typeImageView";
     
@@ -89,7 +88,7 @@
     }];
     self.disableImageView.mas_key = @"disableImageView";
     
-        
+    
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
@@ -111,12 +110,12 @@
     
     [arrowButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-
+        
         BOOL oldIsShowing = self.result.isShowing;
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
-                
+        
         [self setNeedsUpdateConstraints:YES];
         
         if (self.clickArrowBlock) {
@@ -132,7 +131,7 @@
     CGFloat cornerRadius = isShowing ? 0 : EZCornerRadius_8;
     self.topBarView.layer.cornerRadius = cornerRadius;
     [self updateArrowButton];
-
+    
     [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_equalTo(kResultViewMiniHeight);
@@ -164,12 +163,16 @@
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
-
+        
+        [NSAnimationContext beginGrouping];
+        
         if (isShowing) {
-            make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
+            make.bottom.equalTo(self.audioButton.mas_top).animator.offset(-5);
         } else {
-            make.bottom.equalTo(self).offset(0);
+            make.bottom.equalTo(self).animator.offset(0);
         }
+        [NSAnimationContext endGrouping];
+        
     }];
     
     [super updateConstraints];
@@ -182,7 +185,7 @@
 
 - (void)refreshWithResult:(TranslateResult *)result {
     _result = result;
-
+    
     EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];

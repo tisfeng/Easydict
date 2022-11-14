@@ -51,7 +51,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, kMiniMainViewWidth * 1.3, kMiniMainViewHeight * 2)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 1.3 * kMiniMainViewWidth, 2.5 * kMiniMainViewHeight)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -207,7 +207,7 @@ static const CGFloat kMiniMainViewHeight = 300;
                 NSLog(@"translateResult is nil, error: %@", error);
                 return;
             }
-            [self updateTranslateResult:translateResult reloadData:YES];
+            [self updateViewCellResult:translateResult reloadData:YES];
         }];
     }
 }
@@ -222,11 +222,11 @@ static const CGFloat kMiniMainViewHeight = 300;
             completion:completion];
 }
 
-- (void)updateTranslateResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
-    [self updateServiceResults:@[result]reloadData:reloadData];
+- (void)updateViewCellResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+    [self updateViewCellResults:@[result]reloadData:reloadData];
 }
 
-- (void)updateServiceResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
+- (void)updateViewCellResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
@@ -240,12 +240,9 @@ static const CGFloat kMiniMainViewHeight = 300;
     if (reloadData) {
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
-    
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
-        context.duration = 0.5;
+        context.duration = 0.4;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-    } completionHandler:^{
-        
     }];
 }
 
@@ -406,7 +403,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     }];
     
     [resultView setClickArrowBlock:^(BOOL isShowing) {
-        [self updateTranslateResult:result reloadData:NO];
+        [self updateViewCellResult:result reloadData:YES];
     }];
 }
 
