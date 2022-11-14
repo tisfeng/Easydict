@@ -7,6 +7,7 @@
 //
 
 #import "EZResultCell.h"
+#import "EZConst.h"
 
 @implementation EZResultCell
 
@@ -19,6 +20,8 @@
 }
 
 - (void)setup {
+    self.wantsLayer = YES;
+    self.layer.cornerRadius = EZCornerRadius_8;
     self.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
     
     EZResultView *resultView = [[EZResultView alloc] initWithFrame:self.bounds];

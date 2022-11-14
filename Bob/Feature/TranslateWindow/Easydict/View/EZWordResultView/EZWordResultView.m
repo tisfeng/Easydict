@@ -15,6 +15,7 @@
 #import "NSTextView+Height.h"
 #import "EZConst.h"
 #import "EZMainWindow.h"
+#import "NSString+MM.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -77,16 +78,17 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 }];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
-            [self layoutSubtreeIfNeeded];
+            //            [self layoutSubtreeIfNeeded];
         }
-                
+        
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
         
         EZLabel *resultLabel = [EZLabel new];
         [self addSubview:resultLabel];
         resultLabel.text = text;
-
-        __block CGFloat leftMargin = kHorizontalMargin + typeTextField.width;
+        
+        CGFloat typeTextFieldWidth = [typeTextField.stringValue mm_widthWithFont:typeTextField.font];
+        __block CGFloat leftMargin = kHorizontalMargin + typeTextFieldWidth;
         
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
@@ -106,7 +108,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
-
+        
         [self updateLabelHeight:resultLabel leftMargin:leftMargin];
     }
     
@@ -178,12 +180,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }
             
         }];
-       
+        
         audioButton.mas_key = @"audioButton_phonetics";
         
         lastView = audioButton;
     }];
-
+    
     [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length) {
@@ -195,7 +197,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin);
                     if (lastView) {
@@ -212,18 +214,21 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             partTextFiled.mas_key = @"partTextFiled_parts";
         }
         
-        [self layoutSubtreeIfNeeded];
+        //        [self layoutSubtreeIfNeeded];
         
         EZLabel *meanLabel = [EZLabel new];
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
-
-        __block CGFloat leftMargin = kHorizontalMargin + partTextFiled.width;
-
+        
+        CGFloat partTextFiledWidth = [partTextFiled.stringValue mm_widthWithFont:partTextFiled.font];
+        __block CGFloat leftMargin = kHorizontalMargin + partTextFiledWidth;
+        
+        //        __block CGFloat leftMargin = kHorizontalMargin + partTextFiled.width;
+        
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
-
+            
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled);
                 CGFloat leftLeading = 5;
@@ -395,34 +400,80 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         lastView = meanTextField;
     }];
     
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
-        if (lastView) {
-            if (self.result.isShowing) {
-                make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
-            } else {
-                make.bottom.equalTo(self);
-            }
+    EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+    [self addSubview:audioButton];
+    audioButton.image = [NSImage imageNamed:@"audio"];
+    audioButton.toolTip = @"播放音频";
+    
+    mm_weakify(self);
+    [audioButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"audioActionBlock");
+        mm_strongify(self);
+        if (self.playAudioBlock) {
+            self.playAudioBlock(self, self.copiedText);
         }
+    }];
+    audioButton.mas_key = @"audioButton";
+    
+    
+    EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
+    [self addSubview:textCopyButton];
+    
+    textCopyButton.image = [NSImage imageNamed:@"copy"];
+    textCopyButton.toolTip = @"复制";
+    
+    [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"copyActionBlock");
+        mm_strongify(self);
+        if (self.copyTextBlock) {
+            self.copyTextBlock(self, self.copiedText);
+        }
+    }];
+    textCopyButton.mas_key = @"copyButton";
+    
+    CGFloat kMargin = 5;
+    [audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(lastView.mas_bottom).offset(kMargin);
+        make.left.offset(kMargin + 2);
+        make.width.height.mas_equalTo(25);
+        make.bottom.equalTo(self).offset(-kMargin);
+    }];
+    
+    [textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(audioButton.mas_right);
+        make.width.height.bottom.equalTo(audioButton);
+    }];
+    
+    lastView = audioButton;
+    
+    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(lastView.mas_bottom).offset(5);
     }];
 }
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
     CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
-//    NSLog(@"text: %@, width: %@", label.text, @(width));
-
+    //    NSLog(@"text: %@, width: %@", label.text, @(width));
+    
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-//    label.width = width;
+    //    label.width = width;
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
     
     height = [label getTextViewHeightWithWidth:width]; // 377
     
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
-//        make.width.mas_greaterThanOrEqualTo(label.width);
+        //        make.width.mas_greaterThanOrEqualTo(label.width);
     }];
     
-//    NSLog(@"height: %@", @(height));
+    //    NSLog(@"height: %@", @(height));
+}
+
+- (NSString *)copiedText {
+    NSString *text = [NSString mm_stringByCombineComponents:self.result.normalResults separatedString:@"\n"] ?: @"";
+    
+    return text;
 }
 
 @end

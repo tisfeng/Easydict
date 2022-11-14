@@ -31,6 +31,8 @@
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+//        [self.audioButton removeFromSuperview];
+//        [self.textCopyButton removeFromSuperview];
         [self setup];
     }
     return self;
@@ -126,10 +128,7 @@
 
 - (void)updateConstraints {
     CGSize iconSize = CGSizeMake(18, 18);
-    BOOL isShowing = self.result.isShowing;
     
-    CGFloat cornerRadius = isShowing ? 0 : EZCornerRadius_8;
-    self.topBarView.layer.cornerRadius = cornerRadius;
     [self updateArrowButton];
     
     [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -163,16 +162,7 @@
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
-        
-        [NSAnimationContext beginGrouping];
-        
-        if (isShowing) {
-            make.bottom.equalTo(self.audioButton.mas_top).animator.offset(-5);
-        } else {
-            make.bottom.equalTo(self).animator.offset(0);
-        }
-        [NSAnimationContext endGrouping];
-        
+        make.bottom.lessThanOrEqualTo(self);
     }];
     
     [super updateConstraints];

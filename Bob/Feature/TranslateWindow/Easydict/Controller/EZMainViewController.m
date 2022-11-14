@@ -67,13 +67,15 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-    [self startQueryText:@"good"];
+//    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
     
 }
 
 - (void)setup {
-    self.serviceTypes = @[EZServiceTypeGoogle, EZServiceTypeBaidu, EZServiceTypeYoudao];
+    self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
+    self.serviceTypes = @[EZServiceTypeGoogle,EZServiceTypeYoudao,  EZServiceTypeBaidu, ];
+
     
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
@@ -241,7 +243,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
-        context.duration = 0.4;
+        context.duration = 5.4;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     }];
 }
@@ -273,15 +275,23 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     NSView *cellView;
+    CGFloat height;
+    
     if (row == 0) {
         EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:self.tableView.bounds];
         queryCell.queryText = self.queryText;
         cellView = queryCell;
+        height = [cellView fittingSize].height;
     } else {
-        cellView = [self resultCellAtRow:row];
+        TranslateService *service = [self serviceAtRow:row];
+        if (service.result && !service.result.isShowing) {
+            height = kResultViewMiniHeight;
+        } else {
+            cellView = [self resultCellAtRow:row];
+            height = [cellView fittingSize].height ?: kResultViewMiniHeight;
+        }
     }
-    
-    CGFloat height = [cellView fittingSize].height;
+        
 //    NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
@@ -359,10 +369,8 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:self.tableView.bounds];
     resultCell.identifier = EZResultCellId;
-    
-    NSInteger index = row - 1;
-    
-    TranslateService *service = self.services[index];
+        
+    TranslateService *service = [self serviceAtRow:row];;
     TranslateResult *result = service.result;
     if (!result) {
         result = [[TranslateResult alloc] init];
@@ -372,6 +380,12 @@ static const CGFloat kMiniMainViewHeight = 300;
     [self setupResultCell:resultCell];
     
     return resultCell;
+}
+
+- (TranslateService *)serviceAtRow:(NSInteger)row {
+    NSInteger index = row - 1;
+    TranslateService *service = self.services[index];
+    return service;
 }
 
 - (TranslateService *)servicesWithType:(EZServiceType)serviceType {

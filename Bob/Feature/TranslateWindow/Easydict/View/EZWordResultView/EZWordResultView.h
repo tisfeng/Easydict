@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZWordResultView : NSView
 
+@property (nonatomic, copy, readonly) NSString *copiedText;
+
 @property (nonatomic, strong) TranslateResult *result;
 
 @property (nonatomic, copy) void (^playAudioBlock)(EZWordResultView *view, NSString *word);
