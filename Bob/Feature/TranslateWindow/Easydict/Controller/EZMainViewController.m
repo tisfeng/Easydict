@@ -67,16 +67,15 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-//    [self startQueryText:@"good"];
+    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
     
 }
 
 - (void)setup {
     self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
-    self.serviceTypes = @[EZServiceTypeGoogle,EZServiceTypeYoudao,  EZServiceTypeBaidu, ];
+//    self.serviceTypes = @[EZServiceTypeYoudao, ];
 
-    
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
         TranslateService *service = [ServiceTypes serviceWithType:type];
@@ -243,7 +242,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
-        context.duration = 5.4;
+        context.duration = 0.4;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     }];
 }

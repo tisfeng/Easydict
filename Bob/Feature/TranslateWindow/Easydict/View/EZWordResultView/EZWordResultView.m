@@ -22,7 +22,7 @@ static const CGFloat kVerticalMargin = 12;
 static const CGFloat kVerticalPadding = 8;
 
 /// wrappingLabel的约束需要偏移2,不知道是什么神设计
-static const CGFloat kFixWrappingLabelMargin = 2;
+static const CGFloat kFixWrappingLabelMargin = 0;
 
 @interface EZWordResultView ()
 
@@ -78,7 +78,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 }];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
-            //            [self layoutSubtreeIfNeeded];
         }
         
         NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
@@ -173,16 +172,12 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         mm_weakify(self);
         [audioButton setClickBlock:^(EZButton *_Nonnull button) {
             NSLog(@"click audioButton");
-            
             mm_strongify(self);
             if (self.playAudioBlock) {
                 self.playAudioBlock(self, result.text);
             }
-            
         }];
-        
         audioButton.mas_key = @"audioButton_phonetics";
-        
         lastView = audioButton;
     }];
     
@@ -197,7 +192,6 @@ static const CGFloat kFixWrappingLabelMargin = 2;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin);
                     if (lastView) {
@@ -213,9 +207,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
             }];
             partTextFiled.mas_key = @"partTextFiled_parts";
         }
-        
-        //        [self layoutSubtreeIfNeeded];
-        
+                
         EZLabel *meanLabel = [EZLabel new];
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
@@ -223,9 +215,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         
         CGFloat partTextFiledWidth = [partTextFiled.stringValue mm_widthWithFont:partTextFiled.font];
         __block CGFloat leftMargin = kHorizontalMargin + partTextFiledWidth;
-        
-        //        __block CGFloat leftMargin = kHorizontalMargin + partTextFiled.width;
-        
+                
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
             
@@ -447,27 +437,25 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     lastView = audioButton;
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(lastView.mas_bottom).offset(5);
+        make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
     }];
 }
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
     CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
-    //    NSLog(@"text: %@, width: %@", label.text, @(width));
+//    NSLog(@"text: %@, width: %@", label.text, @(width));
     
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     //    label.width = width;
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
-    
     height = [label getTextViewHeightWithWidth:width]; // 377
+//    NSLog(@"height: %@", @(height));
     
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
         //        make.width.mas_greaterThanOrEqualTo(label.width);
     }];
-    
-    //    NSLog(@"height: %@", @(height));
 }
 
 - (NSString *)copiedText {
@@ -475,5 +463,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
     
     return text;
 }
+
+
 
 @end

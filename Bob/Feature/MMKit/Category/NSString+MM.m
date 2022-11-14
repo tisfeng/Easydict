@@ -43,7 +43,7 @@
 - (CGSize)mm_sizetWithAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes
                constrainedToSize:(CGSize)size {
     return [self boundingRectWithSize:size
-                              options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                              options:NSStringDrawingUsesLineFragmentOrigin
                            attributes:attributes
                               context:nil].size;
     
