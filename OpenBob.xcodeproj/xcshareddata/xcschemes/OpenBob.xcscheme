@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C99EEB172385796700FEE666"
-               BuildableName = "Bob.app"
-               BlueprintName = "Bob"
+               BuildableName = "OpenBob.app"
+               BlueprintName = "OpenBob"
                ReferencedContainer = "container:OpenBob.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C99EEB172385796700FEE666"
-            BuildableName = "Bob.app"
-            BlueprintName = "Bob"
+            BuildableName = "OpenBob.app"
+            BlueprintName = "OpenBob"
             ReferencedContainer = "container:OpenBob.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C99EEB172385796700FEE666"
-            BuildableName = "Bob.app"
-            BlueprintName = "Bob"
+            BuildableName = "OpenBob.app"
+            BlueprintName = "OpenBob"
             ReferencedContainer = "container:OpenBob.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

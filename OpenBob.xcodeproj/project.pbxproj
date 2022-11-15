@@ -47,7 +47,7 @@
 		C98C17AA239E410300BD02DB /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C98C17A8239E410300BD02DB /* AboutViewController.m */; };
 		C98C17AB239E410300BD02DB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98C17A9239E410300BD02DB /* AboutViewController.xib */; };
 		C98C17B0239E516A00BD02DB /* Shortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = C98C17AF239E516A00BD02DB /* Shortcut.m */; };
-		C98CAE75239F4619005F7DCA /* BobHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* BobHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C98CAE75239F4619005F7DCA /* OpenBobHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C98CFA28239F8CDB00FB7EC4 /* MMLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CFA21239F8CDB00FB7EC4 /* MMLog.swift */; };
 		C98CFA29239F8CDB00FB7EC4 /* MMFileLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = C98CFA22239F8CDB00FB7EC4 /* MMFileLogFormatter.m */; };
 		C98CFA2A239F8CDB00FB7EC4 /* MMConsoleLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = C98CFA24239F8CDB00FB7EC4 /* MMConsoleLogFormatter.m */; };
@@ -107,7 +107,7 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				C98CAE75239F4619005F7DCA /* BobHelper.app in CopyFiles */,
+				C98CAE75239F4619005F7DCA /* OpenBobHelper.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +153,7 @@
 		C90007F223B3BA710002B6A0 /* NSObject+DarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DarkMode.m"; sourceTree = "<group>"; };
 		C90007F423B3C5BB0002B6A0 /* NSView+HiddenDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+HiddenDebug.h"; sourceTree = "<group>"; };
 		C90007F523B3C5BB0002B6A0 /* NSView+HiddenDebug.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+HiddenDebug.m"; sourceTree = "<group>"; };
-		C90BE309239F38EB00ADE88B /* BobHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BobHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C90BE309239F38EB00ADE88B /* OpenBobHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBobHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90BE30B239F38EB00ADE88B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C90BE30C239F38EB00ADE88B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C90BE30E239F38EB00ADE88B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 		C9986E1B2393B06C0016F569 /* NSView+MM.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+MM.m"; sourceTree = "<group>"; };
 		C9986E1D2393B09E0016F569 /* NSWindow+MM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+MM.h"; sourceTree = "<group>"; };
 		C9986E1E2393B09E0016F569 /* NSWindow+MM.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+MM.m"; sourceTree = "<group>"; };
-		C99EEB182385796700FEE666 /* Bob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bob.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99EEB182385796700FEE666 /* OpenBob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBob.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C99EEB1B2385796700FEE666 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C99EEB1C2385796700FEE666 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C99EEB212385796900FEE666 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -581,8 +581,8 @@
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C99EEB182385796700FEE666 /* Bob.app */,
-				C90BE309239F38EB00ADE88B /* BobHelper.app */,
+				C99EEB182385796700FEE666 /* OpenBob.app */,
+				C90BE309239F38EB00ADE88B /* OpenBobHelper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -805,9 +805,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C90BE308239F38EB00ADE88B /* BobHelper */ = {
+		C90BE308239F38EB00ADE88B /* OpenBobHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "BobHelper" */;
+			buildConfigurationList = C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "OpenBobHelper" */;
 			buildPhases = (
 				C90BE305239F38EB00ADE88B /* Sources */,
 				C90BE306239F38EB00ADE88B /* Frameworks */,
@@ -817,14 +817,14 @@
 			);
 			dependencies = (
 			);
-			name = BobHelper;
+			name = OpenBobHelper;
 			productName = BobHelper;
-			productReference = C90BE309239F38EB00ADE88B /* BobHelper.app */;
+			productReference = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C99EEB172385796700FEE666 /* Bob */ = {
+		C99EEB172385796700FEE666 /* OpenBob */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Bob" */;
+			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "OpenBob" */;
 			buildPhases = (
 				21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */,
 				C99EEB142385796700FEE666 /* Sources */,
@@ -837,9 +837,9 @@
 			);
 			dependencies = (
 			);
-			name = Bob;
+			name = OpenBob;
 			productName = Bob;
-			productReference = C99EEB182385796700FEE666 /* Bob.app */;
+			productReference = C99EEB182385796700FEE666 /* OpenBob.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -875,8 +875,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C99EEB172385796700FEE666 /* Bob */,
-				C90BE308239F38EB00ADE88B /* BobHelper */,
+				C99EEB172385796700FEE666 /* OpenBob */,
+				C90BE308239F38EB00ADE88B /* OpenBobHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -1290,7 +1290,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "BobHelper" */ = {
+		C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "OpenBobHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C90BE31B239F38EC00ADE88B /* Debug */,
@@ -1308,7 +1308,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Bob" */ = {
+		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "OpenBob" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C99EEB2D2385796900FEE666 /* Debug */,
