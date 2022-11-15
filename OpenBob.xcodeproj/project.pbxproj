@@ -325,17 +325,17 @@
 		03B0221829231FA6001C7E63 /* OpenBob */ = {
 			isa = PBXGroup;
 			children = (
-				03B0221929231FA6001C7E63 /* Main.strings */,
-				03B0221B29231FA6001C7E63 /* Bob-Bridging-Header.h */,
-				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
+				03B0222429231FA6001C7E63 /* Feature */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* OpenBob.entitlements */,
+				03B0221929231FA6001C7E63 /* Main.strings */,
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0222129231FA6001C7E63 /* main.m */,
 				03B0222229231FA6001C7E63 /* EZConst.h */,
+				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
 				03B0222329231FA6001C7E63 /* AppDelegate.m */,
-				03B0222429231FA6001C7E63 /* Feature */,
 				03B022E329231FA6001C7E63 /* PrefixHeader.pch */,
+				03B0221B29231FA6001C7E63 /* Bob-Bridging-Header.h */,
 				03B022E429231FA6001C7E63 /* Info.plist */,
 			);
 			path = OpenBob;
@@ -772,7 +772,7 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		C90BE30A239F38EB00ADE88B /* BobHelper */ = {
+		C90BE30A239F38EB00ADE88B /* OpenBobHelper */ = {
 			isa = PBXGroup;
 			children = (
 				C90BE30B239F38EB00ADE88B /* AppDelegate.h */,
@@ -785,14 +785,14 @@
 				C90BE317239F38EC00ADE88B /* main.m */,
 				C90BE319239F38EC00ADE88B /* BobHelper.entitlements */,
 			);
-			path = BobHelper;
+			path = OpenBobHelper;
 			sourceTree = "<group>";
 		};
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
 				03B0221829231FA6001C7E63 /* OpenBob */,
-				C90BE30A239F38EB00ADE88B /* BobHelper */,
+				C90BE30A239F38EB00ADE88B /* OpenBobHelper */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
 				713A345D86B5BC86D158B68F /* Frameworks */,
@@ -1088,20 +1088,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = BobHelper/BobHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				INFOPLIST_FILE = BobHelper/Info.plist;
+				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ripperhe.BobHelper-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ripperhe.OpenBobHelper-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1111,20 +1111,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = BobHelper/BobHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				INFOPLIST_FILE = BobHelper/Info.plist;
+				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ripperhe.BobHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ripperhe.OpenBobHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
