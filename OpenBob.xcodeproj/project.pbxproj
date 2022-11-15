@@ -127,7 +127,7 @@
 
 /* Begin PBXFileReference section */
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		03B0221B29231FA6001C7E63 /* Bob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bob-Bridging-Header.h"; sourceTree = "<group>"; };
+		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03B0221D29231FA6001C7E63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		03B0221E29231FA6001C7E63 /* OpenBob.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = OpenBob.entitlements; sourceTree = "<group>"; };
@@ -319,7 +319,7 @@
 		C90BE317239F38EC00ADE88B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C90BE319239F38EC00ADE88B /* BobHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BobHelper.entitlements; sourceTree = "<group>"; };
 		C99031D223A09E4300E904D4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		C99EEB182385796700FEE666 /* OpenBob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBob.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99EEB182385796700FEE666 /* Open Bob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Bob.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA7129FC389066F3A2227458 /* Pods-Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.debug.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -356,7 +356,7 @@
 				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
 				03B0222329231FA6001C7E63 /* AppDelegate.m */,
 				03B022E329231FA6001C7E63 /* PrefixHeader.pch */,
-				03B0221B29231FA6001C7E63 /* Bob-Bridging-Header.h */,
+				03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */,
 				03B022E429231FA6001C7E63 /* Info.plist */,
 			);
 			path = OpenBob;
@@ -881,7 +881,7 @@
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C99EEB182385796700FEE666 /* OpenBob.app */,
+				C99EEB182385796700FEE666 /* Open Bob.app */,
 				C90BE309239F38EB00ADE88B /* OpenBobHelper.app */,
 			);
 			name = Products;
@@ -907,9 +907,9 @@
 			productReference = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C99EEB172385796700FEE666 /* OpenBob */ = {
+		C99EEB172385796700FEE666 /* Open Bob */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "OpenBob" */;
+			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Open Bob" */;
 			buildPhases = (
 				21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */,
 				C99EEB142385796700FEE666 /* Sources */,
@@ -922,9 +922,9 @@
 			);
 			dependencies = (
 			);
-			name = OpenBob;
+			name = "Open Bob";
 			productName = Bob;
-			productReference = C99EEB182385796700FEE666 /* OpenBob.app */;
+			productReference = C99EEB182385796700FEE666 /* Open Bob.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -960,7 +960,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C99EEB172385796700FEE666 /* OpenBob */,
+				C99EEB172385796700FEE666 /* Open Bob */,
 				C90BE308239F38EB00ADE88B /* OpenBobHelper */,
 			);
 		};
@@ -1358,7 +1358,7 @@
 				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ripperhe.Bob-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/Bob-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/OpenBob-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1388,7 +1388,7 @@
 				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ripperhe.Bob;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/Bob-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/OpenBob-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1414,7 +1414,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "OpenBob" */ = {
+		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Open Bob" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C99EEB2D2385796900FEE666 /* Debug */,
