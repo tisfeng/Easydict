@@ -93,7 +93,6 @@
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
 		03B0233A29231FA6001C7E63 /* Selection.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022E129231FA6001C7E63 /* Selection.m */; };
-		03B0233B29231FA6001C7E63 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03B022E429231FA6001C7E63 /* Info.plist */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
 		C90BE310239F38EB00ADE88B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30F239F38EB00ADE88B /* ViewController.m */; };
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
@@ -903,7 +902,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03B0233B29231FA6001C7E63 /* Info.plist in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				03B022E729231FA6001C7E63 /* Main.storyboard in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
