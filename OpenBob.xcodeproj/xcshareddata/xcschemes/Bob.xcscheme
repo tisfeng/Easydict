@@ -17,7 +17,7 @@
                BlueprintIdentifier = "C99EEB172385796700FEE666"
                BuildableName = "Bob.app"
                BlueprintName = "Bob"
-               ReferencedContainer = "container:Bob.xcodeproj">
+               ReferencedContainer = "container:OpenBob.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "C99EEB172385796700FEE666"
             BuildableName = "Bob.app"
             BlueprintName = "Bob"
-            ReferencedContainer = "container:Bob.xcodeproj">
+            ReferencedContainer = "container:OpenBob.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "C99EEB172385796700FEE666"
             BuildableName = "Bob.app"
             BlueprintName = "Bob"
-            ReferencedContainer = "container:Bob.xcodeproj">
+            ReferencedContainer = "container:OpenBob.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

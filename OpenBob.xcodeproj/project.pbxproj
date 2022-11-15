@@ -576,6 +576,7 @@
 				713A345D86B5BC86D158B68F /* Frameworks */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
@@ -847,8 +848,9 @@
 		C99EEB102385796700FEE666 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = EZ;
 				LastUpgradeCheck = 1410;
-				ORGANIZATIONNAME = ripperhe;
+				ORGANIZATIONNAME = izual;
 				TargetAttributes = {
 					C90BE308239F38EB00ADE88B = {
 						CreatedOnToolsVersion = 11.2.1;
@@ -859,8 +861,8 @@
 					};
 				};
 			};
-			buildConfigurationList = C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Bob" */;
-			compatibilityVersion = "Xcode 9.3";
+			buildConfigurationList = C99EEB132385796700FEE666 /* Build configuration list for PBXProject "OpenBob" */;
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1297,7 +1299,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Bob" */ = {
+		C99EEB132385796700FEE666 /* Build configuration list for PBXProject "OpenBob" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C99EEB2A2385796900FEE666 /* Debug */,
