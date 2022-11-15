@@ -26,7 +26,7 @@
 			<key>CFBundleIconFiles</key>
 			<array>
 				<string>black-white-icon</string>
-				<string></string>
+				<string>blue-white-icon</string>
 			</array>
 			<key>UINewsstandBindingEdge</key>
 			<string>UINewsstandBindingEdgeLeft</string>

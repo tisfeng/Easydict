@@ -29,7 +29,7 @@
     
 //    NSApplication.shared.applicationIconImage = NSImage(named: "macIcon3")
     
-    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
+    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"blue-white-icon"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
