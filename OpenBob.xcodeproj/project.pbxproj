@@ -103,13 +103,13 @@
 		03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */; };
 		03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */; };
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
+		49F0FAF09B92EBB9DEAE8450 /* Pods_OpenBob.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23521C147386892E30FBB936 /* Pods_OpenBob.framework */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
 		C90BE310239F38EB00ADE88B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30F239F38EB00ADE88B /* ViewController.m */; };
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
 		C90BE315239F38EC00ADE88B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90BE313239F38EC00ADE88B /* Main.storyboard */; };
 		C90BE318239F38EC00ADE88B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE317239F38EC00ADE88B /* main.m */; };
 		C98CAE75239F4619005F7DCA /* OpenBobHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		D2B213678C42C42C2AD2339C /* Pods_Bob.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -306,8 +306,11 @@
 		03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cyan-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
+		2085387026495AF77CF28563 /* Pods-OpenBob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenBob.release.xcconfig"; path = "Target Support Files/Pods-OpenBob/Pods-OpenBob.release.xcconfig"; sourceTree = "<group>"; };
+		23521C147386892E30FBB936 /* Pods_OpenBob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpenBob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
-		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E0B57F42E622702C7596496 /* Pods-Open Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.debug.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.debug.xcconfig"; sourceTree = "<group>"; };
+		B9D6359A6D78402E704491A5 /* Pods-Open Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.release.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.release.xcconfig"; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* OpenBobHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBobHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90BE30B239F38EB00ADE88B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C90BE30C239F38EB00ADE88B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -320,6 +323,7 @@
 		C90BE319239F38EC00ADE88B /* BobHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BobHelper.entitlements; sourceTree = "<group>"; };
 		C99031D223A09E4300E904D4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		C99EEB182385796700FEE666 /* Open Bob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Bob.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAA2783203F23B4C5195EB84 /* Pods-OpenBob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenBob.debug.xcconfig"; path = "Target Support Files/Pods-OpenBob/Pods-OpenBob.debug.xcconfig"; sourceTree = "<group>"; };
 		DA7129FC389066F3A2227458 /* Pods-Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.debug.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -335,7 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D2B213678C42C42C2AD2339C /* Pods_Bob.framework in Frameworks */,
+				49F0FAF09B92EBB9DEAE8450 /* Pods_OpenBob.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,7 +840,7 @@
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */,
+				23521C147386892E30FBB936 /* Pods_OpenBob.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -846,6 +850,10 @@
 			children = (
 				DA7129FC389066F3A2227458 /* Pods-Bob.debug.xcconfig */,
 				3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */,
+				4E0B57F42E622702C7596496 /* Pods-Open Bob.debug.xcconfig */,
+				B9D6359A6D78402E704491A5 /* Pods-Open Bob.release.xcconfig */,
+				CAA2783203F23B4C5195EB84 /* Pods-OpenBob.debug.xcconfig */,
+				2085387026495AF77CF28563 /* Pods-OpenBob.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1009,15 +1017,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bob/Pods-Bob-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenBob/Pods-OpenBob-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bob/Pods-Bob-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-OpenBob/Pods-OpenBob-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bob/Pods-Bob-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenBob/Pods-OpenBob-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */ = {
@@ -1035,7 +1043,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bob-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-OpenBob-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1175,7 +1183,8 @@
 		C90BE31B239F38EC00ADE88B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
+				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -1198,7 +1207,7 @@
 		C90BE31C239F38EC00ADE88B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -1336,7 +1345,7 @@
 		};
 		C99EEB2D2385796900FEE666 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA7129FC389066F3A2227458 /* Pods-Bob.debug.xcconfig */;
+			baseConfigurationReference = CAA2783203F23B4C5195EB84 /* Pods-OpenBob.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
@@ -1351,6 +1360,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
 				INFOPLIST_FILE = OpenBob/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1367,7 +1377,7 @@
 		};
 		C99EEB2E2385796900FEE666 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */;
+			baseConfigurationReference = 2085387026495AF77CF28563 /* Pods-OpenBob.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "black-white-icon";
@@ -1382,6 +1392,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
 				INFOPLIST_FILE = OpenBob/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
