@@ -17,7 +17,7 @@
 				<string></string>
 			</array>
 			<key>CFBundleIconName</key>
-			<string>white-black</string>
+			<string>white-black-icon</string>
 			<key>UIPrerenderedIcon</key>
 			<false/>
 		</dict>
@@ -25,6 +25,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>black-white-icon</string>
 				<string></string>
 			</array>
 			<key>UINewsstandBindingEdge</key>
