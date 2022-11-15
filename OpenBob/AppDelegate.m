@@ -27,7 +27,7 @@
     [window center];
     [window makeKeyAndOrderFront:nil];
         
-    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-blue-icon"];
+    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"cyan-white-icon"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

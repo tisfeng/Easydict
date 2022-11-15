@@ -25,6 +25,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>cyan-white-icon</string>
 				<string>white-blue-icon</string>
 				<string>black-white-icon</string>
 				<string>blue-white-icon</string>
