@@ -3,7 +3,7 @@ platform :osx, '10.14'
 
 inhibit_all_warnings!
 
-target 'Bob' do
+target 'OpenBob' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'

@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_BobVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_BobVersionString[];
+FOUNDATION_EXPORT double Pods_OpenBobVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_OpenBobVersionString[];
 
