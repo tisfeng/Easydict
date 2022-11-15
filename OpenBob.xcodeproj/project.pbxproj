@@ -99,6 +99,8 @@
 		03BFBB6A292399D100C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB68292399D100C48725 /* white-black-icon@3x.png */; };
 		03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */; };
 		03BFBB7329239E9F00C48725 /* blue-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7129239E9F00C48725 /* blue-white-icon@2x.png */; };
+		03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB752923A09B00C48725 /* white-blue-icon@2x.png */; };
+		03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB762923A09B00C48725 /* white-blue-icon@3x.png */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
 		C90BE310239F38EB00ADE88B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30F239F38EB00ADE88B /* ViewController.m */; };
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
@@ -298,6 +300,8 @@
 		03BFBB68292399D100C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
 		03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-white-icon@3x.png"; sourceTree = "<group>"; };
 		03BFBB7129239E9F00C48725 /* blue-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-white-icon@2x.png"; sourceTree = "<group>"; };
+		03BFBB752923A09B00C48725 /* white-blue-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-blue-icon@2x.png"; sourceTree = "<group>"; };
+		03BFBB762923A09B00C48725 /* white-blue-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-blue-icon@3x.png"; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		3F045DD4639F4F9836B1E8D6 /* Pods_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90BE309239F38EB00ADE88B /* OpenBobHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBobHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -771,6 +775,7 @@
 		03BFBB5429235C9400C48725 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				03BFBB742923A07A00C48725 /* white-blue-icon */,
 				03BFBB6B29239C4100C48725 /* blue-white-icon */,
 				03BFBB622923987B00C48725 /* black-white-icon */,
 				03BFBB5529235CB900C48725 /* white-black-icon */,
@@ -803,6 +808,15 @@
 				03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */,
 			);
 			path = "blue-white-icon";
+			sourceTree = "<group>";
+		};
+		03BFBB742923A07A00C48725 /* white-blue-icon */ = {
+			isa = PBXGroup;
+			children = (
+				03BFBB752923A09B00C48725 /* white-blue-icon@2x.png */,
+				03BFBB762923A09B00C48725 /* white-blue-icon@3x.png */,
+			);
+			path = "white-blue-icon";
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -956,9 +970,11 @@
 				03BFBB69292399D100C48725 /* white-black-icon@2x.png in Resources */,
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
+				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
 				03B022E729231FA6001C7E63 /* Main.storyboard in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
+				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03B0231E29231FA6001C7E63 /* GeneralViewController.xib in Resources */,
 				03B0231D29231FA6001C7E63 /* AboutViewController.xib in Resources */,

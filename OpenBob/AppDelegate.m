@@ -26,10 +26,8 @@
     EZMainWindow *window = [EZMainWindow shared];
     [window center];
     [window makeKeyAndOrderFront:nil];
-    
-//    NSApplication.shared.applicationIconImage = NSImage(named: "macIcon3")
-    
-    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"blue-white-icon"];
+        
+    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-blue-icon"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
