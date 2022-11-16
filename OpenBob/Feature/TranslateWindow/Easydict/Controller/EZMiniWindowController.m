@@ -50,7 +50,7 @@ static EZMiniWindowController *_instance;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        EZMainWindow *window = [EZMainWindow new];
+        EZMainWindow *window = [EZMainWindow shared];
         EZMiniViewController *viewController = [EZMiniViewController new];
         viewController.window = window;
         window.contentViewController = viewController;
