@@ -349,8 +349,8 @@
 		03B0221829231FA6001C7E63 /* OpenBob */ = {
 			isa = PBXGroup;
 			children = (
-				03BFBB5429235C9400C48725 /* Icons */,
 				03B0222429231FA6001C7E63 /* Feature */,
+				03BFBB5429235C9400C48725 /* Icons */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* OpenBob.entitlements */,
 				03B0221929231FA6001C7E63 /* Main.strings */,
