@@ -7,7 +7,7 @@
 //
 
 #import "EZMainWindow.h"
-#import "EZMainViewController.h"
+#import "EZMiniViewController.h"
 #import "NSColor+MyColors.h"
 
 @implementation EZMainWindow
@@ -47,8 +47,9 @@ static EZMainWindow *_instance;
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        EZMainViewController *mainVC = [[EZMainViewController alloc] init];
-        self.contentViewController = mainVC;
+        EZMiniViewController *miniVC = [[EZMiniViewController alloc] init];
+        miniVC.window = self;
+        self.contentViewController = miniVC;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
@@ -66,13 +67,16 @@ static EZMainWindow *_instance;
     return YES;
 }
 
+#pragma mark - NSNotification
+
 - (void)windowDidResize:(NSNotification *)aNotification {
 //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
     
-    EZMainViewController *mainVC = (EZMainViewController *)self.contentViewController;
+    EZMiniViewController *mainVC = (EZMiniViewController *)self.contentViewController;
     if (mainVC.resizeWindowBlock) {
         mainVC.resizeWindowBlock();
     }
 }
+
 
 @end

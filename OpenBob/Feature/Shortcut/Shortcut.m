@@ -7,7 +7,7 @@
 //
 
 #import "Shortcut.h"
-#import "TranslateWindowController.h"
+#import "EZMiniWindowController.h"
 
 
 @implementation Shortcut
@@ -36,15 +36,15 @@
     }];
 
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:SelectionShortcutKey toAction:^{
-        [TranslateWindowController.shared selectionTranslate];
+        [EZMiniWindowController.shared selectionTranslate];
     }];
 
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:SnipShortcutKey toAction:^{
-        [TranslateWindowController.shared snipTranslate];
+        [EZMiniWindowController.shared snipTranslate];
     }];
 
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:InputShortcutKey toAction:^{
-        [TranslateWindowController.shared inputTranslate];
+        [EZMiniWindowController.shared inputTranslate];
     }];
 
     [[MASShortcutValidator sharedValidator] setAllowAnyShortcutWithOptionModifier:YES];

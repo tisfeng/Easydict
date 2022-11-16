@@ -671,7 +671,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="qM9-fT-Fym" customClass="StatusItem">
+                <customObject id="qM9-fT-Fym" customClass="EZStatusItem">
                     <connections>
                         <outlet property="bobItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
                         <outlet property="inputItem" destination="AWf-Ci-7QE" id="Isp-ch-8Q6"/>

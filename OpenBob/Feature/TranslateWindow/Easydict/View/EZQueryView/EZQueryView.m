@@ -172,7 +172,7 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat width = EZMainWindow.shared.width - 2 * EZMainHorizontalMargin_12;
+    CGFloat width = EZMainWindow.shared.width - 2 * EZMiniHorizontalMargin_12;
     CGFloat height = [self.textView getHeightWithWidth:width];
 //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
 
