@@ -105,6 +105,7 @@
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
 		03E02A1E2924DE6F00A10260 /* EZMiniWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZMiniWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
+		03E02A2629250D1D00A10260 /* EZSelectTextEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
 		C90BE310239F38EB00ADE88B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30F239F38EB00ADE88B /* ViewController.m */; };
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
@@ -312,6 +313,8 @@
 		03E02A1D2924DE6F00A10260 /* EZMiniWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniWindowController.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZStatusItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZStatusItem.h; sourceTree = "<group>"; };
 		03E02A212924E77100A10260 /* EZStatusItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZStatusItem.m; sourceTree = "<group>"; };
+		03E02A2429250D1D00A10260 /* EZSelectTextEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectTextEvent.h; sourceTree = "<group>"; };
+		03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectTextEvent.m; sourceTree = "<group>"; };
 		2085387026495AF77CF28563 /* Pods-OpenBob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenBob.release.xcconfig"; path = "Target Support Files/Pods-OpenBob/Pods-OpenBob.release.xcconfig"; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		4E0B57F42E622702C7596496 /* Pods-Open Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.debug.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.debug.xcconfig"; sourceTree = "<group>"; };
@@ -375,6 +378,7 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				03E02A2329250CED00A10260 /* SelectText */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
 				03B0222829231FA6001C7E63 /* Configuration */,
 				03B0222B29231FA6001C7E63 /* Translate */,
@@ -783,8 +787,8 @@
 		03B022E029231FA6001C7E63 /* Selection */ = {
 			isa = PBXGroup;
 			children = (
-				03B022E129231FA6001C7E63 /* Selection.m */,
 				03B022E229231FA6001C7E63 /* Selection.h */,
+				03B022E129231FA6001C7E63 /* Selection.m */,
 			);
 			path = Selection;
 			sourceTree = "<group>";
@@ -853,6 +857,15 @@
 				03E02A212924E77100A10260 /* EZStatusItem.m */,
 			);
 			path = EZStatusItem;
+			sourceTree = "<group>";
+		};
+		03E02A2329250CED00A10260 /* SelectText */ = {
+			isa = PBXGroup;
+			children = (
+				03E02A2429250D1D00A10260 /* EZSelectTextEvent.h */,
+				03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */,
+			);
+			path = SelectText;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -1111,6 +1124,7 @@
 				03B022FC29231FA6001C7E63 /* FlippedView.m in Sources */,
 				03B022F729231FA6001C7E63 /* TranslateResult.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
+				03E02A2629250D1D00A10260 /* EZSelectTextEvent.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
 				03E02A1E2924DE6F00A10260 /* EZMiniWindowController.m in Sources */,
 				03B0233A29231FA6001C7E63 /* Selection.m in Sources */,

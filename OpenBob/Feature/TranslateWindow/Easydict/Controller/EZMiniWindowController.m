@@ -9,7 +9,7 @@
 #import "EZMiniWindowController.h"
 #import "EZMiniViewController.h"
 #import "EZMainWindow.h"
-#import "Selection.h"
+#import "EZSelectTextEvent.h"
 #import "Snip.h"
 #import "Configuration.h"
 #import <QuartzCore/QuartzCore.h>
@@ -130,11 +130,12 @@ static EZMiniWindowController *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
+    
 //    [self.viewController resetWithState:@"正在取词..."];
-    [Selection getText:^(NSString *_Nullable text) {
+    [EZSelectTextEvent getText:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
         if (text.length) {
-            [self.viewController startQueryText:text];
+//            [self.viewController startQueryText:text];
         } else {
 //            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
 //                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
