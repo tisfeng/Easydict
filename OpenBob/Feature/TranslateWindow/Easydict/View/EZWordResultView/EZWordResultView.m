@@ -214,7 +214,6 @@ static const CGFloat kVerticalPadding = 8;
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
         
-        NSLog(@"partTextFiled width: %@", @(partTextFiled.width));
         __block CGFloat leftMargin = kHorizontalMargin + ceil(partTextFiled.width);
                 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
