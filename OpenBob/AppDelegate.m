@@ -10,10 +10,9 @@
 #import "EZStatusItem.h"
 #import "Shortcut.h"
 #import "MMCrash.h"
-#import "TranslateWindowController.h"
-#import "TranslateViewController.h"
 #import "Configuration.h"
 #import "EZMainWindow.h"
+#import "EZMiniWindowController.h"
 
 @implementation AppDelegate
 
@@ -23,9 +22,9 @@
     [EZStatusItem.shared setup];
     [Shortcut setup];
     
-    EZMainWindow *window = [EZMainWindow shared];
-    [window center];
-    [window makeKeyAndOrderFront:nil];
+    EZMiniWindowController *miniWindowController = [EZMiniWindowController shared];
+    [miniWindowController.window center];
+    [miniWindowController.window makeKeyAndOrderFront:nil];
         
 //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
