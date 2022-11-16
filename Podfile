@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :osx, '10.14.6'
+platform :osx, '10.14'
 
 inhibit_all_warnings!
 
