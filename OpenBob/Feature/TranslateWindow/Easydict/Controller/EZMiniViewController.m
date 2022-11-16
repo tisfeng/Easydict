@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZMainViewController.h"
+#import "EZMiniViewController.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
@@ -25,7 +25,7 @@ static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
-@interface EZMainViewController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface EZMiniViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -44,7 +44,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 @end
 
-@implementation EZMainViewController
+@implementation EZMiniViewController
 
 static const CGFloat kMiniMainViewWidth = 300;
 static const CGFloat kMiniMainViewHeight = 300;
@@ -67,7 +67,7 @@ static const CGFloat kMiniMainViewHeight = 300;
     
     [self setup];
     
-    [self startQueryText:@"good"];
+//    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
     
 }
@@ -152,7 +152,7 @@ static const CGFloat kMiniMainViewHeight = 300;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(EZMainHorizontalMargin_12 * 2, EZMainVerticalMargin_8);
+        tableView.intercellSpacing = CGSizeMake(EZMiniHorizontalMargin_12 * 2, EZMiniVerticalMargin_8);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
@@ -170,6 +170,10 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 - (void)startQuery {
     [self startQueryText:self.queryText];
+}
+
+- (void)startQueryImage:(NSImage *)image {
+    NSLog(@"startQueryImage");
 }
 
 - (void)startQueryText:(NSString *)text {

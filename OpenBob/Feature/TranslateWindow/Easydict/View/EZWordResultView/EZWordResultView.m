@@ -441,7 +441,7 @@ static const CGFloat kVerticalPadding = 8;
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-    CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMainHorizontalMargin_12;
+    CGFloat width = EZMainWindow.shared.width - leftMargin - rightMargin - 2 * EZMiniHorizontalMargin_12;
     if (width < 0) {
         width = 100;
     }

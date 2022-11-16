@@ -64,7 +64,7 @@
     }];
     
     [selectLanguageBarView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.queryView.mas_bottom).offset(EZMainVerticalMargin_8);
+        make.top.equalTo(self.queryView.mas_bottom).offset(EZMiniVerticalMargin_8);
         make.left.right.equalTo(self);
         make.height.mas_equalTo(35);
         make.bottom.equalTo(self);

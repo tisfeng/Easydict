@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "StatusItem.h"
+#import "EZStatusItem.h"
 #import "Shortcut.h"
 #import "MMCrash.h"
 #import "TranslateWindowController.h"
@@ -20,7 +20,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
     [MMCrash registerHandler];
-    [StatusItem.shared setup];
+    [EZStatusItem.shared setup];
     [Shortcut setup];
     
     EZMainWindow *window = [EZMainWindow shared];
@@ -31,7 +31,7 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [StatusItem.shared remove];
+    [EZStatusItem.shared remove];
 }
 
 @end
