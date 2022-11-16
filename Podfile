@@ -1,9 +1,9 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :osx, '10.14'
+platform :osx, '10.14.6'
 
 inhibit_all_warnings!
 
-target 'OpenBob' do
+target 'Open Bob' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
@@ -21,9 +21,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      if config.build_settings['MACOSX_DEPLOYMENT_TARGET'].to_f < 10.14
-        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.14'
-      end
+      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.14'
     end
   end
 end
