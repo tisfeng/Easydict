@@ -89,7 +89,7 @@ DefineMethodMMMake_m(QueryView);
         NSImage *image = [NSImage imageNamed:@"audio"];
         button.image = image;
         
-        [button.layer excuteLight:^(NSButton *button) {
+        [button excuteLight:^(NSButton *button) {
             button.contentTintColor = NSColor.imageTintLightColor;
         } drak:^(NSButton *button) {
             button.contentTintColor = NSColor.imageTintDarkColor;
@@ -103,7 +103,8 @@ DefineMethodMMMake_m(QueryView);
         }];
         mm_weakify(self)
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-            mm_strongify(self) if (self.audioActionBlock) {
+            mm_strongify(self)
+            if (self.audioActionBlock) {
                 self.audioActionBlock(self);
             }
             return RACSignal.empty;
@@ -120,7 +121,7 @@ DefineMethodMMMake_m(QueryView);
         NSImage *image = [NSImage imageNamed:@"copy"];
         button.image = image;
         
-        [button.layer excuteLight:^(NSButton *button) {
+        [button excuteLight:^(NSButton *button) {
             button.contentTintColor = NSColor.imageTintLightColor;
         } drak:^(NSButton *button) {
             button.contentTintColor = NSColor.imageTintDarkColor;
@@ -138,7 +139,8 @@ DefineMethodMMMake_m(QueryView);
         }];
         mm_weakify(self)
         [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-            mm_strongify(self) if (self.copyActionBlock) {
+            mm_strongify(self)
+            if (self.copyActionBlock) {
                 self.copyActionBlock(self);
             }
             return RACSignal.empty;
