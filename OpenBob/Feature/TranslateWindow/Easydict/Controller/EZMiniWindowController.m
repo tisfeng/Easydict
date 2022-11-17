@@ -74,7 +74,7 @@ static EZMiniWindowController *_instance;
     self.popWindow = [EZSelectTextPopWindow shared];
     
     self.eventMonitor = [EZEventMonitor new];
-    [self setupMonitorEventActions];
+    [self setupEventMonitor];
 }
 
 #pragma mark -
@@ -272,7 +272,7 @@ static EZMiniWindowController *_instance;
     self.lastFrontmostApplication = nil;
 }
 
-- (void)setupMonitorEventActions {
+- (void)setupEventMonitor {
     [self.eventMonitor startMonitor];
     
     mm_weakify(self);
@@ -287,7 +287,7 @@ static EZMiniWindowController *_instance;
         [self showSelectTextPopWindow:point];
     }];
     
-    [self.eventMonitor setMouseDownBlock:^{
+    [self.eventMonitor setDismissPopButtonBlock:^{
         mm_strongify(self);
         [self.popWindow close];
     }];
@@ -321,7 +321,7 @@ static EZMiniWindowController *_instance;
     //    [self.selectPopWindow makeKeyAndOrderFront:nil];
     
     [self.popWindow orderFront:nil];
-    self.popWindow.level = kCGMaximumWindowLevel;
+    self.popWindow.level = NSScreenSaverWindowLevel + 1;
     
     [self.popWindow setFrameTopLeftPoint:point];
     

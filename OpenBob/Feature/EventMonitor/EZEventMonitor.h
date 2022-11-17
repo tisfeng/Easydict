@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZEventMonitor : NSObject
 
 @property (nonatomic, copy) void (^selectedTextBlock)(NSString *selectedText);
-@property (nonatomic, copy) void (^mouseDownBlock)(void);
+@property (nonatomic, copy) void (^dismissPopButtonBlock)(void);
 
 
 @property (nonatomic, assign) NSEventMask mask;

@@ -27,6 +27,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, strong) id localMonitor;
 @property (nonatomic, strong) id globalMonitor;
 
+@property (nonatomic, strong) NSEvent *lastEvent;
+
 @end
 
 
@@ -35,11 +37,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (instancetype)init {
     if (self = [super init]) {
         //        [self monitorForEvents];
-//        [self checkAppIsTrusted];
+        //        [self checkAppIsTrusted];
     }
     return self;
 }
-
 
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
@@ -58,7 +59,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     self.type = type;
     self.mask = mask;
     self.handler = handler;
-    
+
     [self start];
 }
 
@@ -66,7 +67,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self stop];
     if (self.type == EZEventMonitorTypeLocal) {
         mm_weakify(self)
-        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;
@@ -75,7 +76,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
     } else {
         mm_weakify(self)
-        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;
@@ -96,25 +97,20 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)getText:(void (^)(NSString *_Nullable))completion {
+    // Simulation shortcut cmd+c
     CGEventRef push = CGEventCreateKeyboardEvent(NULL, kVK_ANSI_C, true);
     CGEventSetFlags(push, kCGEventFlagMaskCommand);
     CGEventPost(kCGHIDEventTap, push);
     CFRelease(push);
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        //        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-        //        NSString *string = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
-        //        NSLog(@"getText: %@", string);
-        
-        
-        //        [pasteboard clearContents];
-        
-        NSString *selectedText = [self.pasteboard stringForType:NSPasteboardTypeString];
-        
-        //                    NSLog(@"getText: %@",selectedText);
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
+        NSLog(@"shortcut getText: %@", selectedText);
+
+        [pasteboard clearContents];
+
         completion(selectedText);
-        
-        [self.pasteboard clearContents];
     });
 }
 
@@ -137,18 +133,19 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (BOOL)checkAppIsTrusted {
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
     NSLog(@"isTrusted: %d", isTrusted);
-    
+
     return isTrusted == YES;
 }
 
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
- 
+
  But this method need allow auxiliary in setting first, also no pop-up alerts either.
  */
 - (void)getSelectedText:(void (^)(NSString *_Nullable))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focussedElement = NULL;
+
     AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
     if (error != kAXErrorSuccess) {
         //        NSLog(@"Could not get focussed element: %d", (int)error);
@@ -158,55 +155,128 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     } else {
         AXValueRef selectedTextValue = NULL;
         AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
+
+        //        AXError getSelectedTextError2 = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedTextValue);
+
+
         if (getSelectedTextError == kAXErrorSuccess) {
             // Note: selectedText can be @""
             NSString *selectedText = (__bridge NSString *)(selectedTextValue);
-            //            NSLog(@"selectedText: %@", selectedText);
+            NSLog(@"selectedText: %@", selectedText);
             completion(selectedText);
             return;
         } else {
-            NSLog(@"Could not get selected text: %d", (int)getSelectedTextError);
+            //            NSLog(@"Could not get selected text: %d", (int)getSelectedTextError);
         }
     }
     if (focussedElement != NULL) {
         CFRelease(focussedElement);
     }
     CFRelease(systemWideElement);
-    
+
     completion(nil);
 }
 
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
-//    [self checkAppIsTrusted];
-    
+    //    [self checkAppIsTrusted];
+
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown |NSEventMaskLeftMouseUp | NSEventMaskScrollWheel;
-    [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent * _Nonnull event) {
-//        NSLog(@"type: %lu", (unsigned long)event.type);
-        
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged;
+    [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
+
+//        NSLog(@"type: %lu", (unsigned long)event.type);
+
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
-                [self getSelectedText:^(NSString *_Nullable text) {
-                    NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-                    if (trimText.length > 0 && self.selectedTextBlock) {
-                        self.selectedTextBlock(trimText);
-                    }
-                }];
+                if (self.lastEvent.type == NSEventTypeLeftMouseDragged) {
+                    NSLog(@"Dragged selected");
+                    [self callbackNonEmptySelectedText];
+                }
                 break;
             }
-            case NSEventTypeScrollWheel:
             case NSEventTypeLeftMouseDown: {
-                if (self.mouseDownBlock) {
-                    self.mouseDownBlock();
+                // check if it is a double click
+                if (event.clickCount == 2) {
+                    NSLog(@"double click");
+                    [self callbackNonEmptySelectedText];
+                } else {
+                    if (self.dismissPopButtonBlock) {
+                        self.dismissPopButtonBlock();
+                    }
                 }
+                break;
+            }
+            case NSEventTypeKeyDown:
+            case NSEventTypeScrollWheel: {
+                if (self.dismissPopButtonBlock) {
+                    self.dismissPopButtonBlock();
+                }
+                break;
+            }
+            case NSEventMaskFlagsChanged: {
+                NSLog(@"event.modifierFlags");
+                break;
+            }
+            case NSEventTypeLeftMouseDragged: {
+                NSLog(@"NSEventTypeLeftMouseDragged");
                 break;
             }
             default:
                 break;
         }
+        
+        self.lastEvent = event;
     }];
 }
+
+- (void)callbackNonEmptySelectedText {
+    [self getSelectedText:^(NSString *_Nullable text) {
+        // if auxiliary get failed, change to use cmd + c
+        if (text.length == 0) {
+            [self useCmdCKeySelectText];
+        } else {
+            NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+            if (trimText.length > 0 && self.selectedTextBlock) {
+                self.selectedTextBlock(trimText);
+            }
+        }
+    }];
+}
+
+
+- (void)useCmdCKeySelectText {
+    [self getText:^(NSString * _Nullable text) {
+        NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+        if (trimText.length > 0 && self.selectedTextBlock) {
+            self.selectedTextBlock(trimText);
+        }
+    }];
+}
+
+
+// Get the frontmost window
+- (void)getFrontmostWindow:(void (^)(NSString *_Nullable))completion {
+    NSArray *arr = (NSArray *)CFBridgingRelease(CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID));
+    NSString *frontAppName = [self getFrontmostApp].localizedName;
+    for (NSDictionary *dict in arr) {
+        if ([dict[@"kCGWindowOwnerName"] isEqualToString:frontAppName]) {
+            NSLog(@"dict: %@", dict);
+            completion(dict[@"kCGWindowName"]);
+            return;
+        }
+    }
+    completion(nil);
+}
+
+// Get the frontmost app
+- (NSRunningApplication *)getFrontmostApp {
+    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
+    return app;
+}
+
+// 获取鼠标取词选中的文本
+
 
 @end
