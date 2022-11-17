@@ -1241,10 +1241,12 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 79NQA2XYHM;
 				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1252,7 +1254,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ripperhe.OpenBobHelper-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.OpenBobHelper-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1264,10 +1266,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 79NQA2XYHM;
 				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1275,7 +1279,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ripperhe.OpenBobHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.izual.OpenBobHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1407,11 +1411,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = OpenBob/OpenBob.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 79NQA2XYHM;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
 				INFOPLIST_FILE = OpenBob/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -1439,11 +1445,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = OpenBob/OpenBob.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 79NQA2XYHM;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
 				INFOPLIST_FILE = OpenBob/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
