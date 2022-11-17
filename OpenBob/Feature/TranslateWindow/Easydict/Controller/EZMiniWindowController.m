@@ -25,6 +25,7 @@
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
 
 @property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
+@property (nonatomic, assign) CGPoint offsetPoint;
 
 @end
 
@@ -67,6 +68,8 @@ static EZMiniWindowController *_instance;
     self.window = window;
     self.viewController = viewController;
     
+    self.offsetPoint = CGPointMake(10, -10);
+
     self.popWindow = [EZSelectTextPopWindow shared];
     
     self.eventMonitor = [EZEventMonitor new];
@@ -144,7 +147,9 @@ static EZMiniWindowController *_instance;
         return notFoundLocation;
     }
     
-    return mouseLocation;
+    NSPoint point = CGPointMake(mouseLocation.x + self.offsetPoint.x, mouseLocation.y + self.offsetPoint.y);
+    
+    return point;
 }
 
 - (void)ensureShowAtMouseLocation {

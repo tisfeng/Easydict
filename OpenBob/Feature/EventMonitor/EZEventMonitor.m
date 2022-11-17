@@ -40,6 +40,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     return self;
 }
 
+
+
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
 }
@@ -181,13 +183,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     mm_weakify(self);
     NSEventMask eventMask = NSEventMaskLeftMouseDown |NSEventMaskLeftMouseUp | NSEventMaskScrollWheel;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent * _Nonnull event) {
-        NSLog(@"type: %lu", (unsigned long)event.type);
+//        NSLog(@"type: %lu", (unsigned long)event.type);
         
         mm_strongify(self);
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
                 [self getSelectedText:^(NSString *_Nullable text) {
-                    // remove whitespace and new line
                     NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
                     if (trimText.length > 0 && self.selectedTextBlock) {
                         self.selectedTextBlock(trimText);

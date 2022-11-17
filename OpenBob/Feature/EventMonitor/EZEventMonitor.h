@@ -19,19 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
-
 - (void)getSelectedText:(void (^)(NSString *_Nullable))completion;
 
 - (void)getText:(void (^)(NSString *_Nullable text))completion;
 
 
-
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
-
-
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
-
-
 - (void)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 
 - (void)start;
@@ -41,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startMonitor;
 
 - (BOOL)checkAppIsTrusted;
+
 
 @end
 

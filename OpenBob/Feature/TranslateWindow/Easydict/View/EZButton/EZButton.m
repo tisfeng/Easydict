@@ -141,7 +141,7 @@
 #pragma mark - Private Methods
 
 - (void)commonInitialize {
-    self.backgroundHighlightColor = NSColor.highlightColor;
+//    self.backgroundHighlightColor = NSColor.highlightColor;
     self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
     
     [self initializeUI];
