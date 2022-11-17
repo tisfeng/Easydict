@@ -93,6 +93,8 @@
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
 		03B0233A29231FA6001C7E63 /* Selection.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022E129231FA6001C7E63 /* Selection.m */; };
+		03B3B8B22925D5B200168E8D /* EZSelectTextPopWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */; };
+		03B3B8B52925DD3D00168E8D /* EZSelectTextPopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZSelectTextPopViewController.m */; };
 		03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB632923998300C48725 /* black-white-icon@2x.png */; };
 		03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB642923998300C48725 /* black-white-icon@3x.png */; };
 		03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */; };
@@ -105,7 +107,7 @@
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
 		03E02A1E2924DE6F00A10260 /* EZMiniWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZMiniWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
-		03E02A2629250D1D00A10260 /* EZSelectTextEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */; };
+		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
 		C90BE30D239F38EB00ADE88B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30C239F38EB00ADE88B /* AppDelegate.m */; };
 		C90BE310239F38EB00ADE88B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE30F239F38EB00ADE88B /* ViewController.m */; };
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
@@ -299,6 +301,10 @@
 		03B022E229231FA6001C7E63 /* Selection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Selection.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		03B3B8B02925D5B200168E8D /* EZSelectTextPopWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectTextPopWindow.h; sourceTree = "<group>"; };
+		03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectTextPopWindow.m; sourceTree = "<group>"; };
+		03B3B8B32925DD3D00168E8D /* EZSelectTextPopViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectTextPopViewController.h; sourceTree = "<group>"; };
+		03B3B8B42925DD3D00168E8D /* EZSelectTextPopViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectTextPopViewController.m; sourceTree = "<group>"; };
 		03BFBB632923998300C48725 /* black-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB642923998300C48725 /* black-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@3x.png"; sourceTree = "<group>"; };
 		03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-white-icon@3x.png"; sourceTree = "<group>"; };
@@ -313,8 +319,8 @@
 		03E02A1D2924DE6F00A10260 /* EZMiniWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniWindowController.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZStatusItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZStatusItem.h; sourceTree = "<group>"; };
 		03E02A212924E77100A10260 /* EZStatusItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZStatusItem.m; sourceTree = "<group>"; };
-		03E02A2429250D1D00A10260 /* EZSelectTextEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectTextEvent.h; sourceTree = "<group>"; };
-		03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectTextEvent.m; sourceTree = "<group>"; };
+		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
+		03E02A2529250D1D00A10260 /* EZEventMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEventMonitor.m; sourceTree = "<group>"; };
 		2085387026495AF77CF28563 /* Pods-OpenBob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenBob.release.xcconfig"; path = "Target Support Files/Pods-OpenBob/Pods-OpenBob.release.xcconfig"; sourceTree = "<group>"; };
 		3A08EDDF832035FD57B6A226 /* Pods-Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.release.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.release.xcconfig"; sourceTree = "<group>"; };
 		4E0B57F42E622702C7596496 /* Pods-Open Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.debug.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.debug.xcconfig"; sourceTree = "<group>"; };
@@ -378,7 +384,7 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				03E02A2329250CED00A10260 /* SelectText */,
+				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
 				03B0222829231FA6001C7E63 /* Configuration */,
 				03B0222B29231FA6001C7E63 /* Translate */,
@@ -523,6 +529,7 @@
 		03B0225029231FA6001C7E63 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				03B3B8AF2925D57400168E8D /* SelectTextPopWindow */,
 				03E02A1C2924DE6F00A10260 /* EZMiniWindowController.h */,
 				03E02A1D2924DE6F00A10260 /* EZMiniWindowController.m */,
 				03B0225129231FA6001C7E63 /* EZMiniViewController.h */,
@@ -771,15 +778,15 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
-				03B022D829231FA6001C7E63 /* MMMake.m */,
-				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
-				03B022DA29231FA6001C7E63 /* MMTool.h */,
-				03B022DB29231FA6001C7E63 /* MMMake.h */,
 				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
-				03B022DD29231FA6001C7E63 /* MMMacro.h */,
-				03B022DE29231FA6001C7E63 /* MMTool.m */,
+				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
 				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
+				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
+				03B022DB29231FA6001C7E63 /* MMMake.h */,
+				03B022D829231FA6001C7E63 /* MMMake.m */,
+				03B022DA29231FA6001C7E63 /* MMTool.h */,
+				03B022DE29231FA6001C7E63 /* MMTool.m */,
+				03B022DD29231FA6001C7E63 /* MMMacro.h */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -791,6 +798,17 @@
 				03B022E129231FA6001C7E63 /* Selection.m */,
 			);
 			path = Selection;
+			sourceTree = "<group>";
+		};
+		03B3B8AF2925D57400168E8D /* SelectTextPopWindow */ = {
+			isa = PBXGroup;
+			children = (
+				03B3B8B02925D5B200168E8D /* EZSelectTextPopWindow.h */,
+				03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */,
+				03B3B8B32925DD3D00168E8D /* EZSelectTextPopViewController.h */,
+				03B3B8B42925DD3D00168E8D /* EZSelectTextPopViewController.m */,
+			);
+			path = SelectTextPopWindow;
 			sourceTree = "<group>";
 		};
 		03BFBB5429235C9400C48725 /* Icons */ = {
@@ -859,13 +877,13 @@
 			path = EZStatusItem;
 			sourceTree = "<group>";
 		};
-		03E02A2329250CED00A10260 /* SelectText */ = {
+		03E02A2329250CED00A10260 /* EventMonitor */ = {
 			isa = PBXGroup;
 			children = (
-				03E02A2429250D1D00A10260 /* EZSelectTextEvent.h */,
-				03E02A2529250D1D00A10260 /* EZSelectTextEvent.m */,
+				03E02A2429250D1D00A10260 /* EZEventMonitor.h */,
+				03E02A2529250D1D00A10260 /* EZEventMonitor.m */,
 			);
-			path = SelectText;
+			path = EventMonitor;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -1108,6 +1126,7 @@
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				03B0230E29231FA6001C7E63 /* TranslateWindowController.m in Sources */,
+				03B3B8B22925D5B200168E8D /* EZSelectTextPopWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03B0230D29231FA6001C7E63 /* TranslateWindow.m in Sources */,
@@ -1124,7 +1143,7 @@
 				03B022FC29231FA6001C7E63 /* FlippedView.m in Sources */,
 				03B022F729231FA6001C7E63 /* TranslateResult.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
-				03E02A2629250D1D00A10260 /* EZSelectTextEvent.m in Sources */,
+				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
 				03E02A1E2924DE6F00A10260 /* EZMiniWindowController.m in Sources */,
 				03B0233A29231FA6001C7E63 /* Selection.m in Sources */,
@@ -1133,6 +1152,7 @@
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				03B022EF29231FA6001C7E63 /* GoogleTranslate.m in Sources */,
+				03B3B8B52925DD3D00168E8D /* EZSelectTextPopViewController.m in Sources */,
 				03B0232929231FA6001C7E63 /* NSDictionary+MM.m in Sources */,
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,

@@ -9,12 +9,12 @@
 #import "EZMiniWindowController.h"
 #import "EZMiniViewController.h"
 #import "EZMainWindow.h"
-#import "EZSelectTextEvent.h"
+#import "EZEventMonitor.h"
 #import "Snip.h"
 #import "Configuration.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>
-
+#import "EZSelectTextPopWindow.h"
 
 @interface EZMiniWindowController ()
 
@@ -22,7 +22,9 @@
 @property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
-@property (nonatomic, strong) EZSelectTextEvent *selectTextEvent;
+@property (nonatomic, strong) EZEventMonitor *eventMonitor;
+
+@property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
 
 @end
 
@@ -52,16 +54,23 @@ static EZMiniWindowController *_instance;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        EZMainWindow *window = [EZMainWindow shared];
-        EZMiniViewController *viewController = [EZMiniViewController new];
-        viewController.window = window;
-        window.contentViewController = viewController;
-        self.window = window;
-        self.viewController = viewController;
-        
-        [self startMonitorSelectTextEvent];
+        [self setup];
     }
     return self;
+}
+
+- (void)setup {
+    EZMainWindow *window = [EZMainWindow shared];
+    EZMiniViewController *viewController = [EZMiniViewController new];
+    viewController.window = window;
+    window.contentViewController = viewController;
+    self.window = window;
+    self.viewController = viewController;
+    
+    self.popWindow = [EZSelectTextPopWindow shared];
+    
+    self.eventMonitor = [EZEventMonitor new];
+    [self setupMonitorEventActions];
 }
 
 #pragma mark -
@@ -80,12 +89,12 @@ static EZMiniWindowController *_instance;
         }];
     }
     if (!screen) return;
-
+    
     // 修正显示位置，用于保证window显示在鼠标所在的screen
     // 如果直接使用mouseLocation，可能会显示到其他screen（应该是由当前window在哪个屏幕的区域更多决定的）
     NSRect windowFrame = self.window.frame;
     NSRect visibleFrame = screen.visibleFrame;
-
+    
     if (mouseLocation.x < visibleFrame.origin.x + 10) {
         mouseLocation.x = visibleFrame.origin.x + 10;
     }
@@ -98,7 +107,7 @@ static EZMiniWindowController *_instance;
     if (mouseLocation.y > visibleFrame.origin.y + visibleFrame.size.height - 10) {
         mouseLocation.y = visibleFrame.origin.y + visibleFrame.size.height - 10;
     }
-
+    
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
@@ -106,6 +115,36 @@ static EZMiniWindowController *_instance;
         [NSApp activateIgnoringOtherApps:YES];
     }
     [self.window setFrameTopLeftPoint:mouseLocation];
+}
+
+- (NSScreen *)getMouseLocatedScreen {
+    NSPoint mouseLocation = [NSEvent mouseLocation];
+    
+    // 找到鼠标所在屏幕
+    NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
+        return NSPointInRect(mouseLocation, obj.frame) ? obj : nil;
+    }];
+    // 找不到屏幕；可能在边缘，放宽条件
+    if (!screen) {
+        screen = [NSScreen.screens mm_find:^id _Nullable(NSScreen *_Nonnull obj, NSUInteger idx) {
+            return MMPointInRect(mouseLocation, obj.frame) ? obj : nil;
+        }];
+    }
+    
+    return screen;
+}
+
+- (NSPoint)getMouseLocation {
+    self.hadShow = YES;
+    NSPoint mouseLocation = [NSEvent mouseLocation];
+    NSPoint notFoundLocation = CGPointMake(-1, -1);
+    
+    NSScreen *screen = [self getMouseLocatedScreen];
+    if (!screen) {
+        return notFoundLocation;
+    }
+    
+    return mouseLocation;
 }
 
 - (void)ensureShowAtMouseLocation {
@@ -123,28 +162,33 @@ static EZMiniWindowController *_instance;
     if ([frontmostApplication.bundleIdentifier isEqualToString:identifier]) {
         return;
     }
-
+    
     self.lastFrontmostApplication = frontmostApplication;
 }
 
-#pragma mark -
+#pragma mark - Menu Actions
 
 - (void)selectionTranslate {
+    if (![self.eventMonitor checkAppIsTrusted]) {
+        NSLog(@"App is not trusted");
+        return;
+    }
+    
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
     
-//    [self.viewController resetWithState:@"正在取词..."];
-    [self.selectTextEvent getText:^(NSString *_Nullable text) {
+    //    [self.viewController resetWithState:@"正在取词..."];
+    [self.eventMonitor getText:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
         if (text.length) {
-//            [self.viewController startQueryText:text];
+            //            [self.viewController startQueryText:text];
         } else {
-//            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
-//                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
-//            }];
-//            [self.viewController resetQueryViewHeightConstraint];
+            //            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
+            //                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
+            //            }];
+            //            [self.viewController resetQueryViewHeightConstraint];
         }
     }];
 }
@@ -158,7 +202,7 @@ static EZMiniWindowController *_instance;
         [self close];
         [CATransaction flush];
     }
-//    [self.viewController resetWithState:@"正在截图..."];
+    //    [self.viewController resetWithState:@"正在截图..."];
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
         NSLog(@"获取到图片 %@", image);
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
@@ -183,8 +227,8 @@ static EZMiniWindowController *_instance;
         return;
     }
     Configuration.shared.isFold = NO;
-//    [self.viewController updateFoldState:NO];
-//    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
+    //    [self.viewController updateFoldState:NO];
+    //    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
     [self ensureShowAtMouseLocation];
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
@@ -211,7 +255,7 @@ static EZMiniWindowController *_instance;
     }
     if ([[NSApplication sharedApplication] keyWindow] == EZMiniWindowController.shared.window) {
         // 执行重试
-//        [self.viewController retry];
+        //        [self.viewController retry];
     }
 }
 
@@ -222,11 +266,42 @@ static EZMiniWindowController *_instance;
     self.lastFrontmostApplication = nil;
 }
 
-- (void)startMonitorSelectTextEvent {
-    self.selectTextEvent = [[EZSelectTextEvent alloc] init];
-    [self.selectTextEvent setSelectedTextBlock:^(NSString * _Nonnull selectedText) {
+- (void)setupMonitorEventActions {
+    [self.eventMonitor startMonitor];
+    
+    mm_weakify(self);
+    [self.eventMonitor setSelectedTextBlock:^(NSString * _Nonnull selectedText) {
         NSLog(@"selectedText: %@", selectedText);
+        
+        mm_strongify(self);
+        CGPoint point = [self getMouseLocation];
+        
+        [self showSelectTextPopWindow:point];
     }];
+    
+    [self.eventMonitor setMouseDownBlock:^{
+        mm_strongify(self);
+        [self.popWindow close];
+    }];
+}
+
+- (void)showSelectTextPopWindow:(CGPoint)point {
+    
+    // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
+    //    [self.selectPopWindow makeKeyAndOrderFront:nil];
+    
+    [self.popWindow orderFront:nil];
+    self.popWindow.level = kCGMaximumWindowLevel;
+    
+    if (!self.popWindow.isKeyWindow) {
+        // fail to make key window, then force activate application for key window
+        //        [NSApp activateIgnoringOtherApps:YES];
+    }
+    
+    [self.popWindow setFrameTopLeftPoint:point];
+    
+    [self.window resignMainWindow];
+    [self.window resignKeyWindow];
 }
 
 @end
