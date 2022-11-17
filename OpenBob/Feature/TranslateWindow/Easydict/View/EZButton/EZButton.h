@@ -65,6 +65,7 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 @property (nonatomic, copy) NSAttributedString *attrTitle;
 
 @property (nonatomic, copy) void (^clickBlock)(EZButton *button);
+@property (nonatomic, copy) void (^hoverBlock)(EZButton *button);
 
 @end
 

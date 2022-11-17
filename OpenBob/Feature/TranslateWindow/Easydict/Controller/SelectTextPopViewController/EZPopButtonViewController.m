@@ -8,6 +8,7 @@
 
 #import "EZPopButtonViewController.h"
 #import "EZButton.h"
+#import "EZMiniWindowController.h"
 
 static CGFloat kPopButtonWidth = 25;
 
@@ -30,12 +31,17 @@ static CGFloat kPopButtonWidth = 25;
     EZButton *button = [[EZButton alloc] initWithFrame:self.view.bounds];
     NSImage *image = [NSImage imageNamed:@"Eudic"];
     button.image = image;
-    [button setClickBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"click button magnifier");
-    }];
     button.backgroundColor = NSColor.clearColor;
     button.center = self.view.center;
     [self.view addSubview:button];
+    
+    mm_weakify(self);
+    [button setHoverBlock:^(EZButton * _Nonnull button) {
+        mm_strongify(self);
+        if(self.hoverBlock) {
+            self.hoverBlock();
+        }
+    }];
 }
 
 @end

@@ -9,6 +9,12 @@
 #import "EZSelectTextPopWindow.h"
 #import "EZPopButtonViewController.h"
 
+@interface EZSelectTextPopWindow ()
+
+@property (nonatomic, strong) EZPopButtonViewController *popViewController;
+
+@end
+
 @implementation EZSelectTextPopWindow
 
 static EZSelectTextPopWindow *_instance;
@@ -41,10 +47,17 @@ static EZSelectTextPopWindow *_instance;
         self.titleVisibility = NSWindowTitleHidden;
         self.backgroundColor = NSColor.clearColor;
         
-        EZPopButtonViewController *popVC = [[EZPopButtonViewController alloc] init];
-        self.contentViewController = popVC;
+        EZPopButtonViewController *popViewController = [[EZPopButtonViewController alloc] init];
+        self.contentViewController = popViewController;
+        self.popViewController = popViewController;
     }
     return self;
+}
+
+- (void)setHoverBlock:(void (^)(void))hoverBlock {
+    _hoverBlock = hoverBlock;
+    
+    self.popViewController.hoverBlock = hoverBlock;
 }
 
 - (BOOL)canBecomeKeyWindow {
@@ -54,6 +67,5 @@ static EZSelectTextPopWindow *_instance;
 - (BOOL)canBecomeMainWindow {
     return YES;
 }
-
 
 @end

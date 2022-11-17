@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZSelectTextPopWindow : NSWindow
 
+@property (nonatomic, copy) void (^hoverBlock)(void);
+
 + (instancetype)shared;
 
 @end

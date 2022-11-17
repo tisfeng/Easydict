@@ -30,7 +30,6 @@ static NSString *EZResultCellId = @"EZResultCellId";
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
-@property (nonatomic, strong) EZQueryCell *queryCell;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
@@ -51,7 +50,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 1.3 * kMiniMainViewWidth, 2.5 * kMiniMainViewHeight)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 1.2 * kMiniMainViewWidth, 1.5 * kMiniMainViewHeight)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -69,7 +68,6 @@ static const CGFloat kMiniMainViewHeight = 300;
     
 //    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
-    
 }
 
 - (void)setup {
@@ -165,7 +163,7 @@ static const CGFloat kMiniMainViewHeight = 300;
 - (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
     
-    self.queryCell.queryText = queryText;
+    self.queryView.queryText = queryText;
 }
 
 - (void)startQuery {
