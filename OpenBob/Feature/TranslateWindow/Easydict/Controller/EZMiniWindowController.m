@@ -22,6 +22,8 @@
 @property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
+@property (nonatomic, strong) EZSelectTextEvent *selectTextEvent;
+
 @end
 
 
@@ -56,6 +58,8 @@ static EZMiniWindowController *_instance;
         window.contentViewController = viewController;
         self.window = window;
         self.viewController = viewController;
+        
+        [self startMonitorSelectTextEvent];
     }
     return self;
 }
@@ -132,7 +136,7 @@ static EZMiniWindowController *_instance;
     }
     
 //    [self.viewController resetWithState:@"正在取词..."];
-    [EZSelectTextEvent getText:^(NSString *_Nullable text) {
+    [self.selectTextEvent getText:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
         if (text.length) {
 //            [self.viewController startQueryText:text];
@@ -216,6 +220,13 @@ static EZMiniWindowController *_instance;
         [self.lastFrontmostApplication activateWithOptions:NSApplicationActivateAllWindows];
     }
     self.lastFrontmostApplication = nil;
+}
+
+- (void)startMonitorSelectTextEvent {
+    self.selectTextEvent = [[EZSelectTextEvent alloc] init];
+    [self.selectTextEvent setSelectedTextBlock:^(NSString * _Nonnull selectedText) {
+        NSLog(@"selectedText: %@", selectedText);
+    }];
 }
 
 @end

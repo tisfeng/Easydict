@@ -12,7 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZSelectTextEvent : NSObject
 
-+ (void)getText:(void (^)(NSString *_Nullable text))completion;
+@property (nonatomic, copy) void (^selectedTextBlock)(NSString *selectedText);
+
+- (void)getSelectedText:(void (^)(NSString *_Nullable))completion;
+
+- (void)getText:(void (^)(NSString *_Nullable text))completion;
 
 @end
 

@@ -64,7 +64,7 @@
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-    //    NSLog(@"mouseEntered");
+//        NSLog(@"mouseEntered");
     
     self.hover = YES;
     if (!self.selected) {
@@ -73,7 +73,7 @@
 }
 
 - (void)mouseExited:(NSEvent *)event {
-    //    NSLog(@"mouseExited");
+//        NSLog(@"mouseExited");
     
     self.hover = NO;
     if (!self.selected) {

@@ -21,7 +21,7 @@
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
     [Shortcut setup];
-    
+        
     EZMiniWindowController *miniWindowController = [EZMiniWindowController shared];
     [miniWindowController.window center];
     [miniWindowController.window makeKeyAndOrderFront:nil];
