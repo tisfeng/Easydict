@@ -408,6 +408,12 @@
     _buttonState = state;
     
     [self updateButtonApperaceWithState:state];
+    
+    if (state == EZButtonHoverState) {
+        if (self.hoverBlock) {
+            self.hoverBlock(self);
+        }
+    }
 }
 
 - (void)setAttrTitle:(NSAttributedString *)attrTitle {

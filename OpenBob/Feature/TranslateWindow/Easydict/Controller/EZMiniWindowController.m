@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
 @property (nonatomic, assign) CGPoint offsetPoint;
+@property (nonatomic, copy) NSString *queryText;
 
 @end
 
@@ -69,7 +70,7 @@ static EZMiniWindowController *_instance;
     self.viewController = viewController;
     
     self.offsetPoint = CGPointMake(10, -10);
-
+    
     self.popWindow = [EZSelectTextPopWindow shared];
     
     self.eventMonitor = [EZEventMonitor new];
@@ -279,6 +280,8 @@ static EZMiniWindowController *_instance;
         NSLog(@"selectedText: %@", selectedText);
         
         mm_strongify(self);
+        self.queryText = selectedText;
+        
         CGPoint point = [self getMouseLocation];
         
         [self showSelectTextPopWindow:point];
@@ -298,15 +301,57 @@ static EZMiniWindowController *_instance;
     [self.popWindow orderFront:nil];
     self.popWindow.level = kCGMaximumWindowLevel;
     
-    if (!self.popWindow.isKeyWindow) {
-        // fail to make key window, then force activate application for key window
-        //        [NSApp activateIgnoringOtherApps:YES];
-    }
-    
     [self.popWindow setFrameTopLeftPoint:point];
+    
+    mm_weakify(self);
+    [self.popWindow setHoverBlock:^{
+        mm_strongify(self);
+        
+        [self.popWindow close];
+        [self showMiniWindowWithQueryText:self.queryText];
+    }];
     
     [self.window resignMainWindow];
     [self.window resignKeyWindow];
+}
+
+- (void)showSelectTextPopWindow:(CGPoint)point queryText:(NSString *)text {
+    
+    // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
+    //    [self.selectPopWindow makeKeyAndOrderFront:nil];
+    
+    [self.popWindow orderFront:nil];
+    self.popWindow.level = kCGMaximumWindowLevel;
+    
+    [self.popWindow setFrameTopLeftPoint:point];
+    
+    mm_weakify(self);
+    [self.popWindow setHoverBlock:^{
+        mm_strongify(self);
+        
+        [self.popWindow close];
+        [self showAtMouseLocation];
+    }];
+    
+    [self.window resignMainWindow];
+    [self.window resignKeyWindow];
+}
+
+
+
+- (void)showMiniWindowWithQueryText:(NSString *)text {
+    if (![self.eventMonitor checkAppIsTrusted]) {
+        NSLog(@"App is not trusted");
+        return;
+    }
+    
+    [self saveFrontmostApplication];
+    if (Snip.shared.isSnapshotting) {
+        return;
+    }
+    
+    [self ensureShowAtMouseLocation];
+     [self.viewController startQueryText:text];
 }
 
 @end

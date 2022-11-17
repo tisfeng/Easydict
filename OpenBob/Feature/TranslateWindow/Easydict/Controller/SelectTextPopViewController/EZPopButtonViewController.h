@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZPopButtonViewController : NSViewController
 
+@property (nonatomic, copy) void (^hoverBlock)(void);
+
 @end
 
 NS_ASSUME_NONNULL_END
