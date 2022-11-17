@@ -146,35 +146,38 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focussedElement = NULL;
 
-    AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
-    if (error != kAXErrorSuccess) {
-        //        NSLog(@"Could not get focussed element: %d", (int)error);
-        //        if (error == kAXErrorAPIDisabled) {
-        //            NSLog(@"accessibility API is disabled");
-        //        }
-    } else {
-        AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-
-        //        AXError getSelectedTextError2 = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedTextValue);
-
-
-        if (getSelectedTextError == kAXErrorSuccess) {
-            // Note: selectedText can be @""
-            NSString *selectedText = (__bridge NSString *)(selectedTextValue);
-            NSLog(@"selectedText: %@", selectedText);
-            completion(selectedText);
-            return;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
+        if (error != kAXErrorSuccess) {
+            //        NSLog(@"Could not get focussed element: %d", (int)error);
+            //        if (error == kAXErrorAPIDisabled) {
+            //            NSLog(@"accessibility API is disabled");
+            //        }
         } else {
-            //            NSLog(@"Could not get selected text: %d", (int)getSelectedTextError);
-        }
-    }
-    if (focussedElement != NULL) {
-        CFRelease(focussedElement);
-    }
-    CFRelease(systemWideElement);
+            AXValueRef selectedTextValue = NULL;
+            AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
 
-    completion(nil);
+            //        AXError getSelectedTextError2 = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedTextValue);
+
+
+            if (getSelectedTextError == kAXErrorSuccess) {
+                // Note: selectedText can be @""
+                NSString *selectedText = (__bridge NSString *)(selectedTextValue);
+                NSLog(@"selectedText: %@", selectedText);
+                completion(selectedText);
+                return;
+            } else {
+                //            NSLog(@"Could not get selected text: %d", (int)getSelectedTextError);
+            }
+        }
+        if (focussedElement != NULL) {
+            CFRelease(focussedElement);
+        }
+        CFRelease(systemWideElement);
+
+        completion(nil);
+    });
+    
 }
 
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
@@ -182,14 +185,15 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     //    [self checkAppIsTrusted];
 
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
 
-//        NSLog(@"type: %lu", (unsigned long)event.type);
+//        NSLog(@"type: %lu", (unsig∂ned long)event.type);
 
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
+                NSLog(@"mouse up");
                 if (self.lastEvent.type == NSEventTypeLeftMouseDragged) {
                     NSLog(@"Dragged selected");
                     [self callbackNonEmptySelectedText];
@@ -197,6 +201,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 break;
             }
             case NSEventTypeLeftMouseDown: {
+                NSLog(@"mouse down");
                 // check if it is a double click
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
@@ -208,22 +213,30 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 }
                 break;
             }
-            case NSEventTypeKeyDown:
-            case NSEventTypeScrollWheel: {
-                if (self.dismissPopButtonBlock) {
-                    self.dismissPopButtonBlock();
-                }
-                break;
-            }
-            case NSEventMaskFlagsChanged: {
-                NSLog(@"event.modifierFlags");
-                break;
-            }
             case NSEventTypeLeftMouseDragged: {
                 NSLog(@"NSEventTypeLeftMouseDragged");
                 break;
             }
+                // aaa
+            case NSEventTypeKeyDown: {
+                NSLog(@"key down");
+
+                if (self.dismissPopButtonBlock) {
+                    self.dismissPopButtonBlock();
+                }
+                break;
+
+            }
+//            case NSEventTypeScrollWheel:
+//            case NSEventTypeFlagsChanged: {
+//                NSLog(@"event.modifierFlags");
+//                break;
+//            }
+            
             default:
+                if (self.dismissPopButtonBlock) {
+                    self.dismissPopButtonBlock();
+                }
                 break;
         }
         
@@ -235,7 +248,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self getSelectedText:^(NSString *_Nullable text) {
         // if auxiliary get failed, change to use cmd + c
         if (text.length == 0) {
-            [self useCmdCKeySelectText];
+//            [self useCmdCKeySelectText];
         } else {
             NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
             if (trimText.length > 0 && self.selectedTextBlock) {

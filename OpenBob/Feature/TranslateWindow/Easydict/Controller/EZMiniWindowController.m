@@ -26,7 +26,7 @@
 
 @property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
 @property (nonatomic, assign) CGPoint offsetPoint;
-@property (nonatomic, copy) NSString *queryText;
+@property (nonatomic, copy) NSString *selectedText;
 
 @end
 
@@ -69,7 +69,7 @@ static EZMiniWindowController *_instance;
     self.window = window;
     self.viewController = viewController;
     
-    self.offsetPoint = CGPointMake(10, -10);
+    self.offsetPoint = CGPointMake(12, -10);
     
     self.popWindow = [EZSelectTextPopWindow shared];
     
@@ -280,7 +280,7 @@ static EZMiniWindowController *_instance;
         NSLog(@"selectedText: %@", selectedText);
         
         mm_strongify(self);
-        self.queryText = selectedText;
+        self.selectedText = selectedText;
         
         CGPoint point = [self getMouseLocation];
         
@@ -308,7 +308,7 @@ static EZMiniWindowController *_instance;
         mm_strongify(self);
         
         [self.popWindow close];
-        [self showMiniWindowWithQueryText:self.queryText];
+        [self showMiniWindowWithQueryText:self.selectedText];
     }];
     
     [self.window resignMainWindow];
