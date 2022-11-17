@@ -13,6 +13,7 @@
 #import "Configuration.h"
 #import "EZMainWindow.h"
 #import "EZMiniWindowController.h"
+#import "EZSelectTextPopWindow.h"
 
 @implementation AppDelegate
 
@@ -25,6 +26,11 @@
     EZMiniWindowController *miniWindowController = [EZMiniWindowController shared];
     [miniWindowController.window center];
     [miniWindowController.window makeKeyAndOrderFront:nil];
+    
+    
+//    EZSelectTextPopWindow *popWindow = [EZSelectTextPopWindow shared];
+//    [popWindow center];
+//    [popWindow makeKeyAndOrderFront:nil];
         
 //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }

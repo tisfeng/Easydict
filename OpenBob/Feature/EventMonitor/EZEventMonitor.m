@@ -6,32 +6,91 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZSelectTextEvent.h"
+#import "EZEventMonitor.h"
 #include <Carbon/Carbon.h>
 
 static CGFloat kReadPasteboardInterval = 1.0;
 
-@interface EZSelectTextEvent ()
+typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
+    EZEventMonitorTypeLocal,
+    EZEventMonitorTypeGlobal,
+    EZEventMonitorTypeBoth,
+};
+
+@interface EZEventMonitor ()
 
 @property (nonatomic, strong) NSPasteboard *pasteboard;
 @property (nonatomic, strong) NSString *selectedText;
 @property (nonatomic, assign) NSInteger changeCount;
 
+@property (nonatomic, assign) EZEventMonitorType type;
+@property (nonatomic, strong) id localMonitor;
+@property (nonatomic, strong) id globalMonitor;
+
 @end
 
-@implementation EZSelectTextEvent
+
+@implementation EZEventMonitor
 
 - (instancetype)init {
     if (self = [super init]) {
-        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-        self.pasteboard = pasteboard;
-        self.changeCount = pasteboard.changeCount;
-        
-        [self monitorForEvents];
-        
-        [self checkAppIsTrusted];
+        //        [self monitorForEvents];
+//        [self checkAppIsTrusted];
     }
     return self;
+}
+
+- (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
+    [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
+}
+
+- (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
+    [self monitorWithType:EZEventMonitorTypeGlobal event:mask handler:handler];
+}
+
+- (void)bothMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
+    return [self monitorWithType:EZEventMonitorTypeBoth event:mask handler:handler];
+}
+
+- (void)monitorWithType:(EZEventMonitorType)type event:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
+    self.type = type;
+    self.mask = mask;
+    self.handler = handler;
+    
+    [self start];
+}
+
+- (void)start {
+    [self stop];
+    if (self.type == EZEventMonitorTypeLocal) {
+        mm_weakify(self)
+        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+            mm_strongify(self);
+            self.handler(event);
+            return event;
+        }];
+    } else if (self.type == EZEventMonitorTypeGlobal) {
+        self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
+    } else {
+        mm_weakify(self)
+        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+            mm_strongify(self);
+            self.handler(event);
+            return event;
+        }];
+        self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
+    }
+}
+
+- (void)stop {
+    if (self.localMonitor) {
+        [NSEvent removeMonitor:self.localMonitor];
+        self.localMonitor = nil;
+    }
+    if (self.globalMonitor) {
+        [NSEvent removeMonitor:self.globalMonitor];
+        self.globalMonitor = nil;
+    }
 }
 
 - (void)getText:(void (^)(NSString *_Nullable))completion {
@@ -74,7 +133,6 @@ static CGFloat kReadPasteboardInterval = 1.0;
 
 /// Check App is trusted, if no, it will prompt user to add it to trusted list.
 - (BOOL)checkAppIsTrusted {
-    // use AXIsProcessTrustedWithOptions to check if the app is trusted
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
     NSLog(@"isTrusted: %d", isTrusted);
     
@@ -117,8 +175,15 @@ static CGFloat kReadPasteboardInterval = 1.0;
 }
 
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
-- (void)monitorForEvents {
-    [NSEvent addGlobalMonitorForEventsMatchingMask:NSEventMaskLeftMouseUp handler:^(NSEvent *event) {
+- (void)startMonitor {
+//    [self checkAppIsTrusted];
+    
+    mm_weakify(self);
+    NSEventMask eventMask = NSEventMaskLeftMouseDown |NSEventMaskLeftMouseUp | NSEventMaskScrollWheel;
+    [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent * _Nonnull event) {
+        NSLog(@"type: %lu", (unsigned long)event.type);
+        
+        mm_strongify(self);
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
                 [self getSelectedText:^(NSString *_Nullable text) {
@@ -130,6 +195,13 @@ static CGFloat kReadPasteboardInterval = 1.0;
                 }];
                 break;
             }
+            case NSEventTypeScrollWheel:
+            case NSEventTypeLeftMouseDown: {
+                if (self.mouseDownBlock) {
+                    self.mouseDownBlock();
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -137,7 +209,3 @@ static CGFloat kReadPasteboardInterval = 1.0;
 }
 
 @end
-
-
-
-
