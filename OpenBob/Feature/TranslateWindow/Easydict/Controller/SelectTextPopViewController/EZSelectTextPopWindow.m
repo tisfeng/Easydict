@@ -7,7 +7,7 @@
 //
 
 #import "EZSelectTextPopWindow.h"
-#import "EZSelectTextPopViewController.h"
+#import "EZPopButtonViewController.h"
 
 @implementation EZSelectTextPopWindow
 
@@ -39,14 +39,9 @@ static EZSelectTextPopWindow *_instance;
         self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
         self.titlebarAppearsTransparent = YES;
         self.titleVisibility = NSWindowTitleHidden;
+        self.backgroundColor = NSColor.clearColor;
         
-        [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-        
-        EZSelectTextPopViewController *popVC = [[EZSelectTextPopViewController alloc] init];
+        EZPopButtonViewController *popVC = [[EZPopButtonViewController alloc] init];
         self.contentViewController = popVC;
     }
     return self;

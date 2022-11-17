@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZSelectTextPopViewController : NSViewController
+@interface EZPopButtonViewController : NSViewController
 
 @end
 
