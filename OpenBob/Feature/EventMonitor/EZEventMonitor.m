@@ -224,9 +224,16 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
+    
+    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent * _Nullable(NSEvent * _Nonnull event) {
+        if (event.keyCode == 53) { // escape
+            NSLog(@"escape");
+        }
+        return event;
+    }];
 
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
 
@@ -234,7 +241,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
-                NSLog(@"mouse up");
+//                NSLog(@"mouse up");
                 if ([self checkIfLeftMouseDragged]) {
                     NSLog(@"Dragged selected");
                     [self getSelectedText];
@@ -242,7 +249,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 break;
             }
             case NSEventTypeLeftMouseDown: {
-                NSLog(@"mouse down");
+//                NSLog(@"mouse down");
                 self.startPoint = NSEvent.mouseLocation;
 
                 // check if it is a double click
