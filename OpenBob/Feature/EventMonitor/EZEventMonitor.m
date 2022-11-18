@@ -29,6 +29,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, strong) NSEvent *lastEvent;
 
+// recored last 3 events
+@property (nonatomic, strong) NSMutableArray<NSEvent *> *recoredEevents;
+
 @end
 
 
@@ -36,6 +39,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (instancetype)init {
     if (self = [super init]) {
+        _recoredEevents = [NSMutableArray array];
         //        [self monitorForEvents];
         //        [self checkAppIsTrusted];
     }
@@ -114,20 +118,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     });
 }
 
-// monitor pasteboard change
-- (void)monitorPasteboardChange:(void (^)(NSString *_Nullable))completion {
-    [NSTimer scheduledTimerWithTimeInterval:kReadPasteboardInterval repeats:YES block:^(NSTimer *_Nonnull timer) {
-        [self getSelectedText:^(NSString *_Nullable text) {
-            if (text.length > 0) {
-                if (![text isEqualToString:self.selectedText]) {
-                    self.selectedText = text;
-                    completion(text);
-                }
-            }
-        }];
-    }];
-}
-
 
 /// Check App is trusted, if no, it will prompt user to add it to trusted list.
 - (BOOL)checkAppIsTrusted {
@@ -144,46 +134,42 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
  
  Cannot work in App: Safari
  */
-- (void)getSelectedText:(void (^)(NSString *_Nullable))completion {
+- (void)getSelectedText:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focussedElement = NULL;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
-        if (error != kAXErrorSuccess) {
-            //        NSLog(@"Could not get focussed element: %d", (int)error);
-            //        if (error == kAXErrorAPIDisabled) {
-            //            NSLog(@"accessibility API is disabled");
-            //        }
+    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
+    
+    NSString *selectedText;
+    AXError error = getFocusedUIElementError;
+    
+    if (getFocusedUIElementError == kAXErrorSuccess) {
+        AXValueRef selectedTextValue = NULL;
+        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
+        error = getSelectedTextError;
+        if (getSelectedTextError == kAXErrorSuccess) {
+            // Note: selectedText may be @""
+            selectedText = (__bridge NSString *)(selectedTextValue);
+            NSLog(@"--> SelectedText: %@", selectedText);
         } else {
-            AXValueRef selectedTextValue = NULL;
-            AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-            
-            //        AXError getSelectedTextError2 = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedTextValue);
-            
-            
-            if (getSelectedTextError == kAXErrorSuccess) {
-                // Note: selectedText can be @""
-                NSString *selectedText = (__bridge NSString *)(selectedTextValue);
-                NSLog(@"selectedText: %@", selectedText);
-                completion(selectedText);
-                return;
+            if (getSelectedTextError == kAXErrorNoValue) {
+                NSLog(@"No Value: %d", getSelectedTextError);
             } else {
-                //            NSLog(@"Could not get selected text: %d", (int)getSelectedTextError);
+                NSLog(@"Could not get selected text: %d", getSelectedTextError);
             }
         }
-        if (focussedElement != NULL) {
-            CFRelease(focussedElement);
-        }
-        CFRelease(systemWideElement);
-        
-        completion(nil);
-    });
+    }
+    
+    if (focussedElement != NULL) {
+        CFRelease(focussedElement);
+    }
+    CFRelease(systemWideElement);
+    
+    completion(selectedText, error);
 }
 
 // Ref: https://macdevelopers.wordpress.com/2014/02/05/how-to-get-selected-text-and-its-coordinates-from-any-system-wide-application-using-accessibility-api/
 - (void)getSelectedTextRange {
-    
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focussedElement = NULL;
     
@@ -197,21 +183,17 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         //            NSLog(@"accessibility API is disabled");
         //        }
     } else {
-        
         // Access selected range attribute from focused element
         AXError selectedRangeError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedRangeValue);
         if (selectedRangeError == kAXErrorSuccess)
             
         {
+            NSLog(@"\nSelected Range: %@", selectedRangeValue);
             
-            NSLog(@"\nSelected Range: %@",selectedRangeValue);
-            
-            //Selected Range is retrieved successfully, then get the range into CFRange type object
+            // Selected Range is retrieved successfully, then get the range into CFRange type object
             
             AXValueGetValue(selectedRangeValue, kAXValueCFRangeType, &selectedCFRange);
-        }
-        else
-        {
+        } else {
             NSLog(@"Error while retrieving selected range");
             return;
         }
@@ -231,9 +213,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         if (selectedBoundsError == kAXErrorSuccess)
             
         {
-            
             AXValueGetValue(selectedBounds, kAXValueCGRectType, &selectedRect);
-            NSLog(@"Selection bounds: %@", NSStringFromRect(NSRectFromCGRect(selectedRect)));   // Selection Rect retrieved
+            NSLog(@"Selection bounds: %@", NSStringFromRect(NSRectFromCGRect(selectedRect))); // Selection Rect retrieved
         }
         
         else
@@ -269,17 +250,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 // check if it is a double click
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
-                    //                    [self callbackNonEmptySelectedText];
-//                    [self selectionRect];
-//                    [self getSelectedTextRange];
-                    
-                    [self getSelectedText:^(NSString * _Nullable text) {
-                        NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-                        if (trimText.length > 0 && self.selectedTextBlock) {
-                            self.selectedTextBlock(trimText);
-                        }
-                    }];
-                    
+                    [self callbackNonEmptySelectedText];
+                    //                    [self selectionRect];
+                    //                    [self getSelectedTextRange];
                 } else {
                     if (self.dismissPopButtonBlock) {
                         self.dismissPopButtonBlock();
@@ -318,10 +291,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)callbackNonEmptySelectedText {
-    [self getSelectedText:^(NSString *_Nullable text) {
+    [self getSelectedText:^(NSString *_Nullable text, AXError error) {
         // if auxiliary get failed, change to use cmd + c
-        if (text.length == 0) {
-            //            [self useCmdCKeySelectText];
+        if (text.length == 0 && error == kAXErrorNoValue) {
+            [self useCmdCKeySelectText];
         } else {
             NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
             if (trimText.length > 0 && self.selectedTextBlock) {
@@ -343,8 +316,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)useAppScriptSelectText {
     NSString *appleScript = [self getSelectedTextScript];
-    [self runAppleScript:appleScript completionHandler:^(NSAppleEventDescriptor * _Nullable eventDescriptor) {
-        
+    [self runAppleScript:appleScript completionHandler:^(NSAppleEventDescriptor *_Nullable eventDescriptor) {
         NSString *selectedText = eventDescriptor.stringValue;
         NSLog(@"appleScript selectedText: %@", selectedText);
         
@@ -378,7 +350,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 // Run AppleScript
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSAppleEventDescriptor *_Nullable eventDescriptor))completionHandler {
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
         
@@ -431,9 +402,7 @@ end tell";
  */
 
 
-
-- (AXUIElementRef)focusedElement
-{
+- (AXUIElementRef)focusedElement {
     pid_t pid = [self getFrontmostApp].processIdentifier;
     AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
     
@@ -442,24 +411,21 @@ end tell";
     AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     if (focusedElementError == kAXErrorSuccess) {
         return focusedElement;
-    }
-    else {
+    } else {
         return nil;
     }
 }
 
-- (CGRect)selectionRect
-{
+- (CGRect)selectionRect {
     AXUIElementRef focusedElement = [self focusedElement];
     
     AXValueRef selectionRangeValue;
     AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
-    if (selectionRangeError == kAXErrorSuccess)
-    {
+    if (selectionRangeError == kAXErrorSuccess) {
         CFRange selectionRange;
         AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
         
-        //selectionRange.length is 0 for "no selection" (aka a bare caret insertion point)
+        // selectionRange.length is 0 for "no selection" (aka a bare caret insertion point)
         NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location);
         
         AXValueRef selectionBoundsValue;
@@ -475,8 +441,7 @@ end tell";
             NSLog(@"It's easy to get the selection bounds rect when text is selected.");
         }
         
-        if (selectionBoundsError == kAXErrorSuccess)
-        {
+        if (selectionBoundsError == kAXErrorSuccess) {
             CGRect selectionBounds;
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionBounds);
             
@@ -484,17 +449,22 @@ end tell";
             NSLog(@"Selection rect: (%f, %f) (%f, %f)", selectionBounds.origin.x, selectionBounds.origin.y, selectionBounds.size.width, selectionBounds.size.height);
             
             return selectionBounds;
-        }
-        else if (selectionBoundsError == kAXErrorNoValue)
-        {
+        } else if (selectionBoundsError == kAXErrorNoValue) {
             NSLog(@"Could not get selection rect. SelectionRange.length == %lu", selectionRange.length);
             return CGRectMake(0, 0, 0, 0);
         }
     }
     
     return CGRectMake(0, 0, 0, 0);
-    
 }
 
+- (void)authorize {
+    NSLog(@"AuthorizeButton clicked");
+    
+    /// Open privacy prefpane
+    
+    NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
+}
 
 @end
