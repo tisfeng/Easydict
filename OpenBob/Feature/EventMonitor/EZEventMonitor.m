@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 break;
             }
             case NSEventTypeKeyDown: { // seems not work...
-                NSLog(@"key down");
+//                NSLog(@"key down");
                 [self dismissPopButton];
                 break;
             }
