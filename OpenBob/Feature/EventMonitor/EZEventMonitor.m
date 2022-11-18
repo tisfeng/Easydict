@@ -100,6 +100,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
+    self.endPoint = NSEvent.mouseLocation;
+
     // Simulation shortcut cmd+c
     CGEventRef push = CGEventCreateKeyboardEvent(NULL, kVK_ANSI_C, true);
     CGEventSetFlags(push, kCGEventFlagMaskCommand);
@@ -136,17 +138,20 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
  */
 - (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focussedElement = NULL;
+    AXUIElementRef focusedElement = NULL;
 
-    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
+    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
 
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
 
+    CGRect selectedTextFrame = [self getSelectedTextFrame];
+    self.selectedTextFrame = [self convertRect:selectedTextFrame];
+    self.endPoint = NSEvent.mouseLocation;
+
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-        error = getSelectedTextError;
+        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
         if (getSelectedTextError == kAXErrorSuccess) {
             // Note: selectedText may be @""
             selectedText = (__bridge NSString *)(selectedTextValue);
@@ -159,71 +164,60 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 NSLog(@"Could not get selected text: %d", getSelectedTextError);
             }
         }
+        error = getSelectedTextError;
     }
 
-    if (focussedElement != NULL) {
-        CFRelease(focussedElement);
+    if (focusedElement != NULL) {
+        CFRelease(focusedElement);
     }
     CFRelease(systemWideElement);
 
     completion(selectedText, error);
 }
 
-// Ref: https://macdevelopers.wordpress.com/2014/02/05/how-to-get-selected-text-and-its-coordinates-from-any-system-wide-application-using-accessibility-api/
-- (void)getSelectedTextRange {
+- (AXUIElementRef)focusedElement {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focussedElement = NULL;
+    AXUIElementRef focusedElement = NULL;
+    AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
+    CFRelease(systemWideElement);
 
-    CFRange selectedCFRange;
-    AXValueRef selectedRangeValue = NULL;
+    return focusedElement;
+}
 
-    AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focussedElement);
-    if (error != kAXErrorSuccess) {
-        //        NSLog(@"Could not get focussed element: %d", (int)error);
-        //        if (error == kAXErrorAPIDisabled) {
-        //            NSLog(@"accessibility API is disabled");
-        //        }
-    } else {
-        // Access selected range attribute from focused element
-        AXError selectedRangeError = AXUIElementCopyAttributeValue(focussedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectedRangeValue);
-        if (selectedRangeError == kAXErrorSuccess)
+/// Get selected text frame
+- (CGRect)getSelectedTextFrame {
+    // Ref: https://macdevelopers.wordpress.com/2014/02/05/how-to-get-selected-text-and-its-coordinates-from-any-system-wide-application-using-accessibility-api/
+    AXUIElementRef focusedElement = [self focusedElement];
+    CGRect selectionFrame = CGRectZero;
+    AXValueRef selectionRangeValue;
 
-        {
-            NSLog(@"\nSelected Range: %@", selectedRangeValue);
+    // 1. get selected text range value
+    AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
 
-            // Selected Range is retrieved successfully, then get the range into CFRange type object
+    if (selectionRangeError == kAXErrorSuccess) {
+        //  AXValueRef range --> CFRange
+        //        CFRange selectionRange;
+        //        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
+        //        NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
 
-            AXValueGetValue(selectedRangeValue, kAXValueCFRangeType, &selectedCFRange);
-        } else {
-            NSLog(@"Error while retrieving selected range");
-            return;
-        }
+        // 2. get bounds from range
+        AXValueRef selectionBoundsValue;
+        AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
 
-        // The length and location of the selected text will be selectedCFRange.length and selectedCFRange.location
+        if (selectionBoundsError == kAXErrorSuccess) {
+            // 3. AXValueRef bounds --> frame
+            AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
 
-        NSLog(@"\nLength: %ld, Location: %ld", selectedCFRange.length, selectedCFRange.location);
-
-        CGRect selectedRect;
-
-        AXValueRef selectedBounds = NULL;
-        // Get the selected bounds value from the selected range
-
-        AXError selectedBoundsError = AXUIElementCopyParameterizedAttributeValue(focussedElement, kAXBoundsForRangeParameterizedAttribute, selectedRangeValue, (CFTypeRef *)&selectedBounds);
-        CFRelease(selectedRangeValue);
-
-        if (selectedBoundsError == kAXErrorSuccess)
-
-        {
-            AXValueGetValue(selectedBounds, kAXValueCGRectType, &selectedRect);
-            NSLog(@"Selection bounds: %@", NSStringFromRect(NSRectFromCGRect(selectedRect))); // Selection Rect retrieved
-        }
-
-        else
-
-        {
-            NSLog(@"Error while retrieving selected range bounds");
+            CFRelease(selectionRangeValue);
+            CFRelease(selectionBoundsValue);
         }
     }
+
+    if (focusedElement != NULL) {
+        CFRelease(focusedElement);
+    }
+
+    return selectionFrame;
 }
 
 
@@ -235,7 +229,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
-        
+
         //        NSLog(@"type: %lu", (unsigned long)event.type);
 
         switch (event.type) {
@@ -250,7 +244,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             case NSEventTypeLeftMouseDown: {
                 NSLog(@"mouse down");
                 self.startPoint = NSEvent.mouseLocation;
-                
+
                 // check if it is a double click
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
@@ -297,7 +291,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.recordEvents.count < kRecordEventCount) {
         return NO;
     }
-    
+
     BOOL isDragged = YES;
     for (NSEvent *event in self.recordEvents) {
         if (event.type != NSEventTypeLeftMouseDragged) {
@@ -325,23 +319,29 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
 - (void)getSelectedText {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+        
+        if (![self isValidSelectedFrame]) {
+            NSLog(@"Invalid selected frame");
+            return;
+        }
+                
         if (text.length > 0) {
             [self handleSelectedText:text];
-        } else {
-            // if auxiliary get failed, error may be kAXErrorNoValue
-            if (error == kAXErrorNoValue) {
-                [self getSelectedTextByKey:^(NSString * _Nullable text) {
-                    [self handleSelectedText:text];
-                }];
-            }
+            return;
+        }
+        
+        // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
+        if (error == kAXErrorNoValue) {
+            [self getSelectedTextByKey:^(NSString *_Nullable text) {
+                [self handleSelectedText:text];
+            }];
         }
     }];
 }
 
 - (void)handleSelectedText:(NSString *)text {
     [self cancelDismissPop];
-    self.endPoint = NSEvent.mouseLocation;
-    
+
     NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
     if (trimText.length > 0 && self.selectedTextBlock) {
         self.selectedTextBlock(trimText);
@@ -437,10 +437,9 @@ end tell";
  */
 
 
-- (AXUIElementRef)focusedElement {
+- (AXUIElementRef)focusedElement2 {
     pid_t pid = [self getFrontmostApp].processIdentifier;
     AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
-
 
     AXUIElementRef focusedElement;
     AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
@@ -451,48 +450,6 @@ end tell";
     }
 }
 
-- (CGRect)selectionRect {
-    AXUIElementRef focusedElement = [self focusedElement];
-
-    AXValueRef selectionRangeValue;
-    AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
-    if (selectionRangeError == kAXErrorSuccess) {
-        CFRange selectionRange;
-        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
-
-        // selectionRange.length is 0 for "no selection" (aka a bare caret insertion point)
-        NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location);
-
-        AXValueRef selectionBoundsValue;
-        AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
-
-        if (selectionRange.length == 0 && selectionBoundsError == kAXErrorSuccess) {
-            NSLog(@"This works in TextMate 2, but nowhere else that I have seen.");
-
-            NSLog(@"This case is the objective of this bug report");
-        }
-
-        if (selectionRange.length > 0 && selectionBoundsError == kAXErrorSuccess) {
-            NSLog(@"It's easy to get the selection bounds rect when text is selected.");
-        }
-
-        if (selectionBoundsError == kAXErrorSuccess) {
-            CGRect selectionBounds;
-            AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionBounds);
-
-            NSLog(@"This will generally only work if text is highlighted");
-            NSLog(@"Selection rect: (%f, %f) (%f, %f)", selectionBounds.origin.x, selectionBounds.origin.y, selectionBounds.size.width, selectionBounds.size.height);
-
-            return selectionBounds;
-        } else if (selectionBoundsError == kAXErrorNoValue) {
-            NSLog(@"Could not get selection rect. SelectionRange.length == %lu", selectionRange.length);
-            return CGRectMake(0, 0, 0, 0);
-        }
-    }
-
-    return CGRectMake(0, 0, 0, 0);
-}
-
 - (void)authorize {
     NSLog(@"AuthorizeButton clicked");
 
@@ -500,6 +457,34 @@ end tell";
 
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
+}
+
+// Convert rect from left-top coordinate to left-bottom coordinate
+- (CGRect)convertRect:(CGRect)rect {
+    CGRect screenRect = NSScreen.mainScreen.frame;
+    CGFloat height = screenRect.size.height;
+    rect.origin.y = height - rect.origin.y - rect.size.height;
+    return rect;
+}
+
+
+/// Check selected text frame is valid
+/**
+ If selected text frame size is zero, return YES
+ If selected text frame size is not zero, and start point and end point is in selected text frame, return YES, else return NO
+ */
+- (BOOL)isValidSelectedFrame {
+    CGRect selectedTextFrame = self.selectedTextFrame;
+    // means get frame failed, but get selected text may success
+    if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
+        return YES;
+    }
+
+    if (CGRectContainsPoint(selectedTextFrame, self.startPoint) && CGRectContainsPoint(selectedTextFrame, self.endPoint)) {
+        return YES;
+    }
+
+    return NO;
 }
 
 @end
