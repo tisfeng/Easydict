@@ -107,7 +107,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     CGEventPost(kCGHIDEventTap, push);
     CFRelease(push);
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
         NSLog(@"shortcut getText: %@", selectedText);
