@@ -141,6 +141,12 @@ static EZMiniWindowController *_instance;
 - (NSPoint)getMouseLocation {
     self.hadShow = YES;
     NSPoint mouseLocation = [NSEvent mouseLocation];
+    NSPoint startLocation = self.eventMonitor.startPoint;
+
+    if (startLocation.x > mouseLocation.x) {
+        mouseLocation = startLocation;
+    }
+    
     NSPoint notFoundLocation = CGPointMake(-1, -1);
     
     NSScreen *screen = [self getMouseLocatedScreen];
