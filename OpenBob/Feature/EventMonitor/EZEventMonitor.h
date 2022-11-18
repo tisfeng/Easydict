@@ -19,9 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
-- (void)getSelectedText:(void (^)(NSString *_Nullable text, AXError error))completion;
+- (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion;
 
-- (void)getText:(void (^)(NSString *_Nullable text))completion;
+- (void)getSelectedTextByKey:(void (^)(NSString *_Nullable text))completion;
 
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;

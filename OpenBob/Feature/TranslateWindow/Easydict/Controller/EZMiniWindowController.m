@@ -186,7 +186,7 @@ static EZMiniWindowController *_instance;
     }
     
     //    [self.viewController resetWithState:@"正在取词..."];
-    [self.eventMonitor getText:^(NSString *_Nullable text) {
+    [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
         if (text.length) {
             //            [self.viewController startQueryText:text];

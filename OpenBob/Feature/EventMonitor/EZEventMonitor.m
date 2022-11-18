@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, strong) id localMonitor;
 @property (nonatomic, strong) id globalMonitor;
 
-@property (nonatomic, strong) NSEvent *lastEvent;
+@property (nonatomic, strong) NSEvent *lastSelectedTextEvent;
 
 // recored last 3 events
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *recordEvents;
@@ -101,7 +101,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 }
 
-- (void)getText:(void (^)(NSString *_Nullable))completion {
+- (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     // Simulation shortcut cmd+c
     CGEventRef push = CGEventCreateKeyboardEvent(NULL, kVK_ANSI_C, true);
     CGEventSetFlags(push, kCGEventFlagMaskCommand);
@@ -111,6 +111,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
+        self.selectedText = selectedText;
         NSLog(@"Key getText: %@", selectedText);
 
         [pasteboard clearContents];
@@ -135,7 +136,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
  Cannot work in App: Safari
  */
-- (void)getSelectedText:(void (^)(NSString *_Nullable text, AXError error))completion {
+- (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focussedElement = NULL;
 
@@ -151,6 +152,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         if (getSelectedTextError == kAXErrorSuccess) {
             // Note: selectedText may be @""
             selectedText = (__bridge NSString *)(selectedTextValue);
+            self.selectedText = selectedText;
             NSLog(@"--> Auxiliary Selected Text: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
@@ -243,7 +245,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 NSLog(@"mouse up");
                 if ([self checkIfLeftMouseDragged]) {
                     NSLog(@"Dragged selected");
-                    [self callbackNonEmptySelectedText];
+                    [self getSelectedText];
                 }
                 break;
             }
@@ -252,7 +254,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 // check if it is a double click
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
-                    [self callbackNonEmptySelectedText];
+                    [self getSelectedText];
                 } else {
                     [self dismissPopButton];
                 }
@@ -306,12 +308,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     return isDragged;
 }
 
-- (void)dismissPopButton {
-    if (self.dismissPopButtonBlock) {
-        self.dismissPopButtonBlock();
-    }
-}
-
 - (void)delayDismissPopButton {
     [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:kDismissPopButtonDelayTime];
 }
@@ -320,30 +316,37 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismissPopButton) object:nil];
 }
 
-- (void)callbackNonEmptySelectedText {
-    [self getSelectedText:^(NSString *_Nullable text, AXError error) {
-        // if auxiliary get failed, change to use cmd + c
-        if (text.length == 0 && error == kAXErrorNoValue) {
-            [self useCmdCKeySelectText];
+- (void)dismissPopButton {
+    if (self.dismissPopButtonBlock) {
+        self.dismissPopButtonBlock();
+    }
+}
+
+/// Use auxiliary to get selected text first, if failed, use cmd key to get.
+- (void)getSelectedText {
+    [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+        if (text.length > 0) {
+            [self handleSelectedText:text];
         } else {
-            NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-            if (trimText.length > 0 && self.selectedTextBlock) {
-                self.selectedTextBlock(trimText);
-                [self cancelDismissPop];
+            // if auxiliary get failed, error may be kAXErrorNoValue
+            if (error == kAXErrorNoValue) {
+                [self getSelectedTextByKey:^(NSString * _Nullable text) {
+                    [self handleSelectedText:text];
+                }];
             }
         }
     }];
 }
 
-
-- (void)useCmdCKeySelectText {
-    [self getText:^(NSString *_Nullable text) {
-        NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-        if (trimText.length > 0 && self.selectedTextBlock) {
-            self.selectedTextBlock(trimText);
-            [self cancelDismissPop];
-        }
-    }];
+- (void)handleSelectedText:(NSString *)text {
+    NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    if (trimText.length > 0 && self.selectedTextBlock) {
+        self.selectedTextBlock(trimText);
+        [self cancelDismissPop];
+    }
+    
+    [self cancelDismissPop];
+    self.lastSelectedTextEvent = self.recordEvents.lastObject;
 }
 
 - (void)useAppScriptSelectText {
