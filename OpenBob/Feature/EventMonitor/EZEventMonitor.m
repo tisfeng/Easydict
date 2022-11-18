@@ -28,8 +28,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, strong) id localMonitor;
 @property (nonatomic, strong) id globalMonitor;
 
-@property (nonatomic, strong) NSEvent *lastSelectedTextEvent;
-
 // recored last 3 events
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *recordEvents;
 
@@ -251,6 +249,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             }
             case NSEventTypeLeftMouseDown: {
                 NSLog(@"mouse down");
+                self.startPoint = NSEvent.mouseLocation;
+                
                 // check if it is a double click
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
@@ -339,14 +339,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)handleSelectedText:(NSString *)text {
+    [self cancelDismissPop];
+    self.endPoint = NSEvent.mouseLocation;
+    
     NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
     if (trimText.length > 0 && self.selectedTextBlock) {
         self.selectedTextBlock(trimText);
         [self cancelDismissPop];
     }
-    
-    [self cancelDismissPop];
-    self.lastSelectedTextEvent = self.recordEvents.lastObject;
 }
 
 - (void)useAppScriptSelectText {
