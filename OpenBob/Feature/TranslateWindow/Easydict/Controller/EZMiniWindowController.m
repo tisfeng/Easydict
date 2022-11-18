@@ -68,11 +68,11 @@ static EZMiniWindowController *_instance;
     window.contentViewController = viewController;
     self.window = window;
     self.viewController = viewController;
-    
+
     self.offsetPoint = CGPointMake(12, -10);
-    
+
     self.popWindow = [EZSelectTextPopWindow shared];
-    
+
     self.eventMonitor = [EZEventMonitor new];
     [self setupEventMonitor];
 }
@@ -93,12 +93,12 @@ static EZMiniWindowController *_instance;
         }];
     }
     if (!screen) return;
-    
+
     // 修正显示位置，用于保证window显示在鼠标所在的screen
     // 如果直接使用mouseLocation，可能会显示到其他screen（应该是由当前window在哪个屏幕的区域更多决定的）
     NSRect windowFrame = self.window.frame;
     NSRect visibleFrame = screen.visibleFrame;
-    
+
     if (mouseLocation.x < visibleFrame.origin.x + 10) {
         mouseLocation.x = visibleFrame.origin.x + 10;
     }
@@ -111,7 +111,7 @@ static EZMiniWindowController *_instance;
     if (mouseLocation.y > visibleFrame.origin.y + visibleFrame.size.height - 10) {
         mouseLocation.y = visibleFrame.origin.y + visibleFrame.size.height - 10;
     }
-    
+
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
@@ -123,7 +123,7 @@ static EZMiniWindowController *_instance;
 
 - (NSScreen *)getMouseLocatedScreen {
     NSPoint mouseLocation = [NSEvent mouseLocation];
-    
+
     // 找到鼠标所在屏幕
     NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
         return NSPointInRect(mouseLocation, obj.frame) ? obj : nil;
@@ -134,29 +134,58 @@ static EZMiniWindowController *_instance;
             return MMPointInRect(mouseLocation, obj.frame) ? obj : nil;
         }];
     }
-    
+
     return screen;
 }
 
+// Get the right-bottom point of start point and end point.
 - (NSPoint)getMouseLocation {
-    self.hadShow = YES;
-    NSPoint mouseLocation = [NSEvent mouseLocation];
-    NSPoint startLocation = self.eventMonitor.startPoint;
-
-    if (startLocation.x > mouseLocation.x) {
-        mouseLocation = startLocation;
-    }
-    
-    NSPoint notFoundLocation = CGPointMake(-1, -1);
-    
     NSScreen *screen = [self getMouseLocatedScreen];
+#if DEBUG
+    NSAssert(screen != nil, @"no screen");
+#endif
     if (!screen) {
-        return notFoundLocation;
+        NSLog(@"no get MouseLocation");
+        return CGPointZero;
     }
-    
-    NSPoint point = CGPointMake(mouseLocation.x + self.offsetPoint.x, mouseLocation.y + self.offsetPoint.y);
-    
-    return point;
+
+    self.hadShow = YES;
+
+    NSPoint startLocation = self.eventMonitor.startPoint;
+    NSPoint endLocation = self.eventMonitor.startPoint;
+    NSPoint correctedLocation = endLocation;
+
+    if (endLocation.x < startLocation.x) {
+        correctedLocation = startLocation;
+    }
+
+    if (endLocation.y > startLocation.y) {
+        correctedLocation = startLocation;
+    }
+
+    return correctedLocation;
+}
+
+- (CGPoint)getPopButtonWindowLocation {
+    NSPoint location = [self getMouseLocation];
+    if (CGPointEqualToPoint(location, CGPointZero)) {
+        return CGPointZero;
+    }
+
+    NSPoint popLocation = CGPointMake(location.x + self.offsetPoint.x, location.y + self.offsetPoint.y);
+
+    return popLocation;
+}
+
+- (CGPoint)getMiniWindowLocation {
+    NSPoint location = [self getPopButtonWindowLocation];
+    if (CGPointEqualToPoint(location, CGPointZero)) {
+        return CGPointZero;
+    }
+
+    NSPoint popLocation = CGPointMake(location.x + 2 * self.offsetPoint.x, location.y - 2 * self.offsetPoint.y);
+
+    return popLocation;
 }
 
 - (void)ensureShowAtMouseLocation {
@@ -174,7 +203,7 @@ static EZMiniWindowController *_instance;
     if ([frontmostApplication.bundleIdentifier isEqualToString:identifier]) {
         return;
     }
-    
+
     self.lastFrontmostApplication = frontmostApplication;
 }
 
@@ -185,12 +214,12 @@ static EZMiniWindowController *_instance;
         NSLog(@"App is not trusted");
         return;
     }
-    
+
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    
+
     //    [self.viewController resetWithState:@"正在取词..."];
     [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
@@ -254,12 +283,13 @@ static EZMiniWindowController *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    
+
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
         // fail to make key window, then force activate application for key window
         [NSApp activateIgnoringOtherApps:YES];
-    }}
+    }
+}
 
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {
@@ -280,84 +310,60 @@ static EZMiniWindowController *_instance;
 
 - (void)setupEventMonitor {
     [self.eventMonitor startMonitor];
-    
+
     mm_weakify(self);
-    [self.eventMonitor setSelectedTextBlock:^(NSString * _Nonnull selectedText) {
+    [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
         NSLog(@"selectedText: %@", selectedText);
-        
+
         mm_strongify(self);
         self.selectedText = selectedText;
-        
-        CGPoint point = [self getMouseLocation];
-        
-        [self showSelectTextPopWindow:point];
+
+        CGPoint point = [self getPopButtonWindowLocation];
+        [self showHoverButtonWindow:point];
     }];
-    
+
     [self.eventMonitor setDismissPopButtonBlock:^{
         mm_strongify(self);
         [self.popWindow close];
     }];
 }
 
-- (void)showSelectTextPopWindow:(CGPoint)point {
-    
+- (void)showHoverButtonWindow:(CGPoint)point {
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-    //    [self.selectPopWindow makeKeyAndOrderFront:nil];
+
+    [self.window resignMainWindow];
+    [self.window resignKeyWindow];
     
-    [self.popWindow orderFront:nil];
+    // make window level max
     self.popWindow.level = kCGMaximumWindowLevel;
-    
-    [self.popWindow setFrameTopLeftPoint:point];
-    
-    mm_weakify(self);
-    [self.popWindow setHoverBlock:^{
-        mm_strongify(self);
-        
-        [self.popWindow close];
-        [self showMiniWindowWithQueryText:self.selectedText];
-    }];
-    
-    [self.window resignMainWindow];
-    [self.window resignKeyWindow];
-}
-
-- (void)showSelectTextPopWindow:(CGPoint)point queryText:(NSString *)text {
-    
-    // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-    //    [self.selectPopWindow makeKeyAndOrderFront:nil];
-    
     [self.popWindow orderFront:nil];
-    self.popWindow.level = NSScreenSaverWindowLevel + 1;
-    
     [self.popWindow setFrameTopLeftPoint:point];
-    
+
     mm_weakify(self);
     [self.popWindow setHoverBlock:^{
         mm_strongify(self);
-        
+
         [self.popWindow close];
-        [self showAtMouseLocation];
+        
+        CGPoint location = [self getMiniWindowLocation];
+        [self showMiniWindowAtPoint:location];
+        [self.viewController startQueryText:self.selectedText];
     }];
-    
-    [self.window resignMainWindow];
-    [self.window resignKeyWindow];
 }
 
-
-
-- (void)showMiniWindowWithQueryText:(NSString *)text {
-    if (![self.eventMonitor checkAppIsTrusted]) {
-        NSLog(@"App is not trusted");
-        return;
-    }
-    
+- (void)showMiniWindowAtPoint:(CGPoint)point {
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
+
+    [self.window makeKeyAndOrderFront:nil];
+    if (!self.window.isKeyWindow) {
+        // fail to make key window, then force activate application for key window
+        [NSApp activateIgnoringOtherApps:YES];
+    }
     
-    [self ensureShowAtMouseLocation];
-     [self.viewController startQueryText:text];
+    [self.window setFrameTopLeftPoint:point];
 }
 
 @end
