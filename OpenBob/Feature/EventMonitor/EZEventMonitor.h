@@ -17,12 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
+@property (nonatomic, assign) CGRect selectedTextFrame;
 
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
 - (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion;
-
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable text))completion;
 
 
