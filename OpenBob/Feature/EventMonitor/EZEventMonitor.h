@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
-- (void)getSelectedText:(void (^)(NSString *_Nullable))completion;
+- (void)getSelectedText:(void (^)(NSString *_Nullable text, AXError error))completion;
 
 - (void)getText:(void (^)(NSString *_Nullable text))completion;
 
