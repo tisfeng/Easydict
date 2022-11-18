@@ -9,7 +9,7 @@
 #import "EZEventMonitor.h"
 #include <Carbon/Carbon.h>
 
-static CGFloat kReadPasteboardInterval = 1.0;
+static CGFloat kDismissPopButtonDelayTime = 2.0;
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     EZEventMonitorTypeLocal,
@@ -39,6 +39,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (instancetype)init {
     if (self = [super init]) {
+        
         _recoredEevents = [NSMutableArray array];
         //        [self monitorForEvents];
         //        [self checkAppIsTrusted];
@@ -230,7 +231,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     //    [self checkAppIsTrusted];
     
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         
@@ -251,12 +252,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 if (event.clickCount == 2) {
                     NSLog(@"double click");
                     [self callbackNonEmptySelectedText];
-                    //                    [self selectionRect];
-                    //                    [self getSelectedTextRange];
                 } else {
-                    if (self.dismissPopButtonBlock) {
-                        self.dismissPopButtonBlock();
-                    }
+                    [self dismissPopButton];
                 }
                 break;
             }
@@ -264,30 +261,38 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 NSLog(@"NSEventTypeLeftMouseDragged");
                 break;
             }
-                // aaa
-            case NSEventTypeKeyDown: {
+            case NSEventTypeKeyDown: { // seems not work...
                 NSLog(@"key down");
-                
-                if (self.dismissPopButtonBlock) {
-                    self.dismissPopButtonBlock();
-                }
+                [self dismissPopButton];
                 break;
             }
-                //            case NSEventTypeScrollWheel:
-                //            case NSEventTypeFlagsChanged: {
-                //                NSLog(@"event.modifierFlags");
-                //                break;
-                //            }
+            case NSEventTypeScrollWheel:
+            case NSEventTypeMouseMoved: {
+                [self delayDismissPopButton];
+                break;
+            }
                 
             default:
-                if (self.dismissPopButtonBlock) {
-                    self.dismissPopButtonBlock();
-                }
+                [self dismissPopButton];
                 break;
         }
         
         self.lastEvent = event;
     }];
+}
+
+- (void)dismissPopButton {
+    if (self.dismissPopButtonBlock) {
+        self.dismissPopButtonBlock();
+    }
+}
+
+- (void)delayDismissPopButton {
+    [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:kDismissPopButtonDelayTime];
+}
+
+- (void)cancelDismissPop {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismissPopButton) object:nil];
 }
 
 - (void)callbackNonEmptySelectedText {
@@ -299,6 +304,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
             if (trimText.length > 0 && self.selectedTextBlock) {
                 self.selectedTextBlock(trimText);
+                [self cancelDismissPop];
             }
         }
     }];
@@ -310,6 +316,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
         if (trimText.length > 0 && self.selectedTextBlock) {
             self.selectedTextBlock(trimText);
+            [self cancelDismissPop];
         }
     }];
 }
