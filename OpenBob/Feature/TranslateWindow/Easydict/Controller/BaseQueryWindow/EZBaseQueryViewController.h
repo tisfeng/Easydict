@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZQueryViewController : NSViewController
+@interface EZBaseQueryViewController : NSViewController
 
 @property (nonatomic, weak) NSWindow *window;
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);

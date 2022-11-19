@@ -14,6 +14,7 @@
 #import "EZFixedQueryWindow.h"
 #import "EZFixedQueryWindowController.h"
 #import "EZSelectTextPopWindow.h"
+#import "EZMainQueryWindow.h"
 
 @implementation AppDelegate
 
@@ -23,9 +24,14 @@
     [EZStatusItem.shared setup];
     [Shortcut setup];
         
-    EZFixedQueryWindowController *miniWindowController = [EZFixedQueryWindowController shared];
-    [miniWindowController.window center];
-    [miniWindowController.window makeKeyAndOrderFront:nil];
+    
+    EZMainQueryWindow *window = [EZMainQueryWindow shared];
+    [window center];
+    [window makeKeyAndOrderFront:nil];
+    
+//    EZFixedQueryWindowController *miniWindowController = [EZFixedQueryWindowController shared];
+//    [miniWindowController.window center];
+//    [miniWindowController.window makeKeyAndOrderFront:nil];
     
     
 //    EZSelectTextPopWindow *popWindow = [EZSelectTextPopWindow shared];

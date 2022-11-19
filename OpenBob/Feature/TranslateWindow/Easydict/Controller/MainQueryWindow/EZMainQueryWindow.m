@@ -1,35 +1,32 @@
 //
-//  MainWindow.m
-//  Bob
+//  EZMainQueryWindow.m
+//  Open Bob
 //
-//  Created by tisfeng on 2022/11/3.
-//  Copyright © 2022 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/11/19.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZFixedQueryWindow.h"
+#import "EZMainQueryWindow.h"
 #import "EZBaseQueryViewController.h"
 #import "NSColor+MyColors.h"
+#import "EZConst.h"
 
-@implementation EZFixedQueryWindow
+@implementation EZMainQueryWindow
 
-static EZFixedQueryWindow *_instance;
+static EZMainQueryWindow *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            _instance = [[self alloc] init];
+            _instance = [[super allocWithZone:NULL] init];
         });
     }
     return _instance;
 }
 
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-    });
-    return _instance;
+    return [self shared];
 }
 
 - (instancetype)init {
@@ -47,9 +44,10 @@ static EZFixedQueryWindow *_instance;
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
-        miniVC.window = self;
-        self.contentViewController = miniVC;
+        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
+        viewController.view.size = CGSizeMake(1.5 * EZMiniQueryWindowWidth, 2 * EZMiniQueryWindowWidth);
+        viewController.window = self;
+        self.viewController = viewController;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
@@ -72,9 +70,8 @@ static EZFixedQueryWindow *_instance;
 - (void)windowDidResize:(NSNotification *)aNotification {
 //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
     
-    EZBaseQueryViewController *mainVC = (EZBaseQueryViewController *)self.contentViewController;
-    if (mainVC.resizeWindowBlock) {
-        mainVC.resizeWindowBlock();
+    if (self.viewController.resizeWindowBlock) {
+        self.viewController.resizeWindowBlock();
     }
 }
 

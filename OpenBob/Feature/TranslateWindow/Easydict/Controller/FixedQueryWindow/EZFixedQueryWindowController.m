@@ -7,7 +7,7 @@
 //
 
 #import "EZFixedQueryWindowController.h"
-#import "EZQueryViewController.h"
+#import "EZBaseQueryViewController.h"
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "Snip.h"
@@ -18,7 +18,7 @@
 
 @interface EZFixedQueryWindowController ()
 
-@property (nonatomic, weak) EZQueryViewController *viewController;
+@property (nonatomic, weak) EZBaseQueryViewController *viewController;
 @property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
@@ -65,7 +65,7 @@ static EZFixedQueryWindowController *_instance;
 
 - (void)setup {
     EZFixedQueryWindow *window = [EZFixedQueryWindow shared];
-    EZQueryViewController *viewController = [EZQueryViewController new];
+    EZBaseQueryViewController *viewController = [EZBaseQueryViewController new];
     viewController.window = window;
     window.contentViewController = viewController;
     self.window = window;
