@@ -7,9 +7,6 @@
 //
 
 #import "EZMiniQueryWindow.h"
-#import "EZBaseQueryViewController.h"
-#import "NSColor+MyColors.h"
-#import "EZConst.h"
 
 @implementation EZMiniQueryWindow
 

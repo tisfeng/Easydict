@@ -10,6 +10,10 @@
 #import "EZBaseQueryViewController.h"
 #import "NSColor+MyColors.h"
 
+@interface EZBaseQueryWindow () <NSWindowDelegate>
+
+@end
+
 @implementation EZBaseQueryWindow
 
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
@@ -18,6 +22,7 @@
         self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
         self.titlebarAppearsTransparent = YES;
         self.titleVisibility = NSWindowTitleHidden;
+        self.delegate = self;
         
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
@@ -50,6 +55,14 @@
 
 - (BOOL)canBecomeMainWindow {
     return YES;
+}
+
+
+#pragma makr - NSWindowDelegate
+
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+    
+    NSLog(@"windowDidBecomeKey: %@", self);
 }
 
 #pragma mark - NSNotification

@@ -65,6 +65,45 @@ static EZWindowManager *_instance;
     [self setupEventMonitor];
 }
 
+- (void)setupEventMonitor {
+    [self.eventMonitor startMonitor];
+
+    mm_weakify(self);
+    [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
+        NSLog(@"selectedText: %@", selectedText);
+
+        mm_strongify(self);
+        self.selectedText = selectedText;
+
+        // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
+        self.startPoint = self.eventMonitor.startPoint;
+        self.endPoint = self.eventMonitor.endPoint;
+
+        CGPoint point = [self getPopButtonWindowLocation];
+        [self.popWindow setFrameTopLeftPoint:point];
+        [self.popWindow orderFrontRegardless];
+
+        [self.mainWindow orderBack:nil];
+    }];
+
+    [self.eventMonitor setDismissPopButtonBlock:^{
+        mm_strongify(self);
+        [self.popWindow close];
+    }];
+
+    [self.eventMonitor setDismissMiniWindowBlock:^{
+        mm_strongify(self);
+        [self.miniWindow close];
+    }];
+    
+    [self.eventMonitor setDismissFixedWindowBlock:^{
+        mm_strongify(self);
+        [self.fixedWindow close];
+    }];
+}
+
+#pragma mark - Getter
+
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
@@ -90,15 +129,19 @@ static EZWindowManager *_instance;
 - (EZPopButtonWindow *)popWindow {
     if (!_popWindow) {
         _popWindow = [EZPopButtonWindow shared];
-        
+
         mm_weakify(self);
         [_popWindow.popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
+
+//            CGPoint location = [self getMiniWindowLocation];
+//            [self showMiniWindowAtPoint:location];
+//            [self.miniWindow.viewController startQueryText:self.selectedText];
             
-            CGPoint location = [self getMiniWindowLocation];
-            [self showMiniWindowAtPoint:location];
-            [self.miniWindow.viewController startQueryText:self.selectedText];
+            CGPoint location = [self getFixedWindowLocation];
+            [self showFixedWindowAtPoint:location];
+            [self.fixedWindow.viewController startQueryText:self.selectedText];
         }];
     }
     return _popWindow;
@@ -226,6 +269,16 @@ static EZWindowManager *_instance;
     return CGPointMake(x, y);
 }
 
+// Get fixed window location, located at the right-top of screen.
+- (CGPoint)getFixedWindowLocation {
+    CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
+    CGFloat x = mainScreenSize.width - self.fixedWindow.width;
+    CGFloat y = mainScreenSize.height;
+
+    return CGPointMake(x, y);
+}
+
+
 - (void)ensureShowAtMouseLocation {
     [self showAtMouseLocation];
 }
@@ -343,41 +396,6 @@ static EZWindowManager *_instance;
     self.lastFrontmostApplication = nil;
 }
 
-- (void)setupEventMonitor {
-    [self.eventMonitor startMonitor];
-
-    mm_weakify(self);
-    [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
-        NSLog(@"selectedText: %@", selectedText);
-
-        mm_strongify(self);
-        self.selectedText = selectedText;
-
-        // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
-        self.startPoint = self.eventMonitor.startPoint;
-        self.endPoint = self.eventMonitor.endPoint;
-
-        CGPoint point = [self getPopButtonWindowLocation];
-        [self.popWindow setFrameTopLeftPoint:point];
-        [self.popWindow orderFrontRegardless];
-        
-        [self.mainWindow orderBack:nil];
-    }];
-
-    [self.eventMonitor setDismissPopButtonBlock:^{
-        mm_strongify(self);
-        [self.popWindow close];
-    }];
-    
-    [self.eventMonitor setDismissMiniWindowBlock:^{
-        mm_strongify(self);
-        if (self.hadShowMiniWindow) {
-            [self.miniWindow close];
-            self.hadShowMiniWindow = NO;
-        }
-    }];
-}
-
 - (void)showMiniWindowAtPoint:(CGPoint)point {
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
@@ -386,13 +404,24 @@ static EZWindowManager *_instance;
 
     [self.miniWindow setFrameTopLeftPoint:point];
     [self.miniWindow makeKeyAndOrderFront:nil];
-        
+
     [self.mainWindow orderBack:nil];
-    
-    // ⚠️ Cannot set YES right now, otherwise will cause dismissMiniBlocak.
+}
+
+- (void)showFixedWindowAtPoint:(CGPoint)point {
+    [self saveFrontmostApplication];
+    if (Snip.shared.isSnapshotting) {
+        return;
+    }
+
+    [self.fixedWindow setFrameTopLeftPoint:point];
+    [self.fixedWindow makeKeyAndOrderFront:nil];
+
+    [self.mainWindow orderBack:nil];
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.hadShowMiniWindow = YES;
-    });
+
+                                                                                  });
 }
 
 @end

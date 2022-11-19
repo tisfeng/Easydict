@@ -11,6 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Fixed window alway show at the designated position, and it will keep previous query result. It can be resized window size.
 @interface EZFixedQueryWindow : EZBaseQueryWindow
 
 + (instancetype)shared;

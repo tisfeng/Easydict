@@ -7,8 +7,6 @@
 //
 
 #import "EZFixedQueryWindow.h"
-#import "EZBaseQueryViewController.h"
-#import "NSColor+MyColors.h"
 
 @implementation EZFixedQueryWindow
 
@@ -18,42 +16,23 @@ static EZFixedQueryWindow *_instance;
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            _instance = [[self alloc] init];
+            _instance = [[super allocWithZone:NULL] init];
         });
     }
     return _instance;
 }
 
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-    });
-    return _instance;
+    return [self shared];
 }
 
 - (instancetype)init {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        self.movableByWindowBackground = YES;
-        self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
-        self.titlebarAppearsTransparent = YES;
-        self.titleVisibility = NSWindowTitleHidden;
-        
-        [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-        
-        EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
-        self.contentViewController = miniVC;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(windowDidResize:)
-                                                     name:NSWindowDidResizeNotification
-                                                   object:self];
+        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
+        viewController.view.size = CGSizeMake(1.2 * EZMiniQueryWindowWidth, 2.8 * EZMiniQueryWindowWidth);
+        self.viewController = viewController;
     }
     return self;
 }
@@ -63,7 +42,7 @@ static EZFixedQueryWindow *_instance;
 }
 
 - (BOOL)canBecomeMainWindow {
-    return YES;
+    return NO;
 }
 
 #pragma mark - NSNotification
@@ -76,6 +55,5 @@ static EZFixedQueryWindow *_instance;
         mainVC.resizeWindowBlock();
     }
 }
-
 
 @end
