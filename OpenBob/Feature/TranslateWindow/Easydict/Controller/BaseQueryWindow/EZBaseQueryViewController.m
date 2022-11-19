@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZQueryViewController.h"
+#import "EZBaseQueryViewController.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
@@ -25,7 +25,7 @@ static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
-@interface EZQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -43,14 +43,11 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 @end
 
-@implementation EZQueryViewController
-
-static const CGFloat kMiniMainViewWidth = 300;
-static const CGFloat kMiniMainViewHeight = 300;
+@implementation EZBaseQueryViewController
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, 1.2 * kMiniMainViewWidth, 1.5 * kMiniMainViewHeight)];
+    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, EZMiniQueryWindowWidth, EZMiniQueryWindowWidth)];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -112,8 +109,8 @@ static const CGFloat kMiniMainViewHeight = 300;
         
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self.view);
-            make.width.mas_greaterThanOrEqualTo(kMiniMainViewWidth);
-            make.height.mas_greaterThanOrEqualTo(kMiniMainViewHeight);
+            make.width.mas_greaterThanOrEqualTo(EZMiniQueryWindowWidth);
+            make.height.mas_greaterThanOrEqualTo(EZMiniQueryWindowHeight);
         }];
         
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);

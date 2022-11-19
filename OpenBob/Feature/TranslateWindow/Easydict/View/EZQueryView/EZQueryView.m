@@ -10,7 +10,6 @@
 #import "EZHoverButton.h"
 #import "NSTextView+Height.h"
 #import "EZConst.h"
-#import "EZFixedQueryWindow.h"
 
 static CGFloat kTextViewMiniHeight = 60;
 
@@ -172,7 +171,8 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat width = EZFixedQueryWindow.shared.width - 2 * EZMiniHorizontalMargin_12;
+    CGFloat windowWidth = NSApplication.sharedApplication.mainWindow.width ?: EZMiniQueryWindowWidth;
+    CGFloat width = windowWidth - 2 * EZMiniHorizontalMargin_12;
     CGFloat height = [self.textView getHeightWithWidth:width];
 //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
 

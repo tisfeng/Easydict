@@ -32,7 +32,7 @@
 		03B022FB29231FA6001C7E63 /* ScrollTestVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0224D29231FA6001C7E63 /* ScrollTestVC.m */; };
 		03B022FC29231FA6001C7E63 /* FlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0224E29231FA6001C7E63 /* FlippedView.m */; };
 		03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */; };
-		03B022FE29231FA6001C7E63 /* EZQueryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225329231FA6001C7E63 /* EZQueryViewController.m */; };
+		03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */; };
 		03B022FF29231FA6001C7E63 /* EZResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225629231FA6001C7E63 /* EZResultCell.m */; };
 		03B0230029231FA6001C7E63 /* EZQueryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225729231FA6001C7E63 /* EZQueryCell.m */; };
 		03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0225C29231FA6001C7E63 /* EZQueryView.m */; };
@@ -106,6 +106,9 @@
 		03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */; };
 		03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */; };
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
+		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
+		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
+		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
 		03E02A1E2924DE6F00A10260 /* EZFixedQueryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
@@ -175,9 +178,9 @@
 		03B0224B29231FA6001C7E63 /* ServiceTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceTypes.m; sourceTree = "<group>"; };
 		03B0224D29231FA6001C7E63 /* ScrollTestVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollTestVC.m; sourceTree = "<group>"; };
 		03B0224E29231FA6001C7E63 /* FlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlippedView.m; sourceTree = "<group>"; };
-		03B0225129231FA6001C7E63 /* EZQueryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZQueryViewController.h; sourceTree = "<group>"; };
+		03B0225129231FA6001C7E63 /* EZBaseQueryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZBaseQueryViewController.h; sourceTree = "<group>"; };
 		03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZFixedQueryWindow.m; sourceTree = "<group>"; };
-		03B0225329231FA6001C7E63 /* EZQueryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZQueryViewController.m; sourceTree = "<group>"; };
+		03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryViewController.m; sourceTree = "<group>"; };
 		03B0225429231FA6001C7E63 /* EZFixedQueryWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZFixedQueryWindow.h; sourceTree = "<group>"; };
 		03B0225629231FA6001C7E63 /* EZResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZResultCell.m; sourceTree = "<group>"; };
 		03B0225729231FA6001C7E63 /* EZQueryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZQueryCell.m; sourceTree = "<group>"; };
@@ -317,6 +320,12 @@
 		03BFBB7B2923A1D900C48725 /* cyan-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cyan-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7E2923A2FA00C48725 /* white-black-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-black-icon@3x.png"; sourceTree = "<group>"; };
+		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
+		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
+		03D043502928935300E7559E /* EZMainQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainQueryWindow.h; sourceTree = "<group>"; };
+		03D043512928935300E7559E /* EZMainQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMainQueryWindow.m; sourceTree = "<group>"; };
+		03D043542928940500E7559E /* EZBaseQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaseQueryWindow.h; sourceTree = "<group>"; };
+		03D043552928940500E7559E /* EZBaseQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryWindow.m; sourceTree = "<group>"; };
 		03E02A1C2924DE6F00A10260 /* EZFixedQueryWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFixedQueryWindowController.h; sourceTree = "<group>"; };
 		03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFixedQueryWindowController.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZStatusItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZStatusItem.h; sourceTree = "<group>"; };
@@ -531,11 +540,11 @@
 		03B0225029231FA6001C7E63 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				03D04353292893A700E7559E /* BaseQueryWindow */,
+				03D0434F2928934300E7559E /* MainQueryWindow */,
 				03D0434B2928857C00E7559E /* FixedQueryWindow */,
 				03D0434A292884B900E7559E /* MiniQueryWindow */,
 				03B3B8AF2925D57400168E8D /* PopButtonWindow */,
-				03B0225129231FA6001C7E63 /* EZQueryViewController.h */,
-				03B0225329231FA6001C7E63 /* EZQueryViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -871,6 +880,8 @@
 		03D0434A292884B900E7559E /* MiniQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
+				03D0434C292886D200E7559E /* EZMiniQueryWindow.h */,
+				03D0434D292886D200E7559E /* EZMiniQueryWindow.m */,
 			);
 			path = MiniQueryWindow;
 			sourceTree = "<group>";
@@ -884,6 +895,26 @@
 				03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */,
 			);
 			path = FixedQueryWindow;
+			sourceTree = "<group>";
+		};
+		03D0434F2928934300E7559E /* MainQueryWindow */ = {
+			isa = PBXGroup;
+			children = (
+				03D043502928935300E7559E /* EZMainQueryWindow.h */,
+				03D043512928935300E7559E /* EZMainQueryWindow.m */,
+			);
+			path = MainQueryWindow;
+			sourceTree = "<group>";
+		};
+		03D04353292893A700E7559E /* BaseQueryWindow */ = {
+			isa = PBXGroup;
+			children = (
+				03B0225129231FA6001C7E63 /* EZBaseQueryViewController.h */,
+				03B0225329231FA6001C7E63 /* EZBaseQueryViewController.m */,
+				03D043542928940500E7559E /* EZBaseQueryWindow.h */,
+				03D043552928940500E7559E /* EZBaseQueryWindow.m */,
+			);
+			path = BaseQueryWindow;
 			sourceTree = "<group>";
 		};
 		03E02A1F2924E74000A10260 /* EZStatusItem */ = {
@@ -1153,6 +1184,7 @@
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				03B022F929231FA6001C7E63 /* TranslateLanguage.m in Sources */,
 				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
+				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				03B0230F29231FA6001C7E63 /* PopUpButton.m in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
@@ -1182,7 +1214,7 @@
 				03B0231F29231FA6001C7E63 /* PreferencesWindowController.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
-				03B022FE29231FA6001C7E63 /* EZQueryViewController.m in Sources */,
+				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				03B0230929231FA6001C7E63 /* NormalResultView.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B022F629231FA6001C7E63 /* TranslateError.m in Sources */,
@@ -1195,6 +1227,7 @@
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
 				03B0230A29231FA6001C7E63 /* TextView.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
+				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				03B022FF29231FA6001C7E63 /* EZResultCell.m in Sources */,
@@ -1206,6 +1239,7 @@
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
+				03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */,
 				03B022F129231FA6001C7E63 /* YoudaoTranslate.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,

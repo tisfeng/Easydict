@@ -1,18 +1,18 @@
 //
-//  MainWindow.m
-//  Bob
+//  EZMiniQueryWindow.m
+//  Open Bob
 //
-//  Created by tisfeng on 2022/11/3.
-//  Copyright © 2022 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/11/19.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZFixedQueryWindow.h"
+#import "EZMiniQueryWindow.h"
 #import "EZBaseQueryViewController.h"
 #import "NSColor+MyColors.h"
 
-@implementation EZFixedQueryWindow
+@implementation EZMiniQueryWindow
 
-static EZFixedQueryWindow *_instance;
+static EZMiniQueryWindow *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -50,11 +50,6 @@ static EZFixedQueryWindow *_instance;
         EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
         miniVC.window = self;
         self.contentViewController = miniVC;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(windowDidResize:)
-                                                     name:NSWindowDidResizeNotification
-                                                   object:self];
     }
     return self;
 }
@@ -65,17 +60,6 @@ static EZFixedQueryWindow *_instance;
 
 - (BOOL)canBecomeMainWindow {
     return YES;
-}
-
-#pragma mark - NSNotification
-
-- (void)windowDidResize:(NSNotification *)aNotification {
-//   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
-    EZBaseQueryViewController *mainVC = (EZBaseQueryViewController *)self.contentViewController;
-    if (mainVC.resizeWindowBlock) {
-        mainVC.resizeWindowBlock();
-    }
 }
 
 
