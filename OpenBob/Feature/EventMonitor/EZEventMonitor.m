@@ -20,7 +20,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @interface EZEventMonitor ()
 
-@property (nonatomic, strong) NSPasteboard *pasteboard;
 @property (nonatomic, strong) NSString *selectedText;
 @property (nonatomic, assign) NSInteger changeCount;
 
@@ -147,7 +146,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     self.selectedTextFrame = [self convertRect:selectedTextFrame];
-    self.endPoint = NSEvent.mouseLocation;
 
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
@@ -156,6 +154,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             // Note: selectedText may be @""
             selectedText = (__bridge NSString *)(selectedTextValue);
             self.selectedText = selectedText;
+            self.endPoint = NSEvent.mouseLocation;
             NSLog(@"--> Auxiliary Selected Text: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
@@ -486,7 +485,7 @@ end tell";
         return YES;
     }
 
-    // sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame
+    // sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
     CGFloat expand = 5;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expand, selectedTextFrame.origin.y, selectedTextFrame.size.width + expand * 2, selectedTextFrame.size.height);
 

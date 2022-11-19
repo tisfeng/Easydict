@@ -27,6 +27,8 @@
 @property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
 @property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, copy) NSString *selectedText;
+@property (nonatomic, assign) CGPoint startPoint;
+@property (nonatomic, assign) CGPoint endPoint;
 
 @end
 
@@ -72,6 +74,14 @@ static EZMiniWindowController *_instance;
     self.offsetPoint = CGPointMake(15, -15);
 
     self.popWindow = [EZSelectTextPopWindow shared];
+    mm_weakify(self);
+    [self.popWindow.popButton setClickBlock:^(EZButton *button) {
+        mm_strongify(self);
+        [self.popWindow close];
+        CGPoint location = [self getMiniWindowLocation];
+        [self showMiniWindowAtPoint:location];
+        [self.viewController startQueryText:self.selectedText];
+    }];
 
     self.eventMonitor = [EZEventMonitor new];
     [self setupEventMonitor];
@@ -151,15 +161,15 @@ static EZMiniWindowController *_instance;
 
     self.hadShow = YES;
 
-    NSPoint startLocation = self.eventMonitor.startPoint;
-    NSPoint endLocation = self.eventMonitor.startPoint;
+    NSPoint startLocation = self.startPoint;
+    NSPoint endLocation = self.endPoint;
     NSPoint correctedLocation = endLocation;
 
     if (endLocation.x < startLocation.x) {
         correctedLocation = startLocation;
     }
 
-    if (endLocation.y > startLocation.y) {
+    if (endLocation.y >= startLocation.y + self.eventMonitor.selectedTextFrame.size.height) {
         correctedLocation = startLocation;
     }
 
@@ -319,9 +329,13 @@ static EZMiniWindowController *_instance;
 
         mm_strongify(self);
         self.selectedText = selectedText;
+        
+        // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
+        self.startPoint = self.eventMonitor.startPoint;
+        self.endPoint = self.eventMonitor.endPoint;
 
         CGPoint point = [self getPopButtonWindowLocation];
-        [self showHoverButtonWindow:point];
+        [self showPopButtonWindow:point];
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -330,7 +344,7 @@ static EZMiniWindowController *_instance;
     }];
 }
 
-- (void)showHoverButtonWindow:(CGPoint)point {
+- (void)showPopButtonWindow:(CGPoint)point {
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
 
     [self.window resignMainWindow];
@@ -340,20 +354,6 @@ static EZMiniWindowController *_instance;
     self.popWindow.level = kCGMaximumWindowLevel;
     [self.popWindow orderFront:nil];
     [self.popWindow setFrameTopLeftPoint:point];
-
-    mm_weakify(self);
-//    [self.popWindow.popButton setHoverBlock:^(EZButton *button) {
-//            
-//    }];
-    
-    
-    [self.popWindow.popButton setClickBlock:^(EZButton *button) {
-        mm_strongify(self);
-        [self.popWindow close];
-        CGPoint location = [self getMiniWindowLocation];
-        [self showMiniWindowAtPoint:location];
-        [self.viewController startQueryText:self.selectedText];
-    }];
 }
 
 - (void)showMiniWindowAtPoint:(CGPoint)point {
