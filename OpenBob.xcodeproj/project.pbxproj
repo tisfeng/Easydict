@@ -386,11 +386,11 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				03B0224C29231FA6001C7E63 /* TranslateWindow */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
 				03B0222829231FA6001C7E63 /* Configuration */,
 				03B0222B29231FA6001C7E63 /* Translate */,
-				03B0224C29231FA6001C7E63 /* TranslateWindow */,
 				03B0228629231FA6001C7E63 /* DarkMode */,
 				03B0228E29231FA6001C7E63 /* Snip */,
 				03B0229929231FA6001C7E63 /* StatusItem */,

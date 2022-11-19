@@ -7,12 +7,15 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZPopButtonViewController : NSViewController
 
+@property (nonatomic, strong) EZButton *popButton;
 @property (nonatomic, copy) void (^hoverBlock)(void);
+@property (nonatomic, copy) void (^clickBlock)(void);
 
 @end
 

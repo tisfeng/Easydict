@@ -69,7 +69,7 @@ static EZMiniWindowController *_instance;
     self.window = window;
     self.viewController = viewController;
 
-    self.offsetPoint = CGPointMake(12, -15);
+    self.offsetPoint = CGPointMake(15, -15);
 
     self.popWindow = [EZSelectTextPopWindow shared];
 
@@ -342,11 +342,14 @@ static EZMiniWindowController *_instance;
     [self.popWindow setFrameTopLeftPoint:point];
 
     mm_weakify(self);
-    [self.popWindow setHoverBlock:^{
+//    [self.popWindow.popButton setHoverBlock:^(EZButton *button) {
+//            
+//    }];
+    
+    
+    [self.popWindow.popButton setClickBlock:^(EZButton *button) {
         mm_strongify(self);
-
         [self.popWindow close];
-        
         CGPoint location = [self getMiniWindowLocation];
         [self showMiniWindowAtPoint:location];
         [self.viewController startQueryText:self.selectedText];

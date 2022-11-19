@@ -410,6 +410,7 @@
     [self updateButtonApperaceWithState:state];
     
     if (state == EZButtonHoverState) {
+        NSLog(@"hover state");
         if (self.hoverBlock) {
             self.hoverBlock(self);
         }
