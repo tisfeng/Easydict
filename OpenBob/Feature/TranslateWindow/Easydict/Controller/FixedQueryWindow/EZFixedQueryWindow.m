@@ -48,7 +48,6 @@ static EZFixedQueryWindow *_instance;
         }];
         
         EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
-        miniVC.window = self;
         self.contentViewController = miniVC;
         
         [[NSNotificationCenter defaultCenter] addObserver:self

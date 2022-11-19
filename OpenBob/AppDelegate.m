@@ -11,10 +11,7 @@
 #import "Shortcut.h"
 #import "MMCrash.h"
 #import "Configuration.h"
-#import "EZFixedQueryWindow.h"
-#import "EZFixedQueryWindowController.h"
-#import "EZSelectTextPopWindow.h"
-#import "EZMainQueryWindow.h"
+#import "EZWindowManager.h"
 
 @implementation AppDelegate
 
@@ -24,19 +21,9 @@
     [EZStatusItem.shared setup];
     [Shortcut setup];
         
-    
-    EZMainQueryWindow *window = [EZMainQueryWindow shared];
-    [window center];
-    [window makeKeyAndOrderFront:nil];
-    
-//    EZFixedQueryWindowController *miniWindowController = [EZFixedQueryWindowController shared];
-//    [miniWindowController.window center];
-//    [miniWindowController.window makeKeyAndOrderFront:nil];
-    
-    
-//    EZSelectTextPopWindow *popWindow = [EZSelectTextPopWindow shared];
-//    [popWindow center];
-//    [popWindow makeKeyAndOrderFront:nil];
+    EZWindowManager *windowManager = [EZWindowManager shared];
+    [windowManager.mainWindow center];
+    [windowManager.mainWindow makeKeyAndOrderFront:nil];
         
 //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }

@@ -6,18 +6,18 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZSelectTextPopWindow.h"
+#import "EZPopButtonWindow.h"
 #import "EZPopButtonViewController.h"
 
-@interface EZSelectTextPopWindow ()
+@interface EZPopButtonWindow ()
 
 @property (nonatomic, strong) EZPopButtonViewController *popViewController;
 
 @end
 
-@implementation EZSelectTextPopWindow
+@implementation EZPopButtonWindow
 
-static EZSelectTextPopWindow *_instance;
+static EZPopButtonWindow *_instance;
 
 + (instancetype)shared {
     if (!_instance) {

@@ -9,58 +9,53 @@
 #import "EZMiniQueryWindow.h"
 #import "EZBaseQueryViewController.h"
 #import "NSColor+MyColors.h"
+#import "EZConst.h"
 
 @implementation EZMiniQueryWindow
 
-static EZMiniQueryWindow *_instance;
 
 + (instancetype)shared {
-    if (!_instance) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _instance = [[self alloc] init];
-        });
-    }
-    return _instance;
-}
-
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-    });
-    return _instance;
+    return [[self alloc] init];
 }
 
 - (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    NSWindowStyleMask style = NSWindowStyleMaskTitled;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        self.movableByWindowBackground = YES;
-        self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
-        self.titlebarAppearsTransparent = YES;
-        self.titleVisibility = NSWindowTitleHidden;
-        
-        [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-        
-        EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
-        miniVC.window = self;
-        self.contentViewController = miniVC;
+        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
+        self.viewController = viewController;
     }
     return self;
 }
+
+//- (instancetype)init {
+//    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+//
+//    CGRect rect = CGRectMake(0, 0, EZMiniQueryWindowWidth, EZMiniQueryWindowWidth);
+//    if (self = [super initWithContentRect:rect styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
+//        self.movableByWindowBackground = YES;
+//        self.level = NSModalPanelWindowLevel; // NSNormalWindowLevel
+//        self.titlebarAppearsTransparent = YES;
+//        self.titleVisibility = NSWindowTitleHidden;
+//
+//        [self excuteLight:^(NSWindow *window) {
+//            window.backgroundColor = NSColor.mainViewBgLightColor;
+//        } drak:^(NSWindow *window) {
+//            window.backgroundColor = NSColor.mainViewBgDarkColor;
+//        }];
+//
+//        EZBaseQueryViewController *miniVC = [[EZBaseQueryViewController alloc] init];
+//        self.contentViewController = miniVC;
+//    }
+//    return self;
+//}
 
 - (BOOL)canBecomeKeyWindow {
     return YES;
 }
 
 - (BOOL)canBecomeMainWindow {
-    return YES;
+    return NO;
 }
-
 
 @end

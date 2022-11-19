@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZBaseQueryWindow.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZFixedQueryWindow : NSWindow
+@interface EZFixedQueryWindow : EZBaseQueryWindow
 
 + (instancetype)shared;
 

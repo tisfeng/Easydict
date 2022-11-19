@@ -93,7 +93,7 @@
 		03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */; };
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
 		03B0233A29231FA6001C7E63 /* Selection.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022E129231FA6001C7E63 /* Selection.m */; };
-		03B3B8B22925D5B200168E8D /* EZSelectTextPopWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */; };
+		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
 		03B3B8B72926B12600168E8D /* applescripts.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 03B3B8B62926B12600168E8D /* applescripts.scpt */; };
 		03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB632923998300C48725 /* black-white-icon@2x.png */; };
@@ -109,6 +109,7 @@
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
+		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
 		03E02A1E2924DE6F00A10260 /* EZFixedQueryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
@@ -305,8 +306,8 @@
 		03B022E229231FA6001C7E63 /* Selection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Selection.h; sourceTree = "<group>"; };
 		03B022E329231FA6001C7E63 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		03B022E429231FA6001C7E63 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		03B3B8B02925D5B200168E8D /* EZSelectTextPopWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectTextPopWindow.h; sourceTree = "<group>"; };
-		03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectTextPopWindow.m; sourceTree = "<group>"; };
+		03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonWindow.h; sourceTree = "<group>"; };
+		03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonWindow.m; sourceTree = "<group>"; };
 		03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonViewController.h; sourceTree = "<group>"; };
 		03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonViewController.m; sourceTree = "<group>"; };
 		03B3B8B62926B12600168E8D /* applescripts.scpt */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = applescripts.scpt; sourceTree = "<group>"; };
@@ -326,6 +327,8 @@
 		03D043512928935300E7559E /* EZMainQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMainQueryWindow.m; sourceTree = "<group>"; };
 		03D043542928940500E7559E /* EZBaseQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBaseQueryWindow.h; sourceTree = "<group>"; };
 		03D043552928940500E7559E /* EZBaseQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryWindow.m; sourceTree = "<group>"; };
+		03D043582928C4C800E7559E /* EZWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowManager.h; sourceTree = "<group>"; };
+		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
 		03E02A1C2924DE6F00A10260 /* EZFixedQueryWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFixedQueryWindowController.h; sourceTree = "<group>"; };
 		03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFixedQueryWindowController.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZStatusItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZStatusItem.h; sourceTree = "<group>"; };
@@ -530,6 +533,7 @@
 		03B0224F29231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				03D043572928C49000E7559E /* WindowManager */,
 				03B0225029231FA6001C7E63 /* Controller */,
 				03B0225529231FA6001C7E63 /* Cell */,
 				03B0225A29231FA6001C7E63 /* View */,
@@ -812,8 +816,8 @@
 		03B3B8AF2925D57400168E8D /* PopButtonWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03B3B8B02925D5B200168E8D /* EZSelectTextPopWindow.h */,
-				03B3B8B12925D5B200168E8D /* EZSelectTextPopWindow.m */,
+				03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */,
+				03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */,
 				03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */,
 				03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */,
 			);
@@ -915,6 +919,15 @@
 				03D043552928940500E7559E /* EZBaseQueryWindow.m */,
 			);
 			path = BaseQueryWindow;
+			sourceTree = "<group>";
+		};
+		03D043572928C49000E7559E /* WindowManager */ = {
+			isa = PBXGroup;
+			children = (
+				03D043582928C4C800E7559E /* EZWindowManager.h */,
+				03D043592928C4C800E7559E /* EZWindowManager.m */,
+			);
+			path = WindowManager;
 			sourceTree = "<group>";
 		};
 		03E02A1F2924E74000A10260 /* EZStatusItem */ = {
@@ -1173,11 +1186,12 @@
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
+				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03B0231129231FA6001C7E63 /* WordResultView.m in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				03B0230E29231FA6001C7E63 /* TranslateWindowController.m in Sources */,
-				03B3B8B22925D5B200168E8D /* EZSelectTextPopWindow.m in Sources */,
+				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03B0230D29231FA6001C7E63 /* TranslateWindow.m in Sources */,
