@@ -61,8 +61,7 @@
 #pragma makr - NSWindowDelegate
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-    
-    NSLog(@"windowDidBecomeKey: %@", self);
+//    NSLog(@"windowDidBecomeKey: %@", self);
 }
 
 #pragma mark - NSNotification

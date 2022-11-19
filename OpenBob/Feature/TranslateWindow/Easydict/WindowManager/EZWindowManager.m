@@ -134,14 +134,7 @@ static EZWindowManager *_instance;
         [_popWindow.popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
-
-//            CGPoint location = [self getMiniWindowLocation];
-//            [self showMiniWindowAtPoint:location];
-//            [self.miniWindow.viewController startQueryText:self.selectedText];
-            
-            CGPoint location = [self getFixedWindowLocation];
-            [self showFixedWindowAtPoint:location];
-            [self.fixedWindow.viewController startQueryText:self.selectedText];
+            [self showFloatingWindow:self.miniWindow queryText:self.selectedText];
         }];
     }
     return _popWindow;
@@ -149,6 +142,16 @@ static EZWindowManager *_instance;
 
 
 #pragma mark -
+
+- (void)showFloatingWindow:(EZBaseQueryWindow *)window queryText:(NSString *)text {
+    CGPoint location = [self getMiniWindowLocation];
+    if ([window isKindOfClass:EZFixedQueryWindow.class]) {
+        location = [self getFixedWindowLocation];
+    }
+    
+    [self showFloatingWindow:window atPoint:location];
+    [window.viewController startQueryText:text];
+}
 
 - (void)showAtMouseLocation {
     NSPoint mouseLocation = [NSEvent mouseLocation];
@@ -209,7 +212,7 @@ static EZWindowManager *_instance;
 }
 
 // Get the right-bottom point of start point and end point.
-- (NSPoint)showLocation {
+- (NSPoint)correctedMouseLocation {
     NSScreen *screen = [self getMouseLocatedScreen];
 #if DEBUG
     NSAssert(screen != nil, @"no screen");
@@ -235,7 +238,7 @@ static EZWindowManager *_instance;
 }
 
 - (CGPoint)getPopButtonWindowLocation {
-    NSPoint location = [self showLocation];
+    NSPoint location = [self correctedMouseLocation];
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
@@ -396,32 +399,16 @@ static EZWindowManager *_instance;
     self.lastFrontmostApplication = nil;
 }
 
-- (void)showMiniWindowAtPoint:(CGPoint)point {
+- (void)showFloatingWindow:(NSWindow *)window atPoint:(CGPoint)point {
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
 
-    [self.miniWindow setFrameTopLeftPoint:point];
-    [self.miniWindow makeKeyAndOrderFront:nil];
+    [window setFrameTopLeftPoint:point];
+    [window makeKeyAndOrderFront:nil];
 
-    [self.mainWindow orderBack:nil];
-}
-
-- (void)showFixedWindowAtPoint:(CGPoint)point {
-    [self saveFrontmostApplication];
-    if (Snip.shared.isSnapshotting) {
-        return;
-    }
-
-    [self.fixedWindow setFrameTopLeftPoint:point];
-    [self.fixedWindow makeKeyAndOrderFront:nil];
-
-    [self.mainWindow orderBack:nil];
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-
-                                                                                  });
+    [_mainWindow orderBack:nil];
 }
 
 @end
