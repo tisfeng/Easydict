@@ -14,22 +14,18 @@
 #import "Configuration.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>
-#import "EZMiniQueryWindow.h"
-
 
 @interface EZWindowManager ()
 
-@property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
-
-@property (nonatomic, strong) EZMiniQueryWindow *miniWindow;
 
 @property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 @property (nonatomic, copy) NSString *selectedText;
+@property (nonatomic, assign) NSWindowLevel mainWindowLevel;
 
 @end
 
@@ -84,6 +80,15 @@ static EZWindowManager *_instance;
     return _fixedWindow;
 }
 
+- (EZMiniQueryWindow *)miniWindow {
+    if (!_miniWindow) {
+        _miniWindow = [[EZMiniQueryWindow alloc] init];
+        _miniWindow.releasedWhenClosed = NO;
+    }
+    return _miniWindow;
+}
+
+
 - (EZPopButtonWindow *)popWindow {
     if (!_popWindow) {
         _popWindow = [EZPopButtonWindow shared];
@@ -92,11 +97,10 @@ static EZWindowManager *_instance;
         [_popWindow.popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
+            
+//            self->_miniWindow = [[EZMiniQueryWindow alloc] init];
+//            self.miniWindow = [[EZMiniQueryWindow alloc] init];
             CGPoint location = [self getMiniWindowLocation];
-
-            self.miniWindow = [[EZMiniQueryWindow alloc] init];
-            self.miniWindow.releasedWhenClosed = YES;
-
             [self showMiniWindowAtPoint:location];
             [self.miniWindow.viewController startQueryText:self.selectedText];
         }];
@@ -108,7 +112,6 @@ static EZWindowManager *_instance;
 #pragma mark -
 
 - (void)showAtMouseLocation {
-    self.hadShow = YES;
     NSPoint mouseLocation = [NSEvent mouseLocation];
     // 找到鼠标所在屏幕
     NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
@@ -177,8 +180,6 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
 
-    self.hadShow = YES;
-
     NSPoint startLocation = self.startPoint;
     NSPoint endLocation = self.endPoint;
     NSPoint correctedLocation = endLocation;
@@ -230,9 +231,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)ensureShowAtMouseLocation {
-    if (!self.hadShow) {
-        [self showAtMouseLocation];
-    }
+    [self showAtMouseLocation];
 }
 
 - (void)saveFrontmostApplication {
@@ -370,13 +369,23 @@ static EZWindowManager *_instance;
         mm_strongify(self);
         [self.popWindow close];
     }];
+    
+    [self.eventMonitor setDismissMiniWindowBlock:^{
+        mm_strongify(self);
+        if (self.hadShowMiniWindow) {
+            [self.miniWindow close];
+            self.hadShowMiniWindow = NO;
+            self.mainWindow.level = self.mainWindowLevel;
+//            self.miniWindow = nil;
+        }
+    }];
 }
 
 - (void)showPopButtonWindow:(CGPoint)point {
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
     
 //    [_mainWindow resignKeyWindow];
-//    [_fixedWindow orderBack:nil];
+    [_mainWindow orderBack:nil];
     
 //    [self.window resignMainWindow];
 //    [self.window resignKeyWindow];
@@ -386,8 +395,8 @@ static EZWindowManager *_instance;
     [self.popWindow orderFront:nil];
     [self.popWindow setFrameTopLeftPoint:point];
     
-    [_mainWindow orderBack:nil];
-    _mainWindow.level = kCGBaseWindowLevel;
+    self.mainWindowLevel = self.mainWindow.level;
+    self.mainWindow.level = kCGBaseWindowLevel;
 }
 
 - (void)showMiniWindowAtPoint:(CGPoint)point {
@@ -403,6 +412,10 @@ static EZWindowManager *_instance;
     }
 
     [self.miniWindow setFrameTopLeftPoint:point];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.hadShowMiniWindow = YES;
+    });
 }
 
 @end

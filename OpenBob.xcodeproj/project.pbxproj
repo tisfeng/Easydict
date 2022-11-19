@@ -502,30 +502,6 @@
 			isa = PBXGroup;
 			children = (
 				03B0224F29231FA6001C7E63 /* Easydict */,
-				03B0227229231FA6001C7E63 /* TranslateWindowController.h */,
-				03B0228029231FA6001C7E63 /* TranslateWindowController.m */,
-				03B0227029231FA6001C7E63 /* TranslateViewController.h */,
-				03B0227B29231FA6001C7E63 /* TranslateViewController.m */,
-				03B0227329231FA6001C7E63 /* TranslateWindow.h */,
-				03B0227F29231FA6001C7E63 /* TranslateWindow.m */,
-				03B0227C29231FA6001C7E63 /* FlippedView.h */,
-				03B0224E29231FA6001C7E63 /* FlippedView.m */,
-				03B0227D29231FA6001C7E63 /* ScrollTestVC.h */,
-				03B0224D29231FA6001C7E63 /* ScrollTestVC.m */,
-				03B0227E29231FA6001C7E63 /* ImageButton.h */,
-				03B0227429231FA6001C7E63 /* ImageButton.m */,
-				03B0228229231FA6001C7E63 /* NormalResultView.h */,
-				03B0227529231FA6001C7E63 /* NormalResultView.m */,
-				03B0227729231FA6001C7E63 /* PopUpButton.h */,
-				03B0228129231FA6001C7E63 /* PopUpButton.m */,
-				03B0228529231FA6001C7E63 /* TextView.h */,
-				03B0227829231FA6001C7E63 /* TextView.m */,
-				03B0227629231FA6001C7E63 /* ResultView.h */,
-				03B0228329231FA6001C7E63 /* ResultView.m */,
-				03B0227929231FA6001C7E63 /* WordResultView.h */,
-				03B0228429231FA6001C7E63 /* WordResultView.m */,
-				03B0227129231FA6001C7E63 /* QueryView.h */,
-				03B0227A29231FA6001C7E63 /* QueryView.m */,
 			);
 			path = TranslateWindow;
 			sourceTree = "<group>";
@@ -533,15 +509,16 @@
 		03B0224F29231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				03D0435B2928E29300E7559E /* Old */,
 				03D043572928C49000E7559E /* WindowManager */,
-				03B0225029231FA6001C7E63 /* Controller */,
+				03B0225029231FA6001C7E63 /* Window */,
 				03B0225529231FA6001C7E63 /* Cell */,
 				03B0225A29231FA6001C7E63 /* View */,
 			);
 			path = Easydict;
 			sourceTree = "<group>";
 		};
-		03B0225029231FA6001C7E63 /* Controller */ = {
+		03B0225029231FA6001C7E63 /* Window */ = {
 			isa = PBXGroup;
 			children = (
 				03D04353292893A700E7559E /* BaseQueryWindow */,
@@ -550,7 +527,7 @@
 				03D0434A292884B900E7559E /* MiniQueryWindow */,
 				03B3B8AF2925D57400168E8D /* PopButtonWindow */,
 			);
-			path = Controller;
+			path = Window;
 			sourceTree = "<group>";
 		};
 		03B0225529231FA6001C7E63 /* Cell */ = {
@@ -928,6 +905,37 @@
 				03D043592928C4C800E7559E /* EZWindowManager.m */,
 			);
 			path = WindowManager;
+			sourceTree = "<group>";
+		};
+		03D0435B2928E29300E7559E /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				03B0227229231FA6001C7E63 /* TranslateWindowController.h */,
+				03B0228029231FA6001C7E63 /* TranslateWindowController.m */,
+				03B0227029231FA6001C7E63 /* TranslateViewController.h */,
+				03B0227B29231FA6001C7E63 /* TranslateViewController.m */,
+				03B0227329231FA6001C7E63 /* TranslateWindow.h */,
+				03B0227F29231FA6001C7E63 /* TranslateWindow.m */,
+				03B0227C29231FA6001C7E63 /* FlippedView.h */,
+				03B0224E29231FA6001C7E63 /* FlippedView.m */,
+				03B0227D29231FA6001C7E63 /* ScrollTestVC.h */,
+				03B0224D29231FA6001C7E63 /* ScrollTestVC.m */,
+				03B0227E29231FA6001C7E63 /* ImageButton.h */,
+				03B0227429231FA6001C7E63 /* ImageButton.m */,
+				03B0228229231FA6001C7E63 /* NormalResultView.h */,
+				03B0227529231FA6001C7E63 /* NormalResultView.m */,
+				03B0227729231FA6001C7E63 /* PopUpButton.h */,
+				03B0228129231FA6001C7E63 /* PopUpButton.m */,
+				03B0228529231FA6001C7E63 /* TextView.h */,
+				03B0227829231FA6001C7E63 /* TextView.m */,
+				03B0227629231FA6001C7E63 /* ResultView.h */,
+				03B0228329231FA6001C7E63 /* ResultView.m */,
+				03B0227929231FA6001C7E63 /* WordResultView.h */,
+				03B0228429231FA6001C7E63 /* WordResultView.m */,
+				03B0227129231FA6001C7E63 /* QueryView.h */,
+				03B0227A29231FA6001C7E63 /* QueryView.m */,
+			);
+			path = Old;
 			sourceTree = "<group>";
 		};
 		03E02A1F2924E74000A10260 /* EZStatusItem */ = {

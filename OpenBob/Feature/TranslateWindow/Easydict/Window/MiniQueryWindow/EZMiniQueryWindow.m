@@ -14,10 +14,6 @@
 @implementation EZMiniQueryWindow
 
 
-+ (instancetype)shared {
-    return [[self alloc] init];
-}
-
 - (instancetype)init {
     NSWindowStyleMask style = NSWindowStyleMaskTitled;
     
@@ -56,6 +52,10 @@
 
 - (BOOL)canBecomeMainWindow {
     return NO;
+}
+
+- (void)dealloc {
+    NSLog(@"mini window dealloc: %@", self);
 }
 
 @end
