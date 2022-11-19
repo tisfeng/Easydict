@@ -9,7 +9,7 @@
 #import "EZEventMonitor.h"
 #include <Carbon/Carbon.h>
 
-static CGFloat kDismissPopButtonDelayTime = 1.0;
+static CGFloat kDismissPopButtonDelayTime = 10.0;
 static NSInteger kRecordEventCount = 3;
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {

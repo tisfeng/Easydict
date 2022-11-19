@@ -54,10 +54,10 @@ static EZSelectTextPopWindow *_instance;
     return self;
 }
 
-- (void)setHoverBlock:(void (^)(void))hoverBlock {
-    _hoverBlock = hoverBlock;
+- (void)setPopViewController:(EZPopButtonViewController *)popViewController {
+    _popViewController = popViewController;
     
-    self.popViewController.hoverBlock = hoverBlock;
+    _popButton = popViewController.popButton;
 }
 
 - (BOOL)canBecomeKeyWindow {

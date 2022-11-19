@@ -7,12 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZSelectTextPopWindow : NSWindow
 
-@property (nonatomic, copy) void (^hoverBlock)(void);
+@property (nonatomic, strong) EZButton *popButton;
 
 + (instancetype)shared;
 
