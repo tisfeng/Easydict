@@ -224,8 +224,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
-    
-    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent * _Nullable(NSEvent * _Nonnull event) {
+
+    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == 53) { // escape
             NSLog(@"escape");
         }
@@ -241,7 +241,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
         switch (event.type) {
             case NSEventTypeLeftMouseUp: {
-//                NSLog(@"mouse up");
+                //                NSLog(@"mouse up");
                 if ([self checkIfLeftMouseDragged]) {
                     NSLog(@"Dragged selected");
                     [self getSelectedText];
@@ -249,7 +249,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 break;
             }
             case NSEventTypeLeftMouseDown: {
-//                NSLog(@"mouse down");
+                //                NSLog(@"mouse down");
                 self.startPoint = NSEvent.mouseLocation;
 
                 // check if it is a double click
@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 break;
             }
             case NSEventTypeKeyDown: { // seems not work...
-//                NSLog(@"key down");
+                                       //                NSLog(@"key down");
                 [self dismissPopButton];
                 break;
             }
@@ -326,17 +326,16 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
 - (void)getSelectedText {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
-        
         if (![self isValidSelectedFrame]) {
             NSLog(@"Invalid selected frame");
             return;
         }
-                
+
         if (text.length > 0) {
             [self handleSelectedText:text];
             return;
         }
-        
+
         // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
         if (error == kAXErrorNoValue) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
@@ -475,7 +474,7 @@ end tell";
 }
 
 
-/// Check selected text frame is valid
+/// Check selected text frame is valid.
 /**
  If selected text frame size is zero, return YES
  If selected text frame size is not zero, and start point and end point is in selected text frame, return YES, else return NO
@@ -487,7 +486,11 @@ end tell";
         return YES;
     }
 
-    if (CGRectContainsPoint(selectedTextFrame, self.startPoint) && CGRectContainsPoint(selectedTextFrame, self.endPoint)) {
+    // sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame
+    CGFloat expand = 5;
+    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expand, selectedTextFrame.origin.y, selectedTextFrame.size.width + expand * 2, selectedTextFrame.size.height);
+
+    if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) && CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
         return YES;
     }
 
