@@ -8,14 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZBaseQueryWindow.h"
-#import "EZBaseQueryViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+/// Mini window alway show at the mouse location, it won't keep previous query result and can't be resized window size.
 @interface EZMiniQueryWindow : EZBaseQueryWindow
-
-//@property (nonatomic, strong) EZBaseQueryViewController *viewController;
-
 
 @end
 

@@ -7,9 +7,6 @@
 //
 
 #import "EZMainQueryWindow.h"
-#import "EZBaseQueryViewController.h"
-#import "NSColor+MyColors.h"
-#import "EZConst.h"
 
 @implementation EZMainQueryWindow
 
@@ -57,6 +54,5 @@ static EZMainQueryWindow *_instance;
         self.viewController.resizeWindowBlock();
     }
 }
-
 
 @end
