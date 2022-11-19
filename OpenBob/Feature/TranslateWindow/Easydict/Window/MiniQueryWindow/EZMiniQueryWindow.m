@@ -14,6 +14,7 @@
     if (self = [super initWithContentRect:CGRectZero styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
         self.viewController = viewController;
+        self.level = NSModalPanelWindowLevel; // NSModalPanelWindowLevel;
     }
     return self;
 }
