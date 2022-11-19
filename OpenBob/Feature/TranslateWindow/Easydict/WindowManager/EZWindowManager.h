@@ -10,15 +10,18 @@
 #import "EZPopButtonWindow.h"
 #import "EZFixedQueryWindow.h"
 #import "EZMainQueryWindow.h"
+#import "EZMiniQueryWindow.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZWindowManager : NSObject
 
 @property (nonatomic, strong) EZMainQueryWindow *mainWindow;
-@property (nonatomic, strong) EZFixedQueryWindow *fixedWindow;
+@property (nonatomic, strong, nullable) EZFixedQueryWindow *fixedWindow;
 @property (nonatomic, strong) EZPopButtonWindow *popWindow;
+@property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
+@property (nonatomic, assign) BOOL hadShowMiniWindow;
 
 + (instancetype)shared;
 

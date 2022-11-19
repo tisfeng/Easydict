@@ -8,6 +8,7 @@
 
 #import "EZEventMonitor.h"
 #include <Carbon/Carbon.h>
+#import "EZWindowManager.h"
 
 static CGFloat kDismissPopButtonDelayTime = 10.0;
 static NSInteger kRecordEventCount = 3;
@@ -250,6 +251,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             case NSEventTypeLeftMouseDown: {
                 //                NSLog(@"mouse down");
                 self.startPoint = NSEvent.mouseLocation;
+                
+                if (![self checkIfPointInMiniWindow:self.startPoint]) {
+                    if (self.dismissMiniWindowBlock) {
+                        self.dismissMiniWindowBlock();
+                    }
+                }
 
                 // check if it is a double click
                 if (event.clickCount == 2) {
@@ -282,6 +289,19 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
         [self updateRecoredEvents:event];
     }];
+}
+
+// Check if point in self.miniWindow
+- (BOOL)checkIfPointInMiniWindow:(NSPoint)point {
+    if (!EZWindowManager.shared.hadShowMiniWindow) {
+        return YES;
+    }
+    
+    NSRect miniWindowFrame = EZWindowManager.shared.miniWindow.frame;
+    if (CGRectContainsPoint(miniWindowFrame, point)) {
+        return YES;
+    }
+    return NO;
 }
 
 // If recoredEevents count > kRecoredEeventCount, remove the first one

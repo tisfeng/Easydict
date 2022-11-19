@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZMiniQueryWindow : EZBaseQueryWindow
 
-+ (instancetype)shared;
-
 //@property (nonatomic, strong) EZBaseQueryViewController *viewController;
 
 
