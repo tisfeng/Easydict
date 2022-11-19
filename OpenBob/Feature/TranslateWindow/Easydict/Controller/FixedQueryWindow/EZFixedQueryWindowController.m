@@ -1,14 +1,14 @@
 //
-//  EZMiniWindowController.m
+//  EZFixedWindowController.m
 //  Open Bob
 //
 //  Created by tisfeng on 2022/11/16.
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZMiniWindowController.h"
-#import "EZMiniViewController.h"
-#import "EZMainWindow.h"
+#import "EZFixedQueryWindowController.h"
+#import "EZQueryViewController.h"
+#import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "Configuration.h"
@@ -16,9 +16,9 @@
 #import <Carbon/Carbon.h>
 #import "EZSelectTextPopWindow.h"
 
-@interface EZMiniWindowController ()
+@interface EZFixedQueryWindowController ()
 
-@property (nonatomic, weak) EZMiniViewController *viewController;
+@property (nonatomic, weak) EZQueryViewController *viewController;
 @property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
@@ -26,16 +26,16 @@
 
 @property (nonatomic, strong) EZSelectTextPopWindow *popWindow;
 @property (nonatomic, assign) CGPoint offsetPoint;
-@property (nonatomic, copy) NSString *selectedText;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
+@property (nonatomic, copy) NSString *selectedText;
 
 @end
 
 
-@implementation EZMiniWindowController
+@implementation EZFixedQueryWindowController
 
-static EZMiniWindowController *_instance;
+static EZFixedQueryWindowController *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -64,8 +64,8 @@ static EZMiniWindowController *_instance;
 }
 
 - (void)setup {
-    EZMainWindow *window = [EZMainWindow shared];
-    EZMiniViewController *viewController = [EZMiniViewController new];
+    EZFixedQueryWindow *window = [EZFixedQueryWindow shared];
+    EZQueryViewController *viewController = [EZQueryViewController new];
     viewController.window = window;
     window.contentViewController = viewController;
     self.window = window;
@@ -307,7 +307,7 @@ static EZMiniWindowController *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    if ([[NSApplication sharedApplication] keyWindow] == EZMiniWindowController.shared.window) {
+    if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindowController.shared.window) {
         // 执行重试
         //        [self.viewController retry];
     }

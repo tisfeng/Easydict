@@ -11,8 +11,8 @@
 #import "Shortcut.h"
 #import "MMCrash.h"
 #import "Configuration.h"
-#import "EZMainWindow.h"
-#import "EZMiniWindowController.h"
+#import "EZFixedQueryWindow.h"
+#import "EZFixedQueryWindowController.h"
 #import "EZSelectTextPopWindow.h"
 
 @implementation AppDelegate
@@ -23,7 +23,7 @@
     [EZStatusItem.shared setup];
     [Shortcut setup];
         
-    EZMiniWindowController *miniWindowController = [EZMiniWindowController shared];
+    EZFixedQueryWindowController *miniWindowController = [EZFixedQueryWindowController shared];
     [miniWindowController.window center];
     [miniWindowController.window makeKeyAndOrderFront:nil];
     

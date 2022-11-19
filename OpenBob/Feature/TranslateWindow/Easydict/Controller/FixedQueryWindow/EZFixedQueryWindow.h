@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZMainWindow : NSWindow
+@interface EZFixedQueryWindow : NSWindow
 
 + (instancetype)shared;
 
