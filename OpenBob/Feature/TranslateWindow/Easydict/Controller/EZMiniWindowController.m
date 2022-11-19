@@ -69,7 +69,7 @@ static EZMiniWindowController *_instance;
     self.window = window;
     self.viewController = viewController;
 
-    self.offsetPoint = CGPointMake(12, -10);
+    self.offsetPoint = CGPointMake(12, -15);
 
     self.popWindow = [EZSelectTextPopWindow shared];
 
@@ -183,7 +183,7 @@ static EZMiniWindowController *_instance;
         return CGPointZero;
     }
 
-    NSPoint popLocation = CGPointMake(location.x + 2 * self.offsetPoint.x, location.y - 2 * self.offsetPoint.y);
+    NSPoint popLocation = CGPointMake(location.x + self.popWindow.width + self.offsetPoint.x, location.y - 2 * self.offsetPoint.y);
 
     return popLocation;
 }
@@ -290,6 +290,8 @@ static EZMiniWindowController *_instance;
         [NSApp activateIgnoringOtherApps:YES];
     }
 }
+
+#pragma mark - Others
 
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {
