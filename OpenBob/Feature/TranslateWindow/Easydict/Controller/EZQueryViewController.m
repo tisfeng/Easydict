@@ -6,7 +6,7 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZMiniViewController.h"
+#import "EZQueryViewController.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 #import "GoogleTranslate.h"
@@ -25,7 +25,7 @@ static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
-@interface EZMiniViewController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface EZQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -43,7 +43,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 @end
 
-@implementation EZMiniViewController
+@implementation EZQueryViewController
 
 static const CGFloat kMiniMainViewWidth = 300;
 static const CGFloat kMiniMainViewHeight = 300;

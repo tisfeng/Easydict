@@ -7,7 +7,7 @@
 //
 
 #import "EZPopButtonViewController.h"
-#import "EZMiniWindowController.h"
+//#import "EZFixedWindowController.h"
 
 static CGFloat kPopButtonWidth = 25;
 

@@ -13,7 +13,7 @@
 #import "EZLabel.h"
 #import "TextView.h"
 #import "NSTextView+Height.h"
-#import "EZMainWindow.h"
+#import "EZFixedQueryWindow.h"
 #import "EZConst.h"
 
 static const CGFloat kHorizontalMargin = 10;
@@ -189,7 +189,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         resultLabel.mas_key = @"meanTextField_parts";
 
         [resultLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            CGFloat width = EZMainWindow.shared.width - leading;
+            CGFloat width = EZFixedQueryWindow.shared.width - leading;
             resultLabel.width = width;
             CGFloat height = [resultLabel getHeight];
             make.height.equalTo(@(height));
@@ -262,7 +262,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         
-        CGFloat width = EZMainWindow.shared.width - leftMargin - kHorizontalMargin - 2 * EZMiniHorizontalMargin_12;
+        CGFloat width = EZFixedQueryWindow.shared.width - leftMargin - kHorizontalMargin - 2 * EZMiniHorizontalMargin_12;
 //        NSLog(@"text: %@, width: %@", text, @(width));
 
         // ⚠️ 很奇特，比如实际计算结果为 364，但界面渲染却是 364.5。这样显示会有点问题，所以暂时宽度+1

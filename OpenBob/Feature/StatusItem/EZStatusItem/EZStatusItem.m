@@ -8,7 +8,7 @@
 
 #import "EZStatusItem.h"
 #import "PreferencesWindowController.h"
-#import "EZMiniWindowController.h"
+#import "EZFixedQueryWindowController.h"
 #import "Snip.h"
 #import "Shortcut.h"
 #import "Configuration.h"
@@ -76,22 +76,22 @@ static EZStatusItem *_instance;
 #pragma mark -
 - (IBAction)translateAction:(NSMenuItem *)sender {
     NSLog(@"划词翻译");
-    [EZMiniWindowController.shared selectionTranslate];
+    [EZFixedQueryWindowController.shared selectionTranslate];
 }
 
 - (IBAction)snipAction:(NSMenuItem *)sender {
     NSLog(@"截图翻译");
-    [EZMiniWindowController.shared snipTranslate];
+    [EZFixedQueryWindowController.shared snipTranslate];
 }
 
 - (IBAction)inputTranslate:(NSMenuItem *)sender {
     NSLog(@"输入翻译");
-    [EZMiniWindowController.shared inputTranslate];
+    [EZFixedQueryWindowController.shared inputTranslate];
 }
 
 - (IBAction)showTranslateWindow:(NSMenuItem *)sender {
     NSLog(@"显示翻译窗口");
-    [EZMiniWindowController.shared showMiniWindow];
+    [EZFixedQueryWindowController.shared showMiniWindow];
 }
 
 
@@ -121,7 +121,7 @@ static EZStatusItem *_instance;
         [Snip.shared stop];
     }
     if (!Configuration.shared.isPin) {
-        [EZMiniWindowController.shared close];
+        [EZFixedQueryWindowController.shared close];
     }
     [PreferencesWindowController.shared show];
 }
@@ -156,7 +156,7 @@ static EZStatusItem *_instance;
 
 - (IBAction)translateRetryAction:(NSMenuItem *)sender {
     NSLog(@"翻译重试");
-    [EZMiniWindowController.shared rerty];
+    [EZFixedQueryWindowController.shared rerty];
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
@@ -165,7 +165,7 @@ static EZStatusItem *_instance;
         [Snip.shared stop];
     } else {
         [[[NSApplication sharedApplication] keyWindow] close];
-        [EZMiniWindowController.shared activeLastFrontmostApplication];
+        [EZFixedQueryWindowController.shared activeLastFrontmostApplication];
     }
 }
 

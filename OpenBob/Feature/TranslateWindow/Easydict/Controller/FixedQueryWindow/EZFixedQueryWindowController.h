@@ -1,5 +1,5 @@
 //
-//  EZMiniWindowController.h
+//  EZFixedWindowController.h
 //  Open Bob
 //
 //  Created by tisfeng on 2022/11/16.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZMiniWindowController : NSWindowController
+@interface EZFixedQueryWindowController : NSWindowController
 
 + (instancetype)shared;
 

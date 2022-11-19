@@ -6,13 +6,13 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZMainWindow.h"
-#import "EZMiniViewController.h"
+#import "EZFixedQueryWindow.h"
+#import "EZQueryViewController.h"
 #import "NSColor+MyColors.h"
 
-@implementation EZMainWindow
+@implementation EZFixedQueryWindow
 
-static EZMainWindow *_instance;
+static EZFixedQueryWindow *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -47,7 +47,7 @@ static EZMainWindow *_instance;
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        EZMiniViewController *miniVC = [[EZMiniViewController alloc] init];
+        EZQueryViewController *miniVC = [[EZQueryViewController alloc] init];
         miniVC.window = self;
         self.contentViewController = miniVC;
         
@@ -72,7 +72,7 @@ static EZMainWindow *_instance;
 - (void)windowDidResize:(NSNotification *)aNotification {
 //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
     
-    EZMiniViewController *mainVC = (EZMiniViewController *)self.contentViewController;
+    EZQueryViewController *mainVC = (EZQueryViewController *)self.contentViewController;
     if (mainVC.resizeWindowBlock) {
         mainVC.resizeWindowBlock();
     }
