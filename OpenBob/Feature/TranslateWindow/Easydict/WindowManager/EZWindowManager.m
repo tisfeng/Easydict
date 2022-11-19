@@ -25,7 +25,6 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 @property (nonatomic, copy) NSString *selectedText;
-@property (nonatomic, assign) NSWindowLevel mainWindowLevel;
 
 @end
 
@@ -88,7 +87,6 @@ static EZWindowManager *_instance;
     return _miniWindow;
 }
 
-
 - (EZPopButtonWindow *)popWindow {
     if (!_popWindow) {
         _popWindow = [EZPopButtonWindow shared];
@@ -98,8 +96,6 @@ static EZWindowManager *_instance;
             mm_strongify(self);
             [self.popWindow close];
             
-//            self->_miniWindow = [[EZMiniQueryWindow alloc] init];
-//            self.miniWindow = [[EZMiniQueryWindow alloc] init];
             CGPoint location = [self getMiniWindowLocation];
             [self showMiniWindowAtPoint:location];
             [self.miniWindow.viewController startQueryText:self.selectedText];
@@ -362,7 +358,10 @@ static EZWindowManager *_instance;
         self.endPoint = self.eventMonitor.endPoint;
 
         CGPoint point = [self getPopButtonWindowLocation];
-        [self showPopButtonWindow:point];
+        [self.popWindow setFrameTopLeftPoint:point];
+        [self.popWindow orderFrontRegardless];
+        
+        [self.mainWindow orderBack:nil];
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -375,28 +374,8 @@ static EZWindowManager *_instance;
         if (self.hadShowMiniWindow) {
             [self.miniWindow close];
             self.hadShowMiniWindow = NO;
-            self.mainWindow.level = self.mainWindowLevel;
-//            self.miniWindow = nil;
         }
     }];
-}
-
-- (void)showPopButtonWindow:(CGPoint)point {
-    // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-    
-//    [_mainWindow resignKeyWindow];
-    [_mainWindow orderBack:nil];
-    
-//    [self.window resignMainWindow];
-//    [self.window resignKeyWindow];
-
-    // make window level max
-    self.popWindow.level = kCGMaximumWindowLevel;
-    [self.popWindow orderFront:nil];
-    [self.popWindow setFrameTopLeftPoint:point];
-    
-    self.mainWindowLevel = self.mainWindow.level;
-    self.mainWindow.level = kCGBaseWindowLevel;
 }
 
 - (void)showMiniWindowAtPoint:(CGPoint)point {
@@ -405,15 +384,13 @@ static EZWindowManager *_instance;
         return;
     }
 
-    [self.miniWindow makeKeyAndOrderFront:nil];
-    if (!self.miniWindow.isKeyWindow) {
-        // fail to make key window, then force activate application for key window
-        [NSApp activateIgnoringOtherApps:YES];
-    }
-
     [self.miniWindow setFrameTopLeftPoint:point];
+    [self.miniWindow makeKeyAndOrderFront:nil];
+        
+    [self.mainWindow orderBack:nil];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    // ⚠️ Cannot set YES right now, otherwise will cause dismissMiniBlocak.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.hadShowMiniWindow = YES;
     });
 }
