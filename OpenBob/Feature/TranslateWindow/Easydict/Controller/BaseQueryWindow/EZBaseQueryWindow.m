@@ -25,15 +25,10 @@
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-//        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-//        viewController.window = self;
-//        self.viewController = viewController;
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
                                                      name:NSWindowDidResizeNotification
                                                    object:self];
-    
     }
     return self;
 }

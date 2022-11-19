@@ -1,12 +1,12 @@
 //
-//  EZFixedWindowController.m
+//  EZWindowManager.m
 //  Open Bob
 //
-//  Created by tisfeng on 2022/11/16.
+//  Created by tisfeng on 2022/11/19.
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZFixedQueryWindowController.h"
+#import "EZWindowManager.h"
 #import "EZBaseQueryViewController.h"
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
@@ -14,17 +14,18 @@
 #import "Configuration.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>
-#import "EZPopButtonWindow.h"
+#import "EZMiniQueryWindow.h"
 
-@interface EZFixedQueryWindowController ()
 
-@property (nonatomic, weak) EZBaseQueryViewController *viewController;
+@interface EZWindowManager ()
+
 @property (nonatomic, assign) BOOL hadShow;
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
 
-@property (nonatomic, strong) EZPopButtonWindow *popWindow;
+@property (nonatomic, strong) EZMiniQueryWindow *miniWindow;
+
 @property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
@@ -33,9 +34,9 @@
 @end
 
 
-@implementation EZFixedQueryWindowController
+@implementation EZWindowManager
 
-static EZFixedQueryWindowController *_instance;
+static EZWindowManager *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -64,27 +65,45 @@ static EZFixedQueryWindowController *_instance;
 }
 
 - (void)setup {
-    EZFixedQueryWindow *window = [EZFixedQueryWindow shared];
-    EZBaseQueryViewController *viewController = [EZBaseQueryViewController new];
-    window.contentViewController = viewController;
-    self.window = window;
-    self.viewController = viewController;
-
     self.offsetPoint = CGPointMake(15, -15);
-
-    self.popWindow = [EZPopButtonWindow shared];
-    mm_weakify(self);
-    [self.popWindow.popButton setClickBlock:^(EZButton *button) {
-        mm_strongify(self);
-        [self.popWindow close];
-        CGPoint location = [self getMiniWindowLocation];
-        [self showMiniWindowAtPoint:location];
-        [self.viewController startQueryText:self.selectedText];
-    }];
-
-    self.eventMonitor = [EZEventMonitor new];
+    self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
 }
+
+- (EZMainQueryWindow *)mainWindow {
+    if (!_mainWindow) {
+        _mainWindow = [EZMainQueryWindow shared];
+    }
+    return _mainWindow;
+}
+
+- (EZFixedQueryWindow *)fixedWindow {
+    if (!_fixedWindow) {
+        _fixedWindow = [EZFixedQueryWindow shared];
+    }
+    return _fixedWindow;
+}
+
+- (EZPopButtonWindow *)popWindow {
+    if (!_popWindow) {
+        _popWindow = [EZPopButtonWindow shared];
+        
+        mm_weakify(self);
+        [_popWindow.popButton setClickBlock:^(EZButton *button) {
+            mm_strongify(self);
+            [self.popWindow close];
+            CGPoint location = [self getMiniWindowLocation];
+
+            self.miniWindow = [[EZMiniQueryWindow alloc] init];
+            self.miniWindow.releasedWhenClosed = YES;
+
+            [self showMiniWindowAtPoint:location];
+            [self.miniWindow.viewController startQueryText:self.selectedText];
+        }];
+    }
+    return _popWindow;
+}
+
 
 #pragma mark -
 
@@ -105,7 +124,7 @@ static EZFixedQueryWindowController *_instance;
 
     // 修正显示位置，用于保证window显示在鼠标所在的screen
     // 如果直接使用mouseLocation，可能会显示到其他screen（应该是由当前window在哪个屏幕的区域更多决定的）
-    NSRect windowFrame = self.window.frame;
+    NSRect windowFrame = self.fixedWindow.frame;
     NSRect visibleFrame = screen.visibleFrame;
 
     if (mouseLocation.x < visibleFrame.origin.x + 10) {
@@ -122,12 +141,12 @@ static EZFixedQueryWindowController *_instance;
     }
 
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-    [self.window makeKeyAndOrderFront:nil];
-    if (!self.window.isKeyWindow) {
+    [self.fixedWindow makeKeyAndOrderFront:nil];
+    if (!self.fixedWindow.isKeyWindow) {
         // fail to make key window, then force activate application for key window
         [NSApp activateIgnoringOtherApps:YES];
     }
-    [self.window setFrameTopLeftPoint:mouseLocation];
+    [self.fixedWindow setFrameTopLeftPoint:mouseLocation];
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -148,7 +167,7 @@ static EZFixedQueryWindowController *_instance;
 }
 
 // Get the right-bottom point of start point and end point.
-- (NSPoint)getMouseLocation {
+- (NSPoint)showLocation {
     NSScreen *screen = [self getMouseLocatedScreen];
 #if DEBUG
     NSAssert(screen != nil, @"no screen");
@@ -176,7 +195,7 @@ static EZFixedQueryWindowController *_instance;
 }
 
 - (CGPoint)getPopButtonWindowLocation {
-    NSPoint location = [self getMouseLocation];
+    NSPoint location = [self showLocation];
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
@@ -187,21 +206,31 @@ static EZFixedQueryWindowController *_instance;
 }
 
 - (CGPoint)getMiniWindowLocation {
-    NSPoint location = [self getPopButtonWindowLocation];
-    if (CGPointEqualToPoint(location, CGPointZero)) {
+    NSPoint popButtonLocation = [self getPopButtonWindowLocation];
+    if (CGPointEqualToPoint(popButtonLocation, CGPointZero)) {
         return CGPointZero;
     }
 
-    NSPoint popLocation = CGPointMake(location.x + self.popWindow.width + self.offsetPoint.x, location.y - 2 * self.offsetPoint.y);
+    CGFloat x = popButtonLocation.x + self.popWindow.width + self.offsetPoint.x;
+    CGFloat y = popButtonLocation.y - 2 * self.offsetPoint.y;
 
-    return popLocation;
+    // left-bottom coordinate system
+    // if x + miniWindow.width > screen.width, then x = screen.width - miniWindow.width
+    NSScreen *screen = NSScreen.mainScreen;
+    if (x + self.miniWindow.width > screen.frame.size.width) {
+        x = screen.frame.size.width - self.miniWindow.width;
+    }
+
+    // if y - miniWindow.height < 0, then y = miniWindow.height
+    if (y - self.miniWindow.height < 0) {
+        y = self.miniWindow.height;
+    }
+
+    return CGPointMake(x, y);
 }
 
 - (void)ensureShowAtMouseLocation {
     if (!self.hadShow) {
-        [self showAtMouseLocation];
-    }
-    if (!self.window.visible || !Configuration.shared.isPin) {
         [self showAtMouseLocation];
     }
 }
@@ -248,8 +277,8 @@ static EZFixedQueryWindowController *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    if (!Configuration.shared.isPin && self.window.visible) {
-        [self close];
+    if (!Configuration.shared.isPin && self.fixedWindow.visible) {
+        [self.fixedWindow close];
         [CATransaction flush];
     }
     //    [self.viewController resetWithState:@"正在截图..."];
@@ -266,7 +295,7 @@ static EZFixedQueryWindowController *_instance;
             [image mm_writeToFileAsPNG:_imagePath];
             NSLog(@"已保存图片\n%@", _imagePath);
             [self ensureShowAtMouseLocation];
-            [self.viewController startQueryImage:image];
+            [self.fixedWindow.viewController startQueryImage:image];
         }
     }];
 }
@@ -280,8 +309,8 @@ static EZFixedQueryWindowController *_instance;
     //    [self.viewController updateFoldState:NO];
     //    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
     [self ensureShowAtMouseLocation];
-    [self.window makeKeyAndOrderFront:nil];
-    if (!self.window.isKeyWindow) {
+    [self.fixedWindow makeKeyAndOrderFront:nil];
+    if (!self.fixedWindow.isKeyWindow) {
         // fail to make key window, then force activate application for key window
         [NSApp activateIgnoringOtherApps:YES];
     }
@@ -293,8 +322,8 @@ static EZFixedQueryWindowController *_instance;
         return;
     }
 
-    [self.window makeKeyAndOrderFront:nil];
-    if (!self.window.isKeyWindow) {
+    [self.fixedWindow makeKeyAndOrderFront:nil];
+    if (!self.fixedWindow.isKeyWindow) {
         // fail to make key window, then force activate application for key window
         [NSApp activateIgnoringOtherApps:YES];
     }
@@ -306,7 +335,7 @@ static EZFixedQueryWindowController *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindowController.shared.window) {
+    if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindow.shared) {
         // 执行重试
         //        [self.viewController retry];
     }
@@ -328,7 +357,7 @@ static EZFixedQueryWindowController *_instance;
 
         mm_strongify(self);
         self.selectedText = selectedText;
-        
+
         // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
         self.endPoint = self.eventMonitor.endPoint;
@@ -345,14 +374,20 @@ static EZFixedQueryWindowController *_instance;
 
 - (void)showPopButtonWindow:(CGPoint)point {
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-
-    [self.window resignMainWindow];
-    [self.window resignKeyWindow];
     
+//    [_mainWindow resignKeyWindow];
+//    [_fixedWindow orderBack:nil];
+    
+//    [self.window resignMainWindow];
+//    [self.window resignKeyWindow];
+
     // make window level max
     self.popWindow.level = kCGMaximumWindowLevel;
     [self.popWindow orderFront:nil];
     [self.popWindow setFrameTopLeftPoint:point];
+    
+    [_mainWindow orderBack:nil];
+    _mainWindow.level = kCGBaseWindowLevel;
 }
 
 - (void)showMiniWindowAtPoint:(CGPoint)point {
@@ -361,13 +396,13 @@ static EZFixedQueryWindowController *_instance;
         return;
     }
 
-    [self.window makeKeyAndOrderFront:nil];
-    if (!self.window.isKeyWindow) {
+    [self.miniWindow makeKeyAndOrderFront:nil];
+    if (!self.miniWindow.isKeyWindow) {
         // fail to make key window, then force activate application for key window
         [NSApp activateIgnoringOtherApps:YES];
     }
-    
-    [self.window setFrameTopLeftPoint:point];
+
+    [self.miniWindow setFrameTopLeftPoint:point];
 }
 
 @end

@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZSelectTextPopWindow : NSWindow
+@interface EZPopButtonWindow : NSWindow
 
 @property (nonatomic, strong) EZButton *popButton;
 

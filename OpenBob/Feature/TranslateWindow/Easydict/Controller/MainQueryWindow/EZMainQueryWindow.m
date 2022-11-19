@@ -33,26 +33,9 @@ static EZMainQueryWindow *_instance;
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        self.movableByWindowBackground = YES;
-        self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
-        self.titlebarAppearsTransparent = YES;
-        self.titleVisibility = NSWindowTitleHidden;
-        
-        [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgDarkColor;
-        }];
-        
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
         viewController.view.size = CGSizeMake(1.5 * EZMiniQueryWindowWidth, 2 * EZMiniQueryWindowWidth);
-        viewController.window = self;
         self.viewController = viewController;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(windowDidResize:)
-                                                     name:NSWindowDidResizeNotification
-                                                   object:self];
     }
     return self;
 }

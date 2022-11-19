@@ -7,12 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZBaseQueryWindow.h"
+#import "EZBaseQueryViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZMiniQueryWindow : NSWindow
+@interface EZMiniQueryWindow : EZBaseQueryWindow
 
 + (instancetype)shared;
+
+//@property (nonatomic, strong) EZBaseQueryViewController *viewController;
+
 
 @end
 
