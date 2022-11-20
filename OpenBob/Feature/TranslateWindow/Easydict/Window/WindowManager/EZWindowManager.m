@@ -150,9 +150,9 @@ static EZWindowManager *_instance;
 //    _showingWindowFrame = [self windowFrameWithType:showingWindowType];
 //}
 
-- (CGRect)showingWindowFrame {
-    return [self windowFrameWithType:self.showingWindowType];
-}
+//- (CGRect)showingWindowFrame {
+//    return [self windowFrameWithType:self.showingWindowType];
+//}
 
 #pragma mark -
 

@@ -27,14 +27,21 @@ static EZFixedQueryWindow *_instance;
 }
 
 - (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable;
-    
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskBorderless | NSWindowStyleMaskResizable;
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-        viewController.view.size = CGSizeMake(1.2 * EZMiniQueryWindowWidth, 2.8 * EZMiniQueryWindowWidth);
+        viewController.view.frame = EZWindowFrameManager.shared.fixedWindowFrame;
         self.viewController = viewController;
+        
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
+        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
+        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
     }
     return self;
+}
+
+- (EZWindowType)windowType {
+    return EZWindowTypeFixed;
 }
 
 - (BOOL)canBecomeKeyWindow {
@@ -43,17 +50,6 @@ static EZFixedQueryWindow *_instance;
 
 - (BOOL)canBecomeMainWindow {
     return NO;
-}
-
-#pragma mark - NSNotification
-
-- (void)windowDidResize:(NSNotification *)aNotification {
-//   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
-    EZBaseQueryViewController *mainVC = (EZBaseQueryViewController *)self.contentViewController;
-    if (mainVC.resizeWindowBlock) {
-        mainVC.resizeWindowBlock();
-    }
 }
 
 @end

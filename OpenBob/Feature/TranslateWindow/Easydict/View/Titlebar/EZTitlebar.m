@@ -8,6 +8,7 @@
 
 #import "EZTitlebar.h"
 #import "EZHoverButton.h"
+#import "EZTitleBarMoveView.h"
 
 @interface EZTitlebar ()
 
@@ -17,14 +18,22 @@
 
 @implementation EZTitlebar
 
-- (instancetype)init {
-    if (self = [super init]) {
+- (instancetype)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
         [self setup];
     }
     return self;
 }
 
 - (void)setup {
+    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
+    moveView.wantsLayer = YES;
+    moveView.layer.backgroundColor = NSColor.redColor.CGColor;
+    [self addSubview:moveView];
+    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self);
+    }];
+    
     EZHoverButton *pinButton = [[EZHoverButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
@@ -43,7 +52,8 @@
     pinButton.cornerRadius = 2;
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(CGSizeMake(22, 22));
-        make.left.equalTo(self).offset(15);
+//        make.left.equalTo(self).offset(15);
+        make.right.inset(15);
         make.top.equalTo(self).offset(5);
 //        make.centerY.equalTo(self);
     }];

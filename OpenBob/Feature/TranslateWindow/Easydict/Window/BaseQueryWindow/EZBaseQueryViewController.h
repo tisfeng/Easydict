@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZWindowFrameManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
 
-@property (nonatomic, assign) CGFloat scrollViewTopOffset;
+@property (nonatomic, assign) CGFloat customTitleBarHeight;
 
 - (void)startQueryText:(NSString *)text;
 - (void)startQueryImage:(NSImage *)image;

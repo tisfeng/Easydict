@@ -47,7 +47,6 @@ static CGFloat kTextViewMiniHeight = 60;
     scrollView.documentView = self.textView;
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
-        //            make.bottom.inset(kVerticalMargin);
         make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
         make.height.mas_equalTo(kTextViewMiniHeight);
     }];
@@ -171,8 +170,9 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat windowWidth = NSApplication.sharedApplication.keyWindow ? EZWindowManager.shared.showingWindowFrame.size.width : EZMiniQueryWindowWidth;
-    CGFloat width = windowWidth - 2 * EZMiniHorizontalMargin_12;
+//    CGFloat windowWidth = EZWindowFrameManager.shared.miniWindowFrame;
+    CGFloat width = self.width - 2 * EZMiniHorizontalMargin_12;
+    
     CGFloat height = [self.textView getHeightWithWidth:width];
 //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
 

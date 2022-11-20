@@ -24,6 +24,7 @@
     EZWindowManager *windowManager = [EZWindowManager shared];
     [windowManager.mainWindow setFrameOrigin:CGPointZero];
     [windowManager.mainWindow makeKeyAndOrderFront:nil];
+    self.windowManager = windowManager;
         
 //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
