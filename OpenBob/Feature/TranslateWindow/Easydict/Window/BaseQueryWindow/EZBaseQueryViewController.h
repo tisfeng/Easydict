@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
 
+@property (nonatomic, assign) CGFloat scrollViewTopOffset;
+
 - (void)startQueryText:(NSString *)text;
 - (void)startQueryImage:(NSImage *)image;
 

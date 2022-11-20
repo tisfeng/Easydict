@@ -7,10 +7,10 @@
 //
 
 #import "EZBaseQueryWindow.h"
-#import "EZBaseQueryViewController.h"
-#import "NSColor+MyColors.h"
 
-@interface EZBaseQueryWindow () <NSWindowDelegate>
+@interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
+
+@property (strong, nonatomic) NSToolbar *myToolbar;
 
 @end
 
@@ -30,6 +30,8 @@
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
+        [self setupUI];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
                                                      name:NSWindowDidResizeNotification
@@ -38,9 +40,15 @@
     return self;
 }
 
-- (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-    return [self initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES];
+- (void)setupUI {
+    NSView *themeView = self.contentView.superview;
+    NSView *titleView = themeView.subviews[1];
+    
+    self.titleBar = [[EZTitlebar alloc] init];
+    [titleView addSubview:self.titleBar];
+    [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(titleView);
+    }];
 }
 
 - (void)setViewController:(EZBaseQueryViewController *)viewController {
@@ -68,7 +76,7 @@
 
 - (void)windowDidResize:(NSNotification *)aNotification {
 //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
+
     if (self.viewController.resizeWindowBlock) {
         self.viewController.resizeWindowBlock();
     }
