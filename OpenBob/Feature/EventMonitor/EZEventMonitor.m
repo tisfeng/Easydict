@@ -292,15 +292,18 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)dismissIfMouseLocationInFloatingWindows {
-    BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.miniWindow];
-    BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.fixedWindow];
-    
-    if (outMiniWindow && self.dismissMiniWindowBlock) {
-        self.dismissMiniWindowBlock();
-    }
-    
-    if (outFixedWindow && self.dismissFixedWindowBlock) {
-        self.dismissFixedWindowBlock();
+    if (EZWindowManager.shared.showingWindowType == EZWindowTypeMini) {
+        BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.miniWindow];
+        if (outMiniWindow && self.dismissMiniWindowBlock) {
+            self.dismissMiniWindowBlock();
+        }
+    } else {
+        if (EZWindowManager.shared.showingWindowType == EZWindowTypeFixed) {
+            BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.fixedWindow];
+            if (outFixedWindow && self.dismissFixedWindowBlock) {
+                self.dismissFixedWindowBlock();
+            }
+        }
     }
 }
 
@@ -355,6 +358,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         if (![self isValidSelectedFrame]) {
             NSLog(@"Invalid selected frame: %@", @(self.selectedTextFrame));
+            NSLog(@"start point: %@, end point: %@", @(self.startPoint), @(self.endPoint));
             if (checkTextFrame) {
                 return;
             }

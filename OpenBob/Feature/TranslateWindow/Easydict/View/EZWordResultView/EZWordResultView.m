@@ -16,6 +16,7 @@
 #import "EZConst.h"
 #import "EZFixedQueryWindow.h"
 #import "NSString+MM.h"
+#import "EZWindowManager.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -442,7 +443,7 @@ static const CGFloat kVerticalPadding = 8;
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
     
-    CGFloat windowWidth = NSApplication.sharedApplication.keyWindow.width ?: EZMiniQueryWindowWidth;
+    CGFloat windowWidth = EZWindowManager.shared.showingWindowFrame.size.width;
     CGFloat width = windowWidth - leftMargin - rightMargin - 2 * EZMiniHorizontalMargin_12;
     if (width < 0) {
         width = 100;

@@ -10,11 +10,10 @@
 
 @implementation EZMiniQueryWindow
 
-- (instancetype)init {    
+- (instancetype)init {
     if (self = [super initWithContentRect:CGRectZero styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
         self.viewController = viewController;
-//        self.viewController.scrollViewTopOffset = 12;
     }
     return self;
 }
