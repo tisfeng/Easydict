@@ -29,10 +29,16 @@
     [self addSubview:pinButton];
     self.pinButton = pinButton;
     NSImage *image = [NSImage imageNamed:@"pin3"];
-    pinButton.normalImage = [image imageWithTintColor:NSColor.grayColor];
-    NSImage *hightlightImage = [image imageWithTintColor:[NSColor mm_colorWithHexString:@"#007AFF"]];
+    NSImage *normalImage = [image imageWithTintColor:NSColor.grayColor];
+
+    pinButton.normalImage = normalImage;
+
+    NSImage *hightlightImage = [image imageWithTintColor:[NSColor mm_colorWithHexString:@"#51A4FF"]];
+    NSImage *selectedImage = [image imageWithTintColor:[NSColor mm_colorWithHexString:@"#007AFF"]];
+    pinButton.hoverImage = hightlightImage;
+
     pinButton.highlightImage = hightlightImage;
-    pinButton.selectedImage = hightlightImage;
+    pinButton.selectedImage = selectedImage;
     pinButton.backgroundSelectedColor = NSColor.clearColor;
     pinButton.cornerRadius = 2;
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
