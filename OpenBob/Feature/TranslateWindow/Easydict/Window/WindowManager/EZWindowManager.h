@@ -14,12 +14,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, EZWindowType) {
+    EZWindowTypeMain = 0,
+    EZWindowTypeMini = 1,
+    EZWindowTypeFixed = 2,
+};
+
 @interface EZWindowManager : NSObject
 
 @property (nonatomic, strong) EZMainQueryWindow *mainWindow;
 @property (nonatomic, strong) EZPopButtonWindow *popWindow;
 @property (nonatomic, strong, nullable) EZFixedQueryWindow *fixedWindow;
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
+
+@property (nonatomic, assign) EZWindowType showingWindowType;
+@property (nonatomic, assign) CGRect showingWindowFrame;
 
 + (instancetype)shared;
 

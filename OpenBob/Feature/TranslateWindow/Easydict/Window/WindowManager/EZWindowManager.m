@@ -12,8 +12,6 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "Configuration.h"
-#import <QuartzCore/QuartzCore.h>
-#import <Carbon/Carbon.h>
 
 @interface EZWindowManager ()
 
@@ -90,10 +88,10 @@ static EZWindowManager *_instance;
     }];
 
     [self.eventMonitor setDismissMiniWindowBlock:^{
-//        mm_strongify(self);
-//        [self.miniWindow close];
+        //        mm_strongify(self);
+        //        [self.miniWindow close];
     }];
-    
+
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
         [self.fixedWindow close];
@@ -132,21 +130,93 @@ static EZWindowManager *_instance;
         [_popWindow.popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
-            [self showFloatingWindow:self.miniWindow queryText:self.selectedText];
+            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];;
         }];
     }
     return _popWindow;
 }
 
+- (void)setShowingWindowType:(EZWindowType)showingWindowType {
+    _showingWindowType = showingWindowType;
+    
+    _showingWindowFrame = [self windowFrameWithType:showingWindowType];
+}
 
 #pragma mark -
 
-- (void)showFloatingWindow:(EZBaseQueryWindow *)window queryText:(NSString *)text {
-    CGPoint location = [self getMiniWindowLocation];
-    if ([window isKindOfClass:EZFixedQueryWindow.class]) {
-        location = [self getFixedWindowLocation];
+- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window {
+    EZWindowType type = EZWindowTypeMain;
+    if ([window isKindOfClass:[EZMiniQueryWindow class]]) {
+        type = EZWindowTypeMini;
+    } else if ([window isKindOfClass:[EZFixedQueryWindow class]]) {
+        type = EZWindowTypeFixed;
     }
-    
+    return type;
+}
+
+- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
+    EZBaseQueryWindow *window;
+    switch (type) {
+        case EZWindowTypeMain: {
+            window = self.mainWindow;
+            break;
+        }
+        case EZWindowTypeFixed: {
+            window = self.fixedWindow;
+            break;
+        }
+        default: {
+            window = self.miniWindow;
+            break;
+        }
+    }
+    return window;
+}
+
+- (CGRect)windowFrameWithType:(EZWindowType)type {
+    CGRect frame;
+    switch (type) {
+        case EZWindowTypeMain: {
+            frame = self.mainWindow.frame;
+            break;
+        }
+        case EZWindowTypeFixed: {
+            frame = self.fixedWindow.frame;
+            break;
+        }
+        default: {
+            CGPoint location = [self getMiniWindowLocation];
+            frame = CGRectMake(location.x, location.y, EZMiniQueryWindowWidth, EZMiniQueryWindowHeight);
+            break;
+        }
+    }
+    return frame;
+}
+
+- (CGPoint)windowLocationWithType:(EZWindowType)type {
+    CGPoint location;
+    switch (type) {
+        case EZWindowTypeMain: {
+            location = CGPointZero;
+            break;
+        }
+        case EZWindowTypeFixed: {
+            location = [self getFixedWindowLocation];
+            break;
+        }
+        default: {
+            location = [self getMiniWindowLocation];
+            break;
+        }
+    }
+    return location;
+}
+
+
+- (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
+    self.showingWindowType = type;
+    CGPoint location = [self windowLocationWithType:type];
+    EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.viewController startQueryText:text];
 }
@@ -408,5 +478,6 @@ static EZWindowManager *_instance;
 
     [_mainWindow orderBack:nil];
 }
+
 
 @end
