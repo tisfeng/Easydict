@@ -130,7 +130,9 @@ static EZWindowManager *_instance;
         [_popWindow.popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
-            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];;
+            
+            [self showFloatingWindowWithQueryText:self.selectedText];
+//            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];;
         }];
     }
     return _popWindow;
@@ -219,6 +221,28 @@ static EZWindowManager *_instance;
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.viewController startQueryText:text];
+}
+
+- (void)showFloatingWindow:(NSWindow *)window atPoint:(CGPoint)point {
+    [self saveFrontmostApplication];
+    if (Snip.shared.isSnapshotting) {
+        return;
+    }
+
+    [window setFrameTopLeftPoint:point];
+    [window makeKeyAndOrderFront:nil];
+
+    [_mainWindow orderBack:nil];
+}
+
+
+/// Show floating window type according to text length, show fixed window if text too long.
+- (void)showFloatingWindowWithQueryText:(NSString *)text {
+    EZWindowType type = EZWindowTypeMini;
+    if (text.length > 15) {
+        type = EZWindowTypeFixed;
+    }
+    [self showFloatingWindowType:type queryText:text];
 }
 
 - (void)showAtMouseLocation {
@@ -466,18 +490,5 @@ static EZWindowManager *_instance;
     }
     self.lastFrontmostApplication = nil;
 }
-
-- (void)showFloatingWindow:(NSWindow *)window atPoint:(CGPoint)point {
-    [self saveFrontmostApplication];
-    if (Snip.shared.isSnapshotting) {
-        return;
-    }
-
-    [window setFrameTopLeftPoint:point];
-    [window makeKeyAndOrderFront:nil];
-
-    [_mainWindow orderBack:nil];
-}
-
 
 @end
