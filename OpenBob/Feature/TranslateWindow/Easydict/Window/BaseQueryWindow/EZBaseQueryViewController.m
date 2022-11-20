@@ -68,8 +68,8 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 - (void)setup {
-    self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
-//    self.serviceTypes = @[EZServiceTypeGoogle, ];
+//    self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
+    self.serviceTypes = @[EZServiceTypeGoogle, ];
 
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {

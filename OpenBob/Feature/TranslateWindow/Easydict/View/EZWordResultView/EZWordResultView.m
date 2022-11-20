@@ -443,7 +443,8 @@ static const CGFloat kVerticalPadding = 8;
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
     
-    CGFloat windowWidth = EZWindowManager.shared.showingWindowFrame.size.width;
+    // ⚠️ when app start, EZWindowManager has not alloc completedo
+    CGFloat windowWidth = NSApplication.sharedApplication.keyWindow ? EZWindowManager.shared.showingWindowFrame.size.width : EZMiniQueryWindowWidth;
     CGFloat width = windowWidth - leftMargin - rightMargin - 2 * EZMiniHorizontalMargin_12;
     if (width < 0) {
         width = 100;

@@ -27,7 +27,7 @@ static EZFixedQueryWindow *_instance;
 }
 
 - (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
