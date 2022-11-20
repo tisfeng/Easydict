@@ -195,7 +195,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
     [self.detectManager detect:self.queryText completion:^(Language language, NSError *error) {
         if (!error) {
             fromLang = language;
-            NSLog(@"detect language: %ld", language);
+//            NSLog(@"detect language: %ld", language);
         }
         
         [self updateQueryViewDetectLanguage:fromLang];
