@@ -67,16 +67,16 @@
 //        NSLog(@"mouseEntered");
     
     self.hover = YES;
-    if (!self.selected) {
-        self.buttonState = EZButtonHoverState;
-    }
+    self.buttonState = EZButtonHoverState;
 }
 
 - (void)mouseExited:(NSEvent *)event {
 //        NSLog(@"mouseExited");
     
     self.hover = NO;
-    if (!self.selected) {
+    if (self.selected) {
+        [self setButtonState:EZButtonSelectedState];
+    } else {
         [self setButtonState:EZButtonNormalState];
     }
 }
@@ -97,11 +97,8 @@
     if (self.enabled && self.hover) {
         if (self.canSelected) {
             self.selected = !self.selected;
-            self.buttonState =
-            self.selected ? EZButtonSelectedState : EZButtonNormalState;
-        } else {
-            self.buttonState = EZButtonHoverState;
         }
+        self.buttonState = EZButtonHoverState;
         
         NSLog(@"send action");
         
@@ -142,7 +139,7 @@
 
 - (void)commonInitialize {
 //    self.backgroundHighlightColor = NSColor.highlightColor;
-    self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
+//    self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
     
     [self initializeUI];
     
