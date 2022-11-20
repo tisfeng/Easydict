@@ -7,7 +7,7 @@
 //
 
 #import "EZTitlebar.h"
-#import "EZButton.h"
+#import "EZHoverButton.h"
 
 @interface EZTitlebar ()
 
@@ -25,18 +25,19 @@
 }
 
 - (void)setup {
-    EZButton *pinButton = [[EZButton alloc] init];
+    EZHoverButton *pinButton = [[EZHoverButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
-    pinButton.normalImage = [[NSImage imageNamed:@"pin_normal"] imageWithTintColor:NSColor.grayColor];
-    NSImage *hightlightImage = [[NSImage imageNamed:@"pin_selected"] imageWithTintColor:[NSColor mm_colorWithHexString:@"#007AFF"]];
+    NSImage *image = [NSImage imageNamed:@"pin3"];
+    pinButton.normalImage = [image imageWithTintColor:NSColor.grayColor];
+    NSImage *hightlightImage = [image imageWithTintColor:[NSColor mm_colorWithHexString:@"#007AFF"]];
     pinButton.highlightImage = hightlightImage;
     pinButton.selectedImage = hightlightImage;
     pinButton.backgroundSelectedColor = NSColor.clearColor;
     pinButton.cornerRadius = 2;
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(CGSizeMake(22, 22));
-        make.left.equalTo(self).offset(12);
+        make.left.equalTo(self).offset(15);
         make.top.equalTo(self).offset(5);
 //        make.centerY.equalTo(self);
     }];
