@@ -28,7 +28,7 @@ static CGFloat kPopButtonWidth = 25;
     [super viewDidLoad];
     
     EZButton *button = [[EZButton alloc] initWithFrame:self.view.bounds];
-    NSImage *image = [NSImage imageNamed:@"Eudic"];
+    NSImage *image = [NSImage imageNamed:@"blue-white-icon"];
     button.image = image;
     button.backgroundColor = NSColor.clearColor;
     self.popButton = button;
