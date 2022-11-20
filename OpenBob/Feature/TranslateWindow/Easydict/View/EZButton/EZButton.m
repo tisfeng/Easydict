@@ -64,7 +64,7 @@
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-        NSLog(@"mouseEntered");
+//        NSLog(@"mouseEntered");
     
     self.hover = YES;
     self.buttonState = EZButtonHoverState;
@@ -407,7 +407,7 @@
     _buttonState = state;
     
     if (state == EZButtonHoverState) {
-        NSLog(@"hover: %@", self);
+//        NSLog(@"hover: %@", self);
         if (self.hoverBlock) {
             self.hoverBlock(self);
         }

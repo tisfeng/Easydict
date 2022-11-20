@@ -11,14 +11,10 @@
 #import "EZFixedQueryWindow.h"
 #import "EZMainQueryWindow.h"
 #import "EZMiniQueryWindow.h"
+#import "EZWindowFrameManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, EZWindowType) {
-    EZWindowTypeMain = 0,
-    EZWindowTypeMini = 1,
-    EZWindowTypeFixed = 2,
-};
 
 @interface EZWindowManager : NSObject
 
@@ -28,9 +24,12 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
 @property (nonatomic, assign) EZWindowType showingWindowType;
-@property (nonatomic, assign) CGRect showingWindowFrame;
+//@property (nonatomic, assign) CGRect showingWindowFrame;
 
 + (instancetype)shared;
+
+- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window;
+- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
 
 @end
 

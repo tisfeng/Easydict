@@ -7,10 +7,10 @@
 //
 
 #import "EZBaseQueryWindow.h"
+#import "EZTitlebar.h"
+#import "EZWindowManager.h"
 
 @interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
-
-@property (strong, nonatomic) NSToolbar *myToolbar;
 
 @end
 
@@ -23,15 +23,15 @@
         self.titlebarAppearsTransparent = YES;
         self.titleVisibility = NSWindowTitleHidden;
         self.delegate = self;
-        
+
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
-        
-        [self setupUI];
-        
+
+        //        [self setupUI];
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
                                                      name:NSWindowDidResizeNotification
@@ -43,8 +43,8 @@
 - (void)setupUI {
     NSView *themeView = self.contentView.superview;
     NSView *titleView = themeView.subviews[1];
-    
-    self.titleBar = [[EZTitlebar alloc] init];
+
+    self.titleBar = [[EZTitlebar alloc] initWithFrame:CGRectMake(0, 0, self.width, 50)];
     [titleView addSubview:self.titleBar];
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(titleView);
@@ -53,7 +53,7 @@
 
 - (void)setViewController:(EZBaseQueryViewController *)viewController {
     _viewController = viewController;
-    
+
     self.contentViewController = viewController;
 }
 
@@ -69,16 +69,39 @@
 #pragma makr - NSWindowDelegate
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-//    NSLog(@"windowDidBecomeKey: %@", self);
+    //    NSLog(@"windowDidBecomeKey: %@", self);
+
+    // Init window manager when window alloc and load finished, to avoid recycle calling.
+    //    [EZWindowManager shared];
 }
 
 #pragma mark - NSNotification
 
 - (void)windowDidResize:(NSNotification *)aNotification {
-//   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-
+    //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
+    
+    if (self.resizeWindowBlock) {
+        self.resizeWindowBlock();
+    }
+    
     if (self.viewController.resizeWindowBlock) {
         self.viewController.resizeWindowBlock();
+    }
+    
+    EZWindowType type = [EZWindowManager.shared getWindowType:self];
+    EZWindowFrameManager *frameManager = [EZWindowFrameManager shared];
+    switch (type) {
+        case EZWindowTypeMain:
+            frameManager.mainWindowFrame = self.frame;
+            break;
+        case EZWindowTypeFixed:
+            frameManager.fixedWindowFrame = self.frame;
+            break;
+        case EZWindowTypeMini:
+            frameManager.miniWindowFrame = self.frame;
+            break;
+        default:
+            break;
     }
 }
 

@@ -14,9 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBaseQueryWindow : NSWindow
 
+@property (nonatomic, assign) EZWindowType windowType;
 @property (nonatomic, strong) EZTitlebar *titleBar;
 
 @property (nonatomic, strong) EZBaseQueryViewController *viewController;
+
+@property (nonatomic, copy) void (^resizeWindowBlock)(void);
 
 @end
 

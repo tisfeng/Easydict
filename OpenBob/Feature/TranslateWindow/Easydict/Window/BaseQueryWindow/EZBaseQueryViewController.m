@@ -19,13 +19,15 @@
 #import "ServiceTypes.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
-#import "EZConst.h"
+#import "EZTitlebar.h"
 
 static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
+
+@property (nonatomic, strong) EZTitlebar *titleBar;
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -47,7 +49,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, EZMiniQueryWindowWidth, EZMiniQueryWindowWidth)];
+    self.view = [[NSView alloc] initWithFrame:EZWindowFrameManager.shared.miniWindowFrame];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -68,8 +70,10 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 - (void)setup {
-//    self.serviceTypes = @[EZServiceTypeYoudao, EZServiceTypeGoogle, EZServiceTypeBaidu, ];
-    self.serviceTypes = @[EZServiceTypeGoogle, ];
+    self.serviceTypes = @[EZServiceTypeYoudao,
+                          EZServiceTypeGoogle,
+//                          EZServiceTypeBaidu,
+    ];
 
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
@@ -91,6 +95,20 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 #pragma mark - Getter
+
+- (EZTitlebar *)titleBar {
+    if (!_titleBar) {
+        EZTitlebar *titleBar = [[EZTitlebar alloc] init];
+        _titleBar = titleBar;
+        [self.view addSubview:titleBar];
+        [titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.equalTo(self.view);
+            make.height.mas_equalTo(self.customTitleBarHeight); // system title bar height is 28
+        }];
+    }
+    return _titleBar;
+}
+
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
         NSScrollView *scrollView = [[NSScrollView alloc] init];
@@ -108,22 +126,21 @@ static NSString *EZResultCellId = @"EZResultCellId";
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
         
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(self.view).offset(12);
-//            make.left.right.bottom.equalTo(self.view);
-            make.edges.equalTo(self.view);
+            make.top.equalTo(self.titleBar.mas_bottom).offset(0);
+            make.left.right.bottom.equalTo(self.view);
+//            make.edges.equalTo(self.view);
             make.width.mas_greaterThanOrEqualTo(EZMiniQueryWindowWidth);
             make.height.mas_greaterThanOrEqualTo(EZMiniQueryWindowHeight);
         }];
         
-        self.scrollViewTopOffset = 0;
-//        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
     }
     return _scrollView;
 }
 
 - (NSTableView *)tableView {
     if (!_tableView) {
-        NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.view.bounds];
+        NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
         
         [tableView excuteLight:^(NSTableView *tableView) {
@@ -164,12 +181,6 @@ static NSString *EZResultCellId = @"EZResultCellId";
     _queryText = queryText;
     
     self.queryView.queryText = queryText;
-}
-
-- (void)setScrollViewTopOffset:(CGFloat)scrollViewTopOffset {
-    _scrollViewTopOffset = scrollViewTopOffset;
-    
-    self.scrollView.contentInsets = NSEdgeInsetsMake(scrollViewTopOffset, 0, 7, 0);
 }
 
 #pragma mark -

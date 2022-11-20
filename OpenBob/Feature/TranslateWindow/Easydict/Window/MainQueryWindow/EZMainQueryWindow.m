@@ -31,12 +31,26 @@ static EZMainQueryWindow *_instance;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-        viewController.view.size = CGSizeMake(1.5 * EZMiniQueryWindowWidth, 2 * EZMiniQueryWindowWidth);
+        viewController.view.frame = EZWindowFrameManager.shared.mainWindowFrame;
         self.viewController = viewController;
         self.titleBar.hidden = YES;
     }
     return self;
 }
+
+//- (EZBaseQueryViewController *)viewController {
+//    if (!_viewController) {
+//        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
+//        viewController.view.frame = EZWindowFrameManager.shared.miniWindowFrame;
+//        _viewController = viewController;
+//    }
+//    return _viewController;
+//}
+
+- (EZWindowType)windowType {
+    return EZWindowTypeMain;
+}
+
 
 - (BOOL)canBecomeKeyWindow {
     return YES;
@@ -44,16 +58,6 @@ static EZMainQueryWindow *_instance;
 
 - (BOOL)canBecomeMainWindow {
     return YES;
-}
-
-#pragma mark - NSNotification
-
-- (void)windowDidResize:(NSNotification *)aNotification {
-//   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
-    
-    if (self.viewController.resizeWindowBlock) {
-        self.viewController.resizeWindowBlock();
-    }
 }
 
 @end

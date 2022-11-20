@@ -18,6 +18,10 @@
     return self;
 }
 
+- (EZWindowType)windowType {
+    return EZWindowTypeMini;
+}
+
 - (BOOL)canBecomeKeyWindow {
     return YES;
 }
