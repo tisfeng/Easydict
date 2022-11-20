@@ -77,12 +77,18 @@ static EZWindowManager *_instance;
 
         CGPoint point = [self getPopButtonWindowLocation];
         [self.popWindow setFrameTopLeftPoint:point];
+        [self.popWindow orderFront:nil];
         [self.popWindow orderFrontRegardless];
+
+//        self.popWindow.level = kCGMaximumWindowLevel;
+        
+//        [NSApp activateIgnoringOtherApps:YES];
 
         [self.mainWindow orderBack:nil];
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
+        NSLog(@"dismiss pop button");
         mm_strongify(self);
         [self.popWindow close];
     }];
@@ -93,8 +99,8 @@ static EZWindowManager *_instance;
     }];
 
     [self.eventMonitor setDismissFixedWindowBlock:^{
-        mm_strongify(self);
-        [self.fixedWindow close];
+//        mm_strongify(self);
+//        [self.fixedWindow close];
     }];
 }
 
@@ -127,7 +133,7 @@ static EZWindowManager *_instance;
         _popWindow = [EZPopButtonWindow shared];
 
         mm_weakify(self);
-        [_popWindow.popButton setClickBlock:^(EZButton *button) {
+        [_popWindow.popButton setHoverBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
             
@@ -138,10 +144,14 @@ static EZWindowManager *_instance;
     return _popWindow;
 }
 
-- (void)setShowingWindowType:(EZWindowType)showingWindowType {
-    _showingWindowType = showingWindowType;
-    
-    _showingWindowFrame = [self windowFrameWithType:showingWindowType];
+//- (void)setShowingWindowType:(EZWindowType)showingWindowType {
+//    _showingWindowType = showingWindowType;
+//    
+//    _showingWindowFrame = [self windowFrameWithType:showingWindowType];
+//}
+
+- (CGRect)showingWindowFrame {
+    return [self windowFrameWithType:self.showingWindowType];
 }
 
 #pragma mark -
@@ -224,6 +234,8 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindow:(NSWindow *)window atPoint:(CGPoint)point {
+    NSLog(@"show floating window: %@", window);
+    
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
@@ -231,6 +243,9 @@ static EZWindowManager *_instance;
 
     [window setFrameTopLeftPoint:point];
     [window makeKeyAndOrderFront:nil];
+    
+    window.level = kCGFloatingWindowLevel;
+//    [NSApp activateIgnoringOtherApps:YES];
 
     [_mainWindow orderBack:nil];
 }

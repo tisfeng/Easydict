@@ -33,24 +33,6 @@ static CGFloat kPopButtonWidth = 23;
     self.popButton = button;
     [self.view addSubview:button];
     button.center = self.view.center;
-    
-    mm_weakify(self);
-    [button setHoverBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"hover pop button");
-        mm_strongify(self);
-        [self showPopButton];
-    }];
-    [button setClickBlock:^(EZButton * _Nonnull button) {
-        [self showPopButton];
-    }];
-}
-
-- (void)showPopButton {
-    if(self.hoverBlock) {
-        self.hoverBlock();
-    } else if (self.clickBlock) {
-        self.clickBlock();
-    }
 }
 
 @end

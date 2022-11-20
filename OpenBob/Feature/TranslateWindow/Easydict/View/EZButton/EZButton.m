@@ -64,7 +64,7 @@
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-//        NSLog(@"mouseEntered");
+        NSLog(@"mouseEntered");
     
     self.hover = YES;
     self.buttonState = EZButtonHoverState;
@@ -100,7 +100,7 @@
         }
         self.buttonState = EZButtonHoverState;
         
-        NSLog(@"send action");
+//        NSLog(@"send action");
         
         NSString *selString = NSStringFromSelector(self.action);
         if ([selString hasSuffix:@":"]) {
@@ -398,19 +398,22 @@
 }
 
 - (void)setButtonState:(EZButtonState)state {
-    if (_buttonState == state) {
-        return;
-    }
+//    NSLog(@"set state: %lu", (unsigned long)state);
+    
+//    if (_buttonState == state) {
+//        return;
+//    }
     
     _buttonState = state;
     
-    [self updateButtonApperaceWithState:state];
-    
     if (state == EZButtonHoverState) {
+        NSLog(@"hover: %@", self);
         if (self.hoverBlock) {
             self.hoverBlock(self);
         }
     }
+    
+    [self updateButtonApperaceWithState:state];
 }
 
 - (void)setAttrTitle:(NSAttributedString *)attrTitle {

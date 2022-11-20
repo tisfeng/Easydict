@@ -279,12 +279,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         case NSEventTypeScrollWheel:
         case NSEventTypeMouseMoved: {
-            [self delayDismissPopButton];
+//            [self delayDismissPopButton];
             break;
         }
 
         default:
-            [self dismissPopButton];
+//            [self dismissPopButton];
             break;
     }
 
