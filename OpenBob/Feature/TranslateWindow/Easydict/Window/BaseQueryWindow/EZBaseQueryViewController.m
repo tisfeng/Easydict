@@ -108,12 +108,15 @@ static NSString *EZResultCellId = @"EZResultCellId";
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
         
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(self.view).offset(12);
+//            make.left.right.bottom.equalTo(self.view);
             make.edges.equalTo(self.view);
             make.width.mas_greaterThanOrEqualTo(EZMiniQueryWindowWidth);
             make.height.mas_greaterThanOrEqualTo(EZMiniQueryWindowHeight);
         }];
         
-        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
+        self.scrollViewTopOffset = 0;
+//        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
     }
     return _scrollView;
 }
@@ -162,6 +165,14 @@ static NSString *EZResultCellId = @"EZResultCellId";
     
     self.queryView.queryText = queryText;
 }
+
+- (void)setScrollViewTopOffset:(CGFloat)scrollViewTopOffset {
+    _scrollViewTopOffset = scrollViewTopOffset;
+    
+    self.scrollView.contentInsets = NSEdgeInsetsMake(scrollViewTopOffset, 0, 7, 0);
+}
+
+#pragma mark -
 
 - (void)startQuery {
     [self startQueryText:self.queryText];

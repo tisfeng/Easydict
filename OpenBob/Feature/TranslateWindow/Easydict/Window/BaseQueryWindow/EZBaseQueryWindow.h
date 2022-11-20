@@ -8,10 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZBaseQueryViewController.h"
+#import "EZTitlebar.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBaseQueryWindow : NSWindow
+
+@property (nonatomic, strong) EZTitlebar *titleBar;
 
 @property (nonatomic, strong) EZBaseQueryViewController *viewController;
 

@@ -14,7 +14,7 @@
     if (self = [super initWithContentRect:CGRectZero styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:YES]) {
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
         self.viewController = viewController;
-        self.level = NSModalPanelWindowLevel; // NSModalPanelWindowLevel;
+//        self.viewController.scrollViewTopOffset = 12;
     }
     return self;
 }

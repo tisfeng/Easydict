@@ -70,8 +70,6 @@ static EZWindowManager *_instance;
 
     mm_weakify(self);
     [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
-        NSLog(@"selectedText: %@", selectedText);
-
         mm_strongify(self);
         self.selectedText = selectedText;
 
@@ -92,8 +90,8 @@ static EZWindowManager *_instance;
     }];
 
     [self.eventMonitor setDismissMiniWindowBlock:^{
-        mm_strongify(self);
-        [self.miniWindow close];
+//        mm_strongify(self);
+//        [self.miniWindow close];
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{

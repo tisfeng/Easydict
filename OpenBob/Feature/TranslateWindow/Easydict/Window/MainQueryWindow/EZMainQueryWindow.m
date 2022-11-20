@@ -33,6 +33,7 @@ static EZMainQueryWindow *_instance;
         EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
         viewController.view.size = CGSizeMake(1.5 * EZMiniQueryWindowWidth, 2 * EZMiniQueryWindowWidth);
         self.viewController = viewController;
+        self.titleBar.hidden = YES;
     }
     return self;
 }

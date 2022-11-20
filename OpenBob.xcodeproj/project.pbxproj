@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -136,6 +137,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03991156292927E000E1B06D /* EZTitlebar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitlebar.h; sourceTree = "<group>"; };
+		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -375,6 +378,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03991155292927A100E1B06D /* Titlebar */ = {
+			isa = PBXGroup;
+			children = (
+				03991156292927E000E1B06D /* EZTitlebar.h */,
+				03991157292927E000E1B06D /* EZTitlebar.m */,
+			);
+			path = Titlebar;
+			sourceTree = "<group>";
+		};
 		03B0221829231FA6001C7E63 /* OpenBob */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,10 +522,9 @@
 			isa = PBXGroup;
 			children = (
 				03D0435B2928E29300E7559E /* Old */,
-				03D043572928C49000E7559E /* WindowManager */,
 				03B0225029231FA6001C7E63 /* Window */,
-				03B0225529231FA6001C7E63 /* Cell */,
 				03B0225A29231FA6001C7E63 /* View */,
+				03B0225529231FA6001C7E63 /* Cell */,
 			);
 			path = Easydict;
 			sourceTree = "<group>";
@@ -521,6 +532,7 @@
 		03B0225029231FA6001C7E63 /* Window */ = {
 			isa = PBXGroup;
 			children = (
+				03D043572928C49000E7559E /* WindowManager */,
 				03D04353292893A700E7559E /* BaseQueryWindow */,
 				03D0434F2928934300E7559E /* MainQueryWindow */,
 				03D0434B2928857C00E7559E /* FixedQueryWindow */,
@@ -544,6 +556,7 @@
 		03B0225A29231FA6001C7E63 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				03991155292927A100E1B06D /* Titlebar */,
 				03B0225B29231FA6001C7E63 /* EZQueryView */,
 				03B0225E29231FA6001C7E63 /* EZWordResultView */,
 				03B0226129231FA6001C7E63 /* EZResultView */,
@@ -1189,6 +1202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03B0231029231FA6001C7E63 /* ResultView.m in Sources */,
+				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
