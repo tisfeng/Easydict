@@ -22,7 +22,7 @@
     [Shortcut setup];
         
     EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager.mainWindow center];
+    [windowManager.mainWindow setFrameOrigin:CGPointZero];
     [windowManager.mainWindow makeKeyAndOrderFront:nil];
         
 //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
