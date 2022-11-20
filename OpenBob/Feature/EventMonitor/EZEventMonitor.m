@@ -144,7 +144,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
-    
+        
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     self.selectedTextFrame = [self convertRect:selectedTextFrame];
     
@@ -203,9 +203,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         // 2. get bounds from range
         AXValueRef selectionBoundsValue;
         AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
-        
+
         if (selectionBoundsError == kAXErrorSuccess) {
             // 3. AXValueRef bounds --> frame
+            // ⚠️ Sometimes, frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
             
             CFRelease(selectionRangeValue);
@@ -224,7 +225,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
-    
+
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == 53) { // escape
             NSLog(@"escape");
@@ -237,56 +238,60 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         
-        //        NSLog(@"type: %lu", (unsigned long)event.type);
-        
-        switch (event.type) {
-            case NSEventTypeLeftMouseUp: {
-                //                NSLog(@"mouse up");
-                if ([self checkIfLeftMouseDragged]) {
-                    //                    NSLog(@"Dragged selected");
-                    [self getSelectedText];
-                }
-                break;
-            }
-            case NSEventTypeLeftMouseDown: {
-                //                NSLog(@"mouse down");
-                self.startPoint = NSEvent.mouseLocation;
-                [self checkIfMouseLocationInFloatWindows];
-                
-                // check if it is a double click
-                if (event.clickCount == 2) {
-//                    NSLog(@"double click");
-                    [self getSelectedText];
-                } else {
-                    [self dismissPopButton];
-                }
-                break;
-            }
-            case NSEventTypeLeftMouseDragged: {
-                //                NSLog(@"NSEventTypeLeftMouseDragged");
-                break;
-            }
-            case NSEventTypeKeyDown: { // seems not work...
-                //                NSLog(@"key down");
-                [self dismissPopButton];
-                break;
-            }
-            case NSEventTypeScrollWheel:
-            case NSEventTypeMouseMoved: {
-                [self delayDismissPopButton];
-                break;
-            }
-                
-            default:
-                [self dismissPopButton];
-                break;
-        }
-        
-        [self updateRecoredEvents:event];
+        [self handleMonitorEvent:event];
     }];
 }
 
-- (void)checkIfMouseLocationInFloatWindows {
+- (void)handleMonitorEvent:(NSEvent *)event {
+    //        NSLog(@"type: %lu", (unsigned long)event.type);
+    
+    switch (event.type) {
+        case NSEventTypeLeftMouseUp: {
+            //                NSLog(@"mouse up");
+            if ([self checkIfLeftMouseDragged]) {
+                //                    NSLog(@"Dragged selected");
+                [self getSelectedText:YES];
+            }
+            break;
+        }
+        case NSEventTypeLeftMouseDown: {
+            //                NSLog(@"mouse down");
+            self.startPoint = NSEvent.mouseLocation;
+            [self dismissIfMouseLocationInFloatingWindows];
+            
+            // check if it is a double click
+            if (event.clickCount == 2) {
+//                    NSLog(@"double click");
+                [self getSelectedText:NO];
+            } else {
+                [self dismissPopButton];
+            }
+            break;
+        }
+        case NSEventTypeLeftMouseDragged: {
+            //                NSLog(@"NSEventTypeLeftMouseDragged");
+            break;
+        }
+        case NSEventTypeKeyDown: { // seems not work...
+            //                NSLog(@"key down");
+            [self dismissPopButton];
+            break;
+        }
+        case NSEventTypeScrollWheel:
+        case NSEventTypeMouseMoved: {
+            [self delayDismissPopButton];
+            break;
+        }
+            
+        default:
+            [self dismissPopButton];
+            break;
+    }
+    
+    [self updateRecoredEvents:event];
+}
+
+- (void)dismissIfMouseLocationInFloatingWindows {
     BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.miniWindow];
     BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.fixedWindow];
     
@@ -346,11 +351,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
-- (void)getSelectedText {
+- (void)getSelectedText:(BOOL)checkTextFrame {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         if (![self isValidSelectedFrame]) {
-            NSLog(@"Invalid selected frame");
-            return;
+            NSLog(@"Invalid selected frame: %@", @(self.selectedTextFrame));
+            if (checkTextFrame) {
+                return;
+            }
         }
         
         if (text.length > 0) {
