@@ -30,7 +30,7 @@
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
 
-        //        [self setupUI];
+        [self setupUI];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
@@ -48,6 +48,17 @@
     [titleView addSubview:self.titleBar];
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(titleView);
+    }];
+    
+    mm_weakify(self);
+    [self.titleBar.pinButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"pin");
+        mm_strongify(self);
+        
+        self.pin = !self.pin;
+        
+        NSWindowLevel level = self.pin ? kCGFloatingWindowLevel : kCGNormalWindowLevel;
+        self.level = level;
     }];
 }
 

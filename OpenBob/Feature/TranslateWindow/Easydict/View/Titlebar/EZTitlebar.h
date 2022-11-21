@@ -7,10 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZHoverButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTitlebar : NSView
+
+@property (nonatomic, strong) EZHoverButton *pinButton;
 
 @end
 
