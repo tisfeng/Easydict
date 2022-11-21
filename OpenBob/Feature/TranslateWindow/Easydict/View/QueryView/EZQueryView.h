@@ -8,10 +8,13 @@
 
 #import "EZCommonView.h"
 #import "EZTextView.h"
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryView : EZCommonView
+
+@property (nonatomic, strong) EZQueryModel *model;
 
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
@@ -23,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
 
-- (void)setQueryText:(NSString * _Nonnull)queryText;
+//- (void)setQueryText:(NSString * _Nonnull)queryText;
 
 @end
 

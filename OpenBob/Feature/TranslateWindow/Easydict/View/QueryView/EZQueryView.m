@@ -17,6 +17,8 @@
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZButton *detectButton;
+
+@property (nonatomic, assign) CGFloat textViewHeight;
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
@@ -87,13 +89,15 @@
 - (void)updateConstraints {
     [self updateCustomLayout];
 
-    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
-        make.height.mas_equalTo(self.textViewMiniHeight).priorityLow();
+        make.height.mas_greaterThanOrEqualTo(self.textViewMiniHeight).priorityLow();
+        
+//        make.height.mas_equalTo(self.textViewHeight);
     }];
 
-    [self.detectButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.detectButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(8);
         make.centerY.equalTo(self.textCopyButton);
         make.height.mas_equalTo(20);
@@ -117,6 +121,19 @@
 
         default:
             break;
+    }
+}
+
+- (void)setModel:(EZQueryModel *)model {
+    _model = model;
+    
+    if (model.queryText) {
+        self.textView.string = model.queryText;
+    }
+    
+    Language fromLanguage = model.fromLanguage;
+    if (fromLanguage != Language_auto) {
+        self.detectLanguage =  LanguageDescFromEnum(fromLanguage);
     }
 }
 
@@ -189,11 +206,20 @@
     if (text.length == 0) {
         self.detectButton.hidden = YES;
     }
+    
 
     CGFloat height = [self heightOfTextView];
+    self.textViewHeight = height;
+    
+//    [self setNeedsUpdateConstraints:YES];
+
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(height);
     }];
+    
+    // cannot layout this, otherwise will crash
+//    [self layoutSubtreeIfNeeded];
+//    NSLog(@"self.frame: %@", @(self.frame));
 
     if (self.updateQueryTextBlock) {
         self.updateQueryTextBlock(text, height);
@@ -213,7 +239,7 @@
     }
     
     height = ceil(height);
-    NSLog(@"final height: %.1f", height);
+//    NSLog(@"final height: %.1f", height);
 
     return height;
 }

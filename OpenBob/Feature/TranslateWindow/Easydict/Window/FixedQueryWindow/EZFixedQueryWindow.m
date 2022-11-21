@@ -29,7 +29,7 @@ static EZFixedQueryWindow *_instance;
 - (instancetype)init {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskBorderless | NSWindowStyleMaskResizable;
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        self.windowType = EZWindowTypeMini;
+        self.windowType = EZWindowTypeFixed;
 
         [self standardWindowButton:NSWindowZoomButton].hidden = YES;
         [self standardWindowButton:NSWindowCloseButton].hidden = YES;

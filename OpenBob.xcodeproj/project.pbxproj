@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
+		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZWindowFrameManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */; };
@@ -145,6 +146,8 @@
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
 		0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZGetViewController.m"; sourceTree = "<group>"; };
+		0309E1F2292BD6A100AFB76A /* EZQueryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryModel.h; sourceTree = "<group>"; };
+		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
 		03991156292927E000E1B06D /* EZTitlebar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitlebar.h; sourceTree = "<group>"; };
 		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
 		03991164292A8A4400E1B06D /* EZTitleBarMoveView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitleBarMoveView.h; sourceTree = "<group>"; };
@@ -399,6 +402,15 @@
 			path = TextView;
 			sourceTree = "<group>";
 		};
+		0309E1F1292BD67E00AFB76A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0309E1F2292BD6A100AFB76A /* EZQueryModel.h */,
+				0309E1F3292BD6A100AFB76A /* EZQueryModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		03991155292927A100E1B06D /* Titlebar */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,18 +536,18 @@
 		03B0223D29231FA6001C7E63 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				03B0224229231FA6001C7E63 /* TranslateLanguage.h */,
+				03B0224929231FA6001C7E63 /* TranslateLanguage.m */,
 				03B0223E29231FA6001C7E63 /* TranslateService.m */,
 				03B0223F29231FA6001C7E63 /* TranslateError.h */,
 				03B0224029231FA6001C7E63 /* OCRResult.h */,
 				03B0224129231FA6001C7E63 /* TranslateResult.h */,
-				03B0224229231FA6001C7E63 /* TranslateLanguage.h */,
 				03B0224329231FA6001C7E63 /* ServiceTypes.h */,
 				03B0224429231FA6001C7E63 /* DetectManager.m */,
 				03B0224529231FA6001C7E63 /* TranslateError.m */,
 				03B0224629231FA6001C7E63 /* TranslateService.h */,
 				03B0224729231FA6001C7E63 /* TranslateResult.m */,
 				03B0224829231FA6001C7E63 /* OCRResult.m */,
-				03B0224929231FA6001C7E63 /* TranslateLanguage.m */,
 				03B0224A29231FA6001C7E63 /* DetectManager.h */,
 				03B0224B29231FA6001C7E63 /* ServiceTypes.m */,
 			);
@@ -553,6 +565,7 @@
 		03B0224F29231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				0309E1F1292BD67E00AFB76A /* Model */,
 				03D0435B2928E29300E7559E /* Old */,
 				03B0225029231FA6001C7E63 /* Window */,
 				03B0225A29231FA6001C7E63 /* View */,
@@ -1250,6 +1263,7 @@
 				03B0231129231FA6001C7E63 /* WordResultView.m in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
+				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
 				03B0230E29231FA6001C7E63 /* TranslateWindowController.m in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
