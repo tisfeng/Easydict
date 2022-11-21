@@ -9,7 +9,6 @@
 
 @interface EZButton ()
 
-@property (nonatomic, assign) BOOL selected;
 @property (nonatomic, assign) BOOL hover;
 @property (nonatomic, assign) BOOL mouseUp;
 

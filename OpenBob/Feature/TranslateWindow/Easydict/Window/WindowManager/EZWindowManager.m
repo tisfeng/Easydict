@@ -65,42 +65,46 @@ static EZWindowManager *_instance;
 
 - (void)setupEventMonitor {
     [self.eventMonitor startMonitor];
-
+    
     mm_weakify(self);
     [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
         mm_strongify(self);
         self.selectedText = selectedText;
-
+        
         // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
         self.endPoint = self.eventMonitor.endPoint;
-
+        
         CGPoint point = [self getPopButtonWindowLocation];
         [self.popWindow setFrameTopLeftPoint:point];
         [self.popWindow orderFront:nil];
         [self.popWindow orderFrontRegardless];
-
-//        self.popWindow.level = kCGMaximumWindowLevel;
         
-//        [NSApp activateIgnoringOtherApps:YES];
-
+        //        self.popWindow.level = kCGMaximumWindowLevel;
+        
+        //        [NSApp activateIgnoringOtherApps:YES];
+        
         [self.mainWindow orderBack:nil];
     }];
-
+    
     [self.eventMonitor setDismissPopButtonBlock:^{
-        NSLog(@"dismiss pop button");
+        //        NSLog(@"dismiss pop button");
         mm_strongify(self);
         [self.popWindow close];
     }];
-
+    
     [self.eventMonitor setDismissMiniWindowBlock:^{
-        //        mm_strongify(self);
-        //        [self.miniWindow close];
+        mm_strongify(self);
+        if (!self.miniWindow.pin) {
+            [self.miniWindow close];
+        }
     }];
-
+    
     [self.eventMonitor setDismissFixedWindowBlock:^{
-//        mm_strongify(self);
-//        [self.fixedWindow close];
+        mm_strongify(self);
+        if (!self.fixedWindow.pin ) {
+            [self.fixedWindow close];
+        }
     }];
 }
 
@@ -131,7 +135,7 @@ static EZWindowManager *_instance;
 - (EZPopButtonWindow *)popWindow {
     if (!_popWindow) {
         _popWindow = [EZPopButtonWindow shared];
-
+        
         mm_weakify(self);
         [_popWindow.popButton setHoverBlock:^(EZButton *button) {
             mm_strongify(self);
@@ -229,13 +233,13 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-
+    
     [window setFrameTopLeftPoint:point];
     [window makeKeyAndOrderFront:nil];
     
     window.level = kCGFloatingWindowLevel;
-//    [NSApp activateIgnoringOtherApps:YES];
-
+    //    [NSApp activateIgnoringOtherApps:YES];
+    
     [_mainWindow orderBack:nil];
 }
 
@@ -262,12 +266,12 @@ static EZWindowManager *_instance;
         }];
     }
     if (!screen) return;
-
+    
     // 修正显示位置，用于保证window显示在鼠标所在的screen
     // 如果直接使用mouseLocation，可能会显示到其他screen（应该是由当前window在哪个屏幕的区域更多决定的）
     NSRect windowFrame = self.fixedWindow.frame;
     NSRect visibleFrame = screen.visibleFrame;
-
+    
     if (mouseLocation.x < visibleFrame.origin.x + 10) {
         mouseLocation.x = visibleFrame.origin.x + 10;
     }
@@ -280,7 +284,7 @@ static EZWindowManager *_instance;
     if (mouseLocation.y > visibleFrame.origin.y + visibleFrame.size.height - 10) {
         mouseLocation.y = visibleFrame.origin.y + visibleFrame.size.height - 10;
     }
-
+    
     // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
     [self.fixedWindow makeKeyAndOrderFront:nil];
     if (!self.fixedWindow.isKeyWindow) {
@@ -292,7 +296,7 @@ static EZWindowManager *_instance;
 
 - (NSScreen *)getMouseLocatedScreen {
     NSPoint mouseLocation = [NSEvent mouseLocation];
-
+    
     // 找到鼠标所在屏幕
     NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
         return NSPointInRect(mouseLocation, obj.frame) ? obj : nil;
@@ -303,7 +307,7 @@ static EZWindowManager *_instance;
             return MMPointInRect(mouseLocation, obj.frame) ? obj : nil;
         }];
     }
-
+    
     return screen;
 }
 
@@ -317,19 +321,19 @@ static EZWindowManager *_instance;
         NSLog(@"no get MouseLocation");
         return CGPointZero;
     }
-
+    
     NSPoint startLocation = self.startPoint;
     NSPoint endLocation = self.endPoint;
     NSPoint correctedLocation = endLocation;
-
+    
     if (endLocation.x < startLocation.x) {
         correctedLocation = startLocation;
     }
-
+    
     if (endLocation.y >= startLocation.y + self.eventMonitor.selectedTextFrame.size.height) {
         correctedLocation = startLocation;
     }
-
+    
     return correctedLocation;
 }
 
@@ -338,9 +342,9 @@ static EZWindowManager *_instance;
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
-
+    
     NSPoint popLocation = CGPointMake(location.x + self.offsetPoint.x, location.y + self.offsetPoint.y);
-
+    
     return popLocation;
 }
 
@@ -349,22 +353,22 @@ static EZWindowManager *_instance;
     if (CGPointEqualToPoint(popButtonLocation, CGPointZero)) {
         return CGPointZero;
     }
-
+    
     CGFloat x = popButtonLocation.x + self.popWindow.width + self.offsetPoint.x;
     CGFloat y = popButtonLocation.y - 2 * self.offsetPoint.y;
-
+    
     // left-bottom coordinate system
     // if x + miniWindow.width > screen.width, then x = screen.width - miniWindow.width
     NSScreen *screen = NSScreen.mainScreen;
     if (x + self.miniWindow.width > screen.frame.size.width) {
         x = screen.frame.size.width - self.miniWindow.width;
     }
-
+    
     // if y - miniWindow.height < 0, then y = miniWindow.height
     if (y - self.miniWindow.height < 0) {
         y = self.miniWindow.height;
     }
-
+    
     return CGPointMake(x, y);
 }
 
@@ -373,7 +377,7 @@ static EZWindowManager *_instance;
     CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
     CGFloat x = mainScreenSize.width - self.fixedWindow.width;
     CGFloat y = mainScreenSize.height;
-
+    
     return CGPointMake(x, y);
 }
 
@@ -388,7 +392,7 @@ static EZWindowManager *_instance;
     if ([frontmostApplication.bundleIdentifier isEqualToString:identifier]) {
         return;
     }
-
+    
     self.lastFrontmostApplication = frontmostApplication;
 }
 
@@ -399,12 +403,12 @@ static EZWindowManager *_instance;
         NSLog(@"App is not trusted");
         return;
     }
-
+    
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
-
+    
     //    [self.viewController resetWithState:@"正在取词..."];
     [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
         [self ensureShowAtMouseLocation];
@@ -468,7 +472,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-
+    
     [self.fixedWindow makeKeyAndOrderFront:nil];
     if (!self.fixedWindow.isKeyWindow) {
         // fail to make key window, then force activate application for key window

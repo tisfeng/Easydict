@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 };
 
 @property (nonatomic, assign) BOOL canSelected; // default NO
+@property (nonatomic, assign) BOOL selected;
 
 @property (nonatomic, assign) EZButtonState buttonState;
 
