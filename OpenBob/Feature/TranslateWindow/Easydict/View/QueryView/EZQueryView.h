@@ -7,13 +7,13 @@
 //
 
 #import "EZCommonView.h"
-#import "TextView.h"
+#import "EZTextView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryView : EZCommonView
 
-@property (nonatomic, strong) TextView *textView;
+@property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
 
 @property (nonatomic, copy) NSString *detectLanguage;

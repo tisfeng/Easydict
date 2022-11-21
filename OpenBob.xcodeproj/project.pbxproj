@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
+		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZWindowFrameManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */; };
@@ -139,6 +141,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
+		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
+		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
+		0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZGetViewController.m"; sourceTree = "<group>"; };
 		03991156292927E000E1B06D /* EZTitlebar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitlebar.h; sourceTree = "<group>"; };
 		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
 		03991164292A8A4400E1B06D /* EZTitleBarMoveView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitleBarMoveView.h; sourceTree = "<group>"; };
@@ -384,6 +390,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0309E1EA292B437C00AFB76A /* TextView */ = {
+			isa = PBXGroup;
+			children = (
+				0309E1EB292B439A00AFB76A /* EZTextView.h */,
+				0309E1EC292B439A00AFB76A /* EZTextView.m */,
+			);
+			path = TextView;
+			sourceTree = "<group>";
+		};
 		03991155292927A100E1B06D /* Titlebar */ = {
 			isa = PBXGroup;
 			children = (
@@ -573,43 +588,44 @@
 		03B0225A29231FA6001C7E63 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0309E1EA292B437C00AFB76A /* TextView */,
 				03991155292927A100E1B06D /* Titlebar */,
-				03B0225B29231FA6001C7E63 /* EZQueryView */,
-				03B0225E29231FA6001C7E63 /* EZWordResultView */,
-				03B0226129231FA6001C7E63 /* EZResultView */,
+				03B0225B29231FA6001C7E63 /* QueryView */,
+				03B0225E29231FA6001C7E63 /* WordResultView */,
+				03B0226129231FA6001C7E63 /* ResultView */,
 				03B0226429231FA6001C7E63 /* EZHoverButton */,
 				03B0226729231FA6001C7E63 /* EZButton */,
 				03B0226A29231FA6001C7E63 /* EZLabel */,
-				03B0226D29231FA6001C7E63 /* EZCommonView */,
+				03B0226D29231FA6001C7E63 /* CommonView */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		03B0225B29231FA6001C7E63 /* EZQueryView */ = {
+		03B0225B29231FA6001C7E63 /* QueryView */ = {
 			isa = PBXGroup;
 			children = (
 				03B0225D29231FA6001C7E63 /* EZQueryView.h */,
 				03B0225C29231FA6001C7E63 /* EZQueryView.m */,
 			);
-			path = EZQueryView;
+			path = QueryView;
 			sourceTree = "<group>";
 		};
-		03B0225E29231FA6001C7E63 /* EZWordResultView */ = {
+		03B0225E29231FA6001C7E63 /* WordResultView */ = {
 			isa = PBXGroup;
 			children = (
 				03B0226029231FA6001C7E63 /* EZWordResultView.h */,
 				03B0225F29231FA6001C7E63 /* EZWordResultView.m */,
 			);
-			path = EZWordResultView;
+			path = WordResultView;
 			sourceTree = "<group>";
 		};
-		03B0226129231FA6001C7E63 /* EZResultView */ = {
+		03B0226129231FA6001C7E63 /* ResultView */ = {
 			isa = PBXGroup;
 			children = (
 				03B0226329231FA6001C7E63 /* EZResultView.h */,
 				03B0226229231FA6001C7E63 /* EZResultView.m */,
 			);
-			path = EZResultView;
+			path = ResultView;
 			sourceTree = "<group>";
 		};
 		03B0226429231FA6001C7E63 /* EZHoverButton */ = {
@@ -639,13 +655,13 @@
 			path = EZLabel;
 			sourceTree = "<group>";
 		};
-		03B0226D29231FA6001C7E63 /* EZCommonView */ = {
+		03B0226D29231FA6001C7E63 /* CommonView */ = {
 			isa = PBXGroup;
 			children = (
 				03B0226F29231FA6001C7E63 /* EZCommonView.h */,
 				03B0226E29231FA6001C7E63 /* EZCommonView.m */,
 			);
-			path = EZCommonView;
+			path = CommonView;
 			sourceTree = "<group>";
 		};
 		03B0228629231FA6001C7E63 /* DarkMode */ = {
@@ -718,6 +734,10 @@
 		03B022A629231FA6001C7E63 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				03B022B029231FA6001C7E63 /* NSView+MM.h */,
+				03B022C329231FA6001C7E63 /* NSView+MM.m */,
+				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
+				0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */,
 				03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */,
 				03B022A829231FA6001C7E63 /* NSWindow+MM.m */,
 				03B022A929231FA6001C7E63 /* NSColor+MM.h */,
@@ -727,7 +747,6 @@
 				03B022AD29231FA6001C7E63 /* NSUserDefaults+MM.m */,
 				03B022AE29231FA6001C7E63 /* NSButton+MM.m */,
 				03B022AF29231FA6001C7E63 /* NSArray+MM.h */,
-				03B022B029231FA6001C7E63 /* NSView+MM.h */,
 				03B022B129231FA6001C7E63 /* NSMutableAttributedString+MM.h */,
 				03B022B229231FA6001C7E63 /* NSDictionary+MM.h */,
 				03B022B329231FA6001C7E63 /* NSWindow+MM.h */,
@@ -742,7 +761,6 @@
 				03B022BE29231FA6001C7E63 /* NSDictionary+MM.m */,
 				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
 				03B022C229231FA6001C7E63 /* NSMutableAttributedString+MM.m */,
-				03B022C329231FA6001C7E63 /* NSView+MM.m */,
 				03B022C429231FA6001C7E63 /* NSArray+MM.m */,
 			);
 			path = Category;
@@ -1221,6 +1239,7 @@
 			files = (
 				03B0231029231FA6001C7E63 /* ResultView.m in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
+				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
@@ -1301,6 +1320,7 @@
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03B022EB29231FA6001C7E63 /* Configuration.m in Sources */,
+				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022ED29231FA6001C7E63 /* BaiduTranslate.m in Sources */,
 				03B022E829231FA6001C7E63 /* main.m in Sources */,

@@ -29,10 +29,8 @@ static EZFixedQueryWindow *_instance;
 - (instancetype)init {
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskBorderless | NSWindowStyleMaskResizable;
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-        viewController.view.frame = EZWindowFrameManager.shared.fixedWindowFrame;
-        self.viewController = viewController;
-        
+        self.windowType = EZWindowTypeMini;
+
         [self standardWindowButton:NSWindowZoomButton].hidden = YES;
         [self standardWindowButton:NSWindowCloseButton].hidden = YES;
         [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
@@ -40,10 +38,7 @@ static EZFixedQueryWindow *_instance;
     return self;
 }
 
-- (EZWindowType)windowType {
-    return EZWindowTypeFixed;
-}
-
+#pragma mark - Rewrite
 - (BOOL)canBecomeKeyWindow {
     return YES;
 }
