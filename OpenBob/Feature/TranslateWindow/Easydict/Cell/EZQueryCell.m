@@ -17,6 +17,8 @@
 
 @interface EZQueryCell ()
 
+@property (nonatomic, strong) NSView *languageBarView;
+
 @property (nonatomic, strong) PopUpButton *fromLanguageButton;
 @property (nonatomic, strong) NSButton *transformButton;
 @property (nonatomic, strong) PopUpButton *toLanguageButton;
@@ -26,6 +28,7 @@
 @end
 
 @implementation EZQueryCell
+
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
@@ -40,40 +43,31 @@
     EZQueryView *queryView = [[EZQueryView alloc] initWithFrame:self.bounds];
     self.queryView = queryView;
     [self addSubview:queryView];
-    [queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self);
-    }];
     
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
-        self->_queryText = text;
-        
+        mm_strongify(self);
+                
         if (self.updateQueryTextBlock) {
             self.updateQueryTextBlock(text, textViewHeight);
         }
     }];
     
-    NSView *selectLanguageBarView = [[NSView alloc] init];
-    [self addSubview:selectLanguageBarView];
-    selectLanguageBarView.wantsLayer = YES;
-    selectLanguageBarView.layer.cornerRadius = EZCornerRadius_8;
-    [selectLanguageBarView excuteLight:^(NSView *barView) {
+    NSView *languageBarView = [[NSView alloc] init];
+    [self addSubview:languageBarView];
+    self.languageBarView = languageBarView;
+    languageBarView.wantsLayer = YES;
+    languageBarView.layer.cornerRadius = EZCornerRadius_8;
+    [languageBarView excuteLight:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
     } drak:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
     
-    [selectLanguageBarView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.queryView.mas_bottom).offset(EZMiniVerticalMargin_8);
-        make.left.right.equalTo(self);
-        make.height.mas_equalTo(35);
-        make.bottom.equalTo(self);
-    }];
     
-    CGFloat transformButtonWidth = 20;
     EZHoverButton *transformButton = [[EZHoverButton alloc] init];
     self.transformButton = transformButton;
-    [selectLanguageBarView addSubview:transformButton];
+    [languageBarView addSubview:transformButton];
     transformButton.toolTip = @"交换语言";
     transformButton.image = [NSImage imageNamed:@"transform"];
     
@@ -81,11 +75,6 @@
         transformButton.contentTintColor = NSColor.blackColor;
     } drak:^(id _Nonnull x) {
         transformButton.contentTintColor = NSColor.whiteColor;
-    }];
-    
-    [transformButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(selectLanguageBarView);
-        make.width.height.mas_equalTo(transformButtonWidth);
     }];
     
     [transformButton setClickBlock:^(EZButton * _Nonnull button) {
@@ -99,16 +88,10 @@
         [self enterAction];
     }];
     
-    CGFloat languageButtonWidth = 90;
-    CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
     
     self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [selectLanguageBarView addSubview:button];
-        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(selectLanguageBarView);
-            make.height.mas_equalTo(25);
-            make.left.equalTo(self).offset(padding);
-        }];
+        [languageBarView addSubview:button];
+       
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             if ([obj integerValue] == Language_auto) {
                 return @"自动检测";
@@ -130,13 +113,8 @@
     
     
     self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
-        [selectLanguageBarView addSubview:button];
-        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(self.fromLanguageButton);
-            make.width.height.equalTo(self.fromLanguageButton);
-            
-            make.right.equalTo(self).offset(-padding);
-        }];
+        [languageBarView addSubview:button];
+
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             if ([obj integerValue] == Language_auto) {
                 return @"自动选择";
@@ -157,6 +135,43 @@
     }];
 }
 
+- (void)updateConstraints {
+    [self.queryView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.equalTo(self);
+    }];
+    
+    [self.languageBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.queryView.mas_bottom).offset(EZMiniVerticalMargin_8);
+        make.left.right.equalTo(self);
+        make.height.mas_equalTo(35);
+        make.bottom.equalTo(self);
+    }];
+    
+    CGFloat languageButtonWidth = 90;
+    CGFloat transformButtonWidth = 20;
+
+    [self.transformButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.languageBarView);
+        make.width.height.mas_equalTo(transformButtonWidth);
+    }];
+    
+    CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
+    NSLog(@"query cell padding: %.1f", padding);
+
+    [self.fromLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.languageBarView);
+        make.height.mas_equalTo(25);
+        make.left.equalTo(self.languageBarView).offset(padding);
+    }];
+    
+    [self.toLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.width.height.equalTo(self.fromLanguageButton);
+        make.right.equalTo(self.languageBarView).offset(-padding);
+    }];
+    
+    [super updateConstraints];
+}
+
 - (void)enterAction {
     if (self.enterActionBlock) {
         self.enterActionBlock(self.queryView.copiedText);
@@ -166,13 +181,19 @@
 
 #pragma mark - Setter
 
-- (void)setQueryText:(NSString *)queryText {
-    _queryText = queryText;
-    
-    if (queryText) {
-        self.queryView.queryText = queryText;
-    }
-}
+//- (void)setQueryText:(NSString *)queryText {
+//    _queryText = queryText;
+//
+//    if (queryText) {
+//        self.queryView.queryText = queryText;
+//    }
+//}
+
+//- (void)setModel:(EZQueryModel *)model {
+//    _model = model;
+//    
+//    self.queryView.model = model;
+//}
 
 - (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
     _enterActionBlock = enterActionBlock;
@@ -190,6 +211,10 @@
     _copyTextBlock = copyActionBlock;
     
     self.queryView.copyTextBlock = copyActionBlock;
+}
+
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
 }
 
 @end

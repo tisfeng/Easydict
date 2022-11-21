@@ -20,6 +20,7 @@
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZTitlebar.h"
+#import "EZQueryModel.h"
 
 static NSString *EZColumnId = @"EZColumnId";
 static NSString *EZQueryCellId = @"EZQueryCellId";
@@ -29,13 +30,17 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 @property (nonatomic, strong) EZTitlebar *titleBar;
 
+@property (nonatomic, strong) EZQueryCell *queryCell;
+
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
-@property (nonatomic, copy) NSString *queryText;
+@property (nonatomic, strong) EZQueryModel *queryModel;
+
+//@property (nonatomic, copy) NSString *queryText;
 
 @property (nonatomic, strong) DetectManager *detectManager;
 @property (nonatomic, strong) EZQueryView *queryView;
@@ -72,14 +77,15 @@ static NSString *EZResultCellId = @"EZResultCellId";
     
     [self setup];
     
-//    [self startQueryText:@"good"];
+    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
 }
 
 - (void)setup {
-    self.serviceTypes = @[EZServiceTypeYoudao,
-                          EZServiceTypeGoogle,
-//                          EZServiceTypeBaidu,
+    self.serviceTypes = @[
+        EZServiceTypeGoogle,
+        EZServiceTypeYoudao,
+        EZServiceTypeBaidu,
     ];
 
     NSMutableArray *translateServices = [NSMutableArray array];
@@ -88,6 +94,8 @@ static NSString *EZResultCellId = @"EZResultCellId";
         [translateServices addObject:service];
     }
     self.services = translateServices;
+    
+    self.queryModel = [EZQueryModel new];
     
     self.detectManager = [[DetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -184,16 +192,17 @@ static NSString *EZResultCellId = @"EZResultCellId";
     return _tableView;
 }
 
-- (void)setQueryText:(NSString *)queryText {
-    _queryText = queryText;
-    
-    self.queryView.queryText = queryText;
+- (EZQueryCell *)queryCell {
+    if (!_queryCell) {
+        _queryCell = [self createQueryCell];
+    }
+    return _queryCell;
 }
 
 #pragma mark -
 
 - (void)startQuery {
-    [self startQueryText:self.queryText];
+    [self startQueryText:self.queryModel.queryText];
 }
 
 - (void)startQueryImage:(NSImage *)image {
@@ -201,7 +210,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 - (void)startQueryText:(NSString *)text {
-    self.queryText = text;
+    self.queryModel.queryText = text;
     
     __block Language fromLang = Configuration.shared.from;
     
@@ -210,7 +219,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
         return;
     }
     
-    [self.detectManager detect:self.queryText completion:^(Language language, NSError *error) {
+    [self.detectManager detect:text completion:^(Language language, NSError *error) {
         if (!error) {
             fromLang = language;
 //            NSLog(@"detect language: %ld", language);
@@ -228,6 +237,10 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 - (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
+    self.queryModel.queryText = text;
+    self.queryModel.fromLanguage = fromLang;
+    self.queryView.model = self.queryModel;
+    
     for (TranslateService *service in self.services) {
         [self queryText:text
                  serive:service
@@ -245,7 +258,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
            serive:(TranslateService *)service
          language:(Language)fromLang
        completion:(nonnull void (^)(TranslateResult *_Nullable translateResult, NSError *_Nullable error))completion {
-    [service translate:self.queryText
+    [service translate:self.queryModel.queryText
                   from:fromLang
                     to:Configuration.shared.to
             completion:completion];
@@ -289,8 +302,12 @@ static NSString *EZResultCellId = @"EZResultCellId";
     
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
-        queryCell.queryText = self.queryText;
+//        EZQueryCell *queryCell = self.queryCell;
+
         self.queryView = queryCell.queryView;
+        self.queryView.model = self.queryModel;
+
+        self.queryCell = queryCell;
         [self updateQueryViewDetectLanguage:self.detectManager.language];
 
         return queryCell;
@@ -306,10 +323,15 @@ static NSString *EZResultCellId = @"EZResultCellId";
     CGFloat height;
     
     if (row == 0) {
-        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
-        queryCell.queryText = self.queryText;
-        cellView = queryCell;
-        height = [cellView fittingSize].height;
+        if (self.queryModel.viewHeight) {
+            height = self.queryModel.viewHeight + 78;
+        } else {
+            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
+    //        EZQueryCell *queryCell = self.queryCell;
+            queryCell.queryView.model = self.queryModel;
+            cellView = queryCell;
+            height = [cellView fittingSize].height;
+        }
     } else {
         TranslateService *service = [self serviceAtRow:row];
         if (service.result && !service.result.isShowing) {
@@ -344,23 +366,19 @@ static NSString *EZResultCellId = @"EZResultCellId";
     mm_weakify(self);
     [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
         mm_strongify(self);
-        self->_queryText = text;
+        self.queryModel.queryText = text;
         
         if (textViewHeight != self.textViewHeight) {
             self.textViewHeight = textViewHeight;
+            self.queryModel.viewHeight = textViewHeight;
             
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                // recover input focus
-                [self.view.window makeFirstResponder:self.queryView.textView];
-                
-                // scroll to input view bottom
-                NSScrollView *scrollView = self.queryView.scrollView;
-                CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
-                [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
+                [self scrollQueryTextViewToBottom];
             }];
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+            // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
             [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
             [CATransaction commit];
         }
@@ -376,7 +394,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
         TranslateService *service = [self firstTranslateService];
         if (service) {
             Language lang = self.detectManager.language;
-            [service audio:self.queryText from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
+            [service audio:self.queryModel.queryText from:lang completion:^(NSString * _Nullable url, NSError * _Nullable error) {
                 if (url.length) {
                     [self playAudioWithURL:url];
                 }
@@ -390,6 +408,16 @@ static NSString *EZResultCellId = @"EZResultCellId";
     }];
     
     return queryCell;
+}
+
+- (void)scrollQueryTextViewToBottom {
+    // recover input focus
+    [self.view.window makeFirstResponder:self.queryView.textView];
+    
+    // scroll to input view bottom
+    NSScrollView *scrollView = self.queryView.scrollView;
+    CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
+    [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
 }
 
 - (TranslateService * _Nullable)firstTranslateService {
