@@ -30,18 +30,13 @@ static EZMainQueryWindow *_instance;
     NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-        viewController.view.frame = EZWindowFrameManager.shared.mainWindowFrame;
-        self.viewController = viewController;
+        self.windowType = EZWindowTypeMain;
         self.titleBar.hidden = YES;
     }
     return self;
 }
 
-
-- (EZWindowType)windowType {
-    return EZWindowTypeMain;
-}
+#pragma mark - Rewrite
 
 - (BOOL)canBecomeKeyWindow {
     return YES;

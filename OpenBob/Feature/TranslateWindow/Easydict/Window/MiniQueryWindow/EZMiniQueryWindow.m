@@ -12,15 +12,12 @@
 
 - (instancetype)init {
     if (self = [super initWithContentRect:CGRectZero styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:YES]) {
-        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-        self.viewController = viewController;
+        self.windowType = EZWindowTypeMini;
     }
     return self;
 }
 
-- (EZWindowType)windowType {
-    return EZWindowTypeMini;
-}
+#pragma mark - Rewrite
 
 - (BOOL)canBecomeKeyWindow {
     return YES;

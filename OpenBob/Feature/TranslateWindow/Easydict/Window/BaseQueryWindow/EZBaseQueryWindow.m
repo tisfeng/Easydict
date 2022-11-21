@@ -62,6 +62,14 @@
     }];
 }
 
+- (void)setWindowType:(EZWindowType)windowType {
+    _windowType = windowType;
+    
+    EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] initWithWindowType:windowType];
+    viewController.view.frame = [EZWindowFrameManager.shared windowFrameWithType:windowType];
+    self.viewController = viewController;
+}
+
 - (void)setViewController:(EZBaseQueryViewController *)viewController {
     _viewController = viewController;
 

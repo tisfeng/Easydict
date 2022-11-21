@@ -47,6 +47,13 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 @implementation EZBaseQueryViewController
 
+- (instancetype)initWithWindowType:(EZWindowType)type {
+    if (self = [super init]) {
+        self.windowType = type;
+    }
+    return self;
+}
+
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
     self.view = [[NSView alloc] initWithFrame:EZWindowFrameManager.shared.miniWindowFrame];
@@ -293,6 +300,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
     return resultCell;
 }
 
+// ⚠️ Need to optimize. cache height, only calculate once.
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     NSView *cellView;
     CGFloat height;
