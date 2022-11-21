@@ -32,7 +32,6 @@ static NSString *EZResultCellId = @"EZResultCellId";
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
-@property (nonatomic, assign) CGRect tableViewContentRect;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
@@ -299,8 +298,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
     CGFloat height;
     
     if (row == 0) {
-        CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
-        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:rect];
+        EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
         queryCell.queryText = self.queryText;
         cellView = queryCell;
         height = [cellView fittingSize].height;
@@ -326,9 +324,13 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 #pragma mark -
 
-- (EZQueryCell *)createQueryCell {
+- (CGRect)tableViewContentRect {
     CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
-    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:rect];
+    return rect;
+}
+
+- (EZQueryCell *)createQueryCell {
+    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
     queryCell.identifier = EZQueryCellId;
         
     mm_weakify(self);
@@ -390,8 +392,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 }
 
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
-    CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
-    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:rect];
+    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentRect]];
     resultCell.identifier = EZResultCellId;
         
     TranslateService *service = [self serviceAtRow:row];;

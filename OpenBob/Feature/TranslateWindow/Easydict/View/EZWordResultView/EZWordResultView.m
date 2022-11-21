@@ -442,24 +442,11 @@ static const CGFloat kVerticalPadding = 8;
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-    
-    // ⚠️ when app start, EZWindowManager has not alloc completedo
-    
-//    CGFloat windowWidth = [EZWindowFrameManager.shared windowFrameWithType:EZWindowTypeMini].size.width;
-//    NSLog(@"window width: %.2f", windowWidth);
-    
+        
     CGFloat width = self.width - leftMargin - rightMargin;
-
-    
-//    CGFloat width = windowWidth - leftMargin - rightMargin - 2 * EZMiniHorizontalMargin_12;
-    if (width < 0) {
-        width = 100;
-    }
-    
 //    NSLog(@"text: %@, width: %@", label.text, @(width));
     
     // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-    //    label.width = width;
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
 //    NSLog(@"height: %@", @(height));
 

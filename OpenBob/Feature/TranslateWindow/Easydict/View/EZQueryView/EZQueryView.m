@@ -170,12 +170,8 @@ static CGFloat kTextViewMiniHeight = 60;
 }
 
 - (CGFloat)heightOfTextView {
-//    CGFloat windowWidth = EZWindowFrameManager.shared.miniWindowFrame;
-    CGFloat width = self.window.width - 2 * EZMiniHorizontalMargin_12;
-    
     CGFloat height = [self.textView getHeightWithWidth:self.width];
-    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
-    NSLog(@"width: %.2f", self.width);
+//    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
 
     CGFloat maxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
     if (height < kTextViewMiniHeight) {
