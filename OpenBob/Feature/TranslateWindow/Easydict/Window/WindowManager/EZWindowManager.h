@@ -15,7 +15,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @interface EZWindowManager : NSObject
 
 @property (nonatomic, strong) EZMainQueryWindow *mainWindow;
@@ -24,12 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
 @property (nonatomic, assign) EZWindowType showingWindowType;
-//@property (nonatomic, assign) CGRect showingWindowFrame;
 
 + (instancetype)shared;
 
-- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window;
-- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
+//- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window;
 
 @end
 

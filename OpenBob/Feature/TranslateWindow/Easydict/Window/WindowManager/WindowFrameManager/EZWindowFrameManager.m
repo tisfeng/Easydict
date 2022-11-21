@@ -58,5 +58,4 @@ static EZWindowFrameManager *_instance;
     return [self windowFrameWithType:window.windowType];
 }
 
-
 @end

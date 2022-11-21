@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import "EZBaseQueryWindow.h"
 
 @class EZBaseQueryWindow;
 
@@ -21,6 +20,7 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 };
 
 
+/// Avoid window manager and base window recycling retain.
 @interface EZWindowFrameManager : NSObject
 
 @property (nonatomic, assign) CGRect miniWindowFrame;
