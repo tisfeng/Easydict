@@ -70,9 +70,6 @@
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
     //    NSLog(@"windowDidBecomeKey: %@", self);
-
-    // Init window manager when window alloc and load finished, to avoid recycle calling.
-    //    [EZWindowManager shared];
 }
 
 #pragma mark - NSNotification
@@ -88,9 +85,8 @@
         self.viewController.resizeWindowBlock();
     }
     
-    EZWindowType type = [EZWindowManager.shared getWindowType:self];
     EZWindowFrameManager *frameManager = [EZWindowFrameManager shared];
-    switch (type) {
+    switch (self.windowType) {
         case EZWindowTypeMain:
             frameManager.mainWindowFrame = self.frame;
             break;

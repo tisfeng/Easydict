@@ -38,19 +38,10 @@ static EZMainQueryWindow *_instance;
     return self;
 }
 
-//- (EZBaseQueryViewController *)viewController {
-//    if (!_viewController) {
-//        EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] init];
-//        viewController.view.frame = EZWindowFrameManager.shared.miniWindowFrame;
-//        _viewController = viewController;
-//    }
-//    return _viewController;
-//}
 
 - (EZWindowType)windowType {
     return EZWindowTypeMain;
 }
-
 
 - (BOOL)canBecomeKeyWindow {
     return YES;

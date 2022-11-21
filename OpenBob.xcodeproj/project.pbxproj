@@ -562,10 +562,10 @@
 		03B0225529231FA6001C7E63 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				03B0225629231FA6001C7E63 /* EZResultCell.m */,
+				03B0225929231FA6001C7E63 /* EZQueryCell.h */,
 				03B0225729231FA6001C7E63 /* EZQueryCell.m */,
 				03B0225829231FA6001C7E63 /* EZResultCell.h */,
-				03B0225929231FA6001C7E63 /* EZQueryCell.h */,
+				03B0225629231FA6001C7E63 /* EZResultCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";

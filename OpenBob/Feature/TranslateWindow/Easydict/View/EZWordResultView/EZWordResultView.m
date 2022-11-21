@@ -448,8 +448,7 @@ static const CGFloat kVerticalPadding = 8;
 //    CGFloat windowWidth = [EZWindowFrameManager.shared windowFrameWithType:EZWindowTypeMini].size.width;
 //    NSLog(@"window width: %.2f", windowWidth);
     
-    
-    CGFloat width = self.width - 2 * EZMiniHorizontalMargin_12 - leftMargin - rightMargin;
+    CGFloat width = self.width - leftMargin - rightMargin;
 
     
 //    CGFloat width = windowWidth - leftMargin - rightMargin - 2 * EZMiniHorizontalMargin_12;

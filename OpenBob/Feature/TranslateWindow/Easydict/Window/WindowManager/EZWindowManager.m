@@ -18,11 +18,11 @@
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
+@property (nonatomic, copy) NSString *selectedText;
 
 @property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
-@property (nonatomic, copy) NSString *selectedText;
 
 @end
 
@@ -138,33 +138,22 @@ static EZWindowManager *_instance;
             [self.popWindow close];
             
             [self showFloatingWindowWithQueryText:self.selectedText];
-//            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];;
         }];
     }
     return _popWindow;
 }
 
-//- (void)setShowingWindowType:(EZWindowType)showingWindowType {
-//    _showingWindowType = showingWindowType;
-//    
-//    _showingWindowFrame = [self windowFrameWithType:showingWindowType];
+#pragma mark - Others
+
+//- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window {
+//    EZWindowType type = EZWindowTypeMain;
+//    if ([window isKindOfClass:[EZMiniQueryWindow class]]) {
+//        type = EZWindowTypeMini;
+//    } else if ([window isKindOfClass:[EZFixedQueryWindow class]]) {
+//        type = EZWindowTypeFixed;
+//    }
+//    return type;
 //}
-
-//- (CGRect)showingWindowFrame {
-//    return [self windowFrameWithType:self.showingWindowType];
-//}
-
-#pragma mark -
-
-- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window {
-    EZWindowType type = EZWindowTypeMain;
-    if ([window isKindOfClass:[EZMiniQueryWindow class]]) {
-        type = EZWindowTypeMini;
-    } else if ([window isKindOfClass:[EZFixedQueryWindow class]]) {
-        type = EZWindowTypeFixed;
-    }
-    return type;
-}
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
     EZBaseQueryWindow *window;
@@ -185,25 +174,25 @@ static EZWindowManager *_instance;
     return window;
 }
 
-- (CGRect)windowFrameWithType:(EZWindowType)type {
-    CGRect frame;
-    switch (type) {
-        case EZWindowTypeMain: {
-            frame = self.mainWindow.frame;
-            break;
-        }
-        case EZWindowTypeFixed: {
-            frame = self.fixedWindow.frame;
-            break;
-        }
-        default: {
-            CGPoint location = [self getMiniWindowLocation];
-            frame = CGRectMake(location.x, location.y, EZMiniQueryWindowWidth, EZMiniQueryWindowHeight);
-            break;
-        }
-    }
-    return frame;
-}
+//- (CGRect)windowFrameWithType:(EZWindowType)type {
+//    CGRect frame;
+//    switch (type) {
+//        case EZWindowTypeMain: {
+//            frame = self.mainWindow.frame;
+//            break;
+//        }
+//        case EZWindowTypeFixed: {
+//            frame = self.fixedWindow.frame;
+//            break;
+//        }
+//        default: {
+//            CGPoint location = [self getMiniWindowLocation];
+//            frame = CGRectMake(location.x, location.y, EZMiniQueryWindowWidth, EZMiniQueryWindowHeight);
+//            break;
+//        }
+//    }
+//    return frame;
+//}
 
 - (CGPoint)windowLocationWithType:(EZWindowType)type {
     CGPoint location;
