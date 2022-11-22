@@ -23,6 +23,13 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 /// Avoid window manager and base window recycling retain.
 @interface EZWindowFrameManager : NSObject
 
+@property (nonatomic, assign) CGFloat miniWindowWidth; // 300
+@property (nonatomic, assign) CGFloat miniWindowHeight; // 200
+@property (nonatomic, assign) CGFloat maxWindowHeight; // 
+
+@property (nonatomic, assign) CGFloat inputViewMiniHeight; // 30, or 60
+@property (nonatomic, assign) CGFloat inputViewMaxHeight; //
+
 @property (nonatomic, assign) CGRect miniWindowFrame;
 @property (nonatomic, assign) CGRect fixedWindowFrame;
 @property (nonatomic, assign) CGRect mainWindowFrame;
@@ -31,6 +38,8 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 
 - (CGRect)windowFrameWithType:(EZWindowType)type;
 - (CGRect)windowFrame:(EZBaseQueryWindow *)window;
+
+- (CGFloat)getInputViewMiniHeight:(EZWindowType)type;
 
 @end
 

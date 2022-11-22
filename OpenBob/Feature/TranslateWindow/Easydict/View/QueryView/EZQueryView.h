@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
 
+@property (nonatomic, assign) CGFloat textViewMiniHeight;
+
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
 
 //- (void)setQueryText:(NSString * _Nonnull)queryText;
