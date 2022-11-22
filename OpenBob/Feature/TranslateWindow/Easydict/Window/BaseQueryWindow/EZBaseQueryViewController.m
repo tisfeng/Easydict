@@ -275,6 +275,10 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 - (void)updateResultCell:(TranslateResult *)result reloadData:(BOOL)reloadData {
+    if (!result) {
+        NSLog(@"resutl is nil");
+        return;
+    }
     [self updateViewCellResults:@[result]reloadData:reloadData];
 }
 
@@ -293,7 +297,7 @@ static NSString *EZColumnId = @"EZColumnId";
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
-        context.duration = 0.4;
+        context.duration = 0.3;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     }];
 }
