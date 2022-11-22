@@ -19,7 +19,6 @@
 @property (nonatomic, strong) EZButton *detectButton;
 
 @property (nonatomic, assign) CGFloat textViewHeight;
-@property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
 @end
@@ -110,15 +109,16 @@
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
     EZWindowType windowType = viewController.windowType;
 
+    self.textViewHeight = [EZWindowFrameManager.shared getInputViewMiniHeight:windowType];
+    
     switch (windowType) {
         case EZWindowTypeMini:
-            self.textViewMiniHeight = 30; // one line
-            self.textViewMaxHeight = 2 * self.textViewMiniHeight;
             self.textView.textContainerInset = NSMakeSize(4, 4);
             break;
         case EZWindowTypeMain:
-        case EZWindowTypeFixed:
-
+        case EZWindowTypeFixed: {
+            self.textView.textContainerInset = NSMakeSize(8, 8);
+        }
         default:
             break;
     }

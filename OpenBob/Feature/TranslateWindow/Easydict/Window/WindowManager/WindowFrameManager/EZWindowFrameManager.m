@@ -34,11 +34,36 @@ static EZWindowFrameManager *_instance;
 
 - (instancetype)init {
     if (self = [super init]) {
-        _mainWindowFrame = CGRectMake(0, 0, 1.5 * EZMiniQueryWindowWidth, 2 * EZMiniQueryWindowWidth);
-        _fixedWindowFrame = CGRectMake(0, 0, 1.2 * EZMiniQueryWindowWidth, 2.8 * EZMiniQueryWindowWidth);
-        _miniWindowFrame = CGRectMake(0, 0, EZMiniQueryWindowWidth, EZMiniQueryWindowWidth);
+        [self commonInitialize];
     }
     return self;
+}
+
+- (void)commonInitialize {
+    self.miniWindowWidth = 300;
+    self.miniWindowHeight = 200;
+    self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height; // 1079
+    
+    self.inputViewMiniHeight = 60;
+    self.inputViewMaxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
+    
+    self.miniWindowFrame = CGRectMake(0, 0, self.miniWindowWidth, self.miniWindowHeight);
+    self.fixedWindowFrame = self.miniWindowFrame;
+    self.mainWindowFrame = self.miniWindowFrame;
+}
+
+
+- (CGFloat)getInputViewMiniHeight:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMain:
+            return 60;
+        case EZWindowTypeFixed:
+            return 60;
+        case EZWindowTypeMini:
+            return 30; // one line
+        default:
+            return 30;
+    }
 }
 
 - (CGRect)windowFrameWithType:(EZWindowType)type {

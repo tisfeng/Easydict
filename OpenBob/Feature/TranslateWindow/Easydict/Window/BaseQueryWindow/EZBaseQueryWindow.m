@@ -66,7 +66,7 @@
     _windowType = windowType;
     
     EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] initWithWindowType:windowType];
-    viewController.view.frame = [EZWindowFrameManager.shared windowFrameWithType:windowType];
+//    viewController.view.frame = [EZWindowFrameManager.shared windowFrameWithType:windowType];
     self.viewController = viewController;
 }
 

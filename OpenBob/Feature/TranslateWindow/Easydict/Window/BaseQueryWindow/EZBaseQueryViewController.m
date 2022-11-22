@@ -23,13 +23,13 @@
 #import "EZQueryModel.h"
 #import "EZSelectLanguageCell.h"
 #import "EZServiceStorage.h"
+#import <KVOController/KVOController.h>
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
 static NSString *EZColumnId = @"EZColumnId";
-
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -45,13 +45,15 @@ static NSString *EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
-//@property (nonatomic, copy) NSString *queryText;
-
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
-@property (nonatomic, assign) CGFloat textViewHeight;
+@property (nonatomic, assign) CGFloat inputViewHeight;
+
+@property (nonatomic, strong) MASConstraint *scrollViewHeight;
+
+@property (nonatomic, strong) FBKVOController *kvo;
 
 @end
 
@@ -82,7 +84,7 @@ static NSString *EZColumnId = @"EZColumnId";
     
     [self setup];
     
-//    [self startQueryText:@"good"];
+    //    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
 }
 
@@ -92,7 +94,7 @@ static NSString *EZColumnId = @"EZColumnId";
         EZServiceTypeYoudao,
         EZServiceTypeBaidu,
     ];
-
+    
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
         TranslateService *service = [EZServiceTypes serviceWithType:type];
@@ -101,6 +103,7 @@ static NSString *EZColumnId = @"EZColumnId";
     self.services = translateServices;
     
     self.queryModel = [EZQueryModel new];
+    self.inputViewHeight = [EZWindowFrameManager.shared getInputViewMiniHeight:self.windowType];
     
     self.detectManager = [[EZDetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -112,6 +115,21 @@ static NSString *EZColumnId = @"EZColumnId";
         mm_strongify(self);
         [self.tableView reloadData];
     }];
+    
+    self.kvo = [FBKVOController controllerWithObserver:self];
+    [self.kvo observe:self.scrollView.documentView
+              keyPath:@"frame"
+              options: NSKeyValueObservingOptionInitial
+     | NSKeyValueObservingOptionOld
+     | NSKeyValueObservingOptionNew
+                block:^(id  _Nullable observer, id  _Nonnull object, NSDictionary<NSString *,id> * _Nonnull change) {
+        NSLog(@"documentView.frame: %@", change[NSKeyValueChangeNewKey]);
+    }];
+    
+    //  I don't know why NSTableBackgroundView cannot be obtained immediately, but must wait for a while to get it.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self updateWindowViewHeight];
+    });
 }
 
 #pragma mark - Getter
@@ -119,21 +137,17 @@ static NSString *EZColumnId = @"EZColumnId";
 - (EZTitlebar *)titleBar {
     if (!_titleBar) {
         EZTitlebar *titleBar = [[EZTitlebar alloc] init];
-        _titleBar = titleBar;
         [self.view addSubview:titleBar];
-        [titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.right.equalTo(self.view);
-            make.height.mas_equalTo(self.customTitleBarHeight); // system title bar height is 28
-        }];
+        _titleBar = titleBar;
     }
     return _titleBar;
 }
 
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
-        NSScrollView *scrollView = [[NSScrollView alloc] init];
-        _scrollView = scrollView;
+        NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
+        _scrollView = scrollView;
         
         [scrollView excuteLight:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgLightColor;
@@ -142,17 +156,8 @@ static NSString *EZColumnId = @"EZColumnId";
         }];
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
-        scrollView.frame = self.view.bounds;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
-        
-        [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.titleBar.mas_bottom).offset(0);
-            make.left.right.bottom.equalTo(self.view);
-//            make.edges.equalTo(self.view);
-            make.width.mas_greaterThanOrEqualTo(EZMiniQueryWindowWidth);
-            make.height.mas_greaterThanOrEqualTo(EZMiniQueryWindowHeight);
-        }];
-        
+                
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
     }
     return _scrollView;
@@ -204,6 +209,24 @@ static NSString *EZColumnId = @"EZColumnId";
     return _queryCell;
 }
 
+#pragma mark - Layout
+
+- (void)updateViewConstraints {
+    [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.equalTo(self.view);
+        make.height.mas_equalTo(self.customTitleBarHeight); // system title bar height is 28
+    }];
+    
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.titleBar.mas_bottom).offset(0);
+        make.left.right.bottom.equalTo(self.view);
+        make.width.mas_greaterThanOrEqualTo(EZWindowFrameManager.shared.miniWindowWidth);
+        self.scrollViewHeight = make.height.mas_greaterThanOrEqualTo(EZWindowFrameManager.shared.miniWindowHeight);
+    }];
+    
+    [super updateViewConstraints];
+}
+
 #pragma mark -
 
 - (void)startQuery {
@@ -227,7 +250,7 @@ static NSString *EZColumnId = @"EZColumnId";
     [self.detectManager detect:text completion:^(Language language, NSError *error) {
         if (!error) {
             fromLang = language;
-//            NSLog(@"detect language: %ld", language);
+            //            NSLog(@"detect language: %ld", language);
         }
         [self updateQueryViewDetectLanguage:fromLang];
         [self queryText:text fromLangunage:fromLang];
@@ -299,8 +322,12 @@ static NSString *EZColumnId = @"EZColumnId";
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
         context.duration = 0.3;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    } completionHandler:^{
+        [self updateWindowViewHeight];
     }];
 }
+
+
 
 #pragma mark - NSTableViewDataSource
 
@@ -312,7 +339,7 @@ static NSString *EZColumnId = @"EZColumnId";
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-//    NSLog(@"tableView for row: %ld", row);
+    //    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
@@ -323,7 +350,7 @@ static NSString *EZColumnId = @"EZColumnId";
         return queryCell;
     }
     
- if (self.windowType != EZWindowTypeMini && row == 1) {
+    if (self.windowType != EZWindowTypeMini && row == 1) {
         EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
         return selectCell;
     }
@@ -355,8 +382,8 @@ static NSString *EZColumnId = @"EZColumnId";
             height = [resultCell fittingSize].height ?: kResultViewMiniHeight;
         }
     }
-        
-//    NSLog(@"row: %ld, height: %@", row, @(height));
+    
+    //    NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -376,14 +403,14 @@ static NSString *EZColumnId = @"EZColumnId";
 - (EZQueryCell *)createQueryCell {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
     queryCell.identifier = EZQueryCellId;
-        
+    
     mm_weakify(self);
     [queryCell setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
         mm_strongify(self);
         self.queryModel.queryText = text;
         
-        if (textViewHeight != self.textViewHeight) {
-            self.textViewHeight = textViewHeight;
+        if (textViewHeight != self.inputViewHeight) {
+            self.inputViewHeight = textViewHeight;
             self.queryModel.viewHeight = textViewHeight;
             
             [CATransaction begin];
@@ -444,7 +471,7 @@ static NSString *EZColumnId = @"EZColumnId";
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentRect]];
     resultCell.identifier = EZResultCellId;
-        
+    
     TranslateService *service = [self serviceAtRow:row];;
     TranslateResult *result = service.result;
     if (!result) {
@@ -561,6 +588,48 @@ static NSString *EZColumnId = @"EZColumnId";
     
     [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]]];
     [self.player play];
+}
+
+- (void)updateWindowViewHeight {
+    CGFloat height = [self getScrollViewHeight];
+    NSLog(@"contentHeight: %@", @(height));
+    
+    height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
+    
+    height += 28; // title bar height is 28
+    
+    // Since chaneg height will cause position change, we need to adjust to keep top-left coordinate position.
+    NSWindow *window = self.view.window;
+    CGFloat y = window.y + window.height - height;
+    [self.view.window setFrameOrigin:CGPointMake(window.x, y)];
+    
+    self.view.window.height = height; // title bar height is 28
+}
+
+- (CGFloat)getScrollViewHeight {
+    CGFloat height = [self getContentHeight];
+    //
+    height = MAX(height, EZWindowFrameManager.shared.miniWindowHeight);
+    height = MIN(height, EZWindowFrameManager.shared.maxWindowHeight);
+    
+    return height;
+}
+
+- (CGFloat)getContentHeight {
+    CGFloat height = self.scrollView.documentView.height;
+    NSLog(@"tableView documentView height: %@", @(height));
+    
+    for (NSView *view in self.tableView.subviews) {
+        if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
+            NSLog(@"backgroundView: %@", @(view.frame));
+            
+            CGFloat blankViewHeight = view.height;
+            height -= blankViewHeight;
+        }
+    }
+    NSLog(@"tableView content height: %@", @(height));
+    
+    return height;
 }
 
 @end
