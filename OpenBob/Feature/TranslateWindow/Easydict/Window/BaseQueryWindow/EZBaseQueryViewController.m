@@ -21,10 +21,14 @@
 #import "EZResultView.h"
 #import "EZTitlebar.h"
 #import "EZQueryModel.h"
+#import "EZSelectLanguageCell.h"
+
+static NSString *EZQueryCellId = @"EZQueryCellId";
+static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString *EZResultCellId = @"EZResultCellId";
 
 static NSString *EZColumnId = @"EZColumnId";
-static NSString *EZQueryCellId = @"EZQueryCellId";
-static NSString *EZResultCellId = @"EZResultCellId";
+
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -77,7 +81,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
     
     [self setup];
     
-    [self startQueryText:@"good"];
+//    [self startQueryText:@"good"];
     //    [self startQueryText:@"你好\n世界"];
 }
 
@@ -273,7 +277,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
-        [rowIndexes addIndex:row + 1];
+        [rowIndexes addIndex:row + [self resultCellOffset]];
     }
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData];
 }
@@ -291,7 +295,7 @@ static NSString *EZResultCellId = @"EZResultCellId";
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return self.services.count + 1;
+    return self.services.count + [self resultCellOffset];
 }
 
 #pragma mark - NSTableViewDelegate
@@ -302,15 +306,22 @@ static NSString *EZResultCellId = @"EZResultCellId";
     
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
-//        EZQueryCell *queryCell = self.queryCell;
-
         self.queryView = queryCell.queryView;
         self.queryView.model = self.queryModel;
-
         self.queryCell = queryCell;
         [self updateQueryViewDetectLanguage:self.detectManager.language];
-
         return queryCell;
+    }
+    
+ if (self.windowType != EZWindowTypeMini && row == 1) {
+        EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
+
+//        EZSelectLanguageCell *selectCell = [tableView makeViewWithIdentifier:EZSelectLanguageCellId owner:self];
+//        if (!selectCell) {
+//            selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
+//            selectCell.identifier = EZSelectLanguageCellId;
+//        }
+        return selectCell;
     }
     
     EZResultCell *resultCell = [self resultCellAtRow:row];
@@ -319,26 +330,25 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 // ⚠️ Need to optimize. cache height, only calculate once.
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
-    NSView *cellView;
     CGFloat height;
     
     if (row == 0) {
         if (self.queryModel.viewHeight) {
-            height = self.queryModel.viewHeight + 78;
+            height = self.queryModel.viewHeight + 30;
         } else {
             EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
-    //        EZQueryCell *queryCell = self.queryCell;
             queryCell.queryView.model = self.queryModel;
-            cellView = queryCell;
-            height = [cellView fittingSize].height;
+            height = [queryCell fittingSize].height;
         }
+    } else if (self.windowType != EZWindowTypeMini && row == 1) {
+        height = 35;
     } else {
         TranslateService *service = [self serviceAtRow:row];
         if (service.result && !service.result.isShowing) {
             height = kResultViewMiniHeight;
         } else {
-            cellView = [self resultCellAtRow:row];
-            height = [cellView fittingSize].height ?: kResultViewMiniHeight;
+            EZResultCell *resultCell = [self resultCellAtRow:row];
+            height = [resultCell fittingSize].height ?: kResultViewMiniHeight;
         }
     }
         
@@ -443,8 +453,26 @@ static NSString *EZResultCellId = @"EZResultCellId";
     return resultCell;
 }
 
+- (NSInteger)resultCellOffset {
+    NSInteger offset;
+    switch (self.windowType) {
+        case EZWindowTypeMini: {
+            offset = 1;
+            break;
+        }
+        case EZWindowTypeMain:
+        case EZWindowTypeFixed: {
+            offset = 2;
+        }
+        default:
+            break;
+    }
+    
+    return offset;
+}
+
 - (TranslateService *)serviceAtRow:(NSInteger)row {
-    NSInteger index = row - 1;
+    NSInteger index = row - [self resultCellOffset];
     TranslateService *service = self.services[index];
     return service;
 }

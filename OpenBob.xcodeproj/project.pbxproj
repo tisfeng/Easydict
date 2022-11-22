@@ -10,6 +10,7 @@
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
+		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZWindowFrameManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */; };
@@ -148,6 +149,8 @@
 		0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZGetViewController.m"; sourceTree = "<group>"; };
 		0309E1F2292BD6A100AFB76A /* EZQueryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryModel.h; sourceTree = "<group>"; };
 		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
+		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
+		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		03991156292927E000E1B06D /* EZTitlebar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitlebar.h; sourceTree = "<group>"; };
 		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
 		03991164292A8A4400E1B06D /* EZTitleBarMoveView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitleBarMoveView.h; sourceTree = "<group>"; };
@@ -592,6 +595,8 @@
 			children = (
 				03B0225929231FA6001C7E63 /* EZQueryCell.h */,
 				03B0225729231FA6001C7E63 /* EZQueryCell.m */,
+				0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */,
+				0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */,
 				03B0225829231FA6001C7E63 /* EZResultCell.h */,
 				03B0225629231FA6001C7E63 /* EZResultCell.m */,
 			);
@@ -1304,6 +1309,7 @@
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				03B0230929231FA6001C7E63 /* NormalResultView.m in Sources */,
+				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B022F629231FA6001C7E63 /* TranslateError.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,

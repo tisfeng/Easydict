@@ -91,7 +91,7 @@
 
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
-        make.bottom.equalTo(self.audioButton.mas_top).offset(-5);
+        make.bottom.equalTo(self.audioButton.mas_top).offset(0);
         make.height.mas_greaterThanOrEqualTo(self.textViewMiniHeight).priorityLow();
         
 //        make.height.mas_equalTo(self.textViewHeight);
