@@ -42,7 +42,7 @@
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
     
-    NSView *languageBarView = [[NSView alloc] init];
+    NSView *languageBarView = [[NSView alloc] initWithFrame:self.bounds];
     [self addSubview:languageBarView];
     self.languageBarView = languageBarView;
     languageBarView.wantsLayer = YES;
@@ -52,6 +52,7 @@
     } drak:^(NSView *barView) {
         barView.layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
+    languageBarView.mas_key = @"languageBarView";
     
     
     EZHoverButton *transformButton = [[EZHoverButton alloc] init];
@@ -77,11 +78,12 @@
         
         [self enterAction];
     }];
-    
+    transformButton.mas_key = @"transformButton";
     
     self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
-       
+        // Only resolve layout warning.
+        button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             if ([obj integerValue] == Language_auto) {
                 return @"自动检测";
@@ -100,11 +102,12 @@
             }
         }];
     }];
+    self.fromLanguageButton.mas_key = @"fromLanguageButton";
     
     
     self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
-
+        button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             if ([obj integerValue] == Language_auto) {
                 return @"自动选择";
@@ -123,6 +126,7 @@
             }
         }];
     }];
+    self.toLanguageButton.mas_key = @"toLanguageButton";
 }
 
 - (void)updateConstraints {
@@ -132,15 +136,15 @@
     
     CGFloat languageButtonWidth = 90;
     CGFloat transformButtonWidth = 20;
-
+    
     [self.transformButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.languageBarView);
         make.width.height.mas_equalTo(transformButtonWidth);
     }];
     
     CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
-//    NSLog(@"query cell padding: %.1f", padding);
-
+    //    NSLog(@"query cell padding: %.1f", padding);
+    
     [self.fromLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(25);
