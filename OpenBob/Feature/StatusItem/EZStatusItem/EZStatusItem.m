@@ -194,9 +194,9 @@ static EZStatusItem *_instance;
         }
     };
 
-    configItemShortcut(self.selectionItem, SelectionShortcutKey);
-    configItemShortcut(self.snipItem, SnipShortcutKey);
-    configItemShortcut(self.inputItem, InputShortcutKey);
+    configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
+    configItemShortcut(self.snipItem, EZSnipShortcutKey);
+    configItemShortcut(self.inputItem, EZInputShortcutKey);
 }
 
 @end

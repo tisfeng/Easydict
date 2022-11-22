@@ -34,13 +34,13 @@
     // Do view setup here.
 
     self.selectionShortcutView.style = MASShortcutViewStyleTexturedRect;
-    [self.selectionShortcutView setAssociatedUserDefaultsKey:SelectionShortcutKey];
+    [self.selectionShortcutView setAssociatedUserDefaultsKey:EZSelectionShortcutKey];
 
     self.snipShortcutView.style = MASShortcutViewStyleTexturedRect;
-    [self.snipShortcutView setAssociatedUserDefaultsKey:SnipShortcutKey];
+    [self.snipShortcutView setAssociatedUserDefaultsKey:EZSnipShortcutKey];
 
     self.inputShortcutView.style = MASShortcutViewStyleTexturedRect;
-    [self.inputShortcutView setAssociatedUserDefaultsKey:InputShortcutKey];
+    [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
 
     self.autoCopyTranslateResultButton.mm_isOn = Configuration.shared.autoCopyTranslateResult;
     self.launchAtStartupButton.mm_isOn = Configuration.shared.launchAtStartup;
