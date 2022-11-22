@@ -102,7 +102,7 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
-        if (!self.fixedWindow.pin ) {
+        if (!self.fixedWindow.pin) {
             [self.fixedWindow close];
         }
     }];
@@ -149,16 +149,6 @@ static EZWindowManager *_instance;
 
 #pragma mark - Others
 
-//- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window {
-//    EZWindowType type = EZWindowTypeMain;
-//    if ([window isKindOfClass:[EZMiniQueryWindow class]]) {
-//        type = EZWindowTypeMini;
-//    } else if ([window isKindOfClass:[EZFixedQueryWindow class]]) {
-//        type = EZWindowTypeFixed;
-//    }
-//    return type;
-//}
-
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
     EZBaseQueryWindow *window;
     switch (type) {
@@ -177,26 +167,6 @@ static EZWindowManager *_instance;
     }
     return window;
 }
-
-//- (CGRect)windowFrameWithType:(EZWindowType)type {
-//    CGRect frame;
-//    switch (type) {
-//        case EZWindowTypeMain: {
-//            frame = self.mainWindow.frame;
-//            break;
-//        }
-//        case EZWindowTypeFixed: {
-//            frame = self.fixedWindow.frame;
-//            break;
-//        }
-//        default: {
-//            CGPoint location = [self getMiniWindowLocation];
-//            frame = CGRectMake(location.x, location.y, EZMiniQueryWindowWidth, EZMiniQueryWindowHeight);
-//            break;
-//        }
-//    }
-//    return frame;
-//}
 
 - (CGPoint)windowLocationWithType:(EZWindowType)type {
     CGPoint location;

@@ -414,6 +414,13 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		0396D612292CBDFD006A11D9 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		03991155292927A100E1B06D /* Titlebar */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,6 +575,7 @@
 		03B0224F29231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				0396D612292CBDFD006A11D9 /* Data */,
 				0309E1F1292BD67E00AFB76A /* Model */,
 				03D0435B2928E29300E7559E /* Old */,
 				03B0225029231FA6001C7E63 /* Window */,
