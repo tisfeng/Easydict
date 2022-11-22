@@ -17,34 +17,34 @@
     MASShortcut *selectionShortcut = [MASShortcut shortcutWithKeyCode:kVK_ANSI_D modifierFlags:NSEventModifierFlagOption];
 //    NSData *selectionShortcutData = [NSKeyedArchiver archivedDataWithRootObject:selectionShortcut];
     NSData *selectionShortcutData = [NSKeyedArchiver archivedDataWithRootObject:selectionShortcut requiringSecureCoding:NO error:nil];
-    
+
     MASShortcut *snipShortcut = [MASShortcut shortcutWithKeyCode:kVK_ANSI_S modifierFlags:NSEventModifierFlagOption];
 //    NSData *snipShortcutData = [NSKeyedArchiver archivedDataWithRootObject:snipShortcut];
     NSData *snipShortcutData = [NSKeyedArchiver archivedDataWithRootObject:snipShortcut requiringSecureCoding:NO error:nil];
 
-    
+
     MASShortcut *inputShortcut = [MASShortcut shortcutWithKeyCode:kVK_ANSI_A modifierFlags:NSEventModifierFlagOption];
 //    NSData *inputShortcutData = [NSKeyedArchiver archivedDataWithRootObject:inputShortcut];
     NSData *inputShortcutData = [NSKeyedArchiver archivedDataWithRootObject:inputShortcut requiringSecureCoding:NO error:nil];
 
-
-    // Register default values to be used for the first app start
+//
+//     Register default values to be used for the first app start
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
-        SelectionShortcutKey : selectionShortcutData,
-        SnipShortcutKey : snipShortcutData,
-        InputShortcutKey : inputShortcutData,
+        EZSelectionShortcutKey : selectionShortcutData,
+        EZSnipShortcutKey : snipShortcutData,
+        EZInputShortcutKey : inputShortcutData,
     }];
 
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:SelectionShortcutKey toAction:^{
-        [EZFixedQueryWindowController.shared selectionTranslate];
+    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
+        [[EZFixedQueryWindowController shared] selectionTranslate];
     }];
 
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:SnipShortcutKey toAction:^{
-        [EZFixedQueryWindowController.shared snipTranslate];
+    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
+        [[EZFixedQueryWindowController shared ]snipTranslate];
     }];
 
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:InputShortcutKey toAction:^{
-        [EZFixedQueryWindowController.shared inputTranslate];
+    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
+        [[EZFixedQueryWindowController shared] inputTranslate];
     }];
 
     [[MASShortcutValidator sharedValidator] setAllowAnyShortcutWithOptionModifier:YES];

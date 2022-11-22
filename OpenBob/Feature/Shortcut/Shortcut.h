@@ -11,9 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *const SelectionShortcutKey = @"SelectionShortcutKey";
-static NSString *const SnipShortcutKey = @"SnipShortcutKey";
-static NSString *const InputShortcutKey = @"InputShortcutKey";
+static NSString *const EZSelectionShortcutKey = @"EZSelectionShortcutKey";
+static NSString *const EZSnipShortcutKey = @"EZSnipShortcutKey";
+static NSString *const EZInputShortcutKey = @"EZInputShortcutKey";
 
 
 @interface Shortcut : NSObject
