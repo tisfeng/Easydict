@@ -139,7 +139,7 @@
     }];
     
     CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
-    NSLog(@"query cell padding: %.1f", padding);
+//    NSLog(@"query cell padding: %.1f", padding);
 
     [self.fromLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
@@ -164,8 +164,6 @@
 
 - (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
     _enterActionBlock = enterActionBlock;
-    
-    
 }
 
 

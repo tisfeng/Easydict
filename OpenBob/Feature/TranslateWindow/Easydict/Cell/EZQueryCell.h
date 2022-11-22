@@ -13,10 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryCell : NSTableRowView
 
-
 @property (nonatomic, strong) EZQueryView *queryView;
-
-@property (nonatomic, copy) NSString *detectLanguage;
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
 
