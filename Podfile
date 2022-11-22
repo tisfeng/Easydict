@@ -15,6 +15,7 @@ target 'Open Bob' do
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
   pod 'Sparkle', '~> 1.24.0'
+  pod 'KVOController'
   
 end
 
