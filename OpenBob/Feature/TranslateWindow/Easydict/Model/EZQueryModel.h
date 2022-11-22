@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZQueryModel : NSObject
 
 @property (nonatomic, copy) NSString *queryText;
-//@property (nonatomic, copy) NSString *detectLanguage;
 @property (nonatomic, assign) Language fromLanguage;
 @property (nonatomic, assign) Language toLanguage;
 

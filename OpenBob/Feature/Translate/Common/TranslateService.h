@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 翻译结果
 @property (nonatomic, strong) TranslateResult * _Nullable result;
 
+@property (nonatomic, assign) BOOL enabled;
+
 /// 支持的语言
 - (NSArray<NSNumber *> *)languages;
 
@@ -30,8 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(Language)lang;
-
-
 
 @end
 

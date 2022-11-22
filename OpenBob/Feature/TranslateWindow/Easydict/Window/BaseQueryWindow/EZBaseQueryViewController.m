@@ -14,14 +14,15 @@
 #import "NSColor+MyColors.h"
 #import "EZQueryCell.h"
 #import "EZResultCell.h"
-#import "DetectManager.h"
+#import "EZDetectManager.h"
 #import <AVFoundation/AVFoundation.h>
-#import "ServiceTypes.h"
+#import "EZServiceTypes.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
 #import "EZTitlebar.h"
 #import "EZQueryModel.h"
 #import "EZSelectLanguageCell.h"
+#import "EZServiceStorage.h"
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -46,7 +47,7 @@ static NSString *EZColumnId = @"EZColumnId";
 
 //@property (nonatomic, copy) NSString *queryText;
 
-@property (nonatomic, strong) DetectManager *detectManager;
+@property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
@@ -94,14 +95,14 @@ static NSString *EZColumnId = @"EZColumnId";
 
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
-        TranslateService *service = [ServiceTypes serviceWithType:type];
+        TranslateService *service = [EZServiceTypes serviceWithType:type];
         [translateServices addObject:service];
     }
     self.services = translateServices;
     
     self.queryModel = [EZQueryModel new];
     
-    self.detectManager = [[DetectManager alloc] init];
+    self.detectManager = [[EZDetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
     
     [self tableView];
@@ -228,7 +229,6 @@ static NSString *EZColumnId = @"EZColumnId";
             fromLang = language;
 //            NSLog(@"detect language: %ld", language);
         }
-        
         [self updateQueryViewDetectLanguage:fromLang];
         [self queryText:text fromLangunage:fromLang];
     }];
@@ -253,7 +253,7 @@ static NSString *EZColumnId = @"EZColumnId";
                 NSLog(@"translateResult is nil, error: %@", error);
                 return;
             }
-            [self updateViewCellResult:translateResult reloadData:YES];
+            [self updateResultCell:translateResult reloadData:YES];
         }];
     }
 }
@@ -262,13 +262,19 @@ static NSString *EZColumnId = @"EZColumnId";
            serive:(TranslateService *)service
          language:(Language)fromLang
        completion:(nonnull void (^)(TranslateResult *_Nullable translateResult, NSError *_Nullable error))completion {
+    if (!service.enabled) {
+        NSLog(@"service disabled: %@", service);
+        return;
+    }
+    
+    service.result.isShowing = YES;
     [service translate:self.queryModel.queryText
                   from:fromLang
                     to:Configuration.shared.to
             completion:completion];
 }
 
-- (void)updateViewCellResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+- (void)updateResultCell:(TranslateResult *)result reloadData:(BOOL)reloadData {
     [self updateViewCellResults:@[result]reloadData:reloadData];
 }
 
@@ -315,12 +321,6 @@ static NSString *EZColumnId = @"EZColumnId";
     
  if (self.windowType != EZWindowTypeMini && row == 1) {
         EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
-
-//        EZSelectLanguageCell *selectCell = [tableView makeViewWithIdentifier:EZSelectLanguageCellId owner:self];
-//        if (!selectCell) {
-//            selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
-//            selectCell.identifier = EZSelectLanguageCellId;
-//        }
         return selectCell;
     }
     
@@ -446,6 +446,7 @@ static NSString *EZColumnId = @"EZColumnId";
     if (!result) {
         result = [[TranslateResult alloc] init];
         service.result = result;
+        result.isShowing = NO; // default not show, show result after querying.
     }
     resultCell.result = result;
     [self setupResultCell:resultCell];
@@ -477,7 +478,7 @@ static NSString *EZColumnId = @"EZColumnId";
     return service;
 }
 
-- (TranslateService *)servicesWithType:(EZServiceType)serviceType {
+- (TranslateService *)serviceWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
     return self.services[index];
 }
@@ -485,7 +486,7 @@ static NSString *EZColumnId = @"EZColumnId";
 - (void)setupResultCell:(EZResultCell *)resultCell {
     EZResultView *resultView = resultCell.resultView;
     TranslateResult *result = resultCell.result;
-    TranslateService *serive = [self servicesWithType:result.serviceType];
+    TranslateService *serive = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
@@ -506,7 +507,21 @@ static NSString *EZColumnId = @"EZColumnId";
     }];
     
     [resultView setClickArrowBlock:^(BOOL isShowing) {
-        [self updateViewCellResult:result reloadData:YES];
+        mm_strongify(self);
+        TranslateService *service = [self serviceWithType:result.serviceType];
+        service.enabled = isShowing;
+        
+        // If hasn't result, start querying
+        if (!result.raw) {
+            [service translate:self.queryModel.queryText
+                          from:self.queryModel.fromLanguage
+                            to:Configuration.shared.to
+                    completion:^(TranslateResult * _Nullable result, NSError * _Nullable error) {
+                [self updateResultCell:result reloadData:YES];
+            }];
+        } else {
+            [self updateResultCell:result reloadData:YES];
+        }
     }];
 }
 

@@ -11,11 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ServiceTypes : NSObject
+@interface EZServiceTypes : NSObject
 
 + (NSArray<EZServiceType> *)allServiceTypes;
-
-+ (NSDictionary<EZServiceType, TranslateService *> *)serviceDict;
 
 + (TranslateService *)serviceWithType:(EZServiceType)type;
 

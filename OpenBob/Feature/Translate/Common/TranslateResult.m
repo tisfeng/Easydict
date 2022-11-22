@@ -7,6 +7,7 @@
 //
 
 #import "TranslateResult.h"
+#import "EZServiceStorage.h"
 
 NSString *const EZServiceTypeGoogle = @"Google";
 NSString *const EZServiceTypeBaidu = @"Baidu";
@@ -43,7 +44,8 @@ NSString *const EZServiceTypeYoudao = @"Youdao";
 - (instancetype)init {
     if (self = [super init]) {
         _normalResults = @[@""];
-        _isShowing = YES;
+//        _isShowing = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
+
     }
     return self;
 }
