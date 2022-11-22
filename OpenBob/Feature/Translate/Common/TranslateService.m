@@ -7,6 +7,7 @@
 //
 
 #import "TranslateService.h"
+#import "EZServiceStorage.h"
 
 #define MethodNotImplemented()    \
     @throw [NSException exceptionWithName:NSInternalInconsistencyException    \
@@ -27,10 +28,24 @@
 
 @implementation TranslateService
 
+- (instancetype)init {
+    if (self = [super init]) {
+        self.enabled = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
+    }
+    return self;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    _enabled = enabled;
+    
+    [[EZServiceStorage shared] setServiceType:self.serviceType enabled:enabled];
+}
+
 - (void)setResult:(TranslateResult *)translateResult {
     _result = translateResult;
        
-    _result.serviceType = self.serviceType;;
+    _result.serviceType = self.serviceType;
+    _result.isShowing = self.enabled;
 }
 
 - (MMOrderedDictionary *)langDict {

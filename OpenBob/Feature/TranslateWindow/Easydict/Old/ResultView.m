@@ -7,7 +7,7 @@
 //
 
 #import "ResultView.h"
-#import "ServiceTypes.h"
+#import "EZServiceTypes.h"
 #import "EZHoverButton.h"
 #import "EZConst.h"
 
@@ -231,7 +231,7 @@ static const CGFloat kMargin = 10;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
-    TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
+    TranslateService *translate = [EZServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:12]];
     
     // 显示word

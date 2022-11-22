@@ -6,28 +6,29 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "ServiceTypes.h"
+#import "EZServiceTypes.h"
 #import "GoogleTranslate.h"
 #import "BaiduTranslate.h"
 #import "YoudaoTranslate.h"
 
-@implementation ServiceTypes
+@implementation EZServiceTypes
 
 + (NSArray<EZServiceType> *)allServiceTypes {
     return [[self serviceDict] allKeys];
 }
 
-+ (NSDictionary<EZServiceType, TranslateService *> *)serviceDict {
++ (NSDictionary<EZServiceType, Class> *)serviceDict {
     NSDictionary *dict = @{
-        EZServiceTypeGoogle : GoogleTranslate.new,
-        EZServiceTypeBaidu : BaiduTranslate.new,
-        EZServiceTypeYoudao : YoudaoTranslate.new
+        EZServiceTypeGoogle : [GoogleTranslate class],
+        EZServiceTypeBaidu : [BaiduTranslate class],
+        EZServiceTypeYoudao : [YoudaoTranslate class]
     };
     return dict;
 }
 
 + (TranslateService *)serviceWithType:(EZServiceType)type {
-    return [self serviceDict][type];
+    Class Cls = [[self serviceDict] objectForKey:type];
+    return [Cls new];
 }
 
 @end

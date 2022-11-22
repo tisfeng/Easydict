@@ -7,7 +7,7 @@
 //
 
 #import "EZResultView.h"
-#import "ServiceTypes.h"
+#import "EZServiceTypes.h"
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
 #import "EZConst.h"
@@ -158,7 +158,7 @@
     }];
     
     [self.typeImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.topBarView).offset(10);
+        make.left.equalTo(self.topBarView).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
@@ -201,7 +201,7 @@
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
-    TranslateService *translate = [ServiceTypes serviceWithType:serviceType];
+    TranslateService *translate = [EZServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:13]];
     
     [self updateArrowButton];
