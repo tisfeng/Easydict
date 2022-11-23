@@ -24,6 +24,7 @@
 #import "EZSelectLanguageCell.h"
 #import "EZServiceStorage.h"
 #import <KVOController/KVOController.h>
+#import "EZTool.h"
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -88,6 +89,12 @@ static NSString *EZColumnId = @"EZColumnId";
     //    [self startQueryText:@"你好\n世界"];
 }
 
+- (void)viewWillAppear {
+    [super viewWillAppear];
+    
+    [self updateWindowViewHeight];
+}
+
 - (void)setup {
     self.serviceTypes = @[
         EZServiceTypeGoogle,
@@ -123,12 +130,16 @@ static NSString *EZColumnId = @"EZColumnId";
      | NSKeyValueObservingOptionOld
      | NSKeyValueObservingOptionNew
                 block:^(id  _Nullable observer, id  _Nonnull object, NSDictionary<NSString *,id> * _Nonnull change) {
-        NSLog(@"documentView.frame: %@", change[NSKeyValueChangeNewKey]);
+        CGRect documentViewFrame = [change[NSKeyValueChangeNewKey] CGRectValue];
+        CGFloat documentViewHeight = documentViewFrame.size.height;
+        NSLog(@"kvo documentViewHeight: %@", @(documentViewHeight));
+        
+//        [self updateWindowViewHeight];
     }];
     
     //  I don't know why NSTableBackgroundView cannot be obtained immediately, but must wait for a while to get it.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self updateWindowViewHeight];
+//        [self updateWindowViewHeight];
     });
 }
 
@@ -595,15 +606,18 @@ static NSString *EZColumnId = @"EZColumnId";
     NSLog(@"contentHeight: %@", @(height));
     
     height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
-    
     height += 28; // title bar height is 28
     
     // Since chaneg height will cause position change, we need to adjust to keep top-left coordinate position.
     NSWindow *window = self.view.window;
     CGFloat y = window.y + window.height - height;
+    
+    window.size = CGSizeMake(window.width, height);
+
     [self.view.window setFrameOrigin:CGPointMake(window.x, y)];
     
-    self.view.window.height = height; // title bar height is 28
+//    self.view.window.height = height; // title bar height is 28
+    
 }
 
 - (CGFloat)getScrollViewHeight {
@@ -624,7 +638,10 @@ static NSString *EZColumnId = @"EZColumnId";
             NSLog(@"backgroundView: %@", @(view.frame));
             
             CGFloat blankViewHeight = view.height;
-            height -= blankViewHeight;
+//            // Only scrollView.documentView.height > tableView.height, there will be a blank NSTableBackgroundView
+            if (self.view.height > self.tableView.height) {
+                height -= blankViewHeight;
+            }
         }
     }
     NSLog(@"tableView content height: %@", @(height));
