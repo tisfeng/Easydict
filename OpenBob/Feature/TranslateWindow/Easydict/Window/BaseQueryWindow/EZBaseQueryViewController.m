@@ -622,7 +622,6 @@ static NSString *EZColumnId = @"EZColumnId";
 
 - (CGFloat)getScrollViewHeight {
     CGFloat height = [self getContentHeight];
-    //
     height = MAX(height, EZWindowFrameManager.shared.miniWindowHeight);
     height = MIN(height, EZWindowFrameManager.shared.maxWindowHeight);
     
@@ -630,23 +629,28 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 - (CGFloat)getContentHeight {
-    CGFloat height = self.scrollView.documentView.height;
-    NSLog(@"tableView documentView height: %@", @(height));
+    CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
+    NSLog(@"documentView height: %@", @(documentViewHeight));
     
-    for (NSView *view in self.tableView.subviews) {
-        if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
-            NSLog(@"backgroundView: %@", @(view.frame));
-            
-            CGFloat blankViewHeight = view.height;
-//            // Only scrollView.documentView.height > tableView.height, there will be a blank NSTableBackgroundView
-            if (self.view.height > self.tableView.height) {
-                height -= blankViewHeight;
+    CGFloat insetsHeight = self.scrollView.contentInsets.top - self.scrollView.contentInsets.bottom;
+    CGFloat scrollViewFrameHeight = self.scrollView.height - insetsHeight;
+    
+    CGFloat contentHeight = documentViewHeight;
+    
+    // Means scrollView has blank supplementary view
+    if (documentViewHeight <= scrollViewFrameHeight) {
+        for (NSView *view in self.tableView.subviews) {
+            if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
+                NSLog(@"backgroundView: %@", @(view.frame));
+                NSView *blankView = view;
+                documentViewHeight -= blankView.height;
             }
         }
     }
-    NSLog(@"tableView content height: %@", @(height));
+        
+    NSLog(@"tableView content height: %@", @(documentViewHeight));
     
-    return height;
+    return documentViewHeight;
 }
 
 @end
