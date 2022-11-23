@@ -593,9 +593,16 @@ static NSString *EZColumnId = @"EZColumnId";
 
 - (void)updateWindowViewHeight {
     CGFloat height = [self getScrollViewHeight];
-    //    NSLog(@"contentHeight: %@", @(height));
+    NSLog(@"contentHeight: %@", @(height));
     
     height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
+    
+    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_greaterThanOrEqualTo(height);
+        make.height.mas_lessThanOrEqualTo(height);
+    }];
+    
+    
     height += 28; // title bar height is 28
     
     // Since chaneg height will cause position change, we need to adjust to keep top-left coordinate position.
