@@ -22,7 +22,7 @@
     [Shortcut setup];
         
     EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager.mainWindow setFrameOrigin:CGPointMake(200, 200)];
+    [windowManager.mainWindow setFrameOrigin:CGPointMake(100, 700)];
     [windowManager.mainWindow makeKeyAndOrderFront:nil];
     self.windowManager = windowManager;
         
