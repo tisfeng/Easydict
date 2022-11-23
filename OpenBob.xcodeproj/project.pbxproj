@@ -118,6 +118,7 @@
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
+		03D8B26E292DBD2000D5A811 /* EZTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZTool.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A1E2924DE6F00A10260 /* EZFixedQueryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
@@ -354,6 +355,8 @@
 		03D043552928940500E7559E /* EZBaseQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryWindow.m; sourceTree = "<group>"; };
 		03D043582928C4C800E7559E /* EZWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowManager.h; sourceTree = "<group>"; };
 		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
+		03D8B26C292DBD2000D5A811 /* EZTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTool.h; sourceTree = "<group>"; };
+		03D8B26D292DBD2000D5A811 /* EZTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTool.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
 		03DC38C0292CC97900922CB2 /* EZServiceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceInfo.m; sourceTree = "<group>"; };
 		03E02A1C2924DE6F00A10260 /* EZFixedQueryWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFixedQueryWindowController.h; sourceTree = "<group>"; };
@@ -770,6 +773,7 @@
 		03B022A629231FA6001C7E63 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03B022B029231FA6001C7E63 /* NSView+MM.h */,
 				03B022C329231FA6001C7E63 /* NSView+MM.m */,
 				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
@@ -852,6 +856,7 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03D8B26B292DBD0300D5A811 /* EZTool */,
 				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
 				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
 				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
@@ -1021,6 +1026,22 @@
 				03B0227A29231FA6001C7E63 /* QueryView.m */,
 			);
 			path = Old;
+			sourceTree = "<group>";
+		};
+		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = EZCategory;
+			sourceTree = "<group>";
+		};
+		03D8B26B292DBD0300D5A811 /* EZTool */ = {
+			isa = PBXGroup;
+			children = (
+				03D8B26C292DBD2000D5A811 /* EZTool.h */,
+				03D8B26D292DBD2000D5A811 /* EZTool.m */,
+			);
+			path = EZTool;
 			sourceTree = "<group>";
 		};
 		03E02A1F2924E74000A10260 /* EZStatusItem */ = {
@@ -1341,6 +1362,7 @@
 				03B0230A29231FA6001C7E63 /* TextView.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
+				03D8B26E292DBD2000D5A811 /* EZTool.m in Sources */,
 				03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				03B022FF29231FA6001C7E63 /* EZResultCell.m in Sources */,
