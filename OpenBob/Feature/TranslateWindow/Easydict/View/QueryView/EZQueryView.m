@@ -124,6 +124,29 @@
     }
 }
 
+- (void)viewDidMoveToWindow {
+//    NSLog(@"viewDidMoveToWindow: %@", self);
+    
+    [self scrollToTextViewBottom];
+    
+    [super viewDidMoveToWindow];
+}
+
+- (void)scrollToTextViewBottom {
+//    NSLog(@"scroll to bottom: %@", self);
+    
+    // recover input focus
+    [self.window makeFirstResponder:self.textView];
+    
+    // scroll to input view bottom
+    NSScrollView *scrollView = self.scrollView;
+    CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
+    [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
+}
+
+
+#pragma mark - Setter
+
 - (void)setModel:(EZQueryModel *)model {
     _model = model;
     

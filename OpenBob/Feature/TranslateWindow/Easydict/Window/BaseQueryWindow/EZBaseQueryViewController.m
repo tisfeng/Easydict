@@ -330,6 +330,19 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 
+- (void)scrollToQueryTextViewBottom {
+//    NSLog(@"scroll inputView to bottom: %@", self.queryView);
+    
+    // recover input focus
+    [self.view.window makeFirstResponder:self.queryView.textView];
+    
+    // scroll to input view bottom
+    NSScrollView *scrollView = self.queryView.scrollView;
+    CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
+    [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
+}
+
+
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -415,15 +428,10 @@ static NSString *EZColumnId = @"EZColumnId";
             self.inputViewHeight = textViewHeight;
             self.queryModel.viewHeight = textViewHeight;
             
-            [CATransaction begin];
-            [CATransaction setCompletionBlock:^{
-                [self scrollQueryTextViewToBottom];
-            }];
-            
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+            
             // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
             [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
-            [CATransaction commit];
         }
     }];
     
@@ -451,16 +459,6 @@ static NSString *EZColumnId = @"EZColumnId";
     }];
     
     return queryCell;
-}
-
-- (void)scrollQueryTextViewToBottom {
-    // recover input focus
-    [self.view.window makeFirstResponder:self.queryView.textView];
-    
-    // scroll to input view bottom
-    NSScrollView *scrollView = self.queryView.scrollView;
-    CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
-    [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
 }
 
 - (TranslateService *_Nullable)firstTranslateService {
