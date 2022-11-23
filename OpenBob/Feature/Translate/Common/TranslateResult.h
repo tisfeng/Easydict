@@ -82,6 +82,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
 @property (nonatomic, copy) EZServiceType serviceType;
 
 @property (nonatomic, assign) BOOL isShowing;
+@property (nonatomic, assign) CGFloat cellHeight;
+
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;
