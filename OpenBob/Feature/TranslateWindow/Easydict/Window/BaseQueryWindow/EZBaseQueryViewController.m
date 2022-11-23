@@ -55,6 +55,9 @@ static NSString *EZColumnId = @"EZColumnId";
 
 @property (nonatomic, strong) FBKVOController *kvo;
 
+@property (nonatomic, assign) BOOL enableResizeWindow;
+
+
 @end
 
 @implementation EZBaseQueryViewController
@@ -119,7 +122,24 @@ static NSString *EZColumnId = @"EZColumnId";
     mm_weakify(self);
     [self setResizeWindowBlock:^{
         mm_strongify(self);
+
+        if (!self.enableResizeWindow) {
+            return;
+        }
+
+        NSLog(@"resize window, resize view");
+        
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            self.enableResizeWindow = NO;
+            [self updateWindowViewHeight];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                self.enableResizeWindow = YES;
+            });
+        }];
+        
         [self.tableView reloadData];
+        [CATransaction commit];
     }];
     
     self.kvo = [FBKVOController controllerWithObserver:self];
@@ -143,7 +163,7 @@ static NSString *EZColumnId = @"EZColumnId";
     for (TranslateService *service in self.services) {
         [results addObject:service.result];
     }
-    [self updateCellWithResults:results reloadData:YES];
+    [self updateCellWithResults:results reloadData:NO];
 }
 
 #pragma mark - Getter
@@ -327,11 +347,18 @@ static NSString *EZColumnId = @"EZColumnId";
     if (reloadData) {
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
+    
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
+        self.enableResizeWindow = NO;
+
         context.duration = 0.3;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
+        self.enableResizeWindow = NO;
         [self updateWindowViewHeight];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.enableResizeWindow = YES;
+        });
     }];
 }
 
@@ -402,6 +429,7 @@ static NSString *EZColumnId = @"EZColumnId";
 
 #pragma mark -
 
+// Get tableView bounds in real time
 - (CGRect)tableViewContentRect {
     CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
     return rect;
@@ -597,14 +625,26 @@ static NSString *EZColumnId = @"EZColumnId";
     
     height += 28; // title bar height is 28
     
-    // Since chaneg height will cause position change, we need to adjust to keep top-left coordinate position.
+    // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
     CGFloat y = window.y + window.height - height;
     
-    window.size = CGSizeMake(window.width, height);
-    window.y = y;
+    if (height == window.height && y == window.y) {
+        return;
+    }
+    
+//    window.size = CGSizeMake(window.width, height);
+//    window.y = y;
+    
+    CGRect newFrame = CGRectMake(window.x, y, window.width, height);
+    // Avoid recycling call, resize window --> reload tableView --> update window height --> resize window 
+    [window setFrame:newFrame display:YES];
     
     CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:window.frame];
+    
+    NSLog(@"window frame: %@", @(window.frame));
+    NSLog(@"safe frame: %@", @(safeFrame));
+    
     [window setFrameOrigin:safeFrame.origin];
 }
 
@@ -625,10 +665,10 @@ static NSString *EZColumnId = @"EZColumnId";
     CGFloat contentHeight = documentViewHeight;
     
     // Means scrollView has blank supplementary view
-    if (documentViewHeight <= scrollViewFrameHeight) {
+    if (documentViewHeight < scrollViewFrameHeight) {
         for (NSView *view in self.tableView.subviews) {
             if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
-                //                NSLog(@"backgroundView: %@", @(view.frame));
+                NSLog(@"backgroundView: %@", @(view.frame));
                 NSView *blankView = view;
                 contentHeight -= blankView.height;
             }
