@@ -12,8 +12,6 @@
 #import "EZWindowManager.h"
 #import "NSView+EZGetViewController.h"
 
-// static CGFloat kTextViewMiniHeight = 60;
-
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZButton *detectButton;
@@ -85,25 +83,28 @@
     detectButton.mas_key = @"detectButton";
 }
 
+
+#pragma mark - Super method
+
+- (void)viewDidMoveToWindow {
+    [self scrollToTextViewBottom];
+    [super viewDidMoveToWindow];
+}
+
 - (void)updateConstraints {
     [self updateCustomLayout];
+    [self updateDetectButton];
 
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         make.bottom.equalTo(self.audioButton.mas_top).offset(0);
         make.height.mas_greaterThanOrEqualTo(self.textViewMiniHeight).priorityLow();
-        
-//        make.height.mas_equalTo(self.textViewHeight);
-    }];
-
-    [self.detectButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(8);
-        make.centerY.equalTo(self.textCopyButton);
-        make.height.mas_equalTo(20);
     }];
 
     [super updateConstraints];
 }
+
+#pragma mark -
 
 - (void)updateCustomLayout {
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
@@ -124,18 +125,47 @@
     }
 }
 
-- (void)viewDidMoveToWindow {
-//    NSLog(@"viewDidMoveToWindow: %@", self);
+- (void)updateDetectButton {
+    Language fromLanguage = self.model.fromLanguage;
+    if (fromLanguage == Language_auto) {
+        self.detectButton.hidden = YES;
+        return;
+    }
     
-    [self scrollToTextViewBottom];
+    self.detectButton.hidden = NO;
     
-    [super viewDidMoveToWindow];
+    NSString *detectLanguageTitle =  LanguageDescFromEnum(fromLanguage);
+    
+    NSString *title = @"识别为 ";
+    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
+    [attrTitle addAttributes:@{
+        NSForegroundColorAttributeName : NSColor.grayColor,
+        NSFontAttributeName : [NSFont systemFontOfSize:10],
+    }
+                       range:NSMakeRange(0, attrTitle.length)];
+
+
+    NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
+    [detectAttrTitle addAttributes:@{
+        NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
+        NSFontAttributeName : [NSFont systemFontOfSize:10],
+    }
+                             range:NSMakeRange(0, detectAttrTitle.length)];
+
+    [attrTitle appendAttributedString:detectAttrTitle];
+
+    CGFloat width = [attrTitle mm_getTextWidth];
+    self.detectButton.attributedTitle = attrTitle;
+    [self.detectButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.textCopyButton.mas_right).offset(8);
+        make.centerY.equalTo(self.textCopyButton);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(width + 8);
+    }];
 }
 
 - (void)scrollToTextViewBottom {
-//    NSLog(@"scroll to bottom: %@", self);
-    
-    // recover input focus
+    // recover input cursor
     [self.window makeFirstResponder:self.textView];
     
     // scroll to input view bottom
@@ -154,10 +184,7 @@
         self.textView.string = model.queryText;
     }
     
-    Language fromLanguage = model.fromLanguage;
-    if (fromLanguage != Language_auto) {
-        self.detectLanguage =  LanguageDescFromEnum(fromLanguage);
-    }
+    [self updateDetectButton];
 }
 
 - (void)setQueryText:(NSString *)queryText {
@@ -170,37 +197,6 @@
 
 - (NSString *)copiedText {
     return self.textView.string;
-}
-
-#pragma mark - Setter
-
-- (void)setDetectLanguage:(NSString *)detectLanguage {
-    _detectLanguage = detectLanguage;
-
-    NSString *title = @"识别为 ";
-    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
-    [attrTitle addAttributes:@{
-        NSForegroundColorAttributeName : NSColor.grayColor,
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                       range:NSMakeRange(0, attrTitle.length)];
-
-
-    NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguage];
-    [detectAttrTitle addAttributes:@{
-        NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                             range:NSMakeRange(0, detectAttrTitle.length)];
-
-    [attrTitle appendAttributedString:detectAttrTitle];
-
-    CGFloat width = [attrTitle mm_getTextWidth];
-    self.detectButton.hidden = NO;
-    self.detectButton.attributedTitle = attrTitle;
-    [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(width + 8);
-    }];
 }
 
 

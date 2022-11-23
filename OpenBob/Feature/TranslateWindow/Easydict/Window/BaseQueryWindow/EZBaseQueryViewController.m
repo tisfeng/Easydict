@@ -36,8 +36,6 @@ static NSString *EZColumnId = @"EZColumnId";
 
 @property (nonatomic, strong) EZTitlebar *titleBar;
 
-@property (nonatomic, strong) EZQueryCell *queryCell;
-
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
@@ -47,6 +45,7 @@ static NSString *EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, strong) EZDetectManager *detectManager;
+@property (nonatomic, strong) EZQueryCell *queryCell;
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
@@ -132,6 +131,19 @@ static NSString *EZColumnId = @"EZColumnId";
         //        CGFloat documentViewHeight = documentViewFrame.size.height;
         //                    NSLog(@"kvo documentViewHeight: %@", @(documentViewHeight));
     }];
+}
+
+- (void)updateTableViewData {
+    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+    
+    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
+    
+    NSMutableArray *results = [NSMutableArray array];
+    for (TranslateService *service in self.services) {
+        [results addObject:service.result];
+    }
+    [self updateCellWithResults:results reloadData:YES];
 }
 
 #pragma mark - Getter
@@ -254,16 +266,10 @@ static NSString *EZColumnId = @"EZColumnId";
             fromLang = language;
             //            NSLog(@"detect language: %ld", language);
         }
-        [self updateQueryViewDetectLanguage:fromLang];
         [self queryText:text fromLangunage:fromLang];
     }];
 }
 
-- (void)updateQueryViewDetectLanguage:(Language)lang {
-    if (lang != Language_auto) {
-        self.queryView.detectLanguage = LanguageDescFromEnum(lang);
-    }
-}
 
 - (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
     self.queryModel.queryText = text;
@@ -278,7 +284,7 @@ static NSString *EZColumnId = @"EZColumnId";
                 NSLog(@"translateResult is nil, error: %@", error);
                 return;
             }
-            [self updateResultCell:translateResult reloadData:YES];
+            [self updateCellWithResult:translateResult reloadData:YES];
         }];
     }
 }
@@ -299,15 +305,15 @@ static NSString *EZColumnId = @"EZColumnId";
             completion:completion];
 }
 
-- (void)updateResultCell:(TranslateResult *)result reloadData:(BOOL)reloadData {
+- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
     if (!result) {
         NSLog(@"resutl is nil");
         return;
     }
-    [self updateViewCellResults:@[ result ] reloadData:reloadData];
+    [self updateCellWithResults:@[ result ] reloadData:reloadData];
 }
 
-- (void)updateViewCellResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
+- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
@@ -330,19 +336,6 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 
-- (void)scrollToQueryTextViewBottom {
-//    NSLog(@"scroll inputView to bottom: %@", self.queryView);
-    
-    // recover input focus
-    [self.view.window makeFirstResponder:self.queryView.textView];
-    
-    // scroll to input view bottom
-    NSScrollView *scrollView = self.queryView.scrollView;
-    CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
-    [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
-}
-
-
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -360,7 +353,6 @@ static NSString *EZColumnId = @"EZColumnId";
         self.queryView = queryCell.queryView;
         self.queryView.model = self.queryModel;
         self.queryCell = queryCell;
-        [self updateQueryViewDetectLanguage:self.detectManager.language];
         return queryCell;
     }
     
@@ -549,10 +541,10 @@ static NSString *EZColumnId = @"EZColumnId";
                           from:self.queryModel.fromLanguage
                             to:Configuration.shared.to
                     completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
-                [self updateResultCell:result reloadData:YES];
+                [self updateCellWithResult:result reloadData:YES];
             }];
         } else {
-            [self updateResultCell:result reloadData:YES];
+            [self updateCellWithResult:result reloadData:YES];
         }
     }];
 }
@@ -620,7 +612,6 @@ static NSString *EZColumnId = @"EZColumnId";
     CGFloat height = [self getContentHeight];
     height = MAX(height, EZWindowFrameManager.shared.miniWindowHeight);
     height = MIN(height, EZWindowFrameManager.shared.maxWindowHeight);
-    
     return height;
 }
 
