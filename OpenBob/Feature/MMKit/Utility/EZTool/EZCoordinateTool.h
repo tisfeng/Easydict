@@ -10,7 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZTool : NSObject
+@interface EZCoordinateTool : NSObject
+
+// Make sure frame is in screen visible frame, return left-bottom postion frame.
++ (CGRect)getSafeAreaFrame:(CGRect)frame;
+
 
 // Convert point from left-top to left-bottom coordinate system
 + (CGPoint)convertPointToBottom:(CGPoint)point;
