@@ -1,4 +1,4 @@
-${PODS_ROOT}/Target Support Files/Pods-Open Bob/Pods-Open Bob-frameworks.sh
+${PODS_ROOT}/Target Support Files/Pods-Easydict/Pods-Easydict-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework
 ${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework
 ${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework
