@@ -137,7 +137,7 @@ static EZWindowManager *_instance;
         _popWindow = [EZPopButtonWindow shared];
         
         mm_weakify(self);
-        [_popWindow.popButton setHoverBlock:^(EZButton *button) {
+        [_popWindow.popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
             [self.popWindow close];
             
