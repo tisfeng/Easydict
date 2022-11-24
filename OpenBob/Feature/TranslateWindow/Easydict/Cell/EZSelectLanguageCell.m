@@ -7,7 +7,7 @@
 //
 
 #import "EZSelectLanguageCell.h"
-#import "PopUpButton.h"
+#import "EZPopUpButton.h"
 #import "TranslateService.h"
 #import "GoogleTranslate.h"
 #import "Configuration.h"
@@ -18,9 +18,9 @@
 
 @property (nonatomic, strong) NSView *languageBarView;
 
-@property (nonatomic, strong) PopUpButton *fromLanguageButton;
+@property (nonatomic, strong) EZPopUpButton *fromLanguageButton;
 @property (nonatomic, strong) NSButton *transformButton;
-@property (nonatomic, strong) PopUpButton *toLanguageButton;
+@property (nonatomic, strong) EZPopUpButton *toLanguageButton;
 @property (nonatomic, strong) TranslateService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
@@ -80,7 +80,7 @@
     }];
     transformButton.mas_key = @"transformButton";
     
-    self.fromLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
+    self.fromLanguageButton = [EZPopUpButton mm_make:^(EZPopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
         // Only resolve layout warning.
         button.frame = self.bounds;
@@ -105,7 +105,7 @@
     self.fromLanguageButton.mas_key = @"fromLanguageButton";
     
     
-    self.toLanguageButton = [PopUpButton mm_make:^(PopUpButton *_Nonnull button) {
+    self.toLanguageButton = [EZPopUpButton mm_make:^(EZPopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
         button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -135,7 +135,7 @@
     }];
     
     CGFloat languageButtonWidth = 90;
-    CGFloat transformButtonWidth = 30;
+    CGFloat transformButtonWidth = 25;
     
     [self.transformButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.languageBarView);
