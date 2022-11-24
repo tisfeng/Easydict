@@ -32,6 +32,8 @@ static NSString *EZResultCellId = @"EZResultCellId";
 
 static NSString *EZColumnId = @"EZColumnId";
 
+static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
+
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) EZTitlebar *titleBar;
@@ -144,7 +146,7 @@ static NSString *EZColumnId = @"EZColumnId";
               keyPath:@"frame"
               options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                 block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-        NSLog(@"change: %@", change);
+//        NSLog(@"change: %@", change);
         
         //        CGRect documentViewFrame = [change[NSKeyValueChangeNewKey] CGRectValue];
         //        CGFloat documentViewHeight = documentViewFrame.size.height;
@@ -153,9 +155,10 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 
+/// Delay update, to avoid reload tableView frequently
 - (void)delayUpdateWindowViewHeight {
     [self cancelUpdateWindowViewHeight];
-    [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:0.2];
+    [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:kDelayUpdateWindowViewTime];
 }
 
 - (void)cancelUpdateWindowViewHeight {
@@ -379,6 +382,7 @@ static NSString *EZColumnId = @"EZColumnId";
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //    NSLog(@"tableView for row: %ld", row);
     
+    // ⚠️ Need to optimize, should reuse cell.
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
         self.queryView = queryCell.queryView;
@@ -433,7 +437,7 @@ static NSString *EZColumnId = @"EZColumnId";
 
 #pragma mark -
 
-// Get tableView bounds in real time
+// Get tableView bounds in real time.
 - (CGRect)tableViewContentRect {
     CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
     return rect;
@@ -620,46 +624,40 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 - (void)updateWindowViewHeight:(BOOL)lock {
+    NSTimeInterval lockTime = 0.1;
+    
     if (lock) {
         self.enableResizeWindow = NO;
     }
     
     CGFloat height = [self getScrollViewHeight];
-    NSLog(@"contentHeight: %@", @(height));
+//    NSLog(@"contentHeight: %@", @(height));
     
     height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     
+    // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_greaterThanOrEqualTo(height);
         make.height.mas_lessThanOrEqualTo(height);
     }];
-    
     
     height += 28; // title bar height is 28
     
     // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
     CGFloat y = window.y + window.height - height;
-    
-    if (height == window.height && y == window.y) {
-        return;
-    }
-    
-    //    window.size = CGSizeMake(window.width, height);
-    //    window.y = y;
-    
     CGRect newFrame = CGRectMake(window.x, y, window.width, height);
     [window setFrame:newFrame display:YES];
     
     CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:window.frame];
     
-    NSLog(@"window frame: %@", @(window.frame));
-    NSLog(@"safe frame: %@", @(safeFrame));
+//    NSLog(@"window frame: %@", @(window.frame));
+//    NSLog(@"safe frame: %@", @(safeFrame));
     
     [window setFrameOrigin:safeFrame.origin];
     
     if (lock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.enableResizeWindow = YES;
         });
     }
@@ -673,28 +671,13 @@ static NSString *EZColumnId = @"EZColumnId";
 }
 
 - (CGFloat)getContentHeight {
+    // Modify scrollView height to 0, to get actual tableView content height, avoid blank view.
+    self.scrollView.height = 0;
+
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-    NSLog(@"documentView height: %@", @(documentViewHeight));
-    
-    CGFloat insetsHeight = self.scrollView.contentInsets.top - self.scrollView.contentInsets.bottom;
-    CGFloat scrollViewFrameHeight = self.scrollView.height - insetsHeight;
-    
-    CGFloat contentHeight = documentViewHeight;
-    
-    // Means scrollView has blank supplementary view
-    if (documentViewHeight < scrollViewFrameHeight) {
-        for (NSView *view in self.tableView.subviews) {
-            if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
-                NSLog(@"backgroundView: %@", @(view.frame));
-                NSView *blankView = view;
-                
-                CGFloat blankViewHeight = blankView.height;
-                contentHeight -= blankViewHeight;
-            }
-        }
-    }
-    //    NSLog(@"tableView content height: %@", @(contentHeight));
-    return contentHeight;
+//    NSLog(@"documentView height: %@", @(documentViewHeight));
+   
+    return documentViewHeight;
 }
 
 @end
