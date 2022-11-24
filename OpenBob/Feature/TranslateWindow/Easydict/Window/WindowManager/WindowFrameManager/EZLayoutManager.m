@@ -6,17 +6,17 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZWindowFrameManager.h"
+#import "EZLayoutManager.h"
 #import "EZBaseQueryWindow.h"
 
-static EZWindowFrameManager *_instance;
+static EZLayoutManager *_instance;
 
-@interface EZWindowFrameManager ()
+@interface EZLayoutManager ()
 
 
 @end
 
-@implementation EZWindowFrameManager
+@implementation EZLayoutManager
 
 + (instancetype)shared {
     if (!_instance) {
@@ -43,17 +43,14 @@ static EZWindowFrameManager *_instance;
     self.miniWindowWidth = 300;
     self.miniWindowHeight = 200;
     self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height; // 1079
-    
-    self.inputViewMiniHeight = 60;
-    self.inputViewMaxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
-    
+
     self.miniWindowFrame = CGRectMake(0, 0, self.miniWindowWidth, self.miniWindowHeight);
     self.fixedWindowFrame = self.miniWindowFrame;
     self.mainWindowFrame = self.miniWindowFrame;
 }
 
 
-- (CGFloat)getInputViewMiniHeight:(EZWindowType)type {
+- (CGFloat)inputViewMiniHeight:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMain:
             return 60;
@@ -63,6 +60,32 @@ static EZWindowFrameManager *_instance;
             return 30; // one line
         default:
             return 30;
+    }
+}
+
+- (CGFloat)inputViewMaxHeight:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMain:
+            return NSScreen.mainScreen.frame.size.height / 3;
+        case EZWindowTypeFixed:
+            return NSScreen.mainScreen.frame.size.height / 3;
+        case EZWindowTypeMini:
+            return 60; // two line
+        default:
+            return 60;
+    }
+}
+
+- (CGSize)textContainerInset:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMain:
+            return CGSizeMake(8, 8);
+        case EZWindowTypeFixed:
+            return CGSizeMake(8, 8);
+        case EZWindowTypeMini:
+            return CGSizeMake(4, 4);
+        default:
+            return CGSizeMake(4, 4);
     }
 }
 

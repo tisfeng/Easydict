@@ -11,7 +11,7 @@
 #import "EZFixedQueryWindow.h"
 #import "EZMainQueryWindow.h"
 #import "EZMiniQueryWindow.h"
-#import "EZWindowFrameManager.h"
+#import "EZLayoutManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

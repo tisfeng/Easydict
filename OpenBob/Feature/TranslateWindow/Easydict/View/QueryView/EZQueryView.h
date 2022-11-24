@@ -9,6 +9,7 @@
 #import "EZCommonView.h"
 #import "EZTextView.h"
 #import "EZQueryModel.h"
+#import "NSView+EZWindowType.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,7 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
 
-@property (nonatomic, assign) CGFloat textViewMiniHeight;
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
 

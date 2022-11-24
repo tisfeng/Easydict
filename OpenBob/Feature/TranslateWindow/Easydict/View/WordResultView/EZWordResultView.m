@@ -16,7 +16,7 @@
 #import "EZConst.h"
 #import "EZFixedQueryWindow.h"
 #import "NSString+MM.h"
-#import "EZWindowFrameManager.h"
+#import "EZLayoutManager.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;

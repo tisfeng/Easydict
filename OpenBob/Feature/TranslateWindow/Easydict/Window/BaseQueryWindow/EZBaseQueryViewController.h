@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZWindowFrameManager.h"
+#import "EZLayoutManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

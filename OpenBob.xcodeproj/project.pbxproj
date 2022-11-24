@@ -14,7 +14,8 @@
 		0396D615292CC4C3006A11D9 /* EZServiceStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZServiceStorage.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
-		0399116A292AA2EF00E1B06D /* EZWindowFrameManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */; };
+		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
+		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
 		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -160,8 +161,10 @@
 		03991157292927E000E1B06D /* EZTitlebar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitlebar.m; sourceTree = "<group>"; };
 		03991164292A8A4400E1B06D /* EZTitleBarMoveView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTitleBarMoveView.h; sourceTree = "<group>"; };
 		03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitleBarMoveView.m; sourceTree = "<group>"; };
-		03991168292AA2EF00E1B06D /* EZWindowFrameManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowFrameManager.h; sourceTree = "<group>"; };
-		03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowFrameManager.m; sourceTree = "<group>"; };
+		03991168292AA2EF00E1B06D /* EZLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLayoutManager.h; sourceTree = "<group>"; };
+		03991169292AA2EF00E1B06D /* EZLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLayoutManager.m; sourceTree = "<group>"; };
+		039CC90B292F664E0037B91E /* NSView+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZWindowType.h"; sourceTree = "<group>"; };
+		039CC90C292F664E0037B91E /* NSView+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZWindowType.m"; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -448,8 +451,8 @@
 		03991167292AA2C000E1B06D /* WindowFrameManager */ = {
 			isa = PBXGroup;
 			children = (
-				03991168292AA2EF00E1B06D /* EZWindowFrameManager.h */,
-				03991169292AA2EF00E1B06D /* EZWindowFrameManager.m */,
+				03991168292AA2EF00E1B06D /* EZLayoutManager.h */,
+				03991169292AA2EF00E1B06D /* EZLayoutManager.m */,
 			);
 			path = WindowFrameManager;
 			sourceTree = "<group>";
@@ -1031,6 +1034,8 @@
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
 			isa = PBXGroup;
 			children = (
+				039CC90B292F664E0037B91E /* NSView+EZWindowType.h */,
+				039CC90C292F664E0037B91E /* NSView+EZWindowType.m */,
 			);
 			path = EZCategory;
 			sourceTree = "<group>";
@@ -1346,6 +1351,7 @@
 				03B0231F29231FA6001C7E63 /* PreferencesWindowController.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZServiceStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
+				039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				03B0230929231FA6001C7E63 /* NormalResultView.m in Sources */,
@@ -1366,7 +1372,7 @@
 				03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				03B022FF29231FA6001C7E63 /* EZResultCell.m in Sources */,
-				0399116A292AA2EF00E1B06D /* EZWindowFrameManager.m in Sources */,
+				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0230C29231FA6001C7E63 /* TranslateViewController.m in Sources */,
