@@ -16,6 +16,7 @@
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
 		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
+		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -165,6 +166,8 @@
 		03991169292AA2EF00E1B06D /* EZLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLayoutManager.m; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSView+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSView+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZWindowType.m"; sourceTree = "<group>"; };
+		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
+		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -781,30 +784,28 @@
 				03B022C329231FA6001C7E63 /* NSView+MM.m */,
 				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
 				0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */,
+				03B022B929231FA6001C7E63 /* NSImage+MM.h */,
+				03B022AB29231FA6001C7E63 /* NSImage+MM.m */,
 				03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */,
+				03B022B429231FA6001C7E63 /* NSAttributedString+MM.m */,
+				03B022B329231FA6001C7E63 /* NSWindow+MM.h */,
 				03B022A829231FA6001C7E63 /* NSWindow+MM.m */,
 				03B022A929231FA6001C7E63 /* NSColor+MM.h */,
+				03B022B529231FA6001C7E63 /* NSColor+MM.m */,
+				03B022BA29231FA6001C7E63 /* NSPasteboard+MM.h */,
 				03B022AA29231FA6001C7E63 /* NSPasteboard+MM.m */,
-				03B022AB29231FA6001C7E63 /* NSImage+MM.m */,
+				03B022B829231FA6001C7E63 /* NSString+MM.h */,
 				03B022AC29231FA6001C7E63 /* NSString+MM.m */,
+				03B022B729231FA6001C7E63 /* NSUserDefaults+MM.h */,
 				03B022AD29231FA6001C7E63 /* NSUserDefaults+MM.m */,
+				03B022B629231FA6001C7E63 /* NSButton+MM.h */,
 				03B022AE29231FA6001C7E63 /* NSButton+MM.m */,
 				03B022AF29231FA6001C7E63 /* NSArray+MM.h */,
-				03B022B129231FA6001C7E63 /* NSMutableAttributedString+MM.h */,
-				03B022B229231FA6001C7E63 /* NSDictionary+MM.h */,
-				03B022B329231FA6001C7E63 /* NSWindow+MM.h */,
-				03B022B429231FA6001C7E63 /* NSAttributedString+MM.m */,
-				03B022B529231FA6001C7E63 /* NSColor+MM.m */,
-				03B022B629231FA6001C7E63 /* NSButton+MM.h */,
-				03B022B729231FA6001C7E63 /* NSUserDefaults+MM.h */,
-				03B022B829231FA6001C7E63 /* NSString+MM.h */,
-				03B022B929231FA6001C7E63 /* NSImage+MM.h */,
-				03B022BA29231FA6001C7E63 /* NSPasteboard+MM.h */,
-				03B022BB29231FA6001C7E63 /* NSTextView+Height */,
-				03B022BE29231FA6001C7E63 /* NSDictionary+MM.m */,
-				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
-				03B022C229231FA6001C7E63 /* NSMutableAttributedString+MM.m */,
 				03B022C429231FA6001C7E63 /* NSArray+MM.m */,
+				03B022B129231FA6001C7E63 /* NSMutableAttributedString+MM.h */,
+				03B022C229231FA6001C7E63 /* NSMutableAttributedString+MM.m */,
+				03B022B229231FA6001C7E63 /* NSDictionary+MM.h */,
+				03B022BE29231FA6001C7E63 /* NSDictionary+MM.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1034,8 +1035,12 @@
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
 			isa = PBXGroup;
 			children = (
+				03B022BB29231FA6001C7E63 /* NSTextView+Height */,
+				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
 				039CC90B292F664E0037B91E /* NSView+EZWindowType.h */,
 				039CC90C292F664E0037B91E /* NSView+EZWindowType.m */,
+				039CC90E292F86F40037B91E /* NSImage+EZResize.h */,
+				039CC90F292F86F40037B91E /* NSImage+EZResize.m */,
 			);
 			path = EZCategory;
 			sourceTree = "<group>";
@@ -1320,6 +1325,7 @@
 				03B0230D29231FA6001C7E63 /* TranslateWindow.m in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				03B022F929231FA6001C7E63 /* TranslateLanguage.m in Sources */,
+				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
 				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
