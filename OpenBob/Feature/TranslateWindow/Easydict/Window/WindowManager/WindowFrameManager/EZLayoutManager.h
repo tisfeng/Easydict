@@ -12,6 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static CGFloat EZInputViewMiniHeight = 50;
 
 typedef NS_ENUM(NSUInteger, EZWindowType) {
     EZWindowTypeMain = 0,
@@ -19,13 +20,12 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
     EZWindowTypeFixed = 2,
 };
 
-
 /// Avoid window manager and base window recycling retain.
 @interface EZLayoutManager : NSObject
 
 @property (nonatomic, assign) CGFloat miniWindowWidth; // 300
 @property (nonatomic, assign) CGFloat miniWindowHeight; // 200
-@property (nonatomic, assign) CGFloat maxWindowHeight; //
+@property (nonatomic, assign) CGFloat maxWindowHeight; 
 
 @property (nonatomic, assign) CGRect miniWindowFrame;
 @property (nonatomic, assign) CGRect fixedWindowFrame;
