@@ -131,7 +131,7 @@
 		C90BE312239F38EC00ADE88B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C90BE311239F38EC00ADE88B /* Assets.xcassets */; };
 		C90BE315239F38EC00ADE88B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90BE313239F38EC00ADE88B /* Main.storyboard */; };
 		C90BE318239F38EC00ADE88B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C90BE317239F38EC00ADE88B /* main.m */; };
-		C98CAE75239F4619005F7DCA /* OpenBobHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F712862A230D274DD3BF55A7 /* Pods_Open_Bob.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A591FC49FD8CA1130B793A0 /* Pods_Open_Bob.framework */; };
 /* End PBXBuildFile section */
 
@@ -142,7 +142,7 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				C98CAE75239F4619005F7DCA /* OpenBobHelper.app in CopyFiles */,
+				C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,10 +172,10 @@
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
+		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03B0221D29231FA6001C7E63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		03B0221E29231FA6001C7E63 /* OpenBob.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = OpenBob.entitlements; sourceTree = "<group>"; };
+		03B0221E29231FA6001C7E63 /* Easydict.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Easydict.entitlements; sourceTree = "<group>"; };
 		03B0222029231FA6001C7E63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		03B0222129231FA6001C7E63 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		03B0222229231FA6001C7E63 /* EZConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZConst.h; sourceTree = "<group>"; };
@@ -379,7 +379,7 @@
 		4E0B57F42E622702C7596496 /* Pods-Open Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.debug.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.debug.xcconfig"; sourceTree = "<group>"; };
 		7A591FC49FD8CA1130B793A0 /* Pods_Open_Bob.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Open_Bob.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9D6359A6D78402E704491A5 /* Pods-Open Bob.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Open Bob.release.xcconfig"; path = "Target Support Files/Pods-Open Bob/Pods-Open Bob.release.xcconfig"; sourceTree = "<group>"; };
-		C90BE309239F38EB00ADE88B /* OpenBobHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenBobHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90BE30B239F38EB00ADE88B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C90BE30C239F38EB00ADE88B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C90BE30E239F38EB00ADE88B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -390,7 +390,7 @@
 		C90BE317239F38EC00ADE88B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C90BE319239F38EC00ADE88B /* BobHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BobHelper.entitlements; sourceTree = "<group>"; };
 		C99031D223A09E4300E904D4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		C99EEB182385796700FEE666 /* Open Bob.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Bob.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99EEB182385796700FEE666 /* Easydict.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Easydict.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAA2783203F23B4C5195EB84 /* Pods-OpenBob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenBob.debug.xcconfig"; path = "Target Support Files/Pods-OpenBob/Pods-OpenBob.debug.xcconfig"; sourceTree = "<group>"; };
 		DA7129FC389066F3A2227458 /* Pods-Bob.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bob.debug.xcconfig"; path = "Target Support Files/Pods-Bob/Pods-Bob.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -472,13 +472,13 @@
 			path = PopUpButton;
 			sourceTree = "<group>";
 		};
-		03B0221829231FA6001C7E63 /* OpenBob */ = {
+		03B0221829231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
 				03B0222429231FA6001C7E63 /* Feature */,
 				03BFBB5429235C9400C48725 /* Icons */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
-				03B0221E29231FA6001C7E63 /* OpenBob.entitlements */,
+				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
 				03B0221929231FA6001C7E63 /* Main.strings */,
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0222129231FA6001C7E63 /* main.m */,
@@ -486,10 +486,10 @@
 				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
 				03B0222329231FA6001C7E63 /* AppDelegate.m */,
 				03B022E329231FA6001C7E63 /* PrefixHeader.pch */,
-				03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */,
+				03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */,
 				03B022E429231FA6001C7E63 /* Info.plist */,
 			);
-			path = OpenBob;
+			path = Easydict;
 			sourceTree = "<group>";
 		};
 		03B0222429231FA6001C7E63 /* Feature */ = {
@@ -1126,7 +1126,7 @@
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
-				03B0221829231FA6001C7E63 /* OpenBob */,
+				03B0221829231FA6001C7E63 /* Easydict */,
 				C90BE30A239F38EB00ADE88B /* OpenBobHelper */,
 				C99EEB192385796700FEE666 /* Products */,
 				9CB57B9B45EC322A11ED8865 /* Pods */,
@@ -1138,8 +1138,8 @@
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C99EEB182385796700FEE666 /* Open Bob.app */,
-				C90BE309239F38EB00ADE88B /* OpenBobHelper.app */,
+				C99EEB182385796700FEE666 /* Easydict.app */,
+				C90BE309239F38EB00ADE88B /* EasydictHelper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1147,9 +1147,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C90BE308239F38EB00ADE88B /* OpenBobHelper */ = {
+		C90BE308239F38EB00ADE88B /* EasydictHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "OpenBobHelper" */;
+			buildConfigurationList = C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "EasydictHelper" */;
 			buildPhases = (
 				C90BE305239F38EB00ADE88B /* Sources */,
 				C90BE306239F38EB00ADE88B /* Frameworks */,
@@ -1159,14 +1159,14 @@
 			);
 			dependencies = (
 			);
-			name = OpenBobHelper;
+			name = EasydictHelper;
 			productName = BobHelper;
-			productReference = C90BE309239F38EB00ADE88B /* OpenBobHelper.app */;
+			productReference = C90BE309239F38EB00ADE88B /* EasydictHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C99EEB172385796700FEE666 /* Open Bob */ = {
+		C99EEB172385796700FEE666 /* Easydict */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Open Bob" */;
+			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Easydict" */;
 			buildPhases = (
 				21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */,
 				C99EEB142385796700FEE666 /* Sources */,
@@ -1179,9 +1179,9 @@
 			);
 			dependencies = (
 			);
-			name = "Open Bob";
+			name = Easydict;
 			productName = Bob;
-			productReference = C99EEB182385796700FEE666 /* Open Bob.app */;
+			productReference = C99EEB182385796700FEE666 /* Easydict.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1203,7 +1203,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C99EEB132385796700FEE666 /* Build configuration list for PBXProject "OpenBob" */;
+			buildConfigurationList = C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Easydict" */;
 			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1217,8 +1217,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C99EEB172385796700FEE666 /* Open Bob */,
-				C90BE308239F38EB00ADE88B /* OpenBobHelper */,
+				C99EEB172385796700FEE666 /* Easydict */,
+				C90BE308239F38EB00ADE88B /* EasydictHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -1459,12 +1459,12 @@
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1472,7 +1472,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.OpenBobHelper-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.EasydictHelper-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1484,12 +1484,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = OpenBobHelper/BobHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OpenBobHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1497,7 +1497,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.izual.OpenBobHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.izual.EasydictHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1627,17 +1627,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = OpenBob/OpenBob.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Easydict/Easydict.entitlements;
 				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
-				INFOPLIST_FILE = OpenBob/Info.plist;
+				DEVELOPMENT_TEAM = "";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1645,9 +1645,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.OpenBob-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/OpenBob-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1661,17 +1661,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = OpenBob/OpenBob.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Easydict/Easydict.entitlements;
 				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/OpenBob/PrefixHeader.pch";
-				INFOPLIST_FILE = OpenBob/Info.plist;
+				DEVELOPMENT_TEAM = "";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1679,9 +1679,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.izual.OpenBob;
+				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "OpenBob/OpenBob-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/Easydict-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1689,7 +1689,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "OpenBobHelper" */ = {
+		C90BE31A239F38EC00ADE88B /* Build configuration list for PBXNativeTarget "EasydictHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C90BE31B239F38EC00ADE88B /* Debug */,
@@ -1698,7 +1698,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C99EEB132385796700FEE666 /* Build configuration list for PBXProject "OpenBob" */ = {
+		C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Easydict" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C99EEB2A2385796900FEE666 /* Debug */,
@@ -1707,7 +1707,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Open Bob" */ = {
+		C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Easydict" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C99EEB2D2385796900FEE666 /* Debug */,
