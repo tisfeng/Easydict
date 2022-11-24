@@ -9,6 +9,7 @@
 #import "EZBaseQueryWindow.h"
 #import "EZTitlebar.h"
 #import "EZWindowManager.h"
+#import "NSImage+EZResize.h"
 
 @interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
 
@@ -50,15 +51,34 @@
         make.edges.equalTo(titleView);
     }];
     
+    EZHoverButton *pinButton = self.titleBar.pinButton;
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)];
+    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:CGSizeMake(16, 16)];
+    pinButton.image = normalImage;
+
     mm_weakify(self);
-    [self.titleBar.pinButton setClickBlock:^(EZButton * _Nonnull button) {
+    [pinButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"pin");
         mm_strongify(self);
         
         self.pin = !self.pin;
-        
+        NSImage *image = self.pin ? selectedImage : normalImage;
+        button.image = image;
+
         NSWindowLevel level = self.pin ? kCGFloatingWindowLevel : kCGNormalWindowLevel;
         self.level = level;
+    }];
+    
+    [pinButton setMouseDownBlock:^(EZButton * _Nonnull button) {
+        NSImage *highlightImage = self.pin ? normalImage : selectedImage;
+        button.image = highlightImage;
+    }];
+    
+    [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
+        button.backgroundColor = button.backgroundHoverColor;
+    }];
+    [pinButton setMouseExitedBlock:^(EZButton * _Nonnull button) {
+        button.backgroundColor = NSColor.clearColor;
     }];
 }
 

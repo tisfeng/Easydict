@@ -65,12 +65,20 @@
 - (void)mouseEntered:(NSEvent *)event {
 //        NSLog(@"mouseEntered");
     
+    if (self.mouseEnterBlock) {
+        self.mouseEnterBlock(self);
+    }
+    
     self.hover = YES;
     self.buttonState = EZButtonHoverState;
 }
 
 - (void)mouseExited:(NSEvent *)event {
 //        NSLog(@"mouseExited");
+    
+    if (self.mouseExitedBlock) {
+        self.mouseExitedBlock(self);
+    }
     
     self.hover = NO;
     if (self.selected) {
@@ -82,6 +90,10 @@
 
 - (void)mouseDown:(NSEvent *)event {
     //    NSLog(@"mouseDown");
+    
+    if (self.mouseDownBlock) {
+        self.mouseDownBlock(self);
+    }
     
     self.mouseUp = NO;
     if (self.enabled && self.hover) {
@@ -409,6 +421,11 @@
 //        NSLog(@"hover: %@", self);
         if (self.hoverBlock) {
             self.hoverBlock(self);
+        }
+    }
+    if (state == EZButtonHighlightState) {
+        if (self.mouseEnterBlock) {
+            self.mouseEnterBlock(self);
         }
     }
     
