@@ -17,6 +17,7 @@
 @property (nonatomic, strong) EZButton *detectButton;
 
 @property (nonatomic, assign) CGFloat textViewHeight;
+@property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
 @end
@@ -27,9 +28,6 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        self.textViewMiniHeight = 60;
-        self.textViewMaxHeight = NSScreen.mainScreen.frame.size.height / 3; // 372
-        self.textView.textContainerInset = NSMakeSize(8, 8);
         
         [self setup];
     }
@@ -88,6 +86,7 @@
 
 - (void)viewDidMoveToWindow {
     [self scrollToTextViewBottom];
+    
     [super viewDidMoveToWindow];
 }
 
@@ -107,22 +106,13 @@
 #pragma mark -
 
 - (void)updateCustomLayout {
-    EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
-    EZWindowType windowType = viewController.windowType;
+//    EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
+    EZWindowType windowType = self.windowType;
 
-    self.textViewHeight = [EZWindowFrameManager.shared getInputViewMiniHeight:windowType];
-    
-    switch (windowType) {
-        case EZWindowTypeMini:
-            self.textView.textContainerInset = NSMakeSize(4, 4);
-            break;
-        case EZWindowTypeMain:
-        case EZWindowTypeFixed: {
-            self.textView.textContainerInset = NSMakeSize(8, 8);
-        }
-        default:
-            break;
-    }
+    self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
+    self.textViewMiniHeight = [EZLayoutManager.shared inputViewMiniHeight:windowType];
+    self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
+    self.textViewHeight = self.textViewMiniHeight;
 }
 
 - (void)updateDetectButton {

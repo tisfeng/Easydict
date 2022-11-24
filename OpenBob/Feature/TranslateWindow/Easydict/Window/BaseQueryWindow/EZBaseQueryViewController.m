@@ -73,7 +73,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:EZWindowFrameManager.shared.miniWindowFrame];
+    self.view = [[NSView alloc] initWithFrame:EZLayoutManager.shared.miniWindowFrame];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = 4;
     self.view.layer.masksToBounds = YES;
@@ -114,7 +114,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     self.services = translateServices;
     
     self.queryModel = [EZQueryModel new];
-    self.inputViewHeight = [EZWindowFrameManager.shared getInputViewMiniHeight:self.windowType];
+    self.inputViewHeight = [EZLayoutManager.shared inputViewMiniHeight:self.windowType];
     
     self.detectManager = [[EZDetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -267,8 +267,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.titleBar.mas_bottom).offset(0);
         make.left.right.bottom.equalTo(self.view);
-        make.width.mas_greaterThanOrEqualTo(EZWindowFrameManager.shared.miniWindowWidth);
-        self.scrollViewHeight = make.height.mas_greaterThanOrEqualTo(EZWindowFrameManager.shared.miniWindowHeight);
+        make.width.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowWidth);
+        self.scrollViewHeight = make.height.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowHeight);
     }];
     
     [super updateViewConstraints];
@@ -386,13 +386,14 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
         self.queryView = queryCell.queryView;
+        self.queryView.windowType = self.windowType;
         self.queryView.model = self.queryModel;
         self.queryCell = queryCell;
         return queryCell;
     }
     
     if (self.windowType != EZWindowTypeMini && row == 1) {
-        EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentRect]];
+        EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
         return selectCell;
     }
     
@@ -408,8 +409,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         if (self.queryModel.viewHeight) {
             height = self.queryModel.viewHeight + 30;
         } else {
-            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
+            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
             queryCell.queryView.model = self.queryModel;
+            queryCell.queryView.windowType = self.windowType;
             height = [queryCell fittingSize].height;
         }
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
@@ -438,13 +440,13 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 #pragma mark -
 
 // Get tableView bounds in real time.
-- (CGRect)tableViewContentRect {
+- (CGRect)tableViewContentBounds {
     CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
     return rect;
 }
 
 - (EZQueryCell *)createQueryCell {
-    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentRect]];
+    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
     queryCell.identifier = EZQueryCellId;
     
     mm_weakify(self);
@@ -497,7 +499,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
-    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentRect]];
+    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
     resultCell.identifier = EZResultCellId;
     
     TranslateService *service = [self serviceAtRow:row];
@@ -665,8 +667,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (CGFloat)getScrollViewHeight {
     CGFloat height = [self getContentHeight];
-    height = MAX(height, EZWindowFrameManager.shared.miniWindowHeight);
-    height = MIN(height, EZWindowFrameManager.shared.maxWindowHeight);
+    height = MAX(height, EZLayoutManager.shared.miniWindowHeight);
+    height = MIN(height, EZLayoutManager.shared.maxWindowHeight);
     return height;
 }
 

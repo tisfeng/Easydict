@@ -66,7 +66,6 @@
     _windowType = windowType;
     
     EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] initWithWindowType:windowType];
-//    viewController.view.frame = [EZWindowFrameManager.shared windowFrameWithType:windowType];
     self.viewController = viewController;
 }
 
@@ -104,7 +103,7 @@
         self.viewController.resizeWindowBlock();
     }
     
-    EZWindowFrameManager *frameManager = [EZWindowFrameManager shared];
+    EZLayoutManager *frameManager = [EZLayoutManager shared];
     switch (self.windowType) {
         case EZWindowTypeMain:
             frameManager.mainWindowFrame = self.frame;
