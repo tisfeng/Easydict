@@ -94,7 +94,7 @@ static NSString *EZColumnId = @"EZColumnId";
 - (void)viewWillAppear {
     [super viewWillAppear];
     
-    [self updateWindowViewHeight];
+    [self updateWindowViewHeightWithLock];
 }
 
 - (void)setup {
@@ -122,20 +122,17 @@ static NSString *EZColumnId = @"EZColumnId";
     mm_weakify(self);
     [self setResizeWindowBlock:^{
         mm_strongify(self);
-
+        
+        // Avoid recycling call, resize window --> update window height --> resize window
         if (!self.enableResizeWindow) {
             return;
         }
-
+        
         NSLog(@"resize window, resize view");
         
         [CATransaction begin];
         [CATransaction setCompletionBlock:^{
-            self.enableResizeWindow = NO;
-            [self updateWindowViewHeight];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.enableResizeWindow = YES;
-            });
+            [self delayUpdateWindowViewHeight];
         }];
         
         [self.tableView reloadData];
@@ -143,15 +140,28 @@ static NSString *EZColumnId = @"EZColumnId";
     }];
     
     self.kvo = [FBKVOController controllerWithObserver:self];
-    [self.kvo observe:self.scrollView.documentView
+    [self.kvo observe:self.tableView
               keyPath:@"frame"
               options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                 block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
+        NSLog(@"change: %@", change);
+        
         //        CGRect documentViewFrame = [change[NSKeyValueChangeNewKey] CGRectValue];
         //        CGFloat documentViewHeight = documentViewFrame.size.height;
         //                    NSLog(@"kvo documentViewHeight: %@", @(documentViewHeight));
     }];
 }
+
+
+- (void)delayUpdateWindowViewHeight {
+    [self cancelUpdateWindowViewHeight];
+    [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:0.2];
+}
+
+- (void)cancelUpdateWindowViewHeight {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateWindowViewHeightWithLock) object:nil];
+}
+
 
 - (void)updateTableViewData {
     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
@@ -349,16 +359,10 @@ static NSString *EZColumnId = @"EZColumnId";
     }
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-        self.enableResizeWindow = NO;
-
         context.duration = 0.3;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
-        self.enableResizeWindow = NO;
-        [self updateWindowViewHeight];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.enableResizeWindow = YES;
-        });
+        [self updateWindowViewHeightWithLock];
     }];
 }
 
@@ -611,7 +615,15 @@ static NSString *EZColumnId = @"EZColumnId";
     [self.player play];
 }
 
-- (void)updateWindowViewHeight {
+- (void)updateWindowViewHeightWithLock {
+    [self updateWindowViewHeight:YES];
+}
+
+- (void)updateWindowViewHeight:(BOOL)lock {
+    if (lock) {
+        self.enableResizeWindow = NO;
+    }
+    
     CGFloat height = [self getScrollViewHeight];
     NSLog(@"contentHeight: %@", @(height));
     
@@ -633,11 +645,10 @@ static NSString *EZColumnId = @"EZColumnId";
         return;
     }
     
-//    window.size = CGSizeMake(window.width, height);
-//    window.y = y;
+    //    window.size = CGSizeMake(window.width, height);
+    //    window.y = y;
     
     CGRect newFrame = CGRectMake(window.x, y, window.width, height);
-    // Avoid recycling call, resize window --> reload tableView --> update window height --> resize window 
     [window setFrame:newFrame display:YES];
     
     CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:window.frame];
@@ -646,6 +657,12 @@ static NSString *EZColumnId = @"EZColumnId";
     NSLog(@"safe frame: %@", @(safeFrame));
     
     [window setFrameOrigin:safeFrame.origin];
+    
+    if (lock) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.enableResizeWindow = YES;
+        });
+    }
 }
 
 - (CGFloat)getScrollViewHeight {
@@ -657,7 +674,7 @@ static NSString *EZColumnId = @"EZColumnId";
 
 - (CGFloat)getContentHeight {
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-    //    NSLog(@"documentView height: %@", @(documentViewHeight));
+    NSLog(@"documentView height: %@", @(documentViewHeight));
     
     CGFloat insetsHeight = self.scrollView.contentInsets.top - self.scrollView.contentInsets.bottom;
     CGFloat scrollViewFrameHeight = self.scrollView.height - insetsHeight;
@@ -670,7 +687,9 @@ static NSString *EZColumnId = @"EZColumnId";
             if ([view isKindOfClass:NSClassFromString(@"NSTableBackgroundView")]) {
                 NSLog(@"backgroundView: %@", @(view.frame));
                 NSView *blankView = view;
-                contentHeight -= blankView.height;
+                
+                CGFloat blankViewHeight = blankView.height;
+                contentHeight -= blankViewHeight;
             }
         }
     }
