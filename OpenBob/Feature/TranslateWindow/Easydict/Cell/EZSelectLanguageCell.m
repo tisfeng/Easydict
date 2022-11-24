@@ -135,7 +135,7 @@
     }];
     
     CGFloat languageButtonWidth = 90;
-    CGFloat transformButtonWidth = 20;
+    CGFloat transformButtonWidth = 30;
     
     [self.transformButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.languageBarView);
