@@ -242,6 +242,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }];
 }
 
+#pragma mark - Handle Event
+
 - (void)handleMonitorEvent:(NSEvent *)event {
     //        NSLog(@"type: %lu", (unsigned long)event.type);
 
@@ -262,7 +264,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             // check if it is a double click
             if (event.clickCount == 2) {
                 //                    NSLog(@"double click");
-                [self getSelectedText:NO];
+                
+                // ⚠️ Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self getSelectedText:NO];
+                });
+                
             } else {
                 [self dismissPopButton];
             }
