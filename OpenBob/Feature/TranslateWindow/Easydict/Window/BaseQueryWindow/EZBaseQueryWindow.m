@@ -52,7 +52,8 @@
     }];
     
     EZHoverButton *pinButton = self.titleBar.pinButton;
-    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)];
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)]; // 797A7F
+    
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:CGSizeMake(16, 16)];
     pinButton.image = normalImage;
 
@@ -75,7 +76,15 @@
     }];
     
     [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
-        button.backgroundColor = button.backgroundHoverColor;
+        NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
+        NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
+        [button excuteLight:^(EZButton *button) {
+            button.backgroundHoverColor = lightHighlightColor;
+            button.backgroundHighlightColor = lightHighlightColor;
+        } drak:^(EZButton *button) {
+            button.backgroundHoverColor = darkHighlightColor;
+            button.backgroundHighlightColor = darkHighlightColor;
+        }];
     }];
     [pinButton setMouseExitedBlock:^(EZButton * _Nonnull button) {
         button.backgroundColor = NSColor.clearColor;
