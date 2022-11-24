@@ -16,7 +16,6 @@
 		0383914F292FBE120009828C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03839145292FBE120009828C /* Main.storyboard */; };
 		03839150292FBE120009828C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839147292FBE120009828C /* main.m */; };
 		03839151292FBE120009828C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839148292FBE120009828C /* AppDelegate.m */; };
-		03839152292FBE120009828C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0383914A292FBE120009828C /* Info.plist */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZServiceStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZServiceStorage.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
@@ -510,6 +509,7 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				03B0224F29231FA6001C7E63 /* Easydict */,
 				03B0224C29231FA6001C7E63 /* TranslateWindow */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
@@ -613,7 +613,6 @@
 		03B0224C29231FA6001C7E63 /* TranslateWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03B0224F29231FA6001C7E63 /* Easydict */,
 			);
 			path = TranslateWindow;
 			sourceTree = "<group>";
@@ -1223,7 +1222,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03839152292FBE120009828C /* Info.plist in Resources */,
 				0383914F292FBE120009828C /* Main.storyboard in Resources */,
 				0383914D292FBE120009828C /* Assets.xcassets in Resources */,
 				0383914C292FBE120009828C /* Main.strings in Resources */,
