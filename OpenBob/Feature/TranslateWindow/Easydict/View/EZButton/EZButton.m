@@ -417,18 +417,6 @@
     
     _buttonState = state;
     
-    if (state == EZButtonHoverState) {
-//        NSLog(@"hover: %@", self);
-        if (self.hoverBlock) {
-            self.hoverBlock(self);
-        }
-    }
-    if (state == EZButtonHighlightState) {
-        if (self.mouseEnterBlock) {
-            self.mouseEnterBlock(self);
-        }
-    }
-    
     [self updateButtonApperaceWithState:state];
 }
 
