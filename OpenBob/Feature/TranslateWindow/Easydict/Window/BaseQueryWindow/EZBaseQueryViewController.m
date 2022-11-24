@@ -410,8 +410,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
             height = self.queryModel.viewHeight + 30;
         } else {
             EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
-            queryCell.queryView.model = self.queryModel;
             queryCell.queryView.windowType = self.windowType;
+            queryCell.queryView.model = self.queryModel;
             height = [queryCell fittingSize].height;
         }
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
