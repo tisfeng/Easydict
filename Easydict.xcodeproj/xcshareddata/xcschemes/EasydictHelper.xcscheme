@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C99EEB172385796700FEE666"
-               BuildableName = "Open Bob.app"
-               BlueprintName = "Open Bob"
-               ReferencedContainer = "container:OpenBob.xcodeproj">
+               BlueprintIdentifier = "C90BE308239F38EB00ADE88B"
+               BuildableName = "EasydictHelper.app"
+               BlueprintName = "EasydictHelper"
+               ReferencedContainer = "container:Easydict.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C99EEB172385796700FEE666"
-            BuildableName = "Open Bob.app"
-            BlueprintName = "Open Bob"
-            ReferencedContainer = "container:OpenBob.xcodeproj">
+            BlueprintIdentifier = "C90BE308239F38EB00ADE88B"
+            BuildableName = "EasydictHelper.app"
+            BlueprintName = "EasydictHelper"
+            ReferencedContainer = "container:Easydict.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C99EEB172385796700FEE666"
-            BuildableName = "Open Bob.app"
-            BlueprintName = "Open Bob"
-            ReferencedContainer = "container:OpenBob.xcodeproj">
+            BlueprintIdentifier = "C90BE308239F38EB00ADE88B"
+            BuildableName = "EasydictHelper.app"
+            BlueprintName = "EasydictHelper"
+            ReferencedContainer = "container:Easydict.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -73,7 +73,6 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "Open Bob"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
