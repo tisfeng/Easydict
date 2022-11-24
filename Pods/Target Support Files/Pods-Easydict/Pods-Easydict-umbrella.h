@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_Open_BobVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_Open_BobVersionString[];
+FOUNDATION_EXPORT double Pods_EasydictVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_EasydictVersionString[];
 
