@@ -9,7 +9,6 @@
 #import "EZLayoutManager.h"
 #import "EZBaseQueryWindow.h"
 
-static EZLayoutManager *_instance;
 
 @interface EZLayoutManager ()
 
@@ -17,6 +16,8 @@ static EZLayoutManager *_instance;
 @end
 
 @implementation EZLayoutManager
+
+static EZLayoutManager *_instance;
 
 + (instancetype)shared {
     if (!_instance) {
@@ -57,9 +58,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return 60;
         case EZWindowTypeMini:
-            return 30; // one line
+            return EZInputViewMiniHeight; // two line
         default:
-            return 30;
+            return EZInputViewMiniHeight;
     }
 }
 
@@ -70,9 +71,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return NSScreen.mainScreen.frame.size.height / 3;
         case EZWindowTypeMini:
-            return 60; // two line
+            return EZInputViewMiniHeight; // two line
         default:
-            return 60;
+            return EZInputViewMiniHeight;
     }
 }
 
