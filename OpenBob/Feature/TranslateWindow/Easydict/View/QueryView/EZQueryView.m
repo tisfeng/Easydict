@@ -146,7 +146,7 @@
     CGFloat width = [attrTitle mm_getTextWidth];
     self.detectButton.attributedTitle = attrTitle;
     [self.detectButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(8);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(6);
         make.centerY.equalTo(self.textCopyButton);
         make.height.mas_equalTo(20);
         make.width.mas_equalTo(width + 8);
