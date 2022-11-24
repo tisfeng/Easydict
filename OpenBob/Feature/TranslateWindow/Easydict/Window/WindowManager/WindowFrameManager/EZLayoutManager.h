@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 
 @property (nonatomic, assign) CGFloat miniWindowWidth; // 300
 @property (nonatomic, assign) CGFloat miniWindowHeight; // 200
-@property (nonatomic, assign) CGFloat maxWindowHeight; 
+@property (nonatomic, assign) CGFloat maxWindowHeight;
 
 @property (nonatomic, assign) CGRect miniWindowFrame;
 @property (nonatomic, assign) CGRect fixedWindowFrame;

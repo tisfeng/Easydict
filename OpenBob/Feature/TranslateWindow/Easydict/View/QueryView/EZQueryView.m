@@ -28,7 +28,7 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        
+        self.textViewMiniHeight = EZInputViewMiniHeight;
         [self setup];
     }
     return self;
@@ -106,7 +106,6 @@
 #pragma mark -
 
 - (void)updateCustomLayout {
-//    EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
     EZWindowType windowType = self.windowType;
 
     self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
@@ -239,13 +238,8 @@
     CGFloat height = [self.textView getHeightWithWidth:self.width];
     //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
 
-    if (height < self.textViewMiniHeight) {
-        height = self.textViewMiniHeight;
-    }
-    if (height > self.textViewMaxHeight) {
-        height = self.textViewMaxHeight;
-        NSLog(@"reached maxHeight");
-    }
+    height = MAX(height, self.textViewMiniHeight);
+    height = MIN(height, self.textViewMaxHeight);
     
     height = ceil(height);
 //    NSLog(@"final height: %.1f", height);
