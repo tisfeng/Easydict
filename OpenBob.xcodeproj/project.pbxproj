@@ -17,6 +17,7 @@
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
 		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
+		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -168,6 +169,8 @@
 		039CC90C292F664E0037B91E /* NSView+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
+		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
+		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* OpenBob-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenBob-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -460,6 +463,15 @@
 			path = WindowFrameManager;
 			sourceTree = "<group>";
 		};
+		039CC911292FB2F80037B91E /* PopUpButton */ = {
+			isa = PBXGroup;
+			children = (
+				039CC912292FB3180037B91E /* EZPopUpButton.h */,
+				039CC913292FB3180037B91E /* EZPopUpButton.m */,
+			);
+			path = PopUpButton;
+			sourceTree = "<group>";
+		};
 		03B0221829231FA6001C7E63 /* OpenBob */ = {
 			isa = PBXGroup;
 			children = (
@@ -633,6 +645,7 @@
 		03B0225A29231FA6001C7E63 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				039CC911292FB2F80037B91E /* PopUpButton */,
 				0309E1EA292B437C00AFB76A /* TextView */,
 				03991155292927A100E1B06D /* Titlebar */,
 				03B0225B29231FA6001C7E63 /* QueryView */,
@@ -1344,6 +1357,7 @@
 				03B0233A29231FA6001C7E63 /* Selection.m in Sources */,
 				03B022F429231FA6001C7E63 /* TranslateService.m in Sources */,
 				03B0230829231FA6001C7E63 /* ImageButton.m in Sources */,
+				039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */,
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				03B022EF29231FA6001C7E63 /* GoogleTranslate.m in Sources */,

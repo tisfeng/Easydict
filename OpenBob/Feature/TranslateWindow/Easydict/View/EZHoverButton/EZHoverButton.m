@@ -12,12 +12,12 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        [self setup];
+        [self ez_setup];
     }
     return self;
 }
 
-- (void)setup {
+- (void)ez_setup {
     self.cornerRadius = 5;
     
     [self excuteLight:^(EZButton *button) {
