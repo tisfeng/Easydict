@@ -28,9 +28,9 @@ static EZFixedQueryWindow *_instance;
 
 - (instancetype)init {
     if (self = [super initWithWindowType:EZWindowTypeFixed]) {
-//        [self standardWindowButton:NSWindowZoomButton].hidden = NO;
-//        [self standardWindowButton:NSWindowCloseButton].hidden = NO;
-//        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = NO;
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
+        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
+        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
     }
     return self;
 }

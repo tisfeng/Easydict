@@ -16,7 +16,7 @@ static EZMainQueryWindow *_instance;
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            _instance = [[super allocWithZone:NULL] initWithWindowType:EZWindowTypeMain];
+            _instance = [[super allocWithZone:NULL] init];
         });
     }
     return _instance;
@@ -26,6 +26,12 @@ static EZMainQueryWindow *_instance;
     return [self shared];
 }
 
+- (instancetype)init {
+    if (self = [super initWithWindowType:EZWindowTypeMain]) {
+        self.titleBar.pinButton.hidden = YES;
+    }
+    return self;
+}
 
 #pragma mark - Rewrite
 

@@ -58,15 +58,6 @@
     
     EZHoverButton *pinButton = self.titleBar.pinButton;
     
-    if (self.windowType == EZWindowTypeMain) {
-        pinButton.hidden = YES;
-    } else {
-        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
-        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
-        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
-    }
-
-    
     NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)];
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:CGSizeMake(16, 16)];
     pinButton.image = normalImage;
