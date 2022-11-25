@@ -11,8 +11,8 @@
 @implementation EZMiniQueryWindow
 
 - (instancetype)init {
-    if (self = [super initWithContentRect:CGRectZero styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:YES]) {
-        self.windowType = EZWindowTypeMini;
+    if (self = [super initWithWindowType:EZWindowTypeMini]) {
+
     }
     return self;
 }

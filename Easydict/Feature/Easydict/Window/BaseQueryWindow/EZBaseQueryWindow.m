@@ -17,20 +17,24 @@
 
 @implementation EZBaseQueryWindow
 
-- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
-    if (self = [super initWithContentRect:contentRect styleMask:style backing:NSBackingStoreBuffered defer:flag]) {
+- (instancetype)initWithWindowType:(EZWindowType)type {
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
+    if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
+        self.windowType = type;
+        
         self.movableByWindowBackground = YES;
-        self.level = NSNormalWindowLevel; // NSModalPanelWindowLevel;
+        self.level = NSNormalWindowLevel;
         self.titlebarAppearsTransparent = YES;
         self.titleVisibility = NSWindowTitleHidden;
         self.delegate = self;
-
+        
+        // ⚠️ must set backgroundColor
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
-
+        
         [self setupUI];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -45,15 +49,25 @@
     NSView *themeView = self.contentView.superview;
     NSView *titleView = themeView.subviews[1];
 
-    self.titleBar = [[EZTitlebar alloc] initWithFrame:CGRectMake(0, 0, self.width, 50)];
+    self.titleBar = [[EZTitlebar alloc] initWithFrame:CGRectMake(0, 0, self.width, 30)];
     [titleView addSubview:self.titleBar];
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(titleView);
     }];
     
-    EZHoverButton *pinButton = self.titleBar.pinButton;
-    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)]; // 797A7F
     
+    EZHoverButton *pinButton = self.titleBar.pinButton;
+    
+    if (self.windowType == EZWindowTypeMain) {
+        pinButton.hidden = YES;
+    } else {
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
+        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
+        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
+    }
+
+    
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)];
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:CGSizeMake(16, 16)];
     pinButton.image = normalImage;
 
@@ -101,6 +115,7 @@
 - (void)setViewController:(EZBaseQueryViewController *)viewController {
     _viewController = viewController;
 
+    viewController.window = self;
     self.contentViewController = viewController;
 }
 

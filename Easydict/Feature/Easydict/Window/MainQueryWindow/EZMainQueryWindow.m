@@ -16,7 +16,7 @@ static EZMainQueryWindow *_instance;
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            _instance = [[super allocWithZone:NULL] init];
+            _instance = [[super allocWithZone:NULL] initWithWindowType:EZWindowTypeMain];
         });
     }
     return _instance;
@@ -26,15 +26,6 @@ static EZMainQueryWindow *_instance;
     return [self shared];
 }
 
-- (instancetype)init {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-    
-    if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
-        self.windowType = EZWindowTypeMain;
-        self.titleBar.hidden = YES;
-    }
-    return self;
-}
 
 #pragma mark - Rewrite
 

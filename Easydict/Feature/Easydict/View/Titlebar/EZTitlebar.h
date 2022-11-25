@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZHoverButton *pinButton;
 
+@property (nonatomic, strong) EZButton *eudicButton;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -25,6 +25,7 @@
 #import "EZServiceStorage.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateTool.h"
+#import "EZBaseQueryWindow.h"
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -53,12 +54,11 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 @property (nonatomic, assign) CGFloat inputViewHeight;
 
-@property (nonatomic, strong) MASConstraint *scrollViewHeight;
-
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL enableResizeWindow;
 
+@property (nonatomic, assign) CGFloat customTitleBarHeight;
 
 @end
 
@@ -75,7 +75,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (void)loadView {
     self.view = [[NSView alloc] initWithFrame:EZLayoutManager.shared.miniWindowFrame];
     self.view.wantsLayer = YES;
-    self.view.layer.cornerRadius = 4;
+    self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
     [self.view excuteLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
@@ -98,6 +98,18 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     [self updateWindowViewHeightWithLock];
 }
+
+- (void)viewDidLayout {
+    mm_weakify(self);
+    [self.window.titleBar.eudicButton setClickBlock:^(EZButton * _Nonnull button) {
+        mm_strongify(self);
+        NSString *queryText = self.queryModel.queryText ?: @"";
+        NSString *url = [NSString stringWithFormat:@"eudic://dict/%@", queryText];
+
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    }];
+}
+
 
 - (void)setup {
     self.serviceTypes = @[
@@ -181,26 +193,27 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 #pragma mark - Getter
 
-- (EZTitlebar *)titleBar {
-    if (!_titleBar) {
-        EZTitlebar *titleBar = [[EZTitlebar alloc] init];
-        [self.view addSubview:titleBar];
-        _titleBar = titleBar;
-    }
-    return _titleBar;
-}
-
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
         NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
         
+        scrollView.wantsLayer = YES;
+        scrollView.layer.cornerRadius = EZCornerRadius_8;
         [scrollView excuteLight:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
+        
+        [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view).offset(self.customTitleBarHeight);
+            make.left.right.bottom.equalTo(self.view);
+            make.width.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowWidth);
+            make.height.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowHeight);
+        }];
+
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
@@ -254,24 +267,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         _queryCell = [self createQueryCell];
     }
     return _queryCell;
-}
-
-#pragma mark - Layout
-
-- (void)updateViewConstraints {
-    [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.right.equalTo(self.view);
-        make.height.mas_equalTo(self.customTitleBarHeight); // system title bar height is 28
-    }];
-    
-    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.titleBar.mas_bottom).offset(0);
-        make.left.right.bottom.equalTo(self.view);
-        make.width.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowWidth);
-        self.scrollViewHeight = make.height.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowHeight);
-    }];
-    
-    [super updateViewConstraints];
 }
 
 #pragma mark -
@@ -652,7 +647,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         make.height.mas_lessThanOrEqualTo(height);
     }];
     
-    height += 28; // title bar height is 28
+    height += self.customTitleBarHeight; // title bar height is 28
     
     // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
