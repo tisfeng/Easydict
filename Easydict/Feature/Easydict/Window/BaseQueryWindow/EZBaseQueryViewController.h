@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startQueryText:(NSString *)text;
 - (void)startQueryImage:(NSImage *)image;
+- (void)retry;
 
 @end
 

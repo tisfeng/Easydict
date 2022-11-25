@@ -284,7 +284,16 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     NSLog(@"startQueryImage");
 }
 
+- (void)retry {
+    [self startQuery];
+}
+
 - (void)startQueryText:(NSString *)text {
+    if (text.length == 0) {
+        NSLog(@"query text length = 0");
+        return;
+    }
+    
     self.queryModel.queryText = text;
     
     __block Language fromLang = Configuration.shared.from;

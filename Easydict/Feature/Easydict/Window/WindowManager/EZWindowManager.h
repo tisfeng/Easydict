@@ -18,15 +18,33 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZWindowManager : NSObject
 
 @property (nonatomic, strong) EZMainQueryWindow *mainWindow;
-@property (nonatomic, strong) EZPopButtonWindow *popWindow;
+@property (nonatomic, strong) EZPopButtonWindow *popButtonWindow;
 @property (nonatomic, strong, nullable) EZFixedQueryWindow *fixedWindow;
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
-@property (nonatomic, assign) EZWindowType showingWindowType;
+@property (nonatomic, assign) EZWindowType floatingWindowType;
+@property (nonatomic, assign) EZWindowType lastFloatingWindowType;
+
+@property (nonatomic, strong, nullable) EZBaseQueryWindow *floatingWindow;
+
 
 + (instancetype)shared;
 
-//- (EZWindowType)getWindowType:(EZBaseQueryWindow *)window;
+- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
+
+- (void)selectionTranslate;
+
+- (void)snipTranslate;
+
+- (void)inputTranslate;
+
+- (void)showMiniFloatingWindow;
+
+- (void)closeFloatingWindow;
+
+- (void)rerty;
+
+- (void)activeLastFrontmostApplication;
 
 @end
 

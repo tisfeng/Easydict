@@ -45,7 +45,9 @@ static EZLayoutManager *_instance;
     self.miniWindowHeight = 200;
     self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height; // 1079
 
-    self.miniWindowFrame = CGRectMake(0, 0, self.miniWindowWidth, self.miniWindowHeight);
+    CGPoint centerPoint = NSMakePoint(NSScreen.mainScreen.visibleFrame.size.width / 2,
+                                      NSScreen.mainScreen.visibleFrame.size.height / 2);
+    self.miniWindowFrame = CGRectMake(centerPoint.x, centerPoint.y, self.miniWindowWidth, self.miniWindowHeight);
     self.fixedWindowFrame = self.miniWindowFrame;
     self.mainWindowFrame = self.miniWindowFrame;
 }

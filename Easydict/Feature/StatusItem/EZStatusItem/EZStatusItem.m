@@ -8,7 +8,7 @@
 
 #import "EZStatusItem.h"
 #import "PreferencesWindowController.h"
-#import "EZFixedQueryWindowController.h"
+#import "EZWindowManager.h"
 #import "Snip.h"
 #import "Shortcut.h"
 #import "Configuration.h"
@@ -76,22 +76,22 @@ static EZStatusItem *_instance;
 #pragma mark -
 - (IBAction)translateAction:(NSMenuItem *)sender {
     NSLog(@"划词翻译");
-    [EZFixedQueryWindowController.shared selectionTranslate];
+    [EZWindowManager.shared selectionTranslate];
 }
 
 - (IBAction)snipAction:(NSMenuItem *)sender {
     NSLog(@"截图翻译");
-    [EZFixedQueryWindowController.shared snipTranslate];
+    [EZWindowManager.shared snipTranslate];
 }
 
 - (IBAction)inputTranslate:(NSMenuItem *)sender {
     NSLog(@"输入翻译");
-    [EZFixedQueryWindowController.shared inputTranslate];
+    [EZWindowManager.shared inputTranslate];
 }
 
-- (IBAction)showTranslateWindow:(NSMenuItem *)sender {
-    NSLog(@"显示翻译窗口");
-    [EZFixedQueryWindowController.shared showMiniWindow];
+- (IBAction)showMiniFloatingWindow:(NSMenuItem *)sender {
+    NSLog(@"显示迷你窗口");
+    [EZWindowManager.shared showMiniFloatingWindow];
 }
 
 
@@ -121,7 +121,7 @@ static EZStatusItem *_instance;
         [Snip.shared stop];
     }
     if (!Configuration.shared.isPin) {
-        [EZFixedQueryWindowController.shared close];
+        [EZWindowManager.shared closeFloatingWindow];
     }
     [PreferencesWindowController.shared show];
 }
@@ -156,7 +156,7 @@ static EZStatusItem *_instance;
 
 - (IBAction)translateRetryAction:(NSMenuItem *)sender {
     NSLog(@"翻译重试");
-    [EZFixedQueryWindowController.shared rerty];
+    [EZWindowManager.shared rerty];
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
@@ -164,8 +164,10 @@ static EZStatusItem *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
-        [[[NSApplication sharedApplication] keyWindow] close];
-        [EZFixedQueryWindowController.shared activeLastFrontmostApplication];
+//        [[[NSApplication sharedApplication] keyWindow] close];
+        
+        [EZWindowManager.shared closeFloatingWindow];
+        [EZWindowManager.shared activeLastFrontmostApplication];
     }
 }
 

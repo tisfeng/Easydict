@@ -44,7 +44,7 @@ static EZFixedQueryWindow *_instance;
 }
 
 - (BOOL)canBecomeMainWindow {
-    return NO;
+    return YES;
 }
 
 @end
