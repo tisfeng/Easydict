@@ -105,6 +105,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         mm_strongify(self);
         NSString *queryText = self.queryModel.queryText ?: @"";
         NSString *url = [NSString stringWithFormat:@"eudic://dict/%@", queryText];
+        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        NSLog(@"open eudic: %@", url);
 
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
     }];
