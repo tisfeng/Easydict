@@ -7,7 +7,7 @@
 //
 
 #import "EZQueryView.h"
-#import "EZHoverButton.h"
+#import "EZButton.h"
 #import "NSTextView+Height.h"
 #import "EZWindowManager.h"
 #import "NSView+EZGetViewController.h"
@@ -57,14 +57,12 @@
     detectButton.title = @"";
 
     [detectButton excuteLight:^(EZButton *detectButton) {
-        NSColor *bgColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
-        detectButton.backgroundColor = bgColor;
-        detectButton.backgroundHoverColor = bgColor;
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
+        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
     } drak:^(EZButton *button) {
-        NSColor *bgColor = [NSColor mm_colorWithHexString:@"#313233"];
-        detectButton.backgroundColor = bgColor;
-        detectButton.backgroundHoverColor = bgColor;
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#313233"];
+        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#424445"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
     }];
 

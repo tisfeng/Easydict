@@ -22,7 +22,7 @@
     [Shortcut setup];
     
     EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager.mainWindow setFrameOrigin:CGPointMake(100, 700)];
+    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
     [windowManager.mainWindow makeKeyAndOrderFront:nil];
     self.windowManager = windowManager;
     
@@ -38,7 +38,6 @@
     
     return YES;
 }
-
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
     // Hide dock app, not exit.
