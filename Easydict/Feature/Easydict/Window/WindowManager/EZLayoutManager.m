@@ -43,7 +43,7 @@ static EZLayoutManager *_instance;
 - (void)commonInitialize {
     self.miniWindowWidth = 300;
     self.miniWindowHeight = 200;
-    self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height; // 1079
+    self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height * 0.95; // 1079
 
     CGPoint centerPoint = NSMakePoint(NSScreen.mainScreen.visibleFrame.size.width / 2,
                                       NSScreen.mainScreen.visibleFrame.size.height / 2);
