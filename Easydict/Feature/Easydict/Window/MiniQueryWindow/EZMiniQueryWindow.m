@@ -12,7 +12,7 @@
 
 - (instancetype)init {
     if (self = [super initWithWindowType:EZWindowTypeMini]) {
-
+        self.styleMask = NSWindowStyleMaskTitled;
     }
     return self;
 }
