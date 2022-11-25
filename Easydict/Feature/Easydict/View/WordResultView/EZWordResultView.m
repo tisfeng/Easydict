@@ -436,7 +436,7 @@ static const CGFloat kVerticalPadding = 8;
     lastView = audioButton;
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.greaterThanOrEqualTo(lastView.mas_bottom).offset(5);
+        make.bottom.equalTo(lastView.mas_bottom).offset(5);
     }];
 }
 
