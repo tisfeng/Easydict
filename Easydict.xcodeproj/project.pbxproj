@@ -129,7 +129,6 @@
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateTool.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
-		03E02A1E2924DE6F00A10260 /* EZFixedQueryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
@@ -379,8 +378,6 @@
 		03D8B26D292DBD2000D5A811 /* EZCoordinateTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateTool.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
 		03DC38C0292CC97900922CB2 /* EZServiceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceInfo.m; sourceTree = "<group>"; };
-		03E02A1C2924DE6F00A10260 /* EZFixedQueryWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFixedQueryWindowController.h; sourceTree = "<group>"; };
-		03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFixedQueryWindowController.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZStatusItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZStatusItem.h; sourceTree = "<group>"; };
 		03E02A212924E77100A10260 /* EZStatusItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZStatusItem.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
@@ -468,15 +465,6 @@
 			path = Titlebar;
 			sourceTree = "<group>";
 		};
-		03991167292AA2C000E1B06D /* WindowFrameManager */ = {
-			isa = PBXGroup;
-			children = (
-				03991168292AA2EF00E1B06D /* EZLayoutManager.h */,
-				03991169292AA2EF00E1B06D /* EZLayoutManager.m */,
-			);
-			path = WindowFrameManager;
-			sourceTree = "<group>";
-		};
 		039CC911292FB2F80037B91E /* PopUpButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -491,10 +479,10 @@
 			children = (
 				03B0222429231FA6001C7E63 /* Feature */,
 				03BFBB5429235C9400C48725 /* Icons */,
+				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
 				03B0221929231FA6001C7E63 /* Main.strings */,
-				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0222129231FA6001C7E63 /* main.m */,
 				03B0222229231FA6001C7E63 /* EZConst.h */,
 				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
@@ -990,8 +978,6 @@
 		03D0434B2928857C00E7559E /* FixedQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03E02A1C2924DE6F00A10260 /* EZFixedQueryWindowController.h */,
-				03E02A1D2924DE6F00A10260 /* EZFixedQueryWindowController.m */,
 				03B0225429231FA6001C7E63 /* EZFixedQueryWindow.h */,
 				03B0225229231FA6001C7E63 /* EZFixedQueryWindow.m */,
 			);
@@ -1021,9 +1007,10 @@
 		03D043572928C49000E7559E /* WindowManager */ = {
 			isa = PBXGroup;
 			children = (
-				03991167292AA2C000E1B06D /* WindowFrameManager */,
 				03D043582928C4C800E7559E /* EZWindowManager.h */,
 				03D043592928C4C800E7559E /* EZWindowManager.m */,
+				03991168292AA2EF00E1B06D /* EZLayoutManager.h */,
+				03991169292AA2EF00E1B06D /* EZLayoutManager.m */,
 			);
 			path = WindowManager;
 			sourceTree = "<group>";
@@ -1348,7 +1335,6 @@
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
-				03E02A1E2924DE6F00A10260 /* EZFixedQueryWindowController.m in Sources */,
 				03B0233A29231FA6001C7E63 /* Selection.m in Sources */,
 				03B022F429231FA6001C7E63 /* TranslateService.m in Sources */,
 				03B0230829231FA6001C7E63 /* ImageButton.m in Sources */,

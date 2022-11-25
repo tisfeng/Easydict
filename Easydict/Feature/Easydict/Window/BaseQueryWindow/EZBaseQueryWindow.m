@@ -112,6 +112,9 @@
     return YES;
 }
 
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
+}
 
 #pragma makr - NSWindowDelegate
 

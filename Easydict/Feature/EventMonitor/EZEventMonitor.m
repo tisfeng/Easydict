@@ -299,15 +299,18 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)dismissIfMouseLocationInFloatingWindows {
-    if (EZWindowManager.shared.showingWindowType == EZWindowTypeMini) {
-        BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.miniWindow];
+    EZWindowManager *windowManager = EZWindowManager.shared;
+    if (windowManager.floatingWindowType == EZWindowTypeMini) {
+        BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
         if (outMiniWindow && self.dismissMiniWindowBlock) {
+            NSLog(@"dismiss mini window");
             self.dismissMiniWindowBlock();
         }
     } else {
-        if (EZWindowManager.shared.showingWindowType == EZWindowTypeFixed) {
-            BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:EZWindowManager.shared.fixedWindow];
+        if (windowManager.floatingWindowType == EZWindowTypeFixed) {
+            BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:windowManager.fixedWindow];
             if (outFixedWindow && self.dismissFixedWindowBlock) {
+                NSLog(@"dismiss fixed window");
                 self.dismissFixedWindowBlock();
             }
         }

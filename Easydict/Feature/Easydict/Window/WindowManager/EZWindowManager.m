@@ -12,6 +12,7 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "Configuration.h"
+#import "EZCoordinateTool.h"
 
 @interface EZWindowManager ()
 
@@ -76,13 +77,10 @@ static EZWindowManager *_instance;
         self.endPoint = self.eventMonitor.endPoint;
         
         CGPoint point = [self getPopButtonWindowLocation];
-        [self.popWindow setFrameTopLeftPoint:point];
-        [self.popWindow orderFront:nil];
-        [self.popWindow orderFrontRegardless];
+        [self.popButtonWindow setFrameTopLeftPoint:point];
+        [self.popButtonWindow orderFront:nil];
+        [self.popButtonWindow orderFrontRegardless];
         
-        //        self.popWindow.level = kCGMaximumWindowLevel;
-        
-        //        [NSApp activateIgnoringOtherApps:YES];
         
         [self.mainWindow orderBack:nil];
     }];
@@ -90,20 +88,20 @@ static EZWindowManager *_instance;
     [self.eventMonitor setDismissPopButtonBlock:^{
         //        NSLog(@"dismiss pop button");
         mm_strongify(self);
-        [self.popWindow close];
+        [self.popButtonWindow close];
     }];
     
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
-        if (!self.miniWindow.pin) {
-            [self.miniWindow close];
+        if (!self.floatingWindow.pin) {
+            [self closeFloatingWindow];
         }
     }];
     
     [self.eventMonitor setDismissFixedWindowBlock:^{
         mm_strongify(self);
-        if (!self.fixedWindow.pin) {
-            [self.fixedWindow close];
+        if (!self.floatingWindow.pin) {
+            [self closeFloatingWindow];
         }
     }];
 }
@@ -120,6 +118,7 @@ static EZWindowManager *_instance;
 - (EZFixedQueryWindow *)fixedWindow {
     if (!_fixedWindow) {
         _fixedWindow = [EZFixedQueryWindow shared];
+        _fixedWindow.releasedWhenClosed = NO;
     }
     return _fixedWindow;
 }
@@ -132,19 +131,23 @@ static EZWindowManager *_instance;
     return _miniWindow;
 }
 
-- (EZPopButtonWindow *)popWindow {
-    if (!_popWindow) {
-        _popWindow = [EZPopButtonWindow shared];
+- (EZPopButtonWindow *)popButtonWindow {
+    if (!_popButtonWindow) {
+        _popButtonWindow = [EZPopButtonWindow shared];
         
         mm_weakify(self);
-        [_popWindow.popButton setMouseEnterBlock:^(EZButton *button) {
+        [_popButtonWindow.popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
-            [self.popWindow close];
+            [self.popButtonWindow close];
             
-            [self showFloatingWindowWithQueryText:self.selectedText];
+            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
         }];
     }
-    return _popWindow;
+    return _popButtonWindow;
+}
+
+- (EZBaseQueryWindow *)floatingWindow {
+    return [self windowWithType:self.floatingWindowType];
 }
 
 #pragma mark - Others
@@ -172,7 +175,7 @@ static EZWindowManager *_instance;
     CGPoint location;
     switch (type) {
         case EZWindowTypeMain: {
-            location = CGPointZero;
+            location = CGPointMake(100, 500);
             break;
         }
         case EZWindowTypeFixed: {
@@ -189,39 +192,36 @@ static EZWindowManager *_instance;
 
 
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
-    self.showingWindowType = type;
     CGPoint location = [self windowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.viewController startQueryText:text];
 }
 
-- (void)showFloatingWindow:(NSWindow *)window atPoint:(CGPoint)point {
-    NSLog(@"show floating window: %@", window);
+- (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
+    NSLog(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
     
-    [window setFrameTopLeftPoint:point];
+    window.level = kCGFloatingWindowLevel;
+    
+    CGRect frame = CGRectMake(point.x, point.y, window.width, window.height);
+    CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:frame];
+    [window setFrameTopLeftPoint:safeFrame.origin];
+    
     [window makeKeyAndOrderFront:nil];
     
-    window.level = kCGFloatingWindowLevel;
-    //    [NSApp activateIgnoringOtherApps:YES];
-    
     [_mainWindow orderBack:nil];
+    
+    // Avoid floating windows being closed immediately.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.floatingWindowType = window.windowType;
+    });
 }
 
-
-/// Show floating window type according to text length, show fixed window if text too long.
-- (void)showFloatingWindowWithQueryText:(NSString *)text {
-    EZWindowType type = EZWindowTypeMini;
-    if (text.length > 15) {
-        type = EZWindowTypeFixed;
-    }
-    [self showFloatingWindowType:type queryText:text];
-}
 
 - (void)showAtMouseLocation {
     NSPoint mouseLocation = [NSEvent mouseLocation];
@@ -324,20 +324,8 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    CGFloat x = popButtonLocation.x + self.popWindow.width + self.offsetPoint.x;
+    CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x;
     CGFloat y = popButtonLocation.y - 2 * self.offsetPoint.y;
-    
-    // left-bottom coordinate system
-    // if x + miniWindow.width > screen.width, then x = screen.width - miniWindow.width
-    NSScreen *screen = NSScreen.mainScreen;
-    if (x + self.miniWindow.width > screen.frame.size.width) {
-        x = screen.frame.size.width - self.miniWindow.width;
-    }
-    
-    // if y - miniWindow.height < 0, then y = miniWindow.height
-    if (y - self.miniWindow.height < 0) {
-        y = self.miniWindow.height;
-    }
     
     return CGPointMake(x, y);
 }
@@ -381,15 +369,20 @@ static EZWindowManager *_instance;
     
     //    [self.viewController resetWithState:@"正在取词..."];
     [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
-        [self ensureShowAtMouseLocation];
-        if (text.length) {
-            //            [self.viewController startQueryText:text];
-        } else {
-            //            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
-            //                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
-            //            }];
-            //            [self.viewController resetQueryViewHeightConstraint];
-        }
+        
+        [self showFloatingWindowType:EZWindowTypeFixed queryText:text];
+        
+//        [self.floatingWindow.viewController startQueryText:text];
+        
+//        [self ensureShowAtMouseLocation];
+//        if (text.length) {
+//               [self.floatingWindow.viewController startQueryText:text];
+//        } else {
+//            //            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
+//            //                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
+//            //            }];
+//            //            [self.viewController resetQueryViewHeightConstraint];
+//        }
     }];
 }
 
@@ -416,7 +409,7 @@ static EZWindowManager *_instance;
             [image mm_writeToFileAsPNG:_imagePath];
             NSLog(@"已保存图片\n%@", _imagePath);
             [self ensureShowAtMouseLocation];
-            [self.fixedWindow.viewController startQueryImage:image];
+            [self.floatingWindow.viewController startQueryImage:image];
         }
     }];
 }
@@ -426,28 +419,46 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    Configuration.shared.isFold = NO;
-    //    [self.viewController updateFoldState:NO];
-    //    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
-    [self ensureShowAtMouseLocation];
-    [self.fixedWindow makeKeyAndOrderFront:nil];
-    if (!self.fixedWindow.isKeyWindow) {
-        // fail to make key window, then force activate application for key window
-        [NSApp activateIgnoringOtherApps:YES];
-    }
+
+    [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
+    
+//    Configuration.shared.isFold = NO;
+//    //    [self.viewController updateFoldState:NO];
+//    //    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
+//    [self ensureShowAtMouseLocation];
+//    [self.floatingWindow makeKeyAndOrderFront:nil];
+//    if (!self.floatingWindow.isKeyWindow) {
+//        // fail to make key window, then force activate application for key window
+//        [NSApp activateIgnoringOtherApps:YES];
+//    }
 }
 
-- (void)showMiniWindow {
+- (void)showMiniFloatingWindow {
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
     }
     
-    [self.fixedWindow makeKeyAndOrderFront:nil];
-    if (!self.fixedWindow.isKeyWindow) {
-        // fail to make key window, then force activate application for key window
-        [NSApp activateIgnoringOtherApps:YES];
-    }
+    CGPoint lastPoint = EZLayoutManager.shared.miniWindowFrame.origin;
+    [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
+    
+//    [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
+//
+//    [self.floatingWindow makeKeyAndOrderFront:nil];
+//    if (!self.floatingWindow.isKeyWindow) {
+//        // fail to make key window, then force activate application for key window
+//        [NSApp activateIgnoringOtherApps:YES];
+//    }
+}
+
+
+/// Close floating window, and record last floating window type.
+- (void)closeFloatingWindow {
+    self.floatingWindow.pin = NO;
+    [self.floatingWindow close];
+    
+    self.lastFloatingWindowType = self.floatingWindowType;
+    self.floatingWindowType = EZWindowTypeMain;
 }
 
 #pragma mark - Others
@@ -458,7 +469,7 @@ static EZWindowManager *_instance;
     }
     if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindow.shared) {
         // 执行重试
-        //        [self.viewController retry];
+        [self.floatingWindow.viewController retry];
     }
 }
 
