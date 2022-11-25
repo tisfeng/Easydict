@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZBaseQueryViewController : NSViewController
 
 @property (nonatomic, assign) EZWindowType windowType;
-@property (nonatomic, assign) CGFloat customTitleBarHeight;
+@property (nonatomic, weak) EZBaseQueryWindow *window;
 
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
 

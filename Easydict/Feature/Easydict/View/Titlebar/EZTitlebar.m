@@ -8,6 +8,8 @@
 
 #import "EZTitlebar.h"
 #import "EZTitleBarMoveView.h"
+#import "NSView+EZWindowType.h"
+#import "NSImage+EZResize.h"
 
 @interface EZTitlebar ()
 
@@ -39,6 +41,34 @@
         make.size.mas_equalTo(CGSizeMake(23, 23));
         make.left.inset(10);
         make.top.equalTo(self).offset(5);
+    }];
+    
+    [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
+        NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
+        NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
+        [button excuteLight:^(EZButton *button) {
+            button.backgroundHoverColor = lightHighlightColor;
+            button.backgroundHighlightColor = lightHighlightColor;
+        } drak:^(EZButton *button) {
+            button.backgroundHoverColor = darkHighlightColor;
+            button.backgroundHighlightColor = darkHighlightColor;
+        }];
+    }];
+    [pinButton setMouseExitedBlock:^(EZButton * _Nonnull button) {
+        button.backgroundColor = NSColor.clearColor;
+    }];
+    
+    
+    EZButton *eudicButton = [[EZButton alloc] init];
+    [self addSubview:eudicButton];
+    self.eudicButton = eudicButton;
+    eudicButton.title = @"";
+    eudicButton.image = [NSImage imageNamed:@"Eudic"];
+    
+    [self.eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self);
+        make.right.inset(15);
+        make.height.width.mas_equalTo(18);
     }];
 }
 
