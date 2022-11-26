@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZCoordinateTool : NSObject
 
++ (CGPoint)getSafeLocation:(CGRect)frame;
+
 // Make sure frame is in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame;
 

@@ -10,23 +10,28 @@
 
 @implementation EZCoordinateTool
 
-// Make sure frame is in screen visible frame, return left-bottom postion frame.
++ (CGPoint)getSafeLocation:(CGRect)frame {
+    CGRect safeFrame = [self getSafeAreaFrame:frame];
+    return safeFrame.origin;
+}
+
+// Make sure frame show in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame {
     NSScreen *screen = [NSScreen mainScreen];
     if (!screen) {
         return frame;
     }
-
+    
     CGRect visibleFrame = screen.visibleFrame;
     if (CGRectContainsRect(visibleFrame, frame)) {
         return frame;
     }
-
+    
     CGFloat x = frame.origin.x;
     CGFloat y = frame.origin.y;
     CGFloat width = frame.size.width;
     CGFloat height = frame.size.height;
-
+    
     // left safe
     if (x < visibleFrame.origin.x) {
         x = visibleFrame.origin.x;
@@ -35,8 +40,8 @@
     if (x + width > visibleFrame.origin.x + visibleFrame.size.width) {
         x = visibleFrame.origin.x + visibleFrame.size.width - width;
     }
-
-
+    
+    
     // top safe
     if (y > visibleFrame.origin.y + visibleFrame.size.height) {
         y = visibleFrame.origin.y + visibleFrame.size.height;
@@ -45,7 +50,7 @@
     if (y < visibleFrame.origin.y) {
         y = visibleFrame.origin.y;
     }
-
+    
     return CGRectMake(x, y, width, height);
 }
 
