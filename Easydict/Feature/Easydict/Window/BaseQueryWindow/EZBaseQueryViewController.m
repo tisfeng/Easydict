@@ -100,13 +100,28 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (void)viewDidLayout {
+    [self setupTitlebarActions];
+}
+
+- (void)setupTitlebarActions {
     mm_weakify(self);
+
     [self.window.titleBar.eudicButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
         NSString *queryText = self.queryModel.queryText ?: @"";
         NSString *url = [NSString stringWithFormat:@"eudic://dict/%@", queryText];
         url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSLog(@"open eudic: %@", url);
+        
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    }];
+    
+    [self.window.titleBar.chromeButton setClickBlock:^(EZButton * _Nonnull button) {
+        mm_strongify(self);
+        NSString *queryText = self.queryModel.queryText ?: @"";
+        NSString *url = [NSString stringWithFormat:@"https://www.google.com/search?q=%@", queryText];
+        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        NSLog(@"open chrome: %@", url);
         
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
     }];

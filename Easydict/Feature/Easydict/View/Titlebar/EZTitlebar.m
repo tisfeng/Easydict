@@ -11,6 +11,9 @@
 #import "NSView+EZWindowType.h"
 #import "NSImage+EZResize.h"
 
+static CGFloat kButtonWidth = 20;
+static CGFloat kButtonPadding = 12;
+
 @interface EZTitlebar ()
 
 @end
@@ -58,6 +61,7 @@
         button.backgroundColor = NSColor.clearColor;
     }];
     
+    NSView *lastView;
     
     EZButton *eudicButton = [[EZButton alloc] init];
     [self addSubview:eudicButton];
@@ -69,8 +73,28 @@
     
     [self.eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self);
-        make.right.inset(15);
-        make.height.width.mas_equalTo(18);
+        make.width.height.mas_equalTo(kButtonWidth);
+        make.right.equalTo(self).offset(-kButtonPadding);
+    }];
+    lastView = eudicButton;
+    
+    
+    EZButton *chromeButton = [[EZButton alloc] init];
+    [self addSubview:chromeButton];
+    self.chromeButton = chromeButton;
+    chromeButton.title = @"";
+    chromeButton.image = [NSImage imageNamed:@"Chrome"];
+    chromeButton.toolTip = @"Google";
+    chromeButton.contentTintColor = NSColor.clearColor;
+    
+    [self.chromeButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self);
+        make.width.height.mas_equalTo(kButtonWidth);
+        if (lastView) {
+            make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
+        } else {
+            make.right.equalTo(self).offset(-kButtonPadding);
+        }
     }];
 }
 
