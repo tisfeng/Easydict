@@ -446,6 +446,9 @@ static EZWindowManager *_instance;
     
     CGPoint lastPoint = EZLayoutManager.shared.miniWindowFrame.origin;
     [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
+    [self.miniWindow.viewController focusInputView];
+    
+    [self.mainWindow orderBack:nil];
 }
 
 
