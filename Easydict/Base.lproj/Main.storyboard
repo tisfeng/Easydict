@@ -677,6 +677,7 @@
                         <outlet property="inputItem" destination="AWf-Ci-7QE" id="Isp-ch-8Q6"/>
                         <outlet property="menu" destination="A3F-ys-zOg" id="n6f-3z-A90"/>
                         <outlet property="selectionItem" destination="lUI-Zn-Bwr" id="WVP-FO-jlf"/>
+                        <outlet property="showMiniItem" destination="PmP-cO-1HF" id="z5W-Mb-1f4"/>
                         <outlet property="snipItem" destination="2TG-8C-8RM" id="NNT-OJ-7eY"/>
                     </connections>
                 </customObject>

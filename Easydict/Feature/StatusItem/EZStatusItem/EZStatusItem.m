@@ -21,6 +21,7 @@
 @property (nonatomic, weak) IBOutlet NSMenuItem *selectionItem;
 @property (nonatomic, weak) IBOutlet NSMenuItem *snipItem;
 @property (weak) IBOutlet NSMenuItem *inputItem;
+@property (weak) IBOutlet NSMenuItem *showMiniItem;
 
 @end
 
@@ -199,6 +200,7 @@ static EZStatusItem *_instance;
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
     configItemShortcut(self.snipItem, EZSnipShortcutKey);
     configItemShortcut(self.inputItem, EZInputShortcutKey);
+    configItemShortcut(self.showMiniItem, EZShowMiniShortcutKey);
 }
 
 @end
