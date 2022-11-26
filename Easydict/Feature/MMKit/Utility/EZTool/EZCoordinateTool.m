@@ -10,6 +10,7 @@
 
 @implementation EZCoordinateTool
 
+/// left-bottom safe postion.
 + (CGPoint)getSafeLocation:(CGRect)frame {
     CGRect safeFrame = [self getSafeAreaFrame:frame];
     return safeFrame.origin;

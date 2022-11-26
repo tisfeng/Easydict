@@ -642,21 +642,25 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     CGFloat height = [self getScrollViewHeight];
     //    NSLog(@"contentHeight: %@", @(height));
     
-    height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
-    
+    CGFloat titleBarHeight = 28; // system title bar height is 28
+
+    CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
+    scrollViewHeight = MIN(height, EZLayoutManager.shared.maxWindowHeight - titleBarHeight);
+
     // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_greaterThanOrEqualTo(height);
-        make.height.mas_lessThanOrEqualTo(height);
+        make.height.mas_greaterThanOrEqualTo(scrollViewHeight);
+        make.height.mas_lessThanOrEqualTo(scrollViewHeight);
     }];
     
-    height += 28; // system title bar height is 28
+    CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
+    showingWindowHeight = MIN(showingWindowHeight, EZLayoutManager.shared.maxWindowHeight);
     
     // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
-    CGFloat y = window.y + window.height - height;
-    CGRect newFrame = CGRectMake(window.x, y, window.width, height);
-    [window setFrame:newFrame display:YES];
+    CGFloat y = window.y + window.height - showingWindowHeight;
+    CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
+    [window setFrame:newFrame display:NO];
     
     CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
     
