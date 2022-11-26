@@ -107,7 +107,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         NSString *url = [NSString stringWithFormat:@"eudic://dict/%@", queryText];
         url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSLog(@"open eudic: %@", url);
-
+        
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
     }];
 }
@@ -160,7 +160,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
               keyPath:@"frame"
               options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                 block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-//        NSLog(@"change: %@", change);
+        //        NSLog(@"change: %@", change);
         
         //        CGRect documentViewFrame = [change[NSKeyValueChangeNewKey] CGRectValue];
         //        CGFloat documentViewHeight = documentViewFrame.size.height;
@@ -215,7 +215,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
             make.width.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowWidth);
             make.height.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowHeight);
         }];
-
+        
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
@@ -291,8 +291,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         return;
     }
     
-    self.queryModel.queryText = text;
+    NSLog(@"start query text: %@", text);
     
+    self.queryModel.queryText = text;
     __block Language fromLang = Configuration.shared.from;
     
     if (fromLang != Language_auto) {
@@ -639,7 +640,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
     
     CGFloat height = [self getScrollViewHeight];
-//    NSLog(@"contentHeight: %@", @(height));
+    //    NSLog(@"contentHeight: %@", @(height));
     
     height = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     
@@ -649,7 +650,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         make.height.mas_lessThanOrEqualTo(height);
     }];
     
-    height += self.customTitleBarHeight; // title bar height is 28
+    height += 28; // system title bar height is 28
     
     // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
@@ -657,12 +658,12 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     CGRect newFrame = CGRectMake(window.x, y, window.width, height);
     [window setFrame:newFrame display:YES];
     
-    CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:window.frame];
+    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
     
-//    NSLog(@"window frame: %@", @(window.frame));
-//    NSLog(@"safe frame: %@", @(safeFrame));
+    //    NSLog(@"window frame: %@", @(window.frame));
+    //    NSLog(@"safe frame: %@", @(safeFrame));
     
-    [window setFrameOrigin:safeFrame.origin];
+    [window setFrameOrigin:safeLocation];
     
     if (lock) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -681,10 +682,10 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (CGFloat)getContentHeight {
     // Modify scrollView height to 0, to get actual tableView content height, avoid blank view.
     self.scrollView.height = 0;
-
+    
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-//    NSLog(@"documentView height: %@", @(documentViewHeight));
-   
+    //    NSLog(@"documentView height: %@", @(documentViewHeight));
+    
     return documentViewHeight;
 }
 

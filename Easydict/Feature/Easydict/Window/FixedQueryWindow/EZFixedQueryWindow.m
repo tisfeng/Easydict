@@ -28,9 +28,9 @@ static EZFixedQueryWindow *_instance;
 
 - (instancetype)init {
     if (self = [super initWithWindowType:EZWindowTypeFixed]) {
-        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
         [self standardWindowButton:NSWindowCloseButton].hidden = YES;
         [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
     }
     return self;
 }
@@ -41,7 +41,7 @@ static EZFixedQueryWindow *_instance;
 }
 
 - (BOOL)canBecomeMainWindow {
-    return YES;
+    return NO;
 }
 
 @end

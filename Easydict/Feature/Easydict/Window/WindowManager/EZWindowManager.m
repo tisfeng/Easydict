@@ -209,8 +209,8 @@ static EZWindowManager *_instance;
     window.level = kCGFloatingWindowLevel;
     
     CGRect frame = CGRectMake(point.x, point.y, window.width, window.height);
-    CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:frame];
-    [window setFrameTopLeftPoint:safeFrame.origin];
+    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:frame];
+    [window setFrameTopLeftPoint:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
     
@@ -330,11 +330,11 @@ static EZWindowManager *_instance;
     return CGPointMake(x, y);
 }
 
-// Get fixed window location, located at the right-top of screen.
+// Get fixed window location, let-top position.
 - (CGPoint)getFixedWindowLocation {
     CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
     CGFloat x = mainScreenSize.width - self.fixedWindow.width;
-    CGFloat y = mainScreenSize.height;
+    CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
     
     return CGPointMake(x, y);
 }

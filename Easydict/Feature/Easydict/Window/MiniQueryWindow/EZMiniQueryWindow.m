@@ -24,7 +24,7 @@
 }
 
 - (BOOL)canBecomeMainWindow {
-    return YES;
+    return NO;
 }
 
 - (void)dealloc {
