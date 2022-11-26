@@ -12,6 +12,8 @@
 
 @interface EZLayoutManager ()
 
+@property (nonatomic, assign) CGSize minimumWindowSize;
+@property (nonatomic, assign) CGSize maximumWindowSize;
 
 @end
 
@@ -41,15 +43,44 @@ static EZLayoutManager *_instance;
 }
 
 - (void)commonInitialize {
-    self.miniWindowWidth = 300;
-    self.miniWindowHeight = 200;
-    self.maxWindowHeight = NSScreen.mainScreen.visibleFrame.size.height; // 1079
+    self.minimumWindowSize = CGSizeMake(300, 200);
+    
+    CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
+    self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
 
-    CGPoint centerPoint = NSMakePoint(NSScreen.mainScreen.visibleFrame.size.width / 2,
-                                      NSScreen.mainScreen.visibleFrame.size.height / 2);
-    self.miniWindowFrame = CGRectMake(centerPoint.x, centerPoint.y, self.miniWindowWidth, self.miniWindowHeight);
+    CGPoint centerPoint = NSMakePoint(visibleFrameSize.width / 2, visibleFrameSize.height / 2);
+    self.miniWindowFrame = CGRectMake(centerPoint.x,
+                                      centerPoint.y,
+                                      self.minimumWindowSize.width,
+                                      self.minimumWindowSize.height);
     self.fixedWindowFrame = self.miniWindowFrame;
     self.mainWindowFrame = self.miniWindowFrame;
+}
+
+- (CGSize)minimumWindowSize:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMini:
+            return self.minimumWindowSize;
+        case EZWindowTypeFixed:
+            return self.minimumWindowSize;
+        case EZWindowTypeMain:
+            return self.minimumWindowSize;
+        default:
+            return self.minimumWindowSize;
+    }
+}
+
+- (CGSize)maximumWindowSize:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMini:
+            return self.maximumWindowSize;
+        case EZWindowTypeFixed:
+            return self.maximumWindowSize;
+        case EZWindowTypeMain:
+            return self.maximumWindowSize;
+        default:
+            return self.maximumWindowSize;
+    }
 }
 
 
