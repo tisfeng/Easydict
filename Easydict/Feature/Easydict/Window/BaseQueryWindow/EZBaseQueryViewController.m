@@ -212,8 +212,10 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view).offset(self.customTitleBarHeight);
             make.left.right.bottom.equalTo(self.view);
-            make.width.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowWidth);
-            make.height.mas_greaterThanOrEqualTo(EZLayoutManager.shared.miniWindowHeight);
+            
+            CGSize miniWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];;
+            make.width.mas_greaterThanOrEqualTo(miniWindowSize.width);
+            make.height.mas_greaterThanOrEqualTo(miniWindowSize.height);
         }];
         
         scrollView.hasVerticalScroller = YES;
@@ -642,10 +644,12 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     CGFloat height = [self getScrollViewHeight];
     //    NSLog(@"contentHeight: %@", @(height));
     
+    CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
+    
     CGFloat titleBarHeight = 28; // system title bar height is 28
 
     CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
-    scrollViewHeight = MIN(height, EZLayoutManager.shared.maxWindowHeight - titleBarHeight);
+    scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
 
     // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -654,13 +658,13 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }];
     
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
-    showingWindowHeight = MIN(showingWindowHeight, EZLayoutManager.shared.maxWindowHeight);
+    showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
     
     // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
     NSWindow *window = self.view.window;
     CGFloat y = window.y + window.height - showingWindowHeight;
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    [window setFrame:newFrame display:NO];
+    [window setFrame:newFrame display:YES];
     
     CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
     
@@ -678,8 +682,13 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (CGFloat)getScrollViewHeight {
     CGFloat height = [self getContentHeight];
-    height = MAX(height, EZLayoutManager.shared.miniWindowHeight);
-    height = MIN(height, EZLayoutManager.shared.maxWindowHeight);
+    
+    CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];;
+    CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];;
+    
+    height = MAX(height, minimumWindowSize.height);
+    height = MIN(height, maximumWindowSize.height);
+    
     return height;
 }
 
