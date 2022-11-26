@@ -26,6 +26,7 @@
 #import <KVOController/KVOController.h>
 #import "EZCoordinateTool.h"
 #import "EZBaseQueryWindow.h"
+#include <Carbon/Carbon.h>
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -288,7 +289,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     return _queryCell;
 }
 
-#pragma mark -
+#pragma mark - Public Methods
 
 - (void)startQuery {
     [self startQueryText:self.queryModel.queryText];
@@ -301,6 +302,40 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (void)retry {
     [self startQuery];
 }
+
+- (void)focusInputView {
+    // Need to activate the current application first.
+//    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    
+    CGPoint point = [self.view convertPoint:self.queryView.textView.center fromView:self.queryView];
+    point = CGPointMake(point.x, point.y + 28);
+    
+    CGPoint focusPoint = [self.window convertPointToScreen:point];
+    NSLog(@"focusPoint: %@", @(focusPoint));
+    
+    // conver position
+    focusPoint = [EZCoordinateTool convertPointToBottomLeft:focusPoint];
+    
+    [self.window makeFirstResponder:self.queryView.textView];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"top left focusPoint: %@", @(focusPoint));
+        PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
+    });
+}
+
+void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount)
+{
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
+    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
+    CGEventSetType(theEvent, type);
+    CGEventPost(kCGHIDEventTap, theEvent);
+    CFRelease(theEvent);
+    CFRelease(source);
+}
+
+#pragma mark -
 
 - (void)startQueryText:(NSString *)text {
     if (text.length == 0) {
