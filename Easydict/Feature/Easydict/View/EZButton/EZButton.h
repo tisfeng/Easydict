@@ -70,6 +70,7 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 @property (nonatomic, copy) void (^mouseEnterBlock)(EZButton *button);
 @property (nonatomic, copy) void (^mouseExitedBlock)(EZButton *button);
 @property (nonatomic, copy) void (^mouseDownBlock)(EZButton *button);
+@property (nonatomic, copy) void (^mouseUpBlock)(EZButton *button);
 
 @end
 

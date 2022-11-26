@@ -45,6 +45,7 @@
     EZHoverButton *pinButton = [[EZHoverButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
+    pinButton.toolTip = @"Pin";
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(buttonSize);
         make.left.inset(10);
