@@ -73,7 +73,7 @@ static EZLayoutManager *_instance;
 - (CGSize)maximumWindowSize:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMini:
-            return self.maximumWindowSize;
+            return CGSizeMake(self.minimumWindowSize.width, 400);
         case EZWindowTypeFixed:
             return self.maximumWindowSize;
         case EZWindowTypeMain:
