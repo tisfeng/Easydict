@@ -5,18 +5,18 @@
       "scale" : "1x"
     },
     {
+      "filename" : "Chrome_32@2x.png",
       "idiom" : "universal",
-      "filename" : "pin_selected@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "Chrome_32@3x.png",
       "idiom" : "universal",
-      "filename" : "pin_selected@3x.png.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }
