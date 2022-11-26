@@ -64,6 +64,7 @@
     self.eudicButton = eudicButton;
     eudicButton.title = @"";
     eudicButton.image = [NSImage imageNamed:@"Eudic"];
+    eudicButton.toolTip = @"查询 Eudic";
     
     [self.eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self);

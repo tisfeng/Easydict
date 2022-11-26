@@ -34,16 +34,16 @@ DefineMethodMMMake_m(EZPopUpButton);
     self.bezelStyle = NSBezelStyleRegularSquare;
     [self setButtonType:NSButtonTypeToggle];
     self.title = @"";
+    
     mm_weakify(self)
-    [self setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
+    [self setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self)
         // 显示menu
         if (self.titles.count) {
             [self setupMenu];
             [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
         }
-        return RACSignal.empty;
-    }]];
+    }];
         
     [NSView mm_make:^(NSView *_Nonnull titleContainerView) {
         [self addSubview:titleContainerView];
