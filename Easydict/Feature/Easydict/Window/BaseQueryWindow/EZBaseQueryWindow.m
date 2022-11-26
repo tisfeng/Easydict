@@ -58,8 +58,10 @@
     
     EZHoverButton *pinButton = self.titleBar.pinButton;
     
-    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:CGSizeMake(16, 16)];
-    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:CGSizeMake(16, 16)];
+    CGSize imageSize = CGSizeMake(18, 18);
+    
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
+    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
     pinButton.image = normalImage;
 
     mm_weakify(self);
