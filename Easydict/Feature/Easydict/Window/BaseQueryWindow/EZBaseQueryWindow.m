@@ -66,7 +66,7 @@
 
     mm_weakify(self);
     [pinButton setClickBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"pin");
+        NSLog(@"click pin");
         mm_strongify(self);
         
         self.pin = !self.pin;
@@ -80,6 +80,13 @@
     [pinButton setMouseDownBlock:^(EZButton * _Nonnull button) {
         NSImage *highlightImage = self.pin ? normalImage : selectedImage;
         button.image = highlightImage;
+    }];
+    
+    [pinButton setMouseUpBlock:^(EZButton * _Nonnull button) {
+        NSImage *image = self.pin ? selectedImage : normalImage;
+        if (button.buttonState == EZButtonNormalState) {
+            button.image = image;
+        }
     }];
     
     [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {

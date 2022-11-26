@@ -104,6 +104,10 @@
 - (void)mouseUp:(NSEvent *)event {
     //    NSLog(@"mouseUp");
     
+    if (self.mouseUpBlock) {
+        self.mouseUpBlock(self);
+    }
+    
     self.mouseUp = YES;
     if (self.enabled && self.hover) {
         if (self.canSelected) {
