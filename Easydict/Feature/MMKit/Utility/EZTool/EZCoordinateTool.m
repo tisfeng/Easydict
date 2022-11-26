@@ -55,13 +55,13 @@
     return CGRectMake(x, y, width, height);
 }
 
-// Convert point from left-top to left-bottom coordinate system
-+ (CGPoint)convertPointToBottom:(CGPoint)point {
+// Convert point from top-left to left-bottom coordinate system
++ (CGPoint)convertPointToBottomLeft:(CGPoint)point {
     return CGPointMake(point.x, [NSScreen mainScreen].frame.size.height - point.y);
 }
 
-// Convert rect from left-top coordinate to left-bottom coordinate
-+ (CGRect)convertRectToBottom:(CGRect)rect {
+// Convert rect from top-left coordinate to left-bottom coordinate
++ (CGRect)convertRectToBottomLeft:(CGRect)rect {
     CGRect screenRect = NSScreen.mainScreen.frame;
     CGFloat height = screenRect.size.height;
     rect.origin.y = height - rect.origin.y - rect.size.height;
@@ -69,13 +69,13 @@
 }
 
 
-// Convert point from left-bottom coordinate to left-top coordinate
-+ (CGPoint)convertPointToTop:(CGPoint)point {
+// Convert point from bottom-left coordinate to left-top coordinate
++ (CGPoint)convertPointToTopLeft:(CGPoint)point {
     return CGPointMake(point.x, [NSScreen mainScreen].frame.size.height - point.y);
 }
 
-// Convert rect from left-bottom coordinate to left-top coordinate
-+ (CGRect)convertRectToTop:(CGRect)rect {
+// Convert rect from bottom-left coordinate to left-top coordinate
++ (CGRect)convertRectToTopLeft:(CGRect)rect {
     CGRect screenRect = NSScreen.mainScreen.frame;
     CGFloat height = screenRect.size.height;
     rect.origin.y = height - rect.origin.y - rect.size.height;

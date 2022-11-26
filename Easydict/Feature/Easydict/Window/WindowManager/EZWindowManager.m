@@ -206,14 +206,16 @@ static EZWindowManager *_instance;
         return;
     }
     
-    window.level = kCGFloatingWindowLevel;
+    // Need to keep last mini frame position
+    [window setFrameOrigin:point];
     
-    CGRect frame = CGRectMake(point.x, point.y, window.width, window.height);
-    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:frame];
-    [window setFrameTopLeftPoint:safeLocation];
+    // set safe window position
+    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
+    [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
-    
+    window.level = kCGFloatingWindowLevel;
+
     [_mainWindow orderBack:nil];
     
     // Avoid floating windows being closed immediately.
@@ -294,6 +296,7 @@ static EZWindowManager *_instance;
     return self.endPoint;
 }
 
+// Top left position
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [self correctedMouseLocation];
     if (CGPointEqualToPoint(location, CGPointZero)) {
@@ -323,8 +326,11 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x;
-    CGFloat y = popButtonLocation.y - 2 * self.offsetPoint.y;
+    CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x; // offsetPoint.x > 0
+    CGFloat y = popButtonLocation.y - self.offsetPoint.y; // offsetPoint.y < 0
+    
+    // ⚠️ Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
+    y = y - self.miniWindow.height;
     
     return CGPointMake(x, y);
 }
@@ -440,14 +446,6 @@ static EZWindowManager *_instance;
     
     CGPoint lastPoint = EZLayoutManager.shared.miniWindowFrame.origin;
     [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
-    
-//    [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
-//
-//    [self.floatingWindow makeKeyAndOrderFront:nil];
-//    if (!self.floatingWindow.isKeyWindow) {
-//        // fail to make key window, then force activate application for key window
-//        [NSApp activateIgnoringOtherApps:YES];
-//    }
 }
 
 
