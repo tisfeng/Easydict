@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EZStatusItem.h"
-#import "Shortcut.h"
+#import "EZShortcut.h"
 #import "MMCrash.h"
 #import "Configuration.h"
 #import "EZWindowManager.h"
@@ -19,7 +19,7 @@
     MMLogInfo(@"程序启动");
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
-    [Shortcut setup];
+    [EZShortcut setup];
     
     EZWindowManager *windowManager = [EZWindowManager shared];
     [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];

@@ -1,9 +1,9 @@
 //
-//  Shortcut.h
-//  Bob
+//  EZShortcut.h
+//  Easydict
 //
-//  Created by ripper on 2019/12/9.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/11/27.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -16,7 +16,7 @@ static NSString *const EZSnipShortcutKey = @"EZSnipShortcutKey";
 static NSString *const EZInputShortcutKey = @"EZInputShortcutKey";
 static NSString *const EZShowMiniShortcutKey = @"EZShowMiniShortcutKey";
 
-@interface Shortcut : NSObject
+@interface EZShortcut : NSObject
 
 + (void)setup;
 
