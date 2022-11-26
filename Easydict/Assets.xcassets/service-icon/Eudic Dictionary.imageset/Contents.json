@@ -5,11 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "Eudic Dictionary.png",
+      "filename" : "Eudic_64@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Eudic_64@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
