@@ -131,6 +131,7 @@
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
+		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -382,6 +383,8 @@
 		03E02A212924E77100A10260 /* EZStatusItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZStatusItem.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
 		03E02A2529250D1D00A10260 /* EZEventMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEventMonitor.m; sourceTree = "<group>"; };
+		03F25CB129327BC200E66A12 /* EZShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcut.h; sourceTree = "<group>"; };
+		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
@@ -518,6 +521,8 @@
 			children = (
 				03B0222629231FA6001C7E63 /* Shortcut.h */,
 				03B0222729231FA6001C7E63 /* Shortcut.m */,
+				03F25CB129327BC200E66A12 /* EZShortcut.h */,
+				03F25CB229327BC200E66A12 /* EZShortcut.m */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -768,13 +773,13 @@
 		03B0229C29231FA6001C7E63 /* PerferenceWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03B0229D29231FA6001C7E63 /* AboutViewController.m */,
-				03B0229E29231FA6001C7E63 /* GeneralViewController.h */,
-				03B0229F29231FA6001C7E63 /* PreferencesWindowController.h */,
-				03B022A029231FA6001C7E63 /* GeneralViewController.m */,
 				03B022A129231FA6001C7E63 /* AboutViewController.h */,
+				03B0229D29231FA6001C7E63 /* AboutViewController.m */,
 				03B022A229231FA6001C7E63 /* AboutViewController.xib */,
+				03B0229E29231FA6001C7E63 /* GeneralViewController.h */,
+				03B022A029231FA6001C7E63 /* GeneralViewController.m */,
 				03B022A329231FA6001C7E63 /* GeneralViewController.xib */,
+				03B0229F29231FA6001C7E63 /* PreferencesWindowController.h */,
 				03B022A429231FA6001C7E63 /* PreferencesWindowController.m */,
 			);
 			path = PerferenceWindow;
@@ -1328,6 +1333,7 @@
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03B022F329231FA6001C7E63 /* YoudaoOCRResponse.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
+				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03B022FC29231FA6001C7E63 /* FlippedView.m in Sources */,

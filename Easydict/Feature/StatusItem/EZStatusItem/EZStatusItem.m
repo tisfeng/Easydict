@@ -10,7 +10,7 @@
 #import "PreferencesWindowController.h"
 #import "EZWindowManager.h"
 #import "Snip.h"
-#import "Shortcut.h"
+#import "EZShortcut.h"
 #import "Configuration.h"
 #import <SSZipArchive/SSZipArchive.h>
 
@@ -181,7 +181,7 @@ static EZStatusItem *_instance;
 - (void)menuWillOpen:(NSMenu *)menu {
     void (^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
         @try {
-            [Shortcut readShortcutForKey:key completion:^(MASShortcut *_Nullable shorcut) {
+            [EZShortcut readShortcutForKey:key completion:^(MASShortcut *_Nullable shorcut) {
                 if (shorcut) {
                     item.keyEquivalent = shorcut.keyCodeStringForKeyEquivalent;
                     item.keyEquivalentModifierMask = shorcut.modifierFlags;

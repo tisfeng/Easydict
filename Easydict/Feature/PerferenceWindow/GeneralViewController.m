@@ -7,7 +7,7 @@
 //
 
 #import "GeneralViewController.h"
-#import "Shortcut.h"
+#import "EZShortcut.h"
 #import "Configuration.h"
 
 
@@ -16,6 +16,8 @@
 @property (weak) IBOutlet MASShortcutView *selectionShortcutView;
 @property (weak) IBOutlet MASShortcutView *snipShortcutView;
 @property (weak) IBOutlet MASShortcutView *inputShortcutView;
+@property (weak) IBOutlet MASShortcutView *showMiniShortcutView;
+
 @property (weak) IBOutlet NSButton *autoCopyTranslateResultButton;
 @property (weak) IBOutlet NSButton *launchAtStartupButton;
 @property (weak) IBOutlet NSButton *autoCheckUpdateButton;
@@ -41,6 +43,9 @@
 
     self.inputShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
+    
+    self.showMiniShortcutView.style = MASShortcutViewStyleTexturedRect;
+    [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
 
     self.autoCopyTranslateResultButton.mm_isOn = Configuration.shared.autoCopyTranslateResult;
     self.launchAtStartupButton.mm_isOn = Configuration.shared.launchAtStartup;
