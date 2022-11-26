@@ -281,7 +281,6 @@ static EZWindowManager *_instance;
     return screen;
 }
 
-// Get the right-bottom point of start point and end point.
 - (NSPoint)correctedMouseLocation {
     NSScreen *screen = [self getMouseLocatedScreen];
 #if DEBUG
@@ -292,19 +291,7 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    NSPoint startLocation = self.startPoint;
-    NSPoint endLocation = self.endPoint;
-    NSPoint correctedLocation = endLocation;
-    
-    if (endLocation.x < startLocation.x) {
-        correctedLocation = startLocation;
-    }
-    
-    if (endLocation.y >= startLocation.y + self.eventMonitor.selectedTextFrame.size.height) {
-        correctedLocation = startLocation;
-    }
-    
-    return correctedLocation;
+    return self.endPoint;
 }
 
 - (CGPoint)getPopButtonWindowLocation {
@@ -313,7 +300,19 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    NSPoint popLocation = CGPointMake(location.x + self.offsetPoint.x, location.y + self.offsetPoint.y);
+    NSPoint startLocation = self.startPoint;
+    NSPoint endLocation = self.endPoint;
+    
+    CGFloat deltaY = endLocation.y - startLocation.y;
+    CGFloat x = location.x + self.offsetPoint.x;
+    CGFloat y = location.y + self.offsetPoint.y;
+    
+    // Direction up
+    if (deltaY > 10) {
+        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 10;
+    }
+    
+    NSPoint popLocation = CGPointMake(x, y);
     
     return popLocation;
 }

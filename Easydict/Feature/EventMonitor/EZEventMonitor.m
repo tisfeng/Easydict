@@ -145,7 +145,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
 
+    // ⚠️ This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
+//    NSLog(@"selected text: %@", @(selectedTextFrame));
     self.selectedTextFrame = [self convertRect:selectedTextFrame];
 
     if (getFocusedUIElementError == kAXErrorSuccess) {
