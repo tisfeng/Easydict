@@ -675,9 +675,12 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
     
-    // Since chaneg height will cause position change, we need to adjust frame to keep top-left coordinate position.
+    // Since chaneg height will cause position change, we need to adjust y to keep top-left coordinate position.
     NSWindow *window = self.view.window;
-    CGFloat y = window.y + window.height - showingWindowHeight;
+        
+    CGFloat deltaHeight = window.height - showingWindowHeight;
+    CGFloat y = window.y + deltaHeight;
+
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
     [window setFrame:newFrame display:YES];
     

@@ -19,16 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // Convert point from left-top to left-bottom coordinate system
-+ (CGPoint)convertPointToBottom:(CGPoint)point;
++ (CGPoint)convertPointToBottomLeft:(CGPoint)point;
 
 // Convert rect from left-top coordinate to left-bottom coordinate
-+ (CGRect)convertRectToBottom:(CGRect)rect;
++ (CGRect)convertRectToBottomLeft:(CGRect)rect;
 
 // Convert point from left-bottom coordinate to left-top coordinate
-+ (CGPoint)convertPointToTop:(CGPoint)point;
++ (CGPoint)convertPointToTopLeft:(CGPoint)point;
 
 // Convert rect from left-bottom coordinate to left-top coordinate
-+ (CGRect)convertRectToTop:(CGRect)rect;
++ (CGRect)convertRectToTopLeft:(CGRect)rect;
 
 @end
 
