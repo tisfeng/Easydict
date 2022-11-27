@@ -10,7 +10,7 @@
 #include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
 
-static CGFloat kDismissPopButtonDelayTime = 10.0;
+static CGFloat kDismissPopButtonDelayTime = 1.0;
 static NSInteger kRecordEventCount = 3;
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     self.type = type;
     self.mask = mask;
     self.handler = handler;
-
+    
     [self start];
 }
 
@@ -70,7 +70,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self stop];
     if (self.type == EZEventMonitorTypeLocal) {
         mm_weakify(self)
-            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;
@@ -79,7 +79,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
     } else {
         mm_weakify(self)
-            self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+        self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
             return event;
@@ -101,21 +101,21 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
-
+    
     // Simulation shortcut cmd+c
     CGEventRef push = CGEventCreateKeyboardEvent(NULL, kVK_ANSI_C, true);
     CGEventSetFlags(push, kCGEventFlagMaskCommand);
     CGEventPost(kCGHIDEventTap, push);
     CFRelease(push);
-
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
         self.selectedText = selectedText;
         NSLog(@"Key getText: %@", selectedText);
-
+        
         [pasteboard clearContents];
-
+        
         completion(selectedText);
     });
 }
@@ -125,31 +125,31 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (BOOL)checkAppIsTrusted {
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
     NSLog(@"isTrusted: %d", isTrusted);
-
+    
     return isTrusted == YES;
 }
 
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
-
+ 
  But this method need allow auxiliary in setting first, no pop-up alerts.
-
+ 
  Cannot work in App: Safari
  */
 - (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
-
+    
     AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-
+    
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
-
+    
     // ⚠️ This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
-//    NSLog(@"selected text: %@", @(selectedTextFrame));
+    //    NSLog(@"selected text: %@", @(selectedTextFrame));
     self.selectedTextFrame = [self convertRect:selectedTextFrame];
-
+    
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
         AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
@@ -168,12 +168,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         error = getSelectedTextError;
     }
-
+    
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
     CFRelease(systemWideElement);
-
+    
     completion(selectedText, error);
 }
 
@@ -182,7 +182,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     AXUIElementRef focusedElement = NULL;
     AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     CFRelease(systemWideElement);
-
+    
     return focusedElement;
 }
 
@@ -192,34 +192,34 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     AXUIElementRef focusedElement = [self focusedElement];
     CGRect selectionFrame = CGRectZero;
     AXValueRef selectionRangeValue;
-
+    
     // 1. get selected text range value
     AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
-
+    
     if (selectionRangeError == kAXErrorSuccess) {
         //  AXValueRef range --> CFRange
         //        CFRange selectionRange;
         //        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
         //        NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
-
+        
         // 2. get bounds from range
         AXValueRef selectionBoundsValue;
         AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
-
+        
         if (selectionBoundsError == kAXErrorSuccess) {
             // 3. AXValueRef bounds --> frame
             // ⚠️ Sometimes, frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
-
+            
             CFRelease(selectionRangeValue);
             CFRelease(selectionBoundsValue);
         }
     }
-
+    
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
-
+    
     return selectionFrame;
 }
 
@@ -227,19 +227,19 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
-
+    
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == 53) { // escape
             NSLog(@"escape");
         }
         return event;
     }];
-
+    
     mm_weakify(self);
     NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
-
+        
         [self handleMonitorEvent:event];
     }];
 }
@@ -248,7 +248,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)handleMonitorEvent:(NSEvent *)event {
     //        NSLog(@"type: %lu", (unsigned long)event.type);
-
+    
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             //                NSLog(@"mouse up");
@@ -262,7 +262,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             //                NSLog(@"mouse down");
             self.startPoint = NSEvent.mouseLocation;
             [self dismissIfMouseLocationInFloatingWindows];
-
+            
             // check if it is a double click
             if (event.clickCount == 2) {
                 //                    NSLog(@"double click");
@@ -282,21 +282,23 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             break;
         }
         case NSEventTypeKeyDown: { // seems not work...
-            //                NSLog(@"key down");
+            NSLog(@"key down");
             [self dismissPopButton];
             break;
         }
-        case NSEventTypeScrollWheel:
+        case NSEventTypeScrollWheel: {
+            [self delayDismissPopButton];
+        }
         case NSEventTypeMouseMoved: {
-//            [self delayDismissPopButton];
+            [self delayDismissPopButton:2.0];
             break;
         }
-
+            
         default:
-//            [self dismissPopButton];
+            [self dismissPopButton];
             break;
     }
-
+    
     [self updateRecoredEvents:event];
 }
 
@@ -340,7 +342,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.recordEvents.count < kRecordEventCount) {
         return NO;
     }
-
+    
     BOOL isDragged = YES;
     for (NSEvent *event in self.recordEvents) {
         if (event.type != NSEventTypeLeftMouseDragged) {
@@ -352,7 +354,11 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)delayDismissPopButton {
-    [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:kDismissPopButtonDelayTime];
+    [self delayDismissPopButton:kDismissPopButtonDelayTime];
+}
+
+- (void)delayDismissPopButton:(NSTimeInterval)delayTime {
+    [self performSelector:@selector(dismissPopButton) withObject:nil afterDelay:delayTime];
 }
 
 - (void)cancelDismissPop {
@@ -373,12 +379,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 return;
             }
         }
-
+        
         if (text.length > 0) {
             [self handleSelectedText:text];
             return;
         }
-
+        
         // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
         if (error == kAXErrorNoValue) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
@@ -390,7 +396,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)handleSelectedText:(NSString *)text {
     [self cancelDismissPop];
-
+    
     NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
     if (trimText.length > 0 && self.selectedTextBlock) {
         self.selectedTextBlock(trimText);
@@ -403,7 +409,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self runAppleScript:appleScript completionHandler:^(NSAppleEventDescriptor *_Nullable eventDescriptor) {
         NSString *selectedText = eventDescriptor.stringValue;
         NSLog(@"appleScript selectedText: %@", selectedText);
-
+        
         NSString *trimText = [selectedText stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
         if (trimText.length > 0 && self.selectedTextBlock) {
             self.selectedTextBlock(trimText);
@@ -436,10 +442,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSAppleEventDescriptor *_Nullable eventDescriptor))completionHandler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
-
+        
         //        NSURL *scriptURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:@"applescripts" ofType:@"scpt"]];
         //        appleScript = [[NSAppleScript alloc] initWithContentsOfURL:scriptURL error:nil];
-
+        
         NSAppleEventDescriptor *eventDescriptor = [appleScript executeAndReturnError:nil];
         NSLog(@"eventDescriptor: %@", eventDescriptor);
         completionHandler(eventDescriptor);
@@ -449,16 +455,16 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // An apple script to get the selected text
 - (NSString *)getSelectedTextScript {
     NSString *script = @"tell application \"System Events\"\n"
-                       @"set frontApp to name of first application process whose frontmost is true\n"
-                       @"set selectedText to value of (text area 1 of window 1 of application process frontApp)\n"
-                       @"end tell\n"
-                       @"return selectedText";
-
+    @"set frontApp to name of first application process whose frontmost is true\n"
+    @"set selectedText to value of (text area 1 of window 1 of application process frontApp)\n"
+    @"end tell\n"
+    @"return selectedText";
+    
     NSRunningApplication *app = [self getFrontmostApp];
     NSString *appName = app.localizedName;
     NSString *bundleID = app.bundleIdentifier;
     NSLog(@"appName: %@, bundleID: %@", appName, bundleID);
-
+    
     script = @"tell application \"Safari\" \
     activate \
 end tell \
@@ -468,7 +474,7 @@ tell application \"System Events\" \
         set myData to (the clipboard) as text \
         return myData \
 end tell";
-
+    
     return script;
 }
 
@@ -476,7 +482,7 @@ end tell";
  tell application "Xcode"
  activate
  end tell
-
+ 
  tell application "System Events"
  keystroke "c" using {command down}
  delay 0.1
@@ -489,7 +495,7 @@ end tell";
 - (AXUIElementRef)focusedElement2 {
     pid_t pid = [self getFrontmostApp].processIdentifier;
     AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
-
+    
     AXUIElementRef focusedElement;
     AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     if (focusedElementError == kAXErrorSuccess) {
@@ -501,9 +507,9 @@ end tell";
 
 - (void)authorize {
     NSLog(@"AuthorizeButton clicked");
-
+    
     /// Open privacy prefpane
-
+    
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
 }
@@ -528,22 +534,22 @@ end tell";
     if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
         return YES;
     }
-
+    
     // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
     CGFloat expandValue = 15;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
                                                   selectedTextFrame.origin.y - expandValue,
                                                   selectedTextFrame.size.width + expandValue * 2,
                                                   selectedTextFrame.size.height + expandValue * 2);
-
+    
     if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) &&
         CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
         return YES;
     }
-
+    
     NSLog(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
     NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
-
+    
     return NO;
 }
 
