@@ -906,10 +906,10 @@
 		03B3B8AF2925D57400168E8D /* PopButtonWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */,
-				03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */,
 				03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */,
 				03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */,
+				03B3B8B02925D5B200168E8D /* EZPopButtonWindow.h */,
+				03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */,
 			);
 			path = PopButtonWindow;
 			sourceTree = "<group>";

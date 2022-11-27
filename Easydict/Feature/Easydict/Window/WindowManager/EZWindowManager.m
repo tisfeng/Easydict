@@ -78,7 +78,6 @@ static EZWindowManager *_instance;
         
         CGPoint point = [self getPopButtonWindowLocation];
         [self.popButtonWindow setFrameTopLeftPoint:point];
-        [self.popButtonWindow orderFront:nil];
         [self.popButtonWindow orderFrontRegardless];
         
         [self->_mainWindow orderBack:nil];
@@ -205,11 +204,8 @@ static EZWindowManager *_instance;
         return;
     }
     
-    // Need to keep last mini frame position
-    [window setFrameOrigin:point];
-    
-    // set safe window position
-    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
+    // get safe window position
+    CGPoint safeLocation = [EZCoordinateTool getFrameSafePoint:window.frame moveToPoint:point];
     [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
