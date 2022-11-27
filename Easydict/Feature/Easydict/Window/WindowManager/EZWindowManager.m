@@ -81,8 +81,7 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFront:nil];
         [self.popButtonWindow orderFrontRegardless];
         
-        
-        [self.mainWindow orderBack:nil];
+        [self->_mainWindow orderBack:nil];
     }];
     
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -156,7 +155,7 @@ static EZWindowManager *_instance;
     EZBaseQueryWindow *window;
     switch (type) {
         case EZWindowTypeMain: {
-            window = self.mainWindow;
+            window = _mainWindow;
             break;
         }
         case EZWindowTypeFixed: {
@@ -448,7 +447,7 @@ static EZWindowManager *_instance;
     [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
     [self.miniWindow.viewController focusInputView];
     
-    [self.mainWindow orderBack:nil];
+    [_mainWindow orderBack:nil];
 }
 
 
