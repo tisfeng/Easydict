@@ -20,17 +20,23 @@
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
     [EZShortcut setup];
+
     
+    // Show main window?
     EZWindowManager *windowManager = [EZWindowManager shared];
     [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
     [windowManager.mainWindow makeKeyAndOrderFront:nil];
     self.windowManager = windowManager;
     
+    
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+
+    
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
-}
+ }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [EZStatusItem.shared remove];
+    [[EZStatusItem shared] remove];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
@@ -41,7 +47,7 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
     // Hide dock app, not exit.
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
+//    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
     
     return NO;
 }

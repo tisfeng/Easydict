@@ -305,34 +305,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)focusInputView {
     // Need to activate the current application first.
-//    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    
-    CGPoint point = [self.view convertPoint:self.queryView.textView.center fromView:self.queryView];
-    point = CGPointMake(point.x, point.y + 28);
-    
-    CGPoint focusPoint = [self.window convertPointToScreen:point];
-    NSLog(@"focusPoint: %@", @(focusPoint));
-    
-    // conver position
-    focusPoint = [EZCoordinateTool convertPointToBottomLeft:focusPoint];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     
     [self.window makeFirstResponder:self.queryView.textView];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"top left focusPoint: %@", @(focusPoint));
-        PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
-    });
-}
-
-void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount)
-{
-    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
-    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
-    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
-    CGEventSetType(theEvent, type);
-    CGEventPost(kCGHIDEventTap, theEvent);
-    CFRelease(theEvent);
-    CFRelease(source);
 }
 
 #pragma mark -

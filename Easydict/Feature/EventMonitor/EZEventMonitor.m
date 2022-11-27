@@ -547,4 +547,21 @@ end tell";
     return NO;
 }
 
+
+/**
+ Simulate mouse click.
+ 
+ PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
+ */
+void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount)
+{
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
+    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
+    CGEventSetType(theEvent, type);
+    CGEventPost(kCGHIDEventTap, theEvent);
+    CFRelease(theEvent);
+    CFRelease(source);
+}
+
 @end
