@@ -74,7 +74,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 /// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:EZLayoutManager.shared.miniWindowFrame];
+    CGRect frame = [[EZLayoutManager shared] windowFrameWithType:self.windowType];
+    self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
