@@ -25,13 +25,13 @@
 }
 
 - (void)setup {
-    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
-    moveView.wantsLayer = YES;
-    moveView.layer.backgroundColor = NSColor.clearColor.CGColor;
-    [self addSubview:moveView];
-    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self);
-    }];
+//    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
+//    moveView.wantsLayer = YES;
+//    moveView.layer.backgroundColor = NSColor.clearColor.CGColor;
+//    [self addSubview:moveView];
+//    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(self);
+//    }];
     
     CGFloat kButtonWidth = 24;
     CGFloat kImagenWidth = 20;

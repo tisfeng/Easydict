@@ -434,16 +434,16 @@
 		0383913F292FBE120009828C /* EasydictHelper */ = {
 			isa = PBXGroup;
 			children = (
-				03839140292FBE120009828C /* Main.strings */,
 				03839142292FBE120009828C /* AppDelegate.h */,
-				03839143292FBE120009828C /* Assets.xcassets */,
+				03839148292FBE120009828C /* AppDelegate.m */,
+				0383914B292FBE120009828C /* ViewController.h */,
 				03839144292FBE120009828C /* ViewController.m */,
+				03839143292FBE120009828C /* Assets.xcassets */,
 				03839145292FBE120009828C /* Main.storyboard */,
 				03839147292FBE120009828C /* main.m */,
-				03839148292FBE120009828C /* AppDelegate.m */,
 				03839149292FBE120009828C /* EasydictHelper.entitlements */,
+				03839140292FBE120009828C /* Main.strings */,
 				0383914A292FBE120009828C /* Info.plist */,
-				0383914B292FBE120009828C /* ViewController.h */,
 			);
 			path = EasydictHelper;
 			sourceTree = "<group>";
