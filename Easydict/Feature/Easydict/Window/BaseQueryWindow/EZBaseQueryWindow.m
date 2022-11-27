@@ -142,6 +142,8 @@
 - (void)windowDidResize:(NSNotification *)aNotification {
     //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
     
+    [[EZLayoutManager shared] updateWindowFrame:self];
+    
     if (self.resizeWindowBlock) {
         self.resizeWindowBlock();
     }
@@ -149,21 +151,10 @@
     if (self.viewController.resizeWindowBlock) {
         self.viewController.resizeWindowBlock();
     }
-    
-    EZLayoutManager *frameManager = [EZLayoutManager shared];
-    switch (self.windowType) {
-        case EZWindowTypeMain:
-            frameManager.mainWindowFrame = self.frame;
-            break;
-        case EZWindowTypeFixed:
-            frameManager.fixedWindowFrame = self.frame;
-            break;
-        case EZWindowTypeMini:
-            frameManager.miniWindowFrame = self.frame;
-            break;
-        default:
-            break;
-    }
+}
+
+- (void)windowDidMove:(NSNotification *)notification {
+    [[EZLayoutManager shared] updateWindowFrame:self];
 }
 
 @end

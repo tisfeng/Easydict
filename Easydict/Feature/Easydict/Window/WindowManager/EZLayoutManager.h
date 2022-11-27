@@ -40,6 +40,8 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type;
 - (CGSize)textContainerInset:(EZWindowType)type;
 
+- (void)updateWindowFrame:(EZBaseQueryWindow *)window;
+
 @end
 
 NS_ASSUME_NONNULL_END
