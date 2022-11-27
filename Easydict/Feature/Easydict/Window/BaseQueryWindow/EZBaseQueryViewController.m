@@ -136,7 +136,19 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
 }
 
+- (void)resetQueryResults {
+    self.queryModel.queryText = @"";
+    
+    for (TranslateService *service in self.services) {
+        TranslateResult *result = [[TranslateResult alloc] init];
+        service.result = result;
+        result.isShowing = NO; // default not show, show result after querying.
+    }
+}
+
 - (void)setup {
+    self.queryModel = [EZQueryModel new];
+
     self.serviceTypes = @[
         EZServiceTypeGoogle,
         EZServiceTypeYoudao,
@@ -149,8 +161,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         [translateServices addObject:service];
     }
     self.services = translateServices;
+    [self resetQueryResults];
     
-    self.queryModel = [EZQueryModel new];
     self.inputViewHeight = [EZLayoutManager.shared inputViewMiniHeight:self.windowType];
     
     self.detectManager = [[EZDetectManager alloc] init];
@@ -326,6 +338,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
     
     NSLog(@"start query text: %@", text);
+    
+    [self resetQueryResults];
+    [self.tableView reloadData];
     
     self.queryModel.queryText = text;
     __block Language fromLang = Configuration.shared.from;
@@ -544,14 +559,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     resultCell.identifier = EZResultCellId;
     
     TranslateService *service = [self serviceAtRow:row];
-    ;
-    TranslateResult *result = service.result;
-    if (!result) {
-        result = [[TranslateResult alloc] init];
-        service.result = result;
-        result.isShowing = NO; // default not show, show result after querying.
-    }
-    resultCell.result = result;
+    resultCell.result = service.result;
     [self setupResultCell:resultCell];
     
     return resultCell;
