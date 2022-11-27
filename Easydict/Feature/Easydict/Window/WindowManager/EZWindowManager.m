@@ -329,7 +329,7 @@ static EZWindowManager *_instance;
     CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x; // offsetPoint.x > 0
     CGFloat y = popButtonLocation.y - self.offsetPoint.y; // offsetPoint.y < 0
     
-    // !!!: Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
+    // ⚠️ Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
     y = y - self.miniWindow.height;
     
     return CGPointMake(x, y);

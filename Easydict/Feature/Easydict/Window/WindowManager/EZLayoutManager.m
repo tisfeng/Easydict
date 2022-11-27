@@ -44,7 +44,7 @@ static EZLayoutManager *_instance;
 
 - (void)commonInitialize {
     self.minimumWindowSize = CGSizeMake(300, 200);
-    
+
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
 
@@ -56,7 +56,7 @@ static EZLayoutManager *_instance;
                                       centerPoint.y,
                                       miniWindowWidth,
                                       self.minimumWindowSize.height);
-    
+
     CGRect minimumWindowFrame = CGRectMake(centerPoint.x,
                                            centerPoint.y,
                                            self.minimumWindowSize.width,
@@ -148,6 +148,22 @@ static EZLayoutManager *_instance;
 
 - (CGRect)windowFrame:(EZBaseQueryWindow *)window {
     return [self windowFrameWithType:window.windowType];
+}
+
+- (void)updateWindowFrame:(EZBaseQueryWindow *)window {
+    switch (window.windowType) {
+        case EZWindowTypeMain:
+            _mainWindowFrame = window.frame;
+            break;
+        case EZWindowTypeFixed:
+            _fixedWindowFrame = window.frame;
+            break;
+        case EZWindowTypeMini:
+            _miniWindowFrame = window.frame;
+            break;
+        default:
+            break;
+    }
 }
 
 @end
