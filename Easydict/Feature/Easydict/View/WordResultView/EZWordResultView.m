@@ -443,10 +443,11 @@ static const CGFloat kVerticalPadding = 8;
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
         
+    // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - leftMargin - rightMargin;
 //    NSLog(@"text: %@, width: %@", label.text, @(width));
     
-    // ⚠️ 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
+    
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
 //    NSLog(@"height: %@", @(height));
 

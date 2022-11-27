@@ -72,7 +72,7 @@ static EZWindowManager *_instance;
         mm_strongify(self);
         self.selectedText = selectedText;
         
-        // ⚠️ Record current selected start and end point, eventMonitor's startPoint will change every valid event.
+        // !!!: Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
         self.endPoint = self.eventMonitor.endPoint;
         
@@ -329,7 +329,7 @@ static EZWindowManager *_instance;
     CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x; // offsetPoint.x > 0
     CGFloat y = popButtonLocation.y - self.offsetPoint.y; // offsetPoint.y < 0
     
-    // ⚠️ Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
+    // !!!: Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
     y = y - self.miniWindow.height;
     
     return CGPointMake(x, y);

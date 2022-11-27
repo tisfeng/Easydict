@@ -53,7 +53,7 @@ typedef NS_ENUM(NSUInteger, EZButtonState) {
 @property (nonatomic, strong, nonnull) NSFont *titleHighlightFont;
 @property (nonatomic, strong, nonnull) NSFont *titleSelectedFont;
 
-@property (nonatomic, strong) NSImage *normalImage; // ⚠️ different from image if need to change image when state changed
+@property (nonatomic, strong) NSImage *normalImage; // !!!: different from image if need to change image when state changed
 @property (nonatomic, strong) NSImage *hoverImage;
 @property (nonatomic, strong) NSImage *highlightImage;
 @property (nonatomic, strong) NSImage *selectedImage;

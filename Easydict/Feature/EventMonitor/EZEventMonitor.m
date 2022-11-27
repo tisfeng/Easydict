@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
     
-    // ⚠️ This frame is left-top position
+    // !!!: This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     //    NSLog(@"selected text: %@", @(selectedTextFrame));
     self.selectedTextFrame = [self convertRect:selectedTextFrame];
@@ -208,7 +208,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         
         if (selectionBoundsError == kAXErrorSuccess) {
             // 3. AXValueRef bounds --> frame
-            // ⚠️ Sometimes, frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
+            // ???: Sometimes, the text frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
             
             CFRelease(selectionRangeValue);
@@ -267,7 +267,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             if (event.clickCount == 2) {
                 //                    NSLog(@"double click");
                 
-                // ⚠️ Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
+                // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self getSelectedText:NO];
                 });
@@ -290,7 +290,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             [self delayDismissPopButton];
         }
         case NSEventTypeMouseMoved: {
-            // Hide the button after exceeding a certain range ?
+            // TODO: Hide the button after exceeding a certain range ?
 //            [self delayDismissPopButton:2.0];
             break;
         }

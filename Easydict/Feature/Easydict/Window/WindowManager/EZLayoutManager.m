@@ -52,7 +52,7 @@ static EZLayoutManager *_instance;
     
     CGFloat miniWindowWidth = 350 / 1727.0 * NSScreen.mainScreen.frame.size.width; // My MacBook screen ratio
     
-    // ⚠️ Note: mini window size is not the minimumWindowSize!
+    // MARK: mini window size is not the minimumWindowSize!
     self.miniWindowFrame = CGRectMake(centerPoint.x,
                                       centerPoint.y,
                                       miniWindowWidth,

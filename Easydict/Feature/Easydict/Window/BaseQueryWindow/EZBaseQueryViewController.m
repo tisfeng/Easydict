@@ -423,7 +423,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //    NSLog(@"tableView for row: %ld", row);
     
-    // ⚠️ Need to optimize, should reuse cell.
+    // TODO: should reuse cell.
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
         self.queryView = queryCell.queryView;
@@ -442,7 +442,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     return resultCell;
 }
 
-// ⚠️ Need to optimize. cache height, only calculate once.
+// TODO: cache height, only calculate once.
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
     
