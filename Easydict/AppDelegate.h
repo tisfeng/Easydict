@@ -12,6 +12,4 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property (nonatomic, strong) EZWindowManager *windowManager;
-
 @end

@@ -23,10 +23,9 @@
 
     
     // Show main window?
-    EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
-    [windowManager.mainWindow makeKeyAndOrderFront:nil];
-    self.windowManager = windowManager;
+//    EZWindowManager *windowManager = [EZWindowManager shared];
+//    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
+//    [windowManager.mainWindow makeKeyAndOrderFront:nil];
     
     
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
