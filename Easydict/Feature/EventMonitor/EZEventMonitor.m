@@ -290,7 +290,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             [self delayDismissPopButton];
         }
         case NSEventTypeMouseMoved: {
-            [self delayDismissPopButton:2.0];
+            // Hide the button after exceeding a certain range ?
+//            [self delayDismissPopButton:2.0];
             break;
         }
             
