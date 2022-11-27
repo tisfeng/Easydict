@@ -27,12 +27,15 @@
 #import "EZCoordinateTool.h"
 #import "EZBaseQueryWindow.h"
 #include <Carbon/Carbon.h>
+#import "EZWindowManager.h"
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
 static NSString *EZResultCellId = @"EZResultCellId";
 
 static NSString *EZColumnId = @"EZColumnId";
+
+static NSString *EZQueryKey = @"{Query}";
 
 static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
@@ -110,25 +113,28 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
     [self.window.titleBar.eudicButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-        NSString *queryText = self.queryModel.queryText ?: @"";
-        NSString *url = [NSString stringWithFormat:@"eudic://dict/%@", queryText];
-        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        NSLog(@"open eudic: %@", url);
-        
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+        [self openUrl:[ NSString stringWithFormat:@"eudic://dict/%@", EZQueryKey]];
     }];
     
     [self.window.titleBar.chromeButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-        NSString *queryText = self.queryModel.queryText ?: @"";
-        NSString *url = [NSString stringWithFormat:@"https://www.google.com/search?q=%@", queryText];
-        url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        NSLog(@"open chrome: %@", url);
-        
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+        [self openUrl:[ NSString stringWithFormat:@"https://www.google.com/search?q=%@", EZQueryKey]];
     }];
 }
 
+- (void)openUrl:(NSString *)urlString {
+    NSString *queryText = self.queryModel.queryText ?: @"";
+    urlString = [urlString stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
+    
+    NSString *url = [NSString stringWithFormat:urlString, queryText];
+    url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSLog(@"open url: %@", url);
+    
+    BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    if (success) {
+        [[EZWindowManager shared] closeFloatingWindow];
+    }
+}
 
 - (void)setup {
     self.serviceTypes = @[
