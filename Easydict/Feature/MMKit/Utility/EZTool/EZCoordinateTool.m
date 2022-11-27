@@ -10,6 +10,17 @@
 
 @implementation EZCoordinateTool
 
+// window frame is frame, move window to point, adjust window frame to make sure window is in screen visible frame.
++ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point {
+    CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
+    return [self getSafeAreaFrame:newFrame];
+}
+
++ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point {
+    CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
+    return [self getSafeLocation:newFrame];
+}
+
 /// left-bottom safe postion.
 + (CGPoint)getSafeLocation:(CGRect)frame {
     CGRect safeFrame = [self getSafeAreaFrame:frame];
@@ -19,20 +30,16 @@
 // Make sure frame show in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame {
     NSScreen *screen = [NSScreen mainScreen];
-    if (!screen) {
-        return frame;
-    }
-    
     CGRect visibleFrame = screen.visibleFrame;
     if (CGRectContainsRect(visibleFrame, frame)) {
         return frame;
     }
-    
+
     CGFloat x = frame.origin.x;
     CGFloat y = frame.origin.y;
     CGFloat width = frame.size.width;
     CGFloat height = frame.size.height;
-    
+
     // left safe
     if (x < visibleFrame.origin.x) {
         x = visibleFrame.origin.x;
@@ -41,8 +48,7 @@
     if (x + width > visibleFrame.origin.x + visibleFrame.size.width) {
         x = visibleFrame.origin.x + visibleFrame.size.width - width;
     }
-    
-    
+
     // top safe
     if (y > visibleFrame.origin.y + visibleFrame.size.height) {
         y = visibleFrame.origin.y + visibleFrame.size.height;
@@ -51,9 +57,12 @@
     if (y < visibleFrame.origin.y) {
         y = visibleFrame.origin.y;
     }
-    
+
     return CGRectMake(x, y, width, height);
 }
+
+
+#pragma mark - Convert Coordinate
 
 // Convert point from top-left to left-bottom coordinate system
 + (CGPoint)convertPointToBottomLeft:(CGPoint)point {
