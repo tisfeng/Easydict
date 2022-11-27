@@ -202,6 +202,15 @@
             return YES;
         }
     }
+    
+    // escape key
+    if (commandSelector == @selector(cancelOperation:)) {
+        NSLog(@"escape");
+        
+        [[EZWindowManager shared] closeFloatingWindow];
+        
+        return NO;
+    }
     return NO;
 }
 

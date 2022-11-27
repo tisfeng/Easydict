@@ -252,6 +252,9 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == 53) { // escape
             NSLog(@"escape");
+            if (self.escapeBlock) {
+                self.escapeBlock();
+            }
         }
         return event;
     }];
@@ -268,7 +271,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 #pragma mark - Handle Event
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-    //        NSLog(@"type: %lu", (unsigned long)event.type);
+//            NSLog(@"type: %lu", (unsigned long)event.type);
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
