@@ -303,7 +303,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [self startQuery];
 }
 
-- (void)focusInputView {
+- (void)focusInputTextView {
     // Need to activate the current application first.
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     

@@ -214,6 +214,7 @@ static EZWindowManager *_instance;
     
     [window makeKeyAndOrderFront:nil];
     window.level = kCGFloatingWindowLevel;
+    [window.viewController focusInputTextView];
 
     [_mainWindow orderBack:nil];
     
@@ -445,7 +446,6 @@ static EZWindowManager *_instance;
     
     CGPoint lastPoint = EZLayoutManager.shared.miniWindowFrame.origin;
     [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
-    [self.miniWindow.viewController focusInputView];
     
     [_mainWindow orderBack:nil];
 }

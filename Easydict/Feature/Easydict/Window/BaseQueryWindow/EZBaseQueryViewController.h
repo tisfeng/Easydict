@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startQueryImage:(NSImage *)image;
 - (void)retry;
 
-- (void)focusInputView;
+- (void)focusInputTextView;
 
 @end
 
