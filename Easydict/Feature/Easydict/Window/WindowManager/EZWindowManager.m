@@ -107,8 +107,7 @@ static EZWindowManager *_instance;
     }];
     
     [self.eventMonitor setEscapeBlock:^{
-        mm_strongify(self);
-        [self closeFloatingWindow];
+        NSLog(@"Escape Block");
     }];
 }
 

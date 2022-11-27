@@ -205,7 +205,7 @@
     
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-        NSLog(@"escape");
+        NSLog(@"escape: %@", textView);
         
         [[EZWindowManager shared] closeFloatingWindow];
         
