@@ -28,7 +28,7 @@
         self.titleVisibility = NSWindowTitleHidden;
         self.delegate = self;
         
-        // ⚠️ must set backgroundColor
+        // !!!: must set backgroundColor
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSWindow *window) {
