@@ -49,22 +49,31 @@ static EZLayoutManager *_instance;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
 
     CGPoint centerPoint = NSMakePoint(visibleFrameSize.width / 2, visibleFrameSize.height / 2);
+    
+    CGFloat miniWindowWidth = 350 / 1727.0 * NSScreen.mainScreen.frame.size.width; // My MacBook screen ratio
+    
+    // ⚠️ Note: mini window size is not the minimumWindowSize!
     self.miniWindowFrame = CGRectMake(centerPoint.x,
                                       centerPoint.y,
-                                      self.minimumWindowSize.width,
+                                      miniWindowWidth,
                                       self.minimumWindowSize.height);
-    self.fixedWindowFrame = self.miniWindowFrame;
-    self.mainWindowFrame = self.miniWindowFrame;
+    
+    CGRect minimumWindowFrame = CGRectMake(centerPoint.x,
+                                           centerPoint.y,
+                                           self.minimumWindowSize.width,
+                                           self.minimumWindowSize.height);
+    self.fixedWindowFrame = minimumWindowFrame;
+    self.mainWindowFrame = minimumWindowFrame;
 }
 
 - (CGSize)minimumWindowSize:(EZWindowType)type {
     switch (type) {
-        case EZWindowTypeMini:
+        case EZWindowTypeMain:
             return self.minimumWindowSize;
         case EZWindowTypeFixed:
             return self.minimumWindowSize;
-        case EZWindowTypeMain:
-            return self.minimumWindowSize;
+        case EZWindowTypeMini:
+            return CGSizeMake(self.miniWindowFrame.size.width, self.minimumWindowSize.height);
         default:
             return self.minimumWindowSize;
     }
@@ -72,12 +81,12 @@ static EZLayoutManager *_instance;
 
 - (CGSize)maximumWindowSize:(EZWindowType)type {
     switch (type) {
-        case EZWindowTypeMini:
-            return CGSizeMake(self.minimumWindowSize.width, 400);
-        case EZWindowTypeFixed:
-            return self.maximumWindowSize;
         case EZWindowTypeMain:
             return self.maximumWindowSize;
+        case EZWindowTypeFixed:
+            return self.maximumWindowSize;
+        case EZWindowTypeMini:
+            return CGSizeMake(self.miniWindowFrame.size.width, 400);
         default:
             return self.maximumWindowSize;
     }
@@ -117,9 +126,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return CGSizeMake(8, 8);
         case EZWindowTypeMini:
-            return CGSizeMake(4, 4);
+            return CGSizeMake(8, 4);
         default:
-            return CGSizeMake(4, 4);
+            return CGSizeMake(8, 4);
     }
 }
 
