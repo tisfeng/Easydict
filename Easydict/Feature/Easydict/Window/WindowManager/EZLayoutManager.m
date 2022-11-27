@@ -49,9 +49,8 @@ static EZLayoutManager *_instance;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
 
     CGPoint centerPoint = NSMakePoint(visibleFrameSize.width / 2, visibleFrameSize.height / 2);
-    
-    CGFloat miniWindowWidth = 350 / 1727.0 * NSScreen.mainScreen.frame.size.width; // My MacBook screen ratio
-    
+    CGFloat miniWindowWidth = 400 / 1727.0 * NSScreen.mainScreen.frame.size.width; // My MacBook screen ratio
+
     // MARK: mini window size is not the minimumWindowSize!
     self.miniWindowFrame = CGRectMake(centerPoint.x,
                                       centerPoint.y,
@@ -85,8 +84,10 @@ static EZLayoutManager *_instance;
             return self.maximumWindowSize;
         case EZWindowTypeFixed:
             return self.maximumWindowSize;
-        case EZWindowTypeMini:
-            return CGSizeMake(self.miniWindowFrame.size.width, 400);
+        case EZWindowTypeMini: {
+            return CGSizeMake(self.miniWindowFrame.size.width, self.maximumWindowSize.height);
+        }
+
         default:
             return self.maximumWindowSize;
     }
