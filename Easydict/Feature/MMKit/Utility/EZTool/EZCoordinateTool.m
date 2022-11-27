@@ -10,16 +10,16 @@
 
 @implementation EZCoordinateTool
 
-// window frame is frame, move window to point, adjust window frame to make sure window is in screen visible frame.
++ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point {
+    CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
+    return [self getSafeLocation:newFrame];
+}
+
 + (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point {
     CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
     return [self getSafeAreaFrame:newFrame];
 }
 
-+ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point {
-    CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
-    return [self getSafeLocation:newFrame];
-}
 
 /// left-bottom safe postion.
 + (CGPoint)getSafeLocation:(CGRect)frame {

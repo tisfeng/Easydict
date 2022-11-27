@@ -76,8 +76,11 @@ static EZWindowManager *_instance;
         self.startPoint = self.eventMonitor.startPoint;
         self.endPoint = self.eventMonitor.endPoint;
         
-        CGPoint point = [self getPopButtonWindowLocation];
-        [self.popButtonWindow setFrameTopLeftPoint:point];
+        CGPoint point = [self getPopButtonWindowLocation]; // This is top-left point
+        CGPoint bottomLeftPoint = CGPointMake(point.x, point.y - self.popButtonWindow.height);
+        CGPoint safePoint = [EZCoordinateTool getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
+        [self.popButtonWindow setFrameOrigin:safePoint];
+        
         [self.popButtonWindow orderFrontRegardless];
         
         [self->_mainWindow orderBack:nil];

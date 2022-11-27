@@ -12,25 +12,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZCoordinateTool : NSObject
 
-// window frame is frame, move window to point, adjust window frame to make sure window is in screen visible frame.
-+ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point;
-+ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point;
 
-// Make sure frame is in screen visible frame, return left-bottom postion frame.
+/// Get safe point, bottom-left coordinate
++ (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point;
++ (CGRect)getSafeFrame:(CGRect)frame moveToPoint:(CGPoint)point;
+
+/// Make sure frame is in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame;
 + (CGPoint)getSafeLocation:(CGRect)frame;
 
 
-// Convert point from left-top to left-bottom coordinate system
+/// Convert point from top-left to bottom-left coordinate system
 + (CGPoint)convertPointToBottomLeft:(CGPoint)point;
 
-// Convert rect from left-top coordinate to left-bottom coordinate
+// Convert rect from top-left to bottom-left coordinate
 + (CGRect)convertRectToBottomLeft:(CGRect)rect;
 
-// Convert point from left-bottom coordinate to left-top coordinate
+// Convert point from bottom-left coordinate to top-left coordinate
 + (CGPoint)convertPointToTopLeft:(CGPoint)point;
 
-// Convert rect from left-bottom coordinate to left-top coordinate
+// Convert rect from bottom-left coordinate to top-left coordinate
 + (CGRect)convertRectToTopLeft:(CGRect)rect;
 
 @end
