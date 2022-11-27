@@ -17,12 +17,13 @@
 #import "EZFixedQueryWindow.h"
 #import "NSString+MM.h"
 #import "EZLayoutManager.h"
+#import "EZWindowManager.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
 static const CGFloat kVerticalPadding = 8;
 
-@interface EZWordResultView ()
+@interface EZWordResultView () <NSTextViewDelegate>
 
 @end
 
@@ -85,6 +86,7 @@ static const CGFloat kVerticalPadding = 8;
         EZLabel *resultLabel = [EZLabel new];
         [self addSubview:resultLabel];
         resultLabel.text = text;
+        resultLabel.delegate = self;
         
         __block CGFloat leftMargin = kHorizontalMargin + ceil(typeTextField.width);
         
@@ -214,6 +216,7 @@ static const CGFloat kVerticalPadding = 8;
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
+        meanLabel.delegate = self;
         
         __block CGFloat leftMargin = kHorizontalMargin + ceil(partTextFiled.width);
                 
@@ -463,6 +466,18 @@ static const CGFloat kVerticalPadding = 8;
 - (NSString *)copiedText {
     NSString *text = [NSString mm_stringByCombineComponents:self.result.normalResults separatedString:@"\n"] ?: @"";
     return text;
+}
+
+#pragma mark - NSTextViewDelegate
+
+- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+    // escape key
+    if (commandSelector == @selector(cancelOperation:)) {
+        NSLog(@"escape: %@", textView);
+        [[EZWindowManager shared] closeFloatingWindow];
+        return NO;
+    }
+    return NO;
 }
 
 @end
