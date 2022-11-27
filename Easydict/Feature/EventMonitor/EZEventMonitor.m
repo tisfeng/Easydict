@@ -102,12 +102,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
     
-    // Simulation shortcut cmd+c
-    CGEventRef push = CGEventCreateKeyboardEvent(NULL, kVK_ANSI_C, true);
-    CGEventSetFlags(push, kCGEventFlagMaskCommand);
-    CGEventPost(kCGHIDEventTap, push);
-    CFRelease(push);
-    
+    // Simulate keyboard event: Cmd + C
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true); // key down
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
@@ -118,6 +116,29 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         
         completion(selectedText);
     });
+}
+
+
+/// Simulate key event.
+void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
+    // Ref: http://www.enkichen.com/2018/09/12/osx-mouse-keyboard-event/
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef push = CGEventCreateKeyboardEvent(source, virtualKey, keyDown);
+    CGEventSetFlags(push, flags);
+    CGEventPost(kCGHIDEventTap, push);
+    CFRelease(push);
+    CFRelease(source);
+}
+
+/// Simulate mouse click.  PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
+void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount) {
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
+    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
+    CGEventSetType(theEvent, type);
+    CGEventPost(kCGHIDEventTap, theEvent);
+    CFRelease(theEvent);
+    CFRelease(source);
 }
 
 
@@ -552,23 +573,6 @@ end tell";
     NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
     
     return NO;
-}
-
-
-/**
- Simulate mouse click.
- 
- PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
- */
-void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount)
-{
-    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
-    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
-    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
-    CGEventSetType(theEvent, type);
-    CGEventPost(kCGHIDEventTap, theEvent);
-    CFRelease(theEvent);
-    CFRelease(source);
 }
 
 @end
