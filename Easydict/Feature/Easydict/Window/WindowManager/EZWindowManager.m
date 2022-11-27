@@ -105,6 +105,11 @@ static EZWindowManager *_instance;
             [self closeFloatingWindow];
         }
     }];
+    
+    [self.eventMonitor setEscapeBlock:^{
+        mm_strongify(self);
+        [self closeFloatingWindow];
+    }];
 }
 
 #pragma mark - Getter
