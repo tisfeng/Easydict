@@ -11,10 +11,12 @@
 #import "NSTextView+Height.h"
 #import "EZWindowManager.h"
 #import "NSView+EZGetViewController.h"
+#import "NSImage+EZResize.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZButton *detectButton;
+@property (nonatomic, strong) EZHoverButton *clearButton;
 
 @property (nonatomic, assign) CGFloat textViewHeight;
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
@@ -77,6 +79,21 @@
     }];
 
     detectButton.mas_key = @"detectButton";
+    
+    EZHoverButton *clearButton = [[EZHoverButton alloc] init];
+    [self addSubview:clearButton];
+    self.clearButton = clearButton;
+    clearButton.hidden = NO;
+    clearButton.image = [[NSImage imageNamed:@"clear_circle"] resizeToSize:CGSizeMake(15, 15)];
+    clearButton.toolTip = @"Clear";
+    
+    [clearButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"clearButton");
+        mm_strongify(self);
+        if (self.clearBlock) {
+            self.clearBlock(self.copiedText);
+        }
+    }];
 }
 
 
@@ -96,6 +113,12 @@
         make.top.left.right.inset(0);
         make.bottom.equalTo(self.audioButton.mas_top).offset(0);
         make.height.mas_greaterThanOrEqualTo(self.textViewMiniHeight).priorityLow();
+    }];
+    
+    [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self).offset(-5);
+        make.centerY.equalTo(self.textCopyButton);
+        make.width.height.mas_equalTo(24);
     }];
 
     [super updateConstraints];
@@ -218,9 +241,8 @@
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
-    if (text.length == 0) {
-        self.detectButton.hidden = YES;
-    }
+   
+    [self updateButtonDisplay:text];
     
 
     CGFloat height = [self heightOfTextView];
@@ -252,6 +274,15 @@
 //    NSLog(@"final height: %.1f", height);
 
     return height;
+}
+
+- (void)updateButtonDisplay:(NSString *)text {
+    BOOL isHidden = text.length == 0;
+    
+    self.clearButton.hidden = isHidden;
+    if (isHidden) {
+        self.detectButton.hidden = YES;
+    }
 }
 
 @end

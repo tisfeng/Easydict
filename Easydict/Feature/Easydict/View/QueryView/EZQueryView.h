@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
-
+@property (nonatomic, copy) void (^clearBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
 
