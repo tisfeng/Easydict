@@ -209,20 +209,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateWindowViewHeightWithLock) object:nil];
 }
 
-
-- (void)updateTableViewWithAnimation {
-    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    
-    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
-    
-    NSMutableArray *results = [NSMutableArray array];
-    for (TranslateService *service in self.services) {
-        [results addObject:service.result];
-    }
-    [self updateCellWithResults:results reloadData:NO];
-}
-
 #pragma mark - Getter
 
 - (NSScrollView *)scrollView {
@@ -340,7 +326,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [self resetQueryResults];
     self.queryModel.queryText = queryText;
     
-    [self reloadTableViewData:^{
+    [self updateTableViewWithAnimation:^{
         self.queryView.model = self.queryModel;
         
         __block Language fromLang = Configuration.shared.from;
@@ -353,24 +339,11 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         [self.detectManager detect:queryText completion:^(Language language, NSError *error) {
             if (!error) {
                 fromLang = language;
-                //            NSLog(@"detect language: %ld", language);
             }
             [self queryText:queryText fromLangunage:fromLang];
         }];
     }];
 }
-
-- (void)reloadTableViewData:(void (^)(void))completion {
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        completion();
-    }];
-    
-//    self.queryModel.viewHeight = 0;
-    [self.tableView reloadData];
-    [CATransaction commit];
-}
-
 
 - (void)queryText:(NSString *)text fromLangunage:(Language)fromLang {
     self.queryModel.queryText = text;
@@ -404,6 +377,51 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
                   from:fromLang
                     to:Configuration.shared.to
             completion:completion];
+}
+
+
+#pragma mark - Update TableView
+
+- (void)resetTableView:(void (^)(void))completion {
+    [self resetQueryResults];
+    
+    [self reloadTableViewData:completion];
+}
+
+- (void)reloadTableViewData:(void (^)(void))completion {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        [self updateWindowViewHeightWithLock];
+        completion();
+    }];
+    
+    [self.tableView reloadData];
+    [CATransaction commit];
+}
+
+- (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
+    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+    
+    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
+    
+    NSMutableArray *results = [NSMutableArray array];
+    for (TranslateService *service in self.services) {
+        [results addObject:service.result];
+    }
+    
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if (completion) {
+            completion();
+        }
+    }];
+    
+    // Do not reload cell data
+    [self updateCellWithResults:results reloadData:NO];
+
+    [CATransaction commit];
+    
 }
 
 - (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
@@ -564,7 +582,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [queryView setClearBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);
         [self resetQueryResults];
-        [self updateTableViewWithAnimation];
+        [self updateTableViewWithAnimation:nil];
     }];
     
     return queryCell;
