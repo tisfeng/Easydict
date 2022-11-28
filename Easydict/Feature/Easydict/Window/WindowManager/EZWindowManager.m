@@ -106,8 +106,11 @@ static EZWindowManager *_instance;
         }
     }];
     
-    [self.eventMonitor setEscapeBlock:^{
-        NSLog(@"Escape Block");
+    [self.eventMonitor setDoubleCommandBlock:^{
+        NSLog(@"double command");
+        
+        mm_strongify(self);
+        [self showMiniFloatingWindow];
     }];
 }
 

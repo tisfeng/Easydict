@@ -519,10 +519,10 @@
 		03B0222529231FA6001C7E63 /* Shortcut */ = {
 			isa = PBXGroup;
 			children = (
-				03B0222629231FA6001C7E63 /* Shortcut.h */,
-				03B0222729231FA6001C7E63 /* Shortcut.m */,
 				03F25CB129327BC200E66A12 /* EZShortcut.h */,
 				03F25CB229327BC200E66A12 /* EZShortcut.m */,
+				03B0222629231FA6001C7E63 /* Shortcut.h */,
+				03B0222729231FA6001C7E63 /* Shortcut.m */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
