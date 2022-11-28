@@ -77,7 +77,7 @@ static EZStatusItem *_instance;
 #pragma mark -
 - (IBAction)translateAction:(NSMenuItem *)sender {
     NSLog(@"划词翻译");
-    [EZWindowManager.shared selectionTranslate];
+    [EZWindowManager.shared selectTextTranslate];
 }
 
 - (IBAction)snipAction:(NSMenuItem *)sender {

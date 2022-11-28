@@ -13,12 +13,13 @@
 #import "NSView+EZGetViewController.h"
 #import "NSImage+EZResize.h"
 
+static CGFloat kExceptTextViewHeight = 30;
+
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
 
-@property (nonatomic, assign) CGFloat textViewHeight;
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
@@ -137,7 +138,6 @@
     self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
     self.textViewMiniHeight = [EZLayoutManager.shared inputViewMiniHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
-    self.textViewHeight = self.textViewMiniHeight;
 }
 
 - (void)updateDetectButton {
@@ -196,6 +196,7 @@
     _model = model;
     
     if (model.queryText) {
+        // will call -heightOfTextView to update textView height
         self.textView.string = model.queryText;
     }
     
@@ -213,7 +214,6 @@
 - (NSString *)copiedText {
     return self.textView.string;
 }
-
 
 #pragma mark - NSTextViewDelegate
 
@@ -250,11 +250,10 @@
     [self updateButtonDisplay:text];
     
 
-    CGFloat height = [self heightOfTextView];
-    self.textViewHeight = height;
+    CGFloat textViewHeight = [self heightOfTextView];
     
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(height);
+        make.height.mas_equalTo(textViewHeight);
     }];
     
     // cannot layout this, otherwise will crash
@@ -262,7 +261,7 @@
 //    NSLog(@"self.frame: %@", @(self.frame));
 
     if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock(text, height);
+        self.updateQueryTextBlock(text, textViewHeight + kExceptTextViewHeight);
     }
 }
 
@@ -286,6 +285,12 @@
     if (isHidden) {
         self.detectButton.hidden = YES;
     }
+}
+
+#pragma mark - Public
+
+- (CGFloat)heightOfQueryView {
+    return [self heightOfTextView] + kExceptTextViewHeight;
 }
 
 @end

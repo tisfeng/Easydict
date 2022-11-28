@@ -56,7 +56,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) AVPlayer *player;
 
-@property (nonatomic, assign) CGFloat inputViewHeight;
+//@property (nonatomic, assign) CGFloat queryViewHeight;
 
 @property (nonatomic, strong) FBKVOController *kvo;
 
@@ -164,7 +164,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     self.services = translateServices;
     [self resetQueryResults];
     
-    self.inputViewHeight = [EZLayoutManager.shared inputViewMiniHeight:self.windowType];
+//    self.queryViewHeight = [EZLayoutManager.shared inputViewMiniHeight:self.windowType];
     
     self.detectManager = [[EZDetectManager alloc] init];
     self.player = [[AVPlayer alloc] init];
@@ -179,9 +179,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         if (!self.enableResizeWindow) {
             return;
         }
-        
-        NSLog(@"resize window, resize view");
-        
+                
         [self reloadTableViewData:^{
             [self delayUpdateWindowViewHeight];
         }];
@@ -365,13 +363,10 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (void)reloadTableViewData:(void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        NSLog(@"complete reloadData");
         completion();
     }];
     
-    NSLog(@"start reloadData");
-
-    self.queryModel.viewHeight = 0;
+//    self.queryModel.viewHeight = 0;
     [self.tableView reloadData];
     [CATransaction commit];
 }
@@ -480,12 +475,15 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     if (row == 0) {
         if (self.queryModel.viewHeight) {
-            height = self.queryModel.viewHeight + 30;
+            height = self.queryModel.viewHeight;
         } else {
-            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
-            queryCell.queryView.windowType = self.windowType;
-            queryCell.queryView.model = self.queryModel;            
-            height = [queryCell.queryView heightOfTextView] + 30;
+            @autoreleasepool {
+                EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
+                EZQueryView *queryView = queryCell.queryView;
+                queryView.windowType = self.windowType;
+                queryView.model = self.queryModel;
+                height = [queryView heightOfQueryView];
+            }
         }
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
@@ -525,17 +523,17 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     EZQueryView *queryView = queryCell.queryView;
     
     mm_weakify(self);
-    [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat textViewHeight) {
+    [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         self.queryModel.queryText = text;
         
-        if (textViewHeight != self.inputViewHeight) {
-            self.inputViewHeight = textViewHeight;
-            self.queryModel.viewHeight = textViewHeight;
+        // Reduce the update frequency, update only when the height changes.
+        if (queryViewHeight != self.queryModel.viewHeight) {
+            self.queryModel.viewHeight = queryViewHeight;
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             
-            // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
+            // !!!: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
             [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
         }
     }];
