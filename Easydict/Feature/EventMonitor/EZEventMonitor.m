@@ -328,10 +328,9 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandEvents:event];
-            }
-
-            if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
-                self.doubleCommandBlock();
+                if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
+                    self.doubleCommandBlock();
+                }
             }
 
             break;
