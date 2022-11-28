@@ -52,7 +52,7 @@ NSString *const TranslateErrorRequestErrorKey = @"Error";
     if (request) {
         [userInfo setObject:request forKey:TranslateErrorRequestKey];
     }
-    return [NSError errorWithDomain:@"com.ripperhe.Bob" code:type userInfo:userInfo.copy];
+    return [NSError errorWithDomain:@"com.izual.easydict" code:type userInfo:userInfo.copy];
 }
 
 @end

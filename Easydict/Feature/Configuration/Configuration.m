@@ -110,9 +110,9 @@ static Configuration *_instance;
     // 注册启动项
     // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
 #if DEBUG
-    NSString *helper = [NSString stringWithFormat:@"com.ripperhe.BobHelper-debug"];
+    NSString *helper = [NSString stringWithFormat:@"com.izual.easydictHelper-debug"];
 #else
-    NSString *helper = [NSString stringWithFormat:@"com.ripperhe.BobHelper"];
+    NSString *helper = [NSString stringWithFormat:@"com.izual.easydictHelper"];
 #endif
     SMLoginItemSetEnabled((__bridge CFStringRef)helper, launchAtStartup);
 }
