@@ -17,4 +17,6 @@ static const CGFloat EZMiniVerticalMargin_8 = 8;
 
 static const CGFloat EZCornerRadius_8 = 8;
 
+static const CGFloat EZTitlebarHeight = 28;
+
 #endif /* EZConst_h */
