@@ -27,15 +27,6 @@
     EZQueryView *queryView = [[EZQueryView alloc] initWithFrame:self.bounds];
     self.queryView = queryView;
     [self addSubview:queryView];
-    
-    mm_weakify(self);
-    [queryView setUpdateQueryTextBlock:^(NSString * _Nonnull text, CGFloat textViewHeight) {
-        mm_strongify(self);
-                
-        if (self.updateQueryTextBlock) {
-            self.updateQueryTextBlock(text, textViewHeight);
-        }
-    }];
 }
 
 - (void)updateConstraints {
@@ -44,33 +35,6 @@
     }];
     
     [super updateConstraints];
-}
-
-- (void)enterAction {
-    if (self.enterActionBlock) {
-        self.enterActionBlock(self.queryView.copiedText);
-    }
-}
-
-
-#pragma mark - Setter
-
-- (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
-    _enterActionBlock = enterActionBlock;
-    
-    self.queryView.enterActionBlock = enterActionBlock;
-}
-
-- (void)setPlayAudioBlock:(void (^)(NSString * _Nonnull))audioActionBlock {
-    _playAudioBlock = audioActionBlock;
-    
-    self.queryView.playAudioBlock = audioActionBlock;
-}
-
-- (void)setCopyTextBlock:(void (^)(NSString * _Nonnull))copyActionBlock {
-    _copyTextBlock = copyActionBlock;
-    
-    self.queryView.copyTextBlock = copyActionBlock;
 }
 
 - (void)dealloc {

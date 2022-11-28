@@ -138,6 +138,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)resetQueryResults {
     self.queryModel.queryText = @"";
+    self.queryView.model = self.queryModel;
     
     for (TranslateService *service in self.services) {
         TranslateResult *result = [[TranslateResult alloc] init];
@@ -181,13 +182,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         
         NSLog(@"resize window, resize view");
         
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
+        [self reloadTableViewData:^{
             [self delayUpdateWindowViewHeight];
         }];
-        
-        [self.tableView reloadData];
-        [CATransaction commit];
     }];
     
     self.kvo = [FBKVOController controllerWithObserver:self];
@@ -215,7 +212,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 
-- (void)updateTableViewData {
+- (void)updateTableViewWithAnimation {
     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
     
     // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
@@ -332,6 +329,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 #pragma mark -
 
 - (void)startQueryText:(NSString *)text {
+    // !!!: deep copy text, because text will be rewrite in resetQueryResults
+    NSString *queryText = [text mutableCopy];
+    
     if (text.length == 0) {
         NSLog(@"query text length = 0");
         return;
@@ -340,23 +340,39 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     NSLog(@"start query text: %@", text);
     
     [self resetQueryResults];
-    [self.tableView reloadData];
+    self.queryModel.queryText = queryText;
     
-    self.queryModel.queryText = text;
-    __block Language fromLang = Configuration.shared.from;
-    
-    if (fromLang != Language_auto) {
-        [self queryText:text fromLangunage:fromLang];
-        return;
-    }
-    
-    [self.detectManager detect:text completion:^(Language language, NSError *error) {
-        if (!error) {
-            fromLang = language;
-            //            NSLog(@"detect language: %ld", language);
+    [self reloadTableViewData:^{
+        self.queryView.model = self.queryModel;
+        
+        __block Language fromLang = Configuration.shared.from;
+        
+        if (fromLang != Language_auto) {
+            [self queryText:queryText fromLangunage:fromLang];
+            return;
         }
-        [self queryText:text fromLangunage:fromLang];
+        
+        [self.detectManager detect:queryText completion:^(Language language, NSError *error) {
+            if (!error) {
+                fromLang = language;
+                //            NSLog(@"detect language: %ld", language);
+            }
+            [self queryText:queryText fromLangunage:fromLang];
+        }];
     }];
+}
+
+- (void)reloadTableViewData:(void (^)(void))completion {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        NSLog(@"complete reloadData");
+        completion();
+    }];
+    
+    NSLog(@"start reloadData");
+
+    [self.tableView reloadData];
+    [CATransaction commit];
 }
 
 
@@ -505,8 +521,10 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
     queryCell.identifier = EZQueryCellId;
     
+    EZQueryView *queryView = queryCell.queryView;
+    
     mm_weakify(self);
-    [queryCell setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat textViewHeight) {
+    [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat textViewHeight) {
         mm_strongify(self);
         self.queryModel.queryText = text;
         
@@ -521,12 +539,12 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         }
     }];
     
-    [queryCell setEnterActionBlock:^(NSString *text) {
+    [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
         [self startQueryText:text];
     }];
     
-    [queryCell setPlayAudioBlock:^(NSString *text) {
+    [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         TranslateService *service = [self firstTranslateService];
         if (service) {
@@ -539,9 +557,15 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         }
     }];
     
-    [queryCell setCopyTextBlock:^(NSString *text) {
+    [queryView setCopyTextBlock:^(NSString *text) {
         mm_strongify(self);
         [self copyTextToPasteboard:text];
+    }];
+    
+    [queryView setClearBlock:^(NSString * _Nonnull text) {
+        mm_strongify(self);
+        [self resetQueryResults];
+        [self updateTableViewWithAnimation];
     }];
     
     return queryCell;
