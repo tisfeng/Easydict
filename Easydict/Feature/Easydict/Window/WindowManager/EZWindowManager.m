@@ -179,7 +179,7 @@ static EZWindowManager *_instance;
     return window;
 }
 
-- (CGPoint)windowLocationWithType:(EZWindowType)type {
+- (CGPoint)floatingWindowLocationWithType:(EZWindowType)type {
     CGPoint location;
     switch (type) {
         case EZWindowTypeMain: {
@@ -199,7 +199,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
-    CGPoint location = [self windowLocationWithType:type];
+    CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.viewController startQueryText:text];
@@ -210,14 +210,19 @@ static EZWindowManager *_instance;
     if (atLastPoint) {
         location = [[EZLayoutManager shared] windowFrameWithType:type].origin;
     } else {
-        location = [self windowLocationWithType:type];
+        location = [self floatingWindowLocationWithType:type];
     }
     
     EZBaseQueryWindow *window = [self windowWithType:type];
-    [self showFloatingWindow:window atPoint:location];
     
-    if (text.length) {
-        [window.viewController startQueryText:text];
+    if (text.length == 0) {
+        [self showFloatingWindow:window atPoint:location];
+    } else {
+        // Reset window height first, avoid being affected by previous window height.
+        [window.viewController resetTableView:^{
+            [self showFloatingWindow:window atPoint:location];
+            [window.viewController startQueryText:text];
+        }];
     }
 }
 
@@ -350,8 +355,11 @@ static EZWindowManager *_instance;
     CGFloat x = popButtonLocation.x + self.popButtonWindow.width + self.offsetPoint.x; // offsetPoint.x > 0
     CGFloat y = popButtonLocation.y - self.offsetPoint.y; // offsetPoint.y < 0
     
-    // ⚠️ Manually change mini frame point to top-left position, later will use setFrameOrigin to show window frame.
-    y = y - self.miniWindow.height;
+    // ⚠️ Manually change mini frame point to top-left position, later have to use setFrameOrigin to show window frame.
+//    y = y - self.miniWindow.height;
+    
+    // later will reset mini window height, so we adjust point.y
+    y = y - [[EZLayoutManager shared] minimumWindowSize:EZWindowTypeMini].height;
     
     return CGPointMake(x, y);
 }
