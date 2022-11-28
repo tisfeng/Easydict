@@ -250,48 +250,6 @@ static EZWindowManager *_instance;
     });
 }
 
-
-- (void)showAtMouseLocation {
-    NSPoint mouseLocation = [NSEvent mouseLocation];
-    // 找到鼠标所在屏幕
-    NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
-        return NSPointInRect(mouseLocation, obj.frame) ? obj : nil;
-    }];
-    // 找不到屏幕；可能在边缘，放宽条件
-    if (!screen) {
-        screen = [NSScreen.screens mm_find:^id _Nullable(NSScreen *_Nonnull obj, NSUInteger idx) {
-            return MMPointInRect(mouseLocation, obj.frame) ? obj : nil;
-        }];
-    }
-    if (!screen) return;
-    
-    // 修正显示位置，用于保证window显示在鼠标所在的screen
-    // 如果直接使用mouseLocation，可能会显示到其他screen（应该是由当前window在哪个屏幕的区域更多决定的）
-    NSRect windowFrame = self.fixedWindow.frame;
-    NSRect visibleFrame = screen.visibleFrame;
-    
-    if (mouseLocation.x < visibleFrame.origin.x + 10) {
-        mouseLocation.x = visibleFrame.origin.x + 10;
-    }
-    if (mouseLocation.y < visibleFrame.origin.y + windowFrame.size.height + 10) {
-        mouseLocation.y = visibleFrame.origin.y + windowFrame.size.height + 10;
-    }
-    if (mouseLocation.x > visibleFrame.origin.x + visibleFrame.size.width - windowFrame.size.width - 10) {
-        mouseLocation.x = visibleFrame.origin.x + visibleFrame.size.width - windowFrame.size.width - 10;
-    }
-    if (mouseLocation.y > visibleFrame.origin.y + visibleFrame.size.height - 10) {
-        mouseLocation.y = visibleFrame.origin.y + visibleFrame.size.height - 10;
-    }
-    
-    // https://stackoverflow.com/questions/7460092/nswindow-makekeyandorderfront-makes-window-appear-but-not-key-or-front
-    [self.fixedWindow makeKeyAndOrderFront:nil];
-    if (!self.fixedWindow.isKeyWindow) {
-        // fail to make key window, then force activate application for key window
-        [NSApp activateIgnoringOtherApps:YES];
-    }
-    [self.fixedWindow setFrameTopLeftPoint:mouseLocation];
-}
-
 - (NSScreen *)getMouseLocatedScreen {
     NSPoint mouseLocation = [NSEvent mouseLocation];
     
@@ -309,7 +267,7 @@ static EZWindowManager *_instance;
     return screen;
 }
 
-- (NSPoint)correctedMouseLocation {
+- (NSPoint)mouseLocation {
     NSScreen *screen = [self getMouseLocatedScreen];
 #if DEBUG
     NSAssert(screen != nil, @"no screen");
@@ -319,12 +277,12 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    return self.endPoint;
+    return [NSEvent mouseLocation];
 }
 
 // Top left position
 - (CGPoint)getPopButtonWindowLocation {
-    NSPoint location = [self correctedMouseLocation];
+    NSPoint location = [self mouseLocation];
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
@@ -364,18 +322,19 @@ static EZWindowManager *_instance;
     return CGPointMake(x, y);
 }
 
-// Get fixed window location, let-top position.
+- (CGPoint)convertShowingPositon:(CGPoint)position windowType:(EZWindowType)windowType {
+    CGFloat windowMiniHeight = [[EZLayoutManager shared] minimumWindowSize:windowType].height;
+    CGPoint newPosition = CGPointMake(position.x, position.y - windowMiniHeight);
+    return newPosition;
+}
+
+// Get fixed window location.
 - (CGPoint)getFixedWindowLocation {
     CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
     CGFloat x = mainScreenSize.width - self.fixedWindow.width;
     CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
     
     return CGPointMake(x, y);
-}
-
-
-- (void)ensureShowAtMouseLocation {
-    [self showAtMouseLocation];
 }
 
 - (void)saveFrontmostApplication {
@@ -429,8 +388,18 @@ static EZWindowManager *_instance;
         if (image) {
             [image mm_writeToFileAsPNG:_imagePath];
             NSLog(@"已保存图片\n%@", _imagePath);
-            [self ensureShowAtMouseLocation];
-            [self.floatingWindow.viewController startQueryImage:image];
+            
+            EZWindowType windowType = EZWindowTypeMini;
+            EZBaseQueryWindow *window = [self windowWithType:windowType];
+            CGPoint mouseLocation = [self mouseLocation];
+            // Convert position
+            CGPoint showingPosition = [self convertShowingPositon:mouseLocation windowType:windowType];
+                        
+            // Reset window height first, avoid being affected by previous window height.
+            [window.viewController resetTableView:^{
+                [self showFloatingWindow:window atPoint:showingPosition];
+                [window.viewController startQueryImage:image];
+            }];
         }
     }];
 }

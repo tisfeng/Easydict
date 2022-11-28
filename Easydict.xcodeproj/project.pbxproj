@@ -747,15 +747,15 @@
 			isa = PBXGroup;
 			children = (
 				03B0228F29231FA6001C7E63 /* Snip.h */,
-				03B0229029231FA6001C7E63 /* SnipFocusView.h */,
-				03B0229129231FA6001C7E63 /* SnipViewController.h */,
-				03B0229229231FA6001C7E63 /* SnipWindowController.h */,
-				03B0229329231FA6001C7E63 /* SnipWindow.m */,
-				03B0229429231FA6001C7E63 /* SnipFocusView.m */,
 				03B0229529231FA6001C7E63 /* Snip.m */,
-				03B0229629231FA6001C7E63 /* SnipWindow.h */,
-				03B0229729231FA6001C7E63 /* SnipWindowController.m */,
+				03B0229029231FA6001C7E63 /* SnipFocusView.h */,
+				03B0229429231FA6001C7E63 /* SnipFocusView.m */,
+				03B0229129231FA6001C7E63 /* SnipViewController.h */,
 				03B0229829231FA6001C7E63 /* SnipViewController.m */,
+				03B0229229231FA6001C7E63 /* SnipWindowController.h */,
+				03B0229729231FA6001C7E63 /* SnipWindowController.m */,
+				03B0229629231FA6001C7E63 /* SnipWindow.h */,
+				03B0229329231FA6001C7E63 /* SnipWindow.m */,
 			);
 			path = Snip;
 			sourceTree = "<group>";

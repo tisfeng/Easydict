@@ -297,6 +297,15 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)startQueryImage:(NSImage *)image {
     NSLog(@"startQueryImage");
+    
+    mm_weakify(self);
+    TranslateService *firstService = [self firstTranslateService];
+    [firstService ocr:image from:Configuration.shared.from to:Configuration.shared.to completion:^(OCRResult * _Nullable result, NSError * _Nullable error) {
+        mm_strongify(self);
+        
+        NSString *resultText = result.mergedText;
+        [self startQueryText:resultText];
+    }];
 }
 
 - (void)retry {
