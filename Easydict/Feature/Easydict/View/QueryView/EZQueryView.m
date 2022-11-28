@@ -30,7 +30,6 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        self.textViewMiniHeight = EZInputViewMiniHeight;
         [self setup];
     }
     return self;
@@ -125,6 +124,12 @@
 }
 
 #pragma mark -
+
+- (void)setWindowType:(EZWindowType)windowType {
+    [super setWindowType:windowType];
+    
+    [self updateCustomLayout];
+}
 
 - (void)updateCustomLayout {
     EZWindowType windowType = self.windowType;
@@ -248,8 +253,6 @@
     CGFloat height = [self heightOfTextView];
     self.textViewHeight = height;
     
-//    [self setNeedsUpdateConstraints:YES];
-
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(height);
     }];

@@ -371,6 +371,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     NSLog(@"start reloadData");
 
+    self.queryModel.viewHeight = 0;
     [self.tableView reloadData];
     [CATransaction commit];
 }
@@ -483,8 +484,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         } else {
             EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
             queryCell.queryView.windowType = self.windowType;
-            queryCell.queryView.model = self.queryModel;
-            height = [queryCell fittingSize].height;
+            queryCell.queryView.model = self.queryModel;            
+            height = [queryCell.queryView heightOfTextView] + 30;
         }
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
