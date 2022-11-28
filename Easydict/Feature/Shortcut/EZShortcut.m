@@ -37,7 +37,7 @@
     EZWindowManager *windowManager = [EZWindowManager shared];
  
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
-        [windowManager selectionTranslate];
+        [windowManager selectTextTranslate];
     }];
 
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{

@@ -32,12 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
 
-- (void)selectionTranslate;
-
-- (void)snipTranslate;
-
 - (void)inputTranslate;
-
+- (void)selectTextTranslate;
+- (void)snipTranslate;
 - (void)showMiniFloatingWindow;
 
 - (void)closeFloatingWindow;

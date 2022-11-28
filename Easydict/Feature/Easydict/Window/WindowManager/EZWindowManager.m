@@ -148,7 +148,7 @@ static EZWindowManager *_instance;
             mm_strongify(self);
             [self.popButtonWindow close];
             
-            [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
+            [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
         }];
     }
     return _popButtonWindow;
@@ -198,12 +198,27 @@ static EZWindowManager *_instance;
     return location;
 }
 
-
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
     CGPoint location = [self windowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.viewController startQueryText:text];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
+    CGPoint location = CGPointZero;
+    if (atLastPoint) {
+        location = [[EZLayoutManager shared] windowFrameWithType:type].origin;
+    } else {
+        location = [self windowLocationWithType:type];
+    }
+    
+    EZBaseQueryWindow *window = [self windowWithType:type];
+    [self showFloatingWindow:window atPoint:location];
+    
+    if (text.length) {
+        [window.viewController startQueryText:text];
+    }
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
@@ -367,7 +382,7 @@ static EZWindowManager *_instance;
 
 #pragma mark - Menu Actions
 
-- (void)selectionTranslate {
+- (void)selectTextTranslate {
     if (![self.eventMonitor checkAppIsTrusted]) {
         NSLog(@"App is not trusted");
         return;
@@ -378,22 +393,9 @@ static EZWindowManager *_instance;
         return;
     }
     
-    //    [self.viewController resetWithState:@"正在取词..."];
     [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
-        
-        [self showFloatingWindowType:EZWindowTypeFixed queryText:text];
-        
-//        [self.floatingWindow.viewController startQueryText:text];
-        
-//        [self ensureShowAtMouseLocation];
-//        if (text.length) {
-//               [self.floatingWindow.viewController startQueryText:text];
-//        } else {
-//            //            [self.viewController resetWithState:@"划词翻译没有获取到文本" actionTitle:@"可能的原因 →" action:^{
-//            //                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%96%87%E6%9C%AC"]];
-//            //            }];
-//            //            [self.viewController resetQueryViewHeightConstraint];
-//        }
+        self.selectedText = text;
+        [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
     }];
 }
 
@@ -406,7 +408,7 @@ static EZWindowManager *_instance;
         [self.fixedWindow close];
         [CATransaction flush];
     }
-    //    [self.viewController resetWithState:@"正在截图..."];
+
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
         NSLog(@"获取到图片 %@", image);
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
@@ -431,29 +433,12 @@ static EZWindowManager *_instance;
         return;
     }
 
-    [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
-    
-//    Configuration.shared.isFold = NO;
-//    //    [self.viewController updateFoldState:NO];
-//    //    [self.viewController resetWithState:@"↩︎ 翻译\n⇧ + ↩︎ 换行\n⌘ + R 重试\n⌘ + W 关闭"];
-//    [self ensureShowAtMouseLocation];
-//    [self.floatingWindow makeKeyAndOrderFront:nil];
-//    if (!self.floatingWindow.isKeyWindow) {
-//        // fail to make key window, then force activate application for key window
-//        [NSApp activateIgnoringOtherApps:YES];
-//    }
+    [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:nil];
 }
 
+/// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
-    [self saveFrontmostApplication];
-    if (Snip.shared.isSnapshotting) {
-        return;
-    }
-    
-    CGPoint lastPoint = EZLayoutManager.shared.miniWindowFrame.origin;
-    [self showFloatingWindow:self.miniWindow atPoint:lastPoint];
-    
-    [_mainWindow orderBack:nil];
+    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:YES queryText:nil];
 }
 
 
