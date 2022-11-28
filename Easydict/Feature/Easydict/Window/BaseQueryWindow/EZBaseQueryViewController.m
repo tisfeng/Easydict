@@ -325,10 +325,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     [self resetQueryResults];
     self.queryModel.queryText = queryText;
-    
+    self.queryView.model = self.queryModel;
+
     [self updateTableViewWithAnimation:^{
-        self.queryView.model = self.queryModel;
-        
         __block Language fromLang = Configuration.shared.from;
         
         if (fromLang != Language_auto) {
