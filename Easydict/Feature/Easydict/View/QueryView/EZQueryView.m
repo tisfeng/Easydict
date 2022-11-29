@@ -96,6 +96,12 @@ static CGFloat kExceptTextViewHeight = 30;
     }];
 }
 
+#pragma mark - Public
+
+- (CGFloat)heightOfQueryView {
+    return [self heightOfTextView] + kExceptTextViewHeight;
+}
+
 
 #pragma mark - Super method
 
@@ -124,12 +130,107 @@ static CGFloat kExceptTextViewHeight = 30;
     [super updateConstraints];
 }
 
-#pragma mark -
+
+#pragma mark - Setter
+
+- (void)setQueryModel:(EZQueryModel *)model {
+    _queryModel = model;
+    
+    NSString *queryText = model.queryText;
+    
+    // Avoid unnecessary calls to NSTextStorageDelegate methods.
+    if (queryText && ![queryText isEqualToString:self.copiedText]) {
+        // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
+        self.textView.string = model.queryText;
+    }
+        
+    [self updateButtonsDisplayState:queryText];
+}
+
+- (void)setQueryText:(NSString *)queryText {
+    if (queryText) {
+        self.textView.string = queryText;
+    }
+}
 
 - (void)setWindowType:(EZWindowType)windowType {
     [super setWindowType:windowType];
     
     [self updateCustomLayout];
+}
+
+
+#pragma mark - Getter
+
+- (NSString *)copiedText {
+    return self.textView.string;
+}
+
+
+#pragma mark - NSTextViewDelegate
+
+- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+    if (commandSelector == @selector(insertNewline:)) {
+        NSEventModifierFlags flags = NSApplication.sharedApplication.currentEvent.modifierFlags;
+        if (flags & NSEventModifierFlagShift) {
+            return NO;
+        } else {
+            if (self.enterActionBlock) {
+                NSLog(@"enterActionBlock");
+                self.enterActionBlock(self.copiedText);
+            }
+            return YES;
+        }
+    }
+    
+    // escape key
+    if (commandSelector == @selector(cancelOperation:)) {
+//        NSLog(@"escape: %@", textView);
+        [[EZWindowManager shared] closeFloatingWindow];
+        
+        return NO;
+    }
+    return NO;
+}
+
+
+#pragma mark - NSTextStorageDelegate
+
+- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
+    NSString *text = textStorage.string;
+   
+    [self updateButtonsDisplayState:text];
+    
+
+    CGFloat textViewHeight = [self heightOfTextView];
+    
+    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(textViewHeight);
+    }];
+    
+    // cannot layout this, otherwise will crash
+//    [self layoutSubtreeIfNeeded];
+//    NSLog(@"self.frame: %@", @(self.frame));
+
+    if (self.updateQueryTextBlock) {
+        self.updateQueryTextBlock(text, textViewHeight + kExceptTextViewHeight);
+    }
+}
+
+
+#pragma mark - Other
+
+- (CGFloat)heightOfTextView {
+    CGFloat height = [self.textView getHeightWithWidth:self.width];
+    //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
+
+    height = MAX(height, self.textViewMiniHeight);
+    height = MIN(height, self.textViewMaxHeight);
+    
+    height = ceil(height);
+//    NSLog(@"final height: %.1f", height);
+
+    return height;
 }
 
 - (void)updateCustomLayout {
@@ -140,9 +241,20 @@ static CGFloat kExceptTextViewHeight = 30;
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
+- (void)updateButtonsDisplayState:(NSString *)text {
+    BOOL isHidden = text.length == 0;
+    
+    self.clearButton.hidden = isHidden;
+    if (isHidden) {
+        self.detectButton.hidden = YES;
+    }
+    
+    [self updateDetectButton];
+}
+
 - (void)updateDetectButton {
     Language fromLanguage = self.queryModel.sourceLanguage;
-    if (fromLanguage == Language_auto) {
+    if (fromLanguage == Language_auto || self.queryModel.queryText.length == 0) {
         self.detectButton.hidden = YES;
         return;
     }
@@ -187,109 +299,6 @@ static CGFloat kExceptTextViewHeight = 30;
     NSScrollView *scrollView = self.scrollView;
     CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
     [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
-}
-
-
-#pragma mark - Setter
-
-- (void)setQueryModel:(EZQueryModel *)model {
-    _queryModel = model;
-    
-    if (model.queryText) {
-        // will call -heightOfTextView to update textView height
-        self.textView.string = model.queryText;
-    }
-    
-    [self updateDetectButton];
-}
-
-- (void)setQueryText:(NSString *)queryText {
-    if (queryText) {
-        self.textView.string = queryText;
-    }
-}
-
-#pragma mark - Getter
-
-- (NSString *)copiedText {
-    return self.textView.string;
-}
-
-#pragma mark - NSTextViewDelegate
-
-- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
-    if (commandSelector == @selector(insertNewline:)) {
-        NSEventModifierFlags flags = NSApplication.sharedApplication.currentEvent.modifierFlags;
-        if (flags & NSEventModifierFlagShift) {
-            return NO;
-        } else {
-            if (self.enterActionBlock) {
-                NSLog(@"enterActionBlock");
-                self.enterActionBlock(self.copiedText);
-            }
-            return YES;
-        }
-    }
-    
-    // escape key
-    if (commandSelector == @selector(cancelOperation:)) {
-//        NSLog(@"escape: %@", textView);
-        [[EZWindowManager shared] closeFloatingWindow];
-        
-        return NO;
-    }
-    return NO;
-}
-
-#pragma mark - NSTextStorageDelegate
-
-- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-    NSString *text = textStorage.string;
-   
-    [self updateButtonDisplayState:text];
-    
-
-    CGFloat textViewHeight = [self heightOfTextView];
-    
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(textViewHeight);
-    }];
-    
-    // cannot layout this, otherwise will crash
-//    [self layoutSubtreeIfNeeded];
-//    NSLog(@"self.frame: %@", @(self.frame));
-
-    if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock(text, textViewHeight + kExceptTextViewHeight);
-    }
-}
-
-- (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView getHeightWithWidth:self.width];
-    //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
-
-    height = MAX(height, self.textViewMiniHeight);
-    height = MIN(height, self.textViewMaxHeight);
-    
-    height = ceil(height);
-//    NSLog(@"final height: %.1f", height);
-
-    return height;
-}
-
-- (void)updateButtonDisplayState:(NSString *)text {
-    BOOL isHidden = text.length == 0;
-    
-    self.clearButton.hidden = isHidden;
-    if (isHidden) {
-        self.detectButton.hidden = YES;
-    }
-}
-
-#pragma mark - Public
-
-- (CGFloat)heightOfQueryView {
-    return [self heightOfTextView] + kExceptTextViewHeight;
 }
 
 @end
