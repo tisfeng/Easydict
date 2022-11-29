@@ -349,14 +349,12 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     if (windowManager.floatingWindowType == EZWindowTypeMini) {
         BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
         if (outMiniWindow && self.dismissMiniWindowBlock) {
-            NSLog(@"dismiss mini window");
             self.dismissMiniWindowBlock();
         }
     } else {
         if (windowManager.floatingWindowType == EZWindowTypeFixed) {
             BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:windowManager.fixedWindow];
             if (outFixedWindow && self.dismissFixedWindowBlock) {
-                NSLog(@"dismiss fixed window");
                 self.dismissFixedWindowBlock();
             }
         }

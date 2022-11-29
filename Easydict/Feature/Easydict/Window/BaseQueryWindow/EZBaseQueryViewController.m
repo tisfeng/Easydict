@@ -51,6 +51,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 @property (nonatomic, strong) NSArray<TranslateService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
+@property (nonatomic, copy) NSString *queryText;
+
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZQueryCell *queryCell;
 @property (nonatomic, strong) EZQueryView *queryView;
@@ -132,14 +134,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
 }
 
-- (void)clearInputText {
-    [self.queryModel reset];
-    self.queryView.queryModel = self.queryModel;
-}
-
 - (void)resetQueryResults {
-    [self clearInputText];
-    
+    self.queryText = @"";
+        
     for (TranslateService *service in self.services) {
         TranslateResult *result = [[TranslateResult alloc] init];
         service.result = result;
@@ -148,7 +145,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (void)setup {
-    
     self.serviceTypes = @[
         EZServiceTypeGoogle,
         EZServiceTypeYoudao,
@@ -161,11 +157,12 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         [translateServices addObject:service];
     }
     self.services = translateServices;
-    [self resetQueryResults];
     
     self.queryModel = [[EZQueryModel alloc] init];
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
+    [self resetQueryResults];
+
     self.player = [[AVPlayer alloc] init];
     
     [self tableView];
@@ -185,20 +182,31 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }];
     
     self.kvo = [FBKVOController controllerWithObserver:self];
-    [self.kvo observe:self.queryModel
+    [self.kvo observe:self
               keyPath:@"queryText"
               options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                 block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-        //        NSLog(@"change: %@", change);
+//        NSLog(@"change: %@", change);
         
-        //        CGRect documentViewFrame = [change[NSKeyValueChangeNewKey] CGRectValue];
-        //        CGFloat documentViewHeight = documentViewFrame.size.height;
-        //                    NSLog(@"kvo documentViewHeight: %@", @(documentViewHeight));
+        NSString *queryText = change[NSKeyValueChangeNewKey];
+        [self updateQueryText:queryText];
     }];
 }
 
+/// Update self.queryText, but not trigger kvo.
+- (void)updateQueryText:(NSString *)queryText {
+    _queryText = queryText;
+    
+    if (queryText.length == 0) {
+        [self.queryModel reset];
+    }
+    
+    self.queryModel.queryText = queryText;
+    self.queryView.queryModel = self.queryModel;
+}
 
-/// Delay update, to avoid reload tableView frequently
+
+/// Delay update, to avoid reload tableView frequently.
 - (void)delayUpdateWindowViewHeight {
     [self cancelUpdateWindowViewHeight];
     [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:kDelayUpdateWindowViewTime];
@@ -302,8 +310,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     NSLog(@"query text: %@", text);
     
     [self resetQueryResults];
-    self.queryModel.queryText = queryText;
-    self.queryView.queryModel = self.queryModel;
+    self.queryText = queryText;
     
     [self updateTableViewWithAnimation:^{
         if (self.queryModel.targetLanguage != Language_auto) {
@@ -540,11 +547,10 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
-        if (text.length == 0) {
-            [self clearInputText];
-        }
-        self.queryModel.queryText = text;
         
+        // Do not use setter, avoid triggers kvo --> update queryView.model
+        [self updateQueryText:text];
+
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.viewHeight) {
             self.queryModel.viewHeight = queryViewHeight;
