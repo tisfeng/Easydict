@@ -369,13 +369,14 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    if (!Configuration.shared.isPin && self.fixedWindow.visible) {
-        [self.fixedWindow close];
-        [CATransaction flush];
-    }
 
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
         NSLog(@"获取到图片 %@", image);
+        if (!image) {
+            NSLog(@"not get screenshot");
+            return;
+        }
+        
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
         static NSString *_imagePath = nil;
         static dispatch_once_t onceToken;
@@ -383,22 +384,20 @@ static EZWindowManager *_instance;
             _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
         });
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-        if (image) {
-            [image mm_writeToFileAsPNG:_imagePath];
-            NSLog(@"已保存图片\n%@", _imagePath);
-            
-            EZWindowType windowType = EZWindowTypeMini;
-            EZBaseQueryWindow *window = [self windowWithType:windowType];
-            CGPoint mouseLocation = [self mouseLocation];
-            // Convert position
-            CGPoint showingPosition = [self convertShowingPositon:mouseLocation windowType:windowType];
-                        
-            // Reset window height first, avoid being affected by previous window height.
-            [window.viewController resetTableView:^{
-                [self showFloatingWindow:window atPoint:showingPosition];
-                [window.viewController startQueryImage:image];
-            }];
-        }
+        [image mm_writeToFileAsPNG:_imagePath];
+        NSLog(@"已保存图片: %@", _imagePath);
+        
+        EZWindowType windowType = EZWindowTypeMini;
+        EZBaseQueryWindow *window = [self windowWithType:windowType];
+        CGPoint mouseLocation = [self mouseLocation];
+        // Convert position
+        CGPoint showingPosition = [self convertShowingPositon:mouseLocation windowType:windowType];
+                    
+        // Reset window height first, avoid being affected by previous window height.
+        [window.viewController resetTableView:^{
+            [self showFloatingWindow:window atPoint:showingPosition];
+            [window.viewController startQueryImage:image];
+        }];
     }];
 }
 
