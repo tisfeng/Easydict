@@ -17,8 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) Language fromLanguage;
 @property (nonatomic, assign) Language toLanguage;
 
-
 @property (nonatomic, assign) CGFloat viewHeight;
+
+- (void)reset;
 
 @end
 

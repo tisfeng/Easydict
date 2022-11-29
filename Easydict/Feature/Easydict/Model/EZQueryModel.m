@@ -10,4 +10,11 @@
 
 @implementation EZQueryModel
 
+- (void)reset {
+    self.queryText = @"";
+    self.fromLanguage = Language_auto;
+    self.toLanguage = Language_auto;
+    self.viewHeight = 0;
+}
+
 @end

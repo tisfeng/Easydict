@@ -233,8 +233,7 @@ static CGFloat kExceptTextViewHeight = 30;
     
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-        NSLog(@"escape: %@", textView);
-        
+//        NSLog(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         
         return NO;
@@ -247,7 +246,7 @@ static CGFloat kExceptTextViewHeight = 30;
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
    
-    [self updateButtonDisplay:text];
+    [self updateButtonDisplayState:text];
     
 
     CGFloat textViewHeight = [self heightOfTextView];
@@ -278,7 +277,7 @@ static CGFloat kExceptTextViewHeight = 30;
     return height;
 }
 
-- (void)updateButtonDisplay:(NSString *)text {
+- (void)updateButtonDisplayState:(NSString *)text {
     BOOL isHidden = text.length == 0;
     
     self.clearButton.hidden = isHidden;
