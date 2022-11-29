@@ -28,6 +28,7 @@
 #import "EZBaseQueryWindow.h"
 #include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
+#import "EZAppleService.h"
 
 static NSString *EZQueryCellId = @"EZQueryCellId";
 static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -309,16 +310,22 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
 }
 
-- (void)startQueryImage:(NSImage *)image {
+- (void)queryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
     
-    mm_weakify(self);
-    TranslateService *firstService = [self firstTranslateService];
-    [firstService ocr:image from:Configuration.shared.from to:Configuration.shared.to completion:^(OCRResult * _Nullable result, NSError * _Nullable error) {
-        mm_strongify(self);
+//    mm_weakify(self);
+//    TranslateService *firstService = [self firstTranslateService];
+    
+    TranslateService *appleService = [[EZAppleService alloc] init];
+    
+    [appleService ocr:image from:Configuration.shared.from to:Configuration.shared.to completion:^(OCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+//        mm_strongify(self);
         
-        NSString *resultText = result.mergedText;
-        [self queryText:resultText];
+        NSString *ocrText = ocrResult.mergedText;
+        self.queryText = ocrText;
+        NSLog(@"ocr text: %@", ocrText);
+        
+//        [self queryText:ocrText];
     }];
 }
 

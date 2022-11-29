@@ -371,12 +371,13 @@ static EZWindowManager *_instance;
     }
 
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
-        NSLog(@"获取到图片 %@", image);
         if (!image) {
             NSLog(@"not get screenshot");
             return;
         }
         
+        NSLog(@"get screenshot: %@", image);
+
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
         static NSString *_imagePath = nil;
         static dispatch_once_t onceToken;
@@ -396,7 +397,7 @@ static EZWindowManager *_instance;
         // Reset window height first, avoid being affected by previous window height.
         [window.viewController resetTableView:^{
             [self showFloatingWindow:window atPoint:showingPosition];
-            [window.viewController startQueryImage:image];
+            [window.viewController queryWithImage:image];
         }];
     }];
 }

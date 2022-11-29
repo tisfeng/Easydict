@@ -18,6 +18,8 @@ typedef NSString *EZServiceType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;
+
 
 @interface TranslatePhonetic : NSObject
 
