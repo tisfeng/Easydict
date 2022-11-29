@@ -136,9 +136,14 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
 }
 
-- (void)resetQueryResults {
-    self.queryModel.queryText = @"";
+- (void)clearInputText {
+    self.detectManager.language = Language_auto;
+    [self.queryModel reset];
     self.queryView.model = self.queryModel;
+}
+
+- (void)resetQueryResults {
+    [self clearInputText];
     
     for (TranslateService *service in self.services) {
         TranslateResult *result = [[TranslateResult alloc] init];
@@ -551,6 +556,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
+        if (text.length == 0) {
+            [self clearInputText];
+        }
         self.queryModel.queryText = text;
         
         // Reduce the update frequency, update only when the height changes.

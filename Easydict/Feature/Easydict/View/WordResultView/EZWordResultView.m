@@ -473,7 +473,7 @@ static const CGFloat kVerticalPadding = 8;
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-        NSLog(@"escape: %@", textView);
+//        NSLog(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         return NO;
     }
