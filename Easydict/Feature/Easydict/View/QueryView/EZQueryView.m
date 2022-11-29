@@ -141,7 +141,7 @@ static CGFloat kExceptTextViewHeight = 30;
 }
 
 - (void)updateDetectButton {
-    Language fromLanguage = self.model.fromLanguage;
+    Language fromLanguage = self.queryModel.sourceLanguage;
     if (fromLanguage == Language_auto) {
         self.detectButton.hidden = YES;
         return;
@@ -192,8 +192,8 @@ static CGFloat kExceptTextViewHeight = 30;
 
 #pragma mark - Setter
 
-- (void)setModel:(EZQueryModel *)model {
-    _model = model;
+- (void)setQueryModel:(EZQueryModel *)model {
+    _queryModel = model;
     
     if (model.queryText) {
         // will call -heightOfTextView to update textView height

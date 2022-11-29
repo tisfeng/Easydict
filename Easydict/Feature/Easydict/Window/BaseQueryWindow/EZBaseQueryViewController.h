@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
-- (void)startQueryText:(NSString *)text;
+- (void)queryText:(NSString *)text;
 - (void)startQueryImage:(NSImage *)image;
 - (void)retry;
 
