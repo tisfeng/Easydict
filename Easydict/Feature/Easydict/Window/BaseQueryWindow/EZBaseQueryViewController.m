@@ -188,13 +188,14 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
                 block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
 //        NSLog(@"change: %@", change);
         
-        NSString *queryText = change[NSKeyValueChangeNewKey];
-        [self updateQueryText:queryText];
+//        NSString *queryText = change[NSKeyValueChangeNewKey];
     }];
 }
 
-/// Update self.queryText, but not trigger kvo.
-- (void)updateQueryText:(NSString *)queryText {
+
+#pragma mark - Setter && Getter
+
+- (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
     
     if (queryText.length == 0) {
@@ -204,19 +205,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
 }
-
-
-/// Delay update, to avoid reload tableView frequently.
-- (void)delayUpdateWindowViewHeight {
-    [self cancelUpdateWindowViewHeight];
-    [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:kDelayUpdateWindowViewTime];
-}
-
-- (void)cancelUpdateWindowViewHeight {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateWindowViewHeightWithLock) object:nil];
-}
-
-#pragma mark - Getter
 
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
@@ -548,8 +536,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
-        // Do not use setter, avoid triggers kvo --> update queryView.model
-        [self updateQueryText:text];
+        self.queryText = text;
 
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.viewHeight) {
@@ -792,6 +779,16 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     //    NSLog(@"documentView height: %@", @(documentViewHeight));
     
     return documentViewHeight;
+}
+
+/// Delay update, to avoid reload tableView frequently.
+- (void)delayUpdateWindowViewHeight {
+    [self cancelUpdateWindowViewHeight];
+    [self performSelector:@selector(updateWindowViewHeightWithLock) withObject:nil afterDelay:kDelayUpdateWindowViewTime];
+}
+
+- (void)cancelUpdateWindowViewHeight {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateWindowViewHeightWithLock) object:nil];
 }
 
 @end
