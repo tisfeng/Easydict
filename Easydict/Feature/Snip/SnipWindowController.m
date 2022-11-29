@@ -25,6 +25,7 @@
     rect = NSMakeRect(rect.origin.x, (mainRect.size.height) - (rect.origin.y + rect.size.height), rect.size.width, rect.size.height);
     NSLog(@"screenshot: %@", NSStringFromRect(rect));
 
+    // This method triggers a request for screen recording permission if it has not authorized.
     CGImageRef imageRef = CGWindowListCreateImageFromArray(rect, windowsRef, kCGWindowImageDefault);
     CFRelease(windowsRef);
     // 获取屏幕实际像素
