@@ -287,7 +287,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 #pragma mark - Public Methods
 
 - (void)queryText:(NSString *)text {
-    // !!!: deep copy text, because text will be rewrite in resetQueryResults
+    // !!!:  deep copy text, because text will be released in resetQueryResults.
     NSString *queryText = [text mutableCopy];
     
     if (text.length == 0) {
@@ -297,20 +297,16 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     NSLog(@"query text: %@", text);
     
-    [self resetQueryResults];
-    self.queryText = queryText;
-    
-    [self updateTableViewWithAnimation:^{
-        if (self.queryModel.targetLanguage != Language_auto) {
-            [self queryAllSerives:self.queryModel];
-            return;
-        }
-        
-        [self.detectManager detect:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
-            self.queryView.queryModel = queryModel;
-            [self queryAllSerives:queryModel];
+    if ([self checkIfAllResultViewClosed]) {
+        self.queryText = queryText;
+        [self queryCurrentModel];
+    } else {
+        [self resetQueryResults];
+        self.queryText = queryText;
+        [self updateTableViewWithAnimation:^{
+            [self queryCurrentModel];
         }];
-    }];
+    }
 }
 
 - (void)startQueryImage:(NSImage *)image {
@@ -327,6 +323,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (void)retry {
+    NSLog(@"retry");
     [self startQuery];
 }
 
@@ -342,6 +339,18 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)startQuery {
     [self queryText:self.queryModel.queryText];
+}
+
+- (void)queryCurrentModel {
+    if (self.queryModel.targetLanguage != Language_auto) {
+        [self queryAllSerives:self.queryModel];
+        return;
+    }
+    
+    [self.detectManager detect:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
+        self.queryView.queryModel = queryModel;
+        [self queryAllSerives:queryModel];
+    }];
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
@@ -370,81 +379,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
                   from:queryModel.sourceLanguage
                     to:queryModel.targetLanguage
             completion:completion];
-}
-
-#pragma mark - Update TableView
-
-- (void)resetTableView:(void (^)(void))completion {
-    [self resetQueryResults];
-    
-    [self reloadTableViewData:completion];
-}
-
-- (void)reloadTableViewData:(void (^)(void))completion {
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        [self updateWindowViewHeightWithLock];
-        completion();
-    }];
-    
-    [self.tableView reloadData];
-    [CATransaction commit];
-}
-
-- (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
-    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    
-    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
-    
-    NSMutableArray *results = [NSMutableArray array];
-    for (TranslateService *service in self.services) {
-        [results addObject:service.result];
-    }
-    
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        if (completion) {
-            completion();
-        }
-    }];
-    
-    // Do not reload cell data
-    [self updateCellWithResults:results reloadData:NO];
-    
-    [CATransaction commit];
-    
-}
-
-- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
-    if (!result) {
-        NSLog(@"resutl is nil");
-        return;
-    }
-    [self updateCellWithResults:@[ result ] reloadData:reloadData];
-}
-
-- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
-    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
-    for (TranslateResult *result in results) {
-        EZServiceType serviceType = result.serviceType;
-        NSInteger row = [self.serviceTypes indexOfObject:serviceType];
-        [rowIndexes addIndex:row + [self resultCellOffset]];
-    }
-    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData];
-}
-
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData {
-    if (reloadData) {
-        [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-    }
-    
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-        context.duration = 0.3;
-        [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-    } completionHandler:^{
-        [self updateWindowViewHeightWithLock];
-    }];
 }
 
 
@@ -516,6 +450,91 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 // Disable select cell
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
     return NO;
+}
+
+
+#pragma mark - Update TableView
+
+- (void)resetTableView:(void (^)(void))completion {
+    [self resetQueryResults];
+    
+    [self reloadTableViewData:completion];
+}
+
+- (void)reloadTableViewData:(void (^)(void))completion {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        [self updateWindowViewHeightWithLock];
+        completion();
+    }];
+    
+    [self.tableView reloadData];
+    [CATransaction commit];
+}
+
+- (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
+    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+    
+    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
+    
+    NSMutableArray *results = [NSMutableArray array];
+    for (TranslateService *service in self.services) {
+        [results addObject:service.result];
+    }
+    
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if (completion) {
+            completion();
+        }
+    }];
+    
+    // Need to reload cell data, especially arrow button state.
+    [self updateCellWithResults:results reloadData:YES];
+    
+    [CATransaction commit];
+    
+}
+
+- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+    if (!result) {
+        NSLog(@"resutl is nil");
+        return;
+    }
+    [self updateCellWithResults:@[ result ] reloadData:reloadData];
+}
+
+- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
+    for (TranslateResult *result in results) {
+        EZServiceType serviceType = result.serviceType;
+        NSInteger row = [self.serviceTypes indexOfObject:serviceType];
+        [rowIndexes addIndex:row + [self resultCellOffset]];
+    }
+    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData];
+}
+
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData {
+    if (reloadData) {
+        [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    }
+    
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
+        context.duration = 0.3;
+        [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    } completionHandler:^{
+        [self updateWindowViewHeightWithLock];
+    }];
+}
+
+- (BOOL)checkIfAllResultViewClosed {
+    for (TranslateService *service in self.services) {
+        if (service.result.isShowing) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 #pragma mark -
