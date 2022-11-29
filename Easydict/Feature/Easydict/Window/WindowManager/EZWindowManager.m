@@ -202,7 +202,7 @@ static EZWindowManager *_instance;
     CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
-    [window.viewController startQueryText:text];
+    [window.viewController queryText:text];
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
@@ -221,7 +221,7 @@ static EZWindowManager *_instance;
         // Reset window height first, avoid being affected by previous window height.
         [window.viewController resetTableView:^{
             [self showFloatingWindow:window atPoint:location];
-            [window.viewController startQueryText:text];
+            [window.viewController queryText:text];
         }];
     }
 }

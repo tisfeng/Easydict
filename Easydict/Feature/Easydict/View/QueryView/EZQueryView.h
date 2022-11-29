@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryView : EZCommonView
 
-@property (nonatomic, strong) EZQueryModel *model;
+@property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;

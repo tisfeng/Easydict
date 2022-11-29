@@ -11,10 +11,13 @@
 #import "TranslateResult.h"
 #import "TranslateError.h"
 #import "OCRResult.h"
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TranslateService : NSObject
+
+@property (nonatomic, strong) EZQueryModel *queryModel;
 
 /// 翻译结果
 @property (nonatomic, strong) TranslateResult * _Nullable result;
@@ -52,6 +55,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;
+
+
+#pragma mark - Old Methods
 
 /// 文本翻译
 /// @param text 查询文本

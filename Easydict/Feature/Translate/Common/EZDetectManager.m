@@ -11,24 +11,34 @@
 
 @interface EZDetectManager ()
 
-@property (nonatomic, strong) TranslateService *translate;
-
 @end
 
 @implementation EZDetectManager
 
++ (instancetype)managerWithModel:(EZQueryModel *)model {
+    EZDetectManager *manager = [[EZDetectManager alloc] init];
+    manager.queryModel = model;
+    
+    return manager;
+}
+
 - (instancetype)init {
     if (self = [super init]) {
-        _translate = [[BaiduTranslate alloc] init];
+        _service = [[BaiduTranslate alloc] init];
     }
     return self;
 }
 
-
-- (void)detect:(NSString *)text completion:(nonnull void (^)(Language, NSError *_Nullable))completion {
-    [self.translate detect:text completion:^(Language lang, NSError * _Nullable error) {
-        self.language = lang;
-        completion(lang, error);
+- (void)detect:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion {
+    NSString *queryText = self.queryModel.queryText;
+    if (queryText.length == 0) {
+        NSLog(@"queryText cannot be nil");
+        return;
+    }
+    
+    [self.service detect:queryText completion:^(Language lang, NSError * _Nullable error) {
+        self.queryModel.sourceLanguage = lang;
+        completion(self.queryModel, error);
     }];
 }
 

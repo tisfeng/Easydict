@@ -7,16 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TranslateService.h"
 #import "TranslateLanguage.h"
+#import "EZQueryModel.h"
+#import "TranslateService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZDetectManager : NSObject
 
-@property (nonatomic, assign) Language language;
+@property (nonatomic, strong) EZQueryModel *queryModel;
+@property (nonatomic, strong) TranslateService *service;
 
-- (void)detect:(NSString *)text completion:(nonnull void (^)(Language language, NSError *_Nullable))completion;
++ (instancetype)managerWithModel:(EZQueryModel *)model;
+
+- (void)detect:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
 
 @end
 

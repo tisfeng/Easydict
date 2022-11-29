@@ -12,9 +12,17 @@
 
 - (void)reset {
     self.queryText = @"";
-    self.fromLanguage = Language_auto;
-    self.toLanguage = Language_auto;
+    self.sourceLanguage = Language_auto;
+    self.targetLanguage = Language_auto;
     self.viewHeight = 0;
+}
+
+- (NSString *)sourceLanguageName {
+    return LanguageDescFromEnum(self.sourceLanguage);
+}
+
+- (NSString *)targetLanguageName {
+    return LanguageDescFromEnum(self.targetLanguage);
 }
 
 @end
