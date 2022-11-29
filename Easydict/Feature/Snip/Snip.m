@@ -69,15 +69,12 @@ static Snip *_instance;
 #pragma mark -
 
 - (void)startWithCompletion:(void (^)(NSImage *_Nullable))completion {
-    
     BOOL enableRecord = [self checkRecordPermission];
     if (!enableRecord) {
         NSLog(@"disabled record permission");
         completion(nil);
-        
         return;
     }
-    
     
     if (self.isSnapshotting) {
         if (completion) {

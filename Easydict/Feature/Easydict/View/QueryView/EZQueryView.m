@@ -243,11 +243,7 @@ static CGFloat kExceptTextViewHeight = 30;
 
 - (void)updateButtonsDisplayState:(NSString *)text {
     BOOL isHidden = text.length == 0;
-    
     self.clearButton.hidden = isHidden;
-    if (isHidden) {
-        self.detectButton.hidden = YES;
-    }
     
     [self updateDetectButton];
 }
