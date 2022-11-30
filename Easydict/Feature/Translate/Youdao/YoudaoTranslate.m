@@ -312,16 +312,16 @@
                     OCRResult *result = [OCRResult new];
                     result.from = [self languageEnumFromString:response.lanFrom];
                     result.to = [self languageEnumFromString:response.lanTo];
-                    result.texts = [response.lines mm_map:^id _Nullable(YoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    result.ocrTextArray = [response.lines mm_map:^id _Nullable(YoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         OCRText *text = [OCRText new];
                         text.text = obj.context;
                         text.translatedText = obj.tranContent;
                         return text;
                     }];
                     result.raw = responseObject;
-                    if (result.texts.count) {
+                    if (result.ocrTextArray.count) {
                         // 有道翻译自动分段，会将分布在几行的句子合并，故用换行分割
-                        result.mergedText = [NSString mm_stringByCombineComponents:[result.texts mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        result.mergedText = [NSString mm_stringByCombineComponents:[result.ocrTextArray mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                                                           return obj.text;
                                                       }] separatedString:@"\n"];
                         completion(result, nil);
@@ -363,7 +363,7 @@
                     result.link = [NSString stringWithFormat:@"http://fanyi.youdao.com/translate?i=%@", ocrResult.mergedText.mm_urlencode];
                     result.from = ocrResult.from;
                     result.to = ocrResult.to;
-                    result.normalResults = [ocrResult.texts mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    result.normalResults = [ocrResult.ocrTextArray mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         return obj.translatedText;
                     }];
                     result.raw = ocrResult.raw;

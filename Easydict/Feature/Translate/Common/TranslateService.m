@@ -95,6 +95,12 @@
     return [[self.langIndexDict objectForKey:@(lang)] integerValue];
 }
 
+
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(OCRResult * _Nullable, NSError * _Nullable))completion {
+    MethodNotImplemented();
+}
+
+
 #pragma mark - 子类重写
 
 - (EZServiceType)serviceType {

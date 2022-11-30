@@ -16,11 +16,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZDetectManager : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
-@property (nonatomic, strong) TranslateService *service;
+@property (nonatomic, strong) TranslateService *detectTextService;
+@property (nonatomic, strong) TranslateService *ocrService;
 
 + (instancetype)managerWithModel:(EZQueryModel *)model;
 
-- (void)detect:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
+- (void)ocrAndDetectText:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
+
+- (void)detectText:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
+- (void)ocr:(void (^)(OCRResult * _Nullable, NSError * _Nullable))completion ;
 
 @end
 

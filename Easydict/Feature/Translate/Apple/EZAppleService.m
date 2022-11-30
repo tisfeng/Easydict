@@ -12,80 +12,6 @@
 
 @implementation EZAppleService
 
-/// Apple System ocr. Use Vision to recognize text in the image. Cost ~400ms
-- (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable, NSError *_Nullable))completion {
-    // Convert NSImage to CGImage
-    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
-
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
-    // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
-
-    // Create a new image-request handler. macos(10.13)
-    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
-    // Create a new request to recognize text.
-    if (@available(macOS 10.15, *)) {
-        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
-            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            NSLog(@"cost time: %.1f ms", (endTime - startTime) * 1000);
-
-            OCRResult *result = [[OCRResult alloc] init];
-            result.from = from;
-            result.to = to;
-
-            if (error) {
-                completion(result, error);
-                return;
-            }
-
-            NSMutableArray *recognizedStrings = [NSMutableArray array];
-            for (VNRecognizedTextObservation *observation in request.results) {
-                VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
-                [recognizedStrings addObject:recognizedText.string];
-            }
-
-            result.texts = recognizedStrings;
-            result.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
-            result.raw = recognizedStrings;
-
-            completion(result, nil);
-        }];
-
-        if (@available(macOS 12.0, *)) {
-            //            NSError *error;
-            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
-            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-            //            NSLog(@"supported Languages: %@", supportedLanguages);
-        }
-
-        request.recognitionLanguages = @[
-            @"zh-Hans",
-            @"zh-Hant",
-            @"en-US",
-            @"ja-JP",
-            @"fr-FR",
-            @"it-IT",
-            @"de-DE",
-            @"es-ES",
-            @"pt-BR",
-            @"yue-Hans",
-            @"yue-Hant",
-            @"ko-KR",
-            @"ru-RU",
-            @"uk-UA",
-        ]; // ISO language codes
-
-        if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = YES;
-        }
-        request.usesLanguageCorrection = YES;
-
-        // Perform the text-recognition request.
-        [requestHandler performRequests:@[ request ] error:nil];
-    } else {
-        // Fallback on earlier versions
-    }
-}
 
 #pragma mark - 子类重写
 
@@ -160,15 +86,96 @@
 - (void)detect:(NSString *)text completion:(void (^)(Language, NSError *_Nullable))completion {
     // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
 
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
     NLLanguageRecognizer *languageRecognizer = [[NLLanguageRecognizer alloc] init];
     [languageRecognizer processString:text];
 
     NLLanguage dominantLanguage = languageRecognizer.dominantLanguage;
     NSLog(@"dominant Language: %@", dominantLanguage);
+    
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"cost time: %.1f ms", (endTime - startTime) * 1000);
 
     Language language = [self languageEnumFromString:dominantLanguage];
 
     completion(language, nil);
+}
+
+
+/// Apple System ocr. Use Vision to recognize text in the image. Cost ~400ms
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(OCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    // Convert NSImage to CGImage
+    CGImageRef cgImage = [queryModel.image CGImageForProposedRect:NULL context:nil hints:nil];
+
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
+    // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
+
+    // Create a new image-request handler. macos(10.13)
+    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
+    // Create a new request to recognize text.
+    if (@available(macOS 10.15, *)) {
+        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
+            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+            NSLog(@"cost time: %.1f ms", (endTime - startTime) * 1000);
+
+            OCRResult *result = [[OCRResult alloc] init];
+            result.from = queryModel.sourceLanguage;
+            result.to = queryModel.targetLanguage;
+
+            if (error) {
+                completion(result, error);
+                return;
+            }
+
+            NSMutableArray *recognizedStrings = [NSMutableArray array];
+            for (VNRecognizedTextObservation *observation in request.results) {
+                VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+                [recognizedStrings addObject:recognizedText.string];
+            }
+            
+            result.texts = recognizedStrings;
+            result.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
+            result.raw = recognizedStrings;
+
+            completion(result, nil);
+        }];
+
+        if (@available(macOS 12.0, *)) {
+            //            NSError *error;
+            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
+            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+            //            NSLog(@"supported Languages: %@", supportedLanguages);
+        }
+
+        request.recognitionLanguages = @[
+            @"zh-Hans",
+            @"zh-Hant",
+            @"en-US",
+            @"ja-JP",
+            @"fr-FR",
+            @"it-IT",
+            @"de-DE",
+            @"es-ES",
+            @"pt-BR",
+            @"yue-Hans",
+            @"yue-Hant",
+            @"ko-KR",
+            @"ru-RU",
+            @"uk-UA",
+        ]; // ISO language codes
+
+        if (@available(macOS 13.0, *)) {
+            request.automaticallyDetectsLanguage = YES;
+        }
+        request.usesLanguageCorrection = YES;
+
+        // Perform the text-recognition request.
+        [requestHandler performRequests:@[ request ] error:nil];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 - (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
