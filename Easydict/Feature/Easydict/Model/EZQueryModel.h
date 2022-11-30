@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *sourceLanguageName;
 @property (nonatomic, copy) NSString *targetLanguageName;
 
+@property (nonatomic, strong) NSImage *image;
+
 @property (nonatomic, assign) CGFloat viewHeight;
 
 - (void)reset;

@@ -84,6 +84,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param completion 回调
 - (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable result, NSError *_Nullable error))completion;
 
+
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(OCRResult *_Nullable ocrResult, NSError *_Nullable error))completion;
+
+
 /// 图片翻译，识图+翻译
 /// @param image image对象
 /// @param from 文本语言

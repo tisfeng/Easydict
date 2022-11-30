@@ -29,7 +29,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 目标语言
 @property (nonatomic, assign) Language to;
 /// 文本识别结果，分句或分段
-@property (nonatomic, strong) NSArray<OCRText *> *texts;
+@property (nonatomic, strong) NSArray<OCRText *> *ocrTextArray;
+
+@property (nonatomic, copy) NSArray<NSString *> *texts;
+
 /// 合并过后的文本
 @property (nonatomic, copy) NSString *mergedText;
 /// OCR接口提供的原始的、未经转换的查询结果

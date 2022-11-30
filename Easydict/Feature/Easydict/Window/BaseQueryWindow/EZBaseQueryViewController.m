@@ -308,15 +308,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     mm_weakify(self);
     
-    TranslateService *appleService = [[EZAppleService alloc] init];
-    [appleService ocr:image from:Configuration.shared.from to:Configuration.shared.to completion:^(OCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+    self.queryModel.image = image;
+    
+    [self.detectManager ocrAndDetectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
         mm_strongify(self);
         
-        NSString *ocrText = ocrResult.mergedText;
-        self.queryText = ocrText;
-        NSLog(@"ocr text: %@", ocrText);
-        
-//        [self queryText:ocrText];
+        self.queryText = queryModel.queryText;
+        NSLog(@"ocr text: %@", self.queryText);
     }];
 }
 
@@ -345,7 +343,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         return;
     }
     
-    [self.detectManager detect:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
+    [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
         self.queryView.queryModel = queryModel;
         [self queryAllSerives:queryModel];
     }];

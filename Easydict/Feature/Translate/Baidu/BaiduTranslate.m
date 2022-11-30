@@ -544,7 +544,7 @@
                     result.raw = responseObject;
                     if (result.texts.count) {
                         // 百度翻译按图片中的行进行分割，可能是一句话，所以用空格拼接
-                        result.mergedText = [NSString mm_stringByCombineComponents:[result.texts mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        result.mergedText = [NSString mm_stringByCombineComponents:[result.ocrTextArray mm_map:^id _Nullable(OCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                                                           return obj.text;
                                                       }] separatedString:@" "];
                         completion(result, nil);
