@@ -11,6 +11,7 @@
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
+		03542A342936F70F00C34C33 /* EZLanguage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguage.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -159,6 +160,8 @@
 		0309E1F3292BD6A100AFB76A /* EZQueryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryModel.m; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
+		03542A322936F70F00C34C33 /* EZLanguage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguage.h; sourceTree = "<group>"; };
+		03542A332936F70F00C34C33 /* EZLanguage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguage.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -443,6 +446,15 @@
 			path = Apple;
 			sourceTree = "<group>";
 		};
+		03542A312936F6FE00C34C33 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				03542A322936F70F00C34C33 /* EZLanguage.h */,
+				03542A332936F70F00C34C33 /* EZLanguage.m */,
+			);
+			path = Language;
+			sourceTree = "<group>";
+		};
 		0383913F292FBE120009828C /* EasydictHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -598,6 +610,7 @@
 		03B0223D29231FA6001C7E63 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				03542A312936F6FE00C34C33 /* Language */,
 				03B0224229231FA6001C7E63 /* TranslateLanguage.h */,
 				03B0224929231FA6001C7E63 /* TranslateLanguage.m */,
 				03B0224629231FA6001C7E63 /* TranslateService.h */,
@@ -1367,6 +1380,7 @@
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03B0231A29231FA6001C7E63 /* StatusItem.m in Sources */,
 				03B022EA29231FA6001C7E63 /* Shortcut.m in Sources */,
+				03542A342936F70F00C34C33 /* EZLanguage.m in Sources */,
 				03B0230029231FA6001C7E63 /* EZQueryCell.m in Sources */,
 				03B0231F29231FA6001C7E63 /* PreferencesWindowController.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZServiceStorage.m in Sources */,

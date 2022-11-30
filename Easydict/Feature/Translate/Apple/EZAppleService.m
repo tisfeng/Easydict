@@ -8,10 +8,11 @@
 
 #import "EZAppleService.h"
 #import <Vision/Vision.h>
+#import <NaturalLanguage/NaturalLanguage.h>
 
 @implementation EZAppleService
 
-/// Apple system ocr. Use Vision to recognize text in the image. Cost ~400ms
+/// Apple System ocr. Use Vision to recognize text in the image. Cost ~400ms
 - (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable, NSError *_Nullable))completion {
     // Convert NSImage to CGImage
     CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
@@ -20,7 +21,7 @@
 
     // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
 
-    // Create a new image-request handler.
+    // Create a new image-request handler. macos(10.13)
     VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
     // Create a new request to recognize text.
     if (@available(macOS 10.15, *)) {
@@ -46,7 +47,7 @@
             result.texts = recognizedStrings;
             result.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
             result.raw = recognizedStrings;
-            
+
             completion(result, nil);
         }];
 
@@ -97,7 +98,7 @@
 }
 
 - (NSString *)name {
-    return @"Apple OCR";
+    return @"Apple";
 }
 
 - (NSString *)link {
@@ -105,29 +106,69 @@
 }
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
-    return [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-            @(Language_auto), @"auto",
-            @(Language_zh_Hans), @"zh-Hans",
-            @(Language_zh_Hant), @"zh-Hant",
-            @(Language_yue), @"yue-Hans",
-            // @(Language_yue), @"yue-Hant",
-            @(Language_en), @"en-US",
-            @(Language_ja), @"ja-JP",
-            @(Language_fr), @"fr-FR",
-            @(Language_it), @"it-IT",
-            @(Language_de), @"de-DE",
-            @(Language_es), @"es-ES",
-            @(Language_pt), @"pt-BR",
-            @(Language_ko), @"ko-KR",
-            @(Language_ru), @"ru-RU",
-            @(Language_uk), @"uk-UA",
-            nil];
+    MMOrderedDictionary *orderDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                      @(Language_auto), NLLanguageUndetermined,
+                                      @(Language_zh_Hans), NLLanguageSimplifiedChinese,
+                                      @(Language_zh_Hant), NLLanguageTraditionalChinese,
+                                      @(Language_en), NLLanguageEnglish,
+                                      @(Language_ja), NLLanguageJapanese,
+                                      @(Language_fr), NLLanguageFrench,
+                                      @(Language_ko), NLLanguageKorean,
+                                      @(Language_it), NLLanguageItalian,
+                                      @(Language_de), NLLanguageGerman,
+                                      @(Language_es), NLLanguageSpanish,
+                                      @(Language_pt), NLLanguagePortuguese,
+                                      @(Language_ru), NLLanguageRussian,
+                                      
+                                      @(Language_ar), NLLanguageArabic,
+                                      @(Language_sv), NLLanguageSwedish,
+                                      @(Language_ro), NLLanguageRomanian,
+                                      @(Language_th), NLLanguageThai,
+                                      @(Language_sk), NLLanguageSlovak,
+                                      @(Language_nl), NLLanguageDutch,
+                                      @(Language_hu), NLLanguageHungarian,
+                                      @(Language_el), NLLanguageGreek,
+                                      @(Language_da), NLLanguageDanish,
+                                      @(Language_fi), NLLanguageFinnish,
+                                      @(Language_pl), NLLanguagePolish,
+                                      @(Language_cs), NLLanguageCzech,
+                                      @(Language_uk), NLLanguageUkrainian,
+                                      
+                                      @(Language_bn), NLLanguageBengali,
+                                      @(Language_ca), NLLanguageCatalan,
+                                      @(Language_he), NLLanguageHebrew,
+                                      @(Language_hi), NLLanguageHindi,
+                                      @(Language_id), NLLanguageIndonesian,
+                                      @(Language_no), NLLanguageNorwegian,
+                                      @(Language_tr), NLLanguageTurkish,
+                                      @(Language_vi), NLLanguageVietnamese,
+                                      @(Language_ps), NLLanguagePersian,
+                                      
+                                      nil];
+    
+    if (@available(macOS 13.0, *)) {
+        [orderDict setObject:NLLanguageKazakh forKey:@(Language_kk)];
+    }
+    
+    return orderDict;
 }
 
 - (void)translate:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(TranslateResult *_Nullable, NSError *_Nullable))completion {
 }
 
+/// Apple System language recognize. macOS >= 10.14
 - (void)detect:(NSString *)text completion:(void (^)(Language, NSError *_Nullable))completion {
+    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
+
+    NLLanguageRecognizer *languageRecognizer = [[NLLanguageRecognizer alloc] init];
+    [languageRecognizer processString:text];
+
+    NLLanguage dominantLanguage = languageRecognizer.dominantLanguage;
+    NSLog(@"dominant Language: %@", dominantLanguage);
+
+    Language language = [self languageEnumFromString:dominantLanguage];
+
+    completion(language, nil);
 }
 
 - (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
