@@ -9,14 +9,11 @@
 #ifndef EZConst_h
 #define EZConst_h
 
-//static const CGFloat EZMiniQueryWindowWidth = 300;
-//static const CGFloat EZMiniQueryWindowHeight = 300;
+static CGFloat const EZMiniHorizontalMargin_12 = 12;
+static CGFloat const EZMiniVerticalMargin_8 = 8;
 
-static const CGFloat EZMiniHorizontalMargin_12 = 12;
-static const CGFloat EZMiniVerticalMargin_8 = 8;
+static CGFloat const EZCornerRadius_8 = 8;
 
-static const CGFloat EZCornerRadius_8 = 8;
-
-static const CGFloat EZTitlebarHeight = 28;
+static CGFloat const EZTitlebarHeight = 28;
 
 #endif /* EZConst_h */

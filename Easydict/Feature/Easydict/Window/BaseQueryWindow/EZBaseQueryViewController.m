@@ -30,15 +30,16 @@
 #import "EZWindowManager.h"
 #import "EZAppleService.h"
 
-static NSString *EZQueryCellId = @"EZQueryCellId";
-static NSString *EZSelectLanguageCellId = @"EZSelectLanguageCellId";
-static NSString *EZResultCellId = @"EZResultCellId";
+static NSString * const EZQueryCellId = @"EZQueryCellId";
+static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString * const EZResultCellId = @"EZResultCellId";
 
-static NSString *EZColumnId = @"EZColumnId";
+static NSString * const EZColumnId = @"EZColumnId";
 
-static NSString *EZQueryKey = @"{Query}";
+static NSString * const EZQueryKey = @"{Query}";
 
-static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
+static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
+static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -92,9 +93,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [super viewDidLoad];
     
     [self setup];
-    
-    //    [self startQueryText:@"good"];
-    //    [self startQueryText:@"你好\n世界"];
 }
 
 - (void)viewWillAppear {
@@ -335,7 +333,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 
-#pragma mark - Query
+#pragma mark - Query Methods
 
 - (void)startQueryText {
     [self startQueryText:self.queryModel.queryText];
@@ -473,6 +471,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [CATransaction commit];
 }
 
+
 - (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
     NSMutableArray *results = [NSMutableArray array];
     for (TranslateService *service in self.services) {
@@ -500,7 +499,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 - (void)closeAllResultView:(void (^)(void))completionHandler {
     NSArray *closingResults = [self needUpdateClosedResults];
     [self updateCellWithResults:closingResults reloadData:YES completionHandler:completionHandler];
-    
 }
 
 
@@ -541,7 +539,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     }
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-        context.duration = 0.3;
+        context.duration = kUpdateTableViewRowHeightAnimationDuration;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
         [self updateWindowViewHeightWithLock];
