@@ -287,7 +287,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 #pragma mark - Public Methods
 
-- (void)queryText:(NSString *)text {
+- (void)startQueryText:(NSString *)text {
     // !!!:  deep copy text, because text will be released in resetQueryResults.
     NSString *queryText = [text mutableCopy];
     
@@ -298,28 +298,21 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     
     NSLog(@"query text: %@", text);
     
-    if ([self checkIfAllResultViewClosed]) {
+    // Close all resultView before querying new text
+    [self closeAllResultView:^{
         self.queryText = queryText;
         [self queryCurrentModel];
-    } else {
-        [self resetQueryResults];
-        self.queryText = queryText;
-        [self updateTableViewWithAnimation:^{
-            [self queryCurrentModel];
-        }];
-    }
+    }];
 }
 
-- (void)queryWithImage:(NSImage *)image {
+- (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
     
-//    mm_weakify(self);
-//    TranslateService *firstService = [self firstTranslateService];
+    mm_weakify(self);
     
     TranslateService *appleService = [[EZAppleService alloc] init];
-    
     [appleService ocr:image from:Configuration.shared.from to:Configuration.shared.to completion:^(OCRResult * _Nullable ocrResult, NSError * _Nullable error) {
-//        mm_strongify(self);
+        mm_strongify(self);
         
         NSString *ocrText = ocrResult.mergedText;
         self.queryText = ocrText;
@@ -331,7 +324,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)retry {
     NSLog(@"retry");
-    [self startQuery];
+    [self startQueryText];
 }
 
 - (void)focusInputTextView {
@@ -344,8 +337,8 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 #pragma mark - Query
 
-- (void)startQuery {
-    [self queryText:self.queryModel.queryText];
+- (void)startQueryText {
+    [self startQueryText:self.queryModel.queryText];
 }
 
 - (void)queryCurrentModel {
@@ -367,7 +360,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
                 NSLog(@"result is nil, error: %@", error);
                 return;
             }
-            [self updateCellWithResult:result reloadData:YES];
+            [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
 }
@@ -464,7 +457,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 
 - (void)resetTableView:(void (^)(void))completion {
     [self resetQueryResults];
-    
     [self reloadTableViewData:completion];
 }
 
@@ -472,7 +464,9 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
         [self updateWindowViewHeightWithLock];
-        completion();
+        if (completion) {
+            completion();
+        }
     }];
     
     [self.tableView reloadData];
@@ -480,11 +474,6 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
-    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    
-    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
-    
     NSMutableArray *results = [NSMutableArray array];
     for (TranslateService *service in self.services) {
         [results addObject:service.result];
@@ -497,32 +486,56 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         }
     }];
     
+    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+
+    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
+    
     // Need to reload cell data, especially arrow button state.
     [self updateCellWithResults:results reloadData:YES];
     
     [CATransaction commit];
+}
+
+- (void)closeAllResultView:(void (^)(void))completionHandler {
+    NSArray *closingResults = [self needUpdateClosedResults];
+    [self updateCellWithResults:closingResults reloadData:YES completionHandler:completionHandler];
     
 }
 
+
 - (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+    [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
+}
+
+- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     if (!result) {
         NSLog(@"resutl is nil");
         return;
     }
-    [self updateCellWithResults:@[ result ] reloadData:reloadData];
+    [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
 - (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
+    [self updateCellWithResults:results reloadData:reloadData completionHandler:nil];
+}
+
+- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (TranslateResult *result in results) {
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
         [rowIndexes addIndex:row + [self resultCellOffset]];
     }
-    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData];
+    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:completionHandler];
 }
 
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData {
+
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData  {
+    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
+}
+
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     if (reloadData) {
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
@@ -532,16 +545,23 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
         [self updateWindowViewHeightWithLock];
+        
+        if (completionHandler) {
+            completionHandler();
+        }
     }];
 }
 
-- (BOOL)checkIfAllResultViewClosed {
+- (NSArray *)needUpdateClosedResults {
+    NSMutableArray *results = [NSMutableArray array];
     for (TranslateService *service in self.services) {
-        if (service.result.isShowing) {
-            return NO;
+        TranslateResult *result = service.result;
+        if (result.isShowing) {
+            result.isShowing = NO;
+            [results addObject:result];
         }
     }
-    return YES;
+    return results;
 }
 
 #pragma mark -
@@ -571,13 +591,13 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             
             // !!!: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
-            [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
+            [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:nil];
         }
     }];
     
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        [self queryText:text];
+        [self startQueryText:text];
     }];
     
     [queryView setPlayAudioBlock:^(NSString *text) {
@@ -688,7 +708,7 @@ static NSTimeInterval kDelayUpdateWindowViewTime = 0.1;
                           from:self.queryModel.sourceLanguage
                             to:Configuration.shared.to
                     completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
-                [self updateCellWithResult:result reloadData:YES];
+                [self updateCellWithResult:result reloadData:YES completionHandler:nil];
             }];
         } else {
             [self updateCellWithResult:result reloadData:YES];

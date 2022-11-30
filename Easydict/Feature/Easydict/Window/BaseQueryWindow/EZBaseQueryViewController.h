@@ -20,8 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
-- (void)queryText:(NSString *)text;
-- (void)queryWithImage:(NSImage *)image;
+- (void)startQueryText:(NSString *)text;
+- (void)startQueryWithImage:(NSImage *)image;
 - (void)retry;
 
 - (void)resetTableView:(void (^)(void))completion;
