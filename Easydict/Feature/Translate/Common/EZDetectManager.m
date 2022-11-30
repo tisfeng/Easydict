@@ -8,6 +8,7 @@
 
 #import "EZDetectManager.h"
 #import "BaiduTranslate.h"
+#import "EZAppleService.h"
 
 @interface EZDetectManager ()
 
@@ -24,7 +25,7 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _service = [[BaiduTranslate alloc] init];
+        _service = [[EZAppleService alloc] init];
     }
     return self;
 }

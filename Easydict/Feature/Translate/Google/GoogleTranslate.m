@@ -681,8 +681,7 @@
                 NSString *googleFromString = responseDict[@"src"];
                 if ([googleFromString
                      isKindOfClass:NSString.class]) {
-                    Language googleFrom = [self
-                                           languageEnumFromString:googleFromString];
+                    Language googleFrom = [self languageEnumFromString:googleFromString];
                     if (googleFrom != Language_auto) {
                         completion(googleFrom, nil);
                         return;

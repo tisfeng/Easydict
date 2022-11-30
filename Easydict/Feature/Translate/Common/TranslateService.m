@@ -121,23 +121,23 @@
     MethodNotImplemented();
 }
 
-- (void)translate:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(TranslateResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(Language)from to:(Language)to completion:(void (^)(TranslateResult *_Nullable result, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
-- (void)detect:(NSString *)text completion:(void (^)(Language, NSError *_Nullable))completion {
+- (void)detect:(NSString *)text completion:(void (^)(Language lang, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
-- (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)audio:(NSString *)text from:(Language)from completion:(void (^)(NSString *_Nullable text, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
-- (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable, NSError *_Nullable))completion {
+- (void)ocr:(NSImage *)image from:(Language)from to:(Language)to completion:(void (^)(OCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
-- (void)ocrAndTranslate:(NSImage *)image from:(Language)from to:(Language)to ocrSuccess:(void (^)(OCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(OCRResult *_Nullable, TranslateResult *_Nullable, NSError *_Nullable))completion {
+- (void)ocrAndTranslate:(NSImage *)image from:(Language)from to:(Language)to ocrSuccess:(void (^)(OCRResult *_Nonnull ocrResult, BOOL success))ocrSuccess completion:(void (^)(OCRResult *_Nullable ocrResult, TranslateResult *_Nullable result, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
