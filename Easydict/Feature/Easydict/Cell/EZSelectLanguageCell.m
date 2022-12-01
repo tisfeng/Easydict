@@ -84,11 +84,8 @@
         [languageBarView addSubview:button];
         // Only resolve layout warning.
         button.frame = self.bounds;
-        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if ([obj isEqualToString:EZLanguageAuto]) {
-                return @"自动检测";
-            }
-            return obj;
+        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(EZLanguage language, NSUInteger idx, BOOL *_Nonnull stop) {
+            return [EZLanguageTool showingLanguageName:language];
         }]];
         [button updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.from]];
         mm_weakify(self);
@@ -108,11 +105,12 @@
     self.toLanguageButton = [EZPopUpButton mm_make:^(EZPopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
         button.frame = self.bounds;
-        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if ([obj isEqualToString: EZLanguageAuto]) {
-                return @"自动选择";
+        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(EZLanguage language, NSUInteger idx, BOOL *_Nonnull stop) {
+            NSString *languageName = [EZLanguageTool showingLanguageName:language];
+            if ([language isEqualToString:EZLanguageAuto] && [EZLanguageTool containsChineseInPreferredTwoLanguages]) {
+                languageName = @"自动选择";
             }
-            return obj;
+            return languageName;
         }]];
         [button updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.to]];
         mm_weakify(self);

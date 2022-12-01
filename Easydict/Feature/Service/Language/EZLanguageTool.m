@@ -63,23 +63,24 @@ NSString *const EZLanguageHebrew = @"Hebrew";
 
 // Get target language with source language
 + (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
-    EZLanguage targetLanguage = EZLanguageAuto;
-    if (sourceLanguage == EZLanguageSimplifiedChinese || sourceLanguage == EZLanguageTraditionalChinese) {
-        targetLanguage = EZLanguageEnglish;
-    } else {
-        targetLanguage = EZLanguageSimplifiedChinese;
+    EZLanguage firstLanguage = [self firstLanguage];
+    EZLanguage secondLanguage = [self secondLanguage];
+    EZLanguage targetLanguage = firstLanguage;
+    if ([sourceLanguage isEqualToString:firstLanguage]) {
+        targetLanguage = secondLanguage;
     }
     return targetLanguage;
 }
 
 // Get user system preferred languages
 + (NSArray<EZLanguage> *)systemPreferredLanguages {
+    // ["zh-Hans-CN", "en-CN"]
     NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
         // "zh-Hans-CN" -> "zh-Hans"
         NSMutableArray *array = [[language componentsSeparatedByString:@"-"] mutableCopy];
-        // remove country code
+        // Remove country code
         [array removeLastObject];
         NSString *languageCode = [array componentsJoinedByString:@"-"];
         // Convert to EZLanguage
@@ -93,28 +94,61 @@ NSString *const EZLanguageHebrew = @"Hebrew";
     //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //    NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
 
-    NSLog(@"languages: %@", languages);
+//    NSLog(@"languages: %@", languages);
 
-    return languages; // @["zh-Hans-CN", "en-CN"]
+    return languages;
 }
 
-+ (EZLanguage)firstLanguage {
++ (NSArray<EZLanguage> *)preferredTwoLanguages {
+    NSMutableArray *twoLanguages = [NSMutableArray array];
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
-    return languages[0];
-}
-+ (EZLanguage)secondLanguage {
-    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+
+    EZLanguage firstLanguage = languages.firstObject;
+    [twoLanguages addObject:firstLanguage];
+
     if (languages.count > 1) {
-        return languages[1];
+        [twoLanguages addObject:languages[1]];
+    } else {
+        EZLanguage secondLanguage = EZLanguageEnglish;
+        if ([firstLanguage isEqualToString:EZLanguageEnglish]) {
+            secondLanguage = EZLanguageSimplifiedChinese;
+        }
+        [twoLanguages addObject:secondLanguage];
     }
 
-    EZLanguage targetLanguage = [self targetLanguageWithSourceLanguage:[self firstLanguage]];
-    return targetLanguage;
+    return twoLanguages;
+}
+
++ (BOOL)containsEnglishInPreferredTwoLanguages {
+    NSArray<EZLanguage> *languages = [self preferredTwoLanguages];
+    return [languages containsObject:EZLanguageEnglish];
+}
+
++ (BOOL)containsChineseInPreferredTwoLanguages {
+    NSArray<EZLanguage> *languages = [self preferredTwoLanguages];
+    for (EZLanguage language in languages) {
+        if ([self isChineseLanguage:language]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
++ (EZLanguage)firstLanguage {
+    return [self preferredTwoLanguages][0];
+}
++ (EZLanguage)secondLanguage {
+    return [self preferredTwoLanguages][1];
 }
 
 + (BOOL)isChineseFirstLanguage {
     EZLanguage firstLanguage = [self firstLanguage];
-    if (firstLanguage == EZLanguageSimplifiedChinese || firstLanguage == EZLanguageTraditionalChinese) {
+    return [self isChineseLanguage:firstLanguage];
+}
+
++ (BOOL)isChineseLanguage:(EZLanguage)language {
+    if (language == EZLanguageSimplifiedChinese || language == EZLanguageTraditionalChinese) {
         return YES;
     }
     return NO;
@@ -130,8 +164,19 @@ NSString *const EZLanguageHebrew = @"Hebrew";
     return NO;
 }
 
++ (BOOL)containsChinesePreferredLanguage {
+    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+    for (EZLanguage language in languages) {
+        if (language == EZLanguageEnglish) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 /// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.
-+ (NSString *)languageShowingName:(EZLanguage)language {
++ (NSString *)showingLanguageName:(EZLanguage)language {
     NSString *languageName = language;
     if ([self isChineseFirstLanguage]) {
         languageName = [self languageChineseName:language];
@@ -146,7 +191,7 @@ NSString *const EZLanguageHebrew = @"Hebrew";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         languageNameDict = @{
-            EZLanguageAuto : @"自动",
+            EZLanguageAuto : @"自动检测",
             EZLanguageSimplifiedChinese : @"简体中文",
             EZLanguageTraditionalChinese : @"繁体中文",
             EZLanguageEnglish : @"英语",

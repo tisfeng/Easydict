@@ -74,16 +74,23 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 /// User system languages, ["zh-Hans-CN", "en-CN"]
 + (NSArray<EZLanguage> *)systemPreferredLanguages;
 
++ (NSArray<EZLanguage> *)preferredTwoLanguages;
+
++ (BOOL)containsEnglishInPreferredTwoLanguages;
++ (BOOL)containsChineseInPreferredTwoLanguages;
+
 /// User first preferred language.
 + (EZLanguage)firstLanguage;
 + (EZLanguage)secondLanguage;
 
 + (BOOL)isChineseFirstLanguage;
++ (BOOL)isChineseLanguage:(EZLanguage)language;
 
 + (BOOL)containsEnglishPreferredLanguage;
++ (BOOL)containsChinesePreferredLanguage;
 
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
-+ (NSString *)languageShowingName:(EZLanguage)language;
++ (NSString *)showingLanguageName:(EZLanguage)language;
 
 /// Get language Chinese name, Chinese -> 中文, English -> 英语.
 + (NSString *)languageChineseName:(EZLanguage)language;
