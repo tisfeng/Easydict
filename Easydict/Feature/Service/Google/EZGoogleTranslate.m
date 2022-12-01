@@ -506,6 +506,7 @@
                     EZQueryResult *result = [EZQueryResult new];
                     self.result = result;
                     
+                    result.raw = responseObject;
                     result.text = text;
                     result.from = googleFrom;
                     result.to = googleTo;
