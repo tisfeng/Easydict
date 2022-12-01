@@ -67,7 +67,7 @@
                 NSLog(@"baidu detected: %@", language); // Apple detect 123 will fails.
 
                 self.queryModel.detectedLanguage = language;
-                self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:language];
+                self.queryModel.targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:language];
                 
                 completion(self.queryModel, error);
             }];
@@ -75,7 +75,7 @@
         }
         
         self.queryModel.detectedLanguage = language;
-        self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:language];
+        self.queryModel.targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:language];
         
         completion(self.queryModel, error);
     }];

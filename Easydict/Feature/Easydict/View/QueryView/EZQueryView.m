@@ -7,17 +7,17 @@
 //
 
 #import "EZQueryView.h"
-#import "EZButton.h"
 #import "NSTextView+Height.h"
 #import "EZWindowManager.h"
 #import "NSView+EZGetViewController.h"
 #import "NSImage+EZResize.h"
+#import "EZDetectLanguageButton.h"
 
 static CGFloat kExceptTextViewHeight = 30;
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
-@property (nonatomic, strong) EZButton *detectButton;
+@property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
 
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
@@ -51,22 +51,9 @@ static CGFloat kExceptTextViewHeight = 30;
     textView.delegate = self;
     textView.textStorage.delegate = self;
 
-    EZButton *detectButton = [[EZButton alloc] init];
+    EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
     [self addSubview:detectButton];
     self.detectButton = detectButton;
-    detectButton.hidden = YES;
-    detectButton.cornerRadius = 10;
-    detectButton.title = @"";
-
-    [detectButton excuteLight:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
-    } drak:^(EZButton *button) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#313233"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#424445"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
-    }];
 
     mm_weakify(self);
     [detectButton setClickBlock:^(EZButton *_Nonnull button) {
@@ -249,41 +236,14 @@ static CGFloat kExceptTextViewHeight = 30;
 }
 
 - (void)updateDetectButton {
-    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
-    if (fromLanguage == EZLanguageAuto) {
-        self.detectButton.hidden = YES;
-        return;
-    }
+    self.detectButton.language = self.queryModel.detectedLanguage;
     
-    self.detectButton.hidden = NO;
-    
-    NSString *detectLanguageTitle =  [EZLanguageTool showingLanguageName:fromLanguage];
-    
-    NSString *title = @"识别为 ";
-    NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
-    [attrTitle addAttributes:@{
-        NSForegroundColorAttributeName : NSColor.grayColor,
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                       range:NSMakeRange(0, attrTitle.length)];
-
-
-    NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
-    [detectAttrTitle addAttributes:@{
-        NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
-        NSFontAttributeName : [NSFont systemFontOfSize:10],
-    }
-                             range:NSMakeRange(0, detectAttrTitle.length)];
-
-    [attrTitle appendAttributedString:detectAttrTitle];
-
-    CGFloat width = [attrTitle mm_getTextWidth];
-    self.detectButton.attributedTitle = attrTitle;
-    [self.detectButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    CGFloat height = 20;
+    self.detectButton.cornerRadius = height / 2;
+    [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(6);
         make.centerY.equalTo(self.textCopyButton);
-        make.height.mas_equalTo(20);
-        make.width.mas_equalTo(width + 8);
+        make.height.mas_equalTo(height);
     }];
 }
 

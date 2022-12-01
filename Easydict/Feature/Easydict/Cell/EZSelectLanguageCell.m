@@ -90,7 +90,7 @@
         // Only resolve layout warning.
         button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(EZLanguage language, NSUInteger idx, BOOL *_Nonnull stop) {
-            return [EZLanguageTool showingLanguageName:language];
+            return [EZLanguageManager showingLanguageName:language];
         }]];
         [button updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.from]];
         mm_weakify(self);
@@ -110,8 +110,8 @@
         [languageBarView addSubview:button];
         button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(EZLanguage language, NSUInteger idx, BOOL *_Nonnull stop) {
-            NSString *languageName = [EZLanguageTool showingLanguageName:language];
-            if ([language isEqualToString:EZLanguageAuto] && [EZLanguageTool containsChineseInPreferredTwoLanguages]) {
+            NSString *languageName = [EZLanguageManager showingLanguageName:language];
+            if ([language isEqualToString:EZLanguageAuto] && [EZLanguageManager containsChineseInPreferredTwoLanguages]) {
                 languageName = @"自动选择";
             }
             return languageName;

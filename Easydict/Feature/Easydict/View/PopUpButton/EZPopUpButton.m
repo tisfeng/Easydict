@@ -28,11 +28,6 @@ DefineMethodMMMake_m(EZPopUpButton);
 }
 
 - (void)setupUI {
-    self.wantsLayer = YES;
-    self.bordered = NO;
-    self.imageScaling = NSImageScaleProportionallyDown;
-    self.bezelStyle = NSBezelStyleRegularSquare;
-    [self setButtonType:NSButtonTypeToggle];
     self.title = @"";
     
     mm_weakify(self)

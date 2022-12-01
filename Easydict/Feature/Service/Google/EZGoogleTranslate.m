@@ -471,11 +471,11 @@
                 return;
             }
             
-            EZLanguage langTo = [EZLanguageTool targetLanguageWithSourceLanguage:lang];
+            EZLanguage langTo = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
             translateBlock(text, lang, langTo);
         }];
     } else {
-        to = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+        to = [EZLanguageManager targetLanguageWithSourceLanguage:from];
         translateBlock(text, from, to);
     }
 }
@@ -626,11 +626,11 @@
                 return;
             }
             
-            EZLanguage langTo = [EZLanguageTool targetLanguageWithSourceLanguage:lang];
+            EZLanguage langTo = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
             translateBlock(text, lang, langTo);
         }];
     } else {
-        to = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+        to = [EZLanguageManager targetLanguageWithSourceLanguage:from];
         translateBlock(text, from, to);
     }
 }

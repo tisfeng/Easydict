@@ -384,7 +384,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     EZLanguage toLanguage = queryModel.targetLanguage;
     
     if ([toLanguage isEqualToString:EZLanguageAuto]) {
-        toLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:fromLanguage];
+        toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
     }
     
     NSLog(@"query language: %@ --> %@", fromLanguage, toLanguage);
