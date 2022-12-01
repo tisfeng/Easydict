@@ -134,13 +134,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)resetQueryResults {
-    self.queryText = @"";
-        
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = [[EZQueryResult alloc] init];
         service.result = result;
         result.isShowing = NO; // default not show, show result after querying.
     }
+    self.queryText = @"";
 }
 
 - (void)setup {
@@ -204,6 +203,10 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
+    
+    if ([self allShowingResults].count > 0) {
+        [self.queryView showClearButton:YES];
+    }
 }
 
 - (NSScrollView *)scrollView {
@@ -525,7 +528,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)closeAllResultView:(void (^)(void))completionHandler {
-    NSArray *closingResults = [self needUpdateClosedResults];
+    NSArray *closingResults = [self allShowingResults];
     [self updateCellWithResults:closingResults reloadData:YES completionHandler:completionHandler];
 }
 
@@ -578,16 +581,22 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }];
 }
 
-- (NSArray *)needUpdateClosedResults {
+- (NSArray *)allShowingResults {
     NSMutableArray *results = [NSMutableArray array];
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         if (result.isShowing) {
-            result.isShowing = NO;
             [results addObject:result];
         }
     }
     return results;
+}
+
+- (void)closeAllShowingResults {
+    NSArray *results = [self allShowingResults];
+    for (EZQueryResult *result in results) {
+        result.isShowing = NO;
+    }
 }
 
 #pragma mark -

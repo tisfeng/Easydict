@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CGFloat)heightOfQueryView;
 
+- (void)showClearButton:(BOOL)show;
+
 @end
 
 NS_ASSUME_NONNULL_END
