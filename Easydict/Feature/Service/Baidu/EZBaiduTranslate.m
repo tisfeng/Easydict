@@ -443,7 +443,7 @@
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
             EZLanguage toLang = to;
             if ([toLang isEqualToString:EZLanguageAuto]) {
-                toLang = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+                toLang = [EZLanguageManager targetLanguageWithSourceLanguage:from];
             }
             [self sendTranslateRequest:text from:from to:toLang completion:completion];
         };
@@ -552,7 +552,7 @@
     NSString *fromLang = (from == EZLanguageAuto) ? [self languageStringFromEnum:EZLanguageEnglish] : [self languageStringFromEnum:from];
     NSString *toLang = nil;
     if (to == EZLanguageAuto) {
-        toLang = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+        toLang = [EZLanguageManager targetLanguageWithSourceLanguage:from];
     } else {
         toLang = [self languageStringFromEnum:to];
     }

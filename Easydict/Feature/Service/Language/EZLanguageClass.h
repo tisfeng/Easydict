@@ -1,8 +1,8 @@
 //
-//  EZLanguage.h
+//  EZLanguageConst.h
 //  Easydict
 //
-//  Created by tisfeng on 2022/11/30.
+//  Created by tisfeng on 2022/12/1.
 //  Copyright © 2022 izual. All rights reserved.
 //
 
@@ -10,12 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// this is the same as Language
+// Refer Apple NLLanguage.
 typedef NSString *EZLanguage NS_STRING_ENUM;
 
 // 目前总计支持 48 种语言：简体中文，繁体中文，英语，日语，韩语，法语，西班牙语，葡萄牙语，意大利语，德语，俄语，阿拉伯语，瑞典语，罗马尼亚语，泰语，斯洛伐克语，荷兰语，匈牙利语，希腊语，丹麦语，芬兰语，波兰语，捷克语，土耳其语，立陶宛语，拉脱维亚语，乌克兰语，保加利亚语，印尼语，马来语，斯洛文尼亚语，爱沙尼亚语，越南语，波斯语，印地语，泰卢固语，泰米尔语，乌尔都语，菲律宾语，高棉语，老挝语，孟加拉语，缅甸语，挪威语，塞尔维亚语，克罗地亚语，蒙古语，希伯来语。
 
 // Currently supports 48 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, Italian, German, Russian, Arabic, Swedish, Romanian, Thai, Slovak, Dutch, Hungarian, Greek, Danish, Finnish, Polish, Czech, Turkish, Lithuanian, Latvian, Ukrainian, Bulgarian, Indonesian, Malay, Slovenian, Estonian, Vietnamese, Persian, Hindi, Telugu, Tamil, Urdu, Filipino, Khmer, Lao, Bengali, Burmese, Norwegian, Serbian, Croatian, Mongolian, Hebrew.
+
 FOUNDATION_EXPORT EZLanguage const EZLanguageAuto;
 FOUNDATION_EXPORT EZLanguage const EZLanguageSimplifiedChinese;
 FOUNDATION_EXPORT EZLanguage const EZLanguageTraditionalChinese;
@@ -66,37 +67,14 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageCroatian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageMongolian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 
-@interface EZLanguageTool : NSObject
+@interface EZLanguageClass : NSObject
 
-/// Get target language with source language
-+ (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
+@property (nonatomic, copy) NSString *chineseName;
+@property (nonatomic, copy) NSString *englishName;
+@property (nonatomic, copy) NSString *localName;
+@property (nonatomic, copy) NSString *flagEmoji;
 
-/// User system languages, ["zh-Hans-CN", "en-CN"]
-+ (NSArray<EZLanguage> *)systemPreferredLanguages;
-
-+ (NSArray<EZLanguage> *)preferredTwoLanguages;
-
-+ (BOOL)containsEnglishInPreferredTwoLanguages;
-+ (BOOL)containsChineseInPreferredTwoLanguages;
-
-/// User first preferred language.
-+ (EZLanguage)firstLanguage;
-+ (EZLanguage)secondLanguage;
-
-+ (BOOL)isChineseFirstLanguage;
-+ (BOOL)isChineseLanguage:(EZLanguage)language;
-
-+ (BOOL)containsEnglishPreferredLanguage;
-+ (BOOL)containsChinesePreferredLanguage;
-
-/// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
-+ (NSString *)showingLanguageName:(EZLanguage)language;
-
-/// Get language Chinese name, Chinese -> 中文, English -> 英语.
-+ (NSString *)languageChineseName:(EZLanguage)language;
-
-/// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
-+ (NSString *)languageFlagEmoji:(EZLanguage)language;
++ (MMOrderedDictionary<EZLanguage, EZLanguageClass *> *)allLanguages;
 
 @end
 

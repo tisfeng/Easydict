@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZLanguageTool.h"
+#import "EZLanguageManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
