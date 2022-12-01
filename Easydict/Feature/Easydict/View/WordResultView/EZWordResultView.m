@@ -424,7 +424,12 @@ static const CGFloat kVerticalPadding = 8;
     
     CGFloat kMargin = 5;
     [audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lastView.mas_bottom).offset(kMargin);
+        if (lastView) {
+            make.top.equalTo(lastView.mas_bottom).offset(kMargin);
+        } else {
+            make.top.equalTo(self).offset(kMargin);
+        }
+        
         make.left.offset(kMargin + 2);
         make.width.height.mas_equalTo(25);
         make.bottom.equalTo(self).offset(-kMargin);
