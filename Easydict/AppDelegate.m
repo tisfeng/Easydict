@@ -23,12 +23,13 @@
 
     
     // Show main window?
-//    EZWindowManager *windowManager = [EZWindowManager shared];
+    EZWindowManager *windowManager = [EZWindowManager shared];
 //    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
-//    [windowManager.mainWindow makeKeyAndOrderFront:nil];
+    [windowManager.mainWindow center];
+    [windowManager.mainWindow makeKeyAndOrderFront:nil];
     
     
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+//    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 
     
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
