@@ -87,6 +87,9 @@ static CGFloat kExceptTextViewHeight = 30;
     return [self heightOfTextView] + kExceptTextViewHeight;
 }
 
+- (void)showClearButton:(BOOL)show {
+    self.clearButton.hidden = !show;
+}
 
 #pragma mark - Super method
 
