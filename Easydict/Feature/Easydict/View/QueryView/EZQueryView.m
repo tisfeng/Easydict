@@ -257,7 +257,7 @@ static CGFloat kExceptTextViewHeight = 30;
     
     self.detectButton.hidden = NO;
     
-    NSString *detectLanguageTitle =  [EZLanguageTool languageShowingName:fromLanguage];
+    NSString *detectLanguageTitle =  [EZLanguageTool showingLanguageName:fromLanguage];
     
     NSString *title = @"识别为 ";
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
