@@ -12,6 +12,8 @@
 
 @interface EZDetectManager ()
 
+@property (nonatomic, strong) EZBaiduTranslate *baiduService;
+
 @end
 
 @implementation EZDetectManager
@@ -29,6 +31,13 @@
         self.ocrService = self.detectTextService;
     }
     return self;
+}
+
+- (EZBaiduTranslate *)baiduService {
+    if (!_baiduService) {
+        _baiduService = [[EZBaiduTranslate alloc] init];
+    }
+    return _baiduService;
 }
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel * _Nonnull, NSError * _Nullable))completion {
@@ -51,10 +60,23 @@
     }
     
     [self.detectTextService detect:queryText completion:^(EZLanguage language, NSError * _Nullable error) {
-        NSLog(@"detected language: %@", language);
+        NSLog(@"detected language: %@", language); // Apple detect 123 will fails.
+        
+        if ([language isEqualToString:EZLanguageAuto]) {
+            [self.baiduService detect:queryText completion:^(EZLanguage  _Nonnull language, NSError * _Nullable error) {
+                NSLog(@"baidu detected: %@", language); // Apple detect 123 will fails.
+
+                self.queryModel.detectedLanguage = language;
+                self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:language];
+                
+                completion(self.queryModel, error);
+            }];
+            return;
+        }
         
         self.queryModel.detectedLanguage = language;
         self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:language];
+        
         completion(self.queryModel, error);
     }];
 }
