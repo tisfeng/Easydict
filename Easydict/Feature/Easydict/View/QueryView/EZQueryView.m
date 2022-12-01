@@ -56,12 +56,10 @@ static CGFloat kExceptTextViewHeight = 30;
     self.detectButton = detectButton;
 
     mm_weakify(self);
-    [detectButton setClickBlock:^(EZButton *_Nonnull button) {
-        NSLog(@"detectButton");
-
+    [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
-        if (self.detectActionBlock) {
-            self.detectActionBlock(button);
+        if (self.selectedLanguageBlock) {
+            self.selectedLanguageBlock(language);
         }
     }];
 
@@ -236,7 +234,7 @@ static CGFloat kExceptTextViewHeight = 30;
 }
 
 - (void)updateDetectButton {
-    self.detectButton.language = self.queryModel.detectedLanguage;
+    self.detectButton.detectedLanguage = self.queryModel.detectedLanguage;
     
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;

@@ -70,7 +70,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 @interface EZLanguageClass : NSObject
 
 @property (nonatomic, copy) NSString *chineseName;
-@property (nonatomic, copy) NSString *englishName;
+@property (nonatomic, copy) EZLanguage englishName;
 @property (nonatomic, copy) NSString *localName;
 @property (nonatomic, copy) NSString *flagEmoji;
 

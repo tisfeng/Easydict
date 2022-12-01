@@ -342,7 +342,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 /// Directly query model.
 - (void)queryCurrentModel {
-    if (![self.queryModel.sourceLanguage isEqualToString:EZLanguageAuto]) {
+    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        fromLanguage = self.queryModel.sourceLanguage;
+    }
+    
+    if (![fromLanguage isEqualToString:EZLanguageAuto]) {
         [self queryAllSerives:self.queryModel];
         return;
     }
@@ -643,6 +648,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         mm_strongify(self);
         [self resetQueryResults];
         [self updateTableViewWithAnimation:nil];
+    }];
+    
+    [queryView setSelectedLanguageBlock:^(EZLanguage  _Nonnull language) {
+        mm_strongify(self);
+        self.queryModel.detectedLanguage = language;
+        [self startQueryText];
     }];
     
     return queryCell;

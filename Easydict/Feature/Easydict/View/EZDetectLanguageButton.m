@@ -7,11 +7,12 @@
 //
 
 #import "EZDetectLanguageButton.h"
+#import "EZLanguageManager.h"
 
 @interface EZDetectLanguageButton ()
 
 @property (nonatomic, strong, nullable) NSMenu *customMenu;
-@property (nonatomic, strong) NSArray<NSString *> *titles;
+@property (nonatomic, strong) NSArray<NSString *> *languages;
 
 @end
 
@@ -27,7 +28,7 @@
 - (void)setup {
     self.hidden = YES;
     self.title = @"";
-    
+
     [self excuteLight:^(EZButton *detectButton) {
         detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
@@ -37,31 +38,39 @@
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#424445"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
     }];
-    
+
     mm_weakify(self);
-    [self setClickBlock:^(EZButton * _Nonnull button) {
+    [self setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-        
+
         // 显示menu
-        if (self.titles.count) {
+        if (self.languages.count) {
             [self setupMenu];
             [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
         }
     }];
+
+    NSMutableArray *languages = [NSMutableArray array];
+    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedValues];
+    for (EZLanguageClass *language in allLanguages) {
+        NSString *languageName = [EZLanguageManager showingLanguageName:language.englishName];
+        [languages addObject:languageName];
+    }
+    self.languages = languages;
 }
 
-- (void)setLanguage:(EZLanguage)language {
-    _language = language;
-    
+- (void)setDetectedLanguage:(EZLanguage)language {
+    _detectedLanguage = language;
+
     if (language == EZLanguageAuto) {
         self.hidden = YES;
         return;
     }
-    
+
     self.hidden = NO;
-    
-    NSString *detectLanguageTitle =  [EZLanguageManager showingLanguageName:language];
-    
+
+    NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:language];
+
     NSString *title = @"识别为 ";
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
     [attrTitle addAttributes:@{
@@ -80,9 +89,9 @@
 
     [attrTitle appendAttributedString:detectAttrTitle];
     self.attributedTitle = attrTitle;
-    
+
     CGFloat width = [attrTitle mm_getTextWidth];
-    
+
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(width + 8);
     }];
@@ -96,7 +105,7 @@
         self.customMenu = [NSMenu new];
     }
     [self.customMenu removeAllItems];
-    [self.titles enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [self.languages enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
         item.target = self;
@@ -107,29 +116,33 @@
 - (void)clickItem:(NSMenuItem *)item {
     [self updateWithIndex:item.tag];
     if (self.menuItemSeletedBlock) {
-        self.menuItemSeletedBlock(item.tag, item.title);
+        self.menuItemSeletedBlock(self.detectedLanguage);
     }
     self.customMenu = nil;
 }
 
 - (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles {
-    self.titles = titles;
-    
+    self.languages = titles;
+
     if (self.customMenu) {
         [self setupMenu];
     }
 }
 
 - (void)updateWithIndex:(NSInteger)index {
-    if (index >= 0 && index < self.titles.count) {
-        NSString *title = [self.titles objectAtIndex:index];
+    if (index >= 0 && index < self.languages.count) {
+        NSString *title = [self.languages objectAtIndex:index];
         NSLog(@"title: %@", title);
+        
+        NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
+        EZLanguage langauge = allLanguages[index];
+        self.detectedLanguage = langauge;
     }
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
-    
+
     // Drawing code here.
 }
 
