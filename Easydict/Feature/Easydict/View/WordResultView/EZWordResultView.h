@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TranslateResult.h"
+#import "EZQueryResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,12 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *copiedText;
 
-@property (nonatomic, strong) TranslateResult *result;
+@property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, copy) void (^playAudioBlock)(EZWordResultView *view, NSString *word);
 @property (nonatomic, copy) void (^copyTextBlock)(EZWordResultView *view, NSString *word);
 
-- (void)refreshWithResult:(TranslateResult *)result;
+- (void)refreshWithResult:(EZQueryResult *)result;
 
 @end
 

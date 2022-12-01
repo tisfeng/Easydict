@@ -7,10 +7,10 @@
 //
 
 #import "EZBaseQueryViewController.h"
-#import "BaiduTranslate.h"
-#import "YoudaoTranslate.h"
-#import "GoogleTranslate.h"
-#import "Configuration.h"
+#import "EZBaiduTranslate.h"
+#import "EZYoudaoTranslate.h"
+#import "EZGoogleTranslate.h"
+#import "EZConfiguration.h"
 #import "NSColor+MyColors.h"
 #import "EZQueryCell.h"
 #import "EZResultCell.h"
@@ -22,7 +22,7 @@
 #import "EZTitlebar.h"
 #import "EZQueryModel.h"
 #import "EZSelectLanguageCell.h"
-#import "EZServiceStorage.h"
+#import "EZLocalStorage.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateTool.h"
 #import "EZBaseQueryWindow.h"
@@ -50,7 +50,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 @property (nonatomic, strong) NSTableColumn *column;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
-@property (nonatomic, strong) NSArray<TranslateService *> *services;
+@property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, copy) NSString *queryText;
@@ -136,8 +136,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)resetQueryResults {
     self.queryText = @"";
         
-    for (TranslateService *service in self.services) {
-        TranslateResult *result = [[TranslateResult alloc] init];
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = [[EZQueryResult alloc] init];
         service.result = result;
         result.isShowing = NO; // default not show, show result after querying.
     }
@@ -152,7 +152,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     NSMutableArray *translateServices = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
-        TranslateService *service = [EZServiceTypes serviceWithType:type];
+        EZQueryService *service = [EZServiceTypes serviceWithType:type];
         [translateServices addObject:service];
     }
     self.services = translateServices;
@@ -338,7 +338,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)queryCurrentModel {
-    if (self.queryModel.targetLanguage != Language_auto) {
+    if (self.queryModel.targetLanguage != EZLanguageAuto) {
         [self queryAllSerives:self.queryModel];
         return;
     }
@@ -350,8 +350,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
-    for (TranslateService *service in self.services) {
-        [self queryWithModel:queryModel serive:service completion:^(TranslateResult * _Nullable result, NSError * _Nullable error) {
+    for (EZQueryService *service in self.services) {
+        [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
             if (!result) {
                 NSLog(@"result is nil, error: %@", error);
                 return;
@@ -362,8 +362,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel
-                serive:(TranslateService *)service
-            completion:(nonnull void (^)(TranslateResult *_Nullable result, NSError *_Nullable error))completion {
+                serive:(EZQueryService *)service
+            completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!service.enabled) {
         NSLog(@"service disabled: %@", service);
         return;
@@ -428,7 +428,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
     } else {
-        TranslateService *service = [self serviceAtRow:row];
+        EZQueryService *service = [self serviceAtRow:row];
         if (service.result && !service.result.isShowing) {
             height = kResultViewMiniHeight;
         } else {
@@ -472,7 +472,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
     NSMutableArray *results = [NSMutableArray array];
-    for (TranslateService *service in self.services) {
+    for (EZQueryService *service in self.services) {
         [results addObject:service.result];
     }
     
@@ -500,11 +500,11 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 
-- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData {
+- (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData {
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
-- (void)updateCellWithResult:(TranslateResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
+- (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     if (!result) {
         NSLog(@"resutl is nil");
         return;
@@ -512,13 +512,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
-- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData {
+- (void)updateCellWithResults:(NSArray<EZQueryResult *> *)results reloadData:(BOOL)reloadData {
     [self updateCellWithResults:results reloadData:reloadData completionHandler:nil];
 }
 
-- (void)updateCellWithResults:(NSArray<TranslateResult *> *)results reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
+- (void)updateCellWithResults:(NSArray<EZQueryResult *> *)results reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
-    for (TranslateResult *result in results) {
+    for (EZQueryResult *result in results) {
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
         [rowIndexes addIndex:row + [self resultCellOffset]];
@@ -550,8 +550,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (NSArray *)needUpdateClosedResults {
     NSMutableArray *results = [NSMutableArray array];
-    for (TranslateService *service in self.services) {
-        TranslateResult *result = service.result;
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
         if (result.isShowing) {
             result.isShowing = NO;
             [results addObject:result];
@@ -598,9 +598,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        TranslateService *service = [self firstTranslateService];
+        EZQueryService *service = [self firstEZQueryService];
         if (service) {
-            Language lang = self.queryModel.sourceLanguage;
+            EZLanguage lang = self.queryModel.sourceLanguage;
             [service audio:self.queryModel.queryText from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
                 if (url.length) {
                     [self playAudioWithURL:url];
@@ -623,8 +623,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     return queryCell;
 }
 
-- (TranslateService *_Nullable)firstTranslateService {
-    for (TranslateService *service in self.services) {
+- (EZQueryService *_Nullable)firstEZQueryService {
+    for (EZQueryService *service in self.services) {
         return service;
     }
     return nil;
@@ -634,7 +634,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
     resultCell.identifier = EZResultCellId;
     
-    TranslateService *service = [self serviceAtRow:row];
+    EZQueryService *service = [self serviceAtRow:row];
     resultCell.result = service.result;
     [self setupResultCell:resultCell];
     
@@ -659,21 +659,21 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     return offset;
 }
 
-- (TranslateService *)serviceAtRow:(NSInteger)row {
+- (EZQueryService *)serviceAtRow:(NSInteger)row {
     NSInteger index = row - [self resultCellOffset];
-    TranslateService *service = self.services[index];
+    EZQueryService *service = self.services[index];
     return service;
 }
 
-- (TranslateService *)serviceWithType:(EZServiceType)serviceType {
+- (EZQueryService *)serviceWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
     return self.services[index];
 }
 
 - (void)setupResultCell:(EZResultCell *)resultCell {
     EZResultView *resultView = resultCell.resultView;
-    TranslateResult *result = resultCell.result;
-    TranslateService *serive = [self serviceWithType:result.serviceType];
+    EZQueryResult *result = resultCell.result;
+    EZQueryService *serive = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
@@ -695,15 +695,15 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [resultView setClickArrowBlock:^(BOOL isShowing) {
         mm_strongify(self);
-        TranslateService *service = [self serviceWithType:result.serviceType];
+        EZQueryService *service = [self serviceWithType:result.serviceType];
         service.enabled = isShowing;
         
         // If hasn't result, start querying
         if (!result.raw) {
             [service translate:self.queryModel.queryText
                           from:self.queryModel.sourceLanguage
-                            to:Configuration.shared.to
-                    completion:^(TranslateResult *_Nullable result, NSError *_Nullable error) {
+                            to:self.queryModel.targetLanguage
+                    completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 [self updateCellWithResult:result reloadData:YES completionHandler:nil];
             }];
         } else {
@@ -712,12 +712,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }];
 }
 
-- (void)playSeriveAudio:(TranslateService *)service textArray:(NSArray<NSString *> *)textArray lang:(Language)lang {
+- (void)playSeriveAudio:(EZQueryService *)service textArray:(NSArray<NSString *> *)textArray lang:(EZLanguage)lang {
     NSString *text = [NSString mm_stringByCombineComponents:textArray separatedString:@"\n"];
     [self playSeriveAudio:service text:text lang:lang];
 }
 
-- (void)playSeriveAudio:(TranslateService *)service text:(NSString *)text lang:(Language)lang {
+- (void)playSeriveAudio:(EZQueryService *)service text:(NSString *)text lang:(EZLanguage)lang {
     if (text.length) {
         mm_weakify(self)
         [service audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {

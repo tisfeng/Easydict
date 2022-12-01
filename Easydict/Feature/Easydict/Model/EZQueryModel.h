@@ -7,18 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TranslateLanguage.h"
+#import "EZLanguageTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryModel : NSObject
 
 @property (nonatomic, copy) NSString *queryText;
-@property (nonatomic, assign) Language sourceLanguage;
-@property (nonatomic, assign) Language targetLanguage;
-
-@property (nonatomic, copy) NSString *sourceLanguageName;
-@property (nonatomic, copy) NSString *targetLanguageName;
+@property (nonatomic, assign) EZLanguage sourceLanguage;
+@property (nonatomic, assign) EZLanguage targetLanguage;
 
 @property (nonatomic, strong) NSImage *image;
 

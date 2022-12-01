@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "EZCommonView.h"
 #import "WordResultView.h"
-#import "TranslateResult.h"
+#import "EZQueryResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,14 +17,14 @@ static const CGFloat kResultViewMiniHeight = 30;
 
 @interface EZResultView : NSView
 
-@property (nonatomic, strong) TranslateResult *result;
+@property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, copy) void (^clickArrowBlock)(BOOL isShowing);
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
 
-- (void)refreshWithResult:(TranslateResult *)result;
+- (void)refreshWithResult:(EZQueryResult *)result;
 - (void)refreshWithStateString:(NSString *)string;
 - (void)refreshWithStateString:(NSString *)string actionTitle:(NSString *_Nullable)actionTitle action:(void (^_Nullable)(void))action;
 

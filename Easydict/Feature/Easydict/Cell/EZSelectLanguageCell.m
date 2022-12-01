@@ -8,9 +8,9 @@
 
 #import "EZSelectLanguageCell.h"
 #import "EZPopUpButton.h"
-#import "TranslateService.h"
-#import "GoogleTranslate.h"
-#import "Configuration.h"
+#import "EZQueryService.h"
+#import "EZGoogleTranslate.h"
+#import "EZConfiguration.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
 
@@ -21,7 +21,7 @@
 @property (nonatomic, strong) EZPopUpButton *fromLanguageButton;
 @property (nonatomic, strong) NSButton *transformButton;
 @property (nonatomic, strong) EZPopUpButton *toLanguageButton;
-@property (nonatomic, strong) TranslateService *translate;
+@property (nonatomic, strong) EZQueryService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
 @end
@@ -32,7 +32,7 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        self.translate = [[GoogleTranslate alloc] init];
+        self.translate = [[EZGoogleTranslate alloc] init];
         [self setup];
     }
     return  self;
@@ -70,11 +70,11 @@
     mm_weakify(self);
     [transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-        Language from = Configuration.shared.from;
-        Configuration.shared.from = Configuration.shared.to;
-        Configuration.shared.to = from;
-        [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
-        [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
+        EZLanguage from = EZConfiguration.shared.from;
+        EZConfiguration.shared.from = EZConfiguration.shared.to;
+        EZConfiguration.shared.to = from;
+        [self.fromLanguageButton updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.from]];
+        [self.toLanguageButton updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.to]];
         
         [self enterAction];
     }];
@@ -85,19 +85,19 @@
         // Only resolve layout warning.
         button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if ([obj integerValue] == Language_auto) {
+            if ([obj isEqualToString:EZLanguageAuto]) {
                 return @"自动检测";
             }
-            return LanguageDescFromEnum([obj integerValue]);
+            return obj;
         }]];
-        [button updateWithIndex:[self.translate indexForLanguage:Configuration.shared.from]];
+        [button updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.from]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
             mm_strongify(self);
-            NSInteger from = [[self.translate.languages objectAtIndex:index] integerValue];
-            NSLog(@"from 选中语言 %zd %@", from, LanguageDescFromEnum(from));
-            if (from != Configuration.shared.from) {
-                Configuration.shared.from = from;
+            EZLanguage from = [self.translate.languages objectAtIndex:index];
+            NSLog(@"from 选中语言: %@", from);
+            if ([from isEqualToString: EZConfiguration.shared.from]) {
+                EZConfiguration.shared.from = from;
                 [self enterAction];
             }
         }];
@@ -109,19 +109,19 @@
         [languageBarView addSubview:button];
         button.frame = self.bounds;
         [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if ([obj integerValue] == Language_auto) {
+            if ([obj isEqualToString: EZLanguageAuto]) {
                 return @"自动选择";
             }
-            return LanguageDescFromEnum([obj integerValue]);
+            return obj;
         }]];
-        [button updateWithIndex:[self.translate indexForLanguage:Configuration.shared.to]];
+        [button updateWithIndex:[self.translate indexForLanguage:EZConfiguration.shared.to]];
         mm_weakify(self);
         [button setMenuItemSeletedBlock:^(NSInteger index, NSString *title) {
             mm_strongify(self);
-            NSInteger to = [[self.translate.languages objectAtIndex:index] integerValue];
-            NSLog(@"to 选中语言 %zd %@", to, LanguageDescFromEnum(to));
-            if (to != Configuration.shared.to) {
-                Configuration.shared.to = to;
+            EZLanguage to = [self.translate.languages objectAtIndex:index];
+            NSLog(@"to 选中语言: %@", to);
+            if (![to isEqualToString: EZConfiguration.shared.to]) {
+                EZConfiguration.shared.to = to;
                 [self enterAction];
             }
         }];

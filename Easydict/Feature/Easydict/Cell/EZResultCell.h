@@ -7,14 +7,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TranslateResult.h"
+#import "EZQueryResult.h"
 #import "EZResultView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZResultCell : NSTableRowView
 
-@property (nonatomic, strong) TranslateResult *result;
+@property (nonatomic, strong) EZQueryResult *result;
 @property (nonatomic, strong) EZResultView *resultView;
 
 @property (nonatomic, copy) void (^clickArrowBlock)(BOOL isShowing);
