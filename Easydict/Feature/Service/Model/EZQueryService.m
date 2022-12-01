@@ -87,7 +87,11 @@
 
 
 - (EZLanguage)languageEnumFromString:(NSString *)langString {
-    return [self.langEnumFromStringDict objectForKey:langString];
+    EZLanguage language = [self.langEnumFromStringDict objectForKey:langString];
+    if (!language) {
+        language = EZLanguageAuto;
+    }
+    return language;
 }
 
 
