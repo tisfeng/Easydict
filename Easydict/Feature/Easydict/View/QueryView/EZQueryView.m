@@ -249,8 +249,8 @@ static CGFloat kExceptTextViewHeight = 30;
 }
 
 - (void)updateDetectButton {
-    EZLanguage fromLanguage = self.queryModel.sourceLanguage;
-    if (fromLanguage == EZLanguageAuto || self.queryModel.queryText.length == 0) {
+    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
+    if (fromLanguage == EZLanguageAuto) {
         self.detectButton.hidden = YES;
         return;
     }

@@ -19,8 +19,13 @@
 @property (nonatomic, strong) NSView *languageBarView;
 
 @property (nonatomic, strong) EZPopUpButton *fromLanguageButton;
+@property (nonatomic, copy) EZLanguage fromLanguage;
+
 @property (nonatomic, strong) NSButton *transformButton;
+
 @property (nonatomic, strong) EZPopUpButton *toLanguageButton;
+@property (nonatomic, copy) EZLanguage toLanguage;
+
 @property (nonatomic, strong) EZQueryService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
@@ -93,14 +98,13 @@
             mm_strongify(self);
             EZLanguage from = [self.translate.languages objectAtIndex:index];
             NSLog(@"from 选中语言: %@", from);
-            if ([from isEqualToString: EZConfiguration.shared.from]) {
+            if (![from isEqualToString: EZConfiguration.shared.from]) {
                 EZConfiguration.shared.from = from;
                 [self enterAction];
             }
         }];
     }];
     self.fromLanguageButton.mas_key = @"fromLanguageButton";
-    
     
     self.toLanguageButton = [EZPopUpButton mm_make:^(EZPopUpButton *_Nonnull button) {
         [languageBarView addSubview:button];
@@ -159,15 +163,11 @@
 
 - (void)enterAction {
     NSLog(@"enterAction");
+    
+    if (self.enterActionBlock) {
+        self.enterActionBlock(EZConfiguration.shared.from, EZConfiguration.shared.to);
+    }
 }
-
-
-#pragma mark - Setter
-
-- (void)setEnterActionBlock:(void (^)(NSString * _Nonnull))enterActionBlock {
-    _enterActionBlock = enterActionBlock;
-}
-
 
 - (void)dealloc {
     NSLog(@"dealloc: %@", self);

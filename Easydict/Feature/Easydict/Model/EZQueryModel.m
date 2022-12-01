@@ -7,21 +7,17 @@
 //
 
 #import "EZQueryModel.h"
+#import "EZConfiguration.h"
 
 @implementation EZQueryModel
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self reset];
+        self.sourceLanguage = EZConfiguration.shared.from;
+        self.targetLanguage = EZConfiguration.shared.to;
+        self.detectedLanguage = EZLanguageAuto;
     }
     return self;
-}
-
-- (void)reset {
-    self.queryText = @"";
-    self.sourceLanguage = EZLanguageAuto;
-    self.targetLanguage = EZLanguageAuto;
-    self.viewHeight = 0;
 }
 
 @end
