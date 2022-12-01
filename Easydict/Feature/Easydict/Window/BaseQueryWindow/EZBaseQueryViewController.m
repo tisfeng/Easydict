@@ -198,7 +198,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     _queryText = queryText;
     
     if (queryText.length == 0) {
-        [self.queryModel reset];
+        self.queryModel.queryViewHeight = 0;
+        self.queryModel.detectedLanguage = EZLanguageAuto;
     }
     
     self.queryModel.queryText = queryText;
@@ -285,6 +286,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 #pragma mark - Public Methods
 
+/// Close all result view, then query text.
 - (void)startQueryText:(NSString *)text {
     // !!!:  deep copy text, because text will be released in resetQueryResults.
     NSString *queryText = [text mutableCopy];
@@ -333,12 +335,14 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 #pragma mark - Query Methods
 
+/// Close all result view, then query.
 - (void)startQueryText {
     [self startQueryText:self.queryModel.queryText];
 }
 
+/// Directly query model.
 - (void)queryCurrentModel {
-    if (self.queryModel.targetLanguage != EZLanguageAuto) {
+    if (![self.queryModel.sourceLanguage isEqualToString:EZLanguageAuto]) {
         [self queryAllSerives:self.queryModel];
         return;
     }
@@ -371,9 +375,23 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     // Show result if it has been queried.
     service.result.isShowing = YES;
+    
+    EZLanguage fromLanguage = queryModel.detectedLanguage;
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        fromLanguage = queryModel.sourceLanguage;
+    }
+    
+    EZLanguage toLanguage = queryModel.targetLanguage;
+    
+    if ([toLanguage isEqualToString:EZLanguageAuto]) {
+        toLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:fromLanguage];
+    }
+    
+    NSLog(@"query language: %@ --> %@", fromLanguage, toLanguage);
+    
     [service translate:queryModel.queryText
-                  from:queryModel.sourceLanguage
-                    to:queryModel.targetLanguage
+                  from:fromLanguage
+                    to:toLanguage
             completion:completion];
 }
 
@@ -401,8 +419,15 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }
     
     if (self.windowType != EZWindowTypeMini && row == 1) {
-        EZSelectLanguageCell *selectCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
-        return selectCell;
+        EZSelectLanguageCell *selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
+        mm_weakify(self);
+        [selectLanguageCell setEnterActionBlock:^(EZLanguage  _Nonnull from, EZLanguage  _Nonnull to) {
+            mm_strongify(self);
+            self.queryModel.sourceLanguage = from;
+            self.queryModel.targetLanguage = to;
+            [self startQueryText];
+        }];
+        return selectLanguageCell;
     }
     
     EZResultCell *resultCell = [self resultCellAtRow:row];
@@ -414,8 +439,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     CGFloat height;
     
     if (row == 0) {
-        if (self.queryModel.viewHeight) {
-            height = self.queryModel.viewHeight;
+        if (self.queryModel.queryViewHeight) {
+            height = self.queryModel.queryViewHeight;
         } else {
             @autoreleasepool {
                 EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
@@ -581,8 +606,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryText = text;
 
         // Reduce the update frequency, update only when the height changes.
-        if (queryViewHeight != self.queryModel.viewHeight) {
-            self.queryModel.viewHeight = queryViewHeight;
+        if (queryViewHeight != self.queryModel.queryViewHeight) {
+            self.queryModel.queryViewHeight = queryViewHeight;
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             

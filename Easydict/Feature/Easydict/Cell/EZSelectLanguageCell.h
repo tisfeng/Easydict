@@ -7,13 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZLanguageTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZSelectLanguageCell : NSTableRowView
 
-@property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
-@property (nonatomic, copy) void (^detectActionBlock)(NSString *text);
+@property (nonatomic, copy) void (^enterActionBlock)(EZLanguage from, EZLanguage to);
 
 @end
 

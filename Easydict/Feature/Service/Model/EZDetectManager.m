@@ -50,9 +50,11 @@
         return;
     }
     
-    [self.detectTextService detect:queryText completion:^(EZLanguage lang, NSError * _Nullable error) {
-        self.queryModel.sourceLanguage = lang;
-        self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:lang];
+    [self.detectTextService detect:queryText completion:^(EZLanguage language, NSError * _Nullable error) {
+        NSLog(@"detected language: %@", language);
+        
+        self.queryModel.detectedLanguage = language;
+        self.queryModel.targetLanguage = [EZLanguageTool targetLanguageWithSourceLanguage:language];
         completion(self.queryModel, error);
     }];
 }
