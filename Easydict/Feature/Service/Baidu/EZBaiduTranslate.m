@@ -440,8 +440,11 @@
 
 
     void (^request)(void) = ^(void) {
-        void (^translateBlock)(EZLanguage f) = ^(EZLanguage from) {
-            EZLanguage toLang = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+        void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
+            EZLanguage toLang = to;
+            if ([toLang isEqualToString:EZLanguageAuto]) {
+                toLang = [EZLanguageTool targetLanguageWithSourceLanguage:from];
+            }
             [self sendTranslateRequest:text from:from to:toLang completion:completion];
         };
         
