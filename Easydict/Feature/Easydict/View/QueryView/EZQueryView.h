@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^clearBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat queryViewHeight);
+@property (nonatomic, copy) void (^selectedLanguageBlock)(EZLanguage language);
 
 
 - (CGFloat)heightOfQueryView;

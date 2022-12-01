@@ -13,9 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZDetectLanguageButton : EZButton
 
-@property (nonatomic, copy) EZLanguage language;
+@property (nonatomic, copy) EZLanguage detectedLanguage;
 
-@property (nonatomic, copy) void (^menuItemSeletedBlock)(NSInteger index, NSString *title);
+@property (nonatomic, copy) void (^menuItemSeletedBlock)(EZLanguage selectedLanguage);
 
 - (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles;
 - (void)updateWithIndex:(NSInteger)index;
