@@ -37,7 +37,7 @@
     [super updateConstraints];
 }
 
-- (void)setResult:(TranslateResult *)result {
+- (void)setResult:(EZQueryResult *)result {
     _result = result;
     
     [self.resultView refreshWithResult:result];

@@ -10,19 +10,18 @@
 
 @implementation EZQueryModel
 
+- (instancetype)init {
+    if (self = [super init]) {
+        [self reset];
+    }
+    return self;
+}
+
 - (void)reset {
     self.queryText = @"";
-    self.sourceLanguage = Language_auto;
-    self.targetLanguage = Language_auto;
+    self.sourceLanguage = EZLanguageAuto;
+    self.targetLanguage = EZLanguageAuto;
     self.viewHeight = 0;
-}
-
-- (NSString *)sourceLanguageName {
-    return LanguageDescFromEnum(self.sourceLanguage);
-}
-
-- (NSString *)targetLanguageName {
-    return LanguageDescFromEnum(self.targetLanguage);
 }
 
 @end

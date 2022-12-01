@@ -44,9 +44,9 @@ static const CGFloat kVerticalPadding = 8;
     return self;
 }
 
-- (void)refreshWithResult:(TranslateResult *)result {
+- (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
-    TranslateWordResult *wordResult = result.wordResult;
+    EZTranslateWordResult *wordResult = result.wordResult;
     
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
@@ -112,7 +112,7 @@ static const CGFloat kVerticalPadding = 8;
         [self updateLabelHeight:resultLabel leftMargin:leftMargin];
     }
     
-    [wordResult.phonetics enumerateObjectsUsingBlock:^(TranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = obj.name;
@@ -182,7 +182,7 @@ static const CGFloat kVerticalPadding = 8;
         lastView = audioButton;
     }];
     
-    [wordResult.parts enumerateObjectsUsingBlock:^(TranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
@@ -247,7 +247,7 @@ static const CGFloat kVerticalPadding = 8;
         [self updateLabelHeight:meanLabel leftMargin:leftMargin];
     }];
     
-    [wordResult.exchanges enumerateObjectsUsingBlock:^(TranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@: ", obj.name];
@@ -306,14 +306,13 @@ static const CGFloat kVerticalPadding = 8;
             }];
             wordButton.mas_key = @"wordButton_words";
             
-            
             lastView = wordButton;
         }];
     }];
     
     __block NSString *lastSimpleWordPart = nil;
     
-    [wordResult.simpleWords enumerateObjectsUsingBlock:^(TranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             // 添加 part label

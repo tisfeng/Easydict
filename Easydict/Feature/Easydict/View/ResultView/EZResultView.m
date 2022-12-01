@@ -194,14 +194,14 @@
     return text;
 }
 
-- (void)refreshWithResult:(TranslateResult *)result {
+- (void)refreshWithResult:(EZQueryResult *)result {
     _result = result;
     
     EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
     
-    TranslateService *translate = [EZServiceTypes serviceWithType:serviceType];
+    EZQueryService *translate = [EZServiceTypes serviceWithType:serviceType];
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:translate.name font:[NSFont systemFontOfSize:13]];
     
     [self updateArrowButton];

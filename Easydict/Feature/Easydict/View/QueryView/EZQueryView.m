@@ -249,15 +249,15 @@ static CGFloat kExceptTextViewHeight = 30;
 }
 
 - (void)updateDetectButton {
-    Language fromLanguage = self.queryModel.sourceLanguage;
-    if (fromLanguage == Language_auto || self.queryModel.queryText.length == 0) {
+    EZLanguage fromLanguage = self.queryModel.sourceLanguage;
+    if (fromLanguage == EZLanguageAuto || self.queryModel.queryText.length == 0) {
         self.detectButton.hidden = YES;
         return;
     }
     
     self.detectButton.hidden = NO;
     
-    NSString *detectLanguageTitle =  LanguageDescFromEnum(fromLanguage);
+    NSString *detectLanguageTitle =  fromLanguage;
     
     NSString *title = @"识别为 ";
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
