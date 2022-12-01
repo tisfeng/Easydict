@@ -7,6 +7,7 @@
 //
 
 #import "EZLanguageTool.h"
+#import "EZAppleService.h"
 
 NSString *const EZLanguageAuto = @"auto";
 NSString *const EZLanguageSimplifiedChinese = @"Chinese-Simplified";
@@ -72,14 +73,23 @@ NSString *const EZLanguageHebrew = @"Hebrew";
 }
 
 // Get user system preferred languages
-+ (NSArray<NSString *> *)systemPreferredLanguages {
++ (NSArray<EZLanguage> *)systemPreferredLanguages {
     NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
-        [languages addObject:language];
+        // "zh-Hans-CN" -> "zh-Hans"
+        NSMutableArray *array = [[language componentsSeparatedByString:@"-"] mutableCopy];
+        // remove country code
+        [array removeLastObject];
+        NSString *languageCode = [array componentsJoinedByString:@"-"];
+        // Convert to EZLanguage
+        EZAppleService *appleService = [[EZAppleService alloc] init];
+        EZLanguage ezLanguage = [appleService languageEnumFromString:languageCode];
+
+        [languages addObject:ezLanguage];
     }
 
-    // The same as abov.
+    // This method seems to be the same.
     //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //    NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
 
@@ -87,6 +97,48 @@ NSString *const EZLanguageHebrew = @"Hebrew";
 
     return languages; // @["zh-Hans-CN", "en-CN"]
 }
+
++ (EZLanguage)firstLanguage {
+    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+    return languages[0];
+}
++ (EZLanguage)secondLanguage {
+    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+    if (languages.count > 1) {
+        return languages[1];
+    }
+
+    EZLanguage targetLanguage = [self targetLanguageWithSourceLanguage:[self firstLanguage]];
+    return targetLanguage;
+}
+
++ (BOOL)isChineseFirstLanguage {
+    EZLanguage firstLanguage = [self firstLanguage];
+    if (firstLanguage == EZLanguageSimplifiedChinese || firstLanguage == EZLanguageTraditionalChinese) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)containsEnglishPreferredLanguage {
+    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+    for (EZLanguage language in languages) {
+        if (language == EZLanguageEnglish) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+/// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.
++ (NSString *)languageShowingName:(EZLanguage)language {
+    NSString *languageName = language;
+    if ([self isChineseFirstLanguage]) {
+        languageName = [self languageChineseName:language];
+    }
+    return languageName;
+}
+
 
 // Get language Chinese name, such as "简体中文"
 + (NSString *)languageChineseName:(EZLanguage)language {
