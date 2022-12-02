@@ -39,6 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
 + (NSString *)showingLanguageName:(EZLanguage)language;
 
++ (NSString *)showingLanguageNameWithFlag:(EZLanguage)language;
+
 /// Get language Chinese name, Chinese -> 中文, English -> 英语.
 + (NSString *)languageChineseName:(EZLanguage)language;
 

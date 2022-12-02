@@ -37,6 +37,8 @@
 // 重写父类方法，无格式粘贴  https://stackoverflow.com/questions/8198767/how-can-you-intercept-pasting-into-a-nstextview-to-remove-unsupported-formatting
 - (void)paste:(id)sender {
     [self pasteAsPlainText:sender];
+    
+    // TODO: need to handle select all text and paste condition!
 }
 
 @end
