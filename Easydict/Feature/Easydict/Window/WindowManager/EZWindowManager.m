@@ -388,7 +388,8 @@ static EZWindowManager *_instance;
         [image mm_writeToFileAsPNG:_imagePath];
         NSLog(@"已保存图片: %@", _imagePath);
         
-        EZWindowType windowType = EZWindowTypeMini;
+        // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
+        EZWindowType windowType = EZWindowTypeFixed;
         EZBaseQueryWindow *window = [self windowWithType:windowType];
         CGPoint mouseLocation = [self mouseLocation];
         // Convert position
@@ -396,7 +397,8 @@ static EZWindowManager *_instance;
                     
         // Reset window height first, avoid being affected by previous window height.
         [window.viewController resetTableView:^{
-            [self showFloatingWindow:window atPoint:showingPosition];
+            [self showFloatingWindowType:windowType atLastPoint:NO queryText:nil];
+//            [self showFloatingWindow:window atPoint:showingPosition];
             [window.viewController startQueryWithImage:image];
         }];
     }];
