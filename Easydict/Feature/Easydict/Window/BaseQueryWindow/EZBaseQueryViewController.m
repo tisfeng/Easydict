@@ -199,6 +199,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     if (queryText.length == 0) {
         self.queryModel.queryViewHeight = 0;
         self.queryModel.detectedLanguage = EZLanguageAuto;
+        
+        [self updateAutoTargetLanguage];
+        [self updateSelectLanguageCell];
     }
     
     self.queryModel.queryText = queryText;
@@ -357,8 +360,27 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
         self.queryView.queryModel = queryModel;
+        [self updateSelectLanguageCell];
+        
         [self queryAllSerives:queryModel];
     }];
+}
+
+/// Update queryModel autoTargetLanguage and return it.
+- (EZLanguage)updateAutoTargetLanguage {
+    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        fromLanguage = self.queryModel.sourceLanguage;
+    }
+    
+    EZLanguage toLanguage = self.queryModel.targetLanguage;
+    
+    if ([toLanguage isEqualToString:EZLanguageAuto]) {
+        toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
+    }
+    self.queryModel.autoTargetLanguage = toLanguage;
+    
+    return toLanguage;
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
@@ -393,12 +415,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         fromLanguage = queryModel.sourceLanguage;
     }
     
-    EZLanguage toLanguage = queryModel.targetLanguage;
-    
-    if ([toLanguage isEqualToString:EZLanguageAuto]) {
-        toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
-    }
-    
+    EZLanguage toLanguage = [self updateAutoTargetLanguage];
+
     NSLog(@"query: %@,  from-to: %@ --> %@", service.serviceType, fromLanguage, toLanguage);
     
     [service translate:queryModel.queryText
@@ -432,6 +450,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     if (self.windowType != EZWindowTypeMini && row == 1) {
         EZSelectLanguageCell *selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
+        selectLanguageCell.queryModel = self.queryModel;
+        
         mm_weakify(self);
         [selectLanguageCell setEnterActionBlock:^(EZLanguage  _Nonnull from, EZLanguage  _Nonnull to) {
             mm_strongify(self);
@@ -583,6 +603,16 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             completionHandler();
         }
     }];
+}
+
+- (void)updateSelectLanguageCell {
+    NSInteger offset = [self resultCellOffset];
+    if (offset == 1) {
+        return;
+    }
+    
+    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
+    [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (NSArray *)allShowingResults {

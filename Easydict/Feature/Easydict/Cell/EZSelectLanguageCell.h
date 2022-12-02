@@ -8,10 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZLanguageManager.h"
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZSelectLanguageCell : NSTableRowView
+
+@property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, copy) void (^enterActionBlock)(EZLanguage from, EZLanguage to);
 

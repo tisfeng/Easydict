@@ -146,4 +146,10 @@
     return languageName;
 }
 
++ (NSString *)showingLanguageNameWithFlag:(EZLanguage)language {
+    NSString *languageName = [self showingLanguageName:language];
+    NSString *flagEmoji = [self languageFlagEmoji:language];
+    return [NSString stringWithFormat:@"%@ %@", languageName, flagEmoji];
+}
+
 @end
