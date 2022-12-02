@@ -377,7 +377,11 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
                 serive:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!service.enabled) {
-        NSLog(@"service disabled: %@", service);
+        NSLog(@"service disabled: %@", service.serviceType);
+        return;
+    }
+    if (queryModel.queryText.length == 0) {
+        NSLog(@"queryText is empty");
         return;
     }
     
@@ -395,7 +399,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
     }
     
-    NSLog(@"query language: %@ --> %@", fromLanguage, toLanguage);
+    NSLog(@"query: %@,  from-to: %@ --> %@", service.serviceType, fromLanguage, toLanguage);
     
     [service translate:queryModel.queryText
                   from:fromLanguage
@@ -461,14 +465,14 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
     } else {
-        EZQueryService *service = [self serviceAtRow:row];
-        if (service.result && !service.result.isShowing) {
+        EZQueryResult *result = [self serviceAtRow:row].result;
+        if (!result.isShowing || result.isEmpty) {
             height = kResultViewMiniHeight;
         } else {
             EZResultCell *resultCell = [self resultCellAtRow:row];
             height = [resultCell fittingSize].height ?: kResultViewMiniHeight;
         }
-        service.result.cellHeight = height;
+        result.cellHeight = height;
     }
     
     //    NSLog(@"row: %ld, height: %@", row, @(height));
@@ -718,7 +722,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)setupResultCell:(EZResultCell *)resultCell {
     EZResultView *resultView = resultCell.resultView;
     EZQueryResult *result = resultCell.result;
-    EZQueryService *serive = [self serviceWithType:result.serviceType];
+    EZQueryService *service = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
@@ -727,7 +731,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             return;
         }
         
-        [self playSeriveAudio:serive text:text lang:result.from];
+        [self playSeriveAudio:service text:text lang:result.from];
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
@@ -740,20 +744,17 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [resultView setClickArrowBlock:^(BOOL isShowing) {
         mm_strongify(self);
-        EZQueryService *service = [self serviceWithType:result.serviceType];
         service.enabled = isShowing;
         
-        // If hasn't result, start querying
-        if (!result.raw) {
-            [service translate:self.queryModel.queryText
-                          from:self.queryModel.sourceLanguage
-                            to:self.queryModel.targetLanguage
-                    completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-                [self updateCellWithResult:result reloadData:YES completionHandler:nil];
-            }];
-        } else {
+        // If result is not empty, update cell and show.
+        if (!result.isEmpty) {
             [self updateCellWithResult:result reloadData:YES];
+            return;
         }
+        
+        [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+            [self updateCellWithResult:result reloadData:YES completionHandler:nil];
+        }];
     }];
 }
 

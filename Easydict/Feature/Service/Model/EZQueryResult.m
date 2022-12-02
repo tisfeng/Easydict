@@ -44,11 +44,23 @@ NSString *const EZServiceTypeApple = @"Apple";
 
 - (instancetype)init {
     if (self = [super init]) {
-        _normalResults = @[@""];
+//        _normalResults = @[@""];
 //        _isShowing = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
 
     }
     return self;
+}
+
+- (NSString *)translatedText {
+    NSString *text = [self.normalResults componentsJoinedByString:@"\n"];
+    return text;
+}
+
+- (BOOL)isEmpty {
+    if (!self.wordResult && self.translatedText.length == 0) {
+        return YES;
+    }
+    return NO;
 }
 
 @end
