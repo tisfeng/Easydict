@@ -198,6 +198,7 @@ static EZWindowManager *_instance;
     return location;
 }
 
+/// Show floating window in fixed(new) position.
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
     CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
@@ -251,7 +252,7 @@ static EZWindowManager *_instance;
 }
 
 - (NSScreen *)getMouseLocatedScreen {
-    NSPoint mouseLocation = [NSEvent mouseLocation];
+    NSPoint mouseLocation = [NSEvent mouseLocation]; // ???: self.endPoint
     
     // 找到鼠标所在屏幕
     NSScreen *screen = [NSScreen.screens mm_find:^id(NSScreen *_Nonnull obj, NSUInteger idx) {
@@ -310,8 +311,8 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    CGFloat x = popButtonLocation.x + self.offsetPoint.x; // offsetPoint.x > 0
-    CGFloat y = popButtonLocation.y - self.offsetPoint.y; // offsetPoint.y < 0
+    CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
+    CGFloat y = popButtonLocation.y + 5;
     
     // ⚠️ Manually change mini frame point to top-left position, later have to use setFrameOrigin to show window frame.
     CGPoint showingPosition = [self convertShowingPositon:CGPointMake(x, y) windowType:EZWindowTypeMini];
@@ -391,14 +392,10 @@ static EZWindowManager *_instance;
         // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
         EZWindowType windowType = EZWindowTypeFixed;
         EZBaseQueryWindow *window = [self windowWithType:windowType];
-        CGPoint mouseLocation = [self mouseLocation];
-        // Convert position
-        CGPoint showingPosition = [self convertShowingPositon:mouseLocation windowType:windowType];
                     
         // Reset window height first, avoid being affected by previous window height.
         [window.viewController resetTableView:^{
-            [self showFloatingWindowType:windowType atLastPoint:NO queryText:nil];
-//            [self showFloatingWindow:window atPoint:showingPosition];
+            [self showFloatingWindowType:windowType queryText:nil];
             [window.viewController startQueryWithImage:image];
         }];
     }];
