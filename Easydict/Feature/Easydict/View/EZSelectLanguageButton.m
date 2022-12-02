@@ -124,14 +124,14 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 
 - (void)showSelectedLanguage:(EZLanguage)selectedLanguage {
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
-        NSString *languageName = [EZLanguageManager showingLanguageName:EZLanguageAuto];
+        NSString *languageName = [EZLanguageManager showingLanguageName:selectedLanguage];
         NSString *languageFlag = [EZLanguageManager languageFlagEmoji:selectedLanguage];
         if ([selectedLanguage isEqualToString:EZLanguageAuto]) {
             languageFlag = [EZLanguageManager languageFlagEmoji:self.autoSelectedLanguage];
         }
-        NSString *newAutoLanguageName = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];
+        NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];
         
-        self.textField.stringValue = newAutoLanguageName;
+        self.textField.stringValue = languageNameWithFlag;
     }
 }
 
@@ -141,7 +141,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 - (void)setAutoSelectedLanguage:(EZLanguage)selectedLanguage {
     _autoSelectedLanguage = selectedLanguage;
     
-    [self showSelectedLanguage:selectedLanguage];
+    [self showSelectedLanguage:EZLanguageAuto];
 }
 
 @end

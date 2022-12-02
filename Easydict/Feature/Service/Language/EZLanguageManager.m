@@ -29,7 +29,7 @@
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
         // "zh-Hans-CN" -> "zh-Hans"
-        NSMutableArray *array = [[language componentsSeparatedByString:@"-"] mutableCopy];
+        NSMutableArray *array = [NSMutableArray arrayWithArray:[language componentsSeparatedByString:@"-"]];
         // Remove country code
         [array removeLastObject];
         NSString *languageCode = [array componentsJoinedByString:@"-"];

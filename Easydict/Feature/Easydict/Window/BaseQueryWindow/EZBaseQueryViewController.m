@@ -179,15 +179,15 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         }];
     }];
     
-    self.kvo = [FBKVOController controllerWithObserver:self];
-    [self.kvo observe:self
-              keyPath:@"queryText"
-              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-                block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-//        NSLog(@"change: %@", change);
-        
-//        NSString *queryText = change[NSKeyValueChangeNewKey];
-    }];
+//    self.kvo = [FBKVOController controllerWithObserver:self];
+//    [self.kvo observe:self
+//              keyPath:@"queryText"
+//              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+//                block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
+////        NSLog(@"change: %@", change);
+//        
+////        NSString *queryText = change[NSKeyValueChangeNewKey];
+//    }];
 }
 
 
@@ -198,11 +198,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     if (queryText.length == 0) {
         self.queryModel.queryViewHeight = 0;
-        self.queryModel.detectedLanguage = EZLanguageAuto;
-        
-        [self updateAutoTargetLanguage];
-        [self updateSelectLanguageCell];
     }
+    
+//    self.queryModel.detectedLanguage = EZLanguageAuto;
+    
+    
+    [self updateAutoTargetLanguage];
+    [self updateSelectLanguageCell];
     
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
@@ -457,6 +459,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             mm_strongify(self);
             self.queryModel.sourceLanguage = from;
             self.queryModel.targetLanguage = to;
+            self.queryModel.detectedLanguage = EZLanguageAuto;
+            
             [self startQueryText];
         }];
         return selectLanguageCell;
@@ -651,7 +655,11 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
-        self.queryText = text;
+        // As soon as the input text changes, set detectedLanguage to Auto.
+        self.queryModel.detectedLanguage = EZLanguageAuto;
+        
+        // !!!: text is from textView.string, it will be changed!
+        self.queryText = [text mutableCopy];
 
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {

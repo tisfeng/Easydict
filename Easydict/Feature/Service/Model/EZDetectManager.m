@@ -64,10 +64,9 @@
         
         if ([language isEqualToString:EZLanguageAuto]) {
             [self.baiduService detect:queryText completion:^(EZLanguage  _Nonnull language, NSError * _Nullable error) {
-                NSLog(@"baidu detected: %@", language); // Apple detect 123 will fails.
+                NSLog(@"baidu detected: %@", language); // Apple detect 123 will fail.
 
                 self.queryModel.detectedLanguage = language;
-                self.queryModel.targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:language];
                 
                 completion(self.queryModel, error);
             }];
