@@ -465,17 +465,12 @@
     if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
         [self detect:text
-          completion:^(EZLanguage lang, NSError *_Nullable error) {
+          completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
             if (error) {
                 completion(nil, error);
                 return;
             }
-            
-            EZLanguage toLanguage = to;
-            if ([lang isEqualToString:to]) {
-                toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
-            }
-            translateBlock(text, lang, toLanguage);
+            translateBlock(text, detectedLanguage, to);
         }];
     } else {
         translateBlock(text, from, to);
@@ -623,17 +618,12 @@
     if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
         [self detect:text
-          completion:^(EZLanguage lang, NSError *_Nullable error) {
+          completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
             if (error) {
                 completion(nil, error);
                 return;
             }
-            
-            EZLanguage toLanguage = to;
-            if ([lang isEqualToString:to]) {
-                toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
-            }
-            translateBlock(text, lang, toLanguage);
+            translateBlock(text, detectedLanguage, to);
         }];
     } else {
         translateBlock(text, from, to);

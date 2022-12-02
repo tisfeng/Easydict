@@ -438,14 +438,9 @@
         return;
     }
 
-
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
-            EZLanguage toLang = to;
-            if ([toLang isEqualToString:EZLanguageAuto]) {
-                toLang = [EZLanguageManager targetLanguageWithSourceLanguage:from];
-            }
-            [self sendTranslateRequest:text from:from to:toLang completion:completion];
+            [self sendTranslateRequest:text from:from to:to completion:completion];
         };
         
         if (from == EZLanguageAuto) {
