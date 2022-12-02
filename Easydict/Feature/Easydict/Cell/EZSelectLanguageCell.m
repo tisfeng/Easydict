@@ -21,7 +21,7 @@
 @property (nonatomic, strong) EZSelectLanguageButton *fromLanguageButton;
 @property (nonatomic, copy) EZLanguage fromLanguage;
 
-@property (nonatomic, strong) NSButton *transformButton;
+@property (nonatomic, strong) EZHoverButton *transformButton;
 
 @property (nonatomic, strong) EZSelectLanguageButton *toLanguageButton;
 @property (nonatomic, copy) EZLanguage toLanguage;
@@ -73,7 +73,7 @@
     }];
     
     mm_weakify(self);
-    [transformButton setClickBlock:^(EZButton * _Nonnull button) {
+    [self.transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
 
         EZLanguage fromLang = EZConfiguration.shared.from;
@@ -174,8 +174,12 @@
 - (void)setQueryModel:(EZQueryModel *)queryModel {
     _queryModel = queryModel;
 
-    self.fromLanguageButton.autoSelectedLanguage = queryModel.detectedLanguage;
-    self.toLanguageButton.autoSelectedLanguage = queryModel.autoTargetLanguage;
+    if ([queryModel.sourceLanguage isEqualToString:EZLanguageAuto]) {
+        self.fromLanguageButton.autoSelectedLanguage = queryModel.detectedLanguage;
+    }
+    if ([queryModel.targetLanguage isEqualToString:EZLanguageAuto]) {
+        self.toLanguageButton.autoSelectedLanguage = queryModel.autoTargetLanguage;
+    }
 }
 
 - (void)enterAction {
@@ -187,7 +191,7 @@
 }
 
 - (void)dealloc {
-    NSLog(@"dealloc: %@", self);
+//    NSLog(@"dealloc: %@", self);
 }
 
 @end

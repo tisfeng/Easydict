@@ -462,7 +462,7 @@
           }];
       };
     
-    if (from == EZLanguageAuto) {
+    if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
         [self detect:text
           completion:^(EZLanguage lang, NSError *_Nullable error) {
@@ -471,11 +471,13 @@
                 return;
             }
             
-            EZLanguage langTo = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
-            translateBlock(text, lang, langTo);
+            EZLanguage toLanguage = to;
+            if ([lang isEqualToString:to]) {
+                toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
+            }
+            translateBlock(text, lang, toLanguage);
         }];
     } else {
-        to = [EZLanguageManager targetLanguageWithSourceLanguage:from];
         translateBlock(text, from, to);
     }
 }
@@ -618,7 +620,7 @@
         }];
     };
     
-    if (from == EZLanguageAuto) {
+    if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
         [self detect:text
           completion:^(EZLanguage lang, NSError *_Nullable error) {
@@ -627,11 +629,13 @@
                 return;
             }
             
-            EZLanguage langTo = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
-            translateBlock(text, lang, langTo);
+            EZLanguage toLanguage = to;
+            if ([lang isEqualToString:to]) {
+                toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:lang];
+            }
+            translateBlock(text, lang, toLanguage);
         }];
     } else {
-        to = [EZLanguageManager targetLanguageWithSourceLanguage:from];
         translateBlock(text, from, to);
     }
 }
