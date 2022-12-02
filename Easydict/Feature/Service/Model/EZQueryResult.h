@@ -100,8 +100,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;
 /// 普通翻译结果，可以有多条（一个段落对应一个翻译结果）
 @property (nonatomic, strong, nullable) NSArray<NSString *> *normalResults;
 
-///
-@property (nonatomic, copy, nullable) NSString *translatedText; // normalResults joined by @"\n"
+/// This is normalResults joined by @"\n"
+@property (nonatomic, copy, nullable) NSString *translatedText;
 
 /// If wordResult and normalResults are nil, isEmpty = YES.
 @property (nonatomic, assign) BOOL isEmpty;

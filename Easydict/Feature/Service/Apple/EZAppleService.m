@@ -35,50 +35,69 @@
 // get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-        EZLanguageAuto,  NLLanguageUndetermined,
-        EZLanguageSimplifiedChinese,  NLLanguageSimplifiedChinese,
-        EZLanguageTraditionalChinese,  NLLanguageTraditionalChinese,
-        EZLanguageEnglish,  NLLanguageEnglish,
-        EZLanguageJapanese,  NLLanguageJapanese,
-        EZLanguageKorean,  NLLanguageKorean,
-        EZLanguageFrench,  NLLanguageFrench,
-        EZLanguageSpanish,  NLLanguageSpanish,
-        EZLanguagePortuguese,  NLLanguagePortuguese,
-        EZLanguageItalian,  NLLanguageItalian,
-        EZLanguageGerman,  NLLanguageGerman,
-        EZLanguageRussian,  NLLanguageRussian,
-        EZLanguageArabic,  NLLanguageArabic,
-        EZLanguageSwedish,  NLLanguageSwedish,
-        EZLanguageRomanian,  NLLanguageRomanian,
-        EZLanguageThai,  NLLanguageThai,
-        EZLanguageSlovak,  NLLanguageSlovak,
-        EZLanguageDutch,  NLLanguageDutch,
-        EZLanguageHungarian,  NLLanguageHungarian,
-        EZLanguageGreek,  NLLanguageGreek,
-        EZLanguageDanish,  NLLanguageDanish,
-        EZLanguageFinnish,  NLLanguageFinnish,
-        EZLanguagePolish,  NLLanguagePolish,
-        EZLanguageCzech,  NLLanguageCzech,
-        EZLanguageTurkish,  NLLanguageTurkish,
-        EZLanguageUkrainian,  NLLanguageUkrainian,
-        EZLanguageBulgarian,  NLLanguageBulgarian,
-        EZLanguageIndonesian,  NLLanguageIndonesian,
-        EZLanguageMalay,  NLLanguageMalay,
-        EZLanguageVietnamese,  NLLanguageVietnamese,
-        EZLanguagePersian,  NLLanguagePersian,
-        EZLanguageHindi,  NLLanguageHindi,
-        EZLanguageTelugu,  NLLanguageTelugu,
-        EZLanguageTamil,  NLLanguageTamil,
-        EZLanguageUrdu,  NLLanguageUrdu,
-        EZLanguageKhmer,  NLLanguageKhmer,
-        EZLanguageLao,  NLLanguageLao,
-        EZLanguageBengali,  NLLanguageBengali,
-        EZLanguageNorwegian,  NLLanguageNorwegian,
-        EZLanguageCroatian,  NLLanguageCroatian,
-        EZLanguageMongolian,  NLLanguageMongolian,
-        EZLanguageHebrew,  NLLanguageHebrew,
-    nil];
+                                        EZLanguageAuto, NLLanguageUndetermined,
+                                        EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,
+                                        EZLanguageTraditionalChinese, NLLanguageTraditionalChinese,
+                                        EZLanguageEnglish, NLLanguageEnglish,
+                                        EZLanguageJapanese, NLLanguageJapanese,
+                                        EZLanguageKorean, NLLanguageKorean,
+                                        EZLanguageFrench, NLLanguageFrench,
+                                        EZLanguageSpanish, NLLanguageSpanish,
+                                        EZLanguagePortuguese, NLLanguagePortuguese,
+                                        EZLanguageItalian, NLLanguageItalian,
+                                        EZLanguageGerman, NLLanguageGerman,
+                                        EZLanguageRussian, NLLanguageRussian,
+                                        EZLanguageArabic, NLLanguageArabic,
+                                        EZLanguageSwedish, NLLanguageSwedish,
+                                        EZLanguageRomanian, NLLanguageRomanian,
+                                        EZLanguageThai, NLLanguageThai,
+                                        EZLanguageSlovak, NLLanguageSlovak,
+                                        EZLanguageDutch, NLLanguageDutch,
+                                        EZLanguageHungarian, NLLanguageHungarian,
+                                        EZLanguageGreek, NLLanguageGreek,
+                                        EZLanguageDanish, NLLanguageDanish,
+                                        EZLanguageFinnish, NLLanguageFinnish,
+                                        EZLanguagePolish, NLLanguagePolish,
+                                        EZLanguageCzech, NLLanguageCzech,
+                                        EZLanguageTurkish, NLLanguageTurkish,
+                                        EZLanguageUkrainian, NLLanguageUkrainian,
+                                        EZLanguageBulgarian, NLLanguageBulgarian,
+                                        EZLanguageIndonesian, NLLanguageIndonesian,
+                                        EZLanguageMalay, NLLanguageMalay,
+                                        EZLanguageVietnamese, NLLanguageVietnamese,
+                                        EZLanguagePersian, NLLanguagePersian,
+                                        EZLanguageHindi, NLLanguageHindi,
+                                        EZLanguageTelugu, NLLanguageTelugu,
+                                        EZLanguageTamil, NLLanguageTamil,
+                                        EZLanguageUrdu, NLLanguageUrdu,
+                                        EZLanguageKhmer, NLLanguageKhmer,
+                                        EZLanguageLao, NLLanguageLao,
+                                        EZLanguageBengali, NLLanguageBengali,
+                                        EZLanguageNorwegian, NLLanguageNorwegian,
+                                        EZLanguageCroatian, NLLanguageCroatian,
+                                        EZLanguageMongolian, NLLanguageMongolian,
+                                        EZLanguageHebrew, NLLanguageHebrew,
+                                        nil];
     
+    return orderedDict;
+}
+
+/// Apple ocr language: "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+- (MMOrderedDictionary *)ocrLanguageDictionary {
+    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                        EZLanguageSimplifiedChinese,  @"zh-Hans",
+                                        EZLanguageTraditionalChinese,  @"zh-Hant",
+                                        EZLanguageEnglish,  @"en-US",
+                                        EZLanguageJapanese,  @"ja-JP",
+                                        EZLanguageKorean,  @"ko-KR",
+                                        EZLanguageFrench,  @"fr-FR",
+                                        EZLanguageSpanish,  @"es-ES",
+                                        EZLanguagePortuguese,  @"pt-BR",
+                                        EZLanguageItalian,  @"it-IT",
+                                        EZLanguageGerman,  @"de-DE",
+                                        EZLanguageRussian,  @"ru-RU",
+                                        EZLanguageUkrainian,  @"uk-UA",
+                                        nil];
     return orderedDict;
 }
 
@@ -96,8 +115,6 @@
 
     // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
     recognizer.languageConstraints = [self constraintLanguages];
-
-
     recognizer.languageHints = [self customLanguageHints];
 
     [recognizer processString:text];
@@ -109,7 +126,7 @@
     NSLog(@"dominant Language: %@", dominantLanguage);
 
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"cost time: %.1f ms", (endTime - startTime) * 1000);
+    NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
 
     EZLanguage language = [self languageEnumFromString:dominantLanguage];
 
@@ -132,7 +149,7 @@
     if (@available(macOS 10.15, *)) {
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            NSLog(@"cost time: %.1f ms", (endTime - startTime) * 1000);
+            NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
 
             EZOCRResult *result = [[EZOCRResult alloc] init];
             result.from = queryModel.sourceLanguage;
@@ -153,8 +170,11 @@
             result.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
             result.raw = recognizedStrings;
 
+            NSLog(@"ocr text: %@", recognizedStrings);
+
             completion(result, nil);
         }];
+
 
         if (@available(macOS 12.0, *)) {
             //            NSError *error;
@@ -163,7 +183,7 @@
             //            NSLog(@"supported Languages: %@", supportedLanguages);
         }
 
-        request.recognitionLanguages = @[
+        NSMutableArray *recognitionLanguages = [NSMutableArray arrayWithArray:@[
             @"zh-Hans",
             @"zh-Hant",
             @"en-US",
@@ -178,11 +198,25 @@
             @"ko-KR",
             @"ru-RU",
             @"uk-UA",
-        ]; // ISO language codes
+        ]];
 
-        if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = YES;
+        EZLanguage sourceLanguage = queryModel.sourceLanguage;
+        if ([sourceLanguage isEqualToString:EZLanguageAuto]) {
+            if (@available(macOS 13.0, *)) {
+                request.automaticallyDetectsLanguage = YES;
+            }
+        } else {
+            // If has designated ocr language, move it to first priority.
+            NSString *appleOCRLangaugeCode = [[self ocrLanguageDictionary] objectForKey:sourceLanguage];
+            [recognitionLanguages removeObject:appleOCRLangaugeCode];
+            
+            if (appleOCRLangaugeCode.length > 0) {
+                [recognitionLanguages insertObject:appleOCRLangaugeCode atIndex:0];
+            }
         }
+        request.recognitionLanguages = recognitionLanguages; // ISO language codes
+
+        // TODO: need to test it.
         request.usesLanguageCorrection = YES;
 
         // Perform the text-recognition request.
