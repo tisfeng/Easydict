@@ -200,10 +200,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryModel.queryViewHeight = 0;
     }
     
-//    self.queryModel.detectedLanguage = EZLanguageAuto;
-    
-    
-    [self updateAutoTargetLanguage];
     [self updateSelectLanguageCell];
     
     self.queryModel.queryText = queryText;
@@ -363,29 +359,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
         self.queryView.queryModel = queryModel;
         [self updateSelectLanguageCell];
-        
         [self queryAllSerives:queryModel];
     }];
 }
 
-/// Update queryModel autoTargetLanguage and return it.
-- (EZLanguage)updateAutoTargetLanguage {
-    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.queryModel.sourceLanguage;
-    }
-    
-    EZLanguage toLanguage = self.queryModel.targetLanguage;
-    
-    if ([toLanguage isEqualToString:EZLanguageAuto]) {
-        toLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
-    }
-    self.queryModel.autoTargetLanguage = toLanguage;
-    
-    return toLanguage;
-}
-
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
+    NSLog(@"from-to: %@ --> %@", queryModel.queryFromLanguage, queryModel.autoTargetLanguage);
+
     for (EZQueryService *service in self.services) {
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
             if (!result) {
@@ -411,19 +391,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     // Show result if it has been queried.
     service.result.isShowing = YES;
-    
-    EZLanguage fromLanguage = queryModel.detectedLanguage;
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = queryModel.sourceLanguage;
-    }
-    
-    EZLanguage toLanguage = [self updateAutoTargetLanguage];
 
-    NSLog(@"query: %@,  from-to: %@ --> %@", service.serviceType, fromLanguage, toLanguage);
+    NSLog(@"query service: %@", service.serviceType);
     
     [service translate:queryModel.queryText
-                  from:fromLanguage
-                    to:toLanguage
+                  from:queryModel.queryFromLanguage
+                    to:queryModel.autoTargetLanguage
             completion:completion];
 }
 
