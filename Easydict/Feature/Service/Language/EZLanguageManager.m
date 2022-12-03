@@ -104,6 +104,12 @@
     return NO;
 }
 
++ (BOOL)isEnglishFirstLanguage {
+    EZLanguage firstLanguage = [self firstLanguage];
+    return [firstLanguage isEqualToString:EZLanguageEnglish];
+}
+
+
 + (BOOL)containsEnglishPreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
