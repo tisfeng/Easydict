@@ -75,30 +75,30 @@
     mm_weakify(self);
     [self.transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-
+        
         EZLanguage fromLang = EZConfiguration.shared.from;
         EZLanguage toLang = EZConfiguration.shared.to;
-
+        
         EZConfiguration.shared.from = toLang;
         EZConfiguration.shared.to = fromLang;
         
         [self.fromLanguageButton showSelectedLanguage:toLang];
         [self.fromLanguageButton showSelectedLanguage:fromLang];
-
+        
         [self enterAction];
     }];
     transformButton.mas_key = @"transformButton";
     
     self.fromLanguageButton = [EZSelectLanguageButton mm_make:^(EZSelectLanguageButton *_Nonnull button) {
         [languageBarView addSubview:button];
-        // Only resolve layout warning.
+        // Just resolve layout warning.
         button.frame = self.bounds;
         
         EZLanguage from = EZConfiguration.shared.from;
         [button showSelectedLanguage:from];
         
         mm_weakify(self);
-        [button setMenuItemSeletedBlock:^(EZLanguage  _Nonnull selectedLanguage) {
+        [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
             self.queryModel.sourceLanguage = selectedLanguage;
             
@@ -113,25 +113,17 @@
     self.toLanguageButton = [EZSelectLanguageButton mm_make:^(EZSelectLanguageButton *_Nonnull button) {
         [languageBarView addSubview:button];
         button.frame = self.bounds;
-        
-        
-//        [button updateMenuWithTitleArray:[self.translate.languages mm_map:^id _Nullable(EZLanguage language, NSUInteger idx, BOOL *_Nonnull stop) {
-//            NSString *languageName = [EZLanguageManager showingLanguageName:language];
-//            if ([language isEqualToString:EZLanguageAuto] && [EZLanguageManager containsChineseInPreferredTwoLanguages]) {
-//                languageName = @"自动选择";
-//            }
-//            return languageName;
-//        }]];
+        button.autoChineseSelectedTitle = @"自动选择";
         
         EZLanguage toLang = EZConfiguration.shared.to;
         [button showSelectedLanguage:toLang];
         
         mm_weakify(self);
-        [button setMenuItemSeletedBlock:^(EZLanguage  _Nonnull selectedLanguage) {
+        [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
             
             self.queryModel.targetLanguage = selectedLanguage;
-
+            
             if (![selectedLanguage isEqualToString:toLang]) {
                 EZConfiguration.shared.to = selectedLanguage;
                 [self enterAction];
@@ -173,7 +165,7 @@
 
 - (void)setQueryModel:(EZQueryModel *)queryModel {
     _queryModel = queryModel;
-
+    
     if ([queryModel.sourceLanguage isEqualToString:EZLanguageAuto]) {
         self.fromLanguageButton.autoSelectedLanguage = queryModel.detectedLanguage;
     }
@@ -191,7 +183,7 @@
 }
 
 - (void)dealloc {
-//    NSLog(@"dealloc: %@", self);
+    //    NSLog(@"dealloc: %@", self);
 }
 
 @end
