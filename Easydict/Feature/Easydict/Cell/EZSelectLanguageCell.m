@@ -82,8 +82,8 @@
         EZConfiguration.shared.from = toLang;
         EZConfiguration.shared.to = fromLang;
         
-        [self.fromLanguageButton showSelectedLanguage:toLang];
-        [self.fromLanguageButton showSelectedLanguage:fromLang];
+        [self.fromLanguageButton setSelectedLanguage:toLang];
+        [self.fromLanguageButton setSelectedLanguage:fromLang];
         
         [self enterAction];
     }];
@@ -95,7 +95,7 @@
         button.frame = self.bounds;
         
         EZLanguage from = EZConfiguration.shared.from;
-        [button showSelectedLanguage:from];
+        [button setSelectedLanguage:from];
         
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
@@ -116,7 +116,7 @@
         button.autoChineseSelectedTitle = @"自动选择";
         
         EZLanguage toLang = EZConfiguration.shared.to;
-        [button showSelectedLanguage:toLang];
+        [button setSelectedLanguage:toLang];
         
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
