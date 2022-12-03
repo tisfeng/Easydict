@@ -50,12 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
 + (NSString *)languageFlagEmoji:(EZLanguage)language;
 
-
-@property (nonatomic, copy) NSString *chineseName;
-@property (nonatomic, copy) NSString *englishName;
-@property (nonatomic, copy) NSString *localName;
-@property (nonatomic, copy) NSString *flagEmoji;
-
 @end
 
 NS_ASSUME_NONNULL_END
