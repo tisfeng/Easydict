@@ -284,6 +284,8 @@
 - (NSDictionary<EZLanguage, NSNumber *> *)userPreferredLanguageProbabilities {
     NSArray *preferredLanguages = [EZLanguageManager systemPreferredLanguages];
     
+    // TODO: need to test more data. Maybe need to write a unit test.
+    
     /**
      Increase the proportional weighting of the user's preferred language.
      
@@ -312,6 +314,11 @@
         }
         languageProbabilities[language] = @(weight);
     }
+    
+    if (![preferredLanguages containsObject:EZLanguageEnglish]) {
+        languageProbabilities[EZLanguageEnglish] = @(0.2);
+    }
+    
     return languageProbabilities;
 }
 
