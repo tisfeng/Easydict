@@ -60,33 +60,56 @@
     
     CGSize imageSize = CGSizeMake(18, 18);
     
-    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
+    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
+    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+
+    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
+    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
+    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
+
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
-    pinButton.image = normalImage;
+    
+    void (^changePinButtonImageBlock)(void) = ^{
+        [pinButton excuteLight:^(EZHoverButton *button) {
+            NSImage *image = self.pin ? selectedImage : normalLightImage;
+            button.image = image;
+        } drak:^(EZHoverButton *button) {
+            NSImage *image = self.pin ? selectedImage : normalDarkImage;
+            button.image = image;
+        }];
+    };
+    
+    changePinButtonImageBlock();
 
     mm_weakify(self);
-    [pinButton setClickBlock:^(EZButton * _Nonnull button) {
-        NSLog(@"click pin");
-        mm_strongify(self);
-        
-        self.pin = !self.pin;
-        NSImage *image = self.pin ? selectedImage : normalImage;
-        button.image = image;
-
-        NSWindowLevel level = self.pin ? kCGFloatingWindowLevel : kCGNormalWindowLevel;
-        self.level = level;
-    }];
     
     [pinButton setMouseDownBlock:^(EZButton * _Nonnull button) {
-        NSImage *highlightImage = self.pin ? normalImage : selectedImage;
-        button.image = highlightImage;
+        NSLog(@"pin mouse down, state: %ld", button.buttonState);
+        mm_strongify(self);
+
+        self.pin = !self.pin;
+        
+        changePinButtonImageBlock();
     }];
     
     [pinButton setMouseUpBlock:^(EZButton * _Nonnull button) {
-        NSImage *image = self.pin ? selectedImage : normalImage;
+        NSLog(@"pin mouse up, state: %ld", button.buttonState);
+        mm_strongify(self);
+        
+        BOOL oldPin = !self.pin;
+        
         if (button.buttonState == EZButtonNormalState) {
-            button.image = image;
+            self.pin = oldPin;
+        } else if (button.state == EZButtonHoverState) {
+            // Means clicked pin button
+            
+            self.pin = !oldPin;
+            NSWindowLevel level = self.pin ? kCGFloatingWindowLevel : kCGNormalWindowLevel;
+            self.level = level;
         }
+        
+        changePinButtonImageBlock();
     }];
     
     [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
