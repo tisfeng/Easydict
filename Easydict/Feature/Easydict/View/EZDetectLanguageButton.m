@@ -52,9 +52,13 @@
 
     NSMutableArray *languages = [NSMutableArray array];
     NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedValues];
-    for (EZLanguageClass *language in allLanguages) {
-        NSString *languageName = [EZLanguageManager showingLanguageName:language.englishName];
-        [languages addObject:languageName];
+    for (EZLanguageClass *languageObject in allLanguages) {
+        EZLanguage language = languageObject.englishName;
+        // Remove Auto language
+        if (![language isEqualToString:EZLanguageAuto]) {
+            NSString *languageNameWithFlag = [EZLanguageManager showingLanguageNameWithFlag:language];
+            [languages addObject:languageNameWithFlag];
+        }
     }
     self.languages = languages;
 }
