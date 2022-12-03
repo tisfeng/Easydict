@@ -110,8 +110,7 @@ static CGFloat kExceptTextViewHeight = 30;
     }];
     
     [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self).offset(-5);
-        make.centerY.equalTo(self.textCopyButton);
+        make.right.bottom.equalTo(self).offset(-3);
         make.width.height.mas_equalTo(24);
     }];
 
