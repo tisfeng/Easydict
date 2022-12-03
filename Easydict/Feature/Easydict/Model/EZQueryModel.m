@@ -20,4 +20,21 @@
     return self;
 }
 
+- (EZLanguage)queryFromLanguage {
+    EZLanguage fromLanguage = self.detectedLanguage;
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        fromLanguage = self.sourceLanguage;
+    }
+    return fromLanguage;
+}
+
+- (EZLanguage)autoTargetLanguage {
+    EZLanguage fromLanguage = self.queryFromLanguage;
+    EZLanguage targetLanguage = self.targetLanguage;
+    if ([targetLanguage isEqualToString:EZLanguageAuto]) {
+        targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
+    }
+    return targetLanguage;
+}
+
 @end

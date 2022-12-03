@@ -74,7 +74,6 @@
         }
         
         self.queryModel.detectedLanguage = language;
-        self.queryModel.autoTargetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:language];
         
         completion(self.queryModel, error);
     }];
