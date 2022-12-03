@@ -64,49 +64,45 @@
 
 - (void)mouseEntered:(NSEvent *)event {
 //        NSLog(@"mouseEntered");
+        
+    self.hover = YES;
+    self.buttonState = EZButtonHoverState;
     
     if (self.mouseEnterBlock) {
         self.mouseEnterBlock(self);
     }
-    
-    self.hover = YES;
-    self.buttonState = EZButtonHoverState;
 }
 
 - (void)mouseExited:(NSEvent *)event {
 //        NSLog(@"mouseExited");
-    
-    if (self.mouseExitedBlock) {
-        self.mouseExitedBlock(self);
-    }
-    
+        
     self.hover = NO;
     if (self.selected) {
         [self setButtonState:EZButtonSelectedState];
     } else {
         [self setButtonState:EZButtonNormalState];
     }
+    
+    if (self.mouseExitedBlock) {
+        self.mouseExitedBlock(self);
+    }
 }
 
 - (void)mouseDown:(NSEvent *)event {
     //    NSLog(@"mouseDown");
-    
-    if (self.mouseDownBlock) {
-        self.mouseDownBlock(self);
-    }
-    
+        
     self.mouseUp = NO;
     if (self.enabled && self.hover) {
         self.buttonState = EZButtonHighlightState;
+    }
+    
+    if (self.mouseDownBlock) {
+        self.mouseDownBlock(self);
     }
 }
 
 - (void)mouseUp:(NSEvent *)event {
     //    NSLog(@"mouseUp");
-    
-    if (self.mouseUpBlock) {
-        self.mouseUpBlock(self);
-    }
     
     self.mouseUp = YES;
     if (self.enabled && self.hover) {
@@ -125,6 +121,10 @@
         } else {
             [self.target performSelector:self.action withObject:nil afterDelay:0.f];
         }
+    }
+    
+    if (self.mouseUpBlock) {
+        self.mouseUpBlock(self);
     }
 }
 
