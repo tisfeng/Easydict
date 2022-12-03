@@ -125,15 +125,21 @@
 }
 
 
+#pragma mark -
+
++ (NSArray<EZLanguage> *)allLanguages {
+    return [[EZLanguageClass allLanguagesDict] sortedKeys];;
+}
+
 // Get language flag emoji according to language, such as "🇨🇳"
 + (NSString *)languageFlagEmoji:(EZLanguage)language {
-    EZLanguageClass *lang = [[EZLanguageClass allLanguages] objectForKey:language];
+    EZLanguageClass *lang = [[EZLanguageClass allLanguagesDict] objectForKey:language];
     return lang.flagEmoji;
 }
 
 // Get language Chinese name, such as "简体中文"
 + (NSString *)languageChineseName:(EZLanguage)language {
-    EZLanguageClass *lang = [[EZLanguageClass allLanguages] objectForKey:language];
+    EZLanguageClass *lang = [[EZLanguageClass allLanguagesDict] objectForKey:language];
     return lang.chineseName;
 }
 

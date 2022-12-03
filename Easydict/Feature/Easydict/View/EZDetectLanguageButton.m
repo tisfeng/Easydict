@@ -103,9 +103,9 @@
     }
     [self.customMenu removeAllItems];
     
-    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
+    NSArray *showingLanguages = [EZLanguageManager allLanguages];
     self.languageDict = [[MMOrderedDictionary alloc] init];
-    for (EZLanguage language in allLanguages) {
+    for (EZLanguage language in showingLanguages) {
         if (![language isEqualToString:EZLanguageAuto]) {
             NSString *languageNameWithFlag = [EZLanguageManager showingLanguageNameWithFlag:language];
             [self.languageDict setObject:languageNameWithFlag forKey:language];
