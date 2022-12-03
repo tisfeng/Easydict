@@ -122,20 +122,29 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         item.target = self;
         [self.customMenu addItem:item];
     }];
+    
+    [self updateLanguageMenuItem:self.selectedLanguage state:NSControlStateValueOn];
 }
 
 - (void)clickItem:(NSMenuItem *)item {
     EZLanguage selectedLanguage = self.languageDict.sortedKeys[item.tag];
-    [self showSelectedLanguage:selectedLanguage];
+    self.selectedLanguage = selectedLanguage;
+    
     if (self.selectedMenuItemBlock) {
         NSLog(@"selecct: %@", selectedLanguage);
-        
         self.selectedMenuItemBlock(selectedLanguage);
     }
     self.customMenu = nil;
 }
 
-- (void)showSelectedLanguage:(EZLanguage)selectedLanguage {
+
+#pragma mark - Setter
+
+- (void)setSelectedLanguage:(EZLanguage)selectedLanguage {
+    EZLanguage oldSelectedLanguage = self.selectedLanguage;
+    
+    _selectedLanguage = selectedLanguage;
+    
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
         NSString *languageName = [EZLanguageManager showingLanguageName:selectedLanguage];
         NSString *languageFlag = [EZLanguageManager languageFlagEmoji:selectedLanguage];
@@ -156,16 +165,22 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         
         self.textField.stringValue = languageNameWithFlag;
         self.toolTip = toolTip;
+        
+        [self updateLanguageMenuItem:oldSelectedLanguage state:NSControlStateValueOff];
+        [self updateLanguageMenuItem:selectedLanguage state:NSControlStateValueOn];
     }
 }
 
-
-#pragma mark - Setter
+- (void)updateLanguageMenuItem:(EZLanguage)language state:(BOOL)state {
+    NSInteger index = [self.languageDict.sortedKeys indexOfObject:language];
+    NSMenuItem *selectedItem = [self.customMenu itemWithTag:index];
+    selectedItem.state = state;
+}
 
 - (void)setAutoSelectedLanguage:(EZLanguage)selectedLanguage {
     _autoSelectedLanguage = selectedLanguage;
-    
-    [self showSelectedLanguage:EZLanguageAuto];
+        
+    self.selectedLanguage = EZLanguageAuto;
 }
 
 @end
