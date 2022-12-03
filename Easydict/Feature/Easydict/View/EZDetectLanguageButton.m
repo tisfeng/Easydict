@@ -12,7 +12,8 @@
 @interface EZDetectLanguageButton ()
 
 @property (nonatomic, strong, nullable) NSMenu *customMenu;
-@property (nonatomic, strong) NSArray<NSString *> *languages;
+
+@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *languageDict;
 
 @end
 
@@ -28,7 +29,7 @@
 - (void)setup {
     self.hidden = YES;
     self.title = @"";
-
+    
     [self excuteLight:^(EZButton *detectButton) {
         detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
@@ -38,43 +39,30 @@
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#424445"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
     }];
-
+    
     mm_weakify(self);
     [self setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-
+        
         // 显示menu
-        if (self.languages.count) {
-            [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
-        }
+        [self setupMenu];
+        [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
     }];
-
-    NSMutableArray *languages = [NSMutableArray array];
-    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedValues];
-    for (EZLanguageClass *languageObject in allLanguages) {
-        EZLanguage language = languageObject.englishName;
-        // Remove Auto language
-        if (![language isEqualToString:EZLanguageAuto]) {
-            NSString *languageNameWithFlag = [EZLanguageManager showingLanguageNameWithFlag:language];
-            [languages addObject:languageNameWithFlag];
-        }
-    }
-    self.languages = languages;
 }
 
-- (void)setDetectedLanguage:(EZLanguage)language {
-    _detectedLanguage = language;
-
-    if (language == EZLanguageAuto) {
+- (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
+    EZLanguage oldDetectedLanguage = self.detectedLanguage;
+    _detectedLanguage = detectedLanguage;
+    
+    if (detectedLanguage == EZLanguageAuto) {
         self.hidden = YES;
         return;
     }
-
+    
     self.hidden = NO;
-
-    NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:language];
-
+    
+    NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:detectedLanguage];
+    
     NSString *title = @"识别为 ";
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
     [attrTitle addAttributes:@{
@@ -82,23 +70,28 @@
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
                        range:NSMakeRange(0, attrTitle.length)];
-
-
+    
+    
     NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
     [detectAttrTitle addAttributes:@{
         NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
                              range:NSMakeRange(0, detectAttrTitle.length)];
-
+    
     [attrTitle appendAttributedString:detectAttrTitle];
     self.attributedTitle = attrTitle;
-
+    
     CGFloat width = [attrTitle mm_getTextWidth];
-
+    
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(width + 8);
     }];
+    
+    if ([self.languageDict.allKeys containsObject:detectedLanguage]) {
+        [self updateLanguageMenuItem:oldDetectedLanguage state:NSControlStateValueOff];
+        [self updateLanguageMenuItem:detectedLanguage state:NSControlStateValueOn];
+    }
 }
 
 
@@ -109,44 +102,46 @@
         self.customMenu = [NSMenu new];
     }
     [self.customMenu removeAllItems];
-    [self.languages enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    
+    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
+    self.languageDict = [[MMOrderedDictionary alloc] init];
+    for (EZLanguage language in allLanguages) {
+        if (![language isEqualToString:EZLanguageAuto]) {
+            NSString *languageNameWithFlag = [EZLanguageManager showingLanguageNameWithFlag:language];
+            [self.languageDict setObject:languageNameWithFlag forKey:language];
+        }
+    }
+    
+    [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage  _Nonnull key, NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
         item.target = self;
         [self.customMenu addItem:item];
     }];
+    
+    [self updateLanguageMenuItem:self.detectedLanguage state:NSControlStateValueOn];
 }
 
 - (void)clickItem:(NSMenuItem *)item {
-    [self updateWithIndex:item.tag];
+    EZLanguage selectedLanguage = self.languageDict.sortedKeys[item.tag];
+    self.detectedLanguage = selectedLanguage;
+    
     if (self.menuItemSeletedBlock) {
         self.menuItemSeletedBlock(self.detectedLanguage);
     }
     self.customMenu = nil;
 }
 
-- (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles {
-    self.languages = titles;
-
-    if (self.customMenu) {
-        [self setupMenu];
-    }
+- (void)updateLanguageMenuItem:(EZLanguage)language state:(BOOL)state {
+    NSInteger index = [self.languageDict.sortedKeys indexOfObject:language];
+    NSMenuItem *selectedItem = [self.customMenu itemWithTag:index];
+    selectedItem.state = state;
 }
 
-- (void)updateWithIndex:(NSInteger)index {
-    if (index >= 0 && index < self.languages.count) {
-        NSString *title = [self.languages objectAtIndex:index];
-        NSLog(@"title: %@", title);
-        
-        NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
-        EZLanguage langauge = allLanguages[index];
-        self.detectedLanguage = langauge;
-    }
-}
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
-
+    
     // Drawing code here.
 }
 

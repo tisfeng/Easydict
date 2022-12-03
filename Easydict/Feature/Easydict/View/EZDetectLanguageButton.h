@@ -17,9 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^menuItemSeletedBlock)(EZLanguage selectedLanguage);
 
-- (void)updateMenuWithTitleArray:(NSArray<NSString *> *)titles;
-- (void)updateWithIndex:(NSInteger)index;
-
 @end
 
 NS_ASSUME_NONNULL_END
