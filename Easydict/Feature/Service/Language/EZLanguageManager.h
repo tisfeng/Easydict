@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)isChineseFirstLanguage;
 + (BOOL)isChineseLanguage:(EZLanguage)language;
 
++ (BOOL)isEnglishFirstLanguage;
+
 + (BOOL)containsEnglishPreferredLanguage;
 + (BOOL)containsChinesePreferredLanguage;
 

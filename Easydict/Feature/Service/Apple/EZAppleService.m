@@ -119,8 +119,8 @@
     
     [recognizer processString:text];
     
-    NSDictionary<NLLanguage, NSNumber *> *dict = [recognizer languageHypothesesWithMaximum:10];
-    NSLog(@"language dict: %@", dict);
+    NSDictionary<NLLanguage, NSNumber *> *languageDict = [recognizer languageHypothesesWithMaximum:5];
+    NSLog(@"language dict: %@", languageDict);
     
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
     NSLog(@"dominant Language: %@", dominantLanguage);
@@ -128,14 +128,14 @@
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
     
-    EZLanguage language = [self languageEnumFromString:dominantLanguage];
+    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageDict];
     
     if ([self isAlphabet:text]) {
-        language = EZLanguageEnglish;
+        mostConfidentLanguage = EZLanguageEnglish;
         NSLog(@"%@ isAlphabet, correct to English", text);
     }
     
-    completion(language, nil);
+    completion(mostConfidentLanguage, nil);
 }
 
 
@@ -251,21 +251,22 @@
     return uniqueLanguages;
 }
 
-
+/// Custom language hints
 - (NSDictionary<NLLanguage, NSNumber *> *)customLanguageHints {
+    // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
-        NLLanguageEnglish : @(0.95),
+        NLLanguageEnglish : @(2.0),
         NLLanguageSimplifiedChinese : @(0.8),
         NLLanguageJapanese : @(0.7),
         NLLanguageFrench : @(0.45), // const, ex
         NLLanguageKorean : @(0.4),
-        NLLanguageGerman : @(0.2), // Bob 是一款 macOS 平台 翻译 和 OCR 软件
+        NLLanguageGerman : @(0.15), // usa
         NLLanguageTraditionalChinese : @(0.2),
         NLLanguageItalian : @(0.1), // via
         NLLanguageSpanish : @(0.1), // favor
-        NLLanguageDutch : @(0.1),   // heel, via
         
         NLLanguagePortuguese : @(0.05), // favor, e
+        NLLanguageDutch : @(0.01),   // heel, via
         NLLanguageCzech : @(0.01),      // pro
     };
     
@@ -278,6 +279,70 @@
     [languageHints addEntriesFromDictionary:customHints];
     
     return languageHints;
+}
+
+- (NSDictionary<EZLanguage, NSNumber *> *)userPreferredLanguageProbabilities {
+    NSArray *preferredLanguages = [EZLanguageManager systemPreferredLanguages];
+    
+    /**
+     Increase the proportional weighting of the user's preferred language.
+     
+     1. Chinese, + 0.5
+     2. English, + 0.3
+     3. Japanese, + 0.1
+     4. ........, + 0.1
+     
+     Since English is so widely used, we need to add additional weighting, + 0.3
+     
+     */
+    NSMutableDictionary<EZLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionary];
+    for (NSInteger i = 0; i < preferredLanguages.count; i++) {
+        EZLanguage language = preferredLanguages[i];
+        CGFloat maxWeight = 0.5;
+        CGFloat weight = maxWeight - i * 0.2;
+        if (weight < 0.1) {
+            weight = 0.1;
+        }
+        if ([language isEqualToString:EZLanguageEnglish]) {
+            if (![EZLanguageManager isEnglishFirstLanguage]) {
+                weight += 0.3;
+            } else {
+                weight += 0.1;
+            }
+        }
+        languageProbabilities[language] = @(weight);
+    }
+    return languageProbabilities;
+}
+
+
+/// Get most confident language.
+/// languageDict value add userPreferredLanguageProbabilities, then sorted by value, return max dict value.
+- (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities {
+    NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
+    NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
+    
+    for (EZLanguage language in userPreferredLanguageProbabilities.allKeys) {
+        NLLanguage appleLanguage = [self languageStringFromEnum:language];
+        CGFloat defaultProbability = [defaultLanguageProbabilities[appleLanguage] doubleValue];
+        if (defaultProbability) {
+            NSNumber *userPreferredLanguageProbability = userPreferredLanguageProbabilities[language];
+            languageProbabilities[appleLanguage] = @(defaultProbability + userPreferredLanguageProbability.doubleValue);
+        }
+    }
+    
+    NSLog(@"language probabilities: %@", languageProbabilities);
+    
+    NSArray<NLLanguage> *sortedLanguages = [languageProbabilities keysSortedByValueUsingComparator:^NSComparisonResult(NSNumber *_Nonnull obj1, NSNumber *_Nonnull obj2) {
+        return [obj2 compare:obj1];
+    }];
+    
+    NLLanguage mostConfidentLanguage = sortedLanguages.firstObject;
+    EZLanguage ezLanguage = [self languageEnumFromString:mostConfidentLanguage];
+    
+    NSLog(@"---> Apple detect: %@", ezLanguage);
+    
+    return ezLanguage;
 }
 
 /// Check if it is a single letter of the alphabet.
