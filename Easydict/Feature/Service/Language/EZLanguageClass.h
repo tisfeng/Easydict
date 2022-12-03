@@ -74,7 +74,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 @property (nonatomic, copy) NSString *localName;
 @property (nonatomic, copy) NSString *flagEmoji;
 
-+ (MMOrderedDictionary<EZLanguage, EZLanguageClass *> *)allLanguages;
++ (MMOrderedDictionary<EZLanguage, EZLanguageClass *> *)allLanguagesDict;
 
 @end
 

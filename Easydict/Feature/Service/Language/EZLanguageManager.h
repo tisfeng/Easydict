@@ -34,6 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)containsEnglishPreferredLanguage;
 + (BOOL)containsChinesePreferredLanguage;
 
+
+#pragma mark -
+
++ (NSArray<EZLanguage> *)allLanguages;
+
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
 + (NSString *)showingLanguageName:(EZLanguage)language;
 
