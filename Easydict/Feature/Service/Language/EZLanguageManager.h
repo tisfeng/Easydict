@@ -11,8 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-
 @interface EZLanguageManager : NSObject
 
 /// Get target language with source language
@@ -46,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
 + (NSString *)languageFlagEmoji:(EZLanguage)language;
+
 
 @property (nonatomic, copy) NSString *chineseName;
 @property (nonatomic, copy) NSString *englishName;

@@ -17,10 +17,9 @@ DefineMethodMMMake_h(EZSelectLanguageButton, button);
 
 @property (nonatomic, copy) EZLanguage autoSelectedLanguage;
 
-@property (nonatomic, strong) NSTextField *textField;
-@property (nonatomic, strong) NSImageView *imageView;
-@property (nonatomic, strong, nullable) NSMenu *customMenu;
-@property (nonatomic, copy) void (^menuItemSeletedBlock)(EZLanguage selectedLanguage);
+@property (nonatomic, copy) NSString *autoChineseSelectedTitle; // 自动检测 --> 自动选择
+
+@property (nonatomic, copy) void (^selectedMenuItemBlock)(EZLanguage selectedLanguage);
 
 - (void)showSelectedLanguage:(EZLanguage)language;
 

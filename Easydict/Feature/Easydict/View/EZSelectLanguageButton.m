@@ -10,6 +10,10 @@
 
 @interface EZSelectLanguageButton ()
 
+@property (nonatomic, strong) NSTextField *textField;
+@property (nonatomic, strong) NSImageView *imageView;
+@property (nonatomic, strong, nullable) NSMenu *customMenu;
+
 @property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *languageDict;
 
 @end
@@ -29,18 +33,17 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 
 - (void)setupUI {
     self.title = @"";
+    [self setupMenu];
     self.autoSelectedLanguage = EZLanguageAuto;
     
     mm_weakify(self)
     [self setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self)
         // 显示menu
-        if (self.languageDict.count) {
-            [self setupMenu];
-            [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
-        }
+        [self setupMenu];
+        [self.customMenu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, 0) inView:self];
     }];
-        
+    
     [NSView mm_make:^(NSView *_Nonnull titleContainerView) {
         [self addSubview:titleContainerView];
         titleContainerView.layer.backgroundColor = [NSColor redColor].CGColor;
@@ -86,23 +89,33 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
             }];
         }];
     }];
-    
-    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
-    self.languageDict = [[MMOrderedDictionary alloc] init];
-    for (EZLanguage language in allLanguages) {
-        NSString *languageName = [EZLanguageManager showingLanguageNameWithFlag:language];
-        [self.languageDict setObject:languageName forKey:language];
-    }
 }
 
 #pragma mark -
 
 - (void)setupMenu {
+    NSArray *allLanguages = [[EZLanguageClass allLanguages] sortedKeys];
+    self.languageDict = [[MMOrderedDictionary alloc] init];
+    for (EZLanguage language in allLanguages) {
+        NSString *languageName = [EZLanguageManager showingLanguageName:language];
+        NSString *languageFlag = [EZLanguageManager languageFlagEmoji:language];
+        
+        if ([language isEqualToString:EZLanguageAuto]) {
+            if ([EZLanguageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+                languageName = self.autoChineseSelectedTitle;
+            }
+        }
+        
+        NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];
+        
+        [self.languageDict setObject:languageNameWithFlag forKey:language];
+    }
+    
     if (!self.customMenu) {
         self.customMenu = [NSMenu new];
     }
     [self.customMenu removeAllItems];
-        
+    
     [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage  _Nonnull key, NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
@@ -114,10 +127,10 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 - (void)clickItem:(NSMenuItem *)item {
     EZLanguage selectedLanguage = self.languageDict.sortedKeys[item.tag];
     [self showSelectedLanguage:selectedLanguage];
-    if (self.menuItemSeletedBlock) {
+    if (self.selectedMenuItemBlock) {
         NSLog(@"selecct: %@", selectedLanguage);
-
-        self.menuItemSeletedBlock(selectedLanguage);
+        
+        self.selectedMenuItemBlock(selectedLanguage);
     }
     self.customMenu = nil;
 }
@@ -126,7 +139,11 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
         NSString *languageName = [EZLanguageManager showingLanguageName:selectedLanguage];
         NSString *languageFlag = [EZLanguageManager languageFlagEmoji:selectedLanguage];
+        
         if ([selectedLanguage isEqualToString:EZLanguageAuto]) {
+            if ([EZLanguageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+                languageName = self.autoChineseSelectedTitle;
+            }
             languageFlag = [EZLanguageManager languageFlagEmoji:self.autoSelectedLanguage];
         }
         NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];
