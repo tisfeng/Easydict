@@ -375,8 +375,6 @@
 //                                            @(EZLanguageAuto), @"auto", @(EZLanguageSimplifiedChinese), @"zh", @(EZLanguageTraditionalChinese), @"cht", @(EZLanguageEnglish), @"en", @(EZLanguage_yue), @"yue", @(EZLanguage_wyw), @"wyw", @(EZLanguage_ja), @"jp", @(EZLanguage_ko), @"kor", @(EZLanguage_fr), @"fra", @(EZLanguage_es), @"spa", @(EZLanguage_th), @"th", @(EZLanguage_ar), @"ara", @(EZLanguage_ru), @"ru", @(EZLanguage_pt), @"pt", @(EZLanguage_de), @"de", @(EZLanguage_it), @"it", @(EZLanguage_el), @"el", @(EZLanguage_nl), @"nl", @(EZLanguage_pl), @"pl", @(EZLanguage_bg), @"bul", @(EZLanguage_et), @"est", @(EZLanguage_da), @"dan", @(EZLanguage_fi), @"fin", @(EZLanguage_cs), @"cs", @(EZLanguage_ro), @"rom", @(EZLanguage_sl), @"slo", @(EZLanguage_sv), @"swe", @(EZLanguage_hu), @"hu", @(EZLanguage_vi), @"vie", nil];
 //}
 
-// Currently supports 48 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, Italian, German, Russian, Arabic, Swedish, Romanian, Thai, Slovak, Dutch, Hungarian, Greek, Danish, Finnish, Polish, Czech, Turkish, Lithuanian, Latvian, Ukrainian, Bulgarian, Indonesian, Malay, Slovenian, Estonian, Vietnamese, Persian, Hindi, Telugu, Tamil, Urdu, Filipino, Khmer, Lao, Bengali, Burmese, Norwegian, Serbian, Croatian, Mongolian, Hebrew.
-
 // get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
