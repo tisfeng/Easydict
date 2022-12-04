@@ -69,8 +69,18 @@ static CGFloat kExceptTextViewHeight = 30;
     [self addSubview:clearButton];
     self.clearButton = clearButton;
     clearButton.hidden = NO;
-    clearButton.image = [[NSImage imageNamed:@"clear_circle"] resizeToSize:CGSizeMake(15, 15)];
-    clearButton.toolTip = @"Clear";
+    
+    NSImage *clearImage;
+    if (@available(macOS 11.0, *)) {
+        clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
+        clearImage = [clearImage resizeToSize:CGSizeMake(15, 15)];
+        clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
+    } else {
+        // Fallback on earlier versions
+        clearImage = [[NSImage imageNamed:@"clear_circle"] resizeToSize:CGSizeMake(15, 15)];
+    }
+    clearButton.image = clearImage;
+    clearButton.toolTip = @"Clear All";
     
     [clearButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"clearButton");
@@ -110,7 +120,7 @@ static CGFloat kExceptTextViewHeight = 30;
     }];
     
     [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.equalTo(self).offset(-3);
+        make.right.bottom.equalTo(self).offset(-4);
         make.width.height.mas_equalTo(24);
     }];
 
