@@ -29,6 +29,8 @@
 #include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
 #import "EZAppleService.h"
+#import <WebKit/WebKit.h>
+#import "EZBaiduWebTranslate.h"
 
 static NSString * const EZQueryCellId = @"EZQueryCellId";
 static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -63,6 +65,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL enableResizeWindow;
+
+@property (nonatomic, strong) EZBaiduWebTranslate *baiduWebTranslate;
 
 @end
 
@@ -179,6 +183,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 //        
 ////        NSString *queryText = change[NSKeyValueChangeNewKey];
 //    }];
+    
+    
+    self.baiduWebTranslate = [[EZBaiduWebTranslate alloc] init];
 }
 
 
@@ -186,7 +193,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
-    
+        
     if (queryText.length == 0) {
         self.queryModel.queryViewHeight = 0;
     }
@@ -289,6 +296,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }
     
     NSLog(@"query text: %@", text);
+    
+    [self.baiduWebTranslate translate:text success:^(NSString * _Nonnull result) {
+        NSLog(@"baidu result: %@", result);
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@"error: %@", error);
+    }];
     
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
