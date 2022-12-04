@@ -108,7 +108,7 @@
     NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
 
     //    @"document.querySelector('p.ordinary-output.target-output.clearfix > span').innerText"
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [webView evaluateJavaScript:@"document.querySelector('.target-output').innerText" completionHandler:^(id _Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"baidu error: %@", error);
