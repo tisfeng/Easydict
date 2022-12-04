@@ -296,18 +296,18 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }
     
     NSLog(@"query text: %@", text);
-    
-    [self.baiduWebTranslate translate:text success:^(NSString * _Nonnull result) {
-        NSLog(@"baidu result: %@", result);
-    } failure:^(NSError * _Nonnull error) {
-        NSLog(@"error: %@", error);
-    }];
-    
+        
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         NSLog(@"close all result");
         self.queryText = text;
-        [self queryCurrentModel];
+//        [self queryCurrentModel];
+        
+        [self.baiduWebTranslate translate:text success:^(NSString * _Nonnull result) {
+            NSLog(@"baidu result: %@", result);
+        } failure:^(NSError * _Nonnull error) {
+            NSLog(@"error: %@", error);
+        }];
     }];
 }
 

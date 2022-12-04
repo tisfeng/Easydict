@@ -91,6 +91,7 @@
           success:(void (^)(NSString *result))success
           failure:(void (^)(NSError *error))failure {
     NSString *urlString = [NSString stringWithFormat:@"https://fanyi.baidu.com/#en/zh/%@", text];
+    NSLog(@"translate url: %@", urlString);
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
     self.completion = ^(NSString *result, NSError *error) {
         if (result) {
@@ -125,37 +126,49 @@
     });
 }
 
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLog(@"didFailNavigation: %@", error);
+}
+
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailProvisionalNavigation: %@", error);
 }
-/** 在收到响应后，决定是否跳转 */
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
 
-    //允许跳转
-    decisionHandler(WKNavigationResponsePolicyAllow);
-    //不允许跳转
-    // decisionHandler(WKNavigationResponsePolicyCancel);
+// 监听 JavaScript 代码是否执行
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    // JavaScript 代码执行
+    NSLog(@"runJavaScriptAlertPanelWithMessage: %@", message);
 }
+
+
+/** 在收到响应后，决定是否跳转 */
+//- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
+//    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+//
+//    //允许跳转
+//    decisionHandler(WKNavigationResponsePolicyAllow);
+//    //不允许跳转
+//    // decisionHandler(WKNavigationResponsePolicyCancel);
+//}
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
     NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
-    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
-
-    if ([navigationActionURL isEqualToString:@"about:blank"]) {
-        decisionHandler(WKNavigationActionPolicyCancel);
-        return;
-    }
-    
-    //允许跳转
-    decisionHandler(WKNavigationActionPolicyAllow);
-    //不允许跳转
-    // decisionHandler(WKNavigationActionPolicyCancel);
-}
+//- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+//    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
+//    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+//
+////    if ([navigationActionURL isEqualToString:@"about:blank"]) {
+////        decisionHandler(WKNavigationActionPolicyCancel);
+////        return;
+////    }
+//
+//    //允许跳转
+//    decisionHandler(WKNavigationActionPolicyAllow);
+//    //不允许跳转
+//    // decisionHandler(WKNavigationActionPolicyCancel);
+//}
 
 @end
