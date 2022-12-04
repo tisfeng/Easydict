@@ -305,6 +305,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         
         [self.baiduWebTranslate translate:text success:^(NSString * _Nonnull result) {
             NSLog(@"baidu result: %@", result);
+            [self.window makeFirstResponder:self.queryView.textView];
         } failure:^(NSError * _Nonnull error) {
             NSLog(@"error: %@", error);
         }];
