@@ -133,15 +133,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     }
 }
 
-- (void)resetQueryResults {
-    for (EZQueryService *service in self.services) {
-        EZQueryResult *result = [[EZQueryResult alloc] init];
-        service.result = result;
-        result.isShowing = NO; // default not show, show result after querying.
-    }
-    self.queryText = @"";
-}
-
 - (void)setup {
     self.serviceTypes = @[
         EZServiceTypeGoogle,
@@ -159,7 +150,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     self.queryModel = [[EZQueryModel alloc] init];
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    [self resetQueryResults];
+    [self resetAllServiceResults];
 
     self.player = [[AVPlayer alloc] init];
     
@@ -483,11 +474,33 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 #pragma mark - Update TableView
 
+- (void)resetAllServiceResults {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = [[EZQueryResult alloc] init];
+        result.isShowing = NO; // default not show, show result after querying.
+        service.result = result;
+    }
+    self.queryText = @"";
+}
+
+- (void)clearQueryResultsWithAnimation:(void (^)(void))completion {
+    self.queryText = @"";
+    
+    // !!!: To show closing animation, we cannot reset result directly.
+    [self closeAllResultView:^{
+        [self resetAllServiceResults];
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 - (void)resetTableView:(void (^)(void))completion {
-    [self resetQueryResults];
+    [self resetAllServiceResults];
     [self reloadTableViewData:completion];
 }
 
+/// TableView reloadData
 - (void)reloadTableViewData:(void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
@@ -501,33 +514,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [CATransaction commit];
 }
 
-
-- (void)updateTableViewWithAnimation:(nullable void (^)(void))completion {
-    NSMutableArray *results = [NSMutableArray array];
-    for (EZQueryService *service in self.services) {
-        [results addObject:service.result];
-    }
-    
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        if (completion) {
-            completion();
-        }
-    }];
-    
-    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-
-    // Avoid blocking when delete text in query text, so set NO reloadData, we update query cell manually
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO];
-    
-    // Need to reload cell data, especially arrow button state.
-    [self updateCellWithResults:results reloadData:YES];
-    
-    [CATransaction commit];
-}
-
 - (void)closeAllResultView:(void (^)(void))completionHandler {
     NSArray *closingResults = [self allShowingResults];
+    [self closeAllShowingResults];
     [self updateCellWithResults:closingResults reloadData:YES completionHandler:completionHandler];
 }
 
@@ -573,7 +562,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
         [self updateWindowViewHeightWithLock];
-        
         if (completionHandler) {
             completionHandler();
         }
@@ -601,6 +589,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     return results;
 }
 
+/// Just set result isShowing to NO, not update cell view.
 - (void)closeAllShowingResults {
     NSArray *results = [self allShowingResults];
     for (EZQueryResult *result in results) {
@@ -668,8 +657,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [queryView setClearBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);
-        [self resetQueryResults];
-        [self updateTableViewWithAnimation:nil];
+        [self clearQueryResultsWithAnimation:nil];
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage  _Nonnull language) {
@@ -762,7 +750,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         }
         
         [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
-            [self updateCellWithResult:result reloadData:YES completionHandler:nil];
+            [self updateCellWithResult:result reloadData:YES];
         }];
     }];
 }
