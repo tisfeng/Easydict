@@ -292,19 +292,17 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 /// Close all result view, then query text.
 - (void)startQueryText:(NSString *)text {
-    // !!!:  deep copy text, because text will be released in resetQueryResults.
-    NSString *queryText = [text mutableCopy];
-    
     if (text.length == 0) {
-        NSLog(@"query text length = 0");
+        NSLog(@"query text is empty");
         return;
     }
     
     NSLog(@"query text: %@", text);
     
-    // Close all resultView before querying new text
+    // Close all resultView before querying new text.
     [self closeAllResultView:^{
-        self.queryText = queryText;
+        NSLog(@"close all result");
+        self.queryText = text;
         [self queryCurrentModel];
     }];
 }
