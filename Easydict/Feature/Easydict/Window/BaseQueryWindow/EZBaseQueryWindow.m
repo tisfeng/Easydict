@@ -58,7 +58,8 @@
     
     EZHoverButton *pinButton = self.titleBar.pinButton;
     
-    CGSize imageSize = CGSizeMake(18, 18);
+    CGFloat imageWidth = 17;
+    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
     
     // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
     NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];

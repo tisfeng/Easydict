@@ -34,13 +34,12 @@
 //    }];
     
     CGFloat kButtonWidth = 24;
-    CGFloat kImagenWidth = 20;
+    CGFloat kImagenWidth = 19;
     CGFloat kButtonPadding = 4;
-    CGFloat kTop = 3;
+    CGFloat kTop = 5;
     
     CGSize buttonSize = CGSizeMake(kButtonWidth, kButtonWidth);
     CGSize imageSize = CGSizeMake(kImagenWidth, kImagenWidth);
-    
     
     EZHoverButton *pinButton = [[EZHoverButton alloc] init];
     [self addSubview:pinButton];
