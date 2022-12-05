@@ -10,9 +10,9 @@
 #import "EZLocalStorage.h"
 
 #define MethodNotImplemented()    \
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException    \
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
-                                 userInfo:nil]
+@throw [NSException exceptionWithName:NSInternalInconsistencyException    \
+reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
+userInfo:nil]
 
 
 @interface EZQueryService ()
@@ -43,7 +43,7 @@
 
 - (void)setResult:(EZQueryResult *)translateResult {
     _result = translateResult;
-       
+    
     _result.serviceType = self.serviceType;
     _result.isShowing = self.enabled;
 }
@@ -76,22 +76,20 @@
     return _langIndexDict;
 }
 
-- (NSString *_Nullable)languageStringFromEnum:(EZLanguage)lang {
+- (NSString *_Nullable)languageCodeForLanguage:(EZLanguage)lang {
     return [self.langDict objectForKey:lang];
 }
 
-
-- (NSInteger)indexForLanguage:(EZLanguage)lang {
-    return [[self.langIndexDict objectForKey:lang] integerValue];
-}
-
-
-- (EZLanguage)languageEnumFromString:(NSString *)langString {
+- (EZLanguage)languageEnumFromCode:(NSString *)langString {
     EZLanguage language = [self.langEnumFromStringDict objectForKey:langString];
     if (!language) {
         language = EZLanguageAuto;
     }
     return language;
+}
+
+- (NSInteger)indexForLanguage:(EZLanguage)lang {
+    return [[self.langIndexDict objectForKey:lang] integerValue];
 }
 
 
@@ -121,6 +119,13 @@
     MethodNotImplemented();
     return nil;
 }
+
+/// 单词直达链接 
+- (nullable NSString *)wordLink {
+    MethodNotImplemented();
+    return nil;
+}
+
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MethodNotImplemented();

@@ -10,6 +10,7 @@
 #import "YoudaoTranslateResponse.h"
 #import "YoudaoOCRResponse.h"
 
+static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 
 @interface EZYoudaoTranslate ()
 
@@ -55,15 +56,37 @@
     return @"http://fanyi.youdao.com";
 }
 
-//- (MMOrderedDictionary *)supportLanguagesDictionary {
-//    return [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-//            @(EZEZLanguageAuto), @"auto", @(EZEZLanguageSimplifiedChinese), @"zh-CHS", @(EZEZLanguageEnglish), @"en", @(EZLanguage_yue), @"yue", @(EZLanguage_ja), @"ja", @(EZLanguage_ko), @"ko", @(EZLanguage_fr), @"fr", @(EZLanguage_es), @"es", @(EZLanguage_pt), @"pt", @(EZLanguage_it), @"it", @(EZLanguage_ru), @"ru", @(EZLanguage_vi), @"vi", @(EZLanguage_de), @"de", @(EZLanguage_ar), @"ar", @(EZLanguage_id), @"id", @(EZLanguage_af), @"af", @(EZLanguage_bs), @"bs", @(EZLanguage_bg), @"bg", @(EZLanguage_ca), @"ca", @(EZLanguage_hr), @"hr", @(EZLanguage_cs), @"cs", @(EZLanguage_da), @"da", @(EZLanguage_nl), @"nl", @(EZLanguage_et), @"et", @(EZLanguage_fj), @"fj", @(EZLanguage_fi), @"fi", @(EZLanguage_el), @"el", @(EZLanguage_ht), @"ht", @(EZLanguage_he), @"he", @(EZLanguage_hi), @"hi", @(EZLanguage_mww), @"mww", @(EZLanguage_hu), @"hu", @(EZLanguage_sw), @"sw", @(EZLanguage_tlh), @"tlh", @(EZLanguage_lv), @"lv", @(EZLanguage_lt), @"lt", @(EZLanguage_ms), @"ms", @(EZLanguage_mt), @"mt", @(EZLanguage_no), @"no", @(EZLanguage_fa), @"fa", @(EZLanguage_pl), @"pl", @(EZLanguage_otq), @"otq", @(EZLanguage_ro), @"ro", @(EZLanguage_sr_Cyrl), @"sr-Cyrl", @(EZLanguage_sr_Latn), @"sr-Latn", @(EZLanguage_sk), @"sk", @(EZLanguage_sv), @"sv", @(EZLanguage_ty), @"ty", @(EZLanguage_th), @"th", @(EZLanguage_to), @"to", @(EZLanguage_tr), @"tr", @(EZLanguage_uk), @"uk", @(EZLanguage_ur), @"ur", @(EZLanguage_cy), @"cy", @(EZLanguage_yua), @"yua", @(EZLanguage_sq), @"sq", @(EZLanguage_am), @"am", @(EZLanguage_hy), @"hy", @(EZLanguage_az), @"az", @(EZLanguage_bn), @"bn", @(EZLanguage_eu), @"eu", @(EZLanguage_be), @"be", @(EZLanguage_ceb), @"ceb", @(EZLanguage_co), @"co", @(EZLanguage_eo), @"eo", @(EZLanguage_tl), @"tl", @(EZLanguage_fy), @"fy", @(EZLanguage_gl), @"gl", @(EZLanguage_ka), @"ka", @(EZLanguage_gu), @"gu", @(EZLanguage_ha), @"ha", @(EZLanguage_haw), @"haw", @(EZLanguage_is), @"is", @(EZLanguage_ig), @"ig", @(EZLanguage_ga), @"ga", @(EZLanguage_jw), @"jw", @(EZLanguage_kn), @"kn", @(EZLanguage_kk), @"kk", @(EZLanguage_km), @"km", @(EZLanguage_ku), @"ku", @(EZLanguage_ky), @"ky", @(EZLanguage_lo), @"lo", @(EZLanguage_la), @"la", @(EZLanguage_lb), @"lb", @(EZLanguage_mk), @"mk", @(EZLanguage_mg), @"mg", @(EZLanguage_mi), @"mi", @(EZLanguage_ml), @"ml", @(EZLanguage_mr), @"mr", @(EZLanguage_mn), @"mn", @(EZLanguage_my), @"my", @(EZLanguage_ne), @"ne", @(EZLanguage_ny), @"ny", @(EZLanguage_ps), @"ps", @(EZLanguage_pa), @"pa", @(EZLanguage_sm), @"sm", @(EZLanguage_gd), @"gd", @(EZLanguage_st), @"st", @(EZLanguage_sn), @"sn", @(EZLanguage_sd), @"sd", @(EZLanguage_si), @"si", @(EZLanguage_so), @"so", @(EZLanguage_su), @"su", @(EZLanguage_tg), @"tg", @(EZLanguage_ta), @"ta", @(EZLanguage_te), @"te", @(EZLanguage_uz), @"uz", @(EZLanguage_xh), @"xh", @(EZLanguage_yi), @"yi", @(EZLanguage_yo), @"yo", @(EZLanguage_zu), @"zu", nil];
-//}
+// https://www.youdao.com/result?word=good&lang=en
+// youdao support 4 languages: en, ja, ko, fr, and to Chinese
+// means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
+- (NSString *)wordLink {
+    EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
+    EZLanguage toLanguage = self.queryModel.autoTargetLanguage;
+    
+    NSString *youdaoFrom = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
+    NSString *youdaoTo = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    NSArray *youdaoLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
+    NSMutableArray *youdaoLanguageCodes = [NSMutableArray array];
+    for (EZLanguage langauge in youdaoLanguags) {
+        NSString *code = [self languageCodeForLanguage:langauge];
+        [youdaoLanguageCodes addObject:code];
+    }
+    
+    if (![EZLanguageManager isChineseLanguage:fromLanguage] || ![EZLanguageManager isChineseLanguage:toLanguage]) {
+        return nil;
+    }
+    
+    NSString *foreignLangauge = youdaoTo;
+    if ([youdaoLanguageCodes containsObject:youdaoFrom]) {
+        foreignLangauge = youdaoFrom;
+    }
+    
+    return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoTranslateURL, encodedWord, foreignLangauge];
+}
 
 
-// Currently supports 48 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, Italian, German, Russian, Arabic, Swedish, Romanian, Thai, Slovak, Dutch, Hungarian, Greek, Danish, Finnish, Polish, Czech, Turkish, Lithuanian, Latvian, Ukrainian, Bulgarian, Indonesian, Malay, Slovenian, Estonian, Vietnamese, Persian, Hindi, Telugu, Tamil, Urdu, Filipino, Khmer, Lao, Bengali, Burmese, Norwegian, Serbian, Croatian, Mongolian, Hebrew.
-
-// get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
@@ -127,8 +150,8 @@
     
     NSString *url = @"https://aidemo.youdao.com/trans";
     NSDictionary *params = @{
-        @"from" : [self languageStringFromEnum:from],
-        @"to" : [self languageStringFromEnum:to],
+        @"from" : [self languageCodeForLanguage:from],
+        @"to" : [self languageCodeForLanguage:to],
         @"q" : text,
     };
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
@@ -151,8 +174,8 @@
                     // 解析语言
                     NSArray *languageComponents = [response.l componentsSeparatedByString:@"2"];
                     if (languageComponents.count == 2) {
-                        result.from = [self languageEnumFromString:languageComponents.firstObject];
-                        result.to = [self languageEnumFromString:languageComponents.lastObject];
+                        result.from = [self languageEnumFromCode:languageComponents.firstObject];
+                        result.to = [self languageEnumFromCode:languageComponents.lastObject];
                     } else {
                         MMAssert(0, @"有道翻译语种解析失败 %@", responseObject);
                     }
@@ -370,8 +393,8 @@
                 YoudaoOCRResponse *response = [YoudaoOCRResponse mj_objectWithKeyValues:responseObject];
                 if (response) {
                     EZOCRResult *result = [EZOCRResult new];
-                    result.from = [self languageEnumFromString:response.lanFrom];
-                    result.to = [self languageEnumFromString:response.lanTo];
+                    result.from = [self languageEnumFromCode:response.lanFrom];
+                    result.to = [self languageEnumFromCode:response.lanTo];
                     result.ocrTextArray = [response.lines mm_map:^id _Nullable(YoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         EZOCRText *text = [EZOCRText new];
                         text.text = obj.context;

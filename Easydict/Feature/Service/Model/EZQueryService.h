@@ -27,10 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<EZLanguage> *)languages;
 
 /// 语言枚举转字符串，不支持则返回空
-- (NSString *_Nullable)languageStringFromEnum:(EZLanguage)lang;
+- (NSString *_Nullable)languageCodeForLanguage:(EZLanguage)lang;
 
 /// 语言字符串转枚举，不支持则返回Auto
-- (EZLanguage)languageEnumFromString:(NSString *)langString;
+- (EZLanguage)languageEnumFromCode:(NSString *)langString;
 
 
 /// 语言在支持的语言数组中的位置，不包含则返回0
@@ -52,6 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 翻译网站首页
 - (NSString *)link;
+
+/// 单词直达链接
+- (nullable NSString *)wordLink;
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;

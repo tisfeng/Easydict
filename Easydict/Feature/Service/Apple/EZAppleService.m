@@ -330,7 +330,7 @@
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
     
     for (EZLanguage language in userPreferredLanguageProbabilities.allKeys) {
-        NLLanguage appleLanguage = [self languageStringFromEnum:language];
+        NLLanguage appleLanguage = [self languageCodeForLanguage:language];
         CGFloat defaultProbability = [defaultLanguageProbabilities[appleLanguage] doubleValue];
         if (defaultProbability) {
             NSNumber *userPreferredLanguageProbability = userPreferredLanguageProbabilities[language];
@@ -345,7 +345,7 @@
     }];
     
     NLLanguage mostConfidentLanguage = sortedLanguages.firstObject;
-    EZLanguage ezLanguage = [self languageEnumFromString:mostConfidentLanguage];
+    EZLanguage ezLanguage = [self languageEnumFromCode:mostConfidentLanguage];
     
     NSLog(@"---> Apple detect: %@", ezLanguage);
     

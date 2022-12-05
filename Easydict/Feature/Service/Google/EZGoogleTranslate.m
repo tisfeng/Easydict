@@ -12,6 +12,8 @@
 
 #define kGoogleRootPage(isCN) (isCN ? @"https://translate.google.cn" : @"https://translate.google.com")
 
+static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
+
 @interface EZGoogleTranslate ()
 
 @property (nonatomic, strong) JSContext *jsContext;
@@ -201,8 +203,8 @@
                      stringByAppendingPathComponent:@"/translate_a/single"];
     NSDictionary *params = @{
         @"q" : text,
-        @"sl" : [self languageStringFromEnum:from],
-        @"tl" : [self languageStringFromEnum:to],
+        @"sl" : [self languageCodeForLanguage:from],
+        @"tl" : [self languageCodeForLanguage:to],
         @"dt" : @"t",
         @"dj" : @"1",
         @"ie" : @"UTF-8",
@@ -251,51 +253,16 @@
     return kGoogleRootPage(self.isCN);
 }
 
-//- (MMOrderedDictionary *)supportLanguagesDictionary {
-//    return [[MMOrderedDictionary alloc]
-//            initWithKeysAndObjects:
-//                @(EZLanguageAuto), @"auto", @(EZLanguageSimplifiedChinese), @"zh-CN", // zh ?
-//            @(EZLanguageTraditionalChinese), @"zh-TW", @(EZLanguageEnglish), @"en", @(EZLanguage_af),
-//            @"af", @(EZLanguage_sq), @"sq", @(EZLanguage_am), @"am", @(EZLanguage_ar),
-//            @"ar", @(EZLanguage_hy), @"hy", @(EZLanguage_az), @"az", @(EZLanguage_eu),
-//            @"eu", @(EZLanguage_be), @"be", @(EZLanguage_bn), @"bn", @(EZLanguage_bs),
-//            @"bs", @(EZLanguage_bg), @"bg", @(EZLanguage_ca), @"ca", @(EZLanguage_ceb),
-//            @"ceb", @(EZLanguage_ny), @"ny", @(EZLanguage_co), @"co", @(EZLanguage_hr),
-//            @"hr", @(EZLanguage_cs), @"cs", @(EZLanguage_da), @"da", @(EZLanguage_nl),
-//            @"nl", @(EZLanguage_eo), @"eo", @(EZLanguage_et), @"et", @(EZLanguage_tl),
-//            @"tl", @(EZLanguage_fi), @"fi", @(EZLanguage_fr), @"fr", @(EZLanguage_fy),
-//            @"fy", @(EZLanguage_gl), @"gl", @(EZLanguage_ka), @"ka", @(EZLanguage_de),
-//            @"de", @(EZLanguage_el), @"el", @(EZLanguage_gu), @"gu", @(EZLanguage_ht),
-//            @"ht", @(EZLanguage_ha), @"ha", @(EZLanguage_haw), @"haw", @(EZLanguage_he),
-//            @"iw", // google 这个 code 码有点特别
-//            @(EZLanguage_hi), @"hi", @(EZLanguage_hmn), @"hmn", @(EZLanguage_hu), @"hu",
-//            @(EZLanguage_is), @"is", @(EZLanguage_ig), @"ig", @(EZLanguage_id), @"id",
-//            @(EZLanguage_ga), @"ga", @(EZLanguage_it), @"it", @(EZLanguage_ja), @"ja",
-//            @(EZLanguage_jw), @"jw", @(EZLanguage_kn), @"kn", @(EZLanguage_kk), @"kk",
-//            @(EZLanguage_km), @"km", @(EZLanguage_ko), @"ko", @(EZLanguage_ku), @"ku",
-//            @(EZLanguage_ky), @"ky", @(EZLanguage_lo), @"lo", @(EZLanguage_la), @"la",
-//            @(EZLanguage_lv), @"lv", @(EZLanguage_lt), @"lt", @(EZLanguage_lb), @"lb",
-//            @(EZLanguage_mk), @"mk", @(EZLanguage_mg), @"mg", @(EZLanguage_ms), @"ms",
-//            @(EZLanguage_ml), @"ml", @(EZLanguage_mt), @"mt", @(EZLanguage_mi), @"mi",
-//            @(EZLanguage_mr), @"mr", @(EZLanguage_mn), @"mn", @(EZLanguage_my), @"my",
-//            @(EZLanguage_ne), @"ne", @(EZLanguage_no), @"no", @(EZLanguage_ps), @"ps",
-//            @(EZLanguage_fa), @"fa", @(EZLanguage_pl), @"pl", @(EZLanguage_pt), @"pt",
-//            @(EZLanguage_pa), @"pa", @(EZLanguage_ro), @"ro", @(EZLanguage_ru), @"ru",
-//            @(EZLanguage_sm), @"sm", @(EZLanguage_gd), @"gd", @(EZLanguage_sr), @"sr",
-//            @(EZLanguage_st), @"st", @(EZLanguage_sn), @"sn", @(EZLanguage_sd), @"sd",
-//            @(EZLanguage_si), @"si", @(EZLanguage_sk), @"sk", @(EZLanguage_sl), @"sl",
-//            @(EZLanguage_so), @"so", @(EZLanguage_es), @"es", @(EZLanguage_su), @"su",
-//            @(EZLanguage_sw), @"sw", @(EZLanguage_sv), @"sv", @(EZLanguage_tg), @"tg",
-//            @(EZLanguage_ta), @"ta", @(EZLanguage_te), @"te", @(EZLanguage_th), @"th",
-//            @(EZLanguage_tr), @"tr", @(EZLanguage_uk), @"uk", @(EZLanguage_ur), @"ur",
-//            @(EZLanguage_uz), @"uz", @(EZLanguage_vi), @"vi", @(EZLanguage_cy), @"cy",
-//            @(EZLanguage_xh), @"xh", @(EZLanguage_yi), @"yi", @(EZLanguage_yo), @"yo",
-//            @(EZLanguage_zu), @"zu", nil];
-//}
+// https://translate.google.com/?sl=auto&tl=zh-CN&text=good&op=translate
+- (NSString *)wordLink {
+    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];
+}
 
-// Currently supports 48 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, Italian, German, Russian, Arabic, Swedish, Romanian, Thai, Slovak, Dutch, Hungarian, Greek, Danish, Finnish, Polish, Czech, Turkish, Lithuanian, Latvian, Ukrainian, Bulgarian, Indonesian, Malay, Slovenian, Estonian, Vietnamese, Persian, Hindi, Telugu, Tamil, Urdu, Filipino, Khmer, Lao, Bengali, Burmese, Norwegian, Serbian, Croatian, Mongolian, Hebrew.
 
-// get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
@@ -398,7 +365,7 @@
                       NSString *googleFromString =
                       responseDict[@"src"];
                       EZLanguage googleFrom = [self
-                                             languageEnumFromString:googleFromString];
+                                               languageEnumFromCode:googleFromString];
                       EZLanguage googleTo = langTo;
                       
                       EZQueryResult *result = [EZQueryResult new];
@@ -414,7 +381,7 @@
                                      @"text=%@",
                                      kGoogleRootPage(self.isCN),
                                      googleFromString,
-                                     [self languageStringFromEnum:googleTo],
+                                     [self languageCodeForLanguage:googleTo],
                                      textEncode];
                       result.fromSpeakURL =
                       [self getAudioURLWithText:text
@@ -435,7 +402,7 @@
                                                    getAudioURLWithText:trans
                                                    language:
                                                        [self
-                                                        languageStringFromEnum:
+                                                        languageCodeForLanguage:
                                                             googleTo]
                                                    sign:signTo];
                           }
@@ -457,8 +424,8 @@
                forKey:EZTranslateErrorRequestResponseKey];
               completion(nil,
                          EZTranslateError(EZTranslateErrorTypeAPI,
-                                        message ?: @"翻译失败",
-                                        reqDict));
+                                          message ?: @"翻译失败",
+                                          reqDict));
           }];
       };
     
@@ -497,7 +464,7 @@
                     
                     NSString *textEncode = text.mm_urlencode;
                     NSString *googleFromString = responseArray[2];
-                    EZLanguage googleFrom = [self languageEnumFromString:googleFromString];
+                    EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     EZLanguage googleTo = langTo;
                     
                     EZQueryResult *result = [EZQueryResult new];
@@ -510,7 +477,7 @@
                     result.link = [NSString stringWithFormat:@"%@/#view=home&op=translate&sl=%@&tl=%@&text=%@",
                                    kGoogleRootPage(self.isCN),
                                    googleFromString,
-                                   [self languageStringFromEnum:googleTo],
+                                   [self languageCodeForLanguage:googleTo],
                                    textEncode];
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                     
@@ -596,7 +563,7 @@
                             
                             NSString *mergeString = [NSString mm_stringByCombineComponents:normalResults separatedString:@"\n"];
                             NSString *signTo = [[self.signFunction callWithArguments:@[ mergeString ]] toString];
-                            result.toSpeakURL = [self getAudioURLWithText:mergeString language:[self languageStringFromEnum:googleTo] sign:signTo];
+                            result.toSpeakURL = [self getAudioURLWithText:mergeString language:[self languageCodeForLanguage:googleTo] sign:signTo];
                         }
                     }
                     
@@ -637,8 +604,8 @@
     url = [url stringByAppendingString:@"?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"];
     NSDictionary *params = @{
         @"client" : @"webapp",
-        @"sl" : [self languageStringFromEnum:from], //
-        @"tl" : [self languageStringFromEnum:to],
+        @"sl" : [self languageCodeForLanguage:from], //
+        @"tl" : [self languageCodeForLanguage:to],
         @"hl" : @"zh-CN",
         @"otf" : @"2",
         @"ssel" : @"3",
@@ -699,7 +666,7 @@
                 NSString *googleFromString = responseDict[@"src"];
                 if ([googleFromString
                      isKindOfClass:NSString.class]) {
-                    EZLanguage googleFrom = [self languageEnumFromString:googleFromString];
+                    EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     if (googleFrom != EZLanguageAuto) {
                         completion(googleFrom, nil);
                         return;
@@ -714,8 +681,8 @@
                     forKey:EZTranslateErrorRequestResponseKey];
         completion(EZLanguageAuto,
                    EZTranslateError(EZTranslateErrorTypeAPI,
-                                  message ?: @"识别语言失败",
-                                  reqDict));
+                                    message ?: @"识别语言失败",
+                                    reqDict));
     }];
 }
 
@@ -743,7 +710,7 @@
                 NSArray *responseArray = responseObject;
                 if (responseArray.count >= 3) {
                     NSString *googleFromString = responseArray[2];
-                    EZLanguage googleFrom = [self languageEnumFromString:googleFromString];
+                    EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     if (googleFrom != EZLanguageAuto) {
                         completion(googleFrom, nil);
                         return;
@@ -779,7 +746,7 @@
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
             NSString *url = [self
                              getAudioURLWithText:text
-                             language:[self languageStringFromEnum:lang]
+                             language:[self languageCodeForLanguage:lang]
                              sign:sign];
             completion(url, nil);
         }];
@@ -792,7 +759,7 @@
             
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
             NSString *url = [self getAudioURLWithText:text
-                                             language:[self languageStringFromEnum:from]
+                                             language:[self languageCodeForLanguage:from]
                                                  sign:sign];
             completion(url, nil);
         }];
