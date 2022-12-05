@@ -36,7 +36,7 @@
         }];
         
         [self setupUI];
-
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(windowDidResize:)
                                                      name:NSWindowDidResizeNotification
@@ -48,7 +48,7 @@
 - (void)setupUI {
     NSView *themeView = self.contentView.superview;
     NSView *titleView = themeView.subviews[1];
-
+    
     self.titleBar = [[EZTitlebar alloc] initWithFrame:CGRectMake(0, 0, self.width, 30)];
     [titleView addSubview:self.titleBar];
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -64,11 +64,11 @@
     // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
     NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
     NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-
+    
     NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
     normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
     NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
-
+    
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
     
     void (^changePinButtonImageBlock)(void) = ^{
@@ -82,20 +82,20 @@
     };
     
     changePinButtonImageBlock();
-
+    
     mm_weakify(self);
     
-    [pinButton setMouseDownBlock:^(EZButton * _Nonnull button) {
-//        NSLog(@"pin mouse down, state: %ld", button.buttonState);
+    [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
+        //        NSLog(@"pin mouse down, state: %ld", button.buttonState);
         mm_strongify(self);
-
+        
         self.pin = !self.pin;
         
         changePinButtonImageBlock();
     }];
     
-    [pinButton setMouseUpBlock:^(EZButton * _Nonnull button) {
-//        NSLog(@"pin mouse up, state: %ld", button.buttonState);
+    [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+        //        NSLog(@"pin mouse up, state: %ld", button.buttonState);
         mm_strongify(self);
         
         BOOL oldPin = !self.pin;
@@ -113,7 +113,7 @@
         changePinButtonImageBlock();
     }];
     
-    [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
+    [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
         NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
         NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
         [button excuteLight:^(EZButton *button) {
@@ -124,7 +124,7 @@
             button.backgroundHighlightColor = darkHighlightColor;
         }];
     }];
-    [pinButton setMouseExitedBlock:^(EZButton * _Nonnull button) {
+    [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
         button.backgroundColor = NSColor.clearColor;
     }];
 }
@@ -138,7 +138,7 @@
 
 - (void)setViewController:(EZBaseQueryViewController *)viewController {
     _viewController = viewController;
-
+    
     viewController.window = self;
     self.contentViewController = viewController;
 }
@@ -179,6 +179,25 @@
 
 - (void)windowDidMove:(NSNotification *)notification {
     [[EZLayoutManager shared] updateWindowFrame:self];
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification {
+    NSLog(@"window Did ResignKey: %@", self);
+    
+    EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
+    if (!floatingWindow.pin) {
+        [[EZWindowManager shared] closeFloatingWindow];
+    }
+}
+
+// Window is hidden or showing.
+- (void)windowDidChangeOcclusionState:(NSNotification *)notification {
+    //    NSLog(@"window Did Change Occlusion State");
+    
+    // Window is obscured
+    if (self.occlusionState != NSWindowOcclusionStateVisible) {
+        
+    }
 }
 
 @end
