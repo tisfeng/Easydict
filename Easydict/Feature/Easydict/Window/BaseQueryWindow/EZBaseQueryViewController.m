@@ -539,6 +539,10 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData {
+    if (!result) {
+        NSLog(@"resutl is nil");
+        return;
+    }
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
