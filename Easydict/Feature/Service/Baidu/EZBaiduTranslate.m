@@ -10,8 +10,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZBaiduTranslateResponse.h"
 
-#define kBaiduRootPage @"https://fanyi.baidu.com"
-
+static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 @interface EZBaiduTranslate ()
 
@@ -87,7 +86,7 @@
 #pragma mark -
 
 - (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *token, NSString *gtk, NSError *error))completion {
-    NSString *url = kBaiduRootPage;
+    NSString *url = kBaiduTranslateURL;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
     
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
@@ -130,10 +129,10 @@
     JSValue *value = [self.jsFunction callWithArguments:@[ text, self.gtk ]];
     NSString *sign = [value toString];
     
-    NSString *url = [kBaiduRootPage stringByAppendingString:@"/v2transapi"];
+    NSString *url = [kBaiduTranslateURL stringByAppendingString:@"/v2transapi"];
     NSDictionary *params = @{
-        @"from" : [self languageStringFromEnum:from],
-        @"to" : [self languageStringFromEnum:to],
+        @"from" : [self languageCodeForLanguage:from],
+        @"to" : [self languageCodeForLanguage:to],
         @"query" : text,
         @"simple_means_flag" : @3,
         @"transtype" : @"realtime",
@@ -159,9 +158,9 @@
                         self.result = result;
                         
                         result.text = text;
-                        result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduRootPage, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
-                        result.from = [self languageEnumFromString:response.trans_result.from] ?: from;
-                        result.to = [self languageEnumFromString:response.trans_result.to] ?: to;
+                        result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
+                        result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
+                        result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
                         
                         // 解析单词释义
                         [response.dict_result.simple_means mm_anyPut:^(EZBaiduTranslateResponseSimpleMean *_Nonnull simple_means) {
@@ -367,7 +366,16 @@
 }
 
 - (NSString *)link {
-    return kBaiduRootPage;
+    return kBaiduTranslateURL;
+}
+
+// https://fanyi.baidu.com/#en/zh/good
+- (NSString *)wordLink {
+    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    return [NSString stringWithFormat:@"%@#%@/%@/%@", kBaiduTranslateURL, from, to, text];
 }
 
 //- (MMOrderedDictionary *)supportLanguagesDictionary {
@@ -435,7 +443,7 @@
         completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
-
+    
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
             [self sendTranslateRequest:text from:from to:to completion:completion];
@@ -487,19 +495,19 @@
         queryString = [queryString substringToIndex:73];
     }
     
-    NSString *url = [kBaiduRootPage stringByAppendingString:@"/langdetect"];
+    NSString *url = [kBaiduTranslateURL stringByAppendingString:@"/langdetect"];
     NSDictionary *params = @{@"query" : queryString};
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
     
     mm_weakify(self);
-    [self.jsonSession POST:[kBaiduRootPage stringByAppendingString:@"/langdetect"] parameters:@{@"query" : queryString} progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    [self.jsonSession POST:[kBaiduTranslateURL stringByAppendingString:@"/langdetect"] parameters:@{@"query" : queryString} progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self);
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *jsonResult = responseObject;
             NSString *from = [jsonResult objectForKey:@"lan"];
             if ([from isKindOfClass:NSString.class] && from.length) {
-                completion([self languageEnumFromString:from], nil);
+                completion([self languageEnumFromCode:from], nil);
             } else {
                 completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, nil, reqDict));
             }
@@ -521,18 +529,18 @@
     if (from == EZLanguageAuto) {
         [self detect:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
-                completion([self getAudioURLWithText:text language:[self languageStringFromEnum:lang]], nil);
+                completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:lang]], nil);
             } else {
                 completion(nil, error);
             }
         }];
     } else {
-        completion([self getAudioURLWithText:text language:[self languageStringFromEnum:from]], nil);
+        completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:from]], nil);
     }
 }
 
 - (NSString *)getAudioURLWithText:(NSString *)text language:(NSString *)language {
-    return [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=3&source=web", kBaiduRootPage, language, text.mm_urlencode];
+    return [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=3&source=web", kBaiduTranslateURL, language, text.mm_urlencode];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
@@ -542,15 +550,15 @@
     }
     
     NSData *data = [image mm_PNGData];
-    NSString *fromLang = (from == EZLanguageAuto) ? [self languageStringFromEnum:EZLanguageEnglish] : [self languageStringFromEnum:from];
+    NSString *fromLang = (from == EZLanguageAuto) ? [self languageCodeForLanguage:EZLanguageEnglish] : [self languageCodeForLanguage:from];
     NSString *toLang = nil;
     if (to == EZLanguageAuto) {
         toLang = [EZLanguageManager targetLanguageWithSourceLanguage:from];
     } else {
-        toLang = [self languageStringFromEnum:to];
+        toLang = [self languageCodeForLanguage:to];
     }
     
-    NSString *url = [kBaiduRootPage stringByAppendingPathComponent:@"/getocr"];
+    NSString *url = [kBaiduTranslateURL stringByAppendingPathComponent:@"/getocr"];
     NSDictionary *params = @{
         @"image" : data,
         @"from" : fromLang,
@@ -574,11 +582,11 @@
                     EZOCRResult *result = [EZOCRResult new];
                     NSString *from = [data objectForKey:@"from"];
                     if (from && [from isKindOfClass:NSString.class]) {
-                        result.from = [self languageEnumFromString:from];
+                        result.from = [self languageEnumFromCode:from];
                     }
                     NSString *to = [data objectForKey:@"to"];
                     if (to && [to isKindOfClass:NSString.class]) {
-                        result.to = [self languageEnumFromString:to];
+                        result.to = [self languageEnumFromCode:to];
                     }
                     NSArray<NSString *> *src = [data objectForKey:@"src"];
                     if (src && src.count) {

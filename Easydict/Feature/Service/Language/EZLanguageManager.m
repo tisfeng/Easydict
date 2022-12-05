@@ -35,27 +35,27 @@
         NSString *languageCode = [array componentsJoinedByString:@"-"];
         // Convert to EZLanguage
         EZAppleService *appleService = [[EZAppleService alloc] init];
-        EZLanguage ezLanguage = [appleService languageEnumFromString:languageCode];
-
+        EZLanguage ezLanguage = [appleService languageEnumFromCode:languageCode];
+        
         [languages addObject:ezLanguage];
     }
-
+    
     // This method seems to be the same.
     //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //    NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
-
+    
     //    NSLog(@"languages: %@", languages);
-
+    
     return languages;
 }
 
 + (NSArray<EZLanguage> *)preferredTwoLanguages {
     NSMutableArray *twoLanguages = [NSMutableArray array];
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
-
+    
     EZLanguage firstLanguage = languages.firstObject;
     [twoLanguages addObject:firstLanguage];
-
+    
     if (languages.count > 1) {
         [twoLanguages addObject:languages[1]];
     } else {
@@ -65,7 +65,7 @@
         }
         [twoLanguages addObject:secondLanguage];
     }
-
+    
     return twoLanguages;
 }
 
