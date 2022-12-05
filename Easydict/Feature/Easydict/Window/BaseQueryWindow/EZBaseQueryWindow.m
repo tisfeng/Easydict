@@ -185,7 +185,8 @@
     NSLog(@"window Did ResignKey: %@", self);
     
     EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
-    if (!floatingWindow.pin) {
+    // Do not close main window
+    if (!floatingWindow.pin && floatingWindow.windowType != EZWindowTypeMain) {
         [[EZWindowManager shared] closeFloatingWindow];
     }
 }
