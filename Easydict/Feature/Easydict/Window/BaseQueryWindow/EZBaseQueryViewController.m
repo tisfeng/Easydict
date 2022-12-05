@@ -336,6 +336,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     // Need to activate the current application first.
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     
+//    [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+
     [self.window makeFirstResponder:self.queryView.textView];
 }
 

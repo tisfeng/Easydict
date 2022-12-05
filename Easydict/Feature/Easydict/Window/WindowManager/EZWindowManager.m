@@ -240,10 +240,12 @@ static EZWindowManager *_instance;
     [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
+        
+    // TODO: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
+    [_mainWindow orderOut:nil];
+
     window.level = kCGFloatingWindowLevel;
     [window.viewController focusInputTextView];
-
-    [_mainWindow orderBack:nil];
     
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -420,6 +422,10 @@ static EZWindowManager *_instance;
 - (void)closeFloatingWindow {
     self.floatingWindow.pin = NO;
     [self.floatingWindow close];
+    
+    // recover last app.
+    [self activeLastFrontmostApplication];
+    [_mainWindow orderBack:nil];
     
     self.lastFloatingWindowType = self.floatingWindowType;
     self.floatingWindowType = EZWindowTypeMain;
