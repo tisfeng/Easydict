@@ -57,7 +57,7 @@ NSString *const EZServiceTypeApple = @"Apple";
 }
 
 - (BOOL)isEmpty {
-    if (!self.wordResult && self.translatedText.length == 0) {
+    if (!self.wordResult && self.translatedText.length == 0 && !self.error) {
         return YES;
     }
     return NO;

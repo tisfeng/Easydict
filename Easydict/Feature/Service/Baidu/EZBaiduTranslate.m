@@ -154,8 +154,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                     if (response.error == 0) {
                         self.error997Count = 0;
                         
-                        EZQueryResult *result = [EZQueryResult new];
-                        self.result = result;
+                        EZQueryResult *result = self.result;
                         
                         result.text = text;
                         result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
@@ -322,6 +321,9 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             completion(result, nil);
                             return;
                         }
+                        
+                        message = @"百度翻译结果为空";
+
                     } else if (response.error == 997) {
                         // token 失效，重新获取
                         self.error997Count++;
@@ -344,10 +346,10 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
     }];
 }
 

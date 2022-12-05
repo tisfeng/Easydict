@@ -106,6 +106,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;
 /// If wordResult and normalResults are nil, isEmpty = YES.
 @property (nonatomic, assign) BOOL isEmpty;
 
+@property (nonatomic, strong, nullable) NSError *error;
+
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;
 /// 翻译后的发音地址

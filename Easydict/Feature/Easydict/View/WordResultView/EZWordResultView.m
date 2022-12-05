@@ -55,7 +55,9 @@ static const CGFloat kVerticalPadding = 8;
     NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
     
-    if (result.normalResults.count) {
+    NSString *errorMsg = result.error.localizedDescription;
+    
+    if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
         if (result.wordResult) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
@@ -81,7 +83,8 @@ static const CGFloat kVerticalPadding = 8;
             [typeTextField layoutSubtreeIfNeeded];
         }
         
-        NSString *text = [NSString mm_stringByCombineComponents:result.normalResults separatedString:@"\n"] ?: @"";
+        
+        NSString *text = result.translatedText ?: errorMsg;
         
         EZLabel *resultLabel = [EZLabel new];
         [self addSubview:resultLabel];
