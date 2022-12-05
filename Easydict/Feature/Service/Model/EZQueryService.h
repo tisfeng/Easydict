@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
 /// 翻译结果
-@property (nonatomic, strong) EZQueryResult * _Nullable result;
+@property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, assign) BOOL enabled;
 

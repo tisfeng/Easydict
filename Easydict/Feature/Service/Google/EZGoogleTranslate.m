@@ -446,14 +446,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
 
 - (void)translateTKKText:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
     
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) = ^(NSString *text, EZLanguage langFrom, EZLanguage langTo) {
         [self sendTranslateTKKText:text from:langFrom to:langTo completion:^(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error) {
             if (error) {
-                completion(nil, error);
+                completion(self.result, error);
                 return;
             }
             
@@ -467,8 +467,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                     EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     EZLanguage googleTo = langTo;
                     
-                    EZQueryResult *result = [EZQueryResult new];
-                    self.result = result;
+                    EZQueryResult *result = self.result;
                     
                     result.raw = responseObject;
                     result.text = text;
@@ -578,7 +577,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                 }
             }
             [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+            completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
         }];
     };
     
@@ -587,7 +586,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
         [self detect:text
           completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
             if (error) {
-                completion(nil, error);
+                completion(self.result, error);
                 return;
             }
             translateBlock(text, detectedLanguage, to);

@@ -301,7 +301,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [self closeAllResultView:^{
         NSLog(@"close all result");
         self.queryText = text;
-//        [self queryCurrentModel];
+        [self queryCurrentModel];
         
         NSString *encodeText = [text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         [self.baiduWebTranslate translate:encodeText success:^(NSString * _Nonnull result) {
@@ -376,8 +376,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
             if (!result) {
                 NSLog(@"result is nil, error: %@", error);
-                return;
             }
+            result.error = error;
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
