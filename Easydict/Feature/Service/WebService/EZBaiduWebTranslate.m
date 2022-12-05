@@ -9,12 +9,21 @@
 #import "EZBaiduWebTranslate.h"
 #import <WebKit/WebKit.h>
 
+// Max query seconds
+static NSTimeInterval const MAX_QUERY_SECONDS = 2;
+
+// Delay query seconds
+static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
+
+
 @interface EZBaiduWebTranslate () <WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) WKWebView *webView;
 
 @property (nonatomic, copy) void (^completion)(NSString *, NSError *);
+
+@property (nonatomic, assign) NSUInteger retryCount;
 
 @end
 
@@ -40,7 +49,6 @@
 
 - (WKWebView *)webView {
     if (!_webView) {
-        
         WKWebViewConfiguration *webViewConfiguration = [[WKWebViewConfiguration alloc] init];
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
@@ -57,8 +65,8 @@
         NSString *cookieString = @"APPGUIDE_10_0_2=1; REALTIME_TRANS_SWITCH=1; FANYI_WORD_SWITCH=1; HISTORY_SWITCH=1; SOUND_SPD_SWITCH=1; SOUND_PREFER_SWITCH=1; ZD_ENTRY=google; BAIDUID=483C3DD690DBC65C6F133A670013BF5D:FG=1; BAIDUID_BFESS=483C3DD690DBC65C6F133A670013BF5D:FG=1; newlogin=1; BDUSS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; BDUSS_BFESS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; Hm_lvt_64ecd82404c51e03dc91cb9e8c025574=1670083644; Hm_lvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_64ecd82404c51e03dc91cb9e8c025574=1670166705";
         
         NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:@{
-            NSHTTPCookieName: @"Cookie",
-            NSHTTPCookieValue: cookieString,
+            NSHTTPCookieName : @"Cookie",
+            NSHTTPCookieValue : cookieString,
         }];
         
         WKHTTPCookieStore *cookieStore = webView.configuration.websiteDataStore.httpCookieStore;
@@ -74,7 +82,6 @@
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": EZUserAgent}];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }];
-        
     }
     return _webView;
 }
@@ -90,13 +97,23 @@
           failure:(void (^)(NSError *error))failure {
     NSString *urlString = [NSString stringWithFormat:@"https://fanyi.baidu.com/#en/zh/%@", text];
     NSLog(@"translate url: %@", urlString);
+    
+    self.retryCount = 0;
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
+    
+    mm_weakify(self);
     self.completion = ^(NSString *result, NSError *error) {
+        mm_strongify(self);
+        
         if (result) {
             success(result);
         } else {
             failure(error);
         }
+        
+        // !!!: When finished, set completion to nil, and reset webView.
+        self.completion = nil;
+        [self.webView loadHTMLString:@"" baseURL:nil];
     };
 }
 
@@ -105,20 +122,15 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
     
-    NSString *selector = @"p.ordinary-output.target-output.clearfix";
-    [self getInnerTextOfElement:selector completion:self.completion];
+    if (self.completion) {
+        NSString *selector = @"p.ordinary-output.target-output.clearfix";
+        [self getInnerTextOfElement:selector completion:self.completion];
+    }
 }
 
 - (void)getInnerTextOfElement:(NSString *)selector
                    completion:(void (^)(NSString *_Nullable, NSError *))completion {
-    // 定义最大重试次数
-    static NSUInteger const MAX_RETRY = 10;
-    
-    // 定义延迟时间（单位：秒）
-    static NSTimeInterval const DELAY_SECONDS = 0.1;
-    
-    // 定义重试次数
-    __block NSUInteger retry = 0;
+    NSLog(@"get result count: %ld", self.retryCount + 1);
     
     // 定义一个异步方法，用于判断页面中是否存在目标元素
     // 先判断页面中是否存在目标元素
@@ -145,17 +157,22 @@
                 
                 if (completion) {
                     completion(result, nil);
-                    self.completion = nil;
-                    [self.webView loadHTMLString:@"" baseURL:nil];
                 }
             }];
         } else {
             // 如果页面中不存在目标元素，则延迟一段时间后再次判断
-            retry++;
-            if (retry < MAX_RETRY) {
+            self.retryCount++;
+            NSInteger maxRetryCount = ceil(MAX_QUERY_SECONDS / DELAY_SECONDS);
+            if (self.retryCount < maxRetryCount  && self.completion) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self getInnerTextOfElement:selector completion:completion];
                 });
+            } else {
+                NSLog(@"finish, retry count: %ld", self.retryCount);
+                if (completion) {
+                    NSError *error = [NSError errorWithDomain:@"com.eztranslation" code:-1 userInfo:@{NSLocalizedDescriptionKey : @"retry count is too large"}];
+                    completion(nil, error);
+                }
             }
         }
     }];
