@@ -23,16 +23,16 @@
 - (AFHTTPSessionManager *)htmlSession {
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
-
+        
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
         [requestSerializer setValue:@"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;" forHTTPHeaderField:@"Cookie"];
         htmlSession.requestSerializer = requestSerializer;
-
+        
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
         htmlSession.responseSerializer = responseSerializer;
-
+        
         _htmlSession = htmlSession;
     }
     return _htmlSession;
@@ -50,12 +50,11 @@
         _webView = webView;
         webView.navigationDelegate = self;
         webView.UIDelegate = self;
-
+        
         NSWindow *window = NSApplication.sharedApplication.keyWindow;
         [window.contentView addSubview:webView];
         
-        
-       NSString *cookieString = @"APPGUIDE_10_0_2=1; REALTIME_TRANS_SWITCH=1; FANYI_WORD_SWITCH=1; HISTORY_SWITCH=1; SOUND_SPD_SWITCH=1; SOUND_PREFER_SWITCH=1; ZD_ENTRY=google; BAIDUID=483C3DD690DBC65C6F133A670013BF5D:FG=1; BAIDUID_BFESS=483C3DD690DBC65C6F133A670013BF5D:FG=1; newlogin=1; BDUSS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; BDUSS_BFESS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; Hm_lvt_64ecd82404c51e03dc91cb9e8c025574=1670083644; Hm_lvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_64ecd82404c51e03dc91cb9e8c025574=1670166705";
+        NSString *cookieString = @"APPGUIDE_10_0_2=1; REALTIME_TRANS_SWITCH=1; FANYI_WORD_SWITCH=1; HISTORY_SWITCH=1; SOUND_SPD_SWITCH=1; SOUND_PREFER_SWITCH=1; ZD_ENTRY=google; BAIDUID=483C3DD690DBC65C6F133A670013BF5D:FG=1; BAIDUID_BFESS=483C3DD690DBC65C6F133A670013BF5D:FG=1; newlogin=1; BDUSS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; BDUSS_BFESS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; Hm_lvt_64ecd82404c51e03dc91cb9e8c025574=1670083644; Hm_lvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_64ecd82404c51e03dc91cb9e8c025574=1670166705";
         
         NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:@{
             NSHTTPCookieName: @"Cookie",
@@ -75,18 +74,17 @@
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": EZUserAgent}];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }];
-
+        
     }
     return _webView;
 }
 
 /**
-使用 WKWebView 加载百度翻译网页，然后获取翻译结果
-
-百度翻译结果的样式为：
-<p class="ordinary-output target-output clearfix"> <span leftpos="0|4" rightpos="0|4" space="">好的</span> </p>
-*/
-
+ 使用 WKWebView 加载百度翻译网页，然后获取翻译结果
+ 
+ 百度翻译结果的样式为：
+ <p class="ordinary-output target-output clearfix"> <span leftpos="0|4" rightpos="0|4" space="">好的</span> </p>
+ */
 - (void)translate:(NSString *)text
           success:(void (^)(NSString *result))success
           failure:(void (^)(NSError *error))failure {
@@ -106,25 +104,65 @@
 // 页面加载完成后，获取翻译结果
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
-
-    //    @"document.querySelector('p.ordinary-output.target-output.clearfix > span').innerText"
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [webView evaluateJavaScript:@"document.querySelector('.target-output').innerText" completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-            if (error) {
-                NSLog(@"baidu error: %@", error);
-                self.completion(nil, error);
-                return;
-            }
-
-            NSLog(@"baidu result: %@", result);
-            
-            if (self.completion) {
-                self.completion(result, nil);
-                self.completion = nil;
-            }
-        }];
-    });
+    
+    NSString *selector = @"p.ordinary-output.target-output.clearfix";
+    [self getInnerTextOfElement:selector completion:self.completion];
 }
+
+- (void)getInnerTextOfElement:(NSString *)selector
+                   completion:(void (^)(NSString *_Nullable, NSError *))completion {
+    // 定义最大重试次数
+    static NSUInteger const MAX_RETRY = 10;
+    
+    // 定义延迟时间（单位：秒）
+    static NSTimeInterval const DELAY_SECONDS = 0.1;
+    
+    // 定义重试次数
+    __block NSUInteger retry = 0;
+    
+    // 定义一个异步方法，用于判断页面中是否存在目标元素
+    // 先判断页面中是否存在目标元素
+    NSString *js = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (error) {
+            // 如果执行出错，则直接返回
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        if ([result boolValue]) {
+            // 如果页面中存在目标元素，则执行下面的代码获取它的 innerText 属性
+            NSString *js = [NSString stringWithFormat:@"document.querySelector('%@').innerText", selector];
+            [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+                if (error) {
+                    // 如果执行出错，则直接返回
+                    if (completion) {
+                        completion(nil, error);
+                    }
+                }
+                
+                if (completion) {
+                    completion(result, nil);
+                    self.completion = nil;
+                    [self.webView loadHTMLString:@"" baseURL:nil];
+                }
+            }];
+        } else {
+            // 如果页面中不存在目标元素，则延迟一段时间后再次判断
+            retry++;
+            if (retry < MAX_RETRY) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self getInnerTextOfElement:selector completion:completion];
+                });
+            }
+        }
+    }];
+}
+
+
+#pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailNavigation: %@", error);
