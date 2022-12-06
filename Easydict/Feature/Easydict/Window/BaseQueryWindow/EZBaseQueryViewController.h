@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBaseQueryViewController : NSViewController
 
+@property (nonatomic, copy) NSString *queryText;
+
 @property (nonatomic, assign) EZWindowType windowType;
 @property (nonatomic, weak) EZBaseQueryWindow *window;
 

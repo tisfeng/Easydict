@@ -28,6 +28,7 @@
 		03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A572937CC3200C34C33 /* EZConfiguration.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageClass.m */; };
+		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -205,6 +206,8 @@
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageClass.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageClass.m; sourceTree = "<group>"; };
+		036E7D79293F4FC8002675DF /* EZLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLinkButton.h; sourceTree = "<group>"; };
+		036E7D7A293F4FC8002675DF /* EZLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLinkButton.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -527,6 +530,29 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		036E7D77293F4F51002675DF /* LanguageButton */ = {
+			isa = PBXGroup;
+			children = (
+				0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */,
+				0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */,
+				03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */,
+				03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */,
+			);
+			path = LanguageButton;
+			sourceTree = "<group>";
+		};
+		036E7D78293F4F61002675DF /* CustomButton */ = {
+			isa = PBXGroup;
+			children = (
+				036E7D77293F4F51002675DF /* LanguageButton */,
+				03B0226429231FA6001C7E63 /* EZHoverButton */,
+				03B0226729231FA6001C7E63 /* EZButton */,
+				036E7D79293F4FC8002675DF /* EZLinkButton.h */,
+				036E7D7A293F4FC8002675DF /* EZLinkButton.m */,
+			);
+			path = CustomButton;
+			sourceTree = "<group>";
+		};
 		0383913F292FBE120009828C /* EasydictHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -762,18 +788,13 @@
 		03B0225A29231FA6001C7E63 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */,
-				0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */,
-				03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */,
-				03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */,
+				036E7D78293F4F61002675DF /* CustomButton */,
 				039CC911292FB2F80037B91E /* PopUpButton */,
 				0309E1EA292B437C00AFB76A /* TextView */,
 				03991155292927A100E1B06D /* Titlebar */,
 				03B0225B29231FA6001C7E63 /* QueryView */,
 				03B0225E29231FA6001C7E63 /* WordResultView */,
 				03B0226129231FA6001C7E63 /* ResultView */,
-				03B0226429231FA6001C7E63 /* EZHoverButton */,
-				03B0226729231FA6001C7E63 /* EZButton */,
 				03B0226A29231FA6001C7E63 /* EZLabel */,
 				03B0226D29231FA6001C7E63 /* CommonView */,
 			);
@@ -1510,6 +1531,7 @@
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
+				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageClass.m in Sources */,
 				03B022EB29231FA6001C7E63 /* Configuration.m in Sources */,
