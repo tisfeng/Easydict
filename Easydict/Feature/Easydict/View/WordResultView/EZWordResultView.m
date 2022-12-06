@@ -478,8 +478,7 @@ static const CGFloat kVerticalPadding = 8;
     
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.equalTo(lastView.mas_bottom).offset(5);
-        make.bottom.greaterThanOrEqualTo(lastView.mas_bottom);
+        make.bottom.equalTo(lastView);
     }];
 }
 
