@@ -156,6 +156,10 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     };
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
     
+    // !!!: Need to rest result before querying new.
+    EZQueryResult *result = [[EZQueryResult alloc] init];
+    self.result = result;
+    
     mm_weakify(self);
     [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self);
@@ -164,7 +168,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             @try {
                 YoudaoTranslateResponse *response = [YoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
-                    EZQueryResult *result = self.result;
                     
                     result.text = text;
                     result.fromSpeakURL = response.speakUrl;

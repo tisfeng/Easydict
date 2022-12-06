@@ -31,7 +31,6 @@ userInfo:nil]
 - (instancetype)init {
     if (self = [super init]) {
         self.enabled = [[EZLocalStorage shared] getServiceInfo:self.serviceType].enabled;
-        self.result = [[EZQueryResult alloc] init];
     }
     return self;
 }

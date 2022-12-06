@@ -9,6 +9,7 @@
 #import "EZBaiduTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZBaiduTranslateResponse.h"
+#import "EZWebViewTranslator.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
@@ -23,10 +24,29 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 @property (nonatomic, copy) NSString *gtk;
 @property (nonatomic, assign) NSInteger error997Count;
 
+@property (nonatomic, strong) EZWebViewTranslator *baiduWebViewTranslator;
+
 @end
 
 
 @implementation EZBaiduTranslate
+
+- (instancetype)init {
+    if (self = [super init]) {
+
+        
+    }
+    return self;
+}
+
+- (EZWebViewTranslator *)baiduWebViewTranslator {
+    if (!_baiduWebViewTranslator) {
+        NSString *selector = @"p.ordinary-output.target-output.clearfix";
+        _baiduWebViewTranslator = [[EZWebViewTranslator alloc] init];
+        _baiduWebViewTranslator.querySelector = selector;
+    }
+    return _baiduWebViewTranslator;
+}
 
 - (JSContext *)jsContext {
     if (!_jsContext) {
@@ -144,6 +164,10 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     
     mm_weakify(self)
     
+    // !!!: Need to rest result before querying new.
+    EZQueryResult *result = [[EZQueryResult alloc] init];
+    self.result = result;
+    
     [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self)
         NSString *message = nil;
@@ -153,9 +177,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 if (response) {
                     if (response.error == 0) {
                         self.error997Count = 0;
-                        
-                        EZQueryResult *result = self.result;
-                        
+         
                         result.text = text;
                         result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
                         result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
@@ -323,6 +345,14 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                         }
                         
                         message = @"百度翻译结果为空";
+                        
+                        [self.baiduWebViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
+                            result.normalResults = @[translatedText];
+                            completion(result, nil);
+                        } failure:^(NSError * _Nonnull error) {
+                            completion(nil, error);
+                        }];
+                        return;
 
                     } else if (response.error == 997) {
                         // token 失效，重新获取
