@@ -18,6 +18,8 @@
 #import "NSString+MM.h"
 #import "EZLayoutManager.h"
 #import "EZWindowManager.h"
+#import "EZLinkButton.h"
+#import "NSImage+EZResize.h"
 
 static const CGFloat kHorizontalMargin = 10;
 static const CGFloat kVerticalMargin = 12;
@@ -425,25 +427,53 @@ static const CGFloat kVerticalPadding = 8;
     }];
     textCopyButton.mas_key = @"copyButton";
     
-    CGFloat kMargin = 5;
-    [audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    CGFloat kTopMargin = 8;
+    CGFloat kRightMargin = 3;
+    
+    [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.top.equalTo(lastView.mas_bottom).offset(kMargin);
+            make.top.equalTo(lastView.mas_bottom).offset(kTopMargin);
         } else {
-            make.top.equalTo(self).offset(kMargin);
+            make.top.equalTo(self).offset(kTopMargin);
         }
         
-        make.left.offset(kMargin + 2);
-        make.width.height.mas_equalTo(25);
-        make.bottom.equalTo(self).offset(-kMargin);
+        make.left.offset(kHorizontalMargin);
+        make.width.height.mas_equalTo(EZCopyButtonWidth);
     }];
     
-    [textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(audioButton.mas_right);
+    [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(audioButton.mas_right).offset(kRightMargin);
         make.width.height.bottom.equalTo(audioButton);
     }];
     
     lastView = audioButton;
+    
+    
+    EZLinkButton *linkButton = [[EZLinkButton alloc] init];
+    [self addSubview:linkButton];
+    NSImage *linkImage;
+    if (@available(macOS 11.0, *)) {
+        linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
+        linkImage = [linkImage resizeToSize:CGSizeMake(16, 16)];
+    } else {
+        // Fallback on earlier versions
+    }
+    linkButton.image = linkImage;
+    linkButton.toolTip = @"Link";
+    linkButton.link = result.link;
+    
+    [linkButton excuteLight:^(NSButton *linkButton) {
+        linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];
+    } drak:^(NSButton *linkButton) {
+        linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintDarkColor]];
+    }];
+    linkButton.mas_key = @"linkButton";
+    
+    [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(textCopyButton.mas_right).offset(kRightMargin);
+        make.width.height.bottom.equalTo(audioButton);
+    }];
+    
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(lastView.mas_bottom).offset(5);

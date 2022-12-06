@@ -47,12 +47,11 @@ static NSString * const EZQueryKey = @"{Query}";
     }
     
     self.text = text;
+    NSString *queryText = text ?: @"";
+    NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
-    NSString *queryText = self.text ?: @"";
-    NSString *urlString = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
-    
-    NSString *url = [NSString stringWithFormat:urlString, queryText];
-    url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
+    url = [NSString stringWithFormat:url, encodedText];
     NSLog(@"open url: %@", url);
     
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];

@@ -54,7 +54,7 @@
     EZLanguage oldDetectedLanguage = self.detectedLanguage;
     _detectedLanguage = detectedLanguage;
     
-    if (detectedLanguage == EZLanguageAuto) {
+    if ([detectedLanguage isEqualToString: EZLanguageAuto]) {
         self.hidden = YES;
         return;
     }

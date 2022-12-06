@@ -74,7 +74,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         [youdaoLanguageCodes addObject:code];
     }
     
-    if (![EZLanguageManager isChineseLanguage:fromLanguage] || ![EZLanguageManager isChineseLanguage:toLanguage]) {
+    if (![EZLanguageManager isChineseLanguage:fromLanguage] && ![EZLanguageManager isChineseLanguage:toLanguage]) {
         return nil;
     }
     
@@ -222,7 +222,8 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                             if (partArray.count) {
                                 wordResult.parts = partArray.copy;
                             }
-                        } else if (result.from == EZLanguageSimplifiedChinese && result.to == EZLanguageEnglish) {
+                        } else if ([result.from isEqualToString:EZLanguageSimplifiedChinese]
+                                   && [result.to isEqualToString:EZLanguageEnglish]) {
                             // 中文查词
                             NSMutableArray *simpleWordArray = [NSMutableArray array];
                             [basic.explains enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -276,9 +277,9 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         if (wordResult.parts || wordResult.simpleWords) {
                             result.wordResult = wordResult;
                             // 如果是单词或短语，优先使用美式发音
-                            if (result.from == EZLanguageEnglish &&
-                                result.to == EZLanguageSimplifiedChinese &&
-                                wordResult.phonetics.firstObject.speakURL.length) {
+                            if ([result.from isEqualToString:EZLanguageEnglish]
+                                && [result.to isEqualToString:EZLanguageSimplifiedChinese]
+                                && wordResult.phonetics.firstObject.speakURL.length) {
                                 result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
                             }
                         }
@@ -290,14 +291,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         [normalResults addObject:obj];
                     }];
                     result.normalResults = normalResults.count ? normalResults.copy : nil;
-                    
-                    // 生成网页链接
-                    if (result.wordResult) {
-                        result.link = [NSString stringWithFormat:@"https://dict.youdao.com/search?q=%@&keyfrom=fanyi.smartResult", text.mm_urlencode];
-                    } else {
-                        // TODO: 句子翻译跳转貌似不行了
-                        result.link = [NSString stringWithFormat:@"http://fanyi.youdao.com/translate?i=%@", text.mm_urlencode];
-                    }
                     
                     // 原始数据
                     result.raw = responseObject;
@@ -437,9 +430,10 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         mm_strongify(self);
         if (EZOCRResult) {
             // 如果翻译结果的语种匹配，不是中文查词或者英文查词时，不调用翻译接口
-            if (to == EZLanguageAuto || to == EZOCRResult.to) {
-                if (!((EZOCRResult.to == EZLanguageSimplifiedChinese || EZOCRResult.to == EZLanguageEnglish) &&
-                      ![EZOCRResult.mergedText containsString:@" "])) {
+            if ([to isEqualToString:EZLanguageAuto] || [to isEqualToString:EZOCRResult.to]) {
+                if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese]
+                       || [EZOCRResult.to isEqualToString:EZLanguageEnglish])
+                      && ![EZOCRResult.mergedText containsString:@" "])) {
                     // 直接回调翻译结果
                     NSLog(@"直接输出翻译结果");
                     ocrSuccess(EZOCRResult, NO);

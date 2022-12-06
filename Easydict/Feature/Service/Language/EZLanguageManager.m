@@ -98,7 +98,8 @@
 }
 
 + (BOOL)isChineseLanguage:(EZLanguage)language {
-    if (language == EZLanguageSimplifiedChinese || language == EZLanguageTraditionalChinese) {
+    if ([language isEqualToString:EZLanguageSimplifiedChinese]
+        || [language isEqualToString:EZLanguageTraditionalChinese]) {
         return YES;
     }
     return NO;
@@ -113,7 +114,7 @@
 + (BOOL)containsEnglishPreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
-        if (language == EZLanguageEnglish) {
+        if ([language isEqualToString: EZLanguageEnglish]) {
             return YES;
         }
     }
@@ -123,7 +124,7 @@
 + (BOOL)containsChinesePreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
-        if (language == EZLanguageEnglish) {
+        if ([language isEqualToString: EZLanguageEnglish]) {
             return YES;
         }
     }

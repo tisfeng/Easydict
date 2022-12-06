@@ -10,8 +10,6 @@
 #import "EZHoverButton.h"
 #import "EZConst.h"
 
-static const CGFloat kMargin = 5;
-
 @interface EZCommonView ()
 
 @end
@@ -76,13 +74,13 @@ static const CGFloat kMargin = 5;
 
 - (void)updateConstraints {
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-kMargin);
-        make.left.offset(kMargin + 2);
-        make.width.height.mas_equalTo(25);
+        make.bottom.offset(-5);
+        make.left.offset(8);
+        make.width.height.mas_equalTo(EZCopyButtonWidth);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right);
+        make.left.equalTo(self.audioButton.mas_right).offset(1);
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
