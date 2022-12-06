@@ -12,7 +12,7 @@
 
 #define kGoogleRootPage(isCN) (isCN ? @"https://translate.google.cn" : @"https://translate.google.com")
 
-static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
+static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
 @interface EZGoogleTranslate ()
 
@@ -466,20 +466,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                 @try {
                     NSArray *responseArray = responseObject;
                     
-                    NSString *textEncode = text.mm_urlencode;
                     NSString *googleFromString = responseArray[2];
                     EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     EZLanguage googleTo = langTo;
-                                        
+                    
                     result.raw = responseObject;
                     result.text = text;
                     result.from = googleFrom;
                     result.to = googleTo;
-                    result.link = [NSString stringWithFormat:@"%@/#view=home&op=translate&sl=%@&tl=%@&text=%@",
-                                   kGoogleRootPage(self.isCN),
-                                   googleFromString,
-                                   [self languageCodeForLanguage:googleTo],
-                                   textEncode];
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                     
                     // 英文查词 中文查词
@@ -497,8 +491,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                             wordResult.phonetics = @[ phonetic ];
                         }
                         
-                        if (googleFrom == EZLanguageEnglish &&
-                            (googleTo == EZLanguageSimplifiedChinese || googleTo == EZLanguageTraditionalChinese)) {
+                        if ([googleFrom isEqualToString:EZLanguageEnglish] &&
+                            ([googleTo isEqualToString:EZLanguageSimplifiedChinese] || [googleTo isEqualToString:EZLanguageTraditionalChinese])) {
                             // 英文查词
                             NSMutableArray *parts = [NSMutableArray array];
                             [dictResult enumerateObjectsUsingBlock:^(NSArray *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -517,8 +511,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                             if (parts.count) {
                                 wordResult.parts = parts.copy;
                             }
-                        } else if ((googleFrom == EZLanguageSimplifiedChinese || googleFrom == EZLanguageTraditionalChinese) &&
-                                   googleTo == EZLanguageEnglish) {
+                        } else if (([googleFrom isEqualToString:EZLanguageSimplifiedChinese]
+                                    || [googleFrom isEqualToString:EZLanguageTraditionalChinese])
+                                   && [googleTo isEqualToString:EZLanguageEnglish]) {
                             // 中文查词
                             NSMutableArray *simpleWords = [NSMutableArray array];
                             [dictResult enumerateObjectsUsingBlock:^(NSArray *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -734,7 +729,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
         return;
     }
     
-    if (from == EZLanguageAuto) {
+    if ([from isEqualToString:EZLanguageAuto]) {
         // 判断语言
         mm_weakify(self)
         [self detect:text

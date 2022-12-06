@@ -46,6 +46,7 @@ userInfo:nil]
     
     _result.serviceType = self.serviceType;
     _result.isShowing = self.enabled;
+    _result.link = self.wordLink;
 }
 
 - (MMOrderedDictionary *)langDict {

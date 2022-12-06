@@ -33,7 +33,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (instancetype)init {
     if (self = [super init]) {
-
+        
         
     }
     return self;
@@ -177,9 +177,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 if (response) {
                     if (response.error == 0) {
                         self.error997Count = 0;
-         
+                        
                         result.text = text;
-                        result.link = [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, response.trans_result.from, response.trans_result.to, text.mm_urlencode];
                         result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
                         result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
                         
@@ -488,7 +487,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             [self sendTranslateRequest:text from:from to:to completion:completion];
         };
         
-        if (from == EZLanguageAuto) {
+        if ([from isEqualToString:EZLanguageAuto]) {
             [self detect:text completion:^(EZLanguage lang, NSError *_Nullable error) {
                 if (error) {
                     completion(nil, error);
@@ -565,7 +564,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
     
-    if (from == EZLanguageAuto) {
+    if ([from isEqualToString:EZLanguageAuto]) {
         [self detect:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
                 completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:lang]], nil);
@@ -589,9 +588,9 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     NSData *data = [image mm_PNGData];
-    NSString *fromLang = (from == EZLanguageAuto) ? [self languageCodeForLanguage:EZLanguageEnglish] : [self languageCodeForLanguage:from];
+    NSString *fromLang = ([from isEqualToString:EZLanguageAuto]) ? [self languageCodeForLanguage:EZLanguageEnglish] : [self languageCodeForLanguage:from];
     NSString *toLang = nil;
-    if (to == EZLanguageAuto) {
+    if ([to isEqualToString:EZLanguageAuto]) {
         toLang = [EZLanguageManager targetLanguageWithSourceLanguage:from];
     } else {
         toLang = [self languageCodeForLanguage:to];
