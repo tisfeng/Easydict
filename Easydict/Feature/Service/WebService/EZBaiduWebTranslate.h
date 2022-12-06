@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBaiduWebTranslate : NSObject
 
+- (instancetype)initWithViewController:(NSViewController *)viewController;
+
 - (void)translate:(NSString *)text
           success:(void (^)(NSString *result))success
           failure:(void (^)(NSError *error))failure;

@@ -20,6 +20,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, weak) NSViewController *viewController;
 
 @property (nonatomic, copy) void (^completion)(NSString *, NSError *);
 
@@ -28,6 +29,14 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 @end
 
 @implementation EZBaiduWebTranslate
+
+- (instancetype)initWithViewController:(NSViewController *)viewController {
+    if (self = [super init]) {
+        self.viewController = viewController;
+        [viewController.view addSubview:self.webView];
+    }
+    return self;
+}
 
 - (AFHTTPSessionManager *)htmlSession {
     if (!_htmlSession) {
@@ -57,10 +66,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(1, 1, 1, 1) configuration:webViewConfiguration];
         _webView = webView;
         webView.navigationDelegate = self;
-        webView.UIDelegate = self;
-        
-        NSWindow *window = NSApplication.sharedApplication.keyWindow;
-        [window.contentView addSubview:webView];
         
         NSString *cookieString = @"APPGUIDE_10_0_2=1; REALTIME_TRANS_SWITCH=1; FANYI_WORD_SWITCH=1; HISTORY_SWITCH=1; SOUND_SPD_SWITCH=1; SOUND_PREFER_SWITCH=1; ZD_ENTRY=google; BAIDUID=483C3DD690DBC65C6F133A670013BF5D:FG=1; BAIDUID_BFESS=483C3DD690DBC65C6F133A670013BF5D:FG=1; newlogin=1; BDUSS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; BDUSS_BFESS=50ZnpUNG93akxsaGZZZ25tTFBZZEY4TzQ2ZG5ZM3FVaUVPS0J-M2JVSVpvNXBqSVFBQUFBJCQAAAAAAAAAAAEAAACFn5wyus3Jz7Xb1sD3u9fTMjkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkWc2MZFnNjSX; Hm_lvt_64ecd82404c51e03dc91cb9e8c025574=1670083644; Hm_lvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_afd111fa62852d1f37001d1f980b6800=1670084751; Hm_lpvt_64ecd82404c51e03dc91cb9e8c025574=1670166705";
         

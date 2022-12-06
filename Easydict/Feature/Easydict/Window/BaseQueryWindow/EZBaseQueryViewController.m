@@ -185,7 +185,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 //    }];
     
     
-    self.baiduWebTranslate = [[EZBaiduWebTranslate alloc] init];
+    self.baiduWebTranslate = [[EZBaiduWebTranslate alloc] initWithViewController:self];
 }
 
 
