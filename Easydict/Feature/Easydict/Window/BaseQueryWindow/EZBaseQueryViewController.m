@@ -102,7 +102,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         [services addObject:service];
     }
     self.services = services;
-    [self resetAllServiceResults];
+    [self resetQueryAndResults];
 
     
     self.player = [[AVPlayer alloc] init];
@@ -290,6 +290,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 /// Directly query model.
 - (void)queryCurrentModel {
+    // !!!: Need to reset all result before new query.
+    [self resetAllResults];
+    
     EZLanguage fromLanguage = self.queryModel.detectedLanguage;
     if ([fromLanguage isEqualToString:EZLanguageAuto]) {
         fromLanguage = self.queryModel.sourceLanguage;
@@ -312,10 +315,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
     for (EZQueryService *service in self.services) {
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
-            if (!result) {
-                NSLog(@"result is nil, error: %@", error);
+            if (error) {
+                NSLog(@"query error: %@", error);
             }
             result.error = error;
+            
+            // !!!: result is new result
+            service.result = result;
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
@@ -411,7 +417,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             height = kResultViewMiniHeight;
         } else {
             EZResultCell *resultCell = [self resultCellAtRow:row];
-            height = [resultCell fittingSize].height ?: kResultViewMiniHeight;
+            height = [resultCell fittingSize].height;
+            height = MAX(height, kResultViewMiniHeight);
         }
         result.cellHeight = height;
     }
@@ -429,29 +436,21 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 #pragma mark - Update TableView
 
-- (void)resetAllServiceResults {
+- (void)resetQueryAndResults {
+    [self resetAllResults];
+    self.queryText = @"";
+}
+
+- (void)resetAllResults {
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = [[EZQueryResult alloc] init];
         result.isShowing = NO; // default not show, show result after querying.
         service.result = result;
     }
-    self.queryText = @"";
-}
-
-- (void)clearQueryResultsWithAnimation:(void (^)(void))completion {
-    self.queryText = @"";
-    
-    // !!!: To show closing animation, we cannot reset result directly.
-    [self closeAllResultView:^{
-        [self resetAllServiceResults];
-        if (completion) {
-            completion();
-        }
-    }];
 }
 
 - (void)resetTableView:(void (^)(void))completion {
-    [self resetAllServiceResults];
+    [self resetQueryAndResults];
     [self reloadTableViewData:completion];
 }
 
@@ -616,7 +615,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [queryView setClearBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);
-        [self clearQueryResultsWithAnimation:nil];
+        
+        self.queryText = @"";
+
+        // !!!: To show closing animation, we cannot reset result directly.
+        [self closeAllResultView:^{
+            [self resetQueryAndResults];
+        }];
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage  _Nonnull language) {

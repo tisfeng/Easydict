@@ -420,6 +420,8 @@ static EZWindowManager *_instance;
 
 /// Close floating window, and record last floating window type.
 - (void)closeFloatingWindow {
+    NSLog(@"close floating window: %@", self.floatingWindow);
+    
     self.floatingWindow.pin = NO;
     [self.floatingWindow close];
     

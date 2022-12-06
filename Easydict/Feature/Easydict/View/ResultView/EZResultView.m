@@ -182,8 +182,8 @@
     
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
-        make.left.equalTo(self);
-        make.bottom.right.equalTo(self);
+        make.left.right.equalTo(self);
+        make.bottom.lessThanOrEqualTo(self).offset(-5); // Since coordinate, wordResultView is under resultView
     }];
     
     [super updateConstraints];
