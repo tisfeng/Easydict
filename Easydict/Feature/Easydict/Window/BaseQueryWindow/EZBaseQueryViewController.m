@@ -30,7 +30,7 @@
 #import "EZWindowManager.h"
 #import "EZAppleService.h"
 #import <WebKit/WebKit.h>
-#import "EZBaiduWebTranslate.h"
+#import "EZWebViewTranslator.h"
 
 static NSString * const EZQueryCellId = @"EZQueryCellId";
 static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -66,7 +66,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 @property (nonatomic, assign) BOOL enableResizeWindow;
 
-@property (nonatomic, strong) EZBaiduWebTranslate *baiduWebTranslate;
+@property (nonatomic, strong) EZWebViewTranslator *baiduWebTranslate;
 
 @end
 
@@ -138,24 +138,25 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)setup {
+    self.queryModel = [[EZQueryModel alloc] init];
+    self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
+    
     self.serviceTypes = @[
         EZServiceTypeGoogle,
         EZServiceTypeYoudao,
         EZServiceTypeBaidu,
     ];
     
-    NSMutableArray *translateServices = [NSMutableArray array];
+    NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
         EZQueryService *service = [EZServiceTypes serviceWithType:type];
-        [translateServices addObject:service];
+        service.queryModel = self.queryModel;
+        [services addObject:service];
     }
-    self.services = translateServices;
-    
-    self.queryModel = [[EZQueryModel alloc] init];
-    self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
-    
+    self.services = services;
     [self resetAllServiceResults];
 
+    
     self.player = [[AVPlayer alloc] init];
     
     [self tableView];
@@ -185,7 +186,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 //    }];
     
     
-    self.baiduWebTranslate = [[EZBaiduWebTranslate alloc] initWithViewController:self];
+//    self.baiduWebTranslate = [[EZWebViewTranslator alloc] initWithViewController:self];
 }
 
 
@@ -303,13 +304,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryText = text;
         [self queryCurrentModel];
         
-        NSString *encodeText = [text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        [self.baiduWebTranslate translate:encodeText success:^(NSString * _Nonnull result) {
-            NSLog(@"baidu result: %@", result);
-            [self.window makeFirstResponder:self.queryView.textView];
-        } failure:^(NSError * _Nonnull error) {
-            NSLog(@"error: %@", error);
-        }];
+//        NSString *encodeText = [text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+//        [self.baiduWebTranslate translate:encodeText success:^(NSString * _Nonnull result) {
+//            NSLog(@"baidu result: %@", result);
+//            [self.window makeFirstResponder:self.queryView.textView];
+//        } failure:^(NSError * _Nonnull error) {
+//            NSLog(@"error: %@", error);
+//        }];
     }];
 }
 

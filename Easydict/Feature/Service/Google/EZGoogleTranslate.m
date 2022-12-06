@@ -450,6 +450,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
         return;
     }
     
+    // !!!: Need to rest result before querying new.
+    EZQueryResult *result = [[EZQueryResult alloc] init];
+    self.result = result;
+    
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) = ^(NSString *text, EZLanguage langFrom, EZLanguage langTo) {
         [self sendTranslateTKKText:text from:langFrom to:langTo completion:^(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error) {
             if (error) {
@@ -466,9 +470,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com/";
                     NSString *googleFromString = responseArray[2];
                     EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                     EZLanguage googleTo = langTo;
-                    
-                    EZQueryResult *result = self.result;
-                    
+                                        
                     result.raw = responseObject;
                     result.text = text;
                     result.from = googleFrom;
