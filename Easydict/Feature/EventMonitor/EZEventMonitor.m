@@ -276,7 +276,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 - (void)handleMonitorEvent:(NSEvent *)event {
 //                NSLog(@"type: %lu", (unsigned long)event.type);
-
+    
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             //                NSLog(@"mouse up");

@@ -12,6 +12,7 @@
 #import "NSView+EZGetViewController.h"
 #import "NSImage+EZResize.h"
 #import "EZDetectLanguageButton.h"
+#include <Carbon/Carbon.h>
 
 static CGFloat kExceptTextViewHeight = 30;
 
@@ -167,8 +168,12 @@ static CGFloat kExceptTextViewHeight = 30;
 #pragma mark - NSTextViewDelegate
 
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+    NSEvent *currentEvent = NSApplication.sharedApplication.currentEvent;
+    NSEventModifierFlags flags = currentEvent.modifierFlags;
+    NSInteger keyCode = currentEvent.keyCode;
+    
     if (commandSelector == @selector(insertNewline:)) {
-        NSEventModifierFlags flags = NSApplication.sharedApplication.currentEvent.modifierFlags;
+        // Shift + Enter
         if (flags & NSEventModifierFlagShift) {
             return NO;
         } else {
@@ -180,13 +185,23 @@ static CGFloat kExceptTextViewHeight = 30;
         }
     }
     
-    // escape key
+    // Escape key
     if (commandSelector == @selector(cancelOperation:)) {
 //        NSLog(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         
-        return NO;
+        return YES;
     }
+    
+    // No operation
+    if (commandSelector == NSSelectorFromString(@"noop:")) {
+        // Cmd + Enter
+        if (flags & NSEventModifierFlagCommand && keyCode == kVK_Return) {
+            NSLog(@"Cmd + Enter");
+            return YES;
+        }
+    }
+    
     return NO;
 }
 
