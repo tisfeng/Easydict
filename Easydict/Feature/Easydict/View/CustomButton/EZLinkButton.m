@@ -51,7 +51,10 @@ static NSString * const EZQueryKey = @"{Query}";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
-    url = [NSString stringWithFormat:url, encodedText];
+    
+    if ([url containsString:@"%@"]) {
+        url = [NSString stringWithFormat:url, encodedText];
+    }
     NSLog(@"open url: %@", url);
     
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
