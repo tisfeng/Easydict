@@ -216,7 +216,7 @@ static const CGFloat kVerticalPadding = 8;
             // Since use string calculate textField width incorrectly 😓
             [partTextFiled layoutSubtreeIfNeeded];
         }
-                
+        
         EZLabel *meanLabel = [EZLabel new];
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
@@ -224,7 +224,7 @@ static const CGFloat kVerticalPadding = 8;
         meanLabel.delegate = self;
         
         __block CGFloat leftMargin = kHorizontalMargin + ceil(partTextFiled.width);
-                
+        
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin);
             
@@ -437,6 +437,8 @@ static const CGFloat kVerticalPadding = 8;
             make.top.equalTo(self).offset(kTopMargin);
         }
         
+        // ???: Must set bottom ?
+        make.bottom.equalTo(self);
         make.left.offset(kHorizontalMargin);
         make.width.height.mas_equalTo(EZCopyButtonWidth);
     }];
@@ -476,23 +478,24 @@ static const CGFloat kVerticalPadding = 8;
     
     
     [self mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(lastView.mas_bottom).offset(5);
+//        make.bottom.equalTo(lastView.mas_bottom).offset(5);
+        make.bottom.greaterThanOrEqualTo(lastView.mas_bottom);
     }];
 }
 
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
     CGFloat rightMargin = kHorizontalMargin;
-        
+    
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - leftMargin - rightMargin;
-//    NSLog(@"text: %@, width: %@", label.text, @(width));
+    //    NSLog(@"text: %@, width: %@", label.text, @(width));
     
     
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
-//    NSLog(@"height: %@", @(height));
-
-//    height = [label getTextViewHeightWithWidth:width]; // 377
-//    NSLog(@"height: %@", @(height));
+    //    NSLog(@"height: %@", @(height));
+    
+    //    height = [label getTextViewHeightWithWidth:width]; // 377
+    //    NSLog(@"height: %@", @(height));
     
     [label mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(height));
@@ -510,7 +513,7 @@ static const CGFloat kVerticalPadding = 8;
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     // escape key
     if (commandSelector == @selector(cancelOperation:)) {
-//        NSLog(@"escape: %@", textView);
+        //        NSLog(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         return NO;
     }
