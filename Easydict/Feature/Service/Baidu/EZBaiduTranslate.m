@@ -346,14 +346,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                         
                         message = @"百度翻译结果为空";
                         
-                        [self.baiduWebViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
-                            result.normalResults = @[translatedText];
-                            completion(result, nil);
-                        } failure:^(NSError * _Nonnull error) {
-                            completion(nil, error);
-                        }];
+                        // If api failed, try to use webView query.
+                        [self webViewTranslate:completion];
+                        
                         return;
-
+                        
                     } else if (response.error == 997) {
                         // token 失效，重新获取
                         self.error997Count++;
@@ -382,6 +379,16 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
     }];
 }
+
+- (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    [self.baiduWebViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
+        self.result.normalResults = @[translatedText];
+        completion(self.result, nil);
+    } failure:^(NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
 
 #pragma mark - 重写父类方法
 
