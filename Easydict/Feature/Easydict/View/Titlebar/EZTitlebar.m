@@ -70,9 +70,11 @@
     NSView *lastView;
     
     
-    EZHoverButton *chromeButton = [[EZHoverButton alloc] init];
+    EZLinkButton *chromeButton = [[EZLinkButton alloc] init];
     [self addSubview:chromeButton];
     self.chromeButton = chromeButton;
+    
+    chromeButton.link = @"https://www.google.com/search?q=%@";
     chromeButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
     chromeButton.toolTip = @"Google";
     chromeButton.contentTintColor = NSColor.clearColor;
@@ -96,9 +98,11 @@
     lastView = chromeButton;
     
     
-    EZHoverButton *eudicButton = [[EZHoverButton alloc] init];
+    EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
     [self addSubview:eudicButton];
     self.eudicButton = eudicButton;
+    
+    eudicButton.link = @"eudic://dict/%@";
     eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
     eudicButton.toolTip = @"Eudic";
     eudicButton.contentTintColor = NSColor.clearColor;
@@ -121,9 +125,6 @@
     }];
     
     lastView = eudicButton;
-    
-    
-    
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

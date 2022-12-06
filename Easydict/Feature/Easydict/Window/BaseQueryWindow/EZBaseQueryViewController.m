@@ -7,37 +7,24 @@
 //
 
 #import "EZBaseQueryViewController.h"
-#import "EZBaiduTranslate.h"
-#import "EZYoudaoTranslate.h"
-#import "EZGoogleTranslate.h"
-#import "EZConfiguration.h"
-#import "NSColor+MyColors.h"
 #import "EZQueryCell.h"
 #import "EZResultCell.h"
 #import "EZDetectManager.h"
 #import <AVFoundation/AVFoundation.h>
-#import "EZServiceTypes.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
-#import "EZTitlebar.h"
 #import "EZQueryModel.h"
 #import "EZSelectLanguageCell.h"
-#import "EZLocalStorage.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateTool.h"
-#import "EZBaseQueryWindow.h"
-#include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
-#import "EZAppleService.h"
-#import <WebKit/WebKit.h>
+#import "EZServiceTypes.h"
 
 static NSString * const EZQueryCellId = @"EZQueryCellId";
 static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
 static NSString * const EZResultCellId = @"EZResultCellId";
 
 static NSString * const EZColumnId = @"EZColumnId";
-
-static NSString * const EZQueryKey = @"{Query}";
 
 static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
@@ -53,8 +40,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
-
-@property (nonatomic, copy) NSString *queryText;
 
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZQueryCell *queryCell;
@@ -92,46 +77,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self setup];
 }
 
 - (void)viewWillAppear {
     [super viewWillAppear];
-    
     [self updateWindowViewHeightWithLock];
-}
-
-- (void)viewDidLayout {
-    [self setupTitlebarActions];
-}
-
-- (void)setupTitlebarActions {
-    mm_weakify(self);
-    
-    [self.window.titleBar.eudicButton setClickBlock:^(EZButton * _Nonnull button) {
-        mm_strongify(self);
-        [self openUrl:[ NSString stringWithFormat:@"eudic://dict/%@", EZQueryKey]];
-    }];
-    
-    [self.window.titleBar.chromeButton setClickBlock:^(EZButton * _Nonnull button) {
-        mm_strongify(self);
-        [self openUrl:[ NSString stringWithFormat:@"https://www.google.com/search?q=%@", EZQueryKey]];
-    }];
-}
-
-- (void)openUrl:(NSString *)urlString {
-    NSString *queryText = self.queryModel.queryText ?: @"";
-    urlString = [urlString stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
-    
-    NSString *url = [NSString stringWithFormat:urlString, queryText];
-    url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSLog(@"open url: %@", url);
-    
-    BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
-    if (success) {
-        [[EZWindowManager shared] closeFloatingWindow];
-    }
 }
 
 - (void)setup {
