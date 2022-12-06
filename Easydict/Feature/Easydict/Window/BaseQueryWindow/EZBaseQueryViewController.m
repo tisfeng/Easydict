@@ -30,7 +30,6 @@
 #import "EZWindowManager.h"
 #import "EZAppleService.h"
 #import <WebKit/WebKit.h>
-#import "EZWebViewTranslator.h"
 
 static NSString * const EZQueryCellId = @"EZQueryCellId";
 static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -65,8 +64,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 @property (nonatomic, strong) FBKVOController *kvo;
 
 @property (nonatomic, assign) BOOL enableResizeWindow;
-
-@property (nonatomic, strong) EZWebViewTranslator *baiduWebTranslate;
 
 @end
 
@@ -184,9 +181,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 //        
 ////        NSString *queryText = change[NSKeyValueChangeNewKey];
 //    }];
-    
-    
-//    self.baiduWebTranslate = [[EZWebViewTranslator alloc] initWithViewController:self];
 }
 
 
@@ -303,14 +297,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         NSLog(@"close all result");
         self.queryText = text;
         [self queryCurrentModel];
-        
-//        NSString *encodeText = [text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-//        [self.baiduWebTranslate translate:encodeText success:^(NSString * _Nonnull result) {
-//            NSLog(@"baidu result: %@", result);
-//            [self.window makeFirstResponder:self.queryView.textView];
-//        } failure:^(NSError * _Nonnull error) {
-//            NSLog(@"error: %@", error);
-//        }];
     }];
 }
 
