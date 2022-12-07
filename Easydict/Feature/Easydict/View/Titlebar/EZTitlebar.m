@@ -75,7 +75,7 @@
     self.chromeButton = chromeButton;
     
     chromeButton.link = @"https://www.google.com/search?q=%@";
-    chromeButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
+    chromeButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
     chromeButton.toolTip = @"Google";
     chromeButton.contentTintColor = NSColor.clearColor;
     
