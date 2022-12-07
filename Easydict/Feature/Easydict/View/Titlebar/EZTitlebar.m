@@ -10,6 +10,8 @@
 #import "EZTitleBarMoveView.h"
 #import "NSView+EZWindowType.h"
 #import "NSImage+EZResize.h"
+#import "NSObject+EZDarkMode.h"
+#import "NSObject+DarkMode.h"
 
 @interface EZTitlebar ()
 
@@ -57,19 +59,15 @@
     NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#464646"];
     
     [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
-        [button excuteLight:^(EZButton *button) {
-            if (button.buttonState == EZButtonHoverState) {
-                button.backgroundColor = lightHighlightColor;
-                button.backgroundHighlightColor = lightHighlightColor;
-                button.backgroundHoverColor = lightHighlightColor;
-            }
-        } drak:^(EZButton *button) {
-            if (button.buttonState == EZButtonHoverState) {
-                button.backgroundColor = darkHighlightColor;
-                button.backgroundHighlightColor = darkHighlightColor;
-                button.backgroundHoverColor = darkHighlightColor;
-            }
-        }];
+        if (self.isDarkMode) {
+            button.backgroundColor = darkHighlightColor;
+            button.backgroundHighlightColor = darkHighlightColor;
+            button.backgroundHoverColor = darkHighlightColor;
+        } else {
+            button.backgroundColor = lightHighlightColor;
+            button.backgroundHighlightColor = lightHighlightColor;
+            button.backgroundHoverColor = lightHighlightColor;
+        }
     }];
     [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
         button.backgroundColor = NSColor.clearColor;
