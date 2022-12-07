@@ -56,7 +56,7 @@
     }];
     
     
-    EZHoverButton *pinButton = self.titleBar.pinButton;
+    EZButton *pinButton = self.titleBar.pinButton;
     [self updatePinButtonImage];
     
     mm_weakify(self);
@@ -83,25 +83,10 @@
         }
         [self updatePinButtonImage];
     }];
-    
-    [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
-        NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
-        NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
-        [button excuteLight:^(EZButton *button) {
-            button.backgroundHoverColor = lightHighlightColor;
-            button.backgroundHighlightColor = lightHighlightColor;
-        } drak:^(EZButton *button) {
-            button.backgroundHoverColor = darkHighlightColor;
-            button.backgroundHighlightColor = darkHighlightColor;
-        }];
-    }];
-    [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
-        button.backgroundColor = NSColor.clearColor;
-    }];
 }
 
 - (void)updatePinButtonImage {
-    CGFloat imageWidth = 17;
+    CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
     
     // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
