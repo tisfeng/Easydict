@@ -54,58 +54,6 @@
     [self.titleBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(titleView);
     }];
-    
-    
-    EZButton *pinButton = self.titleBar.pinButton;
-    [self updatePinButtonImage];
-    
-    mm_weakify(self);
-    [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
-        //        NSLog(@"pin mouse down, state: %ld", button.buttonState);
-        mm_strongify(self);
-        
-        self.pin = !self.pin;
-        
-        [self updatePinButtonImage];
-    }];
-    
-    [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
-        //        NSLog(@"pin mouse up, state: %ld", button.buttonState);
-        mm_strongify(self);
-        
-        BOOL oldPin = !self.pin;
-        
-        // This means clicked pin button.
-        if (button.state == EZButtonHoverState) {
-            self.pin = !oldPin;
-        } else if (button.buttonState == EZButtonNormalState) {
-            self.pin = oldPin;
-        }
-        [self updatePinButtonImage];
-    }];
-}
-
-- (void)updatePinButtonImage {
-    CGFloat imageWidth = 18;
-    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
-    
-    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
-    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
-    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    
-    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
-    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
-    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
-    
-    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
-    
-    [self.titleBar.pinButton excuteLight:^(EZHoverButton *button) {
-        NSImage *image = self.pin ? selectedImage : normalLightImage;
-        button.image = image;
-    } drak:^(EZHoverButton *button) {
-        NSImage *image = self.pin ? selectedImage : normalDarkImage;
-        button.image = image;
-    }];
 }
 
 
@@ -127,10 +75,9 @@
 
 - (void)setPin:(BOOL)pin {
     _pin = pin;
-    
-    [self updatePinButtonImage];
-    
-    NSWindowLevel level = self.pin ? kCGMaximumWindowLevel : kCGNormalWindowLevel;
+     
+    // !!!: Do not use kCGMaximumWindowLevel, otherwise it will obscure the tooltip.
+    NSWindowLevel level = self.pin ? kCGUtilityWindowLevel : kCGNormalWindowLevel;
     self.level = level;
 }
 
