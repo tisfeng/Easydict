@@ -71,7 +71,7 @@
     
     EZLinkButton *googleButton = [[EZLinkButton alloc] init];
     [self addSubview:googleButton];
-    self.chromeButton = googleButton;
+    self.googleButton = googleButton;
     
     googleButton.link = @"https://www.google.com/search?q=%@";
     googleButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
@@ -100,6 +100,7 @@
     EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
     [self addSubview:eudicButton];
     self.eudicButton = eudicButton;
+    self.favoriteButton = eudicButton;
     
     eudicButton.link = @"eudic://dict/%@";
     eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];

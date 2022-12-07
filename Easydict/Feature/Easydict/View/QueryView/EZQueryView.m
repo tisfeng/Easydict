@@ -192,6 +192,10 @@ static CGFloat kExceptTextViewHeight = 30;
         // Cmd + Enter
         if (flags & NSEventModifierFlagCommand && keyCode == kVK_Return) {
             NSLog(@"Cmd + Enter");
+            
+            EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+            [window.titleBar.favoriteButton openLink];
+            
             return YES;
         }
     }
