@@ -87,7 +87,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 }
 
 
-- (MMOrderedDictionary *)supportLanguagesDictionary {
+- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-CHS",

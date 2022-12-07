@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
+		03008B2B2940D3230062B821 /* EZDeppLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeppLTranslate.m */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
@@ -167,6 +168,8 @@
 /* Begin PBXFileReference section */
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
+		03008B292940D3230062B821 /* EZDeppLTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeppLTranslate.h; sourceTree = "<group>"; };
+		03008B2A2940D3230062B821 /* EZDeppLTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeppLTranslate.m; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -465,6 +468,15 @@
 			path = "NSObject+DarkMode";
 			sourceTree = "<group>";
 		};
+		03008B282940D2FD0062B821 /* DeepL */ = {
+			isa = PBXGroup;
+			children = (
+				03008B292940D3230062B821 /* EZDeppLTranslate.h */,
+				03008B2A2940D3230062B821 /* EZDeppLTranslate.m */,
+			);
+			path = DeepL;
+			sourceTree = "<group>";
+		};
 		0309E1EA292B437C00AFB76A /* TextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -675,6 +687,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				03008B282940D2FD0062B821 /* DeepL */,
 				033B7131293CE2010096E2DF /* WebService */,
 				03542A362937AE2100C34C33 /* Model */,
 				03542A312936F6FE00C34C33 /* Language */,
@@ -690,15 +703,15 @@
 		03B0222C29231FA6001C7E63 /* Baidu */ = {
 			isa = PBXGroup;
 			children = (
+				03542A412937B45E00C34C33 /* EZBaiduTranslate.h */,
+				03542A422937B45E00C34C33 /* EZBaiduTranslate.m */,
+				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
+				03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */,
 				03B0222D29231FA6001C7E63 /* BaiduTranslate.h */,
 				03B0223029231FA6001C7E63 /* BaiduTranslate.m */,
 				03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */,
 				03B0222E29231FA6001C7E63 /* BaiduTranslateResponse.h */,
 				03B0223129231FA6001C7E63 /* BaiduTranslateResponse.m */,
-				03542A412937B45E00C34C33 /* EZBaiduTranslate.h */,
-				03542A422937B45E00C34C33 /* EZBaiduTranslate.m */,
-				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
-				03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */,
 			);
 			path = Baidu;
 			sourceTree = "<group>";
@@ -706,11 +719,11 @@
 		03B0223229231FA6001C7E63 /* Google */ = {
 			isa = PBXGroup;
 			children = (
-				03B0223429231FA6001C7E63 /* GoogleTranslate.h */,
-				03B0223329231FA6001C7E63 /* GoogleTranslate.m */,
-				03B0223529231FA6001C7E63 /* google-translate-sign.js */,
 				03542A472937B5CF00C34C33 /* EZGoogleTranslate.h */,
 				03542A482937B5CF00C34C33 /* EZGoogleTranslate.m */,
+				03B0223529231FA6001C7E63 /* google-translate-sign.js */,
+				03B0223429231FA6001C7E63 /* GoogleTranslate.h */,
+				03B0223329231FA6001C7E63 /* GoogleTranslate.m */,
 			);
 			path = Google;
 			sourceTree = "<group>";
@@ -718,18 +731,18 @@
 		03B0223629231FA6001C7E63 /* Youdao */ = {
 			isa = PBXGroup;
 			children = (
-				03B0223A29231FA6001C7E63 /* YoudaoTranslate.h */,
-				03B0223729231FA6001C7E63 /* YoudaoTranslate.m */,
-				03B0223929231FA6001C7E63 /* YoudaoOCRResponse.h */,
-				03B0223B29231FA6001C7E63 /* YoudaoOCRResponse.m */,
-				03B0223C29231FA6001C7E63 /* YoudaoTranslateResponse.h */,
-				03B0223829231FA6001C7E63 /* YoudaoTranslateResponse.m */,
 				03542A4A2937B5F100C34C33 /* EZYoudaoTranslate.h */,
 				03542A4B2937B5F100C34C33 /* EZYoudaoTranslate.m */,
 				03542A4D2937B64B00C34C33 /* EZYoudaoOCRResponse.h */,
 				03542A4E2937B64B00C34C33 /* EZYoudaoOCRResponse.m */,
 				03542A502937B69200C34C33 /* EZYoudaoTranslateResponse.h */,
 				03542A512937B69200C34C33 /* EZYoudaoTranslateResponse.m */,
+				03B0223A29231FA6001C7E63 /* YoudaoTranslate.h */,
+				03B0223729231FA6001C7E63 /* YoudaoTranslate.m */,
+				03B0223929231FA6001C7E63 /* YoudaoOCRResponse.h */,
+				03B0223B29231FA6001C7E63 /* YoudaoOCRResponse.m */,
+				03B0223C29231FA6001C7E63 /* YoudaoTranslateResponse.h */,
+				03B0223829231FA6001C7E63 /* YoudaoTranslateResponse.m */,
 			);
 			path = Youdao;
 			sourceTree = "<group>";
@@ -1451,6 +1464,7 @@
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
+				03008B2B2940D3230062B821 /* EZDeppLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,

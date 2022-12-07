@@ -24,7 +24,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 @property (nonatomic, copy) NSString *gtk;
 @property (nonatomic, assign) NSInteger error997Count;
 
-@property (nonatomic, strong) EZWebViewTranslator *baiduWebViewTranslator;
+@property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @end
 
@@ -39,13 +39,13 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return self;
 }
 
-- (EZWebViewTranslator *)baiduWebViewTranslator {
-    if (!_baiduWebViewTranslator) {
+- (EZWebViewTranslator *)webViewTranslator {
+    if (!_webViewTranslator) {
         NSString *selector = @"p.ordinary-output.target-output.clearfix";
-        _baiduWebViewTranslator = [[EZWebViewTranslator alloc] init];
-        _baiduWebViewTranslator.querySelector = selector;
+        _webViewTranslator = [[EZWebViewTranslator alloc] init];
+        _webViewTranslator.querySelector = selector;
     }
-    return _baiduWebViewTranslator;
+    return _webViewTranslator;
 }
 
 - (JSContext *)jsContext {
@@ -380,7 +380,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    [self.baiduWebViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
+    self.result = [[EZQueryResult alloc] init];
+    [self.webViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
         self.result.normalResults = @[translatedText];
         completion(self.result, nil);
     } failure:^(NSError * _Nonnull error) {
@@ -416,13 +417,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kBaiduTranslateURL, from, to, text];
 }
 
-//- (MMOrderedDictionary *)supportLanguagesDictionary {
-//    return [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-//                                            @(EZLanguageAuto), @"auto", @(EZLanguageSimplifiedChinese), @"zh", @(EZLanguageTraditionalChinese), @"cht", @(EZLanguageEnglish), @"en", @(EZLanguage_yue), @"yue", @(EZLanguage_wyw), @"wyw", @(EZLanguage_ja), @"jp", @(EZLanguage_ko), @"kor", @(EZLanguage_fr), @"fra", @(EZLanguage_es), @"spa", @(EZLanguage_th), @"th", @(EZLanguage_ar), @"ara", @(EZLanguage_ru), @"ru", @(EZLanguage_pt), @"pt", @(EZLanguage_de), @"de", @(EZLanguage_it), @"it", @(EZLanguage_el), @"el", @(EZLanguage_nl), @"nl", @(EZLanguage_pl), @"pl", @(EZLanguage_bg), @"bul", @(EZLanguage_et), @"est", @(EZLanguage_da), @"dan", @(EZLanguage_fi), @"fin", @(EZLanguage_cs), @"cs", @(EZLanguage_ro), @"rom", @(EZLanguage_sl), @"slo", @(EZLanguage_sv), @"swe", @(EZLanguage_hu), @"hu", @(EZLanguage_vi), @"vie", nil];
-//}
-
 // get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
-- (MMOrderedDictionary *)supportLanguagesDictionary {
+- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",

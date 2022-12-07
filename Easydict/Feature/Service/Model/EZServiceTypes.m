@@ -10,6 +10,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
 #import "EZYoudaoTranslate.h"
+#import "EZDeppLTranslate.h"
 
 @implementation EZServiceTypes
 
@@ -21,7 +22,8 @@
     NSDictionary *dict = @{
         EZServiceTypeGoogle : [EZGoogleTranslate class],
         EZServiceTypeBaidu : [EZBaiduTranslate class],
-        EZServiceTypeYoudao : [EZYoudaoTranslate class]
+        EZServiceTypeYoudao : [EZYoudaoTranslate class],
+        EZServiceTypeDeepL : [EZDeppLTranslate class],
     };
     return dict;
 }

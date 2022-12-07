@@ -263,7 +263,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 
-- (MMOrderedDictionary *)supportLanguagesDictionary {
+- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-CN",

@@ -90,6 +90,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
     self.serviceTypes = @[
+        EZServiceTypeDeepL,
         EZServiceTypeGoogle,
         EZServiceTypeYoudao,
         EZServiceTypeBaidu,

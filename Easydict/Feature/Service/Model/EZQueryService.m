@@ -128,7 +128,7 @@ userInfo:nil]
 }
 
 
-- (MMOrderedDictionary *)supportLanguagesDictionary {
+- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MethodNotImplemented();
 }
 
