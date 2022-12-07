@@ -25,13 +25,13 @@
 }
 
 - (void)setup {
-//    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
-//    moveView.wantsLayer = YES;
-//    moveView.layer.backgroundColor = NSColor.clearColor.CGColor;
-//    [self addSubview:moveView];
-//    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self);
-//    }];
+    //    EZTitleBarMoveView *moveView = [[EZTitleBarMoveView alloc] init];
+    //    moveView.wantsLayer = YES;
+    //    moveView.layer.backgroundColor = NSColor.clearColor.CGColor;
+    //    [self addSubview:moveView];
+    //    [moveView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.edges.equalTo(self);
+    //    }];
     
     CGFloat kButtonWidth = 25;
     CGFloat kImagenWidth = 20;
@@ -53,7 +53,7 @@
     NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
     NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
     
-    [pinButton setMouseEnterBlock:^(EZButton * _Nonnull button) {
+    [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
         [button excuteLight:^(EZButton *button) {
             button.backgroundHoverColor = lightHighlightColor;
             button.backgroundHighlightColor = lightHighlightColor;
@@ -62,7 +62,7 @@
             button.backgroundHighlightColor = darkHighlightColor;
         }];
     }];
-    [pinButton setMouseExitedBlock:^(EZButton * _Nonnull button) {
+    [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
         button.backgroundColor = NSColor.clearColor;
     }];
     
@@ -100,7 +100,13 @@
     EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
     [self addSubview:eudicButton];
     self.eudicButton = eudicButton;
-    self.favoriteButton = eudicButton;
+    
+    // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
+    BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
+    eudicButton.hidden = !installedEudic;
+    if (installedEudic) {
+        self.favoriteButton = eudicButton;
+    }
     
     eudicButton.link = @"eudic://dict/%@";
     eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
@@ -126,6 +132,18 @@
     
     lastView = eudicButton;
 }
+
+
+/// Check if installed app according to bundle id array
+- (BOOL)checkInstalledApp:(NSArray<NSString *> *)bundleIds {
+    for (NSString *bundleId in bundleIds) {
+        if ([[NSWorkspace sharedWorkspace] URLForApplicationWithBundleIdentifier:bundleId]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
