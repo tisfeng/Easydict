@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTitlebar : NSView
 
-@property (nonatomic, strong) EZButton *pinButton;
+@property (nonatomic, strong) EZLinkButton *pinButton;
 
 @property (nonatomic, strong) EZLinkButton *eudicButton;
 @property (nonatomic, strong) EZLinkButton *googleButton;

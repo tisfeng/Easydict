@@ -41,10 +41,9 @@
     CGSize buttonSize = CGSizeMake(kButtonWidth, kButtonWidth);
     CGSize imageSize = CGSizeMake(kImagenWidth, kImagenWidth);
     
-    EZButton *pinButton = [[EZButton alloc] init];
+    EZLinkButton *pinButton = [[EZLinkButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
-    pinButton.cornerRadius = 5;
     pinButton.contentTintColor = [NSColor clearColor];
     pinButton.toolTip = @"Pin";
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -53,25 +52,6 @@
         make.left.inset(10);
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
-    
-    NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
-    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#464646"];
-    
-    [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
-        if (self.isDarkMode) {
-            button.backgroundColor = darkHighlightColor;
-            button.backgroundHighlightColor = darkHighlightColor;
-            button.backgroundHoverColor = darkHighlightColor;
-        } else {
-            button.backgroundColor = lightHighlightColor;
-            button.backgroundHighlightColor = lightHighlightColor;
-            button.backgroundHoverColor = lightHighlightColor;
-        }
-    }];
-    [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
-        button.backgroundColor = NSColor.clearColor;
-    }];
-    
     NSView *lastView;
     
     
