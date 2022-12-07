@@ -33,10 +33,9 @@
 //        make.edges.equalTo(self);
 //    }];
     
-    CGFloat kButtonWidth = 24;
-    CGFloat kImagenWidth = 19;
+    CGFloat kButtonWidth = 25;
+    CGFloat kImagenWidth = 20;
     CGFloat kButtonPadding = 4;
-    CGFloat kTop = 5;
     
     CGSize buttonSize = CGSizeMake(kButtonWidth, kButtonWidth);
     CGSize imageSize = CGSizeMake(kImagenWidth, kImagenWidth);
@@ -48,7 +47,7 @@
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(buttonSize);
         make.left.inset(10);
-        make.top.equalTo(self).offset(kTop);
+        make.top.equalTo(self).offset(5);
     }];
     
     NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
@@ -70,17 +69,17 @@
     NSView *lastView;
     
     
-    EZLinkButton *chromeButton = [[EZLinkButton alloc] init];
-    [self addSubview:chromeButton];
-    self.chromeButton = chromeButton;
+    EZLinkButton *googleButton = [[EZLinkButton alloc] init];
+    [self addSubview:googleButton];
+    self.chromeButton = googleButton;
     
-    chromeButton.link = @"https://www.google.com/search?q=%@";
-    chromeButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
-    chromeButton.toolTip = @"Google";
-    chromeButton.contentTintColor = NSColor.clearColor;
+    googleButton.link = @"https://www.google.com/search?q=%@";
+    googleButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
+    googleButton.toolTip = @"Google";
+    googleButton.contentTintColor = NSColor.clearColor;
     
-    [chromeButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(kTop);
+    [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self).offset(EZTitlebarHeight_28 - kButtonWidth);
         make.size.mas_equalTo(buttonSize);
         if (lastView) {
             make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
@@ -88,14 +87,14 @@
             make.right.equalTo(self).offset(-10);
         }
     }];
-    [chromeButton excuteLight:^(EZButton *button) {
+    [googleButton excuteLight:^(EZButton *button) {
         button.backgroundHoverColor = lightHighlightColor;
         button.backgroundHighlightColor = lightHighlightColor;
     } drak:^(EZButton *button) {
         button.backgroundHoverColor = darkHighlightColor;
         button.backgroundHighlightColor = darkHighlightColor;
     }];
-    lastView = chromeButton;
+    lastView = googleButton;
     
     
     EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
