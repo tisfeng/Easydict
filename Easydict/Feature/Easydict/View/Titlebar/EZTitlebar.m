@@ -11,8 +11,11 @@
 #import "NSView+EZWindowType.h"
 #import "NSImage+EZResize.h"
 #import "NSObject+EZDarkMode.h"
+#import "EZBaseQueryWindow.h"
 
 @interface EZTitlebar ()
+
+@property (nonatomic, assign) BOOL pin;
 
 @end
 
@@ -52,8 +55,36 @@
         make.left.inset(10);
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
-    NSView *lastView;
     
+    [self updatePinButtonImage];
+    
+    mm_weakify(self);
+    [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
+        //        NSLog(@"pin mouse down, state: %ld", button.buttonState);
+        mm_strongify(self);
+        
+        self.pin = !self.pin;
+        
+        [self updatePinButtonImage];
+    }];
+    
+    [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
+        //        NSLog(@"pin mouse up, state: %ld", button.buttonState);
+        mm_strongify(self);
+        
+        BOOL oldPin = !self.pin;
+        
+        // This means clicked pin button.
+        if (button.state == EZButtonHoverState) {
+            self.pin = !oldPin;
+        } else if (button.buttonState == EZButtonNormalState) {
+            self.pin = oldPin;
+        }
+        [self updatePinButtonImage];
+    }];
+    
+    
+    NSView *lastView;
     
     EZLinkButton *googleButton = [[EZLinkButton alloc] init];
     [self addSubview:googleButton];
@@ -105,6 +136,41 @@
     lastView = eudicButton;
 }
 
+- (void)updatePinButtonImage {
+    CGFloat imageWidth = 18;
+    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
+    
+    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
+    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    
+    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
+    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
+    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
+    
+    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
+    
+    [self.pinButton excuteLight:^(EZHoverButton *button) {
+        NSImage *image = self.pin ? selectedImage : normalLightImage;
+        button.image = image;
+    } drak:^(EZHoverButton *button) {
+        NSImage *image = self.pin ? selectedImage : normalDarkImage;
+        button.image = image;
+    }];
+}
+
+
+#pragma mark - Setter && Getter
+
+- (BOOL)pin {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    return window.pin;
+}
+
+- (void)setPin:(BOOL)pin {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    window.pin = pin;
+}
 
 /// Check if installed app according to bundle id array
 - (BOOL)checkInstalledApp:(NSArray<NSString *> *)bundleIds {
