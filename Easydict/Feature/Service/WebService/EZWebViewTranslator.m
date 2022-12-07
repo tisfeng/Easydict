@@ -10,7 +10,7 @@
 #import <WebKit/WebKit.h>
 
 // Max query duration seconds
-static NSTimeInterval const MAX_QUERY_SECONDS = 2.0;
+static NSTimeInterval const MAX_QUERY_SECONDS = 10.0;
 
 // Delay query seconds
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
@@ -140,22 +140,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             return;
         }
         
-        if ([result boolValue]) {
-            // 如果页面中存在目标元素，则执行下面的代码获取它的 innerText 属性
-            NSString *js = [NSString stringWithFormat:@"document.querySelector('%@').innerText", selector];
-            [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-                if (error) {
-                    // 如果执行出错，则直接返回
-                    if (completion) {
-                        completion(nil, error);
-                    }
-                }
-                
-                if (completion) {
-                    completion(result, nil);
-                }
-            }];
-        } else {
+        void (^retryBlock)(void) = ^{
             // 如果页面中不存在目标元素，则延迟一段时间后再次判断
             self.retryCount++;
             NSInteger maxRetryCount = ceil(MAX_QUERY_SECONDS / DELAY_SECONDS);
@@ -170,6 +155,28 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     completion(nil, error);
                 }
             }
+        };
+        
+        if ([result boolValue]) {
+            // 如果页面中存在目标元素，则执行下面的代码获取它的 textContent 属性
+            NSString *js = [NSString stringWithFormat:@"document.querySelector('%@').textContent", selector];
+            [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+                if (error) {
+                    // 如果执行出错，则直接返回
+                    if (completion) {
+                        completion(nil, error);
+                    }
+                }
+                // trim text
+                NSString *translatedText = [result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                if (completion && [translatedText length]) {
+                    completion(translatedText, nil);
+                } else {
+                    retryBlock();
+                }
+            }];
+        } else {
+            retryBlock();
         }
     }];
 }
@@ -230,5 +237,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 //    //不允许跳转
 //    // decisionHandler(WKNavigationActionPolicyCancel);
 //}
+
 
 @end

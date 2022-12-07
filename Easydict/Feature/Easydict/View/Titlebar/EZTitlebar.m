@@ -101,7 +101,7 @@
         if (lastView) {
             make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
         } else {
-            make.right.equalTo(self).offset(-9);
+            make.right.equalTo(self).offset(-10);
         }
     }];
     lastView = googleButton;

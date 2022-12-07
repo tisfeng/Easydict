@@ -13,6 +13,7 @@ NSString *const EZServiceTypeGoogle = @"Google";
 NSString *const EZServiceTypeBaidu = @"Baidu";
 NSString *const EZServiceTypeYoudao = @"Youdao";
 NSString *const EZServiceTypeApple = @"Apple";
+NSString *const EZServiceTypeDeepL = @"DeepL";
 
 
 @implementation EZTranslatePhonetic : NSObject
