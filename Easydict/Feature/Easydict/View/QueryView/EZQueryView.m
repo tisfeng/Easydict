@@ -44,18 +44,18 @@ static CGFloat kExceptTextViewHeight = 30;
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
-
+    
     EZTextView *textView = [[EZTextView alloc] initWithFrame:scrollView.bounds];
     self.textView = textView;
     self.scrollView.documentView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
     textView.textStorage.delegate = self;
-
+    
     EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
     [self addSubview:detectButton];
     self.detectButton = detectButton;
-
+    
     mm_weakify(self);
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
@@ -63,7 +63,7 @@ static CGFloat kExceptTextViewHeight = 30;
             self.selectedLanguageBlock(language);
         }
     }];
-
+    
     detectButton.mas_key = @"detectButton";
     
     EZHoverButton *clearButton = [[EZHoverButton alloc] init];
@@ -74,12 +74,11 @@ static CGFloat kExceptTextViewHeight = 30;
     NSImage *clearImage;
     if (@available(macOS 11.0, *)) {
         clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
-        clearImage = [clearImage resizeToSize:CGSizeMake(15, 15)];
-        clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
-    } else {
-        // Fallback on earlier versions
-        clearImage = [[NSImage imageNamed:@"clear_circle"] resizeToSize:CGSizeMake(15, 15)];
     }
+    
+    clearImage = [NSImage imageNamed:@"clear_circle"];
+    clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
+    clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     clearButton.image = clearImage;
     clearButton.toolTip = @"Clear All";
     
@@ -113,7 +112,7 @@ static CGFloat kExceptTextViewHeight = 30;
 - (void)updateConstraints {
     [self updateCustomLayout];
     [self updateDetectButton];
-
+    
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         make.bottom.equalTo(self.audioButton.mas_top).offset(0);
@@ -124,7 +123,7 @@ static CGFloat kExceptTextViewHeight = 30;
         make.right.bottom.equalTo(self).offset(-4);
         make.width.height.mas_equalTo(24);
     }];
-
+    
     [super updateConstraints];
 }
 
@@ -141,7 +140,7 @@ static CGFloat kExceptTextViewHeight = 30;
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
         self.textView.string = model.queryText;
     }
-        
+    
     [self updateButtonsDisplayState:queryText];
 }
 
@@ -187,7 +186,7 @@ static CGFloat kExceptTextViewHeight = 30;
     
     // Escape key
     if (commandSelector == @selector(cancelOperation:)) {
-//        NSLog(@"escape: %@", textView);
+        //        NSLog(@"escape: %@", textView);
         [[EZWindowManager shared] closeFloatingWindow];
         
         return YES;
@@ -210,10 +209,10 @@ static CGFloat kExceptTextViewHeight = 30;
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = textStorage.string;
-   
+    
     [self updateButtonsDisplayState:text];
     
-
+    
     CGFloat textViewHeight = [self heightOfTextView];
     
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -221,9 +220,9 @@ static CGFloat kExceptTextViewHeight = 30;
     }];
     
     // cannot layout this, otherwise will crash
-//    [self layoutSubtreeIfNeeded];
-//    NSLog(@"self.frame: %@", @(self.frame));
-
+    //    [self layoutSubtreeIfNeeded];
+    //    NSLog(@"self.frame: %@", @(self.frame));
+    
     if (self.updateQueryTextBlock) {
         self.updateQueryTextBlock(text, textViewHeight + kExceptTextViewHeight);
     }
@@ -235,19 +234,19 @@ static CGFloat kExceptTextViewHeight = 30;
 - (CGFloat)heightOfTextView {
     CGFloat height = [self.textView getHeightWithWidth:self.width];
     //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
-
+    
     height = MAX(height, self.textViewMiniHeight);
     height = MIN(height, self.textViewMaxHeight);
     
     height = ceil(height);
-//    NSLog(@"final height: %.1f", height);
-
+    //    NSLog(@"final height: %.1f", height);
+    
     return height;
 }
 
 - (void)updateCustomLayout {
     EZWindowType windowType = self.windowType;
-
+    
     self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
     self.textViewMiniHeight = [EZLayoutManager.shared inputViewMiniHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
