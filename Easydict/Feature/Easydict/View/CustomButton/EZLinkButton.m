@@ -8,6 +8,7 @@
 
 #import "EZLinkButton.h"
 #import "EZWindowManager.h"
+#import "NSObject+EZDarkMode.h"
 
 static NSString * const EZQueryKey = @"{Query}";
 
@@ -19,18 +20,40 @@ static NSString * const EZQueryKey = @"{Query}";
 
 @implementation EZLinkButton
 
-- (instancetype)init {
-    if (self = [super init]) {
-        [self setup];
+- (instancetype)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
+        [self link_setup];
     }
     return self;
 }
 
-- (void)setup {
+- (void)link_setup {
     mm_weakify(self);
     [self setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
         [self openLink];
+    }];
+    
+    self.cornerRadius = 5;
+      
+    // ???: Why do I need to set it up again here?  Why cannot use EZHoverButton?
+    NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
+    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#464646"];
+    
+    [self setMouseEnterBlock:^(EZButton *_Nonnull button) {
+        mm_strongify(self);
+        if (self.isDarkMode) {
+            button.backgroundColor = darkHighlightColor;
+            button.backgroundHighlightColor = darkHighlightColor;
+            button.backgroundHoverColor = darkHighlightColor;
+        } else {
+            button.backgroundColor = lightHighlightColor;
+            button.backgroundHighlightColor = lightHighlightColor;
+            button.backgroundHoverColor = lightHighlightColor;
+        }
+    }];
+    [self setMouseExitedBlock:^(EZButton *_Nonnull button) {
+        button.backgroundColor = NSColor.clearColor;
     }];
 }
 
