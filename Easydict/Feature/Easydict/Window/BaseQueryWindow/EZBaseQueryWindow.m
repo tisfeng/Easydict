@@ -57,41 +57,16 @@
     
     
     EZHoverButton *pinButton = self.titleBar.pinButton;
-    
-    CGFloat imageWidth = 17;
-    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
-    
-    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
-    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
-    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    
-    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
-    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
-    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
-    
-    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
-    
-    void (^changePinButtonImageBlock)(void) = ^{
-        [pinButton excuteLight:^(EZHoverButton *button) {
-            NSImage *image = self.pin ? selectedImage : normalLightImage;
-            button.image = image;
-        } drak:^(EZHoverButton *button) {
-            NSImage *image = self.pin ? selectedImage : normalDarkImage;
-            button.image = image;
-        }];
-    };
-    
-    changePinButtonImageBlock();
+    [self updatePinButtonImage];
     
     mm_weakify(self);
-    
     [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
         //        NSLog(@"pin mouse down, state: %ld", button.buttonState);
         mm_strongify(self);
         
         self.pin = !self.pin;
         
-        changePinButtonImageBlock();
+        [self updatePinButtonImage];
     }];
     
     [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
@@ -100,17 +75,13 @@
         
         BOOL oldPin = !self.pin;
         
-        if (button.buttonState == EZButtonNormalState) {
-            self.pin = oldPin;
-        } else if (button.state == EZButtonHoverState) {
-            // Means clicked pin button
-            
+        // This means clicked pin button.
+        if (button.state == EZButtonHoverState) {
             self.pin = !oldPin;
-            NSWindowLevel level = self.pin ? kCGFloatingWindowLevel : kCGNormalWindowLevel;
-            self.level = level;
+        } else if (button.buttonState == EZButtonNormalState) {
+            self.pin = oldPin;
         }
-        
-        changePinButtonImageBlock();
+        [self updatePinButtonImage];
     }];
     
     [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
@@ -129,6 +100,32 @@
     }];
 }
 
+- (void)updatePinButtonImage {
+    CGFloat imageWidth = 17;
+    CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
+    
+    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
+    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+    
+    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
+    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
+    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
+    
+    NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
+    
+    [self.titleBar.pinButton excuteLight:^(EZHoverButton *button) {
+        NSImage *image = self.pin ? selectedImage : normalLightImage;
+        button.image = image;
+    } drak:^(EZHoverButton *button) {
+        NSImage *image = self.pin ? selectedImage : normalDarkImage;
+        button.image = image;
+    }];
+}
+
+
+#pragma mark - Setter
+
 - (void)setWindowType:(EZWindowType)windowType {
     _windowType = windowType;
     
@@ -142,6 +139,17 @@
     viewController.window = self;
     self.contentViewController = viewController;
 }
+
+- (void)setPin:(BOOL)pin {
+    _pin = pin;
+    
+    [self updatePinButtonImage];
+    
+    NSWindowLevel level = self.pin ? kCGMaximumWindowLevel : kCGNormalWindowLevel;
+    self.level = level;
+}
+
+#pragma mark - Rewrite
 
 - (BOOL)canBecomeKeyWindow {
     return YES;
@@ -182,7 +190,7 @@
 }
 
 - (void)windowDidResignKey:(NSNotification *)notification {
-//    NSLog(@"window Did ResignKey: %@", self);
+    //    NSLog(@"window Did ResignKey: %@", self);
     
     EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
     // Do not close main window

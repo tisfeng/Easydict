@@ -244,7 +244,7 @@ static EZWindowManager *_instance;
     // TODO: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     [_mainWindow orderOut:nil];
 
-    window.level = kCGFloatingWindowLevel;
+    window.level = kCGMaximumWindowLevel;
     [window.viewController focusInputTextView];
     
     // Avoid floating windows being closed immediately.
