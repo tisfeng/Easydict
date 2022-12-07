@@ -44,10 +44,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     return EZServiceTypeYoudao;
 }
 
-- (NSString *)identifier {
-    return @"Youdao";
-}
-
 - (NSString *)name {
     return @"有道翻译";
 }

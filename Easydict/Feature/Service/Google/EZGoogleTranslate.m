@@ -241,12 +241,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     return EZServiceTypeGoogle;
 }
 
-- (NSString *)identifier {
-    return self.isCN ? @"google_cn" : @"Google";
-}
-
 - (NSString *)name {
-    return self.isCN ? @"谷歌翻译(国内)" : @"谷歌翻译";
+    return @"Google 翻译";
 }
 
 - (NSString *)link {
