@@ -454,10 +454,7 @@ static const CGFloat kVerticalPadding = 8;
     EZLinkButton *linkButton = [[EZLinkButton alloc] init];
     [self addSubview:linkButton];
   
-    NSImage *linkImage = [NSImage imageNamed:@"link"];
-    if (@available(macOS 11.0, *)) {
-        linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
-    }
+    NSImage *linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
     linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
