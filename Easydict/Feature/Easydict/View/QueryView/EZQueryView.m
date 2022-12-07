@@ -71,12 +71,7 @@ static CGFloat kExceptTextViewHeight = 30;
     self.clearButton = clearButton;
     clearButton.hidden = NO;
     
-    NSImage *clearImage;
-    if (@available(macOS 11.0, *)) {
-        clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
-    }
-    
-    clearImage = [NSImage imageNamed:@"clear_circle"];
+    NSImage *clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     clearButton.image = clearImage;

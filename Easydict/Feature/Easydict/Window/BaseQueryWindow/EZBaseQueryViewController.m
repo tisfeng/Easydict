@@ -197,11 +197,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             tableView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
-        if (@available(macOS 11.0, *)) {
-            tableView.style = NSTableViewStylePlain;
-        } else {
-            // Fallback on earlier versions
-        }
+        tableView.style = NSTableViewStylePlain;
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;
