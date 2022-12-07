@@ -130,11 +130,11 @@
     _windowType = windowType;
     
     EZBaseQueryViewController *viewController = [[EZBaseQueryViewController alloc] initWithWindowType:windowType];
-    self.viewController = viewController;
+    self.queryViewController = viewController;
 }
 
-- (void)setViewController:(EZBaseQueryViewController *)viewController {
-    _viewController = viewController;
+- (void)setQueryViewController:(EZBaseQueryViewController *)viewController {
+    _queryViewController = viewController;
     
     viewController.window = self;
     self.contentViewController = viewController;
@@ -180,8 +180,8 @@
         self.resizeWindowBlock();
     }
     
-    if (self.viewController.resizeWindowBlock) {
-        self.viewController.resizeWindowBlock();
+    if (self.queryViewController.resizeWindowBlock) {
+        self.queryViewController.resizeWindowBlock();
     }
 }
 

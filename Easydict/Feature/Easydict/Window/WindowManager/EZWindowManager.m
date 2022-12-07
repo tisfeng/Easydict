@@ -203,7 +203,7 @@ static EZWindowManager *_instance;
     CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
-    [window.viewController startQueryText:text];
+    [window.queryViewController startQueryText:text];
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
@@ -220,9 +220,9 @@ static EZWindowManager *_instance;
         [self showFloatingWindow:window atPoint:location];
     } else {
         // Reset window height first, avoid being affected by previous window height.
-        [window.viewController resetTableView:^{
+        [window.queryViewController resetTableView:^{
             [self showFloatingWindow:window atPoint:location];
-            [window.viewController startQueryText:text];
+            [window.queryViewController startQueryText:text];
         }];
     }
 }
@@ -245,7 +245,7 @@ static EZWindowManager *_instance;
     [_mainWindow orderOut:nil];
 
     window.level = kCGMaximumWindowLevel;
-    [window.viewController focusInputTextView];
+    [window.queryViewController focusInputTextView];
     
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -396,9 +396,9 @@ static EZWindowManager *_instance;
         EZBaseQueryWindow *window = [self windowWithType:windowType];
                     
         // Reset window height first, avoid being affected by previous window height.
-        [window.viewController resetTableView:^{
+        [window.queryViewController resetTableView:^{
             [self showFloatingWindowType:windowType queryText:nil];
-            [window.viewController startQueryWithImage:image];
+            [window.queryViewController startQueryWithImage:image];
         }];
     }];
 }
@@ -441,7 +441,7 @@ static EZWindowManager *_instance;
     }
     if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindow.shared) {
         // 执行重试
-        [self.floatingWindow.viewController retry];
+        [self.floatingWindow.queryViewController retry];
     }
 }
 

@@ -17,7 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZHoverButton *pinButton;
 
 @property (nonatomic, strong) EZLinkButton *eudicButton;
-@property (nonatomic, strong) EZLinkButton *chromeButton;
+@property (nonatomic, strong) EZLinkButton *googleButton;
+
+@property (nonatomic, strong) EZLinkButton *favoriteButton;
 
 @end
 

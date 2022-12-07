@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZTitlebar *titleBar;
 @property (nonatomic, assign) BOOL pin;
 
-@property (nonatomic, strong) EZBaseQueryViewController *viewController;
+@property (nonatomic, strong) EZBaseQueryViewController *queryViewController;
 
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
 
