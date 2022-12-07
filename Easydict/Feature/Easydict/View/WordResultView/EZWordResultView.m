@@ -440,7 +440,7 @@ static const CGFloat kVerticalPadding = 8;
         // ???: Must set bottom ?
         make.bottom.equalTo(self);
         make.left.offset(kHorizontalMargin);
-        make.width.height.mas_equalTo(EZCopyButtonWidth);
+        make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -453,17 +453,16 @@ static const CGFloat kVerticalPadding = 8;
     
     EZLinkButton *linkButton = [[EZLinkButton alloc] init];
     [self addSubview:linkButton];
-    NSImage *linkImage;
+  
+    NSImage *linkImage = [NSImage imageNamed:@"link"];
     if (@available(macOS 11.0, *)) {
         linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
-        linkImage = [linkImage resizeToSize:CGSizeMake(16, 16)];
-    } else {
-        // Fallback on earlier versions
     }
+    linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
     linkButton.link = result.link;
-    
+
     [linkButton excuteLight:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];
     } drak:^(NSButton *linkButton) {

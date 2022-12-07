@@ -771,7 +771,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
-    CGFloat titleBarHeight = EZTitlebarHeight; // system title bar height is 28
+    CGFloat titleBarHeight = EZTitlebarHeight_28; // system title bar height is 28
     
     CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);

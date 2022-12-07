@@ -324,7 +324,7 @@ static EZWindowManager *_instance;
 
 - (CGPoint)convertShowingPositon:(CGPoint)position windowType:(EZWindowType)windowType {
     CGFloat windowMiniHeight = [[EZLayoutManager shared] minimumWindowSize:windowType].height;
-    CGFloat y = position.y - windowMiniHeight - EZTitlebarHeight;
+    CGFloat y = position.y - windowMiniHeight - EZTitlebarHeight_28;
     CGPoint newPosition = CGPointMake(position.x, y);
     return newPosition;
 }
