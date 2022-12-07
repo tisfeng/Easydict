@@ -33,33 +33,42 @@
     //        make.edges.equalTo(self);
     //    }];
     
-    CGFloat kButtonWidth = 25;
-    CGFloat kImagenWidth = 20;
+    CGFloat kButtonWidth = 26;
+    CGFloat kImagenWidth = 22;
     CGFloat kButtonPadding = 4;
     
     CGSize buttonSize = CGSizeMake(kButtonWidth, kButtonWidth);
     CGSize imageSize = CGSizeMake(kImagenWidth, kImagenWidth);
     
-    EZHoverButton *pinButton = [[EZHoverButton alloc] init];
+    EZButton *pinButton = [[EZButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
+    pinButton.cornerRadius = 5;
+    pinButton.contentTintColor = [NSColor clearColor];
     pinButton.toolTip = @"Pin";
     [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(buttonSize);
+        CGFloat pinButtonWidth = 25;
+        make.width.height.mas_equalTo(pinButtonWidth);
         make.left.inset(10);
-        make.top.equalTo(self).offset(5);
+        make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
     NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
-    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#484848"];
+    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#464646"];
     
     [pinButton setMouseEnterBlock:^(EZButton *_Nonnull button) {
         [button excuteLight:^(EZButton *button) {
-            button.backgroundHoverColor = lightHighlightColor;
-            button.backgroundHighlightColor = lightHighlightColor;
+            if (button.buttonState == EZButtonHoverState) {
+                button.backgroundColor = lightHighlightColor;
+                button.backgroundHighlightColor = lightHighlightColor;
+                button.backgroundHoverColor = lightHighlightColor;
+            }
         } drak:^(EZButton *button) {
-            button.backgroundHoverColor = darkHighlightColor;
-            button.backgroundHighlightColor = darkHighlightColor;
+            if (button.buttonState == EZButtonHoverState) {
+                button.backgroundColor = darkHighlightColor;
+                button.backgroundHighlightColor = darkHighlightColor;
+                button.backgroundHoverColor = darkHighlightColor;
+            }
         }];
     }];
     [pinButton setMouseExitedBlock:^(EZButton *_Nonnull button) {
@@ -84,7 +93,7 @@
         if (lastView) {
             make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
         } else {
-            make.right.equalTo(self).offset(-10);
+            make.right.equalTo(self).offset(-9);
         }
     }];
     [googleButton excuteLight:^(EZButton *button) {
