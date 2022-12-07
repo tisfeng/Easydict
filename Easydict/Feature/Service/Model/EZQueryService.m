@@ -106,11 +106,6 @@ userInfo:nil]
     return nil;
 }
 
-- (NSString *)identifier {
-    MethodNotImplemented();
-    return nil;
-}
-
 - (NSString *)name {
     MethodNotImplemented();
     return nil;

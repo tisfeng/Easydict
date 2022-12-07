@@ -18,10 +18,6 @@
     return EZServiceTypeApple;
 }
 
-- (NSString *)identifier {
-    return @"Apple";
-}
-
 - (NSString *)name {
     return @"Apple";
 }

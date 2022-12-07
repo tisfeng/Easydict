@@ -396,10 +396,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return EZServiceTypeBaidu;
 }
 
-- (NSString *)identifier {
-    return @"Baidu";
-}
-
 - (NSString *)name {
     return @"百度翻译";
 }

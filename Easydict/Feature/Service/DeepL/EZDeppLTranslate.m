@@ -35,12 +35,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     return EZServiceTypeDeepL;
 }
 
-- (NSString *)identifier {
-    return @"DeepL";
-}
-
 - (NSString *)name {
-    return @"DeepL";
+    return @"DeepL 翻译";
 }
 
 - (NSString *)link {
