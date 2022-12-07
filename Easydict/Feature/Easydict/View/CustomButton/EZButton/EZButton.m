@@ -63,8 +63,8 @@
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-//        NSLog(@"mouseEntered");
-
+    //        NSLog(@"mouseEntered");
+    
     if (self.mouseEnterBlock) {
         self.mouseEnterBlock(self);
     }
@@ -75,8 +75,8 @@
 }
 
 - (void)mouseExited:(NSEvent *)event {
-//        NSLog(@"mouseExited");
-      
+    //        NSLog(@"mouseExited");
+    
     if (self.mouseExitedBlock) {
         self.mouseExitedBlock(self);
     }
@@ -91,7 +91,7 @@
 
 - (void)mouseDown:(NSEvent *)event {
     //    NSLog(@"mouseDown");
-      
+    
     if (self.mouseDownBlock) {
         self.mouseDownBlock(self);
     }
@@ -116,7 +116,7 @@
         }
         self.buttonState = EZButtonHoverState;
         
-//        NSLog(@"send action");
+        //        NSLog(@"send action");
         
         NSString *selString = NSStringFromSelector(self.action);
         if ([selString hasSuffix:@":"]) {
@@ -138,7 +138,7 @@
         self.hover = YES;
         [self setButtonState:EZButtonHoverState];
     } else {
-//        NSLog(@"mouse drag out");
+        //        NSLog(@"mouse drag out");
         
         self.hover = NO;
         if (self.canSelected) {
@@ -154,8 +154,8 @@
 #pragma mark - Private Methods
 
 - (void)commonInitialize {
-//    self.backgroundHighlightColor = NSColor.highlightColor;
-//    self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
+    //    self.backgroundHighlightColor = NSColor.highlightColor;
+    //    self.backgroundSelectedColor = NSColor.selectedTextBackgroundColor;
     
     [self initializeUI];
     
@@ -208,7 +208,7 @@
 }
 
 - (void)updateButtonApperaceWithState:(EZButtonState)state {
-    //    NSLog(@"button state: %@", @(state));
+    //        NSLog(@"button state: %@", @(state));
     
     CGFloat cornerRadius = 0.f;
     CGFloat borderWidth = 0.f;
@@ -414,11 +414,7 @@
 }
 
 - (void)setButtonState:(EZButtonState)state {
-//    NSLog(@"set state: %lu", (unsigned long)state);
-    
-//    if (_buttonState == state) {
-//        return;
-//    }
+    //    NSLog(@"set state: %lu", (unsigned long)state);
     
     _buttonState = state;
     

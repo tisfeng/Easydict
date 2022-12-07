@@ -11,7 +11,6 @@
 #import "NSView+EZWindowType.h"
 #import "NSImage+EZResize.h"
 #import "NSObject+EZDarkMode.h"
-#import "NSObject+DarkMode.h"
 
 @interface EZTitlebar ()
 
@@ -94,13 +93,6 @@
             make.right.equalTo(self).offset(-9);
         }
     }];
-    [googleButton excuteLight:^(EZButton *button) {
-        button.backgroundHoverColor = lightHighlightColor;
-        button.backgroundHighlightColor = lightHighlightColor;
-    } drak:^(EZButton *button) {
-        button.backgroundHoverColor = darkHighlightColor;
-        button.backgroundHighlightColor = darkHighlightColor;
-    }];
     lastView = googleButton;
     
     
@@ -128,13 +120,6 @@
         } else {
             make.right.equalTo(self).offset(-kButtonPadding);
         }
-    }];
-    [eudicButton excuteLight:^(EZButton *button) {
-        button.backgroundHoverColor = lightHighlightColor;
-        button.backgroundHighlightColor = lightHighlightColor;
-    } drak:^(EZButton *button) {
-        button.backgroundHoverColor = darkHighlightColor;
-        button.backgroundHighlightColor = darkHighlightColor;
     }];
     
     lastView = eudicButton;
