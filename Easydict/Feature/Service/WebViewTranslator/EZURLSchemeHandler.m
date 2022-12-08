@@ -95,7 +95,12 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 @end
 
 
+
+
 #pragma mark - EZURLSchemeHandler
+
+typedef void (^EZURLSessionTaskCompletionHandler)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error);
+
 
 @interface EZURLSchemeHandler () <WKURLSchemeHandler, NSURLSessionDelegate>
 
@@ -106,11 +111,10 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableTaskDelegatesKeyedByTaskIdentifier;
 @property (readwrite, nonatomic, strong) NSLock *lock;
-
-@property (nonatomic, strong) AFURLSessionManager *urlSession;
-
 @property (nonatomic, copy) HTTPDNSCookieFilter cookieFilter;
 
+@property (nonatomic, strong) AFURLSessionManager *urlSession;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, EZURLSessionTaskCompletionHandler> *monitorDictionary;
 
 @end
 
@@ -157,6 +161,8 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         self.operationQueue.maxConcurrentOperationCount = 1;
         self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
         [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:@"https"];
+
+        self.monitorDictionary = [NSMutableDictionary dictionary];
         
         self.cookieFilter = ^BOOL(NSHTTPCookie *cookie, NSURL *URL) {
             if ([URL.host containsString:cookie.domain]) {
@@ -193,36 +199,34 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 
+#pragma mark - Publick Methods
+
+- (void)monitorURL:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
+    self.monitorDictionary[url] = completionHandler;
+}
+
 #pragma mark - WKURLSchemeHandler
 
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
     NSString *url = request.URL.absoluteString;
-    NSLog(@"url: %@", url);
+//    NSLog(@"url: %@", url);
+    
+    if ([self.monitorDictionary.allKeys containsObject:url]) {
+        EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[url];
+        if (completionHandler) {
+            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:request.HTTPBody options:kNilOptions error:nil];
+            NSLog(@"bodyDict: %@", bodyDict);
 
-    NSString *monitorUrl = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-    if ([url isEqualToString:monitorUrl]) {
-        NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:request.HTTPBody options:kNilOptions error:nil];
-        NSLog(@"bodyDict: %@", bodyDict);
+            NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
 
-        NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:^(NSProgress *_Nonnull uploadProgress) {
-
-        } downloadProgress:^(NSProgress *_Nonnull downloadProgress) {
-
-        } completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-            if ([url isEqualToString:monitorUrl]) {
-                NSLog(@"responseObject: %@", responseObject);
-            }
-        }];
-
-        [task resume];
+            [task resume];
+        }
     }
-
 
     NSMutableURLRequest *mutaRequest = [request mutableCopy];
     [mutaRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
     request = [mutaRequest copy];
-
 
     NSURLSessionTask *task = [self.session dataTaskWithRequest:request];
     EZSessionTaskDelegate *delegate = [[EZSessionTaskDelegate alloc] init];
