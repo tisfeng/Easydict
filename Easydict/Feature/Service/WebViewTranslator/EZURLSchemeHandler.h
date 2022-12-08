@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (EZURLSchemeHandler *)sharedInstance;
 
+- (void)monitorURL:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

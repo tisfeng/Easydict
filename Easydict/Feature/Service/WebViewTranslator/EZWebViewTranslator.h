@@ -17,8 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)preloadURL:(NSString *)url;
 
 - (void)loadURL:(NSString *)URL
-         success:(nullable void (^)(NSString *translatedText))success
-         failure:(nullable void (^)(NSError *error))failure;
+        success:(nullable void (^)(NSString *translatedText))success
+        failure:(nullable void (^)(NSError *error))failure;
+
+- (void)monitorURL:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

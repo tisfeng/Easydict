@@ -26,6 +26,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @property (nonatomic, assign) NSUInteger retryCount;
 
+@property (nonatomic, strong) EZURLSchemeHandler *urlSchemeHandler;
+
 @end
 
 
@@ -38,8 +40,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
         
-        EZURLSchemeHandler *urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
-        [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
+        self.urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
+        [configuration setURLSchemeHandler:self.urlSchemeHandler forURLScheme:@"https"];
         
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         _webView = webView;
@@ -63,7 +65,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                 return;
             }
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : EZUserAgent}];
-            [[NSUserDefaults standardUserDefaults] synchronize];
         }];
         
         // Preload webView, in order to save the loading time later.
@@ -78,12 +79,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 #pragma mark - Query
 
-/**
- 使用 WKWebView 加载百度翻译网页，然后获取翻译结果
- 
- 百度翻译结果的样式为：
- <p class="ordinary-output target-output clearfix"> <span leftpos="0|4" rightpos="0|4" space="">好的</span> </p>
- */
+/// Load URL in webView.
 - (void)loadURL:(NSString *)URL
         success:(nullable void (^)(NSString *translatedText))success
         failure:(nullable void (^)(NSError *error))failure {
@@ -120,8 +116,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     };
 }
 
-- (void)getInnerTextOfElement:(NSString *)selector
-                   completion:(void (^)(NSString *_Nullable, NSError *))completion {
+- (void)getTextContentOfElement:(NSString *)selector
+                     completion:(void (^)(NSString *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
     // 定义一个异步方法，用于判断页面中是否存在目标元素
@@ -142,7 +138,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             NSInteger maxRetryCount = ceil(MAX_QUERY_SECONDS / DELAY_SECONDS);
             if (self.retryCount < maxRetryCount && self.completion) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self getInnerTextOfElement:selector completion:completion];
+                    [self getTextContentOfElement:selector completion:completion];
                 });
             } else {
                 NSLog(@"finish, retry count: %ld", self.retryCount);
@@ -177,6 +173,9 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     }];
 }
 
+- (void)monitorURL:(NSString *)url completionHandler:(void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
+    [self.urlSchemeHandler monitorURL:url completionHandler:completionHandler];
+}
 
 #pragma mark - WKNavigationDelegate
 
@@ -185,7 +184,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
     
     if (self.completion) {
-        [self getInnerTextOfElement:self.querySelector completion:self.completion];
+        [self getTextContentOfElement:self.querySelector completion:self.completion];
     }
 }
 
