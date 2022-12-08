@@ -319,6 +319,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             
             // !!!: result is new result
             service.result = result;
+            NSLog(@"service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }

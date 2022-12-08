@@ -19,6 +19,13 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 @implementation EZDeppLTranslate
 
+- (instancetype)init {
+    if (self = [super init]) {
+        [self.webViewTranslator preloadURL:kDeepLTranslateURL]; // Preload webView.
+    }
+    return self;
+}
+
 - (EZWebViewTranslator *)webViewTranslator {
     if (!_webViewTranslator) {
         NSString *selector = @"#target-dummydiv";
