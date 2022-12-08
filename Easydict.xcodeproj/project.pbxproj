@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
 		03008B2B2940D3230062B821 /* EZDeppLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeppLTranslate.m */; };
+		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
+		03008B382941B2180062B821 /* SSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B302941B2180062B821 /* SSCache.m */; };
+		03008B392941B2180062B821 /* SSResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B312941B2180062B821 /* SSResourceLoader.m */; };
+		03008B3A2941B2180062B821 /* SSWKURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B322941B2180062B821 /* SSWKURL.m */; };
+		03008B3B2941B2180062B821 /* SSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B332941B2180062B821 /* SSUtils.m */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
@@ -170,6 +175,16 @@
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
 		03008B292940D3230062B821 /* EZDeppLTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeppLTranslate.h; sourceTree = "<group>"; };
 		03008B2A2940D3230062B821 /* EZDeppLTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeppLTranslate.m; sourceTree = "<group>"; };
+		03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZURLSchemeHandler.h; sourceTree = "<group>"; };
+		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
+		03008B302941B2180062B821 /* SSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSCache.m; sourceTree = "<group>"; };
+		03008B312941B2180062B821 /* SSResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSResourceLoader.m; sourceTree = "<group>"; };
+		03008B322941B2180062B821 /* SSWKURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSWKURL.m; sourceTree = "<group>"; };
+		03008B332941B2180062B821 /* SSUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSUtils.m; sourceTree = "<group>"; };
+		03008B342941B2180062B821 /* SSResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSResourceLoader.h; sourceTree = "<group>"; };
+		03008B352941B2180062B821 /* SSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSCache.h; sourceTree = "<group>"; };
+		03008B362941B2180062B821 /* SSWKURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSWKURL.h; sourceTree = "<group>"; };
+		03008B372941B2180062B821 /* SSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSUtils.h; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -477,6 +492,21 @@
 			path = DeepL;
 			sourceTree = "<group>";
 		};
+		03008B2F2941B2180062B821 /* SSWKURL */ = {
+			isa = PBXGroup;
+			children = (
+				03008B362941B2180062B821 /* SSWKURL.h */,
+				03008B322941B2180062B821 /* SSWKURL.m */,
+				03008B352941B2180062B821 /* SSCache.h */,
+				03008B302941B2180062B821 /* SSCache.m */,
+				03008B342941B2180062B821 /* SSResourceLoader.h */,
+				03008B312941B2180062B821 /* SSResourceLoader.m */,
+				03008B372941B2180062B821 /* SSUtils.h */,
+				03008B332941B2180062B821 /* SSUtils.m */,
+			);
+			path = SSWKURL;
+			sourceTree = "<group>";
+		};
 		0309E1EA292B437C00AFB76A /* TextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,13 +536,16 @@
 			path = PrintBeautifulLog;
 			sourceTree = "<group>";
 		};
-		033B7131293CE2010096E2DF /* WebService */ = {
+		033B7131293CE2010096E2DF /* WebViewTranslator */ = {
 			isa = PBXGroup;
 			children = (
+				03008B2F2941B2180062B821 /* SSWKURL */,
 				033B7132293CE2430096E2DF /* EZWebViewTranslator.h */,
 				033B7133293CE2430096E2DF /* EZWebViewTranslator.m */,
+				03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */,
+				03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */,
 			);
-			path = WebService;
+			path = WebViewTranslator;
 			sourceTree = "<group>";
 		};
 		03542A2D293645B800C34C33 /* Apple */ = {
@@ -688,7 +721,7 @@
 			isa = PBXGroup;
 			children = (
 				03008B282940D2FD0062B821 /* DeepL */,
-				033B7131293CE2010096E2DF /* WebService */,
+				033B7131293CE2010096E2DF /* WebViewTranslator */,
 				03542A362937AE2100C34C33 /* Model */,
 				03542A312936F6FE00C34C33 /* Language */,
 				03542A2D293645B800C34C33 /* Apple */,
@@ -1479,6 +1512,7 @@
 				03542A522937B69200C34C33 /* EZYoudaoTranslateResponse.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
+				03008B382941B2180062B821 /* SSCache.m in Sources */,
 				03B0230D29231FA6001C7E63 /* TranslateWindow.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
@@ -1524,7 +1558,9 @@
 				039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
+				03008B3B2941B2180062B821 /* SSUtils.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
+				03008B3A2941B2180062B821 /* SSWKURL.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B022F629231FA6001C7E63 /* TranslateError.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
@@ -1537,6 +1573,7 @@
 				03B0230A29231FA6001C7E63 /* TextView.m in Sources */,
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
+				03008B392941B2180062B821 /* SSResourceLoader.m in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateTool.m in Sources */,
 				03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
@@ -1560,6 +1597,7 @@
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,
+				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageClass.m in Sources */,
 				03B022EB29231FA6001C7E63 /* Configuration.m in Sources */,

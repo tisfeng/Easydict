@@ -96,7 +96,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         self.result.normalResults = @[translatedText];
         completion(self.result, nil);
     } failure:^(NSError * _Nonnull error) {
-        completion(nil, error);
+        completion(self.result, error);
     }];
 }
 
