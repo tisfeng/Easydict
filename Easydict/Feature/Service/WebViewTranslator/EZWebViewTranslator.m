@@ -9,7 +9,6 @@
 #import "EZWebViewTranslator.h"
 #import <WebKit/WebKit.h>
 #import "EZURLSchemeHandler.h"
-#import "SSWKURL.h"
 
 // Max query duration seconds
 static NSTimeInterval const MAX_QUERY_SECONDS = 10.0;
@@ -41,12 +40,9 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
         
-        // 创建 MyURLSchemeHandler 实例
-        EZURLSchemeHandler *urlSchemeHandler = [[EZURLSchemeHandler alloc] init];
-
-        // 将 MyURLSchemeHandler 注册到 WKWebViewConfiguration 实例中，以便处理 myapp:// 开头的 URL Scheme
-//        [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
-        [configuration ssRegisterURLProtocol:[SSWKURLProtocol class]];
+        EZURLSchemeHandler *urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
+        [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
+                
 
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(1, 1, 1, 1) configuration:configuration];
         _webView = webView;
