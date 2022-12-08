@@ -40,7 +40,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         
         EZURLSchemeHandler *urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
         [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
-                
+        
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         _webView = webView;
         webView.navigationDelegate = self;
@@ -65,10 +65,16 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : EZUserAgent}];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }];
+        
+        // Preload webView, in order to save the loading time later.
+        [webView loadHTMLString:@"" baseURL:nil];
     }
     return _webView;
 }
 
+- (void)preloadURL:(NSString *)url {
+    [self loadURL:url success:nil failure:nil];
+}
 
 #pragma mark - Query
 
@@ -79,10 +85,12 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
  <p class="ordinary-output target-output clearfix"> <span leftpos="0|4" rightpos="0|4" space="">好的</span> </p>
  */
 - (void)loadURL:(NSString *)URL
-         success:(void (^)(NSString *translatedText))success
-         failure:(void (^)(NSError *error))failure {
-    self.queryURL = URL;
+        success:(nullable void (^)(NSString *translatedText))success
+        failure:(nullable void (^)(NSError *error))failure {
     
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL]]];
+    
+    self.queryURL = URL;
     if (!self.queryURL.length || !self.querySelector.length) {
         NSLog(@"query url and selector cannot be nil");
         return;
@@ -91,16 +99,19 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     NSLog(@"query url: %@", self.queryURL);
     
     self.retryCount = 0;
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.queryURL]]];
     
     mm_weakify(self);
     self.completion = ^(NSString *result, NSError *error) {
         mm_strongify(self);
         
         if (result) {
-            success(result);
+            if (success) {
+                success(result);
+            }
         } else {
-            failure(error);
+            if (failure) {
+                failure(error);
+            }
         }
         
         // !!!: When finished, set completion to nil, and reset webView.
@@ -197,7 +208,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 /** 在收到响应后，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
     NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
-
+    
     // 这里可以查看页面内部的网络请求，并做出相应的处理
     // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
     // decisionHandler 是一个回调，你可以通过它来决定是否允许这个请求发送
@@ -218,12 +229,12 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
     NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
-
-//    if ([navigationActionURL isEqualToString:@"about:blank"]) {
-//        decisionHandler(WKNavigationActionPolicyCancel);
-//        return;
-//    }
-
+    
+    //    if ([navigationActionURL isEqualToString:@"about:blank"]) {
+    //        decisionHandler(WKNavigationActionPolicyCancel);
+    //        return;
+    //    }
+    
     //允许跳转
     decisionHandler(WKNavigationActionPolicyAllow);
     //不允许跳转
