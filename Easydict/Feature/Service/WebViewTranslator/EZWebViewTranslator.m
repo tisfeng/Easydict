@@ -31,8 +31,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @implementation EZWebViewTranslator
 
-
-
 - (WKWebView *)webView {
     if (!_webView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
@@ -43,8 +41,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         EZURLSchemeHandler *urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
         [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
                 
-
-        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(1, 1, 1, 1) configuration:configuration];
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         _webView = webView;
         webView.navigationDelegate = self;
         
@@ -81,7 +78,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
  百度翻译结果的样式为：
  <p class="ordinary-output target-output clearfix"> <span leftpos="0|4" rightpos="0|4" space="">好的</span> </p>
  */
-- (void)queryURL:(NSString *)URL
+- (void)loadURL:(NSString *)URL
          success:(void (^)(NSString *translatedText))success
          failure:(void (^)(NSError *error))failure {
     self.queryURL = URL;
@@ -231,10 +228,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     decisionHandler(WKNavigationActionPolicyAllow);
     //不允许跳转
     // decisionHandler(WKNavigationActionPolicyCancel);
-}
-
-- (void)webView:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction didBecomeDownload:(WKDownload *)download  API_AVAILABLE(macos(11.3)) {
-    NSLog(@"didBecomeDownload: %@", navigationAction.request.URL.absoluteString);
 }
 
 @end
