@@ -8,6 +8,8 @@
 
 #import "EZWebViewTranslator.h"
 #import <WebKit/WebKit.h>
+#import "EZURLSchemeHandler.h"
+#import "SSWKURL.h"
 
 // Max query duration seconds
 static NSTimeInterval const MAX_QUERY_SECONDS = 10.0;
@@ -18,7 +20,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
-@property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) WKWebView *webView;
 
 @property (nonatomic, copy) NSString *queryURL;
@@ -31,32 +32,23 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @implementation EZWebViewTranslator
 
-- (AFHTTPSessionManager *)htmlSession {
-    if (!_htmlSession) {
-        AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
-        
-        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
-        [requestSerializer setValue:@"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;" forHTTPHeaderField:@"Cookie"];
-        htmlSession.requestSerializer = requestSerializer;
-        
-        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
-        htmlSession.responseSerializer = responseSerializer;
-        
-        _htmlSession = htmlSession;
-    }
-    return _htmlSession;
-}
+
 
 - (WKWebView *)webView {
     if (!_webView) {
-        WKWebViewConfiguration *webViewConfiguration = [[WKWebViewConfiguration alloc] init];
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
-        webViewConfiguration.preferences = preferences;
+        configuration.preferences = preferences;
         
-        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(1, 1, 1, 1) configuration:webViewConfiguration];
+        // 创建 MyURLSchemeHandler 实例
+        EZURLSchemeHandler *urlSchemeHandler = [[EZURLSchemeHandler alloc] init];
+
+        // 将 MyURLSchemeHandler 注册到 WKWebViewConfiguration 实例中，以便处理 myapp:// 开头的 URL Scheme
+//        [configuration setURLSchemeHandler:urlSchemeHandler forURLScheme:@"https"];
+        [configuration ssRegisterURLProtocol:[SSWKURLProtocol class]];
+
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(1, 1, 1, 1) configuration:configuration];
         _webView = webView;
         webView.navigationDelegate = self;
         
@@ -210,33 +202,44 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 
 /** 在收到响应后，决定是否跳转 */
-//- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-//    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
-//
-//    //允许跳转
-//    decisionHandler(WKNavigationResponsePolicyAllow);
-//    //不允许跳转
-//    // decisionHandler(WKNavigationResponsePolicyCancel);
-//}
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
+    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+
+    // 这里可以查看页面内部的网络请求，并做出相应的处理
+    // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
+    // decisionHandler 是一个回调，你可以通过它来决定是否允许这个请求发送
+    
+    
+    //允许跳转
+    decisionHandler(WKNavigationResponsePolicyAllow);
+    //不允许跳转
+    // decisionHandler(WKNavigationResponsePolicyCancel);
+}
+
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
     NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
-/** 收到服务器响应后，在发送请求之前，决定是否跳转 */
-//- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-//    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
-//    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
-//
-////    if ([navigationActionURL isEqualToString:@"about:blank"]) {
-////        decisionHandler(WKNavigationActionPolicyCancel);
-////        return;
-////    }
-//
-//    //允许跳转
-//    decisionHandler(WKNavigationActionPolicyAllow);
-//    //不允许跳转
-//    // decisionHandler(WKNavigationActionPolicyCancel);
-//}
 
+/** 收到服务器响应后，在发送请求之前，决定是否跳转 */
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
+    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+
+//    if ([navigationActionURL isEqualToString:@"about:blank"]) {
+//        decisionHandler(WKNavigationActionPolicyCancel);
+//        return;
+//    }
+
+    //允许跳转
+    decisionHandler(WKNavigationActionPolicyAllow);
+    //不允许跳转
+    // decisionHandler(WKNavigationActionPolicyCancel);
+}
+
+- (void)webView:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction didBecomeDownload:(WKDownload *)download  API_AVAILABLE(macos(11.3)) {
+    NSLog(@"didBecomeDownload: %@", navigationAction.request.URL.absoluteString);
+}
 
 @end
+
