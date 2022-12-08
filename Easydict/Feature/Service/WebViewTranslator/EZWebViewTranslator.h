@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *querySelector;
 
-- (void)queryURL:(NSString *)URL
+- (void)loadURL:(NSString *)URL
          success:(void (^)(NSString *translatedText))success
          failure:(void (^)(NSError *error))failure;
 @end

@@ -381,7 +381,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     self.result = [[EZQueryResult alloc] init];
-    [self.webViewTranslator queryURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
+    [self.webViewTranslator loadURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
         self.result.normalResults = @[translatedText];
         completion(self.result, nil);
     } failure:^(NSError * _Nonnull error) {
