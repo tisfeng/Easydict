@@ -252,7 +252,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 // https://translate.google.com/?sl=auto&tl=zh-CN&text=good&op=translate
 - (NSString *)wordLink {
     NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];

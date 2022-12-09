@@ -138,7 +138,7 @@
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~400ms
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     // Convert NSImage to CGImage
-    CGImageRef cgImage = [queryModel.image CGImageForProposedRect:NULL context:nil hints:nil];
+    CGImageRef cgImage = [queryModel.ocrImage CGImageForProposedRect:NULL context:nil hints:nil];
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
@@ -153,8 +153,8 @@
             NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
             
             EZOCRResult *result = [[EZOCRResult alloc] init];
-            result.from = queryModel.sourceLanguage;
-            result.to = queryModel.targetLanguage;
+            result.from = queryModel.userSourceLanguage;
+            result.to = queryModel.userTargetLanguage;
             
             if (error) {
                 completion(result, error);
@@ -201,7 +201,7 @@
             @"uk-UA",
         ]];
         
-        EZLanguage sourceLanguage = queryModel.sourceLanguage;
+        EZLanguage sourceLanguage = queryModel.userSourceLanguage;
         if ([sourceLanguage isEqualToString:EZLanguageAuto]) {
             if (@available(macOS 13.0, *)) {
                 request.automaticallyDetectsLanguage = YES;

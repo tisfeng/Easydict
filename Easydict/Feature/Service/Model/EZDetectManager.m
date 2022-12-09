@@ -78,7 +78,7 @@
 }
 
 - (void)ocr:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion {
-    NSImage *image = self.queryModel.image;
+    NSImage *image = self.queryModel.ocrImage;
     if (!image) {
         NSLog(@"image cannot be nil");
         return;

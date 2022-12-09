@@ -13,8 +13,8 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.sourceLanguage = EZConfiguration.shared.from;
-        self.targetLanguage = EZConfiguration.shared.to;
+        self.userSourceLanguage = EZConfiguration.shared.from;
+        self.userTargetLanguage = EZConfiguration.shared.to;
         self.detectedLanguage = EZLanguageAuto;
     }
     return self;
@@ -23,14 +23,14 @@
 - (EZLanguage)queryFromLanguage {
     EZLanguage fromLanguage = self.detectedLanguage;
     if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.sourceLanguage;
+        fromLanguage = self.userSourceLanguage;
     }
     return fromLanguage;
 }
 
-- (EZLanguage)autoTargetLanguage {
+- (EZLanguage)queryTargetLanguage {
     EZLanguage fromLanguage = self.queryFromLanguage;
-    EZLanguage targetLanguage = self.targetLanguage;
+    EZLanguage targetLanguage = self.userTargetLanguage;
     if ([targetLanguage isEqualToString:EZLanguageAuto]) {
         targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
     }

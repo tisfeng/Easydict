@@ -253,7 +253,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     mm_weakify(self);
     
-    self.queryModel.image = image;
+    self.queryModel.ocrImage = image;
     
     [self.detectManager ocrAndDetectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
         mm_strongify(self);
@@ -292,7 +292,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     EZLanguage fromLanguage = self.queryModel.detectedLanguage;
     if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.queryModel.sourceLanguage;
+        fromLanguage = self.queryModel.userSourceLanguage;
     }
     
     if (![fromLanguage isEqualToString:EZLanguageAuto]) {
@@ -308,7 +308,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
-    NSLog(@"from-to: %@ --> %@", queryModel.queryFromLanguage, queryModel.autoTargetLanguage);
+    NSLog(@"from-to: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     for (EZQueryService *service in self.services) {
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
@@ -341,7 +341,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
-                    to:queryModel.autoTargetLanguage
+                    to:queryModel.queryTargetLanguage
             completion:completion];
 }
 
@@ -375,8 +375,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         mm_weakify(self);
         [selectLanguageCell setEnterActionBlock:^(EZLanguage  _Nonnull from, EZLanguage  _Nonnull to) {
             mm_strongify(self);
-            self.queryModel.sourceLanguage = from;
-            self.queryModel.targetLanguage = to;
+            self.queryModel.userSourceLanguage = from;
+            self.queryModel.userTargetLanguage = to;
             self.queryModel.detectedLanguage = EZLanguageAuto;
             
             [self startQueryText];
@@ -594,7 +594,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         mm_strongify(self);
         EZQueryService *service = [self firstEZQueryService];
         if (service) {
-            EZLanguage lang = self.queryModel.sourceLanguage;
+            EZLanguage lang = self.queryModel.userSourceLanguage;
             [service audio:self.queryModel.queryText from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
                 if (url.length) {
                     [self playAudioWithURL:url];

@@ -53,7 +53,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 // https://www.deepl.com/translator#en/zh/good
 - (NSString *)wordLink {
     NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kDeepLTranslateURL, from, to, text];
