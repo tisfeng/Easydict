@@ -15,8 +15,6 @@
 
 @interface EZTitlebar ()
 
-@property (nonatomic, assign) BOOL pin;
-
 @end
 
 @implementation EZTitlebar
@@ -56,7 +54,7 @@
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
-    [self updatePinButtonImage];
+    self.pin = NO;
     
     mm_weakify(self);
     [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
@@ -65,7 +63,6 @@
         
         self.pin = !self.pin;
         
-        [self updatePinButtonImage];
     }];
     
     [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
@@ -80,7 +77,6 @@
         } else if (button.buttonState == EZButtonNormalState) {
             self.pin = oldPin;
         }
-        [self updatePinButtonImage];
     }];
     
     
@@ -170,6 +166,8 @@
 - (void)setPin:(BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
+    
+    [self updatePinButtonImage];
 }
 
 /// Check if installed app according to bundle id array
