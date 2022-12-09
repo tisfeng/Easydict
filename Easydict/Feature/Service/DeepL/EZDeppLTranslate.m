@@ -88,7 +88,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                                         EZLanguageBulgarian, @"bg",
                                         EZLanguageIndonesian, @"id",
                                         EZLanguageSlovenian, @"sl",
-                                        EZLanguageEstonian, @"",
+                                        EZLanguageEstonian, @"et",
                                         nil];
     return orderedDict;
 }
@@ -105,9 +105,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-    [self.webViewTranslator monitorURL:monitorURL
-                               loadURL:self.wordLink
-                     completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    [self.webViewTranslator monitorBaseURLString:monitorURL
+                                         loadURL:self.wordLink
+                               completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
         

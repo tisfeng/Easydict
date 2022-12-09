@@ -18,9 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)preloadURL:(NSString *)URL;
 
 /// Monitor designated url request when load url.
-- (void)monitorURL:(NSString *)monitorURL
-           loadURL:(NSString *)URL
- completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
+- (void)monitorBaseURLString:(NSString *)monitorURL
+                     loadURL:(NSString *)URL
+           completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
 
 /// Query webView rranslate url result.
 - (void)queryTranslateURL:(NSString *)URL

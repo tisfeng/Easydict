@@ -384,9 +384,22 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
-        self.result.normalResults = texts;
-        completion(self.result, error);
+//    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
+//        self.result.normalResults = texts;
+//        completion(self.result, error);
+//    }];
+    
+    NSString *monitorURL = @"https://fanyi.baidu.com/v2transapi";
+    [self.webViewTranslator monitorBaseURLString:monitorURL loadURL:self.wordLink completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (!error) {
+            [self parseResponse:responseObject
+                           text:self.queryModel.queryText
+                           from:self.queryModel.queryFromLanguage
+                             to:self.queryModel.autoTargetLanguage
+                     completion:completion];
+        } else {
+            completion(self.result, error);
+        }
     }];
 }
 
