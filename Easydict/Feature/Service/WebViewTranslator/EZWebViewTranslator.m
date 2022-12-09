@@ -165,7 +165,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 NSLog(@"finish, retry count: %ld", self.retryCount);
                 if (completion) {
-                    NSError *error = [NSError errorWithDomain:@"com.eztranslation" code:-1 userInfo:@{NSLocalizedDescriptionKey : @"retry count is too large"}];
+                    NSError *error = [NSError errorWithDomain:@"com.easydict.izual" code:-1 userInfo:@{NSLocalizedDescriptionKey : @"[DeepL translate error]"}];
                     completion(nil, error);
                 }
             }
