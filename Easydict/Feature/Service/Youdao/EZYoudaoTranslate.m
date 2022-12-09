@@ -57,10 +57,10 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 // means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
 - (NSString *)wordLink {
     EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
-    EZLanguage toLanguage = self.queryModel.autoTargetLanguage;
+    EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
     
     NSString *youdaoFrom = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *youdaoTo = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *youdaoTo = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     NSArray *youdaoLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];

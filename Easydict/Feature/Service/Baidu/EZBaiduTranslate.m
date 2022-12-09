@@ -174,7 +174,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     
     NSString *text = self.queryModel.queryText;
     NSString *from = self.queryModel.queryFromLanguage;
-    NSString *to = self.queryModel.autoTargetLanguage;
+    NSString *to = self.queryModel.queryTargetLanguage;
     
     NSString *message = nil;
     if (responseObject) {
@@ -416,7 +416,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 // https://fanyi.baidu.com/#en/zh/good
 - (NSString *)wordLink {
     NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.autoTargetLanguage];
+    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kBaiduTranslateURL, from, to, text];

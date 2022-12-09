@@ -100,7 +100,7 @@
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
-            self.queryModel.sourceLanguage = selectedLanguage;
+            self.queryModel.userSourceLanguage = selectedLanguage;
             
             if (![selectedLanguage isEqualToString:from]) {
                 EZConfiguration.shared.from = selectedLanguage;
@@ -122,7 +122,7 @@
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
             
-            self.queryModel.targetLanguage = selectedLanguage;
+            self.queryModel.userTargetLanguage = selectedLanguage;
             
             if (![selectedLanguage isEqualToString:toLang]) {
                 EZConfiguration.shared.to = selectedLanguage;
@@ -170,11 +170,11 @@
 - (void)setQueryModel:(EZQueryModel *)queryModel {
     _queryModel = queryModel;
     
-    if ([queryModel.sourceLanguage isEqualToString:EZLanguageAuto]) {
+    if ([queryModel.userSourceLanguage isEqualToString:EZLanguageAuto]) {
         self.fromLanguageButton.autoSelectedLanguage = queryModel.detectedLanguage;
     }
-    if ([queryModel.targetLanguage isEqualToString:EZLanguageAuto]) {
-        self.toLanguageButton.autoSelectedLanguage = queryModel.autoTargetLanguage;
+    if ([queryModel.userTargetLanguage isEqualToString:EZLanguageAuto]) {
+        self.toLanguageButton.autoSelectedLanguage = queryModel.queryTargetLanguage;
     }
 }
 
