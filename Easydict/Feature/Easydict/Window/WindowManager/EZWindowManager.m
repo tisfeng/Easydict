@@ -422,7 +422,7 @@ static EZWindowManager *_instance;
 - (void)closeFloatingWindow {
     NSLog(@"close floating window: %@", self.floatingWindow);
     
-    self.floatingWindow.pin = NO;
+    self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
     
     // recover last app.
