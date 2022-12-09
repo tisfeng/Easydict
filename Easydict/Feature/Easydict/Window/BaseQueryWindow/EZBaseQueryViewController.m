@@ -290,12 +290,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     // !!!: Reset all result before new query.
     [self resetAllResults];
     
-    EZLanguage fromLanguage = self.queryModel.detectedLanguage;
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.queryModel.userSourceLanguage;
-    }
-    
-    if (![fromLanguage isEqualToString:EZLanguageAuto]) {
+    if (![self.queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
         [self queryAllSerives:self.queryModel];
         return;
     }
