@@ -160,7 +160,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     };
     
     [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        [self parseResponse:responseObject text:text from:from to:to completion:completion];
+        [self parseResponseObject:responseObject completion:completion];
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
@@ -168,9 +168,13 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }];
 }
 
-- (void)parseResponse:(id _Nullable)responseObject text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)parseResponseObject:(id _Nullable)responseObject completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     EZQueryResult *result = self.result;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
+    
+    NSString *text = self.queryModel.queryText;
+    NSString *from = self.queryModel.queryFromLanguage;
+    NSString *to = self.queryModel.autoTargetLanguage;
     
     NSString *message = nil;
     if (responseObject) {
@@ -378,25 +382,16 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     NSLog(@"baidu API error: %@", error);
     
     [self webViewTranslate:completion];
-
-//    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-//    completion(self.result, error);
+    
+    //    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+    //    completion(self.result, error);
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-//    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
-//        self.result.normalResults = texts;
-//        completion(self.result, error);
-//    }];
-    
     NSString *monitorURL = @"https://fanyi.baidu.com/v2transapi";
-    [self.webViewTranslator monitorBaseURLString:monitorURL loadURL:self.wordLink completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    [self.webViewTranslator monitorBaseURLString:monitorURL loadURL:self.wordLink completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
         if (!error) {
-            [self parseResponse:responseObject
-                           text:self.queryModel.queryText
-                           from:self.queryModel.queryFromLanguage
-                             to:self.queryModel.autoTargetLanguage
-                     completion:completion];
+            [self parseResponseObject:responseObject completion:completion];
         } else {
             completion(self.result, error);
         }
