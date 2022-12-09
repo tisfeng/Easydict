@@ -66,9 +66,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             }
             [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent" : EZUserAgent}];
         }];
-        
-        // Preload webView, in order to save the loading time later.
-        [webView loadHTMLString:@"" baseURL:nil];
     }
     return _webView;
 }
@@ -79,41 +76,35 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 #pragma mark - Query
 
-/// Load URL in webView.
+/// Load webView URL.
 - (void)loadURL:(NSString *)URL
         success:(nullable void (^)(NSString *translatedText))success
         failure:(nullable void (^)(NSError *error))failure {
-    
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL]]];
-    
     self.queryURL = URL;
-    if (!self.queryURL.length || !self.querySelector.length) {
-        NSLog(@"query url and selector cannot be nil");
-        return;
-    }
-    
     NSLog(@"query url: %@", self.queryURL);
     
-    self.retryCount = 0;
-    
-    mm_weakify(self);
-    self.completion = ^(NSString *result, NSError *error) {
-        mm_strongify(self);
-        
-        if (result) {
-            if (success) {
-                success(result);
+    if (self.querySelector.length && success) {
+        mm_weakify(self);
+        self.retryCount = 0;
+        self.completion = ^(NSString *result, NSError *error) {
+            mm_strongify(self);
+            
+            if (result) {
+                if (success) {
+                    success(result);
+                }
+            } else {
+                if (failure) {
+                    failure(error);
+                }
             }
-        } else {
-            if (failure) {
-                failure(error);
-            }
-        }
-        
-        // !!!: When finished, set completion to nil, and reset webView.
-        self.completion = nil;
-        [self.webView loadHTMLString:@"" baseURL:nil];
-    };
+            
+            // !!!: When finished, set completion to nil, and reset webView.
+            self.completion = nil;
+            [self.webView loadHTMLString:@"" baseURL:nil];
+        };
+    }
 }
 
 - (void)getTextContentOfElement:(NSString *)selector
