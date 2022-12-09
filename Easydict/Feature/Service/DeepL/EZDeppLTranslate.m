@@ -98,7 +98,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    self.result = [[EZQueryResult alloc] init];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     NSString *url = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
@@ -119,6 +118,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     } failure:^(NSError * _Nonnull error) {
         completion(self.result, error);
     }];
+}
+
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion {
+    NSLog(@"deepL not support ocr");
 }
 
 @end

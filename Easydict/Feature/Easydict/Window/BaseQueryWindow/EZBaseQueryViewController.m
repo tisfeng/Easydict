@@ -316,9 +316,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-            
-            // !!!: result is new result
-            service.result = result;
             NSLog(@"service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
@@ -442,7 +439,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)resetAllResults {
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = [[EZQueryResult alloc] init];
-        result.isShowing = NO; // default not show, show result after querying.
+        result.isShowing = NO; // default not show, show after querying if result is not empty.
         service.result = result;
     }
 }

@@ -158,10 +158,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         @"sign" : sign,
         @"token" : self.token,
     };
-
-    // !!!: Need to rest result before querying new.
-    EZQueryResult *result = [[EZQueryResult alloc] init];
-    self.result = result;
     
     [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         [self parseResponse:responseObject text:text from:from to:to completion:completion];
@@ -173,9 +169,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (void)parseResponse:(id _Nullable)responseObject text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    EZQueryResult *result = [[EZQueryResult alloc] init];
-    self.result = result;
-    
+    EZQueryResult *result = self.result;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
     
     NSString *message = nil;
