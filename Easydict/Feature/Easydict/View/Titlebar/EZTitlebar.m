@@ -54,6 +54,7 @@
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
+    pinButton.clickBlock = nil;
     self.pin = NO;
     
     mm_weakify(self);

@@ -433,7 +433,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                     ocrSuccess(EZOCRResult, NO);
                     EZQueryResult *result = [EZQueryResult new];
                     result.text = EZOCRResult.mergedText;
-                    result.link = [NSString stringWithFormat:@"http://fanyi.youdao.com/translate?i=%@", EZOCRResult.mergedText.mm_urlencode];
                     result.from = EZOCRResult.from;
                     result.to = EZOCRResult.to;
                     result.normalResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

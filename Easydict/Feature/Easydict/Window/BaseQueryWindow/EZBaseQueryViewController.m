@@ -308,7 +308,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel  {
-    NSLog(@"from-to: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
+    NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     for (EZQueryService *service in self.services) {
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
