@@ -20,6 +20,7 @@
 #import "EZWindowManager.h"
 #import "EZLinkButton.h"
 #import "NSImage+EZResize.h"
+#import "EZQueryService.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -470,7 +471,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
-    linkButton.link = result.link;
+    linkButton.link = [result.service wordLink];
 
     [linkButton excuteLight:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];

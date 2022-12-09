@@ -357,7 +357,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                   @try {
                       NSDictionary *responseDict = responseObject;
                       
-                      NSString *textEncode = text.mm_urlencode;
                       NSString *googleFromString = responseDict[@"src"];
                       EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                       EZLanguage googleTo = langTo;
@@ -367,16 +366,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                       result.text = text;
                       result.from = googleFrom;
                       result.to = googleTo;
-                      result.link = [NSString
-                                     stringWithFormat:
-                                         @"%@/"
-                                     @"#view=home&op=translate&sl=%@&tl=%@&"
-                                     @"text=%@",
-                                     kGoogleRootPage(self.isCN),
-                                     googleFromString,
-                                     [self languageCodeForLanguage:googleTo],
-                                     textEncode];
-                      result.fromSpeakURL =  [self getAudioURLWithText:text  language:googleFromString sign:signText];
+                      result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                       
                       // 普通释义
                       NSArray *sentences = responseDict[@"sentences"];

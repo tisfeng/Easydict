@@ -62,6 +62,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 // Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                        EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",
                                         EZLanguageEnglish, @"en",
                                         EZLanguageJapanese, @"ja",
