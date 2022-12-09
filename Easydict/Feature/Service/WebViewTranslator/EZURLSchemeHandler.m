@@ -201,7 +201,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 #pragma mark - Publick Methods
 
-- (void)monitorURL:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
+- (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
     self.monitorDictionary[url] = completionHandler;
 }
 
@@ -209,7 +209,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
-    NSString *url = request.URL.absoluteString;
+    NSURL *URL = request.URL;
     //    NSLog(@"url: %@", url);
     
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
@@ -223,18 +223,35 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     [task resume];
     
     // Monitor designated url.
-    if ([self.monitorDictionary.allKeys containsObject:url]) {
-        EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[url];
-        if (completionHandler) {
-            NSData *body = request.HTTPBody;
-            if (body) {
-                NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:body options:kNilOptions error:nil];
-                NSLog(@"bodyDict: %@", bodyDict);
-            }
+    
+    /**
+     Since Baidu translation API has different URLs for different languages.
+     Such as, en -> zh: https://fanyi.baidu.com/v2transapi?from=en&to=zh
+     fra -> zh: https://fanyi.baidu.com/v2transapi?from=fra&to=zh
+     */
+    
+    EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerWithURL:URL];
+    if (completionHandler) {
+        [request.HTTPBody mj_keyValues];
+        NSData *bodyData = request.HTTPBody;
+        if (bodyData) {
+            NSString *bodyString = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
+            NSData *data = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
             
-            NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
-            [task resume];
+            NSError *error;
+            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+            if (error) {
+                NSLog(@"error: %@", error);
+            }
+            if (bodyDict) {
+                NSLog(@"HTTPBody dict: %@", bodyDict);
+            } else {
+                NSLog(@"HTTPBody string: %@", bodyString);
+            }
         }
+        
+        NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
+        [task resume];
     }
 }
 
@@ -244,6 +261,24 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     });
 }
 
+#pragma mark -
+
+- (nullable EZURLSessionTaskCompletionHandler)completionHandlerWithURL:(NSURL *)URL {
+    // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
+    
+    NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:NO];
+    // Remove url query.
+    components.query = nil;
+    NSString *baseURLString = components.URL.absoluteString;
+    
+    for (NSString *monitorURL in self.monitorDictionary.allKeys) {
+        if ([monitorURL hasPrefix:baseURLString]) {
+            EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[monitorURL];
+            return completionHandler;
+        }
+    }
+    return nil;
+}
 
 #pragma mark - wkwebview 信任 https 接口
 

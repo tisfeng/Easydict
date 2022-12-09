@@ -31,14 +31,19 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @implementation EZWebViewTranslator
 
+- (EZURLSchemeHandler *)urlSchemeHandler {
+    if (!_urlSchemeHandler) {
+        _urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
+    }
+    return _urlSchemeHandler;
+}
+
 - (WKWebView *)webView {
     if (!_webView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
-        
-        self.urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
         [configuration setURLSchemeHandler:self.urlSchemeHandler forURLScheme:@"https"];
         
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
@@ -77,15 +82,15 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 }
 
 /// Monitor designated url request when load url.
-- (void)monitorURL:(NSString *)monitorURL
-           loadURL:(NSString *)URL
- completionHandler:(void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
+- (void)monitorBaseURLString:(NSString *)monitorURL
+                     loadURL:(NSString *)URL
+           completionHandler:(void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
     if (!URL.length || !monitorURL.length) {
         NSLog(@"loadURL or monitorURL cannot be emtpy");
         return;
     }
     
-    [self.urlSchemeHandler monitorURL:monitorURL completionHandler:completionHandler];
+    [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:completionHandler];
     [self loadURL:URL];
 }
 
