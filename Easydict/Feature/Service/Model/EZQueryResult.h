@@ -86,7 +86,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 @property (nonatomic, weak) EZQueryService *service;
 
 @property (nonatomic, assign) BOOL isShowing;
-@property (nonatomic, assign) CGFloat cellHeight;
+@property (nonatomic, assign) CGFloat viewHeight;
 
 
 /// 此次查询的文本
