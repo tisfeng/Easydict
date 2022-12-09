@@ -358,14 +358,11 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                       NSDictionary *responseDict = responseObject;
                       
                       NSString *textEncode = text.mm_urlencode;
-                      NSString *googleFromString =
-                      responseDict[@"src"];
-                      EZLanguage googleFrom = [self
-                                               languageEnumFromCode:googleFromString];
+                      NSString *googleFromString = responseDict[@"src"];
+                      EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                       EZLanguage googleTo = langTo;
                       
-                      EZQueryResult *result = [EZQueryResult new];
-                      self.result = result;
+                      EZQueryResult *result = self.result;
                       
                       result.text = text;
                       result.from = googleFrom;
@@ -379,10 +376,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                      googleFromString,
                                      [self languageCodeForLanguage:googleTo],
                                      textEncode];
-                      result.fromSpeakURL =
-                      [self getAudioURLWithText:text
-                                       language:googleFromString
-                                           sign:signText];
+                      result.fromSpeakURL =  [self getAudioURLWithText:text  language:googleFromString sign:signText];
                       
                       // 普通释义
                       NSArray *sentences = responseDict[@"sentences"];
@@ -446,9 +440,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         return;
     }
     
-    // !!!: Need to rest result before querying new.
-    EZQueryResult *result = [[EZQueryResult alloc] init];
-    self.result = result;
+    EZQueryResult *result = self.result;
     
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) = ^(NSString *text, EZLanguage langFrom, EZLanguage langTo) {
         [self sendTranslateTKKText:text from:langFrom to:langTo completion:^(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error) {
