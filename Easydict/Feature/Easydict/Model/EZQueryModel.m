@@ -21,9 +21,9 @@
 }
 
 - (EZLanguage)queryFromLanguage {
-    EZLanguage fromLanguage = self.detectedLanguage;
+    EZLanguage fromLanguage = self.userSourceLanguage;
     if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.userSourceLanguage;
+        fromLanguage = self.detectedLanguage;
     }
     return fromLanguage;
 }

@@ -206,6 +206,11 @@
     [self updateArrowButton];
     
     [self.wordResultView refreshWithResult:result];
+    
+    [self layoutSubtreeIfNeeded];
+//    NSLog(@"word result view height: %@", @(self.height));
+
+    self.result.viewHeight = self.height;
 }
 
 - (void)updateArrowButton {

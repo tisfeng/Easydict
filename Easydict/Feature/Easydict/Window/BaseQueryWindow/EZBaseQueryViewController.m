@@ -287,7 +287,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 /// Directly query model.
 - (void)queryCurrentModel {
-    // !!!: Need to reset all result before new query.
+    // !!!: Reset all result before new query.
     [self resetAllResults];
     
     EZLanguage fromLanguage = self.queryModel.detectedLanguage;
@@ -411,11 +411,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         if (!result.isShowing || result.isEmpty) {
             height = kResultViewMiniHeight;
         } else {
-            EZResultCell *resultCell = [self resultCellAtRow:row];
-            height = [resultCell fittingSize].height;
-            height = MAX(height, kResultViewMiniHeight);
+            height = MAX(result.viewHeight, kResultViewMiniHeight);
+            NSLog(@"serviceType: %@, height: %@", result.serviceType, @(height));
         }
-        result.cellHeight = height;
     }
     
     //    NSLog(@"row: %ld, height: %@", row, @(height));

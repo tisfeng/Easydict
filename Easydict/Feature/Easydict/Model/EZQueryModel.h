@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, assign) EZLanguage userSourceLanguage;
 @property (nonatomic, assign) EZLanguage userTargetLanguage;
-@property (nonatomic, assign) EZLanguage queryFromLanguage;
 
 @property (nonatomic, assign) EZLanguage detectedLanguage;
+@property (nonatomic, assign) EZLanguage queryFromLanguage;
 @property (nonatomic, assign) EZLanguage queryTargetLanguage;
 
 @property (nonatomic, strong) NSImage *ocrImage;
