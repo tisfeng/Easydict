@@ -33,8 +33,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (instancetype)init {
     if (self = [super init]) {
-        
-        
     }
     return self;
 }
@@ -160,231 +158,237 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         @"sign" : sign,
         @"token" : self.token,
     };
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
-    
-    mm_weakify(self)
-    
+
     // !!!: Need to rest result before querying new.
     EZQueryResult *result = [[EZQueryResult alloc] init];
     self.result = result;
     
     [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        mm_strongify(self)
-        NSString *message = nil;
-        if (responseObject) {
-            @try {
-                EZBaiduTranslateResponse *response = [EZBaiduTranslateResponse mj_objectWithKeyValues:responseObject];
-                if (response) {
-                    if (response.error == 0) {
-                        self.error997Count = 0;
-                        
-                        result.text = text;
-                        result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
-                        result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
-                        
-                        // 解析单词释义
-                        [response.dict_result.simple_means mm_anyPut:^(EZBaiduTranslateResponseSimpleMean *_Nonnull simple_means) {
-                            EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
-                            
-                            [simple_means.symbols.firstObject mm_anyPut:^(EZBaiduTranslateResponseSymbol *_Nonnull symbol) {
-                                // 解析音标
-                                NSMutableArray *phonetics = [NSMutableArray array];
-                                if (symbol.ph_am.length) {
-                                    [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                        obj.name = @"美";
-                                        obj.value = symbol.ph_am;
-                                        obj.speakURL = [self getAudioURLWithText:result.text language:@"en"];
-                                    }]];
-                                }
-                                if (symbol.ph_en.length) {
-                                    [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                        obj.name = @"英";
-                                        obj.value = symbol.ph_en;
-                                        obj.speakURL = [self getAudioURLWithText:result.text language:@"uk"];
-                                    }]];
-                                }
-                                wordResult.phonetics = phonetics.count ? phonetics.copy : nil;
-                                
-                                // 解析词性词义
-                                NSMutableArray *parts = [NSMutableArray array];
-                                [symbol.parts enumerateObjectsUsingBlock:^(EZBaiduTranslateResponsePart *_Nonnull resultPart, NSUInteger idx, BOOL *_Nonnull stop) {
-                                    EZTranslatePart *part = [EZTranslatePart mm_anyMake:^(EZTranslatePart *_Nonnull obj) {
-                                        obj.part = resultPart.part.length ? resultPart.part : (resultPart.part_name.length ? resultPart.part_name : nil);
-                                        obj.means = [resultPart.means mm_where:^BOOL(id mean, NSUInteger idx, BOOL *_Nonnull stop) {
-                                            // 如果中文查词时，会是字典；这个API的设计，真的一言难尽
-                                            return [mean isKindOfClass:NSString.class];
-                                        }];
-                                    }];
-                                    if (part.means.count) {
-                                        [parts addObject:part];
-                                    }
-                                }];
-                                wordResult.parts = parts.count ? parts.copy : nil;
-                            }];
-                            
-                            // 解析其他形式
-                            [simple_means.exchange mm_anyPut:^(EZBaiduTranslateResponseExchange *_Nonnull exchange) {
-                                NSMutableArray *exchanges = [NSMutableArray array];
-                                if (exchange.word_third.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"第三人称单数";
-                                        obj.words = exchange.word_third;
-                                    }]];
-                                }
-                                if (exchange.word_pl.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"复数";
-                                        obj.words = exchange.word_pl;
-                                    }]];
-                                }
-                                if (exchange.word_er.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"比较级";
-                                        obj.words = exchange.word_er;
-                                    }]];
-                                }
-                                if (exchange.word_est.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"最高级";
-                                        obj.words = exchange.word_est;
-                                    }]];
-                                }
-                                if (exchange.word_past.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"过去式";
-                                        obj.words = exchange.word_past;
-                                    }]];
-                                }
-                                if (exchange.word_done.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"过去分词";
-                                        obj.words = exchange.word_done;
-                                    }]];
-                                }
-                                if (exchange.word_ing.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"现在分词";
-                                        obj.words = exchange.word_ing;
-                                    }]];
-                                }
-                                if (exchange.word_proto.count) {
-                                    [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                        obj.name = @"词根";
-                                        obj.words = exchange.word_proto;
-                                    }]];
-                                }
-                                wordResult.exchanges = exchanges.count ? exchanges.copy : nil;
-                            }];
-                            
-                            // 解析中文查词
-                            if (simple_means.word_means.count) {
-                                // 这个时候去解析 simple_means["symbols"][0]["parts"][0]["means"]
-                                NSMutableArray<EZTranslateSimpleWord *> *words = [NSMutableArray array];
-                                NSArray<NSDictionary *> *means = simple_means.symbols.firstObject.parts.firstObject.means;
-                                [means enumerateObjectsUsingBlock:^(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                    if ([obj isKindOfClass:NSDictionary.class]) {
-                                        /**
-                                         "text": "rejoice",
-                                         "part": "v.",
-                                         "word_mean": "rejoice",
-                                         "means": ["\u975e\u5e38\u9ad8\u5174", "\u6df1\u611f\u6b23\u559c"]
-                                         "isSeeAlso": "1"
-                                         */
-                                        if (![obj objectForKey:@"isSeeAlso"]) {
-                                            EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
-                                            simpleWord.word = [obj objectForKey:@"text"];
-                                            simpleWord.part = [obj objectForKey:@"part"];
-                                            if (!simpleWord.part.length) {
-                                                simpleWord.part = @"misc.";
-                                            }
-                                            NSArray *means = [obj objectForKey:@"means"];
-                                            if ([means isKindOfClass:NSArray.class]) {
-                                                simpleWord.means = [means mm_where:^BOOL(id _Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
-                                                    return [mean isKindOfClass:NSString.class];
-                                                }];
-                                            }
-                                            if (simpleWord.word.length) {
-                                                [words addObject:simpleWord];
-                                            }
-                                        }
-                                    }
-                                }];
-                                if (words.count) {
-                                    wordResult.simpleWords = [words sortedArrayUsingComparator:^NSComparisonResult(EZTranslateSimpleWord *_Nonnull obj1, EZTranslateSimpleWord *_Nonnull obj2) {
-                                        if ([obj2.part isEqualToString:@"misc."]) {
-                                            return NSOrderedAscending;
-                                        } else if ([obj1.part isEqualToString:@"misc."]) {
-                                            return NSOrderedDescending;
-                                        } else {
-                                            return [obj1.part compare:obj2.part];
-                                        }
-                                    }];
-                                }
-                            }
-                            
-                            // 至少要有词义或单词组才认为有单词翻译结果
-                            if (wordResult.parts || wordResult.simpleWords) {
-                                result.wordResult = wordResult;
-                            }
-                        }];
-                        
-                        // 解析普通释义
-                        NSMutableArray *normalResults = [NSMutableArray array];
-                        [response.trans_result.data enumerateObjectsUsingBlock:^(EZBaiduTranslateResponseData *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                            [normalResults addObject:obj.dst];
-                        }];
-                        result.normalResults = normalResults.count ? normalResults.copy : nil;
-                        
-                        // 原始数据
-                        result.raw = responseObject;
-                        
-                        if (result.wordResult || result.normalResults) {
-                            completion(result, nil);
-                            return;
-                        }
-                        
-                        message = @"百度翻译结果为空";
-                        
-                        // If api failed, try to use webView query.
-                        [self webViewTranslate:completion];
-                        
-                        return;
-                        
-                    } else if (response.error == 997) {
-                        // token 失效，重新获取
-                        self.error997Count++;
-                        // 记录连续失败，避免无限循环
-                        if (self.error997Count < 3) {
-                            self.token = nil;
-                            self.gtk = nil;
-                            [self translate:text from:from to:to completion:completion];
-                            return;
-                        } else {
-                            message = @"百度翻译获取 token 失败";
-                        }
-                    } else {
-                        message = [NSString stringWithFormat:@"翻译失败，错误码 %zd", response.error];
-                    }
-                }
-            } @catch (NSException *exception) {
-                MMLogInfo(@"百度翻译接口数据解析异常 %@", exception);
-                message = @"百度翻译接口数据解析异常";
-            }
-        }
-        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+        [self parseResponse:responseObject text:text from:from to:to completion:completion];
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
         completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
     }];
 }
 
-- (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)parseResponse:(id _Nullable)responseObject text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    EZQueryResult *result = [[EZQueryResult alloc] init];
+    self.result = result;
+    
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
+    
+    NSString *message = nil;
+    if (responseObject) {
+        @try {
+            EZBaiduTranslateResponse *response = [EZBaiduTranslateResponse mj_objectWithKeyValues:responseObject];
+            if (response) {
+                if (response.error == 0) {
+                    self.error997Count = 0;
+                    
+                    result.text = text;
+                    result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
+                    result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
+                    
+                    // 解析单词释义
+                    [response.dict_result.simple_means mm_anyPut:^(EZBaiduTranslateResponseSimpleMean *_Nonnull simple_means) {
+                        EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
+                        
+                        [simple_means.symbols.firstObject mm_anyPut:^(EZBaiduTranslateResponseSymbol *_Nonnull symbol) {
+                            // 解析音标
+                            NSMutableArray *phonetics = [NSMutableArray array];
+                            if (symbol.ph_am.length) {
+                                [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
+                                    obj.name = @"美";
+                                    obj.value = symbol.ph_am;
+                                    obj.speakURL = [self getAudioURLWithText:result.text language:@"en"];
+                                }]];
+                            }
+                            if (symbol.ph_en.length) {
+                                [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
+                                    obj.name = @"英";
+                                    obj.value = symbol.ph_en;
+                                    obj.speakURL = [self getAudioURLWithText:result.text language:@"uk"];
+                                }]];
+                            }
+                            wordResult.phonetics = phonetics.count ? phonetics.copy : nil;
+                            
+                            // 解析词性词义
+                            NSMutableArray *parts = [NSMutableArray array];
+                            [symbol.parts enumerateObjectsUsingBlock:^(EZBaiduTranslateResponsePart *_Nonnull resultPart, NSUInteger idx, BOOL *_Nonnull stop) {
+                                EZTranslatePart *part = [EZTranslatePart mm_anyMake:^(EZTranslatePart *_Nonnull obj) {
+                                    obj.part = resultPart.part.length ? resultPart.part : (resultPart.part_name.length ? resultPart.part_name : nil);
+                                    obj.means = [resultPart.means mm_where:^BOOL(id mean, NSUInteger idx, BOOL *_Nonnull stop) {
+                                        // 如果中文查词时，会是字典；这个API的设计，真的一言难尽
+                                        return [mean isKindOfClass:NSString.class];
+                                    }];
+                                }];
+                                if (part.means.count) {
+                                    [parts addObject:part];
+                                }
+                            }];
+                            wordResult.parts = parts.count ? parts.copy : nil;
+                        }];
+                        
+                        // 解析其他形式
+                        [simple_means.exchange mm_anyPut:^(EZBaiduTranslateResponseExchange *_Nonnull exchange) {
+                            NSMutableArray *exchanges = [NSMutableArray array];
+                            if (exchange.word_third.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"第三人称单数";
+                                    obj.words = exchange.word_third;
+                                }]];
+                            }
+                            if (exchange.word_pl.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"复数";
+                                    obj.words = exchange.word_pl;
+                                }]];
+                            }
+                            if (exchange.word_er.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"比较级";
+                                    obj.words = exchange.word_er;
+                                }]];
+                            }
+                            if (exchange.word_est.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"最高级";
+                                    obj.words = exchange.word_est;
+                                }]];
+                            }
+                            if (exchange.word_past.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"过去式";
+                                    obj.words = exchange.word_past;
+                                }]];
+                            }
+                            if (exchange.word_done.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"过去分词";
+                                    obj.words = exchange.word_done;
+                                }]];
+                            }
+                            if (exchange.word_ing.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"现在分词";
+                                    obj.words = exchange.word_ing;
+                                }]];
+                            }
+                            if (exchange.word_proto.count) {
+                                [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
+                                    obj.name = @"词根";
+                                    obj.words = exchange.word_proto;
+                                }]];
+                            }
+                            wordResult.exchanges = exchanges.count ? exchanges.copy : nil;
+                        }];
+                        
+                        // 解析中文查词
+                        if (simple_means.word_means.count) {
+                            // 这个时候去解析 simple_means["symbols"][0]["parts"][0]["means"]
+                            NSMutableArray<EZTranslateSimpleWord *> *words = [NSMutableArray array];
+                            NSArray<NSDictionary *> *means = simple_means.symbols.firstObject.parts.firstObject.means;
+                            [means enumerateObjectsUsingBlock:^(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                                if ([obj isKindOfClass:NSDictionary.class]) {
+                                    /**
+                                     "text": "rejoice",
+                                     "part": "v.",
+                                     "word_mean": "rejoice",
+                                     "means": ["\u975e\u5e38\u9ad8\u5174", "\u6df1\u611f\u6b23\u559c"]
+                                     "isSeeAlso": "1"
+                                     */
+                                    if (![obj objectForKey:@"isSeeAlso"]) {
+                                        EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
+                                        simpleWord.word = [obj objectForKey:@"text"];
+                                        simpleWord.part = [obj objectForKey:@"part"];
+                                        if (!simpleWord.part.length) {
+                                            simpleWord.part = @"misc.";
+                                        }
+                                        NSArray *means = [obj objectForKey:@"means"];
+                                        if ([means isKindOfClass:NSArray.class]) {
+                                            simpleWord.means = [means mm_where:^BOOL(id _Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
+                                                return [mean isKindOfClass:NSString.class];
+                                            }];
+                                        }
+                                        if (simpleWord.word.length) {
+                                            [words addObject:simpleWord];
+                                        }
+                                    }
+                                }
+                            }];
+                            if (words.count) {
+                                wordResult.simpleWords = [words sortedArrayUsingComparator:^NSComparisonResult(EZTranslateSimpleWord *_Nonnull obj1, EZTranslateSimpleWord *_Nonnull obj2) {
+                                    if ([obj2.part isEqualToString:@"misc."]) {
+                                        return NSOrderedAscending;
+                                    } else if ([obj1.part isEqualToString:@"misc."]) {
+                                        return NSOrderedDescending;
+                                    } else {
+                                        return [obj1.part compare:obj2.part];
+                                    }
+                                }];
+                            }
+                        }
+                        
+                        // 至少要有词义或单词组才认为有单词翻译结果
+                        if (wordResult.parts || wordResult.simpleWords) {
+                            result.wordResult = wordResult;
+                        }
+                    }];
+                    
+                    // 解析普通释义
+                    NSMutableArray *normalResults = [NSMutableArray array];
+                    [response.trans_result.data enumerateObjectsUsingBlock:^(EZBaiduTranslateResponseData *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        [normalResults addObject:obj.dst];
+                    }];
+                    result.normalResults = normalResults.count ? normalResults.copy : nil;
+                    
+                    // 原始数据
+                    result.raw = responseObject;
+                    
+                    if (result.wordResult || result.normalResults) {
+                        completion(result, nil);
+                        return;
+                    }
+                    
+                    message = @"百度翻译结果为空";
+                    
+                    // If api failed, try to use webView query.
+                    [self webViewTranslate:completion];
+                    
+                    return;
+                    
+                } else if (response.error == 997) {
+                    // token 失效，重新获取
+                    self.error997Count++;
+                    // 记录连续失败，避免无限循环
+                    if (self.error997Count < 3) {
+                        self.token = nil;
+                        self.gtk = nil;
+                        [self translate:text from:from to:to completion:completion];
+                        return;
+                    } else {
+                        message = @"百度翻译获取 token 失败";
+                    }
+                } else {
+                    message = [NSString stringWithFormat:@"翻译失败，错误码 %zd", response.error];
+                }
+            }
+        } @catch (NSException *exception) {
+            MMLogInfo(@"百度翻译接口数据解析异常 %@", exception);
+            message = @"百度翻译接口数据解析异常";
+        }
+    }
+    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+    completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+}
+
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     self.result = [[EZQueryResult alloc] init];
-    [self.webViewTranslator loadURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
-        self.result.normalResults = @[translatedText];
+    [self.webViewTranslator loadURL:self.wordLink success:^(NSString *_Nonnull translatedText) {
+        self.result.normalResults = @[ translatedText ];
         completion(self.result, nil);
-    } failure:^(NSError * _Nonnull error) {
+    } failure:^(NSError *_Nonnull error) {
         completion(nil, error);
     }];
 }
