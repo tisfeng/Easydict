@@ -70,22 +70,42 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     return _webView;
 }
 
-- (void)preloadURL:(NSString *)url {
-    [self loadURL:url success:nil failure:nil];
+#pragma mark - Publick Methods
+
+/// Preload url.
+- (void)preloadURL:(NSString *)URL {
+    [self loadURL:URL];
 }
 
-#pragma mark - Query
+/// Monitor designated url request when load url.
+- (void)monitorURL:(NSString *)monitorURL
+           loadURL:(NSString *)URL
+ completionHandler:(void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
+    if (!URL.length || !monitorURL.length) {
+        NSLog(@"loadURL or monitorURL cannot be emtpy");
+        return;
+    }
+    
+    [self.urlSchemeHandler monitorURL:monitorURL completionHandler:completionHandler];
+    [self loadURL:URL];
+}
 
-/// Load webView URL.
-- (void)loadURL:(NSString *)URL
-        success:(nullable void (^)(NSString *translatedText))success
-        failure:(nullable void (^)(NSError *error))failure {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL]]];
-    self.queryURL = URL;
-    NSLog(@"query url: %@", self.queryURL);
+/// Query webView rranslate url result.
+- (void)queryTranslateURL:(NSString *)URL
+                  success:(nullable void (^)(NSString *translatedText))success
+                  failure:(nullable void (^)(NSError *error))failure {
+    if (self.querySelector.length == 0) {
+        NSLog(@"querySelector is empty, url: %@", URL);
+        return;
+    }
+    
+    [self loadURL:URL];
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     if (self.querySelector.length && success) {
         mm_weakify(self);
+        self.queryURL = URL;
         self.retryCount = 0;
         self.completion = ^(NSString *result, NSError *error) {
             mm_strongify(self);
@@ -93,6 +113,9 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             if (result) {
                 if (success) {
                     success(result);
+                    
+                    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+                    NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
                 }
             } else {
                 if (failure) {
@@ -102,9 +125,18 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             
             // !!!: When finished, set completion to nil, and reset webView.
             self.completion = nil;
+            self.queryURL = nil;
             [self.webView loadHTMLString:@"" baseURL:nil];
         };
     }
+}
+
+#pragma mark -
+
+- (void)loadURL:(NSString *)URL {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL]]];
+    self.queryURL = URL;
+    NSLog(@"query url: %@", URL);
 }
 
 - (void)getTextContentOfElement:(NSString *)selector
@@ -164,9 +196,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     }];
 }
 
-- (void)monitorURL:(NSString *)url completionHandler:(void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
-    [self.urlSchemeHandler monitorURL:url completionHandler:completionHandler];
-}
 
 #pragma mark - WKNavigationDelegate
 
@@ -232,4 +261,3 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 }
 
 @end
-

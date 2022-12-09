@@ -63,8 +63,8 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 @implementation EZSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session
-                    task:(NSURLSessionTask *)task
-    didCompleteWithError:(NSError *)error {
+              task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error {
     if (error) {
         [self.schemeTask didFailWithError:error];
     } else {
@@ -83,8 +83,8 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveResponse:(NSURLResponse *)response
-     completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
     if (dataTask.state == NSURLSessionTaskStateCanceling) {
         return;
     }
@@ -161,7 +161,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         self.operationQueue.maxConcurrentOperationCount = 1;
         self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];
         [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:@"https"];
-
+        
         self.monitorDictionary = [NSMutableDictionary dictionary];
         
         self.cookieFilter = ^BOOL(NSHTTPCookie *cookie, NSURL *URL) {
@@ -210,12 +210,12 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
     NSString *url = request.URL.absoluteString;
-//    NSLog(@"url: %@", url);
- 
+    //    NSLog(@"url: %@", url);
+    
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [mutableRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
     request = [mutableRequest copy];
-
+    
     NSURLSessionTask *task = [self.session dataTaskWithRequest:request];
     EZSessionTaskDelegate *delegate = [[EZSessionTaskDelegate alloc] init];
     delegate.schemeTask = urlSchemeTask;
@@ -226,11 +226,13 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     if ([self.monitorDictionary.allKeys containsObject:url]) {
         EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[url];
         if (completionHandler) {
-            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:request.HTTPBody options:kNilOptions error:nil];
-            NSLog(@"bodyDict: %@", bodyDict);
-
+            NSData *body = request.HTTPBody;
+            if (body) {
+                NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:body options:kNilOptions error:nil];
+                NSLog(@"bodyDict: %@", bodyDict);
+            }
+            
             NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
-
             [task resume];
         }
     }
@@ -307,7 +309,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     [self.lock lock];
     delegate = self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)];
     [self.lock unlock];
-
+    
     return delegate;
 }
 
@@ -319,15 +321,15 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)URLSession:(NSURLSession *)session
-                    task:(NSURLSessionTask *)task
-    didCompleteWithError:(NSError *)error {
+              task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error {
     EZSessionTaskDelegate *delegate = [self delegateForTask:task];
     [delegate URLSession:session task:task didCompleteWithError:error];
 }
 
 - (void)URLSession:(NSURLSession *)session
-                 dataTask:(NSURLSessionDataTask *)dataTask
-    didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
+          dataTask:(NSURLSessionDataTask *)dataTask
+didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
     EZSessionTaskDelegate *delegate = [self delegateForTask:dataTask];
     if (delegate) {
         [self removeDelegateForTask:dataTask];
@@ -343,11 +345,11 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveResponse:(NSURLResponse *)response
-     completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
     EZSessionTaskDelegate *delegate = [self delegateForTask:dataTask];
     [delegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
-
+    
     NSURLSessionResponseDisposition disposition = NSURLSessionResponseAllow;
     if (completionHandler) {
         completionHandler(disposition);

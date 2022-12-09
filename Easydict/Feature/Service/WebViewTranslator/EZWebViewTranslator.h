@@ -14,13 +14,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *querySelector;
 
-- (void)preloadURL:(NSString *)url;
+/// Preload url.
+- (void)preloadURL:(NSString *)URL;
 
-- (void)loadURL:(NSString *)URL
-        success:(nullable void (^)(NSString *translatedText))success
-        failure:(nullable void (^)(NSError *error))failure;
+/// Monitor designated url request when load url.
+- (void)monitorURL:(NSString *)monitorURL
+           loadURL:(NSString *)URL
+ completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
 
-- (void)monitorURL:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
+/// Query webView rranslate url result.
+- (void)queryTranslateURL:(NSString *)URL
+                  success:(nullable void (^)(NSString *translatedText))success
+                  failure:(nullable void (^)(NSError *error))failure;
 
 @end
 
