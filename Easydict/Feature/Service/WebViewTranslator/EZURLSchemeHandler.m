@@ -211,7 +211,18 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     NSURLRequest *request = [urlSchemeTask request];
     NSString *url = request.URL.absoluteString;
 //    NSLog(@"url: %@", url);
+ 
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+    [mutableRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
+    request = [mutableRequest copy];
+
+    NSURLSessionTask *task = [self.session dataTaskWithRequest:request];
+    EZSessionTaskDelegate *delegate = [[EZSessionTaskDelegate alloc] init];
+    delegate.schemeTask = urlSchemeTask;
+    [self setDelegate:delegate forTask:task];
+    [task resume];
     
+    // Monitor designated url.
     if ([self.monitorDictionary.allKeys containsObject:url]) {
         EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[url];
         if (completionHandler) {
@@ -223,16 +234,6 @@ static EZURLSchemeHandler *_sharedInstance = nil;
             [task resume];
         }
     }
-
-    NSMutableURLRequest *mutaRequest = [request mutableCopy];
-    [mutaRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
-    request = [mutaRequest copy];
-
-    NSURLSessionTask *task = [self.session dataTaskWithRequest:request];
-    EZSessionTaskDelegate *delegate = [[EZSessionTaskDelegate alloc] init];
-    delegate.schemeTask = urlSchemeTask;
-    [self setDelegate:delegate forTask:task];
-    [task resume];
 }
 
 - (void)webView:(WKWebView *)webView stopURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
