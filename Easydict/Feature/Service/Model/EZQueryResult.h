@@ -83,6 +83,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 @interface EZQueryResult : NSObject
 
 @property (nonatomic, copy) EZServiceType serviceType;
+@property (nonatomic, weak) EZQueryService *service;
 
 @property (nonatomic, assign) BOOL isShowing;
 @property (nonatomic, assign) CGFloat cellHeight;
