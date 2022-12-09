@@ -24,8 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Query webView rranslate url result.
 - (void)queryTranslateURL:(NSString *)URL
-                  success:(nullable void (^)(NSString *translatedText))success
-                  failure:(nullable void (^)(NSError *error))failure;
+        completionHandler:(nullable void (^)(NSArray<NSString *> *_Nullable translatedText, NSError *error))completionHandler;
 
 @end
 

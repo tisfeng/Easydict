@@ -375,7 +375,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict);
-    NSLog(@"baidu error: %@", error);
+    NSLog(@"baidu API error: %@", error);
     
     [self webViewTranslate:completion];
 
@@ -384,14 +384,9 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"query baidu webView");
-    
-    self.result = [[EZQueryResult alloc] init];
-    [self.webViewTranslator queryTranslateURL:self.wordLink success:^(NSString *_Nonnull translatedText) {
-        self.result.normalResults = @[ translatedText ];
-        completion(self.result, nil);
-    } failure:^(NSError *_Nonnull error) {
-        completion(nil, error);
+    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
+        self.result.normalResults = texts;
+        completion(self.result, error);
     }];
 }
 
