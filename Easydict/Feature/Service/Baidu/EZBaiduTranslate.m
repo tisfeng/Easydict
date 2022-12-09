@@ -373,13 +373,21 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             message = @"百度翻译接口数据解析异常";
         }
     }
-    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-    completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+    
+    NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict);
+    NSLog(@"baidu error: %@", error);
+    
+    [self webViewTranslate:completion];
+
+//    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+//    completion(self.result, error);
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"query baidu webView");
+    
     self.result = [[EZQueryResult alloc] init];
-    [self.webViewTranslator loadURL:self.wordLink success:^(NSString *_Nonnull translatedText) {
+    [self.webViewTranslator queryTranslateURL:self.wordLink success:^(NSString *_Nonnull translatedText) {
         self.result.normalResults = @[ translatedText ];
         completion(self.result, nil);
     } failure:^(NSError *_Nonnull error) {
