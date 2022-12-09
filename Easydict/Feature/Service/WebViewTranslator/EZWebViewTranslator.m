@@ -20,13 +20,11 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) EZURLSchemeHandler *urlSchemeHandler;
 
 @property (nonatomic, copy) NSString *queryURL;
-@property (nonatomic, copy) void (^completion)(NSString *, NSError *);
-
 @property (nonatomic, assign) NSUInteger retryCount;
-
-@property (nonatomic, strong) EZURLSchemeHandler *urlSchemeHandler;
+@property (nonatomic, copy) void (^completionHandler)(NSArray<NSString *>  * _Nullable , NSError *);
 
 @end
 
@@ -70,6 +68,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     return _webView;
 }
 
+
 #pragma mark - Publick Methods
 
 /// Preload url.
@@ -92,40 +91,35 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 /// Query webView rranslate url result.
 - (void)queryTranslateURL:(NSString *)URL
-                  success:(nullable void (^)(NSString *translatedText))success
-                  failure:(nullable void (^)(NSError *error))failure {
+        completionHandler:(nullable void (^)(NSArray<NSString *> * _Nullable, NSError *))completionHandler; {
     if (self.querySelector.length == 0) {
         NSLog(@"querySelector is empty, url: %@", URL);
         return;
     }
     
     [self loadURL:URL];
-    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
-    if (self.querySelector.length && success) {
+    if (URL.length && completionHandler) {
         mm_weakify(self);
         self.queryURL = URL;
         self.retryCount = 0;
-        self.completion = ^(NSString *result, NSError *error) {
+        self.completionHandler = ^(NSArray<NSString *> *texts, NSError *error) {
             mm_strongify(self);
             
-            if (result) {
-                if (success) {
-                    success(result);
-                    
-                    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-                    NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-                }
+            if (error) {
+                completionHandler(nil, error);
             } else {
-                if (failure) {
-                    failure(error);
-                }
+                completionHandler(texts, nil);
+                CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+                NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
             }
             
-            // !!!: When finished, set completion to nil, and reset webView.
-            self.completion = nil;
+            // !!!: When finished, set completion to nil, and
+            self.completionHandler = nil;
             self.queryURL = nil;
+            
+            // ???: reset webView.
             [self.webView loadHTMLString:@"" baseURL:nil];
         };
     }
@@ -140,13 +134,13 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 }
 
 - (void)getTextContentOfElement:(NSString *)selector
-                     completion:(void (^)(NSString *_Nullable, NSError *))completion {
+                     completion:(void (^)(NSArray<NSString *>  *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
     // 定义一个异步方法，用于判断页面中是否存在目标元素
     // 先判断页面中是否存在目标元素
     NSString *js = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
-    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+    [self.webView evaluateJavaScript:js completionHandler:^(NSString  *_Nullable result, NSError *_Nullable error) {
         if (error) {
             // 如果执行出错，则直接返回
             if (completion) {
@@ -159,7 +153,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             // 如果页面中不存在目标元素，则延迟一段时间后再次判断
             self.retryCount++;
             NSInteger maxRetryCount = ceil(MAX_QUERY_SECONDS / DELAY_SECONDS);
-            if (self.retryCount < maxRetryCount && self.completion) {
+            if (self.retryCount < maxRetryCount && self.completionHandler) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self getTextContentOfElement:selector completion:completion];
                 });
@@ -182,10 +176,11 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                         completion(nil, error);
                     }
                 }
-                // trim text
+                // !!!: Trim text, and wait translatedText length > 0
                 NSString *translatedText = [result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                if (completion && [translatedText length]) {
-                    completion(translatedText, nil);
+                if (completion && translatedText.length > 0) {
+                    NSArray *texts = [translatedText componentsSeparatedByString:@"\n"];
+                    completion(texts, nil);
                 } else {
                     retryBlock();
                 }
@@ -203,8 +198,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
     
-    if (self.completion) {
-        [self getTextContentOfElement:self.querySelector completion:self.completion];
+    if (self.completionHandler) {
+        [self getTextContentOfElement:self.querySelector completion:self.completionHandler];
     }
 }
 

@@ -98,18 +98,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
-    [self.webViewTranslator queryTranslateURL:self.wordLink success:^(NSString * _Nonnull translatedText) {
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"web deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-        
-        self.result.normalResults = @[translatedText];
-        completion(self.result, nil);
-    } failure:^(NSError * _Nonnull error) {
+    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
+        self.result.normalResults = texts;
         completion(self.result, error);
     }];
     
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
     [self.webViewTranslator monitorURL:monitorURL
                                loadURL:self.wordLink
