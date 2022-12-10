@@ -151,7 +151,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     self.queryView.queryModel = self.queryModel;
 
     if ([self allShowingResults].count > 0) {
-        [self.queryView showClearButton:YES];
+        [self.queryView setClearButtonAnimatedHidden:NO];
     }
 }
 

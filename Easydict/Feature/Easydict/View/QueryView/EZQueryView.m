@@ -13,6 +13,7 @@
 #import "NSImage+EZResize.h"
 #import "EZDetectLanguageButton.h"
 #include <Carbon/Carbon.h>
+#import "NSView+EZHiddenWithAnimation.h"
 
 static CGFloat kExceptTextViewHeight = 30;
 
@@ -69,7 +70,9 @@ static CGFloat kExceptTextViewHeight = 30;
     EZHoverButton *clearButton = [[EZHoverButton alloc] init];
     [self addSubview:clearButton];
     self.clearButton = clearButton;
-    clearButton.hidden = NO;
+    
+    // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
+    clearButton.alphaValue = 0;
     
     NSImage *clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
@@ -92,8 +95,8 @@ static CGFloat kExceptTextViewHeight = 30;
     return [self heightOfTextView] + kExceptTextViewHeight;
 }
 
-- (void)showClearButton:(BOOL)show {
-    self.clearButton.hidden = !show;
+- (void)setClearButtonAnimatedHidden:(BOOL)hidden {
+    [self.clearButton setAnimatedHidden:hidden];
 }
 
 #pragma mark - Super method
@@ -253,7 +256,7 @@ static CGFloat kExceptTextViewHeight = 30;
 
 - (void)updateButtonsDisplayState:(NSString *)text {
     BOOL isHidden = text.length == 0;
-    self.clearButton.hidden = isHidden;
+    [self setClearButtonAnimatedHidden:isHidden];
     
     [self updateDetectButton];
 }
