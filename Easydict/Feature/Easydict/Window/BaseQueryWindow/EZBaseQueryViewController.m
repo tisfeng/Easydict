@@ -634,8 +634,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
 
-        self.queryText = @"";
-
         // !!!: To show closing animation, we cannot reset result directly.
         [self closeAllResultView:^{
             [self resetQueryAndResults];
