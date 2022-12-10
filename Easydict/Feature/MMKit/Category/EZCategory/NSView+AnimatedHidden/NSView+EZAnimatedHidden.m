@@ -6,7 +6,7 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "NSView+EZHiddenWithAnimation.h"
+#import "NSView+EZAnimatedHidden.h"
 
 static CGFloat const kHiddenAnimationDuration = 0.3;
 
@@ -14,6 +14,9 @@ static CGFloat const kHiddenAnimationDuration = 0.3;
 
 - (void)setAnimatedHidden:(BOOL)hidden {
     CGFloat alphaValue = hidden ? 0 : 1.0;
+    if (self.alphaValue == alphaValue) {
+        return;
+    }
         
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
         context.duration = kHiddenAnimationDuration;

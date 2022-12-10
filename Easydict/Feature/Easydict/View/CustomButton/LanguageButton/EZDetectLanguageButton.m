@@ -8,7 +8,7 @@
 
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
-#import "NSView+EZHiddenWithAnimation.h"
+#import "NSView+EZAnimatedHidden.h"
 
 @interface EZDetectLanguageButton ()
 

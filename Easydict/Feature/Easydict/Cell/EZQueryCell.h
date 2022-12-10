@@ -15,14 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZQueryView *queryView;
 
-//@property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat textViewHeight);
-//
-//@property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
-//@property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
-//
-//@property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
-//@property (nonatomic, copy) void (^detectActionBlock)(NSString *text);
-
 @end
 
 NS_ASSUME_NONNULL_END

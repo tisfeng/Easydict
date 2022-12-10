@@ -141,12 +141,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
 
-    if (queryText.length == 0) {
-        self.queryModel.queryViewHeight = 0;
-    }
-
-    //    [self updateSelectLanguageCell];
-
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
 
@@ -205,7 +199,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.column = column;
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
         [tableView addTableColumn:column];
-
+        
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = 100;
@@ -355,6 +349,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryView.windowType = self.windowType;
         self.queryView.queryModel = self.queryModel;
         self.queryCell = queryCell;
+                
         return queryCell;
     }
 
@@ -386,13 +381,11 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         if (self.queryModel.queryViewHeight) {
             height = self.queryModel.queryViewHeight;
         } else {
-            @autoreleasepool {
-                EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
-                EZQueryView *queryView = queryCell.queryView;
-                queryView.windowType = self.windowType;
-                queryView.queryModel = self.queryModel;
-                height = [queryView heightOfQueryView];
-            }
+            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
+            EZQueryView *queryView = queryCell.queryView;
+            queryView.windowType = self.windowType;
+            queryView.queryModel = self.queryModel;
+            height = [queryView heightOfQueryView];
         }
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
