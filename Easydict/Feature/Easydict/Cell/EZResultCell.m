@@ -45,4 +45,8 @@
     [self.resultView refreshWithResult:result];
 }
 
+- (void)dealloc {
+//    NSLog(@"EZResultCell dealloc: %@", self);
+}
+
 @end

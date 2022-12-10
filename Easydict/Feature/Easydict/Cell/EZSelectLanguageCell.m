@@ -9,7 +9,6 @@
 #import "EZSelectLanguageCell.h"
 #import "EZSelectLanguageButton.h"
 #import "EZQueryService.h"
-#import "EZGoogleTranslate.h"
 #import "EZConfiguration.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
@@ -37,7 +36,6 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        self.translate = [[EZGoogleTranslate alloc] init];
         [self setup];
     }
     return  self;
