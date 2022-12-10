@@ -20,11 +20,11 @@
 #import "EZWindowManager.h"
 #import "EZServiceTypes.h"
 
-static NSString * const EZQueryCellId = @"EZQueryCellId";
-static NSString * const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
-static NSString * const EZResultCellId = @"EZResultCellId";
+static NSString *const EZQueryCellId = @"EZQueryCellId";
+static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
+static NSString *const EZResultCellId = @"EZResultCellId";
 
-static NSString * const EZColumnId = @"EZColumnId";
+static NSString *const EZColumnId = @"EZColumnId";
 
 static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
@@ -88,14 +88,14 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)setup {
     self.queryModel = [[EZQueryModel alloc] init];
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
-    
+
     self.serviceTypes = @[
         EZServiceTypeDeepL,
         EZServiceTypeGoogle,
         EZServiceTypeYoudao,
         EZServiceTypeBaidu,
     ];
-    
+
     NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in self.serviceTypes) {
         EZQueryService *service = [EZServiceTypes serviceWithType:type];
@@ -105,34 +105,34 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     self.services = services;
     [self resetQueryAndResults];
 
-    
+
     self.player = [[AVPlayer alloc] init];
-    
+
     [self tableView];
-    
+
     mm_weakify(self);
     [self setResizeWindowBlock:^{
         mm_strongify(self);
-        
+
         // Avoid recycling call, resize window --> update window height --> resize window
         if (!self.enableResizeWindow) {
             return;
         }
-        
+
         [self reloadTableViewData:^{
             [self delayUpdateWindowViewHeight];
         }];
     }];
-    
-//    self.kvo = [FBKVOController controllerWithObserver:self];
-//    [self.kvo observe:self
-//              keyPath:@"queryText"
-//              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-//                block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-////        NSLog(@"change: %@", change);
-//        
-////        NSString *queryText = change[NSKeyValueChangeNewKey];
-//    }];
+
+    //    self.kvo = [FBKVOController controllerWithObserver:self];
+    //    [self.kvo observe:self
+    //              keyPath:@"queryText"
+    //              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+    //                block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
+    ////        NSLog(@"change: %@", change);
+    //
+    ////        NSString *queryText = change[NSKeyValueChangeNewKey];
+    //    }];
 }
 
 
@@ -140,16 +140,16 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)setQueryText:(NSString *)queryText {
     _queryText = queryText;
-        
+
     if (queryText.length == 0) {
         self.queryModel.queryViewHeight = 0;
     }
-    
-//    [self updateSelectLanguageCell];
-    
+
+    //    [self updateSelectLanguageCell];
+
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
-    
+
     if ([self allShowingResults].count > 0) {
         [self.queryView showClearButton:YES];
     }
@@ -160,7 +160,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
-        
+
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
         [scrollView excuteLight:^(NSScrollView *scrollView) {
@@ -168,20 +168,21 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         } drak:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
-        
+
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view).offset(0);
             make.left.right.bottom.equalTo(self.view);
-            
-            CGSize miniWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];;
+
+            CGSize miniWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];
+            ;
             make.width.mas_greaterThanOrEqualTo(miniWindowSize.width);
             make.height.mas_greaterThanOrEqualTo(miniWindowSize.height);
         }];
-        
+
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
-        
+
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
     }
     return _scrollView;
@@ -191,26 +192,26 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-        
+
         [tableView excuteLight:^(NSTableView *tableView) {
             tableView.backgroundColor = NSColor.mainViewBgLightColor;
         } drak:^(NSTableView *tableView) {
             tableView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
-        
+
         tableView.style = NSTableViewStylePlain;
-        
+
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
         [tableView addTableColumn:column];
-        
+
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = 100;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
-        
+
         tableView.headerView = nil;
         tableView.intercellSpacing = CGSizeMake(2 * EZMiniHorizontalMargin_12, EZMiniVerticalMargin_8);
         tableView.gridColor = NSColor.clearColor;
@@ -237,9 +238,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         NSLog(@"query text is empty");
         return;
     }
-    
+
     NSLog(@"query text: %@", text);
-        
+
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         NSLog(@"close all result");
@@ -250,14 +251,14 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
-    
+
     mm_weakify(self);
-    
+
     self.queryModel.ocrImage = image;
-    
-    [self.detectManager ocrAndDetectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
+
+    [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
-        
+
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
     }];
@@ -271,8 +272,8 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)focusInputTextView {
     // Need to activate the current application first.
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    
-//    [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+
+    //    [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
 
     [self.window makeFirstResponder:self.queryView.textView];
 }
@@ -289,18 +290,18 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)queryCurrentModel {
     // !!!: Reset all result before new query.
     [self resetAllResults];
-    
+
     // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
     [self detectQueryText:^{
         [self queryAllSerives:self.queryModel];
     }];
 }
 
-- (void)queryAllSerives:(EZQueryModel *)queryModel  {
+- (void)queryAllSerives:(EZQueryModel *)queryModel {
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     for (EZQueryService *service in self.services) {
-        [self queryWithModel:queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+        [self queryWithModel:queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"query error: %@", error);
             }
@@ -322,12 +323,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         NSLog(@"queryText is empty");
         return;
     }
-    
+
     // Show result if it has been queried.
     service.result.isShowing = YES;
 
     NSLog(@"query service: %@", service.serviceType);
-    
+
     [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
                     to:queryModel.queryTargetLanguage
@@ -346,7 +347,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //    NSLog(@"tableView for row: %ld", row);
-    
+
     // TODO: should reuse cell.
     if (row == 0) {
         EZQueryCell *queryCell = [self createQueryCell];
@@ -356,23 +357,23 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryCell = queryCell;
         return queryCell;
     }
-    
+
     if (self.windowType != EZWindowTypeMini && row == 1) {
         EZSelectLanguageCell *selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
         selectLanguageCell.queryModel = self.queryModel;
-        
+
         mm_weakify(self);
-        [selectLanguageCell setEnterActionBlock:^(EZLanguage  _Nonnull from, EZLanguage  _Nonnull to) {
+        [selectLanguageCell setEnterActionBlock:^(EZLanguage _Nonnull from, EZLanguage _Nonnull to) {
             mm_strongify(self);
             self.queryModel.userSourceLanguage = from;
             self.queryModel.userTargetLanguage = to;
             self.queryModel.detectedLanguage = EZLanguageAuto;
-            
+
             [self startQueryText];
         }];
         return selectLanguageCell;
     }
-    
+
     EZResultCell *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
@@ -380,7 +381,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 // TODO: cache height, only calculate once.
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
-    
+
     if (row == 0) {
         if (self.queryModel.queryViewHeight) {
             height = self.queryModel.queryViewHeight;
@@ -404,9 +405,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             NSLog(@"serviceType: %@, height: %@", result.serviceType, @(height));
         }
     }
-    
+
     //    NSLog(@"row: %ld, height: %@", row, @(height));
-    
+
     return height;
 }
 
@@ -433,7 +434,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             completion();
         }
     }];
-    
+
     [self.tableView reloadData];
     [CATransaction commit];
 }
@@ -475,7 +476,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:completionHandler];
 }
 
-- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData  {
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData {
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
 }
 
@@ -483,7 +484,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     if (reloadData) {
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
-    
+
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = kUpdateTableViewRowHeightAnimationDuration;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
@@ -500,7 +501,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     if (offset == 1) {
         return;
     }
-    
+
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
     [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
@@ -537,12 +538,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 }
 
 /// Detect query text, and update select language cell.
-- (void)detectQueryText:(nullable void(^)(void))completion {
-    [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
+- (void)detectQueryText:(nullable void (^)(void))completion {
+    [self.detectManager detectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
-        
+
         [self updateDetectedLanguage:queryModel];
-        
+
         if (completion) {
             completion();
         }
@@ -584,34 +585,34 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (EZQueryCell *)createQueryCell {
     EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
     queryCell.identifier = EZQueryCellId;
-    
+
     EZQueryView *queryView = queryCell.queryView;
-    
+
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
- 
+
         // !!!: text is from textView.string, it will be changed!
         self.queryText = [text mutableCopy];
 
         [self delayDetectQueryText];
-        
+
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
-            
+
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            
+
             // !!!: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
             [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:nil];
         }
     }];
-    
+
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
         [self startQueryText:text];
     }];
-    
+
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         EZQueryService *service = [self firstEZQueryService];
@@ -624,15 +625,15 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             }];
         }
     }];
-    
+
     [queryView setCopyTextBlock:^(NSString *text) {
         mm_strongify(self);
         [self copyTextToPasteboard:text];
     }];
-    
-    [queryView setClearBlock:^(NSString * _Nonnull text) {
+
+    [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-        
+
         self.queryText = @"";
 
         // !!!: To show closing animation, we cannot reset result directly.
@@ -640,13 +641,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
             [self resetQueryAndResults];
         }];
     }];
-    
-    [queryView setSelectedLanguageBlock:^(EZLanguage  _Nonnull language) {
+
+    [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
         mm_strongify(self);
         self.queryModel.detectedLanguage = language;
         [self startQueryText];
     }];
-    
+
     return queryCell;
 }
 
@@ -660,11 +661,11 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
     EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
     resultCell.identifier = EZResultCellId;
-    
+
     EZQueryService *service = [self serviceAtRow:row];
     resultCell.result = service.result;
     [self setupResultCell:resultCell];
-    
+
     return resultCell;
 }
 
@@ -682,7 +683,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         default:
             break;
     }
-    
+
     return offset;
 }
 
@@ -701,17 +702,17 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     EZResultView *resultView = resultCell.resultView;
     EZQueryResult *result = resultCell.result;
     EZQueryService *service = [self serviceWithType:result.serviceType];
-    
+
     mm_weakify(self)
-    [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
-        mm_strongify(self);
-        if (!result) {
-            return;
-        }
-        
-        [self playSeriveAudio:service text:text lang:result.from];
-    }];
-    
+        [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
+            mm_strongify(self);
+            if (!result) {
+                return;
+            }
+
+            [self playSeriveAudio:service text:text lang:result.from];
+        }];
+
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         if (!result) {
@@ -719,18 +720,18 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         }
         [self copyTextToPasteboard:text];
     }];
-    
+
     [resultView setClickArrowBlock:^(BOOL isShowing) {
         mm_strongify(self);
         service.enabled = isShowing;
-        
+
         // If result is not empty, update cell and show.
         if (!result.isEmpty) {
             [self updateCellWithResult:result reloadData:YES];
             return;
         }
-        
-        [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+
+        [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             [self updateCellWithResult:result reloadData:YES];
         }];
     }];
@@ -744,14 +745,14 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)playSeriveAudio:(EZQueryService *)service text:(NSString *)text lang:(EZLanguage)lang {
     if (text.length) {
         mm_weakify(self)
-        [service audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-            mm_strongify(self);
-            if (!error) {
-                [self playAudioWithURL:url];
-            } else {
-                MMLogInfo(@"获取音频 URL 失败 %@", error);
-            }
-        }];
+            [service audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+                mm_strongify(self);
+                if (!error) {
+                    [self playAudioWithURL:url];
+                } else {
+                    MMLogInfo(@"获取音频 URL 失败 %@", error);
+                }
+            }];
     }
 }
 
@@ -765,7 +766,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     if (!url.length) {
         return;
     }
-    
+
     [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]]];
     [self.player play];
 }
@@ -778,46 +779,46 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (void)updateWindowViewHeight:(BOOL)lock {
     NSTimeInterval lockTime = 0.1;
-    
+
     if (lock) {
         self.enableResizeWindow = NO;
     }
-    
+
     CGFloat height = [self getScrollViewHeight];
     //    NSLog(@"contentHeight: %@", @(height));
-    
+
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
-    
+
     CGFloat titleBarHeight = EZTitlebarHeight_28; // system title bar height is 28
-    
+
     CGFloat scrollViewHeight = height + self.scrollView.contentInsets.top + self.scrollView.contentInsets.bottom;
     scrollViewHeight = MIN(scrollViewHeight, maxWindowSize.height - titleBarHeight);
-    
+
     // Diable change window height manually.
     [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_greaterThanOrEqualTo(scrollViewHeight);
         make.height.mas_lessThanOrEqualTo(scrollViewHeight);
     }];
-    
+
     CGFloat showingWindowHeight = scrollViewHeight + titleBarHeight;
     showingWindowHeight = MIN(showingWindowHeight, maxWindowSize.height);
-    
+
     // Since chaneg height will cause position change, we need to adjust y to keep top-left coordinate position.
     NSWindow *window = self.view.window;
-    
+
     CGFloat deltaHeight = window.height - showingWindowHeight;
     CGFloat y = window.y + deltaHeight;
-    
+
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
     [window setFrame:newFrame display:YES];
-    
+
     CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
-    
+
     //    NSLog(@"window frame: %@", @(window.frame));
     //    NSLog(@"safe frame: %@", @(safeFrame));
-    
+
     [window setFrameOrigin:safeLocation];
-    
+
     if (lock) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.enableResizeWindow = YES;
@@ -827,23 +828,23 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 - (CGFloat)getScrollViewHeight {
     CGFloat height = [self getContentHeight];
-    
-    CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];;
-    CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];;
-    
+
+    CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];
+    CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
+
     height = MAX(height, minimumWindowSize.height);
     height = MIN(height, maximumWindowSize.height);
-    
+
     return height;
 }
 
 - (CGFloat)getContentHeight {
     // Modify scrollView height to 0, to get actual tableView content height, avoid blank view.
     self.scrollView.height = 0;
-    
+
     CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
     //    NSLog(@"documentView height: %@", @(documentViewHeight));
-    
+
     return documentViewHeight;
 }
 
