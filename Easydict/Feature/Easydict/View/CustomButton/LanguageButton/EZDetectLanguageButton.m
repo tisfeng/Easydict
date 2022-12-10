@@ -8,6 +8,7 @@
 
 #import "EZDetectLanguageButton.h"
 #import "EZLanguageManager.h"
+#import "NSView+EZHiddenWithAnimation.h"
 
 @interface EZDetectLanguageButton ()
 
@@ -27,7 +28,7 @@
 }
 
 - (void)setup {
-    self.hidden = YES;
+    self.alphaValue = 0;
     self.title = @"";
     
     [self excuteLight:^(EZButton *detectButton) {
@@ -55,12 +56,12 @@
     _detectedLanguage = detectedLanguage;
     
     if ([detectedLanguage isEqualToString: EZLanguageAuto]) {
-        self.hidden = YES;
+        [self setAnimatedHidden:YES];
         return;
     }
     
-    self.hidden = NO;
-    
+    [self setAnimatedHidden:NO];
+
     NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:detectedLanguage];
     
     NSString *title = @"识别为 ";
