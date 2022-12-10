@@ -45,7 +45,6 @@ userInfo:nil]
     _result = translateResult;
     
     _result.serviceType = self.serviceType;
-    _result.isShowing = self.enabled;
     _result.service = self;
 }
 
