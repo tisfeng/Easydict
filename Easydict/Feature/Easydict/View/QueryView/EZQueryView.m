@@ -13,7 +13,7 @@
 #import "NSImage+EZResize.h"
 #import "EZDetectLanguageButton.h"
 #include <Carbon/Carbon.h>
-#import "NSView+EZHiddenWithAnimation.h"
+#import "NSView+EZAnimatedHidden.h"
 
 static CGFloat kExceptTextViewHeight = 30;
 

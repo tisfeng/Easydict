@@ -22,7 +22,7 @@
 - (void)setup {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    self.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
+//    self.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
     
     EZResultView *resultView = [[EZResultView alloc] initWithFrame:self.bounds];
     [self addSubview:resultView];
