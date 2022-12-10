@@ -131,7 +131,7 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (void)detect:(NSString *)text completion:(void (^)(EZLanguage lang, NSError *_Nullable error))completion {
+- (void)detect:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
