@@ -46,7 +46,10 @@
         layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
     
+    mm_weakify(self);
+    
     self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
+        mm_strongify(self);
         [self addSubview:view];
         view.wantsLayer = YES;
         [view.layer excuteLight:^(CALayer *layer) {
@@ -58,12 +61,14 @@
     self.topBarView.mas_key = @"topBarView";
     
     self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
+        mm_strongify(self);
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
     }];
     self.typeImageView.mas_key = @"typeImageView";
     
     self.typeLabel = [NSTextField mm_make:^(NSTextField *label) {
+        mm_strongify(self);
         [self addSubview:label];
         label.editable = NO;
         label.bordered = NO;
@@ -81,6 +86,7 @@
     self.typeLabel.mas_key = @"typeLabel";
     
     self.disableImageView = [NSImageView mm_make:^(NSImageView *imageView) {
+        mm_strongify(self);
         [self addSubview:imageView];
         NSImage *image = [NSImage imageNamed:@"disabled"];
         [imageView setImage:image];
@@ -92,7 +98,6 @@
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
     
-    mm_weakify(self);
     [wordResultView setPlayAudioBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
         mm_strongify(self);
         if (self.playAudioBlock) {
@@ -101,6 +106,7 @@
     }];
     
     [wordResultView setCopyTextBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
+        mm_strongify(self);
         if (self.copyTextBlock) {
             self.copyTextBlock(word);
         }

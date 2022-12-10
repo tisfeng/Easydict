@@ -60,12 +60,16 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     NSString *errorMsg = result.error.localizedDescription;
     
+    mm_weakify(self);
+    
     if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
         __block CGFloat leftMargin = 0;
 
         if (result.wordResult) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
+                mm_strongify(self);
+
                 [self addSubview:textField];
                 textField.stringValue = @"释义：";
                 textField.maximumNumberOfLines = 1;
@@ -94,7 +98,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         NSString *text = result.translatedText ?: errorMsg;
         
-        EZLabel *resultLabel = [EZLabel new];
+        EZLabel *resultLabel = [[EZLabel alloc] init];
         [self addSubview:resultLabel];
         resultLabel.text = text;
         resultLabel.delegate = self;
@@ -125,6 +129,8 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self);
+
             [self addSubview:textField];
             textField.stringValue = obj.name;
             textField.textColor = typeTextColor;
@@ -151,6 +157,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSTextField *valueTextField = nil;
         if (obj.value.length) {
             valueTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+                mm_strongify(self);
+
                 [self addSubview:textField];
                 textField.stringValue = [NSString stringWithFormat:@"/%@/", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
@@ -199,6 +207,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         if (obj.part.length) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+                mm_strongify(self);
+
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = typeTextColor;
@@ -267,6 +277,8 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self);
+
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@: ", obj.name];
             [textField excuteLight:^(id _Nonnull x) {
@@ -296,6 +308,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
+                mm_strongify(self);
+
                 [self addSubview:button];
                 button.bordered = NO;
                 button.imageScaling = NSImageScaleProportionallyDown;
@@ -335,6 +349,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         if (obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             // 添加 part label
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+                mm_strongify(self);
+
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = typeTextColor;
@@ -357,6 +373,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
         
         NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
+            mm_strongify(self);
+
             [self addSubview:button];
             button.bordered = NO;
             button.imageScaling = NSImageScaleProportionallyDown;
@@ -378,7 +396,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             }];
             mm_weakify(self, obj)
             [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                mm_strongify(self, obj) if (self.copyTextBlock) {
+                mm_strongify(self, obj)
+                if (self.copyTextBlock) {
                     self.copyTextBlock(self, obj.word);
                 }
                 return RACSignal.empty;
@@ -388,6 +407,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self);
+
             [self addSubview:textField];
             textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
             [textField excuteLight:^(id _Nonnull x) {
@@ -414,7 +435,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"播放音频";
     
-    mm_weakify(self);
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"audioActionBlock");
         mm_strongify(self);
