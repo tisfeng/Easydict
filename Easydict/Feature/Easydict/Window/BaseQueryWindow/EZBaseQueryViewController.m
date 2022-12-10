@@ -145,7 +145,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         self.queryModel.queryViewHeight = 0;
     }
     
-    [self updateSelectLanguageCell];
+//    [self updateSelectLanguageCell];
     
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
@@ -290,15 +290,9 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     // !!!: Reset all result before new query.
     [self resetAllResults];
     
-    if (![self.queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
+    // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
+    [self detectQueryText:^{
         [self queryAllSerives:self.queryModel];
-        return;
-    }
-    
-    [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
-        self.queryView.queryModel = queryModel;
-        [self updateSelectLanguageCell];
-        [self queryAllSerives:queryModel];
     }];
 }
 
@@ -424,19 +418,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 #pragma mark - Update TableView
 
-- (void)resetQueryAndResults {
-    [self resetAllResults];
-    self.queryText = @"";
-}
-
-- (void)resetAllResults {
-    for (EZQueryService *service in self.services) {
-        EZQueryResult *result = [[EZQueryResult alloc] init];
-        result.isShowing = NO; // default not show, show after querying if result is not empty.
-        service.result = result;
-    }
-}
-
+/// Reset tableView, reloadData
 - (void)resetTableView:(void (^)(void))completion {
     [self resetQueryAndResults];
     [self reloadTableViewData:completion];
@@ -493,7 +475,6 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:completionHandler];
 }
 
-
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData  {
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
 }
@@ -522,6 +503,55 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
     [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
+#pragma mark - Update Data.
+
+- (void)resetQueryAndResults {
+    [self resetAllResults];
+    self.queryText = @"";
+}
+
+- (void)resetAllResults {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = [[EZQueryResult alloc] init];
+        result.isShowing = NO; // default not show, show after querying if result is not empty.
+        service.result = result;
+    }
+}
+
+- (void)delayDetectQueryText {
+    [self cancelDelayDetectQueryText];
+
+    if (self.queryText.length == 0) {
+        self.queryModel.detectedLanguage = EZLanguageAuto;
+        [self updateDetectedLanguage:self.queryModel];
+        return;
+    }
+
+    [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:1.0];
+}
+
+- (void)cancelDelayDetectQueryText {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(detectQueryText:) object:nil];
+}
+
+/// Detect query text, and update select language cell.
+- (void)detectQueryText:(nullable void(^)(void))completion {
+    [self.detectManager detectText:^(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error) {
+        // `self.queryModel.detectedLanguage` has already been updated inside the method.
+        
+        [self updateDetectedLanguage:queryModel];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
+- (void)updateDetectedLanguage:(EZQueryModel *)queryModel {
+    self.queryView.queryModel = queryModel;
+    [self updateSelectLanguageCell];
 }
 
 - (NSArray *)allShowingResults {
@@ -560,13 +590,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
-        
-        // As soon as the input text changes, set detectedLanguage to Auto.
-        self.queryModel.detectedLanguage = EZLanguageAuto;
-        
+ 
         // !!!: text is from textView.string, it will be changed!
         self.queryText = [text mutableCopy];
 
+        [self delayDetectQueryText];
+        
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
