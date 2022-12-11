@@ -61,15 +61,12 @@
     [pinButton setMouseDownBlock:^(EZButton *_Nonnull button) {
         //        NSLog(@"pin mouse down, state: %ld", button.buttonState);
         mm_strongify(self);
-        
         self.pin = !self.pin;
-        
     }];
     
     [pinButton setMouseUpBlock:^(EZButton *_Nonnull button) {
         //        NSLog(@"pin mouse up, state: %ld", button.buttonState);
         mm_strongify(self);
-        
         BOOL oldPin = !self.pin;
         
         // This means clicked pin button.
@@ -147,10 +144,13 @@
     
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
     
+    mm_weakify(self);
     [self.pinButton excuteLight:^(EZHoverButton *button) {
+        mm_strongify(self)
         NSImage *image = self.pin ? selectedImage : normalLightImage;
         button.image = image;
     } drak:^(EZHoverButton *button) {
+        mm_strongify(self)
         NSImage *image = self.pin ? selectedImage : normalDarkImage;
         button.image = image;
     }];

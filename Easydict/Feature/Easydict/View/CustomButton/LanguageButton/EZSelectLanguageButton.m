@@ -70,6 +70,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         }];
         
         self.textField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self)
+
             [titleContainerView addSubview:textField];
             textField.stringValue = @"";
             textField.editable = NO;
