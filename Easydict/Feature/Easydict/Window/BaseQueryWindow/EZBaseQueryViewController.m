@@ -26,7 +26,7 @@ static NSString *const EZResultCellId = @"EZResultCellId";
 
 static NSString *const EZColumnId = @"EZColumnId";
 
-static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
+static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -122,8 +122,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
             return;
         }
 
-        [self reloadTableViewDataWithDisplay:YES completion:^{
-            NSLog(@"delayUpdateWindowViewHeight");
+        [self reloadTableViewDataWithLock:NO completion:^{
             [self delayUpdateWindowViewHeight];
         }];
     }];
@@ -423,17 +422,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 
 /// TableView reloadData
 - (void)reloadTableViewData:(void (^)(void))completion {
-    [self reloadTableViewDataWithDisplay:YES completion:completion];
+    [self reloadTableViewDataWithLock:YES completion:completion];
 }
 
-/// TableView reloadData, no animation.
-- (void)reloadTableViewDataWithDisplay:(BOOL)displayFlag completion:(void (^)(void))completion {
+- (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowViewHeightWithAnimation:NO display:displayFlag];
-        if (completion) {
-            completion();
-        }
+        [self updateWindowViewHeightWithLock:lockFlag animate:NO display:NO completion:completion];
     }];
 
     [self.tableView reloadData];
@@ -778,10 +773,27 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 }
 
 - (void)updateWindowViewHeightWithAnimation:(BOOL)animateFlag display:(BOOL)displayFlag {
-    self.lockResizeWindow = YES;
+    [self updateWindowViewHeightWithAnimation:animateFlag display:displayFlag completion:nil];
+}
+
+- (void)updateWindowViewHeightWithAnimation:(BOOL)animateFlag
+                                    display:(BOOL)displayFlag
+                                 completion:(nullable void (^)(void))completion {
+    [self updateWindowViewHeightWithLock:YES animate:animateFlag display:displayFlag completion:completion];
+}
+
+- (void)updateWindowViewHeightWithLock:(BOOL)lockFlag
+                               animate:(BOOL)animateFlag
+                               display:(BOOL)displayFlag
+                            completion:(nullable void (^)(void))completion {
+    if (lockFlag) {
+        self.lockResizeWindow = YES;
+    }
+    
+    NSLog(@"updateWindowViewHeightWithLock");
     
     CGFloat height = [self getRestrainedScrollViewHeight];
-    //    NSLog(@"contentHeight: %@", @(height));
+        NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
 
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
 
@@ -814,11 +826,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
         [self.window setFrame:newFrame display:displayFlag animate:animateFlag];
     } completionHandler:^{
         self.lockResizeWindow = NO;
+        
+        if (completion) {
+            completion();
+        }
     }];
     
     NSLog(@"window frame: %@", @(window.frame));
 }
-
 
 - (CGFloat)getRestrainedScrollViewHeight {
     CGFloat height = [self getScrollViewHeight];
