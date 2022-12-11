@@ -91,6 +91,11 @@
     return YES;
 }
 
+- (NSTimeInterval)animationResizeTime:(NSRect)newFrame {
+    return EZUpdateTableViewRowHeightAnimationDuration;
+}
+
+
 - (void)dealloc {
     NSLog(@"dealloc: %@", self);
 }
