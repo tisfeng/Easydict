@@ -27,7 +27,7 @@ static NSString *const EZResultCellId = @"EZResultCellId";
 static NSString *const EZColumnId = @"EZColumnId";
 
 static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
-static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
+static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 1.3;
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -78,11 +78,12 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setup];
+    [self updateWindowViewHeightWithLock];
 }
 
 - (void)viewWillAppear {
     [super viewWillAppear];
-    [self updateWindowViewHeightWithLock];
+//    [self updateWindowViewHeightWithLock];
 }
 
 - (void)setup {
@@ -177,7 +178,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
 
-        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 7, 0);
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 6, 0);
     }
     return _scrollView;
 }
@@ -207,7 +208,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
 
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(2 * EZMiniHorizontalMargin_12, EZMiniVerticalMargin_8);
+        tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_8);
         tableView.gridColor = NSColor.clearColor;
         tableView.gridStyleMask = NSTableViewGridNone;
         [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
@@ -478,11 +479,13 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
 
+//    [self updateWindowViewHeightWithLock];
+
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = kUpdateTableViewRowHeightAnimationDuration;
+        [self updateWindowViewHeightWithLock];
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
     } completionHandler:^{
-        [self updateWindowViewHeightWithLock];
         if (completionHandler) {
             completionHandler();
         }
@@ -571,7 +574,7 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 
 // Get tableView bounds in real time.
 - (CGRect)tableViewContentBounds {
-    CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZMiniHorizontalMargin_12, self.scrollView.height);
+    CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZHorizontalCellSpacing_12, self.scrollView.height);
     return rect;
 }
 
@@ -765,17 +768,10 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
 #pragma mark - Update Window Height
 
 - (void)updateWindowViewHeightWithLock {
-    [self updateWindowViewHeight:YES];
-}
+    // lock enableResizeWindow.
+    self.enableResizeWindow = NO;
 
-- (void)updateWindowViewHeight:(BOOL)lock {
-    NSTimeInterval lockTime = 0.1;
-
-    if (lock) {
-        self.enableResizeWindow = NO;
-    }
-
-    CGFloat height = [self getScrollViewHeight];
+    CGFloat height = [self getRestrainedScrollViewHeight];
     //    NSLog(@"contentHeight: %@", @(height));
 
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
@@ -801,24 +797,26 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    [window setFrame:newFrame display:YES];
+    [window setFrame:newFrame display:NO];
 
+    [EZCoordinateTool getFrameSafePoint:newFrame moveToPoint:CGPointMake(window.x, y)];
     CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
 
-    //    NSLog(@"window frame: %@", @(window.frame));
+        NSLog(@"window frame: %@", @(window.frame));
     //    NSLog(@"safe frame: %@", @(safeFrame));
 
-    [window setFrameOrigin:safeLocation];
+    // Update frame as animation.
+    [window.animator setFrameOrigin:safeLocation];
 
-    if (lock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.enableResizeWindow = YES;
-        });
-    }
+    // unlock enableResizeWindow.
+    NSTimeInterval lockTime = kUpdateTableViewRowHeightAnimationDuration;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.enableResizeWindow = YES;
+    });
 }
 
-- (CGFloat)getScrollViewHeight {
-    CGFloat height = [self getContentHeight];
+- (CGFloat)getRestrainedScrollViewHeight {
+    CGFloat height = [self getScrollViewHeight];
 
     CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];
     CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
@@ -829,6 +827,20 @@ static NSTimeInterval const kUpdateTableViewRowHeightAnimationDuration = 0.3;
     return height;
 }
 
+/// Manually calculate tableView row height.
+- (CGFloat)getScrollViewHeight {
+    CGFloat scrollViewContentHeight = 0;
+    
+    NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
+    for (int i = 0; i < rowCount; i++) {
+       CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
+        scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
+    }
+    
+    return scrollViewContentHeight;
+}
+
+/// Auto calculate documentView height.
 - (CGFloat)getContentHeight {
     // Modify scrollView height to 0, to get actual tableView content height, avoid blank view.
     self.scrollView.height = 0;
