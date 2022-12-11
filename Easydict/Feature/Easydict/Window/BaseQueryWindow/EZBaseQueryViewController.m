@@ -117,13 +117,15 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
         mm_strongify(self);
 
         // Avoid recycling call, resize window --> update window height --> resize window
-        if (!self.lockResizeWindow) {
+        if (self.lockResizeWindow) {
+            NSLog(@"lockResizeWindow");
             return;
         }
 
-//        [self reloadTableViewData:^{
-//            [self delayUpdateWindowViewHeight];
-//        }];
+        [self reloadTableViewDataWithDisplay:YES completion:^{
+            NSLog(@"delayUpdateWindowViewHeight");
+            [self delayUpdateWindowViewHeight];
+        }];
     }];
 
     //    self.kvo = [FBKVOController controllerWithObserver:self];
@@ -396,7 +398,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
             height = kResultViewMiniHeight;
         } else {
             height = MAX(result.viewHeight, kResultViewMiniHeight);
-            NSLog(@"serviceType: %@, height: %@", result.serviceType, @(height));
+//            NSLog(@"serviceType: %@, height: %@", result.serviceType, @(height));
         }
     }
 
@@ -421,9 +423,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 
 /// TableView reloadData
 - (void)reloadTableViewData:(void (^)(void))completion {
+    [self reloadTableViewDataWithDisplay:YES completion:completion];
+}
+
+/// TableView reloadData, no animation.
+- (void)reloadTableViewDataWithDisplay:(BOOL)displayFlag completion:(void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowViewHeightWithAnimation:NO];
+        [self updateWindowViewHeightWithAnimation:NO display:displayFlag];
         if (completion) {
             completion();
         }
@@ -767,10 +774,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
 #pragma mark - Update Window Height
 
 - (void)updateWindowViewHeightWithAnimation:(BOOL)animated {
-    // lock enableResizeWindow.
-    self.lockResizeWindow = NO;
+    [self updateWindowViewHeightWithAnimation:animated display:YES];
+}
 
-    [self.view layoutSubtreeIfNeeded];
+- (void)updateWindowViewHeightWithAnimation:(BOOL)animateFlag display:(BOOL)displayFlag {
+    self.lockResizeWindow = YES;
     
     CGFloat height = [self getRestrainedScrollViewHeight];
     //    NSLog(@"contentHeight: %@", @(height));
@@ -798,58 +806,17 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.1;
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-//    [window setFrame:newFrame display:YES];
+    // TODO: safe window frame.
     
-    CGFloat animatedDuration = animated ? EZUpdateTableViewRowHeightAnimationDuration : 0;
-    
+    CGFloat animatedDuration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
         context.duration = animatedDuration;
-//        [self.window.animator setFrame:newFrame display:YES];
-        
-        [self.window setFrame:newFrame display:YES animate:animated];
-
+        [self.window setFrame:newFrame display:displayFlag animate:animateFlag];
     } completionHandler:^{
-        // 动画完成后的处理
+        self.lockResizeWindow = NO;
     }];
     
-
-    [EZCoordinateTool getFrameSafePoint:newFrame moveToPoint:CGPointMake(window.x, y)];
-//    CGPoint safeLocation = [EZCoordinateTool getSafeLocation:window.frame];
-
-        NSLog(@"window frame: %@", @(window.frame));
-    //    NSLog(@"safe frame: %@", @(safeFrame));
-
-//    [window setFrameOrigin:safeLocation];
-
-    // unlock, + 0.01 to avoid reload tableView immediately after updating height.
-//    NSTimeInterval lockTime = kUpdateTableViewRowHeightAnimationDuration + 0.01;
-    NSTimeInterval lockTime = 2 * EZUpdateTableViewRowHeightAnimationDuration;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(lockTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.lockResizeWindow = YES;
-    });
-}
-
-- (void)setLockResizeWindow:(BOOL)enableResizeWindow {
-    _lockResizeWindow = enableResizeWindow;
-    
-    NSLog(@"enableResizeWindow: %d", enableResizeWindow);
-}
-
-- (void)enableResizeWindow {
-    self.lockResizeWindow = NO;
-}
-
-- (void)disableResizeWindow {
-    self.lockResizeWindow = YES;
-}
-
-/// Since manually changing the window size may be a continuous event, the previous action needs to be cancelled.
-- (void)delayEnbleResizeWindow {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(enableResizeWindow) object:nil];
-
-    
-    NSTimeInterval lockTime = 2 * EZUpdateTableViewRowHeightAnimationDuration;
-    [self performSelector:@selector(enableResizeWindow) withObject:nil afterDelay:lockTime];
+    NSLog(@"window frame: %@", @(window.frame));
 }
 
 
