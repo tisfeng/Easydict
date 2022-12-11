@@ -262,7 +262,7 @@ static const CGFloat kFixWrappingLabelMargin = 2;
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         
-        CGFloat width = EZFixedQueryWindow.shared.width - leftMargin - kHorizontalMargin - 2 * EZMiniHorizontalMargin_12;
+        CGFloat width = EZFixedQueryWindow.shared.width - leftMargin - kHorizontalMargin - 2 * EZHorizontalCellSpacing_12;
 //        NSLog(@"text: %@, width: %@", text, @(width));
 
         // ⚠️ 很奇特，比如实际计算结果为 364，但界面渲染却是 364.5。这样显示会有点问题，所以暂时宽度+1
