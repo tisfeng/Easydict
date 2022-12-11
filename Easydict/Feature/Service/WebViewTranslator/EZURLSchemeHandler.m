@@ -8,6 +8,17 @@
 
 #import "EZURLSchemeHandler.h"
 
+NS_INLINE NSException * _Nullable tryBlock(void(^_Nonnull tryBlock)(void)) {
+    @try {
+        tryBlock();
+    }
+    @catch (NSException *exception) {
+        NSLog(@"--> exception error: %@", exception);
+        return exception;
+    }
+    return nil;
+}
+
 
 typedef BOOL (^HTTPDNSCookieFilter)(NSHTTPCookie *, NSURL *);
 
@@ -65,8 +76,19 @@ static char *kNSURLRequestSSTOPKEY = "kNSURLRequestSSTOPKEY";
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
+    if (task.state == NSURLSessionTaskStateCanceling) {
+        return;
+    }
+    
+    if (self.schemeTask.request.ss_stop) {
+        NSLog(@"--> This task has already been stopped");
+        return;
+    }
+    
     if (error) {
-        [self.schemeTask didFailWithError:error];
+        tryBlock(^{
+            [self.schemeTask didFailWithError:error];
+        });
     } else {
         [self.schemeTask didFinish];
     }
@@ -78,7 +100,14 @@ didCompleteWithError:(NSError *)error {
     if (dataTask.state == NSURLSessionTaskStateCanceling) {
         return;
     }
-    [self.schemeTask didReceiveData:data];
+    if (self.schemeTask.request.ss_stop) {
+        NSLog(@"--> This task has already been stopped");
+        return;
+    }
+    
+    tryBlock(^{
+        [self.schemeTask didReceiveData:data];
+    });
 }
 
 
@@ -88,13 +117,18 @@ didReceiveResponse:(NSURLResponse *)response
     if (dataTask.state == NSURLSessionTaskStateCanceling) {
         return;
     }
-    [self.schemeTask didReceiveResponse:response];
+    if (self.schemeTask.request.ss_stop) {
+        NSLog(@"--> This task has already been stopped");
+        return;
+    }
+    
+    tryBlock(^{
+        [self.schemeTask didReceiveResponse:response];
+    });
 }
 
 
 @end
-
-
 
 
 #pragma mark - EZURLSchemeHandler
@@ -201,7 +235,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 #pragma mark - Publick Methods
 
-- (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler {
+- (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
     self.monitorDictionary[url] = completionHandler;
 }
 
@@ -230,7 +264,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
      fra -> zh: https://fanyi.baidu.com/v2transapi?from=fra&to=zh
      */
     
-    EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerWithURL:URL];
+    EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerForURL:URL];
     if (completionHandler) {
         [request.HTTPBody mj_keyValues];
         NSData *bodyData = request.HTTPBody;
@@ -263,7 +297,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 #pragma mark -
 
-- (nullable EZURLSessionTaskCompletionHandler)completionHandlerWithURL:(NSURL *)URL {
+- (nullable EZURLSessionTaskCompletionHandler)completionHandlerForURL:(NSURL *)URL {
     // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
     
     NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:NO];
@@ -358,6 +392,10 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
+    if (task.state == NSURLSessionTaskStateCanceling) {
+        return;
+    }
+    
     EZSessionTaskDelegate *delegate = [self delegateForTask:task];
     [delegate URLSession:session task:task didCompleteWithError:error];
 }
@@ -365,6 +403,10 @@ didCompleteWithError:(NSError *)error {
 - (void)URLSession:(NSURLSession *)session
           dataTask:(NSURLSessionDataTask *)dataTask
 didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
+    if (dataTask.state == NSURLSessionTaskStateCanceling) {
+        return;
+    }
+    
     EZSessionTaskDelegate *delegate = [self delegateForTask:dataTask];
     if (delegate) {
         [self removeDelegateForTask:dataTask];
@@ -375,13 +417,22 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
 - (void)URLSession:(NSURLSession *)session
           dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data {
+    if (dataTask.state == NSURLSessionTaskStateCanceling) {
+        return;
+    }
+    
     EZSessionTaskDelegate *delegate = [self delegateForTask:dataTask];
     [delegate URLSession:session dataTask:dataTask didReceiveData:data];
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
  completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+    if (dataTask.state == NSURLSessionTaskStateCanceling) {
+        return;
+    }
+    
     EZSessionTaskDelegate *delegate = [self delegateForTask:dataTask];
     [delegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
     
