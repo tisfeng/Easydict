@@ -818,12 +818,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    // TODO: safe window frame.
+    CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:newFrame];
     
     CGFloat animatedDuration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
         context.duration = animatedDuration;
-        [self.window setFrame:newFrame display:displayFlag animate:animateFlag];
+        [self.window setFrame:safeFrame display:displayFlag animate:animateFlag];
     } completionHandler:^{
         self.lockResizeWindow = NO;
         
