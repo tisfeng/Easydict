@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.3;
+
 @interface EZBaseQueryViewController : NSViewController
 
 @property (nonatomic, copy) NSString *queryText;
