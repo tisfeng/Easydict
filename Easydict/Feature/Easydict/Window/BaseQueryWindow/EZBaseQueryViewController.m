@@ -349,6 +349,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         EZQueryCell *queryCell = [self createQueryCell];
         self.queryView = queryCell.queryView;
         self.queryView.windowType = self.windowType;
+        [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
         self.queryView.queryModel = self.queryModel;
         self.queryCell = queryCell;
                 
