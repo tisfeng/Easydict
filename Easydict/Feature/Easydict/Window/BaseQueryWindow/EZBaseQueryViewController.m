@@ -378,17 +378,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
 
-    // TODO: need to optimize.
     if (row == 0) {
-        if (self.queryModel.queryViewHeight) {
-            height = self.queryModel.queryViewHeight;
-        } else {
-            EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
-            EZQueryView *queryView = queryCell.queryView;
-            queryView.windowType = self.windowType;
-            queryView.queryModel = self.queryModel;
-            height = [queryView heightOfQueryView];
-        }
+        CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
+        CGFloat miniQueryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
+        height = MAX(self.queryModel.queryViewHeight, miniQueryViewHeight);
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
     } else {

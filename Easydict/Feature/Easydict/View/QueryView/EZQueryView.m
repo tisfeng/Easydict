@@ -15,8 +15,6 @@
 #include <Carbon/Carbon.h>
 #import "NSView+EZAnimatedHidden.h"
 
-static CGFloat kExceptTextViewHeight = 30;
-
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
@@ -92,7 +90,7 @@ static CGFloat kExceptTextViewHeight = 30;
 #pragma mark - Public
 
 - (CGFloat)heightOfQueryView {
-    return [self heightOfTextView] + kExceptTextViewHeight;
+    return [self heightOfTextView] + EZExceptInputViewHeight;
 }
 
 - (void)setClearButtonAnimatedHidden:(BOOL)hidden {
@@ -226,7 +224,7 @@ static CGFloat kExceptTextViewHeight = 30;
     //    NSLog(@"self.frame: %@", @(self.frame));
     
     if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock(text, textViewHeight + kExceptTextViewHeight);
+        self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
     }
 }
 
