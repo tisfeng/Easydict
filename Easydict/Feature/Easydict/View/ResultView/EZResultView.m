@@ -127,7 +127,7 @@
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
         
-        [self setNeedsUpdateConstraints:YES];
+//        [self setNeedsUpdateConstraints:YES];
         
         if (self.clickArrowBlock) {
             self.clickArrowBlock(newIsShowing);
@@ -213,10 +213,13 @@
     
     [self.wordResultView refreshWithResult:result];
     
-    [self layoutSubtreeIfNeeded];
-//    NSLog(@"word result view height: %@", @(self.height));
-
-    self.result.viewHeight = self.height;
+    CGFloat viewHeight = kResultViewMiniHeight;
+    if (result.hasResult && result.isShowing) {
+        [self layoutSubtreeIfNeeded];
+        viewHeight = self.height;
+        //    NSLog(@"result view height: %@", @(self.height));
+    }
+    self.result.viewHeight = viewHeight;
 }
 
 - (void)updateArrowButton {

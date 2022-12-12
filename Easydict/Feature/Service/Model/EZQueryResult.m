@@ -64,4 +64,11 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
     return NO;
 }
 
+- (BOOL)hasResult {
+    if (self.isEmpty == NO || self.error != nil) {
+        return YES;
+    }
+    return NO;
+}
+
 @end

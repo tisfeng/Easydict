@@ -109,6 +109,9 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 
 @property (nonatomic, strong, nullable) NSError *error;
 
+/// If self.isEmpty == NO || self.error != nil, then hasResult = YES, that means will show result view.
+@property (nonatomic, assign) BOOL hasResult;
+
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;
 /// 翻译后的发音地址
