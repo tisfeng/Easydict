@@ -17,6 +17,8 @@
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
+@property (nonatomic, strong) NSButton *audioButton;
+@property (nonatomic, strong) NSButton *textCopyButton;
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
 
@@ -37,6 +39,14 @@
 }
 
 - (void)setup {
+    self.wantsLayer = YES;
+    self.layer.cornerRadius = EZCornerRadius_8;
+    [self.layer excuteLight:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
+    } drak:^(id _Nonnull x) {
+        [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
+    }];
+    
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.bounds];
     self.scrollView = scrollView;
     [self addSubview:scrollView];
@@ -51,11 +61,43 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     
+    EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+    [self addSubview:audioButton];
+    self.audioButton = audioButton;
+    audioButton.image = [NSImage imageNamed:@"audio"];
+    audioButton.toolTip = @"播放音频";
+    
+    mm_weakify(self)
+    [audioButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"audioActionBlock");
+        mm_strongify(self)
+        if (self.playAudioBlock) {
+            self.playAudioBlock(self.copiedText);
+        }
+    }];
+    audioButton.mas_key = @"audioButton";
+    
+    EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
+    [self addSubview:textCopyButton];
+    self.textCopyButton = textCopyButton;
+    
+    textCopyButton.image = [NSImage imageNamed:@"copy"];
+    textCopyButton.toolTip = @"复制";
+    
+    [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
+        NSLog(@"copyActionBlock");
+        mm_strongify(self)
+        if (self.copyTextBlock) {
+            self.copyTextBlock(self.copiedText);
+        }
+    }];
+    textCopyButton.mas_key = @"copyButton";
+    
+    
     EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
     [self addSubview:detectButton];
     self.detectButton = detectButton;
     
-    mm_weakify(self);
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
         if (self.selectedLanguageBlock) {
@@ -107,7 +149,20 @@
 
 - (void)updateConstraints {
     [self updateCustomLayout];
+    
+    [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.offset(-5);
+        make.left.offset(8);
+        make.width.height.mas_equalTo(EZAudioButtonWidth_25);
+    }];
+    
+    [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.audioButton.mas_right).offset(1);
+        make.width.height.bottom.equalTo(self.audioButton);
+    }];
+    
     [self updateDetectButton];
+
     
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
