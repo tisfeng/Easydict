@@ -31,7 +31,7 @@
 		03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A542937B7DE00C34C33 /* EZTranslateError.m */; };
 		03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A572937CC3200C34C33 /* EZConfiguration.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
-		03542A5E2938F05B00C34C33 /* EZLanguageClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageClass.m */; };
+		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
@@ -217,8 +217,8 @@
 		03542A572937CC3200C34C33 /* EZConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZConfiguration.m; sourceTree = "<group>"; };
 		03542A592938DA2B00C34C33 /* EZDetectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDetectLanguageButton.h; sourceTree = "<group>"; };
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
-		03542A5C2938F05B00C34C33 /* EZLanguageClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageClass.h; sourceTree = "<group>"; };
-		03542A5D2938F05B00C34C33 /* EZLanguageClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageClass.m; sourceTree = "<group>"; };
+		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
+		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLinkButton.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -549,8 +549,8 @@
 			children = (
 				03542A322936F70F00C34C33 /* EZLanguageManager.h */,
 				03542A332936F70F00C34C33 /* EZLanguageManager.m */,
-				03542A5C2938F05B00C34C33 /* EZLanguageClass.h */,
-				03542A5D2938F05B00C34C33 /* EZLanguageClass.m */,
+				03542A5C2938F05B00C34C33 /* EZLanguageModel.h */,
+				03542A5D2938F05B00C34C33 /* EZLanguageModel.m */,
 			);
 			path = Language;
 			sourceTree = "<group>";
@@ -1586,7 +1586,7 @@
 				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
-				03542A5E2938F05B00C34C33 /* EZLanguageClass.m in Sources */,
+				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
 				03B022EB29231FA6001C7E63 /* Configuration.m in Sources */,
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,

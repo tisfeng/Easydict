@@ -699,7 +699,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }];
 }
 
-- (void)audio:(NSString *)text
+- (void)playTextAudio:(NSString *)text
          from:(EZLanguage)from
    completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {

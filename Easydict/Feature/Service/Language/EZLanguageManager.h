@@ -7,11 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZLanguageClass.h"
+#import "EZLanguageModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLanguageManager : NSObject
+
++ (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
+
+- (nullable EZLanguageModel *)languageModelFromLocaleIdentifier:(NSString *)localeIdentifier;
 
 /// Get target language with source language
 + (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;

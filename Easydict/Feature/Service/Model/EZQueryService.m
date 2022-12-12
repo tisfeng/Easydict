@@ -134,7 +134,7 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (void)audio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable text, NSError *_Nullable error))completion {
+- (void)playTextAudio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable text, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
 
