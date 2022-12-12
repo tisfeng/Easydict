@@ -597,8 +597,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
 
-            // !!!: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
-            [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:nil];
+            // ???: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
+            [self updateTableViewRowIndexes:firstIndexSet reloadData:YES completionHandler:nil];
         }
     }];
 
