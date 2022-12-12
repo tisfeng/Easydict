@@ -147,7 +147,7 @@
     CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
     
     // Shift a bit to the left so that the UI looks better.
-    padding -= 10;
+    padding -= 5;
     
     //    NSLog(@"query cell padding: %.1f", padding);
     
