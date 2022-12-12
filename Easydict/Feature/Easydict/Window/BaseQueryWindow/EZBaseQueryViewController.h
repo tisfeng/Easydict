@@ -11,7 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.3;
+// ???: If value is not 0.2, it seems will block animation, because default animationResizeTime is 0.2 ?
+static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
 @interface EZBaseQueryViewController : NSViewController
 
