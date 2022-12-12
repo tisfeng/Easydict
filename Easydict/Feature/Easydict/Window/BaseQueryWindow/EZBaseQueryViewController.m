@@ -600,6 +600,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self startQueryText:text];
     }];
 
+    // TODO: need to use Apple system api to play audio.
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         EZQueryService *service = [self firstEZQueryService];

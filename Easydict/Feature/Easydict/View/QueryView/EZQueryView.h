@@ -6,7 +6,6 @@
 //  Copyright © 2022 ripperhe. All rights reserved.
 //
 
-#import "EZCommonView.h"
 #import "EZTextView.h"
 #import "EZQueryModel.h"
 #import "NSView+EZWindowType.h"
@@ -15,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 static CGFloat EZExceptInputViewHeight = 30;
 
-@interface EZQueryView : EZCommonView
+@interface EZQueryView : NSView
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
@@ -23,6 +22,9 @@ static CGFloat EZExceptInputViewHeight = 30;
 @property (nonatomic, strong) NSScrollView *scrollView;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
+
+@property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
+@property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
 @property (nonatomic, copy) void (^clearBlock)(NSString *text);
 

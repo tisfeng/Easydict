@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZCommonView.h"
 #import "WordResultView.h"
 #import "EZQueryResult.h"
 
