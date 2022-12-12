@@ -221,7 +221,9 @@ static EZWindowManager *_instance;
     } else {
         // Reset window height first, avoid being affected by previous window height.
         [window.queryViewController resetTableView:^{
-            [self showFloatingWindow:window atPoint:location];
+            // !!!: location is bottom-left point, we need to convert it to top-left point,
+            CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
+            [self showFloatingWindow:window atPoint:correctedPosition];
             [window.queryViewController startQueryText:text];
         }];
     }
@@ -315,18 +317,9 @@ static EZWindowManager *_instance;
     
     CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
     CGFloat y = popButtonLocation.y + 5;
-    
-    // ⚠️ Manually change mini frame point to top-left position, later have to use setFrameOrigin to show window frame.
-    CGPoint showingPosition = [self convertShowingPositon:CGPointMake(x, y) windowType:EZWindowTypeMini];
+    CGPoint showingPosition = CGPointMake(x, y);
     
     return showingPosition;
-}
-
-- (CGPoint)convertShowingPositon:(CGPoint)position windowType:(EZWindowType)windowType {
-    CGFloat windowMiniHeight = [[EZLayoutManager shared] minimumWindowSize:windowType].height;
-    CGFloat y = position.y - windowMiniHeight - EZTitlebarHeight_28;
-    CGPoint newPosition = CGPointMake(position.x, y);
-    return newPosition;
 }
 
 // Get fixed window location.

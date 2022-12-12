@@ -428,7 +428,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)reloadTableViewDataWithLock:(BOOL)lockFlag completion:(void (^)(void))completion {
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        [self updateWindowViewHeightWithLock:lockFlag animate:NO display:NO completion:completion];
+        [self updateWindowViewHeightWithLock:lockFlag animate:NO display:YES completion:completion];
     }];
 
     [self.tableView reloadData];
