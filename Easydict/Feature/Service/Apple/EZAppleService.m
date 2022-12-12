@@ -9,6 +9,7 @@
 #import "EZAppleService.h"
 #import <Vision/Vision.h>
 #import <NaturalLanguage/NaturalLanguage.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation EZAppleService
 
@@ -31,11 +32,11 @@
 // get supportLanguagesDictionary, key is EZLanguage, value is NLLanguage, such as EZLanguageAuto, NLLanguageUndetermined
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, NLLanguageUndetermined,
-                                        EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,
-                                        EZLanguageTraditionalChinese, NLLanguageTraditionalChinese,
-                                        EZLanguageEnglish, NLLanguageEnglish,
-                                        EZLanguageJapanese, NLLanguageJapanese,
+                                        EZLanguageAuto, NLLanguageUndetermined,                     // uud
+                                        EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,   // zh-Hans
+                                        EZLanguageTraditionalChinese, NLLanguageTraditionalChinese, // zh-Hant
+                                        EZLanguageEnglish, NLLanguageEnglish,                       // en
+                                        EZLanguageJapanese, NLLanguageJapanese,                     // ja
                                         EZLanguageKorean, NLLanguageKorean,
                                         EZLanguageFrench, NLLanguageFrench,
                                         EZLanguageSpanish, NLLanguageSpanish,
@@ -79,6 +80,9 @@
 }
 
 /// Apple ocr language: "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+///
+/// TODO: need to use languageModel localeIdentifier instead.
+///
 - (MMOrderedDictionary *)ocrLanguageDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageSimplifiedChinese, @"zh-Hans",
@@ -227,7 +231,61 @@
     }
 }
 
-- (void)audio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)playTextAudio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    // com.apple.voice.compact.en-US.Samantha
+    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:from];
+    
+    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+    [synthesizer startSpeakingString:text];
+    
+    //    [self say];
+}
+
+- (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
+    NSString *voiceIdentifier = nil;
+    EZLanguageModel *languageModel = [EZLanguageManager languageModelFromLanguage:language];
+    NSString *localeIdentifier = languageModel.localeIdentifier;
+    
+    NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
+    for (NSString *voice in availableVoices) {
+        NSLog(@"%@", voice);
+        NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
+        NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
+        if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
+            voiceIdentifier = attributesForVoice[NSVoiceIdentifier];
+            // a language has multiple voice, we use compact type.
+            if ([voiceIdentifier containsString:@"compact"]) {
+                return voiceIdentifier;
+            }
+        }
+    }
+    
+    return voiceIdentifier;
+}
+
+
+- (void)say {
+    // 创建语音合成器。
+    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+    // 创建一个语音合成器的语音。
+    
+    AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:@"The quick brown fox jumped over the lazy dog."];
+    // 配置语音。
+    utterance.rate = 0.57;
+    utterance.pitchMultiplier = 0.8;
+    utterance.postUtteranceDelay = 0.2;
+    utterance.volume = 0.8;
+    
+    // 检索英式英语的声音。
+    AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
+    
+    //    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
+    //    NSLog(@"speechVoices: %@", speechVoices);
+    
+    // 将语音分配给语音合成器。
+    utterance.voice = voice;
+    // 告诉语音合成器来讲话。
+    [synthesizer speakUtterance:utterance];
 }
 
 
@@ -262,7 +320,7 @@
         NLLanguageSpanish : @(0.1), // favor
         
         NLLanguagePortuguese : @(0.05), // favor, e
-        NLLanguageDutch : @(0.01),   // heel, via
+        NLLanguageDutch : @(0.01),      // heel, via
         NLLanguageCzech : @(0.01),      // pro
     };
     

@@ -19,6 +19,7 @@
 #import "EZCoordinateTool.h"
 #import "EZWindowManager.h"
 #import "EZServiceTypes.h"
+#import "EZAppleService.h"
 
 static NSString *const EZQueryCellId = @"EZQueryCellId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -604,15 +605,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     // TODO: need to use Apple system api to play audio.
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        EZQueryService *service = [self firstEZQueryService];
-        if (service) {
-            EZLanguage lang = self.queryModel.userSourceLanguage;
-            [service audio:self.queryModel.queryText from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-                if (url.length) {
-                    [self playAudioWithURL:url];
-                }
-            }];
-        }
+        EZQueryService *service = [[EZAppleService alloc] init];
+        EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
+        [service playTextAudio:self.queryModel.queryText from:fromLanguage completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+            if (url.length) {
+                [self playAudioWithURL:url];
+            }
+        }];
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -636,13 +635,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     }];
 
     return queryCell;
-}
-
-- (EZQueryService *_Nullable)firstEZQueryService {
-    for (EZQueryService *service in self.services) {
-        return service;
-    }
-    return nil;
 }
 
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
@@ -732,7 +724,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)playSeriveAudio:(EZQueryService *)service text:(NSString *)text lang:(EZLanguage)lang {
     if (text.length) {
         mm_weakify(self)
-            [service audio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+            [service playTextAudio:text from:lang completion:^(NSString *_Nullable url, NSError *_Nullable error) {
                 mm_strongify(self);
                 if (!error) {
                     [self playAudioWithURL:url];

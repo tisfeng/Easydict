@@ -67,14 +67,17 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageCroatian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageMongolian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 
-@interface EZLanguageClass : NSObject
+@interface EZLanguageModel : NSObject
 
 @property (nonatomic, copy) NSString *chineseName;
 @property (nonatomic, copy) EZLanguage englishName;
 @property (nonatomic, copy) NSString *localName;
 @property (nonatomic, copy) NSString *flagEmoji;
+@property (nonatomic, copy) NSString *voiceName; // Chinese: Tingting, English: Samantha
+@property (nonatomic, copy) NSString *localeIdentifier; //  ISO 639-1 and ISO 3166-1, such as en_US, zh_CN
 
-+ (MMOrderedDictionary<EZLanguage, EZLanguageClass *> *)allLanguagesDict;
+
++ (MMOrderedDictionary<EZLanguage, EZLanguageModel *> *)allLanguagesDict;
 
 @end
 

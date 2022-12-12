@@ -11,6 +11,21 @@
 
 @implementation EZLanguageManager
 
++ (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language {
+    return [[EZLanguageModel allLanguagesDict] objectForKey:language];
+}
+
+// Get language model with locale identifier, such as "zh-CN"
+- (nullable EZLanguageModel *)languageModelFromLocaleIdentifier:(NSString *)localeIdentifier {
+    for (EZLanguageModel *languageModel in [EZLanguageModel allLanguagesDict].allValues) {
+        if ([languageModel.localeIdentifier isEqualToString:localeIdentifier]) {
+            return languageModel;
+        }
+    }
+    return nil;
+}
+
+
 // Get target language with source language
 + (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
     EZLanguage firstLanguage = [self firstLanguage];
@@ -36,26 +51,26 @@
         // Convert to EZLanguage
         EZAppleService *appleService = [[EZAppleService alloc] init];
         EZLanguage ezLanguage = [appleService languageEnumFromCode:languageCode];
-        
+
         [languages addObject:ezLanguage];
     }
-    
+
     // This method seems to be the same.
     //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //    NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
-    
+
     //    NSLog(@"languages: %@", languages);
-    
+
     return languages;
 }
 
 + (NSArray<EZLanguage> *)preferredTwoLanguages {
     NSMutableArray *twoLanguages = [NSMutableArray array];
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
-    
+
     EZLanguage firstLanguage = languages.firstObject;
     [twoLanguages addObject:firstLanguage];
-    
+
     if (languages.count > 1) {
         [twoLanguages addObject:languages[1]];
     } else {
@@ -65,7 +80,7 @@
         }
         [twoLanguages addObject:secondLanguage];
     }
-    
+
     return twoLanguages;
 }
 
@@ -98,8 +113,7 @@
 }
 
 + (BOOL)isChineseLanguage:(EZLanguage)language {
-    if ([language isEqualToString:EZLanguageSimplifiedChinese]
-        || [language isEqualToString:EZLanguageTraditionalChinese]) {
+    if ([language isEqualToString:EZLanguageSimplifiedChinese] || [language isEqualToString:EZLanguageTraditionalChinese]) {
         return YES;
     }
     return NO;
@@ -114,7 +128,7 @@
 + (BOOL)containsEnglishPreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
-        if ([language isEqualToString: EZLanguageEnglish]) {
+        if ([language isEqualToString:EZLanguageEnglish]) {
             return YES;
         }
     }
@@ -124,7 +138,7 @@
 + (BOOL)containsChinesePreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
-        if ([language isEqualToString: EZLanguageEnglish]) {
+        if ([language isEqualToString:EZLanguageEnglish]) {
             return YES;
         }
     }
@@ -135,18 +149,19 @@
 #pragma mark -
 
 + (NSArray<EZLanguage> *)allLanguages {
-    return [[EZLanguageClass allLanguagesDict] sortedKeys];;
+    return [[EZLanguageModel allLanguagesDict] sortedKeys];
+    ;
 }
 
 // Get language flag emoji according to language, such as "🇨🇳"
 + (NSString *)languageFlagEmoji:(EZLanguage)language {
-    EZLanguageClass *lang = [[EZLanguageClass allLanguagesDict] objectForKey:language];
+    EZLanguageModel *lang = [[EZLanguageModel allLanguagesDict] objectForKey:language];
     return lang.flagEmoji;
 }
 
 // Get language Chinese name, such as "简体中文"
 + (NSString *)languageChineseName:(EZLanguage)language {
-    EZLanguageClass *lang = [[EZLanguageClass allLanguagesDict] objectForKey:language];
+    EZLanguageModel *lang = [[EZLanguageModel allLanguagesDict] objectForKey:language];
     return lang.chineseName;
 }
 
