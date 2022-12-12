@@ -11,9 +11,9 @@
 #import "EZWindowManager.h"
 #import "NSView+EZGetViewController.h"
 #import "NSImage+EZResize.h"
-#import "EZDetectLanguageButton.h"
 #include <Carbon/Carbon.h>
 #import "NSView+EZAnimatedHidden.h"
+#import "EZDetectLanguageButton.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -111,9 +111,6 @@
     [self addSubview:clearButton];
     self.clearButton = clearButton;
     
-    // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
-    clearButton.alphaValue = 0;
-    
     NSImage *clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
@@ -139,7 +136,7 @@
     [self.clearButton setAnimatedHidden:hidden];
 }
 
-#pragma mark - Super method
+#pragma mark - Rewrite
 
 - (void)viewDidMoveToWindow {
     [self scrollToTextViewBottom];
@@ -334,6 +331,14 @@
     NSScrollView *scrollView = self.scrollView;
     CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
     [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
+}
+
+
+- (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel {
+    // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
+    
+    self.clearButton.alphaValue = queryModel.queryText.length ? 1.0 : 0;
+    self.detectButton.alphaValue = [queryModel.detectedLanguage isEqualToString:EZLanguageAuto] ? 0 : 1.0;
 }
 
 @end

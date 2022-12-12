@@ -21,6 +21,7 @@ static CGFloat EZExceptInputViewHeight = 30;
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
 
+
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
@@ -35,6 +36,8 @@ static CGFloat EZExceptInputViewHeight = 30;
 - (CGFloat)heightOfQueryView;
 
 - (void)setClearButtonAnimatedHidden:(BOOL)show;
+
+- (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
 
 @end
 
