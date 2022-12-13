@@ -137,7 +137,6 @@
             return;
         }
         
-        
         BOOL oldIsShowing = self.result.isShowing;
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
@@ -148,7 +147,7 @@
 //        [self setNeedsUpdateConstraints:YES];
         
         if (self.clickArrowBlock) {
-            self.clickArrowBlock(newIsShowing);
+            self.clickArrowBlock(self.result);
         }
         
         //        [self rotateArrowButton];
