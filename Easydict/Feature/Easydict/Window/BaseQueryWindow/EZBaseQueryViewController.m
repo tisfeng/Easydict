@@ -692,6 +692,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self copyTextToPasteboard:text];
     }];
     
+    [resultView setQueryTextBlock:^(NSString * _Nonnull word) {
+        mm_strongify(self);
+        [self startQueryText:word];
+    }];
+    
     [resultView setClickArrowBlock:^(BOOL isShowing) {
         mm_strongify(self);
         service.enabled = isShowing;

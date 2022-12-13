@@ -288,6 +288,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = textFont;
+            textField.selectable = YES;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
@@ -307,35 +308,24 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         
-        [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
+        [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
+            EZHoverButton *wordButton = [[EZHoverButton alloc] init];
+            [self addSubview:wordButton];
+            wordButton.attributedTitle = [NSAttributedString mm_attributedStringWithString:word font:textFont color:[NSColor mm_colorWithHexString:@"#007AFF"]];
+            [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                if (idx == 0) {
+                    make.left.equalTo(nameTextFiled.mas_right);
+                } else {
+                    make.left.equalTo(lastView.mas_right).offset(5);
+                }
+                make.centerY.equalTo(nameTextFiled);
+            }];
+            mm_weakify(self);
+            [wordButton setClickBlock:^(EZButton * _Nonnull button) {
                 mm_strongify(self);
-
-                [self addSubview:button];
-                button.bordered = NO;
-                button.imageScaling = NSImageScaleProportionallyDown;
-                button.bezelStyle = NSBezelStyleRegularSquare;
-                [button setButtonType:NSButtonTypeMomentaryChange];
-                button.attributedTitle = [NSAttributedString mm_attributedStringWithString:obj font:textFont color:[NSColor mm_colorWithHexString:@"#007AFF"]];
-                [button sizeToFit];
-                [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                    if (idx == 0) {
-                        make.left.equalTo(nameTextFiled.mas_right);
-                    } else {
-                        make.left.equalTo(lastView.mas_right).offset(5);
-                    }
-                    make.centerY.equalTo(nameTextFiled);
-                }];
-                
-                mm_weakify(self, obj)
-                [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                    mm_strongify(self, obj);
-                    
-                    if (self.copyTextBlock) {
-                        self.copyTextBlock(self, obj);
-                    }
-                    return RACSignal.empty;
-                }]];
+                if (self.queryTextBlock) {
+                    self.queryTextBlock(self, word);
+                }
             }];
             wordButton.mas_key = @"wordButton_words";
             
