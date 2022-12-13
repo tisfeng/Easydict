@@ -80,9 +80,6 @@
 }
 
 /// Apple ocr language: "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-///
-/// TODO: need to use languageModel localeIdentifier instead.
-///
 - (MMOrderedDictionary *)ocrLanguageDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageSimplifiedChinese, @"zh-Hans",

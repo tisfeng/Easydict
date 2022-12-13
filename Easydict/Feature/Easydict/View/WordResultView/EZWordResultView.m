@@ -167,6 +167,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     [x setTextColor:NSColor.resultTextDarkColor];
                 }];
                 textField.font = textFont;
+                textField.selectable = YES;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
