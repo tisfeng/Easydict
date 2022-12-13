@@ -354,9 +354,9 @@ static const CGFloat kVerticalPadding_8 = 8;
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin_8);
                     if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
                     } else {
-                        make.top.offset(kHorizontalMargin_8);
+                        make.top.offset(kVerticalPadding_8);
                     }
                 }];
             }];
@@ -365,39 +365,30 @@ static const CGFloat kVerticalPadding_8 = 8;
             lastSimpleWordPart = obj.part;
         }
         
-        NSButton *wordButton = [NSButton mm_make:^(NSButton *_Nonnull button) {
-            mm_strongify(self);
-
-            [self addSubview:button];
-            button.bordered = NO;
-            button.imageScaling = NSImageScaleProportionallyDown;
-            button.bezelStyle = NSBezelStyleRegularSquare;
-            [button setButtonType:NSButtonTypeMomentaryChange];
-            button.attributedTitle = [NSAttributedString mm_attributedStringWithString:obj.word font:[NSFont systemFontOfSize:13] color:[NSColor mm_colorWithHexString:@"#007AFF"]];
-            [button sizeToFit];
-            [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.offset(kHorizontalMargin_8);
-                if (partTextFiled) {
-                    make.top.equalTo(partTextFiled.mas_bottom).offset(5);
+        EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+        [self addSubview:wordButton];
+        [wordButton setTitle:obj.word];
+        [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kHorizontalMargin_8 - 2); // Since button has been expanded, so need to be shifted to the left.
+            if (partTextFiled) {
+                make.top.equalTo(partTextFiled.mas_bottom).offset(5);
+            } else {
+                if (lastView) {
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
                 } else {
-                    if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(2);
-                    } else {
-                        make.top.offset(kHorizontalMargin_8);
-                    }
+                    make.top.offset(kHorizontalMargin_8);
                 }
-            }];
-            mm_weakify(self, obj)
-            [button setRac_command:[[RACCommand alloc] initWithSignalBlock:^RACSignal *_Nonnull(id _Nullable input) {
-                mm_strongify(self, obj)
-                if (self.copyTextBlock) {
-                    self.copyTextBlock(self, obj.word);
-                }
-                return RACSignal.empty;
-            }]];
+            }
+        }];
+        
+        mm_weakify(self);
+        [wordButton setClickBlock:^(EZButton * _Nonnull button) {
+            mm_strongify(self);
+            if (self.queryTextBlock) {
+                self.queryTextBlock(self, obj.word);
+            }
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
-        
         
         NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
             mm_strongify(self);

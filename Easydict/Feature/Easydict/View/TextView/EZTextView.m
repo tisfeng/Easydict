@@ -29,7 +29,7 @@
             [textView setTextColor:NSColor.queryTextDarkColor];
         }];
         self.alignment = NSTextAlignmentLeft;
-        self.textContainerInset = CGSizeMake(8, 8);
+        self.textContainerInset = CGSizeMake(4, 4);
     }
     return self;
 }
