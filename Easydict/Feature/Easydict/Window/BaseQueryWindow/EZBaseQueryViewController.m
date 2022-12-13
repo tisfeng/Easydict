@@ -718,13 +718,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self startQueryText:word];
     }];
     
-    [resultView setClickArrowBlock:^(BOOL isShowing) {
+    // !!!: Avoid capture result, the block paramter result is different from former result.
+    [resultView setClickArrowBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-        service.enabled = isShowing;
+        service.enabled = result.isShowing;
         
-        // TODO: Avoid capture result, result shoul be new
         // If result is not empty, update cell and show.
-        if (isShowing && !result.hasResult) {
+        if (result.isShowing && !result.hasResult) {
             [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 [self updateCellWithResult:result reloadData:YES];
             }];
