@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAppleService : EZQueryService
 
-- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSError *_Nullable))completion;
+- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
 
 @end
 

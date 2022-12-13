@@ -489,7 +489,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         };
         
         if ([from isEqualToString:EZLanguageAuto]) {
-            [self detect:text completion:^(EZLanguage lang, NSError *_Nullable error) {
+            [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
                 if (error) {
                     completion(nil, error);
                     return;
@@ -522,7 +522,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
 }
 
-- (void)detect:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
+- (void)detectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
         completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeParam, @"识别语言的文本为空", nil));
         return;
@@ -566,7 +566,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     if ([from isEqualToString:EZLanguageAuto]) {
-        [self detect:text completion:^(EZLanguage lang, NSError *_Nullable error) {
+        [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
                 completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:lang]], nil);
             } else {

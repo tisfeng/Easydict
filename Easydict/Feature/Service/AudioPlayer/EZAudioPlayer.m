@@ -46,7 +46,7 @@
 
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(nullable void (^)(NSError *_Nullable))completion {
-    [self.appleService playTextAudio:text fromLanguage:from completion:completion];
+    [self.appleService playTextAudio:text fromLanguage:from];
 }
 
 /// Play text audio with designated service.
