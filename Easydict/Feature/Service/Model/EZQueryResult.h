@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -81,6 +82,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 
 
 @interface EZQueryResult : NSObject
+
+@property (nonatomic, strong) EZQueryModel *queryModel;
 
 @property (nonatomic, copy) EZServiceType serviceType;
 @property (nonatomic, weak) EZQueryService *service;

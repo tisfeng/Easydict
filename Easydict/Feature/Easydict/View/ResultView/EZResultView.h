@@ -16,9 +16,11 @@ static const CGFloat kResultViewMiniHeight = 30;
 
 @interface EZResultView : NSView
 
-@property (nonatomic, strong) EZQueryResult *result;
+//@property (nonatomic, strong) EZQueryResult *result;
 
+//@property (nonatomic, copy) void (^clickArrowBlock)(EZQueryResult *result);
 @property (nonatomic, copy) void (^clickArrowBlock)(BOOL isShowing);
+
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
