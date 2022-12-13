@@ -102,7 +102,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 @property (nonatomic, strong, nullable) NSArray<NSString *> *normalResults;
 
 /// This is normalResults joined by @"\n"
-@property (nonatomic, copy, nullable) NSString *translatedText;
+@property (nonatomic, copy) NSString *translatedText;
 
 /// If wordResult and normalResults are nil, isEmpty = YES.
 @property (nonatomic, assign) BOOL isEmpty;
