@@ -21,6 +21,7 @@
 #import "EZLinkButton.h"
 #import "NSImage+EZResize.h"
 #import "EZQueryService.h"
+#import "EZBlueTextButton.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -160,7 +161,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 mm_strongify(self);
 
                 [self addSubview:textField];
-                textField.stringValue = [NSString stringWithFormat:@"/%@/", obj.value];
+                textField.stringValue = [NSString stringWithFormat:@"/ %@ /", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
                     [x setTextColor:NSColor.resultTextLightColor];
                 } drak:^(id _Nonnull x) {
@@ -309,15 +310,10 @@ static const CGFloat kVerticalPadding_8 = 8;
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
-            EZHoverButton *wordButton = [[EZHoverButton alloc] init];
+            EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
             [self addSubview:wordButton];
-            wordButton.attributedTitle = [NSAttributedString mm_attributedStringWithString:word font:textFont color:[NSColor mm_colorWithHexString:@"#007AFF"]];
-            
-            [wordButton sizeToFit];
-            CGSize size = wordButton.size;
-            CGFloat expandValue = 8;
-            CGSize expandSize = CGSizeMake(size.width + expandValue, size.height + expandValue);
-            
+            [wordButton setTitle:word];
+
             [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 if (idx == 0) {
                     make.left.equalTo(nameTextFiled.mas_right);
@@ -325,7 +321,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                     make.left.equalTo(lastView.mas_right).offset(5);
                 }
                 make.centerY.equalTo(nameTextFiled);
-                make.size.mas_equalTo(expandSize);
             }];
             mm_weakify(self);
             [wordButton setClickBlock:^(EZButton * _Nonnull button) {

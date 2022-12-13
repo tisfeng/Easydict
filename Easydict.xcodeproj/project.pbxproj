@@ -133,6 +133,7 @@
 		03B3B8B72926B12600168E8D /* applescripts.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 03B3B8B62926B12600168E8D /* applescripts.scpt */; };
 		03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD28192945EF5F00F5891A /* EZFlippedView.m */; };
 		03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD281D29481C0400F5891A /* EZAudioPlayer.m */; };
+		03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD282129486CF200F5891A /* EZBlueTextButton.m */; };
 		03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB632923998300C48725 /* black-white-icon@2x.png */; };
 		03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB642923998300C48725 /* black-white-icon@3x.png */; };
 		03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */; };
@@ -417,6 +418,8 @@
 		03BD28192945EF5F00F5891A /* EZFlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFlippedView.m; sourceTree = "<group>"; };
 		03BD281C29481C0400F5891A /* EZAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioPlayer.h; sourceTree = "<group>"; };
 		03BD281D29481C0400F5891A /* EZAudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioPlayer.m; sourceTree = "<group>"; };
+		03BD282029486CF200F5891A /* EZBlueTextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBlueTextButton.h; sourceTree = "<group>"; };
+		03BD282129486CF200F5891A /* EZBlueTextButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBlueTextButton.m; sourceTree = "<group>"; };
 		03BFBB632923998300C48725 /* black-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB642923998300C48725 /* black-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@3x.png"; sourceTree = "<group>"; };
 		03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-white-icon@3x.png"; sourceTree = "<group>"; };
@@ -591,6 +594,7 @@
 		036E7D78293F4F61002675DF /* CustomButton */ = {
 			isa = PBXGroup;
 			children = (
+				03BD281F29486CA600F5891A /* BlueTextButton */,
 				036E7D77293F4F51002675DF /* LanguageButton */,
 				03B0226429231FA6001C7E63 /* EZHoverButton */,
 				03B0226729231FA6001C7E63 /* EZButton */,
@@ -1108,6 +1112,15 @@
 			path = AudioPlayer;
 			sourceTree = "<group>";
 		};
+		03BD281F29486CA600F5891A /* BlueTextButton */ = {
+			isa = PBXGroup;
+			children = (
+				03BD282029486CF200F5891A /* EZBlueTextButton.h */,
+				03BD282129486CF200F5891A /* EZBlueTextButton.m */,
+			);
+			path = BlueTextButton;
+			sourceTree = "<group>";
+		};
 		03BFBB5429235C9400C48725 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -1493,6 +1506,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
+				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
