@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param text 文本
 /// @param from 文本语言
 /// @param completion 回调
-- (void)playTextAudio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable url, NSError *_Nullable error))completion;
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable url, NSError *_Nullable error))completion;
 
 /// 识别图片文本
 /// @param image image对象

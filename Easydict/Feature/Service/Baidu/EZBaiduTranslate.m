@@ -559,7 +559,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }];
 }
 
-- (void)playTextAudio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
         completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
         return;

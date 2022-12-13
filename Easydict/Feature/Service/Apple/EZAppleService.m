@@ -231,14 +231,9 @@
     }
 }
 
-- (void)playTextAudio:(NSString *)text from:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    // com.apple.voice.compact.en-US.Samantha
-    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:from];
-    
-    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
-    [synthesizer startSpeakingString:text];
-    
-    //    [self say];
+
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"Apple can play text audio directly, please use -playTextAudio");
 }
 
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
@@ -290,6 +285,16 @@
 
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"Apple not support ocrAndTranslate");
+}
+
+#pragma mark - Public Methods
+
+- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage completion:(void (^)(NSError *_Nullable))completion {
+    // com.apple.voice.compact.en-US.Samantha
+    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
+    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+    [synthesizer startSpeakingString:text];
 }
 
 #pragma mark - Others
