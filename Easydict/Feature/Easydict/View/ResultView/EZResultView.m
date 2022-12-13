@@ -234,7 +234,7 @@
     if (result.hasResult && result.isShowing) {
         [self layoutSubtreeIfNeeded];
         viewHeight = self.height;
-        //    NSLog(@"result view height: %@", @(self.height));
+        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
 }

@@ -276,7 +276,7 @@
     //    NSLog(@"self.frame: %@", @(self.frame));
     
     if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock([text mutableCopy], textViewHeight + EZExceptInputViewHeight);
+        self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
     }
 }
 
