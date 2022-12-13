@@ -112,6 +112,13 @@
         }
     }];
     
+    [wordResultView setQueryTextBlock:^(EZWordResultView * _Nonnull view, NSString * _Nonnull word) {
+        mm_strongify(self);
+        if (self.queryTextBlock) {
+            self.queryTextBlock(word);
+        }
+    }];
+    
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
