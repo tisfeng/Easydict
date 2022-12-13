@@ -56,7 +56,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
     NSFont *typeTextFont = textFont;
-    NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#999999"];
+    NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#7A7A7A"];
     
     NSString *errorMsg = result.error.localizedDescription;
     
@@ -312,6 +312,12 @@ static const CGFloat kVerticalPadding_8 = 8;
             EZHoverButton *wordButton = [[EZHoverButton alloc] init];
             [self addSubview:wordButton];
             wordButton.attributedTitle = [NSAttributedString mm_attributedStringWithString:word font:textFont color:[NSColor mm_colorWithHexString:@"#007AFF"]];
+            
+            [wordButton sizeToFit];
+            CGSize size = wordButton.size;
+            CGFloat expandValue = 8;
+            CGSize expandSize = CGSizeMake(size.width + expandValue, size.height + expandValue);
+            
             [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 if (idx == 0) {
                     make.left.equalTo(nameTextFiled.mas_right);
@@ -319,6 +325,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     make.left.equalTo(lastView.mas_right).offset(5);
                 }
                 make.centerY.equalTo(nameTextFiled);
+                make.size.mas_equalTo(expandSize);
             }];
             mm_weakify(self);
             [wordButton setClickBlock:^(EZButton * _Nonnull button) {
