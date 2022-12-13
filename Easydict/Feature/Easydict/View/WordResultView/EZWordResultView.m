@@ -66,7 +66,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
-        __block CGFloat leftMargin = 0;
+        __block CGFloat exceptedWidth = 0;
 
         if (result.wordResult) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
@@ -87,7 +87,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                         make.top.offset(kVerticalMargin_12);
                     }
                     make.left.mas_equalTo(kHorizontalMargin_8);
-                    leftMargin += kHorizontalMargin_8;
+                    exceptedWidth += kHorizontalMargin_8;
                 }];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
@@ -96,7 +96,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
         
         
-        leftMargin += ceil(typeTextField.width);
+        exceptedWidth += ceil(typeTextField.width);
         
         NSString *text = result.translatedText ?: errorMsg;
         
@@ -108,6 +108,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         [resultLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin_8);
+            exceptedWidth += kHorizontalMargin_8;
+
             if (typeTextField) {
                 make.top.equalTo(typeTextField);
                 make.left.equalTo(typeTextField.mas_right);
@@ -119,14 +121,14 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
                 
                 CGFloat leftPadding = 5;
-                leftMargin += leftPadding;
+                exceptedWidth += leftPadding;
                 make.left.equalTo(self).offset(leftPadding);
             }
         }];
         resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
         
-        [self updateLabelHeight:resultLabel leftMargin:leftMargin];
+        [self updateLabelHeight:resultLabel exceptedWidth:exceptedWidth];
     }
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -206,7 +208,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
-        __block CGFloat leftMargin = 0;
+        __block CGFloat exceptedWidth = 0;
         
         if (obj.part.length) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
@@ -222,7 +224,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin_8);
-                    leftMargin += kHorizontalMargin_8;
+                    exceptedWidth += kHorizontalMargin_8;
                     
                     if (lastView) {
                         if (idx == 0) {
@@ -247,19 +249,20 @@ static const CGFloat kVerticalPadding_8 = 8;
         meanLabel.text = text;
         meanLabel.delegate = self;
         
-       leftMargin += ceil(partTextFiled.width);
+       exceptedWidth += ceil(partTextFiled.width);
         
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin_8);
+            exceptedWidth += kHorizontalMargin_8;
             
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled);
                 CGFloat leftLeading = 5;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
-                leftMargin += leftLeading;
+                exceptedWidth += leftLeading;
             } else {
                 make.left.equalTo(self).offset(kHorizontalMargin_8);
-                leftMargin += kHorizontalMargin_8;
+                exceptedWidth += kHorizontalMargin_8;
 
                 if (lastView) {
                     CGFloat topPadding = kVerticalPadding_8;
@@ -275,7 +278,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
         
-        [self updateLabelHeight:meanLabel leftMargin:leftMargin];
+        [self updateLabelHeight:meanLabel exceptedWidth:exceptedWidth];
     }];
     
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -366,14 +369,14 @@ static const CGFloat kVerticalPadding_8 = 8;
             lastSimpleWordPart = obj.part;
         }
         
-        __block CGFloat leftMargin = 0;
+        __block CGFloat exceptedWidth = 0;
 
         EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
         [self addSubview:wordButton];
         [wordButton setTitle:obj.word];
         [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat leftOffset = kHorizontalMargin_8 - 2;
-            leftMargin += leftOffset;
+            exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled.mas_bottom).offset(5);
@@ -386,7 +389,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
         }];
         
-        leftMargin += (wordButton.width + 2 * wordButton.expandValue);
+        exceptedWidth += (wordButton.width + 2 * wordButton.expandValue);
         
         mm_weakify(self);
         [wordButton setClickBlock:^(EZButton * _Nonnull button) {
@@ -411,19 +414,20 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
 
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(wordButton).offset(3); // Since word button has expand vlaue
+
             CGFloat leftOffset = 2;
             make.left.equalTo(wordButton.mas_right).offset(leftOffset);
-            leftMargin += leftOffset;
+            exceptedWidth += leftOffset;
             
-            make.top.equalTo(wordButton).offset(3); // Since word button has expand vlaue
             make.right.lessThanOrEqualTo(self).offset(-kHorizontalMargin_8);
+            exceptedWidth += kHorizontalMargin_8;
         }];
-        
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
         lastView = meanLabel;
         
-        [self updateLabelHeight:meanLabel leftMargin:leftMargin];
+        [self updateLabelHeight:meanLabel exceptedWidth:exceptedWidth];
     }];
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
@@ -508,13 +512,9 @@ static const CGFloat kVerticalPadding_8 = 8;
 }
 
 /// Calcuate label height manually.
-/// TODO: need to optimize.
-- (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
-    // !!!: make sure
-    CGFloat rightMargin = kHorizontalMargin_8;
-    
+- (void)updateLabelHeight:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-    CGFloat width = self.width - leftMargin - rightMargin;
+    CGFloat width = self.width - exceptedWidth;
     //    NSLog(@"text: %@, width: %@", label.text, @(width));
     
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
