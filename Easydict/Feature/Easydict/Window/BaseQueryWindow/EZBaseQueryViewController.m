@@ -145,7 +145,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 #pragma mark - Setter && Getter
 
 - (void)setQueryText:(NSString *)queryText {
-    _queryText = queryText;
+    // ???: Avoid text being affected by input text.
+    _queryText = [NSString stringWithString:queryText];
     
     self.queryModel.queryText = queryText;
     self.queryView.queryModel = self.queryModel;
@@ -501,7 +502,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 - (void)resetQueryAndResults {
     [self resetAllResults];
+    
+    self.queryModel.detectedLanguage = EZLanguageAuto;
     self.queryText = @"";
+    [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
 - (void)resetAllResults {
@@ -509,6 +513,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         EZQueryResult *result = [[EZQueryResult alloc] init];
         result.isShowing = NO; // default not show, show after querying if result is not empty.
         service.result = result;
+        
+        // TODO: need update result view result
+
+        NSInteger index = [self.services indexOfObject:service];
+        NSInteger row =  index + [self resultCellOffset];
+
+        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+        resultCell.result = result;
     }
 }
 
@@ -517,7 +529,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     if (self.queryText.length == 0) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
-        [self updateDetectedLanguage:self.queryModel];
+        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
         return;
     }
     
@@ -533,7 +545,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [self.detectManager detectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
         
-        [self updateDetectedLanguage:queryModel];
+        [self updateQueryViewModelAndDetectedLanguage:queryModel];
         
         if (completion) {
             completion();
@@ -541,7 +553,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     }];
 }
 
-- (void)updateDetectedLanguage:(EZQueryModel *)queryModel {
+- (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
     self.queryView.queryModel = queryModel;
     [self updateSelectLanguageCell];
 }
@@ -583,16 +595,20 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
+        // !!!: text is from textView.string, it will be changed!
+        NSString *queryText = [text copy];
+        
+        // !!!: The code here is a bit messy, so you need to be careful about changing it.
+        
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
-        if ([self.queryText isEqualToString:text]) {
+        if ([self.queryText isEqualToString:queryText]) {
             return;
         }
         
-        // !!!: text is from textView.string, it will be changed!
-        self.queryText = [text mutableCopy];
+        self.queryText = [NSString stringWithString:queryText];
         
         [self delayDetectQueryText];
-        
+
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
@@ -706,15 +722,15 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         mm_strongify(self);
         service.enabled = isShowing;
         
+        // TODO: Avoid capture result, result shoul be new
         // If result is not empty, update cell and show.
-        if (result.hasResult) {
+        if (isShowing && !result.hasResult) {
+            [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+                [self updateCellWithResult:result reloadData:YES];
+            }];
+        } else {
             [self updateCellWithResult:result reloadData:YES];
-            return;
         }
-        
-        [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-            [self updateCellWithResult:result reloadData:YES];
-        }];
     }];
 }
 

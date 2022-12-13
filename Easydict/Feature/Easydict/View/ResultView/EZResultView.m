@@ -23,6 +23,9 @@
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
+@property (nonatomic, strong) EZQueryResult *result;
+
+
 @end
 
 
@@ -129,11 +132,19 @@
     [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         
+        if (!self.result.hasResult && self.result.queryModel.queryText.length == 0) {
+            NSLog(@"query text is empty");
+            return;
+        }
+        
+        
         BOOL oldIsShowing = self.result.isShowing;
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
         
+        [self updateArrowButton];
+
 //        [self setNeedsUpdateConstraints:YES];
         
         if (self.clickArrowBlock) {

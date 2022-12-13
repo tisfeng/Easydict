@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *copiedText;
 
-@property (nonatomic, strong) EZQueryResult *result;
+//@property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, copy) void (^playAudioBlock)(EZWordResultView *view, NSString *word);
 @property (nonatomic, copy) void (^copyTextBlock)(EZWordResultView *view, NSString *word);

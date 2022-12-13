@@ -44,8 +44,9 @@ userInfo:nil]
 - (void)setResult:(EZQueryResult *)translateResult {
     _result = translateResult;
     
-    _result.serviceType = self.serviceType;
     _result.service = self;
+    _result.serviceType = self.serviceType;
+    _result.queryModel = self.queryModel;
 }
 
 - (MMOrderedDictionary *)langDict {

@@ -186,7 +186,7 @@
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     if (queryText && ![queryText isEqualToString:self.copiedText]) {
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
-        self.textView.string = model.queryText;
+        self.textView.string = queryText; // ???: need to check
     }
     
     [self updateButtonsDisplayState:queryText];
@@ -276,7 +276,7 @@
     //    NSLog(@"self.frame: %@", @(self.frame));
     
     if (self.updateQueryTextBlock) {
-        self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
+        self.updateQueryTextBlock([text mutableCopy], textViewHeight + EZExceptInputViewHeight);
     }
 }
 
