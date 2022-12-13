@@ -12,7 +12,7 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        
+        self.expandValue = 6;
     }
     return self;
 }
@@ -23,8 +23,7 @@
     
     [self sizeToFit];
     CGSize size = self.size;
-    CGFloat expandValue = 6;
-    CGSize expandSize = CGSizeMake(size.width + expandValue, size.height + expandValue);
+    CGSize expandSize = CGSizeMake(size.width + self.expandValue, size.height + self.expandValue);
     
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(expandSize);

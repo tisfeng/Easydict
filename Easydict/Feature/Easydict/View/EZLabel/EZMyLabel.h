@@ -12,6 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZMyLabel : NSTextField
 
+@property (nonatomic, assign) CGFloat characterSpacing;
+@property (nonatomic, assign) CGFloat lineSpacing;
+@property (nonatomic, assign) CGFloat paragraphSpacing;
+
+
 @end
 
 NS_ASSUME_NONNULL_END
