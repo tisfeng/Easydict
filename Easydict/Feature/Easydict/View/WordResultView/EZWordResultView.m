@@ -22,6 +22,7 @@
 #import "NSImage+EZResize.h"
 #import "EZQueryService.h"
 #import "EZBlueTextButton.h"
+#import "EZMyLabel.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -365,11 +366,15 @@ static const CGFloat kVerticalPadding_8 = 8;
             lastSimpleWordPart = obj.part;
         }
         
+        __block CGFloat leftMargin = 0;
+
         EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
         [self addSubview:wordButton];
         [wordButton setTitle:obj.word];
         [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(kHorizontalMargin_8 - 2); // Since button has been expanded, so need to be shifted to the left.
+            CGFloat leftOffset = kHorizontalMargin_8 - 2;
+            leftMargin += leftOffset;
+            make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled.mas_bottom).offset(5);
             } else {
@@ -381,6 +386,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
         }];
         
+        leftMargin += (wordButton.width + 2 * wordButton.expandValue);
+        
         mm_weakify(self);
         [wordButton setClickBlock:^(EZButton * _Nonnull button) {
             mm_strongify(self);
@@ -390,28 +397,33 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
         
-        NSTextField *meanTextField = [[NSTextField wrappingLabelWithString:@""] mm_put:^(NSTextField *_Nonnull textField) {
-            mm_strongify(self);
-
-            [self addSubview:textField];
-            textField.stringValue = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
-            [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextLightColor];
-            } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextDarkColor];
-            }];
-            textField.font = textFont;
-            textField.backgroundColor = NSColor.clearColor;
-            textField.alignment = NSTextAlignmentLeft;
-            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.equalTo(wordButton.mas_right).offset(8);
-                make.top.equalTo(wordButton);
-                make.right.lessThanOrEqualTo(self).offset(-kHorizontalMargin_8);
-            }];
-        }];
-        meanTextField.mas_key = @"meanTextField_simpleWords";
         
-        lastView = meanTextField;
+        NSString *meanText = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
+        
+        EZLabel *meanLabel = [[EZLabel alloc] init];
+        meanLabel.text = meanText;
+        
+        [self addSubview:meanLabel];
+        [meanLabel excuteLight:^(id _Nonnull x) {
+            [x setTextColor:NSColor.resultTextLightColor];
+        } drak:^(id _Nonnull x) {
+            [x setTextColor:NSColor.resultTextDarkColor];
+        }];
+
+        [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            CGFloat leftOffset = 2;
+            make.left.equalTo(wordButton.mas_right).offset(leftOffset);
+            leftMargin += leftOffset;
+            
+            make.top.equalTo(wordButton).offset(3); // Since word button has expand vlaue
+            make.right.lessThanOrEqualTo(self).offset(-kHorizontalMargin_8);
+        }];
+        
+        
+        meanLabel.mas_key = @"meanLabel_simpleWords";
+        lastView = meanLabel;
+        
+        [self updateLabelHeight:meanLabel leftMargin:leftMargin];
     }];
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
@@ -444,14 +456,14 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"copyButton";
     
-    CGFloat kTopMargin = 8;
+    CGFloat kTopMargin_10 = 10;
     CGFloat kRightMargin = 3;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.top.equalTo(lastView.mas_bottom).offset(kTopMargin);
+            make.top.equalTo(lastView.mas_bottom).offset(kTopMargin_10);
         } else {
-            make.top.equalTo(self).offset(kTopMargin);
+            make.top.equalTo(self).offset(kTopMargin_10);
         }
         
         // ???: Must set bottom ?
@@ -495,13 +507,15 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
 }
 
+/// Calcuate label height manually.
+/// TODO: need to optimize.
 - (void)updateLabelHeight:(EZLabel *)label leftMargin:(CGFloat)leftMargin {
+    // !!!: make sure
     CGFloat rightMargin = kHorizontalMargin_8;
     
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - leftMargin - rightMargin;
     //    NSLog(@"text: %@, width: %@", label.text, @(width));
-    
     
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
     //    NSLog(@"height: %@", @(height));

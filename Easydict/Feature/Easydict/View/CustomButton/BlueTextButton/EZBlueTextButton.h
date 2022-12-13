@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBlueTextButton : EZHoverButton
 
+@property (nonatomic, assign) CGFloat expandValue;
+
 @end
 
 NS_ASSUME_NONNULL_END

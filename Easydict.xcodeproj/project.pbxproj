@@ -134,6 +134,7 @@
 		03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD28192945EF5F00F5891A /* EZFlippedView.m */; };
 		03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD281D29481C0400F5891A /* EZAudioPlayer.m */; };
 		03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD282129486CF200F5891A /* EZBlueTextButton.m */; };
+		03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD2824294875AE00F5891A /* EZMyLabel.m */; };
 		03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB632923998300C48725 /* black-white-icon@2x.png */; };
 		03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB642923998300C48725 /* black-white-icon@3x.png */; };
 		03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */; };
@@ -420,6 +421,8 @@
 		03BD281D29481C0400F5891A /* EZAudioPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioPlayer.m; sourceTree = "<group>"; };
 		03BD282029486CF200F5891A /* EZBlueTextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBlueTextButton.h; sourceTree = "<group>"; };
 		03BD282129486CF200F5891A /* EZBlueTextButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBlueTextButton.m; sourceTree = "<group>"; };
+		03BD2823294875AE00F5891A /* EZMyLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMyLabel.h; sourceTree = "<group>"; };
+		03BD2824294875AE00F5891A /* EZMyLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMyLabel.m; sourceTree = "<group>"; };
 		03BFBB632923998300C48725 /* black-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@2x.png"; sourceTree = "<group>"; };
 		03BFBB642923998300C48725 /* black-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@3x.png"; sourceTree = "<group>"; };
 		03BFBB7029239E9F00C48725 /* blue-white-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-white-icon@3x.png"; sourceTree = "<group>"; };
@@ -906,6 +909,8 @@
 			children = (
 				03B0226B29231FA6001C7E63 /* EZLabel.h */,
 				03B0226C29231FA6001C7E63 /* EZLabel.m */,
+				03BD2823294875AE00F5891A /* EZMyLabel.h */,
+				03BD2824294875AE00F5891A /* EZMyLabel.m */,
 			);
 			path = EZLabel;
 			sourceTree = "<group>";
@@ -1538,6 +1543,7 @@
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				03B0230F29231FA6001C7E63 /* PopUpButton.m in Sources */,
+				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03B022F329231FA6001C7E63 /* YoudaoOCRResponse.m in Sources */,
