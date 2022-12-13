@@ -411,8 +411,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
-        [self detect:text
-          completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
+        [self detectText:text
+              completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
             if (error) {
                 completion(nil, error);
                 return;
@@ -556,8 +556,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     if ([from isEqualToString:EZLanguageAuto]) {
         // 需要先识别语言，用于指定目标语言
-        [self detect:text
-          completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
+        [self detectText:text
+              completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
             if (error) {
                 completion(self.result, error);
                 return;
@@ -600,7 +600,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }];
 }
 
-- (void)detect:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
+- (void)detectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     //    [self detectSingleText:text completion:completion];
     [self detectTKKText:text completion:completion];
 }
@@ -708,8 +708,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     if ([from isEqualToString:EZLanguageAuto]) {
         // 判断语言
         mm_weakify(self)
-        [self detect:text
-          completion:^(EZLanguage lang, NSError *_Nullable error) {
+        [self detectText:text
+              completion:^(EZLanguage lang, NSError *_Nullable error) {
             mm_strongify(self) if (error) {
                 completion(nil, error);
                 return;

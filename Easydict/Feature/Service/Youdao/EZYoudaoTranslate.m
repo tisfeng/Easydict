@@ -309,7 +309,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     }];
 }
 
-- (void)detect:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
+- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
         completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeParam, @"识别语言的文本为空", nil));
         return;

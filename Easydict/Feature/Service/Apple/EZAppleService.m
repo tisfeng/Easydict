@@ -105,7 +105,7 @@
 }
 
 /// Apple System language recognize.
-- (void)detect:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
+- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
     // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
@@ -290,11 +290,21 @@
 
 #pragma mark - Public Methods
 
-- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage completion:(void (^)(NSError *_Nullable))completion {
-    // com.apple.voice.compact.en-US.Samantha
-    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
-    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
-    [synthesizer startSpeakingString:text];
+- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
+    void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
+        // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
+        NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
+        NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+        [synthesizer startSpeakingString:text];
+    };
+    
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        [self detectText:text completion:^(EZLanguage _Nonnull fromLanguage, NSError *_Nullable error) {
+            playBlock(text, fromLanguage);
+        }];
+    } else {
+        playBlock(text, fromLanguage);
+    }
 }
 
 #pragma mark - Others

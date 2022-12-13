@@ -59,9 +59,9 @@
         return;
     }
 
-    [self.detectTextService detect:queryText completion:^(EZLanguage language, NSError *_Nullable error) {
+    [self.detectTextService detectText:queryText completion:^(EZLanguage language, NSError *_Nullable error) {
         if ([language isEqualToString:EZLanguageAuto]) {
-            [self.baiduService detect:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+            [self.baiduService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
                 NSLog(@"baidu detected: %@", language); // Apple detect 123 will fail.
                 [self handleDetectedLanguage:language error:error completion:completion];
             }];
