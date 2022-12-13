@@ -583,6 +583,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
+        // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
+        if ([self.queryText isEqualToString:text]) {
+            return;
+        }
+        
         // !!!: text is from textView.string, it will be changed!
         self.queryText = [text mutableCopy];
         
