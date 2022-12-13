@@ -53,7 +53,7 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
 }
 
 - (NSString *)translatedText {
-    NSString *text = [self.normalResults componentsJoinedByString:@"\n"];
+    NSString *text = [self.normalResults componentsJoinedByString:@"\n"] ?: @"";
     return text;
 }
 
