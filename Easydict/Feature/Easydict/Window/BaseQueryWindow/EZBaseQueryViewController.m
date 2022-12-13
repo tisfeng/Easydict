@@ -98,8 +98,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     self.serviceTypes = @[
         EZServiceTypeDeepL,
         EZServiceTypeGoogle,
-        EZServiceTypeYoudao,
         EZServiceTypeBaidu,
+        EZServiceTypeYoudao,
     ];
     
     NSMutableArray *services = [NSMutableArray array];
@@ -142,19 +142,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 }
 
 
-#pragma mark - Setter && Getter
-
-- (void)setQueryText:(NSString *)queryText {
-    // ???: Avoid text being affected by input text.
-    _queryText = [NSString stringWithString:queryText];
-    
-    self.queryModel.queryText = queryText;
-    self.queryView.queryModel = self.queryModel;
-    
-    if ([self allShowingResults].count > 0) {
-        [self.queryView setClearButtonAnimatedHidden:NO];
-    }
-}
+#pragma mark - Getter && Setter
 
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
@@ -228,6 +216,24 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         _queryCell = [self createQueryCell];
     }
     return _queryCell;
+}
+
+- (void)setQueryText:(NSString *)queryText {
+    // !!!: Avoid text being affected by input text.
+    _queryText = [queryText copy];
+    
+    self.queryModel.queryText = queryText;
+    
+    if (self.queryText.length == 0) {
+        self.queryModel.detectedLanguage = EZLanguageAuto;
+        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
+    } else {
+        self.queryView.queryModel = self.queryModel;
+    }
+    
+    if ([self allShowingResults].count > 0) {
+        [self.queryView setClearButtonAnimatedHidden:NO];
+    }
 }
 
 #pragma mark - Public Methods
@@ -479,8 +485,9 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = EZUpdateTableViewRowHeightAnimationDuration;
-        [self updateWindowViewHeightWithAnimation:YES];
+        // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+        [self updateWindowViewHeightWithAnimation:YES];
     } completionHandler:^{
         if (completionHandler) {
             completionHandler();
@@ -526,13 +533,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 - (void)delayDetectQueryText {
     [self cancelDelayDetectQueryText];
-    
-    if (self.queryText.length == 0) {
-        self.queryModel.detectedLanguage = EZLanguageAuto;
-        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-        return;
-    }
-    
     [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:1.0];
 }
 
@@ -558,14 +558,30 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [self updateSelectLanguageCell];
 }
 
+
+// TODO: need to check, use true cell result, rather than self result
 - (NSArray *)allShowingResults {
     NSMutableArray *results = [NSMutableArray array];
+
+//    NSInteger rowCount = [self.tableView numberOfRows];
+//    NSInteger startIndex = [self resultCellOffset];
+//    rowCount -= startIndex;
+//
+//    for (int i = (int)startIndex; i < rowCount; i++) {
+//        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
+//        EZQueryResult *result = resultCell.result;
+//        if (result.isShowing) {
+//            [results addObject:result];
+//        }
+//    }
+
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         if (result.isShowing) {
             [results addObject:result];
         }
     }
+    
     return results;
 }
 
@@ -595,17 +611,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
-        // !!!: text is from textView.string, it will be changed!
-        NSString *queryText = [text copy];
-        
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
-        if ([self.queryText isEqualToString:queryText]) {
+        if ([self.queryText isEqualToString:text]) {
             return;
         }
         
-        self.queryText = [NSString stringWithString:queryText];
+        self.queryText = [NSString stringWithString:text];
         
         [self delayDetectQueryText];
 
@@ -639,6 +652,9 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
+        
+        // Clear query text, detect language and clear button right now;
+        self.queryText = @"";
         
         // !!!: To show closing animation, we cannot reset result directly.
         [self closeAllResultView:^{
