@@ -489,9 +489,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                             if (parts.count) {
                                 wordResult.parts = parts.copy;
                             }
-                        } else if (([googleFrom isEqualToString:EZLanguageSimplifiedChinese]
-                                    || [googleFrom isEqualToString:EZLanguageTraditionalChinese])
-                                   && [googleTo isEqualToString:EZLanguageEnglish]) {
+                        } else if (([googleFrom isEqualToString:EZLanguageSimplifiedChinese] || [googleFrom isEqualToString:EZLanguageTraditionalChinese]) && [googleTo isEqualToString:EZLanguageEnglish]) {
                             // 中文查词
                             NSMutableArray *simpleWords = [NSMutableArray array];
                             [dictResult enumerateObjectsUsingBlock:^(NSArray *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -699,9 +697,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }];
 }
 
-- (void)playTextAudio:(NSString *)text
-         from:(EZLanguage)from
-   completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)textToAudio:(NSString *)text
+       fromLanguage:(EZLanguage)from
+         completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
         completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
         return;
