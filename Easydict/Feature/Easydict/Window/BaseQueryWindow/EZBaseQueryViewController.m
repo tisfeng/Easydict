@@ -93,6 +93,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 - (void)setup {
     self.queryModel = [[EZQueryModel alloc] init];
+    self.queryModel.queryViewHeight = [self miniQueryViewHeight];
+    
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
     self.serviceTypes = @[
@@ -226,7 +228,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     if (self.queryText.length == 0) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
-        self.queryModel.queryViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
+        self.queryModel.queryViewHeight = [self miniQueryViewHeight];
         [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
     } else {
         self.queryView.queryModel = self.queryModel;
@@ -392,14 +394,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     CGFloat height;
     
     if (row == 0) {
-        CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
-        CGFloat miniQueryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
-        height = MAX(self.queryModel.queryViewHeight, miniQueryViewHeight);
+        height = self.queryModel.queryViewHeight;
     } else if (self.windowType != EZWindowTypeMini && row == 1) {
         height = 35;
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         // A non-zero value must be set, but the initial viewHeight is 0.
+        
+        // TODO: need to optimize.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
     //    NSLog(@"row: %ld, height: %@", row, @(height));
@@ -865,6 +867,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     //    NSLog(@"documentView height: %@", @(documentViewHeight));
     
     return documentViewHeight;
+}
+
+- (CGFloat)miniQueryViewHeight {
+    CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
+    CGFloat queryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
+    return queryViewHeight;
 }
 
 /// Delay update, to avoid reload tableView frequently.
