@@ -226,11 +226,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     if (self.queryText.length == 0) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
+        self.queryModel.queryViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
         [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
     } else {
         self.queryView.queryModel = self.queryModel;
+        [self updateQueryCell];
     }
-    
+        
     if ([self allShowingResults].count > 0) {
         [self.queryView setClearButtonAnimatedHidden:NO];
     }
@@ -478,8 +480,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:nil];
 }
 
+/// Update tableView row data, update row height and window height with animation.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     if (reloadData) {
+        
+        // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
+        
+        // ???: need to check.
+
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     
@@ -495,13 +503,23 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     }];
 }
 
+- (void)updateQueryCell {
+    [self updateQueryCellWithCompletionHandler:nil];
+}
+
+/// Update query cell data and row height.
+- (void)updateQueryCellWithCompletionHandler:(nullable void (^)(void))completionHandler {
+    NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:YES completionHandler:completionHandler];
+}
+
 - (void)updateSelectLanguageCell {
     NSInteger offset = [self resultCellOffset];
     if (offset == 1) {
         return;
     }
     
-    NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
+    NSIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
     [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
@@ -510,9 +528,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)resetQueryAndResults {
     [self resetAllResults];
     
-    self.queryModel.detectedLanguage = EZLanguageAuto;
     self.queryText = @"";
-    [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
 }
 
 - (void)resetAllResults {
@@ -555,6 +571,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
     self.queryView.queryModel = queryModel;
+    [self updateQueryCell];
     [self updateSelectLanguageCell];
 }
 
@@ -625,11 +642,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
-            
-            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            
-            // ???: Avoid blocking when deleting text continuously in query text, so set NO reloadData, we update query cell manually.
-            [self updateTableViewRowIndexes:firstIndexSet reloadData:YES completionHandler:nil];
+            [self updateQueryCell];
         }
     }];
     
@@ -655,11 +668,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         
         // Clear query text, detect language and clear button right now;
         self.queryText = @"";
-        
-        // !!!: To show closing animation, we cannot reset result directly.
-        [self closeAllResultView:^{
-            [self resetQueryAndResults];
+
+        [self updateQueryCellWithCompletionHandler:^{
+            // !!!: To show closing animation, we cannot reset result directly.
+            [self closeAllResultView:^{
+                [self resetQueryAndResults];
+            }];
         }];
+
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
