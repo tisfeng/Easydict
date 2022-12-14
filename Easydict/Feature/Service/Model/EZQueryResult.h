@@ -91,6 +91,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 @property (nonatomic, assign) BOOL isShowing;
 @property (nonatomic, assign) CGFloat viewHeight;
 
+@property (nonatomic, assign) BOOL isLoading;
+
 
 /// 此次查询的文本
 @property (nonatomic, copy) NSString *text;
