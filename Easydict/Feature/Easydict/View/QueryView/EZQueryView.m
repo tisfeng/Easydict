@@ -304,7 +304,7 @@
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
-- (void)updateButtonsDisplayState:(NSString *)text {
+- (void)updateButtonsDisplayState:(NSString *)text {    
     BOOL isHidden = text.length == 0;
     [self setClearButtonAnimatedHidden:isHidden];
     
