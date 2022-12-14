@@ -316,6 +316,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
+            result.isLoading = NO;
             NSLog(@"service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
@@ -336,6 +337,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     // Show result if it has been queried.
     service.result.isShowing = YES;
+    service.result.isLoading = YES;
     
     NSLog(@"query service: %@", service.serviceType);
     
@@ -400,8 +402,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         // A non-zero value must be set, but the initial viewHeight is 0.
-        
-        // TODO: need to optimize.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
     //    NSLog(@"row: %ld, height: %@", row, @(height));
