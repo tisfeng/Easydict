@@ -533,6 +533,15 @@
 			path = PrintBeautifulLog;
 			sourceTree = "<group>";
 		};
+		03385AFF294B5A2800696A96 /* EZLinkButton */ = {
+			isa = PBXGroup;
+			children = (
+				036E7D79293F4FC8002675DF /* EZLinkButton.h */,
+				036E7D7A293F4FC8002675DF /* EZLinkButton.m */,
+			);
+			path = EZLinkButton;
+			sourceTree = "<group>";
+		};
 		033B7131293CE2010096E2DF /* WebViewTranslator */ = {
 			isa = PBXGroup;
 			children = (
@@ -597,12 +606,11 @@
 		036E7D78293F4F61002675DF /* CustomButton */ = {
 			isa = PBXGroup;
 			children = (
+				03385AFF294B5A2800696A96 /* EZLinkButton */,
 				03BD281F29486CA600F5891A /* BlueTextButton */,
 				036E7D77293F4F51002675DF /* LanguageButton */,
 				03B0226429231FA6001C7E63 /* EZHoverButton */,
 				03B0226729231FA6001C7E63 /* EZButton */,
-				036E7D79293F4FC8002675DF /* EZLinkButton.h */,
-				036E7D7A293F4FC8002675DF /* EZLinkButton.m */,
 			);
 			path = CustomButton;
 			sourceTree = "<group>";
