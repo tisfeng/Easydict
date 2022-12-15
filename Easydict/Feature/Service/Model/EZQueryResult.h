@@ -122,7 +122,10 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 /// 翻译后的发音地址
 @property (nonatomic, copy, nullable) NSString *toSpeakURL;
 /// 翻译接口提供的原始的、未经转换的查询结果
-@property (nonatomic, strong) id raw;
+@property (nonatomic, strong, nullable) id raw;
+
+
+- (void)reset;
 
 @end
 
