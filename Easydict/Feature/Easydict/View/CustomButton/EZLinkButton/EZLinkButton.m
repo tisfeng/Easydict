@@ -8,7 +8,6 @@
 
 #import "EZLinkButton.h"
 #import "EZWindowManager.h"
-#import "NSObject+EZDarkMode.h"
 
 static NSString * const EZQueryKey = @"{Query}";
 
@@ -36,24 +35,22 @@ static NSString * const EZQueryKey = @"{Query}";
     
     self.cornerRadius = 5;
       
-    // ???: Why do I need to set it up again here?  Why cannot use EZHoverButton?
-    NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
-    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#464646"];
+    // !!!: Must set different Hover color from EZHoverButton, because link button is used in titleBar, and window has the same background color as EZHoverButton.
     
-    [self setMouseEnterBlock:^(EZButton *_Nonnull button) {
-        mm_strongify(self);
-        if (self.isDarkMode) {
-            button.backgroundColor = darkHighlightColor;
-            button.backgroundHighlightColor = darkHighlightColor;
-            button.backgroundHoverColor = darkHighlightColor;
-        } else {
-            button.backgroundColor = lightHighlightColor;
-            button.backgroundHighlightColor = lightHighlightColor;
-            button.backgroundHoverColor = lightHighlightColor;
-        }
-    }];
-    [self setMouseExitedBlock:^(EZButton *_Nonnull button) {
-        button.backgroundColor = NSColor.clearColor;
+    NSColor *lightHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
+    NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#DADADA"];
+    
+    NSColor *darkHoverColor = [NSColor mm_colorWithHexString:@"#3F3F3F"];
+    NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#525252"];
+    
+    [self excuteLight:^(EZButton *button) {
+        button.contentTintColor = [NSColor imageTintLightColor];
+        button.backgroundHoverColor = lightHoverColor;
+        button.backgroundHighlightColor = lightHighlightColor;
+    } drak:^(EZButton *button) {
+        button.contentTintColor = [NSColor imageTintDarkColor];
+        button.backgroundHoverColor = darkHoverColor;
+        button.backgroundHighlightColor = darkHighlightColor;
     }];
 }
 
