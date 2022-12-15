@@ -299,10 +299,12 @@ static NSInteger const kAnimationDotViewCount = 5;
     NSLog(@"startLoadingAnimation");
     
     mm_weakify(self);
-    
-    // (subviews.count - 1) * X = kAnimationDuration / 2
-    // 4*X=0.25
-    // X=0.12
+
+    /**
+     (subviews.count - 1) * X = kAnimationDuration / 2
+     4 * X = 0.25
+     X = 0.12
+     */
     
     NSArray *subviews = self.loadingView.subviews; // 5
     CGFloat delayInterval = 0.12;
