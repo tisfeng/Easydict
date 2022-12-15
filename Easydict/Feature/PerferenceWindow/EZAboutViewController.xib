@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="AboutViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="EZAboutViewController">
             <connections>
                 <outlet property="githubTextField" destination="6Ba-5D-bHm" id="guQ-r4-BWR"/>
                 <outlet property="versionTextField" destination="eDW-SZ-DEh" id="eqg-vN-oTK"/>

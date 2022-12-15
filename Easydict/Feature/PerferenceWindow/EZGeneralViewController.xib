@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="GeneralViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="EZGeneralViewController">
             <connections>
                 <outlet property="autoCheckUpdateButton" destination="3Ux-D6-rfd" id="sDd-Zj-XRK"/>
                 <outlet property="autoCopyTranslateResultButton" destination="vKL-Rb-7ex" id="nIS-CE-i2e"/>

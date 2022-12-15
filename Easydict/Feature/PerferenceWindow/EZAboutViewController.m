@@ -1,15 +1,15 @@
 //
-//  AboutViewController.m
-//  Bob
+//  EZAboutViewController.m
+//  Easydict
 //
-//  Created by ripper on 2019/12/9.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/12/15.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "AboutViewController.h"
+#import "EZAboutViewController.h"
 
 
-@interface AboutViewController ()
+@interface EZAboutViewController ()
 
 @property (weak) IBOutlet NSTextField *versionTextField;
 @property (weak) IBOutlet NSTextField *githubTextField;
@@ -17,7 +17,7 @@
 @end
 
 
-@implementation AboutViewController
+@implementation EZAboutViewController
 
 - (instancetype)init {
     return [super initWithNibName:[self className] bundle:nil];
