@@ -55,7 +55,7 @@
 - (void)detectText:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     NSString *queryText = self.queryModel.queryText;
     if (queryText.length == 0) {
-        NSLog(@"queryText cannot be nil");
+        NSLog(@"detectText cannot be nil");
         return;
     }
 

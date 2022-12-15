@@ -15,7 +15,7 @@
 #import "NSView+EZAnimatedHidden.h"
 #import "EZDetectLanguageButton.h"
 
-@interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
+@interface EZQueryView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
@@ -59,7 +59,6 @@
     self.scrollView.documentView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
-    textView.textStorage.delegate = self;
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
@@ -257,10 +256,12 @@
 }
 
 
-#pragma mark - NSTextStorageDelegate
+#pragma mark - NSTextDelegate
 
-- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-    NSString *text = textStorage.string;
+- (void)textDidChange:(NSNotification *)notification {
+    NSString *text = self.textView.string;
+
+    NSLog(@"textDidChange: %@", text);
     
     [self updateButtonsDisplayState:text];
     
