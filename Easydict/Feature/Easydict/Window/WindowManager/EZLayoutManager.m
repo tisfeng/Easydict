@@ -43,7 +43,7 @@ static EZLayoutManager *_instance;
 }
 
 - (void)commonInitialize {
-    self.minimumWindowSize = CGSizeMake(300, 200);
+    self.minimumWindowSize = CGSizeMake(300, 100);
 
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
