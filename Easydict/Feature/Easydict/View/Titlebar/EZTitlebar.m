@@ -35,7 +35,7 @@
     //        make.edges.equalTo(self);
     //    }];
     
-    CGFloat kButtonWidth = 26;
+    CGFloat kButtonWidth = 25;
     CGFloat kImagenWidth = 22;
     CGFloat kButtonPadding = 4;
     
