@@ -685,7 +685,7 @@
                 <customObject id="jrA-nT-KAI" customClass="SUUpdater"/>
                 <menu autoenablesItems="NO" identifier="status.item.menu" id="A3F-ys-zOg" userLabel="Status Item Menu">
                     <items>
-                        <menuItem title="Bob" enabled="NO" id="PkP-25-JBw">
+                        <menuItem title="Easydict" enabled="NO" id="PkP-25-JBw">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="jsC-rB-zr4"/>
@@ -714,44 +714,6 @@
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="ch8-gu-f7X"/>
-                        <menuItem title="翻译网站" id="tmm-RJ-RnR">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <menu key="submenu" title="翻译网站" id="Qci-sE-4Vz">
-                                <items>
-                                    <menuItem title="百度翻译" id="7uW-Ry-t7W">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="baiduTranslationWebsite:" target="qM9-fT-Fym" id="vB7-dY-d79"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="有道翻译" id="vJb-9C-vdH">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="youdaoTranslationWebsite:" target="qM9-fT-Fym" id="zhe-cB-kNK"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="有道词典" id="8fJ-rL-1Bl">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="youdaoDictWebsite:" target="qM9-fT-Fym" id="GTC-vS-bn0"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="谷歌翻译(国内)" id="Le2-9U-JAY">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="googleCNTranslationWebsite:" target="qM9-fT-Fym" id="gZJ-bc-3as"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="谷歌翻译" id="QbW-ly-Zlf">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="googleTranslationWebsite:" target="qM9-fT-Fym" id="xdr-OR-n7V"/>
-                                        </connections>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </menuItem>
-                        <menuItem isSeparatorItem="YES" id="WTI-QT-Hy9"/>
                         <menuItem title="偏好设置" keyEquivalent="," id="Fzj-Rh-cL0">
                             <connections>
                                 <action selector="preferenceAction:" target="qM9-fT-Fym" id="Emg-Mm-dS5"/>
@@ -767,7 +729,7 @@
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <menu key="submenu" title="帮助" id="Q2R-dF-dyU">
                                 <items>
-                                    <menuItem title="使用教程" id="yWr-rH-hQa">
+                                    <menuItem title="反馈问题" id="yWr-rH-hQa">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
                                             <action selector="documentationAction:" target="qM9-fT-Fym" id="OoC-My-foN"/>
@@ -777,12 +739,6 @@
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
                                             <action selector="exportLogAction:" target="qM9-fT-Fym" id="bm3-88-xNM"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="QQ 群: 971584165（点击复制）" id="dNw-c8-pV2">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="qqGroupAction:" target="qM9-fT-Fym" id="qZF-Nl-zPW"/>
                                         </connections>
                                     </menuItem>
                                 </items>
