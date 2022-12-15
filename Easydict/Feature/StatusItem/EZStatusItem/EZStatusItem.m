@@ -7,7 +7,7 @@
 //
 
 #import "EZStatusItem.h"
-#import "PreferencesWindowController.h"
+#import "EZPreferencesWindowController.h"
 #import "EZWindowManager.h"
 #import "Snip.h"
 #import "EZShortcut.h"
@@ -124,7 +124,7 @@ static EZStatusItem *_instance;
     if (!Configuration.shared.isPin) {
         [EZWindowManager.shared closeFloatingWindow];
     }
-    [PreferencesWindowController.shared show];
+    [EZPreferencesWindowController.shared show];
 }
 
 - (IBAction)documentationAction:(NSMenuItem *)sender {

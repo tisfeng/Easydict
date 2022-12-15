@@ -47,6 +47,11 @@
 		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
+		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
+		039F5505294B6E29004AB940 /* EZGeneralViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5500294B6E29004AB940 /* EZGeneralViewController.xib */; };
+		039F5506294B6E29004AB940 /* EZGeneralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZGeneralViewController.m */; };
+		039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5502294B6E29004AB940 /* EZAboutViewController.xib */; };
+		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
 		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -96,11 +101,6 @@
 		03B0231729231FA6001C7E63 /* Snip.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229529231FA6001C7E63 /* Snip.m */; };
 		03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229729231FA6001C7E63 /* SnipWindowController.m */; };
 		03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229829231FA6001C7E63 /* SnipViewController.m */; };
-		03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229D29231FA6001C7E63 /* AboutViewController.m */; };
-		03B0231C29231FA6001C7E63 /* GeneralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A029231FA6001C7E63 /* GeneralViewController.m */; };
-		03B0231D29231FA6001C7E63 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03B022A229231FA6001C7E63 /* AboutViewController.xib */; };
-		03B0231E29231FA6001C7E63 /* GeneralViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03B022A329231FA6001C7E63 /* GeneralViewController.xib */; };
-		03B0231F29231FA6001C7E63 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A429231FA6001C7E63 /* PreferencesWindowController.m */; };
 		03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022A829231FA6001C7E63 /* NSWindow+MM.m */; };
 		03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AA29231FA6001C7E63 /* NSPasteboard+MM.m */; };
 		03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022AB29231FA6001C7E63 /* NSImage+MM.m */; };
@@ -250,6 +250,14 @@
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
+		039F54FC294B6E29004AB940 /* EZGeneralViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZGeneralViewController.h; sourceTree = "<group>"; };
+		039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPreferencesWindowController.m; sourceTree = "<group>"; };
+		039F54FE294B6E29004AB940 /* EZAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAboutViewController.h; sourceTree = "<group>"; };
+		039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPreferencesWindowController.h; sourceTree = "<group>"; };
+		039F5500294B6E29004AB940 /* EZGeneralViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZGeneralViewController.xib; sourceTree = "<group>"; };
+		039F5501294B6E29004AB940 /* EZGeneralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZGeneralViewController.m; sourceTree = "<group>"; };
+		039F5502294B6E29004AB940 /* EZAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZAboutViewController.xib; sourceTree = "<group>"; };
+		039F5503294B6E29004AB940 /* EZAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZAboutViewController.m; sourceTree = "<group>"; };
 		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -346,14 +354,6 @@
 		03B0229629231FA6001C7E63 /* SnipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipWindow.h; sourceTree = "<group>"; };
 		03B0229729231FA6001C7E63 /* SnipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipWindowController.m; sourceTree = "<group>"; };
 		03B0229829231FA6001C7E63 /* SnipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnipViewController.m; sourceTree = "<group>"; };
-		03B0229D29231FA6001C7E63 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
-		03B0229E29231FA6001C7E63 /* GeneralViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneralViewController.h; sourceTree = "<group>"; };
-		03B0229F29231FA6001C7E63 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
-		03B022A029231FA6001C7E63 /* GeneralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneralViewController.m; sourceTree = "<group>"; };
-		03B022A129231FA6001C7E63 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
-		03B022A229231FA6001C7E63 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
-		03B022A329231FA6001C7E63 /* GeneralViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GeneralViewController.xib; sourceTree = "<group>"; };
-		03B022A429231FA6001C7E63 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+MM.h"; sourceTree = "<group>"; };
 		03B022A829231FA6001C7E63 /* NSWindow+MM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+MM.m"; sourceTree = "<group>"; };
 		03B022A929231FA6001C7E63 /* NSColor+MM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSColor+MM.h"; sourceTree = "<group>"; };
@@ -974,14 +974,14 @@
 		03B0229C29231FA6001C7E63 /* PerferenceWindow */ = {
 			isa = PBXGroup;
 			children = (
-				03B022A129231FA6001C7E63 /* AboutViewController.h */,
-				03B0229D29231FA6001C7E63 /* AboutViewController.m */,
-				03B022A229231FA6001C7E63 /* AboutViewController.xib */,
-				03B0229E29231FA6001C7E63 /* GeneralViewController.h */,
-				03B022A029231FA6001C7E63 /* GeneralViewController.m */,
-				03B022A329231FA6001C7E63 /* GeneralViewController.xib */,
-				03B0229F29231FA6001C7E63 /* PreferencesWindowController.h */,
-				03B022A429231FA6001C7E63 /* PreferencesWindowController.m */,
+				039F54FE294B6E29004AB940 /* EZAboutViewController.h */,
+				039F5503294B6E29004AB940 /* EZAboutViewController.m */,
+				039F5502294B6E29004AB940 /* EZAboutViewController.xib */,
+				039F54FC294B6E29004AB940 /* EZGeneralViewController.h */,
+				039F5501294B6E29004AB940 /* EZGeneralViewController.m */,
+				039F5500294B6E29004AB940 /* EZGeneralViewController.xib */,
+				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
+				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
 			);
 			path = PerferenceWindow;
 			sourceTree = "<group>";
@@ -1444,13 +1444,13 @@
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
+				039F5505294B6E29004AB940 /* EZGeneralViewController.xib in Resources */,
 				03B022E729231FA6001C7E63 /* Main.storyboard in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
-				03B0231E29231FA6001C7E63 /* GeneralViewController.xib in Resources */,
-				03B0231D29231FA6001C7E63 /* AboutViewController.xib in Resources */,
+				039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03B3B8B72926B12600168E8D /* applescripts.scpt in Resources */,
@@ -1564,6 +1564,7 @@
 				03B022FC29231FA6001C7E63 /* FlippedView.m in Sources */,
 				03B022F729231FA6001C7E63 /* TranslateResult.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
+				039F5506294B6E29004AB940 /* EZGeneralViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
@@ -1584,7 +1585,6 @@
 				03B022EA29231FA6001C7E63 /* Shortcut.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				03B0230029231FA6001C7E63 /* EZQueryCell.m in Sources */,
-				03B0231F29231FA6001C7E63 /* PreferencesWindowController.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */,
@@ -1604,7 +1604,6 @@
 				03B0232129231FA6001C7E63 /* NSPasteboard+MM.m in Sources */,
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateTool.m in Sources */,
-				03B0231B29231FA6001C7E63 /* AboutViewController.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				03B022FF29231FA6001C7E63 /* EZResultCell.m in Sources */,
 				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
@@ -1625,6 +1624,7 @@
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
+				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
@@ -1634,8 +1634,8 @@
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022ED29231FA6001C7E63 /* BaiduTranslate.m in Sources */,
 				03B022E829231FA6001C7E63 /* main.m in Sources */,
-				03B0231C29231FA6001C7E63 /* GeneralViewController.m in Sources */,
 				03B022FB29231FA6001C7E63 /* ScrollTestVC.m in Sources */,
+				039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */,
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,

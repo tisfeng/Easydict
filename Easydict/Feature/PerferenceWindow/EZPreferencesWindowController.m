@@ -1,31 +1,31 @@
 //
-//  PreferencesWindowController.m
-//  Bob
+//  EZPreferencesWindowController.m
+//  Easydict
 //
-//  Created by ripper on 2019/12/9.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/12/15.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "PreferencesWindowController.h"
-#import "GeneralViewController.h"
-#import "AboutViewController.h"
+#import "EZPreferencesWindowController.h"
+#import "EZGeneralViewController.h"
+#import "EZAboutViewController.h"
 
 
-@interface PreferencesWindowController ()
+@interface EZPreferencesWindowController ()
 
 @end
 
 
-@implementation PreferencesWindowController
+@implementation EZPreferencesWindowController
 
-static PreferencesWindowController *_instance;
+static EZPreferencesWindowController *_instance;
 + (instancetype)shared {
     if (!_instance) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             NSArray *viewControllers = @[
-                [GeneralViewController new],
-                [AboutViewController new],
+                [EZGeneralViewController new],
+                [EZAboutViewController new],
             ];
             _instance = [[self alloc] initWithViewControllers:viewControllers];
         });

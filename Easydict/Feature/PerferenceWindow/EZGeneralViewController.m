@@ -1,17 +1,17 @@
 //
-//  GeneralViewController.m
-//  Bob
+//  EZGeneralViewController.m
+//  Easydict
 //
-//  Created by ripper on 2019/12/9.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/12/15.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "GeneralViewController.h"
+#import "EZGeneralViewController.h"
 #import "EZShortcut.h"
-#import "Configuration.h"
+#import "EZConfiguration.h"
 
 
-@interface GeneralViewController ()
+@interface EZGeneralViewController ()
 
 @property (weak) IBOutlet MASShortcutView *selectionShortcutView;
 @property (weak) IBOutlet MASShortcutView *snipShortcutView;
@@ -25,7 +25,7 @@
 @end
 
 
-@implementation GeneralViewController
+@implementation EZGeneralViewController
 
 - (instancetype)init {
     return [super initWithNibName:[self className] bundle:nil];
@@ -47,23 +47,23 @@
     self.showMiniShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
 
-    self.autoCopyTranslateResultButton.mm_isOn = Configuration.shared.autoCopyTranslateResult;
-    self.launchAtStartupButton.mm_isOn = Configuration.shared.launchAtStartup;
-    self.autoCheckUpdateButton.mm_isOn = Configuration.shared.automaticallyChecksForUpdates;
+    self.autoCopyTranslateResultButton.mm_isOn = EZConfiguration.shared.autoCopyTranslateResult;
+    self.launchAtStartupButton.mm_isOn = EZConfiguration.shared.launchAtStartup;
+    self.autoCheckUpdateButton.mm_isOn = EZConfiguration.shared.automaticallyChecksForUpdates;
 }
 
 #pragma mark - event
 
 - (IBAction)autoCopyTranslateResultButtonClicked:(NSButton *)sender {
-    Configuration.shared.autoCopyTranslateResult = sender.mm_isOn;
+    EZConfiguration.shared.autoCopyTranslateResult = sender.mm_isOn;
 }
 
 - (IBAction)launchAtStartupButtonClicked:(NSButton *)sender {
-    Configuration.shared.launchAtStartup = sender.mm_isOn;
+    EZConfiguration.shared.launchAtStartup = sender.mm_isOn;
 }
 
 - (IBAction)autoCheckUpdateButtonClicked:(NSButton *)sender {
-    Configuration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
+    EZConfiguration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController
