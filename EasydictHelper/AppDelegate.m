@@ -30,11 +30,14 @@
 
     if (!alreadyRunning) {
         NSURL *appURL = [[NSWorkspace sharedWorkspace] URLForApplicationWithBundleIdentifier:identifier];
-        NSError *error = nil;
-        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:appURL options:NSWorkspaceLaunchWithoutActivation configuration:@{} error:&error];
-        if (error) {
-            NSLog(@"Helper 启动 %@ 报错\n%@", identifier, error);
-        }
+        
+        NSWorkspaceOpenConfiguration *config = [NSWorkspaceOpenConfiguration configuration];
+        [config setActivates:NO];
+        [[NSWorkspace sharedWorkspace] openApplicationAtURL:appURL configuration:config completionHandler:^(NSRunningApplication * _Nullable app, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"Helper 启动 %@ 报错\n%@", identifier, error);
+            }
+        }];
     }
     [NSApp terminate:nil];
 }
