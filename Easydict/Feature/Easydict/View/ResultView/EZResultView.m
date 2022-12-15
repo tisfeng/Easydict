@@ -12,8 +12,10 @@
 #import "EZWordResultView.h"
 #import "EZConst.h"
 #import <FBKVOController.h>
+#import "NSView+EZAnimatedHidden.h"
 
-static CGFloat const kAnimationDuration = 0.4;
+static CGFloat const kAnimationDuration = 0.5;
+static NSInteger const kAnimationDotViewCount = 5;
 
 @interface EZResultView () <CAAnimationDelegate>
 
@@ -96,6 +98,7 @@ static CGFloat const kAnimationDuration = 0.4;
     self.disableImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
+        imageView.hidden = YES;
         NSImage *image = [NSImage imageNamed:@"disabled"];
         [imageView setImage:image];
     }];
@@ -190,23 +193,23 @@ static CGFloat const kAnimationDuration = 0.4;
         make.size.mas_equalTo(iconSize);
     }];
 
-    CGFloat width = 4;
     [self.loadingView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.disableImageView.mas_right).offset(5);
+        make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
     [self.loadingView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     NSView *lastView = nil;
-    CGFloat padding = 1.5 * width;
-    CGFloat margin = 10;
-    NSInteger count = 5;
-    for (int i = 0; i < count; i++) {
+    CGFloat width = 4;
+    CGFloat padding = 1.8 * width;
+    CGFloat margin = width;
+    for (int i = 0; i < kAnimationDotViewCount; i++) {
         CGRect rect = CGRectMake(0, 0, width, width);
         NSView *dotView = [[NSView alloc] initWithFrame:rect];
         dotView.wantsLayer = YES;
-        dotView.layer.backgroundColor = NSColor.orangeColor.CGColor;
+        dotView.hidden = YES;
+        dotView.layer.backgroundColor = [NSColor mm_colorWithHexString:@"#FF8E27"].CGColor;
         dotView.layer.cornerRadius = width / 2;
         [self.loadingView addSubview:dotView];
 
@@ -324,20 +327,24 @@ static CGFloat const kAnimationDuration = 0.4;
 - (void)startLoadingAnimation {
     mm_weakify(self);
     
-    NSArray *subviews = self.loadingView.subviews; // 5
+    // (subviews.count - 1) * X = kAnimationDuration / 2
+    // 4*X=0.25
+    // X=0.12
     
-    CGFloat delayInterval = 0.1;
-    CGFloat animationInterval = 0.2;
+    NSArray *subviews = self.loadingView.subviews; // 5
+    CGFloat delayInterval = 0.12;
+    CGFloat animationInterval = 0.1;
     CGFloat timerInterval = (subviews.count - 1) * delayInterval + kAnimationDuration + animationInterval; // 1.0
     
+    [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval repeats:YES block:^(NSTimer * _Nonnull timer) {
         mm_strongify(self);
         
         for (int i = 0; i < subviews.count; i++) {
             CGFloat delayTime = delayInterval * i;
             NSView *dotView = subviews[i];
-            dotView.hidden = NO;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dotView.hidden = NO;
                 [self scaleAnimateView:dotView];
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime + kAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -356,21 +363,13 @@ static CGFloat const kAnimationDuration = 0.4;
 - (void)scaleAnimateView:(NSView *)view {
     self.loadingView.hidden = NO;
 
-    view.layer.backgroundColor = NSColor.orangeColor.CGColor;
     [view.layer removeAllAnimations];
 
     CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-    scaleAnimation.values = @[ @1.0, @2.2, @1.0 ];
+    scaleAnimation.values = @[ @1.0, @2.0, @1.0 ];
     scaleAnimation.removedOnCompletion = NO;
     scaleAnimation.fillMode = kCAFillModeForwards;
-
-//    CAKeyframeAnimation *colorAnimation = [CAKeyframeAnimation animationWithKeyPath:@"backgroundColor"];
-//    NSNumber *whiteColor = (__bridge id _Nullable)([NSColor whiteColor].CGColor);
-//    NSNumber *orangeColor = (__bridge id _Nullable)([NSColor orangeColor].CGColor);
-//    colorAnimation.values = @[ whiteColor, orangeColor, whiteColor ];
-//    colorAnimation.removedOnCompletion = NO;
-//    colorAnimation.fillMode = kCAFillModeForwards;
-    
+    scaleAnimation.calculationMode = kCAAnimationLinear;
     
     CGRect oldRect = view.layer.frame;
     view.layer.anchorPoint = CGPointMake(0.5, 0.5);
@@ -379,10 +378,8 @@ static CGFloat const kAnimationDuration = 0.4;
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations = @[ scaleAnimation ];
     group.duration = kAnimationDuration;
-
     group.delegate = self;
-    
-    //    group.repeatCount = 0;
+    group.repeatCount = 0;
     [view.layer addAnimation:group forKey:@"group"];
 }
 
