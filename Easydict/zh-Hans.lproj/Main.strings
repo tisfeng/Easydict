@@ -383,8 +383,8 @@
 /* Class = "NSMenuItem"; title = "Paste and Match Style"; ObjectID = "xuj-Ac-VOd"; */
 "xuj-Ac-VOd.title" = "Paste and Match Style";
 
-/* Class = "NSMenuItem"; title = "Bob Help"; ObjectID = "yMd-CK-UoO"; */
-"yMd-CK-UoO.title" = "Bob Help";
+/* Class = "NSMenuItem"; title = "Easydict Help"; ObjectID = "yMd-CK-UoO"; */
+"yMd-CK-UoO.title" = "Easydict Help";
 
 /* Class = "NSMenu"; title = "Baseline"; ObjectID = "zJj-ya-zFA"; */
 "zJj-ya-zFA.title" = "Baseline";

@@ -1,6 +1,6 @@
 //
 //  EZStatusItem.m
-//  Open Bob
+//  Easydict
 //
 //  Created by tisfeng on 2022/11/16.
 //  Copyright © 2022 izual. All rights reserved.
@@ -64,7 +64,7 @@ static EZStatusItem *_instance;
     self.statusItem = item;
 
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    self.bobItem.title = [NSString stringWithFormat:@"Bob %@", version];
+    self.bobItem.title = [NSString stringWithFormat:@"Easydict %@", version];
 }
 
 - (void)remove {
@@ -139,7 +139,7 @@ static EZStatusItem *_instance;
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH-mm-ss-SSS"];
     NSString *dataString = [dateFormatter stringFromDate:[NSDate date]];
     NSString *downloadDirectory = NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *zipPath = [downloadDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"Bob log %@.zip", dataString]];
+    NSString *zipPath = [downloadDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"Easydict log %@.zip", dataString]];
     BOOL result = [SSZipArchive createZipFileAtPath:zipPath withContentsOfDirectory:logPath keepParentDirectory:NO];
     if (result) {
         [[NSWorkspace sharedWorkspace] selectFile:zipPath inFileViewerRootedAtPath:@""];
