@@ -312,7 +312,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-            result.isLoading = NO;
             NSLog(@"service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
@@ -469,6 +468,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)updateCellWithResults:(NSArray<EZQueryResult *> *)results reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
+        result.isLoading = NO;
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
         [rowIndexes addIndex:row + [self resultCellOffset]];
