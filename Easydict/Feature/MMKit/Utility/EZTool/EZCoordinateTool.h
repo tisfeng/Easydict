@@ -1,6 +1,6 @@
 //
 //  EZTool.h
-//  Open Bob
+//  Easydict
 //
 //  Created by tisfeng on 2022/11/23.
 //  Copyright © 2022 izual. All rights reserved.

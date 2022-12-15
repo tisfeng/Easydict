@@ -1,6 +1,6 @@
 //
 //  EZWindowManager.m
-//  Open Bob
+//  Easydict
 //
 //  Created by tisfeng on 2022/11/19.
 //  Copyright © 2022 izual. All rights reserved.
