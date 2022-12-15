@@ -128,8 +128,8 @@ static EZStatusItem *_instance;
 }
 
 - (IBAction)documentationAction:(NSMenuItem *)sender {
-    NSLog(@"使用教程");
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/ripperhe/Bob"]];
+    NSLog(@"反馈问题");
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/tisfeng/Easydict"]];
 }
 
 - (IBAction)exportLogAction:(id)sender {
