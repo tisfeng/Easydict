@@ -11,7 +11,6 @@
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
 #import "EZConst.h"
-#import <FBKVOController.h>
 #import "NSView+EZAnimatedHidden.h"
 
 static CGFloat const kAnimationDuration = 0.5;
@@ -31,7 +30,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 @property (nonatomic, strong) EZQueryResult *result;
 
-@property (nonatomic, weak) FBKVOController *kvo;
 @property (nonatomic, strong) NSTimer *timer;
 
 @end
@@ -289,38 +287,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 #pragma mark - Animation
 
-- (void)observeIsLoadingState {
-    //    [self startOrEndLoadingAnimation:self.result.isLoading];
-    
-    if (!self.kvo) {
-        self.kvo = [FBKVOController controllerWithObserver:self];
-        [self.kvo observe:self.result
-                  keyPath:@"isLoading"
-                  options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-                    block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-            //                    NSLog(@"change: %@", change);
-            
-            BOOL isLoading = [change[NSKeyValueChangeNewKey] boolValue];
-            [self startOrEndLoadingAnimation:isLoading];
-        }];
-    }
-}
-
-- (void)rotateArrowButton {
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation.fromValue = @(0);
-    animation.toValue = [NSNumber numberWithFloat:-90 * (M_PI / 180.0f)];
-    animation.cumulative = YES;
-    animation.repeatCount = 1;
-    animation.duration = 1;
-    
-    CGRect oldRect = self.arrowButton.layer.frame;
-    self.arrowButton.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
-    self.arrowButton.layer.frame = oldRect;
-    
-    [self.arrowButton.layer addAnimation:animation forKey:@"animation"];
-}
-
 - (void)startOrEndLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
         [self startLoadingAnimation];
@@ -366,7 +332,6 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.timer fire];
 }
 
-
 - (void)scaleAnimateView:(NSView *)view {
     self.loadingView.hidden = NO;
     
@@ -395,6 +360,23 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.timer invalidate];
 }
 
+
+#pragma mark -
+
+- (void)rotateArrowButton {
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation.fromValue = @(0);
+    animation.toValue = [NSNumber numberWithFloat:-90 * (M_PI / 180.0f)];
+    animation.cumulative = YES;
+    animation.repeatCount = 1;
+    animation.duration = 1;
+    
+    CGRect oldRect = self.arrowButton.layer.frame;
+    self.arrowButton.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
+    self.arrowButton.layer.frame = oldRect;
+    
+    [self.arrowButton.layer addAnimation:animation forKey:@"animation"];
+}
 
 // add color animation for view. color from white to gray
 - (void)addColorAnimationForView:(NSView *)view {
