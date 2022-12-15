@@ -714,10 +714,10 @@
 		03B0222829231FA6001C7E63 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				03B0222929231FA6001C7E63 /* Configuration.h */,
-				03B0222A29231FA6001C7E63 /* Configuration.m */,
 				03542A562937CC3200C34C33 /* EZConfiguration.h */,
 				03542A572937CC3200C34C33 /* EZConfiguration.m */,
+				03B0222929231FA6001C7E63 /* Configuration.h */,
+				03B0222A29231FA6001C7E63 /* Configuration.m */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";

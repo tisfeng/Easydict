@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZConfiguration : NSObject
 
-@property (nonatomic, assign) BOOL autoCopyTranslateResult;
+@property (nonatomic, assign) BOOL autoSelectText;
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
 
