@@ -45,9 +45,8 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
 
 - (instancetype)init {
     if (self = [super init]) {
-//        _normalResults = @[@""];
-//        _isShowing = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
-
+        //        _normalResults = @[@""];
+        //        _isShowing = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
     }
     return self;
 }
@@ -69,6 +68,23 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
         return YES;
     }
     return NO;
+}
+
+- (void)reset {
+    self.queryModel = [[EZQueryModel alloc] init];
+    self.normalResults = nil;
+    self.wordResult = nil;
+    self.error = nil;
+    self.serviceType = EZServiceTypeBaidu;
+    self.service = nil;
+    self.isShowing = NO;
+    self.viewHeight = 0;
+    self.text = @"";
+    self.from = EZLanguageAuto;
+    self.to = EZLanguageAuto;
+    self.toSpeakURL = nil;
+    self.fromSpeakURL = nil;
+    self.raw = nil;
 }
 
 @end

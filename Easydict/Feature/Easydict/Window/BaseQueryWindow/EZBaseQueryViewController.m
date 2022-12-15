@@ -86,10 +86,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [self updateWindowViewHeightWithAnimation:NO];
 }
 
-- (void)viewWillAppear {
-    [super viewWillAppear];
-    //    [self updateWindowViewHeightWithLock];
-}
 
 - (void)setup {
     self.queryModel = [[EZQueryModel alloc] init];
@@ -98,8 +94,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
     self.serviceTypes = @[
-        EZServiceTypeDeepL,
         EZServiceTypeGoogle,
+        EZServiceTypeDeepL,
         EZServiceTypeBaidu,
         EZServiceTypeYoudao,
     ];
@@ -234,7 +230,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         self.queryView.queryModel = self.queryModel;
         [self updateQueryCell];
     }
-        
+    
     if ([self allShowingResults].count > 0) {
         [self.queryView setClearButtonAnimatedHidden:NO];
     }
@@ -338,6 +334,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     // Show result if it has been queried.
     service.result.isShowing = YES;
     service.result.isLoading = YES;
+    
+    [self updateResultCell:service.result];
     
     NSLog(@"query service: %@", service.serviceType);
     
@@ -489,7 +487,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
         
         // ???: need to check.
-
+        
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     
@@ -535,18 +533,25 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 - (void)resetAllResults {
     for (EZQueryService *service in self.services) {
-        EZQueryResult *result = [[EZQueryResult alloc] init];
+        EZQueryResult *result = service.result;
+        [result reset];
+        if (!service.result) {
+            result = [[EZQueryResult alloc] init];
+        }
         result.isShowing = NO; // default not show, show after querying if result is not empty.
+        result.isLoading = NO;
         service.result = result;
         
-        // TODO: need update result view result
-
-        NSInteger index = [self.services indexOfObject:service];
-        NSInteger row =  index + [self resultCellOffset];
-
-        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
-        resultCell.result = result;
+        [self updateResultCell:service.result];
     }
+}
+
+- (void)updateResultCell:(EZQueryResult *)result {
+    NSInteger index = [self.services indexOfObject:result.service];
+    NSInteger row =  index + [self resultCellOffset];
+    
+    EZResultCell *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+    resultCell.result = result;
 }
 
 - (void)delayDetectQueryText {
@@ -581,19 +586,19 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 // TODO: need to check, use true cell result, rather than self result
 - (NSArray *)allShowingResults {
     NSMutableArray *results = [NSMutableArray array];
-
-//    NSInteger rowCount = [self.tableView numberOfRows];
-//    NSInteger startIndex = [self resultCellOffset];
-//    rowCount -= startIndex;
-//
-//    for (int i = (int)startIndex; i < rowCount; i++) {
-//        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
-//        EZQueryResult *result = resultCell.result;
-//        if (result.isShowing) {
-//            [results addObject:result];
-//        }
-//    }
-
+    
+    //    NSInteger rowCount = [self.tableView numberOfRows];
+    //    NSInteger startIndex = [self resultCellOffset];
+    //    rowCount -= startIndex;
+    //
+    //    for (int i = (int)startIndex; i < rowCount; i++) {
+    //        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
+    //        EZQueryResult *result = resultCell.result;
+    //        if (result.isShowing) {
+    //            [results addObject:result];
+    //        }
+    //    }
+    
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         if (result.isShowing) {
@@ -609,6 +614,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     NSArray *results = [self allShowingResults];
     for (EZQueryResult *result in results) {
         result.isShowing = NO;
+        result.isLoading = NO;
     }
 }
 
@@ -640,7 +646,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         self.queryText = [NSString stringWithString:text];
         
         [self delayDetectQueryText];
-
+        
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
@@ -670,14 +676,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         
         // Clear query text, detect language and clear button right now;
         self.queryText = @"";
-
+        
         [self updateQueryCellWithCompletionHandler:^{
             // !!!: To show closing animation, we cannot reset result directly.
             [self closeAllResultView:^{
                 [self resetQueryAndResults];
             }];
         }];
-
+        
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
