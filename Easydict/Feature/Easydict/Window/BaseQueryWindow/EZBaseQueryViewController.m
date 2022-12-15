@@ -510,7 +510,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 /// Update query cell data and row height.
 - (void)updateQueryCellWithCompletionHandler:(nullable void (^)(void))completionHandler {
     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:YES completionHandler:completionHandler];
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:completionHandler];
 }
 
 - (void)updateSelectLanguageCell {

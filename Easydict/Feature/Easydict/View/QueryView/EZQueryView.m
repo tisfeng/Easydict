@@ -260,8 +260,7 @@
 
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = self.textView.string;
-
-    NSLog(@"textDidChange: %@", text);
+//    NSLog(@"textDidChange: %@", text);
     
     [self updateButtonsDisplayState:text];
     
