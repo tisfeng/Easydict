@@ -262,7 +262,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
         viewHeight = self.height;
-        NSLog(@"result view height: %@", @(self.height));
+//        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
     
