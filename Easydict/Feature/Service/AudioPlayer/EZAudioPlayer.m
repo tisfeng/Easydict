@@ -45,7 +45,7 @@
 #pragma mark - Public Mehods
 
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(nullable void (^)(NSError *_Nullable))completion {
+- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from {
     [self.appleService playTextAudio:text fromLanguage:from];
 }
 

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZAudioPlayer : NSObject
 
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(nullable void (^)(NSError *_Nullable))completion;
+- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
 
 /// Play text audio with designated service.
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)language serive:(EZQueryService *)service;

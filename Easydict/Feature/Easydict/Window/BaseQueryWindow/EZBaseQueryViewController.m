@@ -667,9 +667,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self.audioPlayer  playSystemTextAudio:self.queryText
-                                  fromLanguage:self.queryModel.queryFromLanguage
-                                    completion:nil];
+        [self.audioPlayer  playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -750,7 +748,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self.audioPlayer playTextAudio:text
-                           fromLanguage:service.queryModel.queryFromLanguage
+                           fromLanguage:service.queryModel.queryTargetLanguage
                                  serive:service];
     }];
     

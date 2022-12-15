@@ -8,6 +8,7 @@
 
 #import "EZQueryService.h"
 #import "EZLocalStorage.h"
+#import "EZAudioPlayer.h"
 
 #define MethodNotImplemented()    \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException    \
@@ -19,9 +20,10 @@ userInfo:nil]
 
 @property (nonatomic, strong) MMOrderedDictionary *langDict;
 @property (nonatomic, strong) NSArray<EZLanguage> *languages;
-//@property (nonatomic, strong) NSDictionary<NSNumber *, NSString *> *langStringFromEnumDict;
 @property (nonatomic, strong) NSDictionary<NSString *, EZLanguage> *langEnumFromStringDict;
 @property (nonatomic, strong) NSDictionary< EZLanguage, NSNumber *> *langIndexDict;
+
+@property (nonatomic, strong) EZAudioPlayer *aduioPlayer;
 
 @end
 
@@ -33,6 +35,13 @@ userInfo:nil]
         self.enabled = [[EZLocalStorage shared] getServiceInfo:self.serviceType].enabled;
     }
     return self;
+}
+
+- (EZAudioPlayer *)aduioPlayer {
+    if (!_aduioPlayer) {
+        _aduioPlayer = [[EZAudioPlayer alloc] init];
+    }
+    return _aduioPlayer;
 }
 
 - (void)setEnabled:(BOOL)enabled {
@@ -136,7 +145,7 @@ userInfo:nil]
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioUrl, NSError *_Nullable error))completion {
-    MethodNotImplemented();
+    [self.aduioPlayer playSystemTextAudio:text fromLanguage:from];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
