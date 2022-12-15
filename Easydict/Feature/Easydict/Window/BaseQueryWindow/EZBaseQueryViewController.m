@@ -124,6 +124,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         }
         
         [self reloadTableViewDataWithLock:NO completion:^{
+            // Update query view height manually, and update cell height.
+            self.queryModel.queryViewHeight = [self.queryView heightOfQueryView];
+            
+            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+            [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+            
             [self delayUpdateWindowViewHeight];
         }];
     }];
