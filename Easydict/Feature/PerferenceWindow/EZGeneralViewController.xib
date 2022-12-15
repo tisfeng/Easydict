@@ -96,10 +96,10 @@
                     </constraints>
                 </box>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vKL-Rb-7ex">
-                    <rect key="frame" x="153" y="91" width="132" height="18"/>
-                    <buttonCell key="cell" type="check" title="自动复制翻译结果" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="3Rf-pg-98U">
+                    <rect key="frame" x="153" y="91" width="177" height="18"/>
+                    <buttonCell key="cell" type="check" title="划词后自动显示查询图标" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="3Rf-pg-98U">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
+                        <font key="font" size="13" name=".PingFangSC-Regular"/>
                     </buttonCell>
                     <connections>
                         <action selector="autoCopyTranslateResultButtonClicked:" target="-2" id="Ple-eL-Uhj"/>
@@ -151,7 +151,7 @@
                 <constraint firstItem="rdS-e7-tO0" firstAttribute="leading" secondItem="4dL-3k-Qcg" secondAttribute="leading" id="bCp-Jd-PhA"/>
                 <constraint firstItem="JZI-C8-iw8" firstAttribute="top" secondItem="vKL-Rb-7ex" secondAttribute="bottom" constant="13" id="cyq-uC-HC9"/>
                 <constraint firstItem="E7D-SM-ttH" firstAttribute="trailing" secondItem="sCf-ch-6bJ" secondAttribute="trailing" id="hjQ-WX-OIR"/>
-                <constraint firstItem="Eda-ku-sQd" firstAttribute="centerX" secondItem="vKL-Rb-7ex" secondAttribute="centerX" id="i36-S4-dhw"/>
+                <constraint firstItem="Eda-ku-sQd" firstAttribute="centerX" secondItem="vKL-Rb-7ex" secondAttribute="centerX" constant="-22.5" id="i36-S4-dhw"/>
                 <constraint firstItem="hbv-Im-TzA" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="83" id="jzN-P9-GVa"/>
                 <constraint firstItem="Eda-ku-sQd" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="140" id="kOf-wQ-RYE"/>
                 <constraint firstItem="eDQ-79-aWx" firstAttribute="centerY" secondItem="hbv-Im-TzA" secondAttribute="centerY" id="kyN-KI-QWp"/>

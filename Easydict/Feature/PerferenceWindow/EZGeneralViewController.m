@@ -47,7 +47,7 @@
     self.showMiniShortcutView.style = MASShortcutViewStyleTexturedRect;
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
 
-    self.autoCopyTranslateResultButton.mm_isOn = EZConfiguration.shared.autoCopyTranslateResult;
+    self.autoCopyTranslateResultButton.mm_isOn = EZConfiguration.shared.autoSelectText;
     self.launchAtStartupButton.mm_isOn = EZConfiguration.shared.launchAtStartup;
     self.autoCheckUpdateButton.mm_isOn = EZConfiguration.shared.automaticallyChecksForUpdates;
 }
@@ -55,7 +55,7 @@
 #pragma mark - event
 
 - (IBAction)autoCopyTranslateResultButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.autoCopyTranslateResult = sender.mm_isOn;
+    EZConfiguration.shared.autoSelectText = sender.mm_isOn;
 }
 
 - (IBAction)launchAtStartupButtonClicked:(NSButton *)sender {

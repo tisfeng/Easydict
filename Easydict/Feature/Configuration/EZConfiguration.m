@@ -10,7 +10,9 @@
 #import <ServiceManagement/ServiceManagement.h>
 #import <Sparkle/Sparkle.h>
 
-#define kAutoCopyTranslateResultKey @"configuration_auto_copy_translate_result"
+static NSString *const kAutoSelectTextKey = @"configuration_auto_select_text";
+//#define kAutoCopyTranslateResultKey @"configuration_auto_copy_translate_result"
+
 #define kLaunchAtStartupKey @"configuration_launch_at_startup"
 
 #define kTranslateIdentifierKey @"configuration_translate_identifier"
@@ -43,7 +45,7 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.autoCopyTranslateResult = [[NSUserDefaults mm_read:kAutoCopyTranslateResultKey defaultValue:@NO checkClass:NSNumber.class] boolValue];
+    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@NO checkClass:NSNumber.class] boolValue];
     self.translateIdentifier = [NSUserDefaults mm_read:kTranslateIdentifierKey defaultValue:nil checkClass:NSString.class];
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
@@ -65,9 +67,9 @@ static EZConfiguration *_instance;
 
 #pragma mark - setter
 
-- (void)setAutoCopyTranslateResult:(BOOL)autoCopyTranslateResult {
-    _autoCopyTranslateResult = autoCopyTranslateResult;
-    [NSUserDefaults mm_write:@(autoCopyTranslateResult) forKey:kAutoCopyTranslateResultKey];
+- (void)setAutoSelectText:(BOOL)autoSelectText {
+    _autoSelectText = autoSelectText;
+    [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {

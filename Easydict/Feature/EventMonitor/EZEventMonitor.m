@@ -9,6 +9,7 @@
 #import "EZEventMonitor.h"
 #include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
+#import "EZConfiguration.h"
 
 static CGFloat kDismissPopButtonDelayTime = 1.0;
 
@@ -435,6 +436,17 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
 - (void)getSelectedText:(BOOL)checkTextFrame {
+    BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
+    if (!enableAutoSelectText) {
+        NSLog(@"user did not enableAutoSelectText");
+        return;
+    }
+    
+    if (![self checkAppIsTrusted]) {
+        NSLog(@"App has not trusted");
+        return;
+    }
+    
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         if (![self isValidSelectedFrame]) {
             if (checkTextFrame) {
