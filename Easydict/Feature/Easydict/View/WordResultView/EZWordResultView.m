@@ -66,6 +66,35 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     mm_weakify(self);
     
+    if (result.wordResult) {
+        NSTextField *wordTextField = nil;
+        wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self);
+            [self addSubview:textField];
+            textField.stringValue = result.text;
+            [textField excuteLight:^(id _Nonnull x) {
+                [x setTextColor:NSColor.resultTextLightColor];
+            } drak:^(id _Nonnull x) {
+                [x setTextColor:NSColor.resultTextDarkColor];
+            }];
+            textField.font = [NSFont boldSystemFontOfSize:22];
+            textField.selectable = YES;
+            textField.editable = NO;
+            textField.bordered = NO;
+            textField.backgroundColor = NSColor.clearColor;
+            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                if (lastView) {
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
+                } else {
+                    make.top.offset(kVerticalPadding_8);
+                }
+                make.left.mas_equalTo(kHorizontalMargin_8);
+            }];
+        }];
+        wordTextField.mas_key = @"wordTextField";
+        lastView = wordTextField;
+    }
+    
     if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
         __block CGFloat exceptedWidth = 0;
