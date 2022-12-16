@@ -685,7 +685,6 @@
 			isa = PBXGroup;
 			children = (
 				03B0224F29231FA6001C7E63 /* Easydict */,
-				03B0224C29231FA6001C7E63 /* TranslateWindow */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
 				03B0222829231FA6001C7E63 /* Configuration */,
@@ -801,13 +800,6 @@
 				03B0224829231FA6001C7E63 /* OCRResult.m */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		03B0224C29231FA6001C7E63 /* TranslateWindow */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = TranslateWindow;
 			sourceTree = "<group>";
 		};
 		03B0224F29231FA6001C7E63 /* Easydict */ = {
