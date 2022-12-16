@@ -3,7 +3,7 @@
 //  Bob
 //
 //  Created by tisfeng on 2022/11/9.
-//  Copyright © 2022 ripperhe. All rights reserved.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
