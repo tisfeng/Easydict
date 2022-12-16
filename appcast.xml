@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+  <channel>
+    <title>Easydict</title>
+    <item>
+      <title>1.0.0</title>
+      <pubDate>Sat, 17 Dec 2022 00:07:29 +0000</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.0.0/Easydict.zip"
+        sparkle:version="1" sparkle:shortVersionString="1.0.0" type="application/octet-stream"
+        sparkle:edSignature="seCppdAp9j9S8RqKsdEFSNUqN72Cd/FjGmIj4rla05tDhi0CsfpCVUugo5t8zivxRYRwq3s4vYGpcskTmUNIDA=="
+        length="5301080" />
+      <description><![CDATA[
+      <ul>
+      <li>First version</li>
+      </ul>
+      ]]>      
+    </description>
+    </item>
+  </channel>
+</rss>

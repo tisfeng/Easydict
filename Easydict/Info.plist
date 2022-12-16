@@ -64,7 +64,7 @@
 		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2019 ripperhe. All rights reserved.</string>
+	<string>Copyright © 2022 tisfeng. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
@@ -74,8 +74,8 @@
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/ripperhe/Bob/master/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/tisfeng/Easydict/master/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>9A+xsrQOIlVVWM8Ck/XH0AoTCqHf7S7S1SKTNP62LJE=</string>
+	<string>9Ee1FtAsmJHFD79H4bToJhAOJmTtkTYIUDr23ofEWiU</string>
 </dict>
 </plist>
