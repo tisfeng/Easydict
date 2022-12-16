@@ -207,8 +207,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         tableView.headerView = nil;
         tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_8);
         tableView.gridColor = NSColor.clearColor;
-        tableView.gridStyleMask = NSTableViewGridNone;
-        [tableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask];
         self.scrollView.documentView = tableView;
         [tableView sizeLastColumnToFit]; // must put in the end
     }
@@ -426,7 +424,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [self reloadTableViewData:completion];
 }
 
-/// TableView reloadData
+/// TableView reloadData, and update window height.
 - (void)reloadTableViewData:(void (^)(void))completion {
     [self reloadTableViewDataWithLock:YES completion:completion];
 }
@@ -503,9 +501,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
         [self updateWindowViewHeightWithAnimation:YES];
     } completionHandler:^{
-        if (completionHandler) {
-            completionHandler();
-        }
+        // TODO: There was no need to update the tableView again here, but I found a strange problem where querying certain words, such as copy, would cause the actual display height of the tableView to be inconsistent with the calculated height, so I reload it temporarily.
+        [self reloadTableViewData:completionHandler];
     }];
 }
 
@@ -844,7 +841,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 }
 
 - (CGFloat)getRestrainedScrollViewHeight {
-    CGFloat height = [self getScrollViewHeight];
+    CGFloat height = [self getScrollViewContentHeight];
     
     CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];
     CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
@@ -856,14 +853,16 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 }
 
 /// Manually calculate tableView row height.
-- (CGFloat)getScrollViewHeight {
+- (CGFloat)getScrollViewContentHeight {
     CGFloat scrollViewContentHeight = 0;
     
     NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
+//        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
     }
+//    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     return scrollViewContentHeight;
 }
