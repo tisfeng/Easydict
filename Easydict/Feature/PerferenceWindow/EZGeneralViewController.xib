@@ -102,7 +102,7 @@
                         <font key="font" size="13" name=".PingFangSC-Regular"/>
                     </buttonCell>
                     <connections>
-                        <action selector="autoCopyTranslateResultButtonClicked:" target="-2" id="Ple-eL-Uhj"/>
+                        <action selector="autoSelectTextButtonClicked:" target="-2" id="Ple-eL-Uhj"/>
                     </connections>
                 </button>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="Eda-ku-sQd" customClass="MASShortcutView">

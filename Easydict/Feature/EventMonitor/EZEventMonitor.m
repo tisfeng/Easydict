@@ -442,11 +442,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         return;
     }
     
-    if (![self checkAppIsTrusted]) {
-        NSLog(@"App has not trusted");
-        return;
-    }
-    
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         if (![self isValidSelectedFrame]) {
             if (checkTextFrame) {
