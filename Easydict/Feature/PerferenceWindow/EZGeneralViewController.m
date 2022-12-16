@@ -54,8 +54,19 @@
 
 #pragma mark - event
 
-- (IBAction)autoCopyTranslateResultButtonClicked:(NSButton *)sender {
+- (IBAction)autoSelectTextButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoSelectText = sender.mm_isOn;
+    
+    if (sender.mm_isOn) {
+        [self checkAppIsTrusted];
+    }
+}
+
+- (BOOL)checkAppIsTrusted {
+    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
+    NSLog(@"isTrusted: %d", isTrusted);
+
+    return isTrusted == YES;
 }
 
 - (IBAction)launchAtStartupButtonClicked:(NSButton *)sender {
