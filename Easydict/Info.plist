@@ -74,8 +74,8 @@
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/tisfeng/Easydict/master/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml?token=GHSAT0AAAAAABVUFG45SUOJBQBZ4YF36MMWY44UP7Q</string>
 	<key>SUPublicEDKey</key>
-	<string>9Ee1FtAsmJHFD79H4bToJhAOJmTtkTYIUDr23ofEWiU</string>
+	<string>9Ee1FtAsmJHFD79H4bToJhAOJmTtkTYIUDr23ofEWiU=</string>
 </dict>
 </plist>
