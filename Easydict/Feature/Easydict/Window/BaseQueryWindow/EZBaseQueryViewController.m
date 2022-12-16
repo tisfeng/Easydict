@@ -450,18 +450,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData {
-    if (!result) {
-        NSLog(@"resutl is nil");
-        return;
-    }
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-    if (!result) {
-        NSLog(@"resutl is nil");
-        return;
-    }
+
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
@@ -499,10 +492,15 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         context.duration = EZUpdateTableViewRowHeightAnimationDuration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self updateWindowViewHeightWithAnimation:YES];
     } completionHandler:^{
+        if (completionHandler) {
+            completionHandler();
+        }
+        
         // TODO: There was no need to update the tableView again here, but I found a strange problem where querying certain words, such as copy, would cause the actual display height of the tableView to be inconsistent with the calculated height, so I reload it temporarily.
-        [self reloadTableViewData:completionHandler];
+        [self reloadTableViewData:nil];
     }];
 }
 
