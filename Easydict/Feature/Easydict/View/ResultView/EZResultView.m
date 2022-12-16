@@ -257,6 +257,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.wordResultView refreshWithResult:result];
     
     
+    // TODO: need to optimize. This way seems to be too time consuming and can cause UI lag, such as clicking arrow buttons. Let's change to manual height calculation later.
     [self layoutSubtreeIfNeeded];
     
     CGFloat viewHeight = kResultViewMiniHeight;
