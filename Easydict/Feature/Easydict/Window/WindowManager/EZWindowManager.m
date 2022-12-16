@@ -230,7 +230,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
-    NSLog(@"show floating window: %@, %@", window, @(point));
+//    NSLog(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {

@@ -492,15 +492,18 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         context.duration = EZUpdateTableViewRowHeightAnimationDuration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+//        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self updateWindowViewHeightWithAnimation:YES];
     } completionHandler:^{
         if (completionHandler) {
             completionHandler();
         }
         
-        // TODO: There was no need to update the tableView again here, but I found a strange problem where querying certain words, such as copy, would cause the actual display height of the tableView to be inconsistent with the calculated height, so I reload it temporarily.
-        [self reloadTableViewData:nil];
+        // TODO: There was no need to update the tableView again here, but I found a strange bug where querying certain words, such as copy, would cause the actual display height of the tableView to be inconsistent with the calculated height, so I reload it temporarily.
+        
+        // But currently, reload tableView will cuase memory leak strangely...
+        
+//        [self reloadTableViewData:nil];
     }];
 }
 
