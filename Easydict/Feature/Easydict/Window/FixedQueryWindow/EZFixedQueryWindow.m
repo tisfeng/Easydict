@@ -31,6 +31,10 @@ static EZFixedQueryWindow *_instance;
         [self standardWindowButton:NSWindowCloseButton].hidden = YES;
         [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
         [self standardWindowButton:NSWindowZoomButton].hidden = YES;
+        
+#if !DEBUG
+        self.styleMask = NSWindowStyleMaskTitled; // no resizable, wait to fix memory leak.
+#endif
     }
     return self;
 }
