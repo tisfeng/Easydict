@@ -29,6 +29,10 @@ jobs:
           # save the value to env
           echo "repo_stars=$stars" >> $GITHUB_ENV
 
+      - name: Convert body to HTML
+        run: |
+          echo "body=Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{env.event_name}}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>, total stars: <b>${{env.repo_stars}}</b>, stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>" >> $GITHUB_ENV
+
       - name: "Send mail"
         uses: dawidd6/action-send-mail@v3
         with:
@@ -38,11 +42,6 @@ jobs:
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
           subject: ✨ GitHub repo has been ${{env.event_name}}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          html_body: |
-            <p>Your repo [${{{ github.repository }}}] was {{{ env.event_name }}} ✨ by {{{ github.actor }}} {{{ github.server_url }}}/{{{ github.actor }}},</p>
-            <p>total stars: {{{ env.repo_stars }}},</p>
-            <p>stargazers list: {{{ github.server_url }}}/{{{ github.repository }}}/stargazers</p>
-
-          to: ${{ secrets.EMAIL_ADDRESS }}
+          body_html: ${{env.body}}
+          to: ${{ secrets.GMAIL_BOT_RECEIVER }}
           from: GitHub Actions
-          convert_markdown: true
