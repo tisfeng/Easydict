@@ -31,7 +31,7 @@ jobs:
 
       - name: Convert body to HTML
         run: |
-          html_body="Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{env.event_name}}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br>Total stars: <b>${{env.repo_stars}}</b>  <br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
+          html_body="<h1>Easydict</h1> <br><center><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png'></center><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{env.event_name}}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Total stars: <b>${{env.repo_stars}}</b>  <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
           echo "html_body=$html_body" >> $GITHUB_ENV
           echo "html body: ${{env.html_body}}"
 
