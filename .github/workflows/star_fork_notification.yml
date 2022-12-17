@@ -32,6 +32,7 @@ jobs:
       - name: Convert body to HTML
         run: |
           echo "body=Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{env.event_name}}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>, total stars: <b>${{env.repo_stars}}</b>, stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>" >> $GITHUB_ENV
+          echo "html body: ${{env.body}}"
 
       - name: "Send mail"
         uses: dawidd6/action-send-mail@v3
@@ -42,6 +43,6 @@ jobs:
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
           subject: ✨ GitHub repo has been ${{env.event_name}}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          body_html: ${{env.body}}
+          html_body: ${{env.body}}
           to: ${{ secrets.GMAIL_BOT_RECEIVER }}
           from: GitHub Actions
