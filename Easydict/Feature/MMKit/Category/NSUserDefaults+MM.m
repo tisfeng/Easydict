@@ -26,7 +26,6 @@
 
 + (void)mm_write:(id)obj forKey:(NSString *)key {
     [[NSUserDefaults standardUserDefaults] setObject:obj forKey:key];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
