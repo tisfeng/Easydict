@@ -18,11 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
 
-@property (nonatomic, copy) NSString *translateIdentifier;
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;
-@property (nonatomic, assign) BOOL isPin;
-@property (nonatomic, assign) BOOL isFold;
 
 
 + (instancetype)shared;
