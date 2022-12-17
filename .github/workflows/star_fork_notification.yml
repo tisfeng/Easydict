@@ -13,20 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: ${{ github.event_name == 'fork' }}
-        run: echo "🎉 triggered by a ${{ github.event_name }} event."
-      - name: Set the value
-        run: echo "event_name=forked" >> $GITHUB_ENV
-
+        run: |
+          echo "🎉 triggered by a ${{ github.event_name }} event."
+          echo "event_name=forked" >> $GITHUB_ENV
       - if: ${{ github.event_name == 'watch' }}
-        run: echo "🎉 triggered by a ${{ github.event_name }} event."
-      - name: Set the value
-        run: echo "event_name=starred" >> $GITHUB_ENV
+        run: |
+          echo "🎉 triggered by a ${{ github.event_name }} event."
+          echo "event_name=starred" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |
           result=$(curl -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
           echo "Number of stars: $stars"
+          # save the value to env
           echo "repo_stars=$stars" >> $GITHUB_ENV
 
       - name: "Send mail"
