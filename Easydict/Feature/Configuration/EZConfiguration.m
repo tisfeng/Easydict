@@ -11,12 +11,9 @@
 #import <Sparkle/Sparkle.h>
 
 static NSString *const kAutoSelectTextKey = @"configuration_auto_select_text";
-
-#define kLaunchAtStartupKey @"configuration_launch_at_startup"
-
-#define kFromKey @"configuration_from"
-#define kToKey @"configuration_to"
-
+static NSString *const kLaunchAtStartupKey = @"configuration_launch_at_startup";
+static NSString *const kFromKey = @"configuration_from";
+static NSString *const kToKey = @"configuration_to";
 
 @implementation EZConfiguration
 
@@ -42,6 +39,7 @@ static EZConfiguration *_instance;
 
 - (void)setup {
     self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
 }
