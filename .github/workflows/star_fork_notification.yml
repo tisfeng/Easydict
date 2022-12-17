@@ -1,0 +1,37 @@
+name: "GitHub Repo Starred or Forked Notification"
+
+on:
+  # Runs your workflow when someone forks a repository.
+  fork:
+  # Runs your workflow when the workflow's repository is starred.
+  # https://docs.github.com/cn/github-ae@latest/actions/using-workflows/events-that-trigger-workflows#watch
+  watch:
+    types: [started]
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ github.event_name == 'fork' }}
+        run: echo "🎉 triggered by a ${{ github.event_name }} event."
+      - name: Set the value
+        run: echo "event_name=forked" >> $GITHUB_ENV
+
+      - if: ${{ github.event_name == 'watch' }}
+        run: echo "🎉 triggered by a ${{ github.event_name }} event."
+      - name: Set the value
+        run: echo "event_name=starred" >> $GITHUB_ENV
+
+      - name: "Send mail"
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_BOT_USERNAME }}
+          password: ${{ secrets.GMAIL_BOT_PASSWORD }}
+          subject: ✨ GitHub repo has been ${{env.event_name}}!
+          # List stargazers  https://github.com/tisfeng/Easydict/stargazers
+          body: "Your repo [${{ github.repository }}] was ${{env.event_name}} ✨ by {${{ github.actor }}} ${{ github.server_url }}/${{ github.actor }},  stargazers list: ${{ github.server_url }}/${{ github.repository }}/stargazers"
+          to: ${{ secrets.EMAIL_ADDRESS }}
+          from: GitHub Actions
+          convert_markdown: true
