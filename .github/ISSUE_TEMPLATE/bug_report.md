@@ -1,8 +1,8 @@
 ---
 name: 反馈问题
-about: Bob 安装或使用出现异常
-title: '您好，请按照模板填写，谢谢啦 🙏'
-labels: 'bug'
+about: Easydict 安装或使用出现异常
+title: "您好，请按照模板填写，谢谢啦 🙏"
+labels: "bug"
 ---
 
 <!--
@@ -20,9 +20,11 @@ labels: 'bug'
 <!-- 点击编辑器上方的 preview 可预览你填写的效果 -->
 
 ## 运行环境
-* Device: <!--e.g. MacBook Pro (Retina, 15-inch, Mid 2015)-->
-* macOS: <!--e.g. 10.15.3-->
-* Bob Version: <!--e.g. 0.3.0-->
+
+- Device: <!--e.g. MacBook Pro (Retina, 15-inch, Mid 2015)-->
+- macOS: <!--e.g. 11.0-->
+- Easydict Version: <!--e.g. 0.3.0-->
 
 ## 描述问题
+
 <!--请简洁清晰地描述问题，如果涉及 UI，希望能够提供截图-->
