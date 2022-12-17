@@ -11,15 +11,11 @@
 #import <Sparkle/Sparkle.h>
 
 static NSString *const kAutoSelectTextKey = @"configuration_auto_select_text";
-//#define kAutoCopyTranslateResultKey @"configuration_auto_copy_translate_result"
 
 #define kLaunchAtStartupKey @"configuration_launch_at_startup"
 
-#define kTranslateIdentifierKey @"configuration_translate_identifier"
 #define kFromKey @"configuration_from"
 #define kToKey @"configuration_to"
-#define kPinKey @"configuration_pin"
-#define kFoldKey @"configuration_fold"
 
 
 @implementation EZConfiguration
@@ -45,12 +41,9 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@NO checkClass:NSNumber.class] boolValue];
-    self.translateIdentifier = [NSUserDefaults mm_read:kTranslateIdentifierKey defaultValue:nil checkClass:NSString.class];
+    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    self.isPin = [[NSUserDefaults mm_read:kPinKey defaultValue:@NO checkClass:NSNumber.class] boolValue];
-    self.isFold = [[NSUserDefaults mm_read:kFoldKey defaultValue:@NO checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -81,11 +74,6 @@ static EZConfiguration *_instance;
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
 }
 
-- (void)setTranslateIdentifier:(NSString *)translateIdentifier {
-    _translateIdentifier = translateIdentifier;
-    [NSUserDefaults mm_write:translateIdentifier forKey:kTranslateIdentifierKey];
-}
-
 - (void)setFrom:(EZLanguage)from {
     _from = from;
     [NSUserDefaults mm_write:from forKey:kFromKey];
@@ -96,15 +84,6 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
-- (void)setIsPin:(BOOL)isPin {
-    _isPin = isPin;
-    [NSUserDefaults mm_write:@(isPin) forKey:kPinKey];
-}
-
-- (void)setIsFold:(BOOL)isFold {
-    _isFold = isFold;
-    [NSUserDefaults mm_write:@(isFold) forKey:kFoldKey];
-}
 
 #pragma mark -
 
