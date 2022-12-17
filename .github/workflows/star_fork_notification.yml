@@ -44,5 +44,5 @@ jobs:
           subject: ✨ GitHub repo has been ${{env.event_name}}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
           html_body: ${{env.body}}
-          to: ${{ secrets.GMAIL_BOT_RECEIVER }}
+          to: ${{ secrets.RECEIVER_EMAIL }}
           from: GitHub Actions
