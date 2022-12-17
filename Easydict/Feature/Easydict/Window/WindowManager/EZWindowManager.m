@@ -109,8 +109,10 @@ static EZWindowManager *_instance;
     [self.eventMonitor setDoubleCommandBlock:^{
         NSLog(@"double command");
         
+#if DEBUG
         mm_strongify(self);
         [self showMiniFloatingWindow];
+#endif
     }];
 }
 
