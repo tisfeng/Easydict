@@ -27,6 +27,7 @@ jobs:
           result=$(curl -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
           echo "Number of stars: $stars"
+          echo "repo_stars=$stars" >> $GITHUB_ENV
 
       - name: "Send mail"
         uses: dawidd6/action-send-mail@v3
@@ -37,7 +38,7 @@ jobs:
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
           subject: ✨ GitHub repo has been ${{env.event_name}}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          body: "Your repo [${{ github.repository }}] was ${{env.event_name}} ✨ by {${{ github.actor }}} ${{ github.server_url }}/${{ github.actor }}, total stars: ${{stars}}, stargazers list: ${{ github.server_url }}/${{ github.repository }}/stargazers"
+          body: "Your repo [${{ github.repository }}] was ${{env.event_name}} ✨ by {${{ github.actor }}} ${{ github.server_url }}/${{ github.actor }}, total stars: ${{repo_stars}}, stargazers list: ${{ github.server_url }}/${{ github.repository }}/stargazers"
           to: ${{ secrets.EMAIL_ADDRESS }}
           from: GitHub Actions
           convert_markdown: true
