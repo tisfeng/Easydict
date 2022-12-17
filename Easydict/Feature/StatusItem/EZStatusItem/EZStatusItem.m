@@ -53,9 +53,9 @@ static EZStatusItem *_instance;
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [item.button setToolTip:@"Bob"];
 #if DEBUG
-    NSImage *image = [NSImage imageNamed:@"menu-icon"];
-#else
     NSImage *image = [NSImage imageNamed:@"menu-icon-2"];
+#else
+    NSImage *image = [NSImage imageNamed:@"menu-icon"];
 #endif
     image.template = YES;
     [item.button setImage:image];
