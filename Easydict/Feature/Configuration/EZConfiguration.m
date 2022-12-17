@@ -9,11 +9,14 @@
 #import "EZConfiguration.h"
 #import <ServiceManagement/ServiceManagement.h>
 #import <Sparkle/Sparkle.h>
+#import <ApplicationServices/ApplicationServices.h>
 
 static NSString *const kAutoSelectTextKey = @"configuration_auto_select_text";
 static NSString *const kLaunchAtStartupKey = @"configuration_launch_at_startup";
 static NSString *const kFromKey = @"configuration_from";
 static NSString *const kToKey = @"configuration_to";
+
+static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
 @implementation EZConfiguration
 
@@ -38,10 +41,29 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    NSNumber *autoSelectText = [NSUserDefaults mm_read:kAutoSelectTextKey];
+    if (autoSelectText == nil) {
+        autoSelectText = [NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class];
+    }
+    self.autoSelectText = [autoSelectText boolValue];
+
+    NSNumber *launchAtStartup = [NSUserDefaults mm_read:kLaunchAtStartupKey];
+    if (launchAtStartup == nil) {
+        launchAtStartup = [NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class];
+    }
+    self.launchAtStartup = [launchAtStartup boolValue];
+
+    NSString *from = [NSUserDefaults mm_read:kFromKey];
+    if (from == nil) {
+        from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    }
+    self.from = from;
+
+    NSString *to = [NSUserDefaults mm_read:kToKey];
+    if (to == nil) {
+        to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    }
+    self.to = to;
 }
 
 #pragma mark - getter
@@ -88,12 +110,38 @@ static EZConfiguration *_instance;
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
     // 注册启动项
     // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
+
+    NSString *helperBundleId = [self helperBundleId];
+    SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
+}
+
+- (BOOL)isLoginItemEnabled {
+    BOOL enabled = NO;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    CFArrayRef loginItems = SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
+#pragma clang diagnostic pop
+
+    for (id item in (__bridge NSArray *)loginItems) {
+        NSString *helperBundleId = [self helperBundleId];
+
+        if ([[[item objectForKey:@"Label"] description] isEqualToString:helperBundleId]) {
+            enabled = YES;
+            break;
+        }
+    }
+    CFRelease(loginItems);
+    return enabled;
+}
+
+- (NSString *)helperBundleId {
 #if DEBUG
-    NSString *helper = [NSString stringWithFormat:@"com.izual.easydictHelper-debug"];
+    NSString *helper = [NSString stringWithFormat:@"%@-debug", kEasydictHelperBundleId];
 #else
-    NSString *helper = [NSString stringWithFormat:@"com.izual.easydictHelper"];
+    NSString *helper = kEasydictHelperBundleId;
 #endif
-    SMLoginItemSetEnabled((__bridge CFStringRef)helper, launchAtStartup);
+    return helper;
 }
 
 @end
