@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
           subject: ✨ GitHub repo has been ${{env.event_name}}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          body: "Your repo [${{ github.repository }}] was ${{env.event_name}} ✨ by {${{ github.actor }}} ${{ github.server_url }}/${{ github.actor }}, total stars: $stars, stargazers list: ${{ github.server_url }}/${{ github.repository }}/stargazers"
+          body: "Your repo [${{ github.repository }}] was ${{env.event_name}} ✨ by {${{ github.actor }}} ${{ github.server_url }}/${{ github.actor }}, total stars: ${{stars}}, stargazers list: ${{ github.server_url }}/${{ github.repository }}/stargazers"
           to: ${{ secrets.EMAIL_ADDRESS }}
           from: GitHub Actions
           convert_markdown: true
