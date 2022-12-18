@@ -266,23 +266,22 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     
     EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerForURL:URL];
     if (completionHandler) {
-        [request.HTTPBody mj_keyValues];
-        NSData *bodyData = request.HTTPBody;
-        if (bodyData) {
-            NSString *bodyString = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
-            NSData *data = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
-            
-            NSError *error;
-            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            if (error) {
-                NSLog(@"error: %@", error);
-            }
-            if (bodyDict) {
-                NSLog(@"HTTPBody dict: %@", bodyDict);
-            } else {
-                NSLog(@"HTTPBody string: %@", bodyString);
-            }
-        }
+//        NSData *bodyData = request.HTTPBody;
+//        if (bodyData) {
+//            NSString *bodyString = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
+//            NSData *data = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
+//            
+//            NSError *error;
+//            NSDictionary *bodyDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+//            if (error) {
+//                NSLog(@"error: %@", error);
+//            }
+//            if (bodyDict) {
+//                NSLog(@"HTTPBody dict: %@", bodyDict);
+//            } else {
+//                NSLog(@"HTTPBody string: %@", bodyString);
+//            }
+//        }
         
         NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
         [task resume];

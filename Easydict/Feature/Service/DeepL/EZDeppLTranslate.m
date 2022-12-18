@@ -112,7 +112,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
         
-        NSLog(@"deepL responseObject: %@", responseObject);
+//        NSLog(@"deepL responseObject: %@", responseObject);
     }];
 }
 

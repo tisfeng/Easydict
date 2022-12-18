@@ -200,7 +200,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.rowHeight = 100;
+        tableView.rowHeight = 40;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
@@ -498,12 +498,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         if (completionHandler) {
             completionHandler();
         }
-        
-        // TODO: There was no need to update the tableView again here, but I found a strange bug where querying certain words, such as copy, would cause the actual display height of the tableView to be inconsistent with the calculated height, so I reload it temporarily.
-        
-        // But currently, reload tableView will cuase memory leak strangely...
-        
-//        [self reloadTableViewData:nil];
     }];
 }
 
@@ -799,8 +793,9 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     //    NSLog(@"updateWindowViewHeightWithLock");
     
-    CGFloat height = [self getRestrainedScrollViewHeight];
-    //        NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
+    CGFloat tableViewHeight = [self getScrollViewContentHeight];
+    CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
+//            NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
@@ -827,7 +822,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
     CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:newFrame];
     
-    [self.window setFrame:safeFrame display:displayFlag animate:animateFlag];
+    // ???: why set window frame will change tableView height?
+    [self.window setFrame:safeFrame display:NO animate:animateFlag];
+    
+    // Restore tableView height.
+    self.tableView.height = tableViewHeight;
     
     if (animateFlag) {
         // Animation cost time.
@@ -841,8 +840,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     //    NSLog(@"window frame: %@", @(window.frame));
 }
 
-- (CGFloat)getRestrainedScrollViewHeight {
-    CGFloat height = [self getScrollViewContentHeight];
+- (CGFloat)getRestrainedScrollViewHeight:(CGFloat)scrollViewContentHeight {
+    CGFloat height = scrollViewContentHeight;
     
     CGSize minimumWindowSize = [EZLayoutManager.shared minimumWindowSize:self.windowType];
     CGSize maximumWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
