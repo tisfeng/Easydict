@@ -1,6 +1,6 @@
 //
 //  MainTabViewController.h
-//  Bob
+//  Easydict
 //
 //  Created by tisfeng on 2022/11/3.
 //  Copyright © 2022 izual. All rights reserved.
@@ -12,7 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 // ???: If value is not 0.2, it seems will block animation, because default animationResizeTime is 0.2 ?
-static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.3;
+static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.4;
 
 @interface EZBaseQueryViewController : NSViewController
 
