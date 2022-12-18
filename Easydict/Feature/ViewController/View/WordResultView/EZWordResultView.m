@@ -7,11 +7,9 @@
 //
 
 #import "EZWordResultView.h"
-#import "ImageButton.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
 #import "EZLabel.h"
-#import "TextView.h"
 #import "NSTextView+Height.h"
 #import "EZConst.h"
 #import "EZFixedQueryWindow.h"

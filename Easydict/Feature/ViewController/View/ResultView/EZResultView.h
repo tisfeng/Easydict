@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "WordResultView.h"
 #import "EZQueryResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
