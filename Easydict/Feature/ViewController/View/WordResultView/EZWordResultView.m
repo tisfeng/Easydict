@@ -358,8 +358,9 @@ static const CGFloat kVerticalPadding_8 = 8;
             mm_weakify(self);
             [wordButton setClickBlock:^(EZButton * _Nonnull button) {
                 mm_strongify(self);
-                if (self.queryTextBlock) {
-                    self.queryTextBlock(self, word);
+                if (self.clickTextBlock) {
+                    self.clickTextBlock(self, word);
+                    self.copyTextBlock(self, word);
                 }
             }];
             wordButton.mas_key = @"wordButton_words";
@@ -423,8 +424,9 @@ static const CGFloat kVerticalPadding_8 = 8;
         mm_weakify(self);
         [wordButton setClickBlock:^(EZButton * _Nonnull button) {
             mm_strongify(self);
-            if (self.queryTextBlock) {
-                self.queryTextBlock(self, obj.word);
+            if (self.clickTextBlock) {
+                self.clickTextBlock(self, obj.word);
+                self.copyTextBlock(self, obj.word);
             }
         }];
         wordButton.mas_key = @"wordButton_simpleWords";

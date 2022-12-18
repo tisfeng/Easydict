@@ -124,10 +124,10 @@ static NSInteger const kAnimationDotViewCount = 5;
         }
     }];
     
-    [wordResultView setQueryTextBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
+    [wordResultView setClickTextBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
         mm_strongify(self);
-        if (self.queryTextBlock) {
-            self.queryTextBlock(word);
+        if (self.clickTextBlock) {
+            self.clickTextBlock(word);
         }
     }];
     

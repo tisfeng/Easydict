@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^playAudioBlock)(EZWordResultView *view, NSString *word);
 @property (nonatomic, copy) void (^copyTextBlock)(EZWordResultView *view, NSString *word);
-@property (nonatomic, copy) void (^queryTextBlock)(EZWordResultView *view, NSString *word);
+@property (nonatomic, copy) void (^clickTextBlock)(EZWordResultView *view, NSString *word);
 
 - (void)refreshWithResult:(EZQueryResult *)result;
 

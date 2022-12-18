@@ -19,7 +19,7 @@ static const CGFloat kResultViewMiniHeight = 30;
 
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
-@property (nonatomic, copy) void (^queryTextBlock)(NSString *word);
+@property (nonatomic, copy) void (^clickTextBlock)(NSString *word);
 
 - (void)refreshWithResult:(EZQueryResult *)result;
 
