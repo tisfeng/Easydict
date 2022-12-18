@@ -11,9 +11,9 @@
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
-                            <menuItem title="Bob" id="0sa-UX-oa3">
+                            <menuItem title="Easydict" id="0sa-UX-oa3">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Bob" systemMenu="apple" id="M5e-02-Qvj">
+                                <menu key="submenu" title="Easydict" systemMenu="apple" id="M5e-02-Qvj">
                                     <items>
                                         <menuItem title="About Bob" id="oz1-ny-V93">
                                             <modifierMask key="keyEquivalentModifierMask"/>

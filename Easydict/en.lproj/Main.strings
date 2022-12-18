@@ -6,7 +6,7 @@
 "0cE-0y-BcT.title" = "Text Replacement";
 
 /* Class = "NSMenuItem"; title = "Bob"; ObjectID = "0sa-UX-oa3"; */
-"0sa-UX-oa3.title" = "Bob";
+"0sa-UX-oa3.title" = "Easydict";
 
 /* Class = "NSMenuItem"; title = "Translate Retry"; ObjectID = "1PR-FX-lvy"; */
 "1PR-FX-lvy.title" = "Translate Retry";
@@ -18,7 +18,7 @@
 "1hf-nd-d37.title" = "Show Fonts";
 
 /* Class = "NSMenuItem"; title = "截图翻译"; ObjectID = "2TG-8C-8RM"; */
-"2TG-8C-8RM.title" = "截图翻译";
+"2TG-8C-8RM.title" = "Snip Translate";
 
 /* Class = "NSMenuItem"; title = "Find Previous"; ObjectID = "2cy-ys-bxL"; */
 "2cy-ys-bxL.title" = "Find Previous";
@@ -60,7 +60,7 @@
 "ATD-km-qzd.title" = "Find";
 
 /* Class = "NSMenuItem"; title = "输入翻译"; ObjectID = "AWf-Ci-7QE"; */
-"AWf-Ci-7QE.title" = "输入翻译";
+"AWf-Ci-7QE.title" = "Input Translate";
 
 /* Class = "NSMenuItem"; title = "Font"; ObjectID = "AXS-J4-86G"; */
 "AXS-J4-86G.title" = "Font";
@@ -117,10 +117,10 @@
 "Fju-GT-JhG.title" = "Edit";
 
 /* Class = "NSMenuItem"; title = "偏好设置"; ObjectID = "Fzj-Rh-cL0"; */
-"Fzj-Rh-cL0.title" = "偏好设置";
+"Fzj-Rh-cL0.title" = "Preferences";
 
 /* Class = "NSMenuItem"; title = "检查更新"; ObjectID = "GQ2-WA-9QB"; */
-"GQ2-WA-9QB.title" = "检查更新";
+"GQ2-WA-9QB.title" = "Check for updates";
 
 /* Class = "NSMenuItem"; title = "Find and Replace…"; ObjectID = "H59-hx-Liq"; */
 "H59-hx-Liq.title" = "Find and Replace…";
@@ -138,7 +138,7 @@
 "I8A-qR-Op7.title" = "Cut";
 
 /* Class = "NSMenuItem"; title = "帮助"; ObjectID = "ICB-w8-IqK"; */
-"ICB-w8-IqK.title" = "帮助";
+"ICB-w8-IqK.title" = "Help";
 
 /* Class = "NSMenuItem"; title = "Find Next"; ObjectID = "IWX-7r-RUj"; */
 "IWX-7r-RUj.title" = "Find Next";
@@ -147,7 +147,7 @@
 "J5J-YV-4ty.title" = "Kern";
 
 /* Class = "NSMenuItem"; title = "退出"; ObjectID = "JZ0-yT-1tw"; */
-"JZ0-yT-1tw.title" = "退出";
+"JZ0-yT-1tw.title" = "Quit";
 
 /* Class = "NSMenuItem"; title = "Baseline"; ObjectID = "KJd-o4-nm1"; */
 "KJd-o4-nm1.title" = "Baseline";
@@ -162,7 +162,7 @@
 "Lze-X3-X4H.title" = "Paste";
 
 /* Class = "NSMenu"; title = "Bob"; ObjectID = "M5e-02-Qvj"; */
-"M5e-02-Qvj.title" = "Bob";
+"M5e-02-Qvj.title" = "Easydict";
 
 /* Class = "NSMenuItem"; title = "Smart Quotes"; ObjectID = "MfP-Gx-Wn8"; */
 "MfP-Gx-Wn8.title" = "Smart Quotes";
@@ -189,7 +189,7 @@
 "PkP-25-JBw.title" = "Easydict";
 
 /* Class = "NSMenuItem"; title = "显示迷你窗口"; ObjectID = "PmP-cO-1HF"; */
-"PmP-cO-1HF.title" = "显示迷你窗口";
+"PmP-cO-1HF.title" = "Show Mini Window";
 
 /* Class = "NSMenu"; title = "Help"; ObjectID = "PwY-WS-D9w"; */
 "PwY-WS-D9w.title" = "Help";
@@ -198,7 +198,7 @@
 "PyB-Zr-Vwk.title" = "Help";
 
 /* Class = "NSMenu"; title = "帮助"; ObjectID = "Q2R-dF-dyU"; */
-"Q2R-dF-dyU.title" = "帮助";
+"Q2R-dF-dyU.title" = "Help";
 
 /* Class = "NSMenuItem"; title = "Services"; ObjectID = "QGo-r1-cSg"; */
 "QGo-r1-cSg.title" = "Services";
@@ -249,7 +249,7 @@
 "Vle-hf-Qhd.title" = "Revert to Saved";
 
 /* Class = "NSMenuItem"; title = "导出日志"; ObjectID = "XpX-Ud-znp"; */
-"XpX-Ud-znp.title" = "导出日志";
+"XpX-Ud-znp.title" = "Export Log";
 
 /* Class = "NSMenuItem"; title = "Align Right"; ObjectID = "Xq7-tZ-u65"; */
 "Xq7-tZ-u65.title" = "Align Right";
@@ -336,7 +336,7 @@
 "lFU-de-f4a.title" = "Substitutions";
 
 /* Class = "NSMenuItem"; title = "划词翻译"; ObjectID = "lUI-Zn-Bwr"; */
-"lUI-Zn-Bwr.title" = "划词翻译";
+"lUI-Zn-Bwr.title" = "Select Translate";
 
 /* Class = "NSMenuItem"; title = "Open…"; ObjectID = "mnj-j0-7uG"; */
 "mnj-j0-7uG.title" = "Open…";
@@ -426,7 +426,7 @@
 "yMd-CK-UoO.title" = "Easydict Help";
 
 /* Class = "NSMenuItem"; title = "反馈问题"; ObjectID = "yWr-rH-hQa"; */
-"yWr-rH-hQa.title" = "反馈问题";
+"yWr-rH-hQa.title" = "Feedback";
 
 /* Class = "NSMenu"; title = "Baseline"; ObjectID = "zJj-ya-zFA"; */
 "zJj-ya-zFA.title" = "Baseline";
