@@ -551,6 +551,24 @@
 			path = CustomButton;
 			sourceTree = "<group>";
 		};
+		0376AB59294F5EEC00E2E2A4 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				03BFBB5429235C9400C48725 /* Icons */,
+				03B0221F29231FA6001C7E63 /* Main.storyboard */,
+				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
+				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
+				03B0222129231FA6001C7E63 /* main.m */,
+				03B0222229231FA6001C7E63 /* EZConst.h */,
+				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
+				03B0222329231FA6001C7E63 /* AppDelegate.m */,
+				03B022E329231FA6001C7E63 /* PrefixHeader.pch */,
+				03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */,
+				03B022E429231FA6001C7E63 /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		0383913F292FBE120009828C /* EasydictHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -601,17 +619,7 @@
 			isa = PBXGroup;
 			children = (
 				03B0222429231FA6001C7E63 /* Feature */,
-				03BFBB5429235C9400C48725 /* Icons */,
-				03B0221F29231FA6001C7E63 /* Main.storyboard */,
-				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
-				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
-				03B0222129231FA6001C7E63 /* main.m */,
-				03B0222229231FA6001C7E63 /* EZConst.h */,
-				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
-				03B0222329231FA6001C7E63 /* AppDelegate.m */,
-				03B022E329231FA6001C7E63 /* PrefixHeader.pch */,
-				03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */,
-				03B022E429231FA6001C7E63 /* Info.plist */,
+				0376AB59294F5EEC00E2E2A4 /* App */,
 			);
 			path = Easydict;
 			sourceTree = "<group>";
@@ -1689,7 +1697,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Easydict/Easydict.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1698,8 +1706,8 @@
 				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 79NQA2XYHM;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/PrefixHeader.pch";
-				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1709,7 +1717,7 @@
 				MARKETING_VERSION = 0.4.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/Easydict-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1723,7 +1731,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Easydict/Easydict.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1732,8 +1740,8 @@
 				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 79NQA2XYHM;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/PrefixHeader.pch";
-				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1743,7 +1751,7 @@
 				MARKETING_VERSION = 0.4.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/Easydict-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
