@@ -52,7 +52,6 @@
 		039F5506294B6E29004AB940 /* EZGeneralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZGeneralViewController.m */; };
 		039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5502294B6E29004AB940 /* EZAboutViewController.xib */; };
 		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
-		03B022E529231FA6001C7E63 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221929231FA6001C7E63 /* Main.strings */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
 		03B022E829231FA6001C7E63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* main.m */; };
@@ -202,6 +201,8 @@
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLinkButton.m; sourceTree = "<group>"; };
+		0375090B294F58D600C887B8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		0375090D294F58E100C887B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -236,7 +237,6 @@
 		039F5501294B6E29004AB940 /* EZGeneralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZGeneralViewController.m; sourceTree = "<group>"; };
 		039F5502294B6E29004AB940 /* EZAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZAboutViewController.xib; sourceTree = "<group>"; };
 		039F5503294B6E29004AB940 /* EZAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZAboutViewController.m; sourceTree = "<group>"; };
-		03B0221A29231FA6001C7E63 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03B0221D29231FA6001C7E63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -603,7 +603,6 @@
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
-				03B0221929231FA6001C7E63 /* Main.strings */,
 				03B0222129231FA6001C7E63 /* main.m */,
 				03B0222229231FA6001C7E63 /* EZConst.h */,
 				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
@@ -1240,6 +1239,7 @@
 		C99EEB102385796700FEE666 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = NO;
 				CLASSPREFIX = EZ;
 				LastUpgradeCheck = 1420;
 				ORGANIZATIONNAME = izual;
@@ -1305,7 +1305,6 @@
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03B3B8B72926B12600168E8D /* applescripts.scpt in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
-				03B022E529231FA6001C7E63 /* Main.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1491,18 +1490,12 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		03B0221929231FA6001C7E63 /* Main.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				03B0221A29231FA6001C7E63 /* zh-Hans */,
-			);
-			name = Main.strings;
-			sourceTree = "<group>";
-		};
 		03B0221F29231FA6001C7E63 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				03B0222029231FA6001C7E63 /* Base */,
+				0375090B294F58D600C887B8 /* zh-Hans */,
+				0375090D294F58E100C887B8 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
