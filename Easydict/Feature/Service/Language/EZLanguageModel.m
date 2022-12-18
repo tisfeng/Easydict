@@ -9,8 +9,8 @@
 #import "EZLanguageModel.h"
 
 NSString *const EZLanguageAuto = @"auto";
-NSString *const EZLanguageSimplifiedChinese = @"Chinese_Simplified";
-NSString *const EZLanguageTraditionalChinese = @"Chinese_Traditional";
+NSString *const EZLanguageSimplifiedChinese = @"Chinese-Simplified";
+NSString *const EZLanguageTraditionalChinese = @"Chinese-Traditional";
 NSString *const EZLanguageEnglish = @"English";
 NSString *const EZLanguageJapanese = @"Japanese";
 NSString *const EZLanguageKorean = @"Korean";

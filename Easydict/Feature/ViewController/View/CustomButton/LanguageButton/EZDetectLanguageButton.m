@@ -64,7 +64,7 @@
 
     NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:detectedLanguage];
     
-    NSString *title = @"识别为 ";
+    NSString *title = NSLocalizedString(@"detect as", nil);
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
     [attrTitle addAttributes:@{
         NSForegroundColorAttributeName : NSColor.grayColor,

@@ -39,11 +39,10 @@
 
 // Get user system preferred languages
 + (NSArray<EZLanguage> *)systemPreferredLanguages {
-    // ["zh-Hans-CN", "en-CN"]
+    // "en-CN", "zh-Hans", "zh-Hans-CN"
     NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
-        // "zh-Hans-CN" -> "zh-Hans"
         NSMutableArray *array = [NSMutableArray arrayWithArray:[language componentsSeparatedByString:@"-"]];
         // Remove country code
         [array removeLastObject];
@@ -66,23 +65,38 @@
 
 + (NSArray<EZLanguage> *)preferredTwoLanguages {
     NSMutableArray *twoLanguages = [NSMutableArray array];
-    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
+    NSMutableArray<EZLanguage> *preferredlanguages = [[self systemPreferredLanguages] mutableCopy];
 
-    EZLanguage firstLanguage = languages.firstObject;
+    EZLanguage firstLanguage = [self firstLanguageFromLanguages:preferredlanguages];
     [twoLanguages addObject:firstLanguage];
 
-    if (languages.count > 1) {
-        [twoLanguages addObject:languages[1]];
-    } else {
-        EZLanguage secondLanguage = EZLanguageEnglish;
+    // Remove first language
+    [preferredlanguages removeObject:firstLanguage];
+    
+    EZLanguage secondLanguage = [self firstLanguageFromLanguages:preferredlanguages];
+    if ([firstLanguage isEqualToString:secondLanguage]) {
         if ([firstLanguage isEqualToString:EZLanguageEnglish]) {
             secondLanguage = EZLanguageSimplifiedChinese;
+        } else {
+            secondLanguage = EZLanguageEnglish;
         }
-        [twoLanguages addObject:secondLanguage];
     }
+    [twoLanguages addObject:secondLanguage];
 
     return twoLanguages;
 }
+
+// Get first language that is not auto, from languages
++ (EZLanguage)firstLanguageFromLanguages:(NSArray<EZLanguage> *)languages {
+    for (EZLanguage language in languages) {
+        if ([language isEqualToString:EZLanguageAuto]) {
+            continue;
+        }
+        return language;
+    }
+    return EZLanguageEnglish;
+}
+
 
 + (BOOL)containsEnglishInPreferredTwoLanguages {
     NSArray<EZLanguage> *languages = [self preferredTwoLanguages];
