@@ -7,8 +7,8 @@
 //
 
 #import "EZYoudaoTranslate.h"
-#import "YoudaoTranslateResponse.h"
-#import "YoudaoOCRResponse.h"
+#import "EZYoudaoTranslateResponse.h"
+#import "EZYoudaoOCRResponse.h"
 
 static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 
@@ -160,7 +160,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         NSString *message = nil;
         if (responseObject) {
             @try {
-                YoudaoTranslateResponse *response = [YoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
+                EZYoudaoTranslateResponse *response = [EZYoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
                     
                     result.text = text;
@@ -177,7 +177,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                     }
                     
                     // 中文查词 英文查词
-                    YoudaoTranslateResponseBasic *basic = response.basic;
+                    EZYoudaoTranslateResponseBasic *basic = response.basic;
                     if (basic) {
                         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
                         
@@ -379,12 +379,12 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         NSString *message = nil;
         if (responseObject) {
             @try {
-                YoudaoOCRResponse *response = [YoudaoOCRResponse mj_objectWithKeyValues:responseObject];
+                 EZYoudaoOCRResponse *response = [ EZYoudaoOCRResponse mj_objectWithKeyValues:responseObject];
                 if (response) {
                     EZOCRResult *result = [EZOCRResult new];
                     result.from = [self languageEnumFromCode:response.lanFrom];
                     result.to = [self languageEnumFromCode:response.lanTo];
-                    result.ocrTextArray = [response.lines mm_map:^id _Nullable(YoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    result.ocrTextArray = [response.lines mm_map:^id _Nullable( EZYoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         EZOCRText *text = [EZOCRText new];
                         text.text = obj.context;
                         text.translatedText = obj.tranContent;
