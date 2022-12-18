@@ -10,7 +10,6 @@
 #import "EZStatusItem.h"
 #import "EZShortcut.h"
 #import "MMCrash.h"
-#import "Configuration.h"
 #import "EZWindowManager.h"
 
 @implementation AppDelegate

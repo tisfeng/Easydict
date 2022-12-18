@@ -58,7 +58,6 @@
 		03B022E829231FA6001C7E63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* main.m */; };
 		03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222329231FA6001C7E63 /* AppDelegate.m */; };
 		03B022EA29231FA6001C7E63 /* Shortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222729231FA6001C7E63 /* Shortcut.m */; };
-		03B022EB29231FA6001C7E63 /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222A29231FA6001C7E63 /* Configuration.m */; };
 		03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */; };
 		03B022ED29231FA6001C7E63 /* BaiduTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0223029231FA6001C7E63 /* BaiduTranslate.m */; };
 		03B022EE29231FA6001C7E63 /* BaiduTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0223129231FA6001C7E63 /* BaiduTranslateResponse.m */; };
@@ -269,8 +268,6 @@
 		03B0222329231FA6001C7E63 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		03B0222629231FA6001C7E63 /* Shortcut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shortcut.h; sourceTree = "<group>"; };
 		03B0222729231FA6001C7E63 /* Shortcut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shortcut.m; sourceTree = "<group>"; };
-		03B0222929231FA6001C7E63 /* Configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Configuration.h; sourceTree = "<group>"; };
-		03B0222A29231FA6001C7E63 /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
 		03B0222D29231FA6001C7E63 /* BaiduTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaiduTranslate.h; sourceTree = "<group>"; };
 		03B0222E29231FA6001C7E63 /* BaiduTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaiduTranslateResponse.h; sourceTree = "<group>"; };
 		03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "baidu-translate-sign.js"; sourceTree = "<group>"; };
@@ -715,8 +712,6 @@
 			children = (
 				03542A562937CC3200C34C33 /* EZConfiguration.h */,
 				03542A572937CC3200C34C33 /* EZConfiguration.m */,
-				03B0222929231FA6001C7E63 /* Configuration.h */,
-				03B0222A29231FA6001C7E63 /* Configuration.m */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -1621,7 +1616,6 @@
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
-				03B022EB29231FA6001C7E63 /* Configuration.m in Sources */,
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022ED29231FA6001C7E63 /* BaiduTranslate.m in Sources */,
