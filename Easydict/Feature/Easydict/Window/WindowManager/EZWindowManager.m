@@ -11,7 +11,6 @@
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "Snip.h"
-#import "Configuration.h"
 #import "EZCoordinateTool.h"
 
 @interface EZWindowManager ()

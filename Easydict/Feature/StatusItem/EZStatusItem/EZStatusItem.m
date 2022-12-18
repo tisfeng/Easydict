@@ -11,7 +11,6 @@
 #import "EZWindowManager.h"
 #import "Snip.h"
 #import "EZShortcut.h"
-#import "Configuration.h"
 #import <SSZipArchive/SSZipArchive.h>
 
 @interface EZStatusItem () <NSMenuDelegate>
@@ -120,9 +119,6 @@ static EZStatusItem *_instance;
     NSLog(@"偏好设置");
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
-    }
-    if (!Configuration.shared.isPin) {
-        [EZWindowManager.shared closeFloatingWindow];
     }
     [EZPreferencesWindowController.shared show];
 }
