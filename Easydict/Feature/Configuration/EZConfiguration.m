@@ -11,10 +11,10 @@
 #import <Sparkle/Sparkle.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-static NSString *const kAutoSelectTextKey = @"configuration_auto_select_text";
-static NSString *const kLaunchAtStartupKey = @"configuration_launch_at_startup";
-static NSString *const kFromKey = @"configuration_from";
-static NSString *const kToKey = @"configuration_to";
+static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
+static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
+static NSString *const kFromKey = @"EZConfiguration_kFromKey";
+static NSString *const kToKey = @"EZConfiguration_kToKey";
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
@@ -111,6 +111,8 @@ static EZConfiguration *_instance;
     // 注册启动项
     // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
 
+    [self isLoginItemEnabled];
+    
     NSString *helperBundleId = [self helperBundleId];
     SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
 }
