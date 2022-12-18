@@ -1,0 +1,21 @@
+
+/* Class = "NSButtonCell"; title = "开机自启动"; ObjectID = "0e5-PT-Ixx"; */
+"0e5-PT-Ixx.title" = "开机自启动";
+
+/* Class = "NSButtonCell"; title = "划词后自动显示查询图标"; ObjectID = "3Rf-pg-98U"; */
+"3Rf-pg-98U.title" = "划词后自动显示查询图标";
+
+/* Class = "NSButtonCell"; title = "自动检查更新"; ObjectID = "6JV-Vl-CaE"; */
+"6JV-Vl-CaE.title" = "自动检查更新";
+
+/* Class = "NSTextFieldCell"; title = "显示迷你窗口: "; ObjectID = "8jK-EX-oRM"; */
+"8jK-EX-oRM.title" = "显示迷你窗口: ";
+
+/* Class = "NSTextFieldCell"; title = "划词翻译："; ObjectID = "NhA-v8-r28"; */
+"NhA-v8-r28.title" = "划词翻译：";
+
+/* Class = "NSTextFieldCell"; title = "截图翻译："; ObjectID = "e7R-RC-R3D"; */
+"e7R-RC-R3D.title" = "截图翻译：";
+
+/* Class = "NSTextFieldCell"; title = "输入翻译："; ObjectID = "uWf-a6-Vf9"; */
+"uWf-a6-Vf9.title" = "输入翻译：";
