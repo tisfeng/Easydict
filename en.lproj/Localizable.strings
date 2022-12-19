@@ -14,14 +14,14 @@
 "deepL_translate" = "DeepL Translate";
 "system_translate" = "System Translate";
 
-"explain" = "Explain:";
+"explain" = "explain:";
 "us_phonetic" = "us";
 "uk_phonetic" = "uk";
-"singular" = "Singular";
-"plural" = "Plural";
-"comparative" = "Comparative";
-"superlative" = "Superlative";
-"past" = "Past";
-"past_participle" = "Past Participle";
-"present_participle" = "Present Participle";
-"root" = "Root";
+"singular" = "singular";
+"plural" = "plural";
+"comparative" = "comparative";
+"superlative" = "superlative";
+"past" = "past";
+"past_participle" = "past participle";
+"present_participle" = "present articiple";
+"root" = "root";
