@@ -433,7 +433,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-    if ([[NSApplication sharedApplication] keyWindow] == EZFixedQueryWindow.shared) {
+    if ([[NSApplication sharedApplication] keyWindow] == self.floatingWindow) {
         // 执行重试
         [self.floatingWindow.queryViewController retry];
     }

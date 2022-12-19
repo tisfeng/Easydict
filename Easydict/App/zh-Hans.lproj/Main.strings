@@ -50,8 +50,8 @@
 /* Class = "NSMenuItem"; title = "\tRight to Left"; ObjectID = "9k9-E7-lZ9"; */
 "9k9-E7-lZ9.title" = "\tRight to Left";
 
-/* Class = "NSMenuItem"; title = "Hide Bob"; ObjectID = "9vV-36-7Ry"; */
-"9vV-36-7Ry.title" = "Hide Bob";
+/* Class = "NSMenuItem"; title = "Hide Easydict"; ObjectID = "9vV-36-7Ry"; */
+"9vV-36-7Ry.title" = "Hide Easydict";
 
 /* Class = "NSMenuItem"; title = "Check Grammar With Spelling"; ObjectID = "AJi-ur-lQe"; */
 "AJi-ur-lQe.title" = "Check Grammar With Spelling";
@@ -80,8 +80,8 @@
 /* Class = "NSMenuItem"; title = "Save…"; ObjectID = "BKM-kK-dpX"; */
 "BKM-kK-dpX.title" = "Save…";
 
-/* Class = "NSMenuItem"; title = "Quit Bob"; ObjectID = "BRC-If-Fmo"; */
-"BRC-If-Fmo.title" = "Quit Bob";
+/* Class = "NSMenuItem"; title = "Quit Easydict"; ObjectID = "BRC-If-Fmo"; */
+"BRC-If-Fmo.title" = "Quit Easydict";
 
 /* Class = "NSMenuItem"; title = "Show Sidebar"; ObjectID = "Bmv-mF-MbD"; */
 "Bmv-mF-MbD.title" = "Show Sidebar";
@@ -362,8 +362,8 @@
 /* Class = "NSMenuItem"; title = "Open Recent"; ObjectID = "omU-aR-9Dn"; */
 "omU-aR-9Dn.title" = "Open Recent";
 
-/* Class = "NSMenuItem"; title = "About Bob"; ObjectID = "oz1-ny-V93"; */
-"oz1-ny-V93.title" = "About Bob";
+/* Class = "NSMenuItem"; title = "About Easydict"; ObjectID = "oz1-ny-V93"; */
+"oz1-ny-V93.title" = "About Easydict";
 
 /* Class = "NSMenuItem"; title = "Underline"; ObjectID = "p8l-cp-Ck7"; */
 "p8l-cp-Ck7.title" = "Underline";

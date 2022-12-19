@@ -15,7 +15,7 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Easydict" systemMenu="apple" id="M5e-02-Qvj">
                                     <items>
-                                        <menuItem title="About Bob" id="oz1-ny-V93">
+                                        <menuItem title="About Easydict" id="oz1-ny-V93">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="vc7-gb-amA"/>
@@ -33,7 +33,7 @@
                                             <menu key="submenu" title="Services" systemMenu="services" id="6oP-eF-qCh"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="nGL-2G-RIk"/>
-                                        <menuItem title="Hide Bob" keyEquivalent="h" id="9vV-36-7Ry">
+                                        <menuItem title="Hide Easydict" keyEquivalent="h" id="9vV-36-7Ry">
                                             <connections>
                                                 <action selector="hide:" target="Ady-hI-5gd" id="GS5-De-FVK"/>
                                             </connections>
@@ -51,7 +51,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Fiw-Zs-Gu2"/>
-                                        <menuItem title="Quit Bob" keyEquivalent="q" id="BRC-If-Fmo">
+                                        <menuItem title="Quit Easydict" keyEquivalent="q" id="BRC-If-Fmo">
                                             <connections>
                                                 <action selector="quitAction:" target="qM9-fT-Fym" id="eRH-Ea-yXh"/>
                                             </connections>

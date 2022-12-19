@@ -12,6 +12,7 @@
 #import "MMCrash.h"
 #import "EZWindowManager.h"
 #import "EZLanguageManager.h"
+#import "EZConfiguration.h"
 
 @implementation AppDelegate
 
@@ -21,16 +22,17 @@
     [EZStatusItem.shared setup];
     [EZShortcut setup];
     
-    
-    // Show main window?
-    //    EZWindowManager *windowManager = [EZWindowManager shared];
-    //    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
-    //    [windowManager.mainWindow center];
-    //    [windowManager.mainWindow makeKeyAndOrderFront:nil];
-    
-    
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
-    
+    NSApplicationActivationPolicy activationPolicy = NSApplicationActivationPolicyAccessory;
+    if (!EZConfiguration.shared.hideMainWindow) {
+        activationPolicy = NSApplicationActivationPolicyRegular;
+
+        EZWindowManager *windowManager = [EZWindowManager shared];
+        [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
+        [windowManager.mainWindow center];
+        [windowManager.mainWindow makeKeyAndOrderFront:nil];
+    }
+    [NSApp setActivationPolicy:activationPolicy];
+
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
 
