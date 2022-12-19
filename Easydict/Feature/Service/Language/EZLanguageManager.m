@@ -55,8 +55,8 @@
     }
 
     // This method seems to be the same.
-    //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //    NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
+//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//        NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
 
     //    NSLog(@"languages: %@", languages);
 

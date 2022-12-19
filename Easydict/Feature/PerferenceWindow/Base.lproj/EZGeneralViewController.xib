@@ -26,7 +26,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="hbv-Im-TzA">
-                    <rect key="frame" x="81" y="252" width="68" height="16"/>
+                    <rect key="frame" x="81" y="252" width="65" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="划词翻译：" id="NhA-v8-r28">
                         <font key="font" usesAppearanceFont="YES"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -34,14 +34,14 @@
                     </textFieldCell>
                 </textField>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="eDQ-79-aWx" customClass="MASShortcutView">
-                    <rect key="frame" x="155" y="248" width="130" height="25"/>
+                    <rect key="frame" x="152" y="248" width="130" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="9ll-cB-LQt"/>
                         <constraint firstAttribute="width" constant="130" id="cOb-Bf-zBC"/>
                     </constraints>
                 </customView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sCf-ch-6bJ">
-                    <rect key="frame" x="81" y="215" width="68" height="16"/>
+                    <rect key="frame" x="81" y="215" width="65" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="截图翻译：" id="e7R-RC-R3D">
                         <font key="font" usesAppearanceFont="YES"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -49,7 +49,7 @@
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rdS-e7-tO0">
-                    <rect key="frame" x="153" y="45" width="93" height="18"/>
+                    <rect key="frame" x="159" y="45" width="87" height="18"/>
                     <buttonCell key="cell" type="check" title="开机自启动" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0e5-PT-Ixx">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -59,7 +59,7 @@
                     </connections>
                 </button>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="4dL-3k-Qcg" customClass="MASShortcutView">
-                    <rect key="frame" x="155" y="210" width="130" height="25"/>
+                    <rect key="frame" x="152" y="210" width="130" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="iZC-KT-oES"/>
                         <constraint firstAttribute="width" constant="130" id="rzg-5L-sm8"/>
@@ -72,7 +72,7 @@
                     </constraints>
                 </box>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E7D-SM-ttH">
-                    <rect key="frame" x="81" y="177" width="68" height="16"/>
+                    <rect key="frame" x="81" y="177" width="65" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="输入翻译：" id="uWf-a6-Vf9">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -80,7 +80,7 @@
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Ux-D6-rfd">
-                    <rect key="frame" x="153" y="19" width="106" height="18"/>
+                    <rect key="frame" x="160" y="19" width="99" height="18"/>
                     <buttonCell key="cell" type="check" title="自动检查更新" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6JV-Vl-CaE">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -96,7 +96,7 @@
                     </constraints>
                 </box>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vKL-Rb-7ex">
-                    <rect key="frame" x="153" y="91" width="177" height="18"/>
+                    <rect key="frame" x="159" y="91" width="177" height="18"/>
                     <buttonCell key="cell" type="check" title="划词后自动显示查询图标" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="3Rf-pg-98U">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -106,14 +106,14 @@
                     </connections>
                 </button>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="Eda-ku-sQd" customClass="MASShortcutView">
-                    <rect key="frame" x="155" y="135" width="130" height="25"/>
+                    <rect key="frame" x="161" y="135" width="130" height="25"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="130" id="1AZ-Fy-vUB"/>
                         <constraint firstAttribute="height" constant="25" id="NWm-sn-mlG"/>
                     </constraints>
                 </customView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Spq-on-6rM">
-                    <rect key="frame" x="58" y="142" width="91" height="16"/>
+                    <rect key="frame" x="71" y="142" width="84" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="显示迷你窗口: " id="8jK-EX-oRM">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -121,7 +121,7 @@
                     </textFieldCell>
                 </textField>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="29j-qh-lea" customClass="MASShortcutView">
-                    <rect key="frame" x="155" y="172" width="130" height="25"/>
+                    <rect key="frame" x="152" y="172" width="130" height="25"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="130" id="4J6-bU-vIi"/>
                         <constraint firstAttribute="height" constant="25" id="6Sz-27-yQi"/>
