@@ -3,7 +3,7 @@
 "0e5-PT-Ixx.title" = "Start at login";
 
 /* Class = "NSButtonCell"; title = "划词后自动显示查询图标"; ObjectID = "3Rf-pg-98U"; */
-"3Rf-pg-98U.title" = "Show icon after selecting";
+"3Rf-pg-98U.title" = "Show icon after selecting text";
 
 /* Class = "NSButtonCell"; title = "自动检查更新"; ObjectID = "6JV-Vl-CaE"; */
 "6JV-Vl-CaE.title" = "Check for updates automatically";
