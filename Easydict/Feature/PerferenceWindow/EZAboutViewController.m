@@ -41,7 +41,7 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return @"关于";
+    return NSLocalizedString(@"about", nil);
 }
 
 - (NSImage *)toolbarItemImage {

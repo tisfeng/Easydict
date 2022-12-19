@@ -84,7 +84,7 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return @"通用";
+    return NSLocalizedString(@"general", nil);
 }
 
 - (NSImage *)toolbarItemImage {
