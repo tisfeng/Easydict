@@ -35,8 +35,8 @@
 /* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "4J7-dP-txa"; */
 "4J7-dP-txa.title" = "Enter Full Screen";
 
-/* Class = "NSMenuItem"; title = "Quit BobHelper"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "Quit BobHelper";
+/* Class = "NSMenuItem"; title = "Quit EasydictHelper"; ObjectID = "4sb-4s-VLi"; */
+"4sb-4s-VLi.title" = "Quit EasydictHelper";
 
 /* Class = "NSMenuItem"; title = "Edit"; ObjectID = "5QF-Oa-p0T"; */
 "5QF-Oa-p0T.title" = "Edit";
@@ -44,8 +44,8 @@
 /* Class = "NSMenuItem"; title = "Copy Style"; ObjectID = "5Vv-lz-BsD"; */
 "5Vv-lz-BsD.title" = "Copy Style";
 
-/* Class = "NSMenuItem"; title = "About BobHelper"; ObjectID = "5kV-Vb-QxS"; */
-"5kV-Vb-QxS.title" = "About BobHelper";
+/* Class = "NSMenuItem"; title = "About EasydictHelper"; ObjectID = "5kV-Vb-QxS"; */
+"5kV-Vb-QxS.title" = "About EasydictHelper";
 
 /* Class = "NSMenuItem"; title = "Redo"; ObjectID = "6dh-zS-Vam"; */
 "6dh-zS-Vam.title" = "Redo";
@@ -161,8 +161,8 @@
 /* Class = "NSMenuItem"; title = "Baseline"; ObjectID = "OaQ-X3-Vso"; */
 "OaQ-X3-Vso.title" = "Baseline";
 
-/* Class = "NSMenuItem"; title = "Hide BobHelper"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "Hide BobHelper";
+/* Class = "NSMenuItem"; title = "Hide EasydictHelper"; ObjectID = "Olw-nP-bQN"; */
+"Olw-nP-bQN.title" = "Hide EasydictHelper";
 
 /* Class = "NSMenuItem"; title = "Find Previous"; ObjectID = "OwM-mh-QMV"; */
 "OwM-mh-QMV.title" = "Find Previous";
