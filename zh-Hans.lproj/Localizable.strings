@@ -26,3 +26,18 @@
 
 "general" = "通用";
 "about" = "关于";
+
+"select_translate" = "划词翻译:";
+"input_translate" = "输入翻译:";
+"snip_translate" = "截图翻译:";
+"select_translate" = "划词翻译:";
+"show_mini_window" = "显示迷你窗口:";
+
+"check_update" = "检查更新:";
+"auto_check_update" = "自动检查更新";
+"show_icon" = "查询图标:";
+"auto_show_icon" = "划词后自动显示查询图标";
+"launch" = "启动:";
+"launch_at_startup" = "开机启动";
+"main_window" = "主窗口:";
+"hide_main_window" = "隐藏主窗口";

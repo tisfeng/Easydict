@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL autoSelectText;
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
+@property (nonatomic, assign) BOOL hideMainWindow;
 
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;
