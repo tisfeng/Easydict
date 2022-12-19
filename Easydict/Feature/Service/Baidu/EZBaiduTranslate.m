@@ -197,14 +197,14 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             NSMutableArray *phonetics = [NSMutableArray array];
                             if (symbol.ph_am.length) {
                                 [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                    obj.name = @"美";
+                                    obj.name = NSLocalizedString(@"us_phonetic", nil);
                                     obj.value = symbol.ph_am;
                                     obj.speakURL = [self getAudioURLWithText:result.text language:@"en"];
                                 }]];
                             }
                             if (symbol.ph_en.length) {
                                 [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                    obj.name = @"英";
+                                    obj.name = NSLocalizedString(@"uk_phonetic", nil);
                                     obj.value = symbol.ph_en;
                                     obj.speakURL = [self getAudioURLWithText:result.text language:@"uk"];
                                 }]];
@@ -233,49 +233,49 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             NSMutableArray *exchanges = [NSMutableArray array];
                             if (exchange.word_third.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"第三人称单数";
+                                    obj.name = NSLocalizedString(@"singular", nil);
                                     obj.words = exchange.word_third;
                                 }]];
                             }
                             if (exchange.word_pl.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"复数";
+                                    obj.name = NSLocalizedString(@"plural", nil);
                                     obj.words = exchange.word_pl;
                                 }]];
                             }
                             if (exchange.word_er.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"比较级";
+                                    obj.name = NSLocalizedString(@"comparative", nil);
                                     obj.words = exchange.word_er;
                                 }]];
                             }
                             if (exchange.word_est.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"最高级";
+                                    obj.name = NSLocalizedString(@"superlative", nil);
                                     obj.words = exchange.word_est;
                                 }]];
                             }
                             if (exchange.word_past.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"过去式";
+                                    obj.name = NSLocalizedString(@"past", nil);
                                     obj.words = exchange.word_past;
                                 }]];
                             }
                             if (exchange.word_done.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"过去分词";
+                                    obj.name = NSLocalizedString(@"past_participle", nil);
                                     obj.words = exchange.word_done;
                                 }]];
                             }
                             if (exchange.word_ing.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"现在分词";
+                                    obj.name = NSLocalizedString(@"present_participle", nil);
                                     obj.words = exchange.word_ing;
                                 }]];
                             }
                             if (exchange.word_proto.count) {
                                 [exchanges addObject:[EZTranslateExchange mm_anyMake:^(EZTranslateExchange *_Nonnull obj) {
-                                    obj.name = @"词根";
+                                    obj.name = NSLocalizedString(@"root", nil);
                                     obj.words = exchange.word_proto;
                                 }]];
                             }
@@ -406,7 +406,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 - (NSString *)name {
-    return @"百度翻译";
+    return NSLocalizedString(@"baidu_translate", nil);
 }
 
 - (NSString *)link {

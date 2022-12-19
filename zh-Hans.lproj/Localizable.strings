@@ -6,4 +6,20 @@
   Copyright © 2022 izual. All rights reserved.
 */
 
-"detect as" = "识别为 "; 
+"detected" = "识别为 ";
+"google_translate" = "Google 翻译";
+"baidu_translate" = "百度翻译";
+"youdao_translate" = "有道翻译";
+"deepL_translate" = "DeepL 翻译";
+"system_translate" = "系统翻译";
+"explain" = "释义:";
+"us_phonetic" = "美";
+"uk_phonetic" = "英";
+"singular" = "第三人称单数";
+"plural" = "复数";
+"comparative" = "比较级";
+"superlative" = "最高级";
+"past" = "过去式";
+"past_participle" = "过去分词";
+"present_participle" = "现在分词";
+"root" = "词根";

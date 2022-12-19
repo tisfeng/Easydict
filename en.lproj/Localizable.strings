@@ -6,4 +6,22 @@
   Copyright © 2022 izual. All rights reserved.
 */
 
-"detect as" = "Detect as ";
+"detected" = "Detected ";
+
+"google_translate" = "Google Translate";
+"baidu_translate" = "Baidu Translate";
+"youdao_translate" = "Youdao Translate";
+"deepL_translate" = "DeepL Translate";
+"system_translate" = "System Translate";
+
+"explain" = "Explain:";
+"us_phonetic" = "us";
+"uk_phonetic" = "uk";
+"singular" = "Singular";
+"plural" = "Plural";
+"comparative" = "Comparative";
+"superlative" = "Superlative";
+"past" = "Past";
+"past_participle" = "Past Participle";
+"present_participle" = "Present Participle";
+"root" = "Root";

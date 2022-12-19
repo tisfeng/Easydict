@@ -45,7 +45,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 }
 
 - (NSString *)name {
-    return @"有道翻译";
+    return NSLocalizedString(@"youdao_translate", nil);
 }
 
 - (NSString *)link {
@@ -162,7 +162,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             @try {
                 EZYoudaoTranslateResponse *response = [EZYoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
-                    
                     result.text = text;
                     result.fromSpeakURL = response.speakUrl;
                     result.toSpeakURL = response.tSpeakUrl;
@@ -185,14 +184,14 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         NSMutableArray *phoneticArray = [NSMutableArray array];
                         if (basic.us_phonetic && basic.us_speech) {
                             EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
-                            phonetic.name = @"美";
+                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
                             phonetic.value = basic.us_phonetic;
                             phonetic.speakURL = basic.us_speech;
                             [phoneticArray addObject:phonetic];
                         }
                         if (basic.uk_phonetic && basic.uk_speech) {
                             EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
-                            phonetic.name = @"英";
+                            phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
                             phonetic.value = basic.uk_phonetic;
                             phonetic.speakURL = basic.uk_speech;
                             [phoneticArray addObject:phonetic];
@@ -216,8 +215,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                             if (partArray.count) {
                                 wordResult.parts = partArray.copy;
                             }
-                        } else if ([result.from isEqualToString:EZLanguageSimplifiedChinese]
-                                   && [result.to isEqualToString:EZLanguageEnglish]) {
+                        } else if ([result.from isEqualToString:EZLanguageSimplifiedChinese] && [result.to isEqualToString:EZLanguageEnglish]) {
                             // 中文查词
                             NSMutableArray *simpleWordArray = [NSMutableArray array];
                             [basic.explains enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -271,9 +269,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         if (wordResult.parts || wordResult.simpleWords) {
                             result.wordResult = wordResult;
                             // 如果是单词或短语，优先使用美式发音
-                            if ([result.from isEqualToString:EZLanguageEnglish]
-                                && [result.to isEqualToString:EZLanguageSimplifiedChinese]
-                                && wordResult.phonetics.firstObject.speakURL.length) {
+                            if ([result.from isEqualToString:EZLanguageEnglish] && [result.to isEqualToString:EZLanguageSimplifiedChinese] && wordResult.phonetics.firstObject.speakURL.length) {
                                 result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
                             }
                         }
@@ -379,12 +375,12 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         NSString *message = nil;
         if (responseObject) {
             @try {
-                 EZYoudaoOCRResponse *response = [ EZYoudaoOCRResponse mj_objectWithKeyValues:responseObject];
+                EZYoudaoOCRResponse *response = [EZYoudaoOCRResponse mj_objectWithKeyValues:responseObject];
                 if (response) {
                     EZOCRResult *result = [EZOCRResult new];
                     result.from = [self languageEnumFromCode:response.lanFrom];
                     result.to = [self languageEnumFromCode:response.lanTo];
-                    result.ocrTextArray = [response.lines mm_map:^id _Nullable( EZYoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    result.ocrTextArray = [response.lines mm_map:^id _Nullable(EZYoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         EZOCRText *text = [EZOCRText new];
                         text.text = obj.context;
                         text.translatedText = obj.tranContent;
@@ -425,9 +421,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         if (EZOCRResult) {
             // 如果翻译结果的语种匹配，不是中文查词或者英文查词时，不调用翻译接口
             if ([to isEqualToString:EZLanguageAuto] || [to isEqualToString:EZOCRResult.to]) {
-                if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese]
-                       || [EZOCRResult.to isEqualToString:EZLanguageEnglish])
-                      && ![EZOCRResult.mergedText containsString:@" "])) {
+                if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese] || [EZOCRResult.to isEqualToString:EZLanguageEnglish]) && ![EZOCRResult.mergedText containsString:@" "])) {
                     // 直接回调翻译结果
                     NSLog(@"直接输出翻译结果");
                     ocrSuccess(EZOCRResult, NO);

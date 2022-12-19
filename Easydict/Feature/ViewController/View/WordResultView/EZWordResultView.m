@@ -102,7 +102,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 mm_strongify(self);
 
                 [self addSubview:textField];
-                textField.stringValue = @"释义: ";
+                textField.stringValue = NSLocalizedString(@"explain", nil);
                 textField.maximumNumberOfLines = 1;
                 textField.font = typeTextFont;
                 textField.editable = NO;
