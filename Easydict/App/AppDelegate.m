@@ -11,6 +11,7 @@
 #import "EZShortcut.h"
 #import "MMCrash.h"
 #import "EZWindowManager.h"
+#import "EZLanguageManager.h"
 
 @implementation AppDelegate
 
@@ -19,20 +20,38 @@
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
     [EZShortcut setup];
-
+    
     
     // Show main window?
-//    EZWindowManager *windowManager = [EZWindowManager shared];
-//    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
-//    [windowManager.mainWindow center];
-//    [windowManager.mainWindow makeKeyAndOrderFront:nil];
+    //    EZWindowManager *windowManager = [EZWindowManager shared];
+    //    [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
+    //    [windowManager.mainWindow center];
+    //    [windowManager.mainWindow makeKeyAndOrderFront:nil];
     
     
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
-
     
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
- }
+}
+
+///
+- (void)setupAppLanguage {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *AppleLanguagesKey = @"AppleLanguages";
+    NSMutableArray *userLanguages = [[defaults objectForKey:AppleLanguagesKey] mutableCopy];
+    
+    NSString *systemLanguageCode = @"en-CN";
+    if ([EZLanguageManager isChineseFirstLanguage]) {
+        systemLanguageCode = @"zh-CN";
+    }
+    // Avoid two identical languages.
+    [userLanguages removeObject:systemLanguageCode];
+    [userLanguages insertObject:systemLanguageCode atIndex:0];
+    
+    
+    // "en-CN", "zh-Hans", "zh-Hans-CN"
+    [defaults setObject:userLanguages forKey:AppleLanguagesKey];
+}
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [[EZStatusItem shared] remove];
@@ -46,7 +65,7 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
     // Hide dock app, not exit.
-//    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
+    //    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
     
     return NO;
 }
