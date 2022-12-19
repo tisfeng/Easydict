@@ -15,6 +15,7 @@ static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
+static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
@@ -41,29 +42,11 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    NSNumber *autoSelectText = [NSUserDefaults mm_read:kAutoSelectTextKey];
-    if (autoSelectText == nil) {
-        autoSelectText = [NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class];
-    }
-    self.autoSelectText = [autoSelectText boolValue];
-
-    NSNumber *launchAtStartup = [NSUserDefaults mm_read:kLaunchAtStartupKey];
-    if (launchAtStartup == nil) {
-        launchAtStartup = [NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class];
-    }
-    self.launchAtStartup = [launchAtStartup boolValue];
-
-    NSString *from = [NSUserDefaults mm_read:kFromKey];
-    if (from == nil) {
-        from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    }
-    self.from = from;
-
-    NSString *to = [NSUserDefaults mm_read:kToKey];
-    if (to == nil) {
-        to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    }
-    self.to = to;
+    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -104,6 +87,12 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
+- (void)setHideMainWindow:(BOOL)hideMainWindow {
+    _hideMainWindow = hideMainWindow;
+
+    [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
+}
+
 
 #pragma mark -
 
@@ -112,7 +101,7 @@ static EZConfiguration *_instance;
     // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
 
     [self isLoginItemEnabled];
-    
+
     NSString *helperBundleId = [self helperBundleId];
     SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
 }

@@ -33,7 +33,6 @@
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
-		0376AB52294F5DCD00E2E2A4 /* EZGeneralViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB54294F5DCD00E2E2A4 /* EZGeneralViewController.xib */; };
 		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
@@ -204,9 +203,6 @@
 		036E7D7A293F4FC8002675DF /* EZLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLinkButton.m; sourceTree = "<group>"; };
 		0375090B294F58D600C887B8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		0375090D294F58E100C887B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		0376AB53294F5DCD00E2E2A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/EZGeneralViewController.xib; sourceTree = "<group>"; };
-		0376AB56294F5DCE00E2E2A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/EZGeneralViewController.strings; sourceTree = "<group>"; };
-		0376AB58294F5DCF00E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/EZGeneralViewController.strings"; sourceTree = "<group>"; };
 		0376AB5D294F659700E2E2A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0376AB5F294F659800E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -883,7 +879,6 @@
 				039F5502294B6E29004AB940 /* EZAboutViewController.xib */,
 				039F54FC294B6E29004AB940 /* EZGeneralViewController.h */,
 				039F5501294B6E29004AB940 /* EZGeneralViewController.m */,
-				0376AB54294F5DCD00E2E2A4 /* EZGeneralViewController.xib */,
 				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
 				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
 			);
@@ -1307,7 +1302,6 @@
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
 				03B022EC29231FA6001C7E63 /* baidu-translate-sign.js in Resources */,
 				03BFBB772923A09B00C48725 /* white-blue-icon@2x.png in Resources */,
-				0376AB52294F5DCD00E2E2A4 /* EZGeneralViewController.xib in Resources */,
 				03B022E729231FA6001C7E63 /* Main.storyboard in Resources */,
 				03B022F029231FA6001C7E63 /* google-translate-sign.js in Resources */,
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
@@ -1488,16 +1482,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0376AB54294F5DCD00E2E2A4 /* EZGeneralViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0376AB53294F5DCD00E2E2A4 /* Base */,
-				0376AB56294F5DCE00E2E2A4 /* en */,
-				0376AB58294F5DCF00E2E2A4 /* zh-Hans */,
-			);
-			name = EZGeneralViewController.xib;
-			sourceTree = "<group>";
-		};
 		0376AB5E294F659700E2E2A4 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

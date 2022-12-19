@@ -28,3 +28,18 @@
 
 "general" = "General";
 "about" = "About";
+
+
+"select_translate" = "Select Translate:";
+"input_translate" = "Input Translate:";
+"snip_translate" = "Snip Translate:";
+"show_mini_window" = "Show Mini Window:";
+
+"check_update" = "Check Update:";
+"auto_check_update" = "Auto Check Update";
+"show_icon" = "Show Icon:";
+"auto_show_icon" = "Auto Show Icon";
+"launch" = "Launch:";
+"launch_at_startup" = "Launch at Startup";
+"main_window" = "Main Window:";
+"hide_main_window" = "Hide Main Window";
