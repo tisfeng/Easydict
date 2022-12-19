@@ -43,7 +43,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (NSString *)name {
-    return @"DeepL 翻译";
+    return NSLocalizedString(@"deepL_translate", nil);
 }
 
 - (NSString *)link {
@@ -94,12 +94,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult * _Nullable, NSError * _Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     [self webViewTranslate:completion];
 }
 
-- (void)webViewTranslate: (nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError * _Nonnull error) {
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         self.result.normalResults = texts;
         completion(self.result, error);
     }];
@@ -108,15 +108,15 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
     [self.webViewTranslator monitorBaseURLString:monitorURL
                                          loadURL:self.wordLink
-                               completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
         
-//        NSLog(@"deepL responseObject: %@", responseObject);
+        //        NSLog(@"deepL responseObject: %@", responseObject);
     }];
 }
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion {
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"deepL not support ocr");
 }
 

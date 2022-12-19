@@ -20,7 +20,7 @@
 }
 
 - (NSString *)name {
-    return @"Apple";
+    return NSLocalizedString(@"system_translate", nil);
 }
 
 - (NSString *)link {
@@ -240,7 +240,7 @@
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
     for (NSString *voice in availableVoices) {
-//        NSLog(@"%@", voice);
+        //        NSLog(@"%@", voice);
         NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
         NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
         if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {

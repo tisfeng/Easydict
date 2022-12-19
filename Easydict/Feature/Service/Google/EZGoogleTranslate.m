@@ -242,7 +242,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (NSString *)name {
-    return @"Google 翻译";
+    return NSLocalizedString(@"google_translate", nil);
 }
 
 - (NSString *)link {
