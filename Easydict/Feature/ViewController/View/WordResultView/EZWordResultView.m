@@ -250,7 +250,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-                [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+                [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin_8);
                     exceptedWidth += kHorizontalMargin_8;
@@ -315,7 +315,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             mm_strongify(self);
 
             [self addSubview:textField];
-            textField.stringValue = [NSString stringWithFormat:@"%@: ", obj.name];
+            textField.stringValue = [NSString stringWithFormat:@"%@:", obj.name];
             [textField excuteLight:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {

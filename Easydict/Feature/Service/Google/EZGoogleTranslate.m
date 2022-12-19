@@ -462,7 +462,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         NSString *phoneticText = responseArray[0][1][3];
                         if (phoneticText) {
                             EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
-                            phonetic.name = @"美";
+                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
                             phonetic.value = phoneticText;
                             phonetic.speakURL = result.fromSpeakURL;
                             
@@ -574,11 +574,17 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
     url = [url stringByAppendingString:@"?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"];
+    
+    NSString *souceLangCode = [self languageCodeForLanguage:from];
+    NSString *targetLangCode = [self languageCodeForLanguage:to];
+    NSString *preferredLanguage = [EZLanguageManager firstLanguage];
+    NSString *preferredLangCode = [self languageCodeForLanguage:preferredLanguage];
+    
     NSDictionary *params = @{
         @"client" : @"webapp",
-        @"sl" : [self languageCodeForLanguage:from], //
-        @"tl" : [self languageCodeForLanguage:to],
-        @"hl" : @"zh-CN",
+        @"sl" : souceLangCode, //
+        @"tl" : targetLangCode,
+        @"hl" : preferredLangCode, // zh-CN, en
         @"otf" : @"2",
         @"ssel" : @"3",
         @"tsel" : @"0",
