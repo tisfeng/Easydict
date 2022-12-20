@@ -15,7 +15,7 @@
 #import "NSView+EZAnimatedHidden.h"
 #import "EZDetectLanguageButton.h"
 
-@interface EZQueryView () <NSTextViewDelegate>
+@interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
 @property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
@@ -24,6 +24,10 @@
 
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
+
+@property (nonatomic, copy) NSString *typingText;
+
+@property (nonatomic, assign) BOOL typing;
 
 @end
 
@@ -59,6 +63,7 @@
     self.scrollView.documentView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
+    textView.textStorage.delegate = self;
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
@@ -158,7 +163,7 @@
     }];
     
     [self updateDetectButton];
-
+    
     
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
@@ -183,7 +188,8 @@
     NSString *queryText = model.queryText;
     
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
-    if (queryText && ![queryText isEqualToString:self.copiedText]) {
+    // !!!: do not update textView while user is typing (like Chinese input)
+    if (queryText && ![queryText isEqualToString:self.copiedText] && !self.typing) {
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
         self.textView.string = queryText; // ???: need to check
     }
@@ -255,12 +261,18 @@
     return NO;
 }
 
+- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
+    self.typing = YES;
+}
+
 
 #pragma mark - NSTextDelegate
 
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = self.textView.string;
-//    NSLog(@"textDidChange: %@", text);
+    NSLog(@"textDidChange: %@", text);
+    
+    self.typing = NO;
     
     [self updateButtonsDisplayState:text];
     
