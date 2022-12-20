@@ -326,11 +326,10 @@
         NLLanguageJapanese : @(0.7),
         NLLanguageFrench : @(0.45), // const, ex
         NLLanguageKorean : @(0.4),
-        NLLanguageGerman : @(0.15), // usa
         NLLanguageTraditionalChinese : @(0.2),
         NLLanguageItalian : @(0.1), // via
         NLLanguageSpanish : @(0.1), // favor
-        
+        NLLanguageGerman : @(0.05), // usa, sender
         NLLanguagePortuguese : @(0.05), // favor, e
         NLLanguageDutch : @(0.01),      // heel, via
         NLLanguageCzech : @(0.01),      // pro
