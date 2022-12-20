@@ -85,19 +85,14 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     [self.textField sizeToFit];
     CGFloat textFieldWidth = self.textField.width;
 
-    [self.textField mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.imageView.mas_right).offset(kPadding);
         make.right.equalTo(self);
         make.centerY.equalTo(self);
-        make.width.mas_equalTo(ceil(textFieldWidth));
+        make.width.mas_equalTo(textFieldWidth);
     }];
     
-    
-    [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(ceil(textFieldWidth));
-    }];
-    
-    CGFloat width = kPadding * 3 + imageViewWidth + textFieldWidth;
+    CGFloat width = kPadding * 2 + imageViewWidth + textFieldWidth;
     _buttonWidth = width;
     
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -151,6 +146,10 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         self.selectedMenuItemBlock(selectedLanguage);
     }
     self.customMenu = nil;
+    
+//        [self setNeedsUpdateConstraints:YES];
+        
+//        [self layoutSubtreeIfNeeded];
 }
 
 
@@ -188,6 +187,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         //        [self updateTextFieldLayout];
         
         [self setNeedsUpdateConstraints:YES];
+        
+//        [self layoutSubtreeIfNeeded];
         
     }
 }
