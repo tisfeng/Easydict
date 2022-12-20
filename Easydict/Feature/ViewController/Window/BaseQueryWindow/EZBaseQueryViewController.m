@@ -244,13 +244,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 /// Close all result view, then query text.
 - (void)startQueryText:(NSString *)text {
-    if (text.length == 0) {
-        NSLog(@"query text is empty");
-        return;
-    }
-    
-    NSLog(@"query text: %@", text);
-    
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         NSLog(@"close all result");
@@ -298,6 +291,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 /// Directly query model.
 - (void)queryCurrentModel {
+    if (self.queryText.length == 0) {
+        NSLog(@"query text is empty");
+        return;
+    }
+    
+    NSLog(@"query text: %@", self.queryText);
+    
     // !!!: Reset all result before new query.
     [self resetAllResults];
     
@@ -479,6 +479,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 /// Update tableView row data, update row height and window height with animation.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
+//    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
+
     if (reloadData) {
         
         // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
@@ -488,6 +490,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     
+    
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = EZUpdateTableViewRowHeightAnimationDuration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
@@ -495,6 +498,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self updateWindowViewHeightWithAnimation:YES];
     } completionHandler:^{
+//        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
             completionHandler();
         }
