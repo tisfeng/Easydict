@@ -24,10 +24,12 @@ static EZPreferencesWindowController *_instance;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             NSArray *viewControllers = @[
-                [EZGeneralViewController new],
-                [EZAboutViewController new],
+                [[EZGeneralViewController alloc] init],
+                [[EZAboutViewController alloc] init],
             ];
-            _instance = [[self alloc] initWithViewControllers:viewControllers];
+            
+            NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
+            _instance = [[self alloc] initWithViewControllers:viewControllers title:appName];
         });
     }
     return _instance;
