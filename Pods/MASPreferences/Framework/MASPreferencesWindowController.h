@@ -21,11 +21,7 @@ extern NSString * const kMASPreferencesWindowControllerDidChangeViewNotification
  * Window controller for managing Preference view controllers.
  */
 __attribute__((__visibility__("default")))
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5
 @interface MASPreferencesWindowController : NSWindowController <NSToolbarDelegate, NSWindowDelegate>
-#else
-@interface MASPreferencesWindowController : NSWindowController
-#endif
 {
 @private
     NSMutableArray *_viewControllers;
