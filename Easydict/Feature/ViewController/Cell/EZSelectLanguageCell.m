@@ -136,30 +136,29 @@
         make.edges.equalTo(self);
     }];
     
-    CGFloat languageButtonWidth = 90;
-    CGFloat transformButtonWidth = 25;
-    
+    CGFloat transformButtonWidth = 26;
     [self.transformButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.languageBarView);
         make.width.height.mas_equalTo(transformButtonWidth);
     }];
     
-    CGFloat padding = ((self.width - transformButtonWidth) / 2 - languageButtonWidth) / 2;
     
-    // Shift a bit to the left so that the UI looks better.
-    padding -= 5;
-    
-    //    NSLog(@"query cell padding: %.1f", padding);
-    
+    CGFloat halfWidth = (self.width - transformButtonWidth) / 2;
+    CGFloat fromButtonMargin = (halfWidth - self.fromLanguageButton.buttonWidth) / 2;
+    CGFloat toButtonMargin = (halfWidth - self.toLanguageButton.buttonWidth) / 2;
+
     [self.fromLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
-        make.left.equalTo(self.languageBarView).offset(padding);
+        make.left.greaterThanOrEqualTo(self.languageBarView).offset(fromButtonMargin);
+//        make.right.lessThanOrEqualTo(self.transformButton.mas_left).offset(-3).priorityLow();
     }];
     
     [self.toLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.width.height.equalTo(self.fromLanguageButton);
-        make.right.equalTo(self.languageBarView).offset(-padding);
+        make.centerY.equalTo(self.languageBarView);
+        make.height.mas_equalTo(transformButtonWidth);
+        make.right.lessThanOrEqualTo(self.languageBarView).offset(-toButtonMargin);
+//        make.left.greaterThanOrEqualTo(self.transformButton.mas_right).offset(3);
     }];
     
     [super updateConstraints];
@@ -175,6 +174,7 @@
         self.toLanguageButton.autoSelectedLanguage = queryModel.queryTargetLanguage;
     }
 }
+
 
 - (void)enterAction {
     NSLog(@"enterAction");

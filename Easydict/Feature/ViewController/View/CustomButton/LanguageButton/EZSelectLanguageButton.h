@@ -16,12 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 DefineMethodMMMake_h(EZSelectLanguageButton, button);
 
 @property (nonatomic, copy) EZLanguage selectedLanguage;
-
 @property (nonatomic, copy) EZLanguage autoSelectedLanguage;
-
 @property (nonatomic, copy) NSString *autoChineseSelectedTitle; // 自动检测 --> 自动选择
 
 @property (nonatomic, copy) void (^selectedMenuItemBlock)(EZLanguage selectedLanguage);
+
+@property (nonatomic, assign, readonly) CGFloat buttonWidth;
 
 @end
 
