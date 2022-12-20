@@ -187,6 +187,7 @@ static NSString * PreferencesKeyForViewBounds (NSString *identifier)
         toolbarItem.label = controller.toolbarItemLabel;
         toolbarItem.target = self;
         toolbarItem.action = @selector(toolbarItemDidClick:);
+        toolbarItem.maxSize = CGSizeMake(22, 22);
     }
     return toolbarItem;
 }
