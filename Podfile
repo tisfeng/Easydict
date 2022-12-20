@@ -11,7 +11,7 @@ target 'Easydict' do
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
   pod 'MASShortcut', '~> 2.4.0'
-  pod 'MASPreferences', '~> 1.3'
+  pod 'MASPreferences', '~> 1.4.1'
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
   pod 'Sparkle', '~> 1.24.0'
