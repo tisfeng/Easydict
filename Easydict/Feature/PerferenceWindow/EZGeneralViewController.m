@@ -42,16 +42,8 @@
 
 
 - (void)loadView {
-    CGRect frame = CGRectMake(0, 0, 430, 350);
+    CGRect frame = CGRectMake(0, 0, 430, 320);
     self.view = [[NSView alloc] initWithFrame:frame];
-    //    self.view.wantsLayer = YES;
-    //    self.view.layer.cornerRadius = EZCornerRadius_8;
-    //    self.view.layer.masksToBounds = YES;
-    //    [self.view excuteLight:^(NSView *_Nonnull x) {
-    //        x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
-    //    } drak:^(NSView *_Nonnull x) {
-    //        x.layer.backgroundColor = NSColor.mainViewBgDarkColor.CGColor;
-    //    }];
 }
 
 - (void)viewDidLoad {
@@ -146,9 +138,11 @@
 
 - (void)updateViewConstraints {
     CGFloat leftMargin = 100;
-    CGFloat topMargin = 30;
+    CGFloat topMargin = 20;
 
-    CGFloat verticalPadding = 20;
+    CGFloat verticalPadding = 15;
+    CGFloat verticalShortcutViewPadding = verticalPadding + 5;
+
     CGFloat horizontalPadding = 8;
 
     [self.selectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -163,7 +157,7 @@
 
     [self.inputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.selectLabel.mas_bottom).offset(verticalPadding);
+        make.top.equalTo(self.selectLabel.mas_bottom).offset(verticalShortcutViewPadding);
     }];
     [self.inputShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.inputLabel.mas_right).offset(horizontalPadding);
@@ -173,7 +167,7 @@
 
     [self.snipLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.inputLabel.mas_bottom).offset(verticalPadding);
+        make.top.equalTo(self.inputLabel.mas_bottom).offset(verticalShortcutViewPadding);
     }];
     [self.snipShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.snipLabel.mas_right).offset(horizontalPadding);
@@ -183,7 +177,7 @@
 
     [self.showMiniLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.snipLabel.mas_bottom).offset(verticalPadding);
+        make.top.equalTo(self.snipLabel.mas_bottom).offset(verticalShortcutViewPadding);
     }];
     [self.showMiniShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showMiniLabel.mas_right).offset(horizontalPadding);
@@ -193,14 +187,14 @@
 
     // add separator
     [self.separator mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.inset(35);
-        make.top.equalTo(self.showMiniLabel.mas_bottom).offset(verticalPadding);
+        make.left.right.inset(30);
+        make.top.equalTo(self.showMiniLabel.mas_bottom).offset(verticalShortcutViewPadding);
         make.height.mas_equalTo(0.5);
     }];
 
     [self.selectTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.separator.mas_bottom).offset(verticalPadding);
+        make.top.equalTo(self.separator.mas_bottom).offset(verticalShortcutViewPadding);
     }];
 
     [self.autoSelectTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
