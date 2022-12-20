@@ -147,17 +147,21 @@
     CGFloat fromButtonMargin = (halfWidth - self.fromLanguageButton.buttonWidth) / 2;
     CGFloat toButtonMargin = (halfWidth - self.toLanguageButton.buttonWidth) / 2;
 
-    [self.fromLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.fromLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
         make.left.greaterThanOrEqualTo(self.languageBarView).offset(fromButtonMargin);
+        
+//        make.width.mas_equalTo(self.fromLanguageButton.buttonWidth);
 //        make.right.lessThanOrEqualTo(self.transformButton.mas_left).offset(-3).priorityLow();
     }];
     
-    [self.toLanguageButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.toLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
         make.right.lessThanOrEqualTo(self.languageBarView).offset(-toButtonMargin);
+//        make.width.mas_equalTo(self.toLanguageButton.buttonWidth);
+
 //        make.left.greaterThanOrEqualTo(self.transformButton.mas_right).offset(3);
     }];
     
@@ -178,6 +182,8 @@
 
 - (void)enterAction {
     NSLog(@"enterAction");
+    
+    [self setNeedsUpdateConstraints:YES];
     
     if (self.enterActionBlock) {
         self.enterActionBlock(EZConfiguration.shared.from, EZConfiguration.shared.to);
