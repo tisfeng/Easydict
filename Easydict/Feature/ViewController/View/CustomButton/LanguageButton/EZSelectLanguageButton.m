@@ -8,8 +8,6 @@
 
 #import "EZSelectLanguageButton.h"
 
-static CGFloat const kPadding = 5;
-
 @interface EZSelectLanguageButton ()
 
 @property (nonatomic, strong) NSTextField *textField;
@@ -75,9 +73,12 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 }
 
 - (void)updateConstraints {
+    __block CGFloat padding = 0;
     CGFloat imageViewWidth = 8;
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self).offset(kPadding);
+        CGFloat leftOffset = 6;
+        padding += leftOffset;
+        make.left.equalTo(self).offset(leftOffset);
         make.centerY.equalTo(self).offset(1);
         make.width.height.mas_equalTo(imageViewWidth);
     }];
@@ -86,13 +87,18 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     CGFloat textFieldWidth = self.textField.width;
 
     [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.imageView.mas_right).offset(kPadding);
-        make.right.equalTo(self);
+        CGFloat leftOffset = 3;
+        padding += leftOffset;
+        make.left.equalTo(self.imageView.mas_right).offset(leftOffset);
+        
+        CGFloat rightOffset = 1;
+        padding += rightOffset;
+        make.right.equalTo(self).offset(-rightOffset);
         make.centerY.equalTo(self);
         make.width.mas_equalTo(textFieldWidth);
     }];
     
-    CGFloat width = kPadding * 2 + imageViewWidth + textFieldWidth;
+    CGFloat width = padding + imageViewWidth + textFieldWidth;
     _buttonWidth = width;
     
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -183,13 +189,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         
         [self updateLanguageMenuItem:oldSelectedLanguage state:NSControlStateValueOff];
         [self updateLanguageMenuItem:selectedLanguage state:NSControlStateValueOn];
-        
-        //        [self updateTextFieldLayout];
-        
-        [self setNeedsUpdateConstraints:YES];
-        
-//        [self layoutSubtreeIfNeeded];
-        
+                
+        [self setNeedsUpdateConstraints:YES];        
     }
 }
 

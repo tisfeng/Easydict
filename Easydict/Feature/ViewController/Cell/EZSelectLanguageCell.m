@@ -8,7 +8,6 @@
 
 #import "EZSelectLanguageCell.h"
 #import "EZSelectLanguageButton.h"
-#import "EZQueryService.h"
 #import "EZConfiguration.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
@@ -25,7 +24,6 @@
 @property (nonatomic, strong) EZSelectLanguageButton *toLanguageButton;
 @property (nonatomic, copy) EZLanguage toLanguage;
 
-@property (nonatomic, strong) EZQueryService *translate;
 @property (nonatomic, assign) BOOL isTranslating;
 
 @end
@@ -64,9 +62,9 @@
     transformButton.toolTip = @"交换语言";
     transformButton.image = [NSImage imageNamed:@"transform"];
     
-    [transformButton excuteLight:^(id _Nonnull x) {
+    [transformButton excuteLight:^(EZHoverButton *transformButton) {
         transformButton.contentTintColor = NSColor.blackColor;
-    } drak:^(id _Nonnull x) {
+    } drak:^(EZHoverButton *transformButton) {
         transformButton.contentTintColor = NSColor.whiteColor;
     }];
     
@@ -74,14 +72,14 @@
     [self.transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
         
-        EZLanguage fromLang = EZConfiguration.shared.from;
-        EZLanguage toLang = EZConfiguration.shared.to;
+        EZLanguage fromLang = self.queryModel.userSourceLanguage;
+        EZLanguage toLang = self.queryModel.userTargetLanguage;
         
         EZConfiguration.shared.from = toLang;
         EZConfiguration.shared.to = fromLang;
         
         [self.fromLanguageButton setSelectedLanguage:toLang];
-        [self.fromLanguageButton setSelectedLanguage:fromLang];
+        [self.toLanguageButton setSelectedLanguage:fromLang];
         
         [self enterAction];
     }];
@@ -89,18 +87,13 @@
     
     self.fromLanguageButton = [EZSelectLanguageButton mm_make:^(EZSelectLanguageButton *_Nonnull button) {
         [languageBarView addSubview:button];
-        // Just resolve layout warning.
-        button.frame = self.bounds;
-        
-        EZLanguage from = EZConfiguration.shared.from;
-        [button setSelectedLanguage:from];
         
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
             self.queryModel.userSourceLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:from]) {
+            if (![selectedLanguage isEqualToString:EZConfiguration.shared.from]) {
                 EZConfiguration.shared.from = selectedLanguage;
                 [self enterAction];
             }
@@ -110,19 +103,14 @@
     
     self.toLanguageButton = [EZSelectLanguageButton mm_make:^(EZSelectLanguageButton *_Nonnull button) {
         [languageBarView addSubview:button];
-        button.frame = self.bounds;
         button.autoChineseSelectedTitle = @"自动选择";
-        
-        EZLanguage toLang = EZConfiguration.shared.to;
-        [button setSelectedLanguage:toLang];
-        
+
         mm_weakify(self);
         [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
             mm_strongify(self);
-            
             self.queryModel.userTargetLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:toLang]) {
+            if (![selectedLanguage isEqualToString:EZConfiguration.shared.to]) {
                 EZConfiguration.shared.to = selectedLanguage;
                 [self enterAction];
             }
@@ -145,24 +133,20 @@
     
     CGFloat halfWidth = (self.width - transformButtonWidth) / 2;
     CGFloat fromButtonMargin = (halfWidth - self.fromLanguageButton.buttonWidth) / 2;
+    fromButtonMargin = MAX(fromButtonMargin, 0);
     CGFloat toButtonMargin = (halfWidth - self.toLanguageButton.buttonWidth) / 2;
+    toButtonMargin = MAX(toButtonMargin, 0);
 
     [self.fromLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
-        make.left.greaterThanOrEqualTo(self.languageBarView).offset(fromButtonMargin);
-        
-//        make.width.mas_equalTo(self.fromLanguageButton.buttonWidth);
-//        make.right.lessThanOrEqualTo(self.transformButton.mas_left).offset(-3).priorityLow();
+        make.right.lessThanOrEqualTo(self.transformButton.mas_left).offset(-fromButtonMargin);
     }];
     
     [self.toLanguageButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.languageBarView);
         make.height.mas_equalTo(transformButtonWidth);
-        make.right.lessThanOrEqualTo(self.languageBarView).offset(-toButtonMargin);
-//        make.width.mas_equalTo(self.toLanguageButton.buttonWidth);
-
-//        make.left.greaterThanOrEqualTo(self.transformButton.mas_right).offset(3);
+        make.left.greaterThanOrEqualTo(self.transformButton.mas_right).offset(toButtonMargin);
     }];
     
     [super updateConstraints];
@@ -171,9 +155,12 @@
 - (void)setQueryModel:(EZQueryModel *)queryModel {
     _queryModel = queryModel;
     
+    self.fromLanguageButton.selectedLanguage = queryModel.userSourceLanguage;
     if ([queryModel.userSourceLanguage isEqualToString:EZLanguageAuto]) {
         self.fromLanguageButton.autoSelectedLanguage = queryModel.queryFromLanguage;
     }
+    
+    self.toLanguageButton.selectedLanguage = queryModel.userTargetLanguage;
     if ([queryModel.userTargetLanguage isEqualToString:EZLanguageAuto]) {
         self.toLanguageButton.autoSelectedLanguage = queryModel.queryTargetLanguage;
     }
