@@ -313,7 +313,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-            NSLog(@"key down");
+//            NSLog(@"key down");
             [self dismissPopButton];
             break;
         }

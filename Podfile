@@ -17,6 +17,9 @@ target 'Easydict' do
   pod 'Sparkle', '~> 1.24.0'
   pod 'KVOController'
   
+  # Add the Firebase pod for Google Analytics
+  pod 'FirebaseAnalytics'
+  
 end
 
 post_install do |installer|

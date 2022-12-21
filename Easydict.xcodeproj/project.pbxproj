@@ -126,6 +126,8 @@
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
+		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
+		03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateTool.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
@@ -376,6 +378,7 @@
 		03D043552928940500E7559E /* EZBaseQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBaseQueryWindow.m; sourceTree = "<group>"; };
 		03D043582928C4C800E7559E /* EZWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowManager.h; sourceTree = "<group>"; };
 		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
+		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateTool.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateTool.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
@@ -618,6 +621,7 @@
 		03B0221829231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
+				03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */,
 				03B0222429231FA6001C7E63 /* Feature */,
 				0376AB59294F5EEC00E2E2A4 /* App */,
 			);
@@ -1287,6 +1291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0383914F292FBE120009828C /* Main.storyboard in Resources */,
+				03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
 				0383914D292FBE120009828C /* Assets.xcassets in Resources */,
 				0383914C292FBE120009828C /* Main.strings in Resources */,
 			);
@@ -1307,6 +1312,7 @@
 				03BFBB7229239E9F00C48725 /* blue-white-icon@3x.png in Resources */,
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
+				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
 				039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */,
 				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
