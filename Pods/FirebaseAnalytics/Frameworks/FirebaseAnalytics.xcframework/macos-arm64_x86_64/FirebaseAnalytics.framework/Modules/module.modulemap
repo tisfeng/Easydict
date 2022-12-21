@@ -1,0 +1,12 @@
+framework module FirebaseAnalytics {
+umbrella header "FirebaseAnalytics-umbrella.h"
+export *
+module * { export * }
+  link framework "AppKit"
+  link framework "Foundation"
+  link framework "Security"
+  link framework "SystemConfiguration"
+  link "c++"
+  link "sqlite3"
+  link "z"
+}

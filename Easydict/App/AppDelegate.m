@@ -14,6 +14,8 @@
 #import "EZLanguageManager.h"
 #import "EZConfiguration.h"
 
+@import FirebaseCore;
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -22,6 +24,16 @@
     [EZStatusItem.shared setup];
     [EZShortcut setup];
     
+    [self showMainWindow];
+    
+#if !DEBUG
+    [FIRApp configure];
+#endif
+
+    //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
+}
+
+- (void)showMainWindow {
     NSApplicationActivationPolicy activationPolicy = NSApplicationActivationPolicyAccessory;
     if (!EZConfiguration.shared.hideMainWindow) {
         activationPolicy = NSApplicationActivationPolicyRegular;
@@ -32,8 +44,6 @@
         [windowManager.mainWindow makeKeyAndOrderFront:nil];
     }
     [NSApp setActivationPolicy:activationPolicy];
-
-    //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
 
 ///
@@ -54,6 +64,9 @@
     // "en-CN", "zh-Hans", "zh-Hans-CN"
     [defaults setObject:userLanguages forKey:AppleLanguagesKey];
 }
+
+
+#pragma mark - NSApplicationDelegate
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     [[EZStatusItem shared] remove];
