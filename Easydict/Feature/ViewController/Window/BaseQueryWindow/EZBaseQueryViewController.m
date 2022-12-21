@@ -20,6 +20,7 @@
 #import "EZServiceTypes.h"
 #import "EZAppleService.h"
 #import "EZAudioPlayer.h"
+#import "EZLog.h"
 
 static NSString *const EZQueryCellId = @"EZQueryCellId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -84,6 +85,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     [self setup];
     [self updateWindowViewHeightWithAnimation:NO];
+}
+
+- (void)viewWillAppear {
+    [super viewWillAppear];
+    
+    [EZLog logWindowAppear:self.windowType];
 }
 
 
@@ -405,7 +412,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // A non-zero value must be set, but the initial viewHeight is 0.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
-        NSLog(@"row: %ld, height: %@", row, @(height));
+//        NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -486,7 +493,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
+//    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
 
     if (reloadData) {
         
@@ -506,7 +513,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self updateWindowViewHeightWithAnimation:animateFlag];
     } completionHandler:^{
-        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+//        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
             completionHandler();
         }

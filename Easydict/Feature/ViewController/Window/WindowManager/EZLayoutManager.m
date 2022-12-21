@@ -44,10 +44,10 @@ static EZLayoutManager *_instance;
 
 - (void)commonInitialize {
     self.minimumWindowSize = CGSizeMake(300, 100);
-
+    
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
-
+    
     CGPoint centerPoint = NSMakePoint(visibleFrameSize.width / 2, visibleFrameSize.height / 2);
     CGFloat rateableWidth = 1727.0 / NSScreen.mainScreen.frame.size.width;
     CGFloat miniWindowWidth = 400 * rateableWidth; // My MacBook screen ratio
@@ -55,12 +55,12 @@ static EZLayoutManager *_instance;
                                       centerPoint.y,
                                       miniWindowWidth,
                                       self.minimumWindowSize.height);
-
+    
     CGFloat fixedWindowWidth = 360 * rateableWidth;
     self.fixedWindowFrame = CGRectMake(centerPoint.x,
                                        centerPoint.y,
                                        fixedWindowWidth,
-                                       self.minimumWindowSize.height);;
+                                       self.minimumWindowSize.height);
     
     CGFloat mainWindowWidth = 480 * rateableWidth;
     self.mainWindowFrame = CGRectMake(centerPoint.x,
@@ -166,6 +166,19 @@ static EZLayoutManager *_instance;
             break;
         default:
             break;
+    }
+}
+
+- (NSString *)windowName:(EZWindowType)type {
+    switch (type) {
+        case EZWindowTypeMain:
+            return @"main_window";
+        case EZWindowTypeFixed:
+            return @"fixed_window";
+        case EZWindowTypeMini:
+            return @"mini_window";
+        default:
+            return @"mini_window";
     }
 }
 
