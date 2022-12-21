@@ -405,7 +405,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // A non-zero value must be set, but the initial viewHeight is 0.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
-    //    NSLog(@"row: %ld, height: %@", row, @(height));
+        NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -479,7 +479,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 /// Update tableView row data, update row height and window height with animation.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-//    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
+    [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData animate:YES completionHandler:completionHandler];
+}
+
+- (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes
+                       reloadData:(BOOL)reloadData
+                          animate:(BOOL)animateFlag
+                completionHandler:(void (^)(void))completionHandler {
+    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
 
     if (reloadData) {
         
@@ -490,15 +497,16 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
     
+    CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-        context.duration = EZUpdateTableViewRowHeightAnimationDuration;
+        context.duration = duration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
 //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
-        [self updateWindowViewHeightWithAnimation:YES];
+        [self updateWindowViewHeightWithAnimation:animateFlag];
     } completionHandler:^{
-//        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
             completionHandler();
         }
@@ -506,13 +514,21 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 }
 
 - (void)updateQueryCell {
-    [self updateQueryCellWithCompletionHandler:nil];
+    [self updateQueryCellWithAnimation:NO completionHandler:nil];
+}
+
+- (void)updateQueryCellWithAnimation:(BOOL)animateFlag {
+    [self updateQueryCellWithAnimation:animateFlag completionHandler:nil];
 }
 
 /// Update query cell data and row height.
 - (void)updateQueryCellWithCompletionHandler:(nullable void (^)(void))completionHandler {
+    [self updateQueryCellWithAnimation:YES completionHandler:completionHandler];
+}
+
+- (void)updateQueryCellWithAnimation:(BOOL)animateFlag completionHandler:(nullable void (^)(void))completionHandler {
     NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO completionHandler:completionHandler];
+    [self updateTableViewRowIndexes:firstIndexSet reloadData:NO animate:animateFlag completionHandler:completionHandler];
 }
 
 - (void)updateSelectLanguageCell {
@@ -638,6 +654,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
         
+        NSLog(@"UpdateQueryTextBlock");
+        
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
@@ -645,14 +663,18 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
             return;
         }
         
+        NSLog(@"before set queryText");
         self.queryText = [NSString stringWithString:text];
-        
+        NSLog(@"after set queryText");
+
         [self delayDetectQueryText];
-        
+        NSLog(@"after delayDetectQueryText");
+
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
             [self updateQueryCell];
+            NSLog(@"after updateQueryCell");
         }
     }];
     
