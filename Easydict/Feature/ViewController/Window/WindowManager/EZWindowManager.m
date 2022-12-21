@@ -108,6 +108,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor setDoubleCommandBlock:^{
         NSLog(@"double command");
         
+        // TODO: Let users customize double-click shortcuts later on
 #if DEBUG
         mm_strongify(self);
         [self showMiniFloatingWindow];
@@ -143,12 +144,10 @@ static EZWindowManager *_instance;
 - (EZPopButtonWindow *)popButtonWindow {
     if (!_popButtonWindow) {
         _popButtonWindow = [EZPopButtonWindow shared];
-        
         mm_weakify(self);
         [_popButtonWindow.popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
-            [self.popButtonWindow close];
-            
+            [self->_popButtonWindow close];
             [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
         }];
     }
