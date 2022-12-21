@@ -24,6 +24,8 @@
     [EZStatusItem.shared setup];
     [EZShortcut setup];
     
+    [self setupAppLanguage];
+    
     [self showMainWindow];
     
 #if !DEBUG

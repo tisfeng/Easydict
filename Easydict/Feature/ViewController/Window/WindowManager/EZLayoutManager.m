@@ -62,7 +62,7 @@ static EZLayoutManager *_instance;
                                        fixedWindowWidth,
                                        self.minimumWindowSize.height);;
     
-    CGFloat mainWindowWidth = 450 * rateableWidth;
+    CGFloat mainWindowWidth = 480 * rateableWidth;
     self.mainWindowFrame = CGRectMake(centerPoint.x,
                                       centerPoint.y,
                                       mainWindowWidth,

@@ -556,6 +556,7 @@
 		0376AB59294F5EEC00E2E2A4 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */,
 				0376AB5E294F659700E2E2A4 /* Localizable.strings */,
 				03BFBB5429235C9400C48725 /* Icons */,
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
@@ -621,7 +622,6 @@
 		03B0221829231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
-				03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */,
 				03B0222429231FA6001C7E63 /* Feature */,
 				0376AB59294F5EEC00E2E2A4 /* App */,
 			);
