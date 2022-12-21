@@ -91,7 +91,6 @@ static EZLayoutManager *_instance;
         case EZWindowTypeMini: {
             return CGSizeMake(self.miniWindowFrame.size.width, self.maximumWindowSize.height);
         }
-
         default:
             return self.maximumWindowSize;
     }
@@ -101,9 +100,9 @@ static EZLayoutManager *_instance;
 - (CGFloat)inputViewMiniHeight:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMain:
-            return 60;
+            return 70;
         case EZWindowTypeFixed:
-            return 60;
+            return 65;
         case EZWindowTypeMini:
             return EZInputViewMiniHeight; // two line
         default:
