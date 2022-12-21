@@ -262,7 +262,11 @@
 }
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-    self.typing = YES;
+    NSString *text = self.textView.string;
+    NSLog(@"didProcessEditing: %@", text);
+    if (!text.length) {
+        self.typing = YES;
+    }
 }
 
 
