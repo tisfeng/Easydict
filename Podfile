@@ -19,6 +19,7 @@ target 'Easydict' do
   
   # Add the Firebase pod for Google Analytics
   pod 'FirebaseAnalytics'
+  pod 'AppCenter'
   
 end
 

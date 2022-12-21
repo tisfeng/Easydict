@@ -15,6 +15,9 @@
 #import "EZConfiguration.h"
 
 @import FirebaseCore;
+@import AppCenter;
+@import AppCenterAnalytics;
+@import AppCenterCrashes;
 
 @implementation AppDelegate
 
@@ -28,11 +31,20 @@
     
     [self showMainWindow];
     
-#if !DEBUG
-    [FIRApp configure];
-#endif
+    [self setupCrashLogService];
 
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
+}
+
+- (void)setupCrashLogService {
+#if !DEBUG
+    [FIRApp configure];
+    
+    [MSACAppCenter start:@"3533eca3-c104-473e-8bce-1cd3f421c5e8" withServices:@[
+      [MSACAnalytics class],
+      [MSACCrashes class]
+    ]];
+#endif
 }
 
 - (void)showMainWindow {
