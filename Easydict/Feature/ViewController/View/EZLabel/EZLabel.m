@@ -39,7 +39,7 @@
     NSRange range = NSMakeRange(0, text.length);
     
     // Character spacing
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSKernAttributeName : @(0.5)}];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSKernAttributeName : @(0.2)}];
     
     // Line spacing
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
