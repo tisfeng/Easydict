@@ -132,6 +132,7 @@
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
+		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -387,6 +388,8 @@
 		03E02A212924E77100A10260 /* EZStatusItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZStatusItem.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
 		03E02A2529250D1D00A10260 /* EZEventMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEventMonitor.m; sourceTree = "<group>"; };
+		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
+		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F25CB129327BC200E66A12 /* EZShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcut.h; sourceTree = "<group>"; };
 		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
@@ -971,13 +974,14 @@
 		03B022CE29231FA6001C7E63 /* Log */ = {
 			isa = PBXGroup;
 			children = (
-				03B022CF29231FA6001C7E63 /* MMLog.h */,
-				03B022D029231FA6001C7E63 /* MMFileLogFormatter.h */,
-				03B022D129231FA6001C7E63 /* MMConsoleLogFormatter.h */,
+				03F0DB352953424F00EBF9C1 /* EZLog */,
 				03B022D229231FA6001C7E63 /* MMLog.swift */,
+				03B022CF29231FA6001C7E63 /* MMLog.h */,
 				03B022D329231FA6001C7E63 /* MMLog.m */,
-				03B022D429231FA6001C7E63 /* MMConsoleLogFormatter.m */,
+				03B022D029231FA6001C7E63 /* MMFileLogFormatter.h */,
 				03B022D529231FA6001C7E63 /* MMFileLogFormatter.m */,
+				03B022D129231FA6001C7E63 /* MMConsoleLogFormatter.h */,
+				03B022D429231FA6001C7E63 /* MMConsoleLogFormatter.m */,
 			);
 			path = Log;
 			sourceTree = "<group>";
@@ -1166,6 +1170,15 @@
 				03B3B8B62926B12600168E8D /* applescripts.scpt */,
 			);
 			path = EventMonitor;
+			sourceTree = "<group>";
+		};
+		03F0DB352953424F00EBF9C1 /* EZLog */ = {
+			isa = PBXGroup;
+			children = (
+				03F0DB362953428300EBF9C1 /* EZLog.h */,
+				03F0DB372953428300EBF9C1 /* EZLog.m */,
+			);
+			path = EZLog;
 			sourceTree = "<group>";
 		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
@@ -1468,6 +1481,7 @@
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
+				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,

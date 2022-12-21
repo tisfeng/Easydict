@@ -13,38 +13,43 @@
 #import "EZWindowManager.h"
 #import "EZLanguageManager.h"
 #import "EZConfiguration.h"
+#import "EZLog.h"
 
 @import FirebaseCore;
 @import AppCenter;
 @import AppCenterAnalytics;
 @import AppCenterCrashes;
 
+static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f421c5e8";
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
+    
+    [self setupAppLanguage];
+
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
     [EZShortcut setup];
-    
-    [self setupAppLanguage];
     
     [self showMainWindow];
     
     [self setupCrashLogService];
 
+    // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
 
 - (void)setupCrashLogService {
-#if !DEBUG
+    // Firebase
     [FIRApp configure];
     
-    [MSACAppCenter start:@"3533eca3-c104-473e-8bce-1cd3f421c5e8" withServices:@[
+    // App Center
+    [MSACAppCenter start:EZAppCenterAppSecretKey withServices:@[
       [MSACAnalytics class],
       [MSACCrashes class]
     ]];
-#endif
 }
 
 - (void)showMainWindow {
@@ -88,6 +93,8 @@
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
     [EZWindowManager.shared.mainWindow makeKeyAndOrderFront:nil];
+    
+    [EZLog logWindowAppear:EZWindowTypeMain];
     
     return YES;
 }

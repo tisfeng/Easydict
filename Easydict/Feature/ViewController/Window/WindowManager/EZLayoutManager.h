@@ -41,6 +41,7 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 - (CGSize)textContainerInset:(EZWindowType)type;
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
+- (NSString *)windowName:(EZWindowType)type;
 
 @end
 
