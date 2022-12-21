@@ -329,6 +329,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     }
 }
 
+// TODO: service already has the model property.
 - (void)queryWithModel:(EZQueryModel *)queryModel
                 serive:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
@@ -353,6 +354,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                   from:queryModel.queryFromLanguage
                     to:queryModel.queryTargetLanguage
             completion:completion];
+    
+    [EZLog logService:service];
 }
 
 

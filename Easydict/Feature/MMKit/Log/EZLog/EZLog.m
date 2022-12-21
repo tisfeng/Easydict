@@ -15,8 +15,20 @@
 
 + (void)logWindowAppear:(EZWindowType)windowType {
     NSString *windowName = [EZLayoutManager.shared windowName:windowType];
-    NSString *event = [NSString stringWithFormat:@"show_%@", windowName];
-    [self logEventWithName:event parameters:nil];
+    NSString *name = [NSString stringWithFormat:@"show_%@", windowName];
+    [self logEventWithName:name parameters:nil];
+}
+
++ (void)logService:(EZQueryService *)service {
+    NSString *name = @"query_service";
+    EZQueryModel *model = service.queryModel;
+    NSDictionary *dict = @{
+        @"serviceType" : service.serviceType,
+        @"queryText" : model.queryText,
+        @"from" : model.queryFromLanguage,
+        @"to" : model.queryTargetLanguage,
+    };
+    [self logEventWithName:name parameters:dict];
 }
 
 /// Log event. ⚠️ Event name must contain only letters, numbers, or underscores.

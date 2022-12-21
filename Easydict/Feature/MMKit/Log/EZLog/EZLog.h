@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "EZWindowManager.h"
+#import "EZQueryService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLog : NSObject
 
 + (void)logWindowAppear:(EZWindowType)windowType;
++ (void)logService:(EZQueryService *)service;
+
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict;
 
 @end
