@@ -216,7 +216,7 @@
 #pragma mark - Getter
 
 - (NSString *)copiedText {
-    return self.textView.string;
+    return [self.textView.string copy];
 }
 
 
@@ -275,7 +275,7 @@
 #pragma mark - NSTextDelegate
 
 - (void)textDidChange:(NSNotification *)notification {
-    NSString *text = [self.textView.string copy];
+    NSString *text = [self copiedText];
     NSLog(@"textDidChange: %@", text);
     
     self.typing = NO;

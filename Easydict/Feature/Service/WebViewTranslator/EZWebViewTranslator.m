@@ -33,7 +33,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (EZURLSchemeHandler *)urlSchemeHandler {
     if (!_urlSchemeHandler) {
-        _urlSchemeHandler = [EZURLSchemeHandler sharedInstance];
+        _urlSchemeHandler = [[EZURLSchemeHandler alloc] init];;
     }
     return _urlSchemeHandler;
 }
@@ -249,10 +249,10 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
     NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
     
-    //    if ([navigationActionURL isEqualToString:@"about:blank"]) {
-    //        decisionHandler(WKNavigationActionPolicyCancel);
-    //        return;
-    //    }
+    if ([navigationActionURL isEqualToString:@"about:blank"]) {
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
     
     //允许跳转
     decisionHandler(WKNavigationActionPolicyAllow);
