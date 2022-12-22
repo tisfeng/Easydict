@@ -192,6 +192,9 @@
     if (queryText && ![queryText isEqualToString:self.copiedText] && !self.typing) {
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
         self.textView.string = queryText; // ???: need to check
+        
+        // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
+        [self.textView didChangeText];
     }
     
     [self updateButtonsDisplayState:queryText];
@@ -264,16 +267,15 @@
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     NSString *text = self.textView.string;
     NSLog(@"didProcessEditing: %@", text);
-    if (!text.length) {
-        self.typing = YES;
-    }
+    // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
+    self.typing = YES;
 }
 
 
 #pragma mark - NSTextDelegate
 
 - (void)textDidChange:(NSNotification *)notification {
-    NSString *text = self.textView.string;
+    NSString *text = [self.textView.string copy];
     NSLog(@"textDidChange: %@", text);
     
     self.typing = NO;

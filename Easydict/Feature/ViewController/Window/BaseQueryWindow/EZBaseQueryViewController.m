@@ -228,10 +228,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 }
 
 - (void)setQueryText:(NSString *)queryText {
-    // !!!: Avoid text being affected by input text.
+    // !!!: Rewrite property copy setter. Avoid text being affected.
     _queryText = [queryText copy];
     
-    self.queryModel.queryText = queryText;
+    self.queryModel.queryText = _queryText;
     
     if (self.queryText.length == 0) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
@@ -251,6 +251,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 /// Close all result view, then query text.
 - (void)startQueryText:(NSString *)text {
+    if (!text) {
+        return;
+    }
+    
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         NSLog(@"close all result");
@@ -663,28 +667,27 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
-        
-        NSLog(@"UpdateQueryTextBlock");
+//        NSLog(@"UpdateQueryTextBlock");
         
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
-        if ([self.queryText isEqualToString:text]) {
-            return;
-        }
         
-        NSLog(@"before set queryText");
-        self.queryText = [NSString stringWithString:text];
-        NSLog(@"after set queryText");
+        // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
+        
+        
+//        NSLog(@"before set queryText");
+        self.queryText = text;
+//        NSLog(@"after set queryText");
 
         [self delayDetectQueryText];
-        NSLog(@"after delayDetectQueryText");
+//        NSLog(@"after delayDetectQueryText");
 
         // Reduce the update frequency, update only when the height changes.
         if (queryViewHeight != self.queryModel.queryViewHeight) {
             self.queryModel.queryViewHeight = queryViewHeight;
             [self updateQueryCell];
-            NSLog(@"after updateQueryCell");
+//            NSLog(@"after updateQueryCell");
         }
     }];
     
