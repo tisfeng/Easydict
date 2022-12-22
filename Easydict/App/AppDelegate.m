@@ -42,14 +42,16 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
 }
 
 - (void)setupCrashLogService {
-    // Firebase
-    [FIRApp configure];
-    
     // App Center
     [MSACAppCenter start:EZAppCenterAppSecretKey withServices:@[
       [MSACAnalytics class],
       [MSACCrashes class]
     ]];
+
+#if !DEBUG
+    // Firebase
+    [FIRApp configure];
+#endif
 }
 
 - (void)showMainWindow {

@@ -25,7 +25,7 @@ static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
-- (void)startQueryText:(NSString *)text;
+- (void)startQueryText:(nullable NSString *)text;
 - (void)startQueryWithImage:(NSImage *)image;
 - (void)retry;
 
