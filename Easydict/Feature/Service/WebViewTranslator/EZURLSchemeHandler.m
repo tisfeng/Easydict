@@ -175,19 +175,6 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     }
 }
 
-
-+ (EZURLSchemeHandler *)sharedInstance {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedInstance = [[super allocWithZone:NULL] init];
-    });
-    return _sharedInstance;
-}
-
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    return [self sharedInstance];
-}
-
 - (instancetype)init {
     if (self = [super init]) {
         self.lock = [[NSLock alloc] init];

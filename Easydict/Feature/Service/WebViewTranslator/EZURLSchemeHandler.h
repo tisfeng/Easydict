@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZURLSchemeHandler : NSObject <WKURLSchemeHandler>
 
-+ (EZURLSchemeHandler *)sharedInstance;
-
 - (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
 
 @end
