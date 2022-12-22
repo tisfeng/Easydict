@@ -674,7 +674,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
         
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
-        
+       
+        // Reduce the update frequency, update only when the queryText or height changes.
+        if ([self.queryText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
+            return;
+        }
         
 //        NSLog(@"before set queryText");
         self.queryText = text;
@@ -683,12 +687,9 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         [self delayDetectQueryText];
 //        NSLog(@"after delayDetectQueryText");
 
-        // Reduce the update frequency, update only when the height changes.
-        if (queryViewHeight != self.queryModel.queryViewHeight) {
-            self.queryModel.queryViewHeight = queryViewHeight;
-            [self updateQueryCell];
+        self.queryModel.queryViewHeight = queryViewHeight;
+        [self updateQueryCell];
 //            NSLog(@"after updateQueryCell");
-        }
     }];
     
     [queryView setEnterActionBlock:^(NSString *text) {
