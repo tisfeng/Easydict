@@ -21,6 +21,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 
 
 @interface EZTranslatePhonetic : NSObject
