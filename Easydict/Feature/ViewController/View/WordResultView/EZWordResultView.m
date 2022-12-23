@@ -127,7 +127,10 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         exceptedWidth += ceil(typeTextField.width);
         
-        NSString *text = result.translatedText ?: errorMsg;
+        NSString *text = errorMsg;
+        if (result.translatedText.length > 0) {
+            text = result.translatedText;
+        }
         
         EZLabel *resultLabel = [[EZLabel alloc] init];
         [self addSubview:resultLabel];

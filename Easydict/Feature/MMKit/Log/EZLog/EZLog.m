@@ -33,7 +33,7 @@
 
 /// Log event. ⚠️ Event name must contain only letters, numbers, or underscores.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
-    NSLog(@"log event: %@, %@", name, dict);
+//    NSLog(@"log event: %@, %@", name, dict);
     [MSACAnalytics trackEvent:name withProperties:dict];
     [FIRAnalytics logEventWithName:name parameters:dict];
 }

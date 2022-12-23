@@ -103,8 +103,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     self.serviceTypes = @[
         EZServiceTypeGoogle,
         EZServiceTypeDeepL,
-        EZServiceTypeYoudao,
-        EZServiceTypeBaidu,
+//        EZServiceTypeYoudao,
+//        EZServiceTypeBaidu,
     ];
     
     NSMutableArray *services = [NSMutableArray array];
