@@ -140,7 +140,6 @@ typedef void (^EZURLSessionTaskCompletionHandler)(NSURLResponse *_Nonnull respon
 
 @property (nonatomic, strong) Class protocolClass;
 @property (nonatomic, strong) NSURLSession *session;
-@property (nonatomic, strong) dispatch_queue_t queue;
 
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *mutableTaskDelegatesKeyedByTaskIdentifier;
@@ -211,15 +210,6 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     return _session;
 }
 
-- (dispatch_queue_t)queue {
-    if (!_queue) {
-        _queue = dispatch_queue_create("com.easydict.izual", DISPATCH_QUEUE_SERIAL);
-        _queue = dispatch_get_main_queue();
-    }
-    return _queue;
-}
-
-
 #pragma mark - Publick Methods
 
 - (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
@@ -276,7 +266,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 }
 
 - (void)webView:(WKWebView *)webView stopURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
-    dispatch_async(self.queue, ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         urlSchemeTask.request.ss_stop = YES;
     });
 }

@@ -265,8 +265,7 @@
 }
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-    NSString *text = self.textView.string;
-    NSLog(@"didProcessEditing: %@", text);
+//    NSLog(@"didProcessEditing: %@", [self copiedText]);
     // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
     self.typing = YES;
 }
@@ -276,7 +275,7 @@
 
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
-    NSLog(@"textDidChange: %@", text);
+//    NSLog(@"textDidChange: %@", text);
     
     self.typing = NO;
     

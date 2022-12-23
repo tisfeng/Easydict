@@ -165,7 +165,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 NSLog(@"finish, retry count: %ld", self.retryCount);
                 if (completion) {
-                    NSError *error = [NSError errorWithDomain:@"com.easydict.izual" code:-1 userInfo:@{NSLocalizedDescriptionKey : @"[DeepL translate error]"}];
+                    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", MAX_QUERY_SECONDS];
+                    NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:@{NSLocalizedDescriptionKey : errorString}];
                     completion(nil, error);
                 }
             }
