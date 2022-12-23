@@ -142,9 +142,9 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                      completion:(void (^)(NSArray<NSString *>  *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
-    // 定义一个异步方法，用于判断页面中是否存在目标元素
     // 先判断页面中是否存在目标元素
     NSString *js = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
+    // NSString *js = @"document.body.innerHTML";
     [self.webView evaluateJavaScript:js completionHandler:^(NSString  *_Nullable result, NSError *_Nullable error) {
         if (error) {
             // 如果执行出错，则直接返回

@@ -11,6 +11,7 @@
 #import "EZBaiduTranslate.h"
 #import "EZYoudaoTranslate.h"
 #import "EZDeppLTranslate.h"
+#import "EZVolcanoTranslate.h"
 
 @implementation EZServiceTypes
 
@@ -24,6 +25,7 @@
         EZServiceTypeBaidu : [EZBaiduTranslate class],
         EZServiceTypeYoudao : [EZYoudaoTranslate class],
         EZServiceTypeDeepL : [EZDeppLTranslate class],
+        EZServiceTypeVolcano: [EZVolcanoTranslate class],
     };
     return dict;
 }
