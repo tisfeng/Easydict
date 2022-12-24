@@ -59,7 +59,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
     NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
-    return [NSString stringWithFormat:@"%@?category=&home_language=en&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, text];
+    return [NSString stringWithFormat:@"%@?category=&home_language=zh&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, text];
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
@@ -128,16 +128,17 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
     
     // https://translate.volcengine.com/web/translate/v1/?msToken=&X-Bogus=DFSzKwGLQDGhFUIXSkg53N7TlqSz&_signature=_02B4Z6wo00001JPEP6AAAIDDBxJkrN0CktiT1DsAAEdZbuaHXanY5YK83lzLs2IvC-TGG2SrwAfASYu0RlxzNxrvOYDTyy2LHOGiN98QnTNZfEC6O0BSwWWTr5KNbw3TykBrdkDs6PsVqDcOc9
     
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1";
-    [self.webViewTranslator monitorBaseURLString:monitorURL
-                                         loadURL:self.wordLink
-                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-        
-        //        NSLog(@"deepL responseObject: %@", responseObject);
-    }];
+    // ???: Why does this method cause a persistent memory leak? But DeepL does not?
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1/?msToken";
+//    [self.webViewTranslator monitorBaseURLString:monitorURL
+//                                         loadURL:self.wordLink
+//                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+//        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+//        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+//
+//        //        NSLog(@"deepL responseObject: %@", responseObject);
+//    }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
