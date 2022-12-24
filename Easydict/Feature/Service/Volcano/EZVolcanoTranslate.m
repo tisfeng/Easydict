@@ -28,9 +28,9 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
 
 - (EZWebViewTranslator *)webViewTranslator {
     if (!_webViewTranslator) {
-        // <p class="translate-area-result"><span>好</span></p>
-//        NSString *selector = @"[contenteditable=false] [data-slate-string]";
-        NSString *selector = @".translate-area-result";
+        // Note that the desktop and mobile versions of the volcano have different web elements
+//        NSString *selector = @"[contenteditable=false] [data-slate-string]"; // mobile
+        NSString *selector = @".translate-area-result"; // desktop
         
         _webViewTranslator = [[EZWebViewTranslator alloc] init];
         _webViewTranslator.querySelector = selector;

@@ -133,7 +133,11 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 #pragma mark -
 
 - (void)loadURL:(NSString *)URL {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URL]]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL]];
+    // !!!: Set up User-Agent to ensure that the HTML elements are consistent with the Mac side for easy parsing of UI elements
+    [request setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
+
+    [self.webView loadRequest:request];
     self.queryURL = URL;
     NSLog(@"query url: %@", URL);
 }
@@ -183,10 +187,9 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     }
                 }
                 // !!!: Trim text, and wait translatedText length > 0
-                NSString *translatedText = [result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                if (completion && translatedText.length > 0) {
-                    NSArray *texts = [translatedText componentsSeparatedByString:@"\n"];
-                    completion(texts, nil);
+                NSArray *translatedTexts = [self getValidTranslatedTexts:result];;
+                if (completion && translatedTexts) {
+                    completion(translatedTexts, nil);
                 } else {
                     retryBlock();
                 }
@@ -195,6 +198,21 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             retryBlock();
         }
     }];
+}
+
+- (nullable NSArray<NSString *> *)getValidTranslatedTexts:(NSString *)text {
+    NSString *translatedText = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (translatedText.length == 0) {
+        return nil;
+    }
+    
+    // Volcano translatesometimes returns ... first, this is invalid.
+    if ([translatedText isEqualToString:@"..."]) {
+        return nil;
+    }
+    
+    NSArray *texts = [translatedText componentsSeparatedByString:@"\n"];
+    return texts;
 }
 
 
