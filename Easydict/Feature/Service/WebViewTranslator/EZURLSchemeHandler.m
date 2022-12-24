@@ -194,6 +194,10 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     return self;
 }
 
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
+}
+
 - (AFURLSessionManager *)urlSession {
     if (!_urlSession) {
         AFURLSessionManager *jsonSession = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
@@ -205,6 +209,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (NSURLSession *)session {
     if (!_session) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        // !!!: The session object keeps a strong reference to the delegate.
         _session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:self.operationQueue];
     }
     return _session;
@@ -262,6 +267,8 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         
         NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
         [task resume];
+        
+        [self.monitorDictionary removeObjectForKey:URL.absoluteString];
     }
 }
 
@@ -276,6 +283,30 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (nullable EZURLSessionTaskCompletionHandler)completionHandlerForURL:(NSURL *)URL {
     // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
     
+//    NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:NO];
+//    // Remove url query.
+//    components.query = nil;
+//    NSString *baseURLString = components.URL.absoluteString;
+//
+//    for (NSString *monitorURL in self.monitorDictionary.allKeys) {
+//        if ([monitorURL hasPrefix:baseURLString]) {
+//            EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[monitorURL];
+//            return completionHandler;
+//        }
+//    }
+//    return nil;
+    
+    NSString *monitorURL = [self monitorURLForURL:URL];
+    if (monitorURL) {
+        EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[monitorURL];
+        return completionHandler;
+    }
+    return nil;
+}
+
+- (nullable NSString *)monitorURLForURL:(NSURL *)URL {
+    // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
+    
     NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:NO];
     // Remove url query.
     components.query = nil;
@@ -283,8 +314,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     
     for (NSString *monitorURL in self.monitorDictionary.allKeys) {
         if ([monitorURL hasPrefix:baseURLString]) {
-            EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[monitorURL];
-            return completionHandler;
+            return monitorURL;
         }
     }
     return nil;
