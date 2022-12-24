@@ -24,7 +24,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 @property (nonatomic, copy) NSString *queryURL;
 @property (nonatomic, assign) NSUInteger retryCount;
-@property (nonatomic, copy) void (^completionHandler)(NSArray<NSString *>  * _Nullable , NSError *);
+@property (nonatomic, copy) void (^completionHandler)(NSArray<NSString *> *_Nullable, NSError *);
 
 @end
 
@@ -33,7 +33,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (EZURLSchemeHandler *)urlSchemeHandler {
     if (!_urlSchemeHandler) {
-        _urlSchemeHandler = [[EZURLSchemeHandler alloc] init];;
+        _urlSchemeHandler = [[EZURLSchemeHandler alloc] init];
     }
     return _urlSchemeHandler;
 }
@@ -96,7 +96,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 /// Query webView rranslate url result.
 - (void)queryTranslateURL:(NSString *)URL
-        completionHandler:(nullable void (^)(NSArray<NSString *> * _Nullable, NSError *))completionHandler; {
+        completionHandler:(nullable void (^)(NSArray<NSString *> *_Nullable, NSError *))completionHandler {
     if (self.querySelector.length == 0) {
         NSLog(@"querySelector is empty, url: %@", URL);
         return;
@@ -136,20 +136,21 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL]];
     // !!!: Set up User-Agent to ensure that the HTML elements are consistent with the Mac side for easy parsing of UI elements
     [request setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
-
+    
     [self.webView loadRequest:request];
     self.queryURL = URL;
     NSLog(@"query url: %@", URL);
 }
 
 - (void)getTextContentOfElement:(NSString *)selector
-                     completion:(void (^)(NSArray<NSString *>  *_Nullable, NSError *))completion {
+                     completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
     // 先判断页面中是否存在目标元素
-    NSString *js = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
+    NSString *queryElement = [NSString stringWithFormat:@"document.querySelector('%@')", selector];
+    NSString *checkIfElementExist = [NSString stringWithFormat:@"%@ != null", queryElement];
     // NSString *js = @"document.body.innerHTML";
-    [self.webView evaluateJavaScript:js completionHandler:^(NSString  *_Nullable result, NSError *_Nullable error) {
+    [self.webView evaluateJavaScript:checkIfElementExist completionHandler:^(NSString *_Nullable result, NSError *_Nullable error) {
         if (error) {
             // 如果执行出错，则直接返回
             if (completion) {
@@ -178,8 +179,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         
         if ([result boolValue]) {
             // 如果页面中存在目标元素，则执行下面的代码获取它的 textContent 属性
-            NSString *js = [NSString stringWithFormat:@"document.querySelector('%@').textContent", selector];
-            [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+            NSString *elementTextContent = [NSString stringWithFormat:@"%@.textContent", queryElement];
+            [self.webView evaluateJavaScript:elementTextContent completionHandler:^(NSString *_Nullable result, NSError *_Nullable error) {
                 if (error) {
                     // 如果执行出错，则直接返回
                     if (completion) {
@@ -187,7 +188,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     }
                 }
                 // !!!: Trim text, and wait translatedText length > 0
-                NSArray *translatedTexts = [self getValidTranslatedTexts:result];;
+                NSArray *translatedTexts = [self getValidTranslatedTexts:result];
                 if (completion && translatedTexts) {
                     completion(translatedTexts, nil);
                 } else {
