@@ -34,6 +34,7 @@
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
+		037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -49,7 +50,7 @@
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
-		039F5506294B6E29004AB940 /* EZGeneralViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZGeneralViewController.m */; };
+		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
 		039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5502294B6E29004AB940 /* EZAboutViewController.xib */; };
 		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -134,7 +135,6 @@
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
-		03F14A3F2956BDB800CB7379 /* EZTencentTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3E2956BDB800CB7379 /* EZTencentTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -210,6 +210,8 @@
 		0375090D294F58E100C887B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		0376AB5D294F659700E2E2A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0376AB5F294F659800E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcutViewContorller.h; sourceTree = "<group>"; };
+		037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcutViewContorller.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -236,11 +238,11 @@
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
-		039F54FC294B6E29004AB940 /* EZGeneralViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZGeneralViewController.h; sourceTree = "<group>"; };
+		039F54FC294B6E29004AB940 /* EZSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSettingViewController.h; sourceTree = "<group>"; };
 		039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPreferencesWindowController.m; sourceTree = "<group>"; };
 		039F54FE294B6E29004AB940 /* EZAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAboutViewController.h; sourceTree = "<group>"; };
 		039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPreferencesWindowController.h; sourceTree = "<group>"; };
-		039F5501294B6E29004AB940 /* EZGeneralViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZGeneralViewController.m; sourceTree = "<group>"; };
+		039F5501294B6E29004AB940 /* EZSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZSettingViewController.m; sourceTree = "<group>"; };
 		039F5502294B6E29004AB940 /* EZAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZAboutViewController.xib; sourceTree = "<group>"; };
 		039F5503294B6E29004AB940 /* EZAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZAboutViewController.m; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -394,8 +396,6 @@
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F14A392956016B00CB7379 /* EZVolcanoTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZVolcanoTranslate.h; sourceTree = "<group>"; };
 		03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZVolcanoTranslate.m; sourceTree = "<group>"; };
-		03F14A3D2956BDB800CB7379 /* EZTencentTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTencentTranslate.h; sourceTree = "<group>"; };
-		03F14A3E2956BDB800CB7379 /* EZTencentTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTencentTranslate.m; sourceTree = "<group>"; };
 		03F25CB129327BC200E66A12 /* EZShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcut.h; sourceTree = "<group>"; };
 		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
@@ -675,7 +675,6 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				03F14A3C2956BDA700CB7379 /* Tencent */,
 				03F14A382956011400CB7379 /* Volcano */,
 				03BD281B29481BE100F5891A /* AudioPlayer */,
 				03008B282940D2FD0062B821 /* DeepL */,
@@ -889,13 +888,15 @@
 		03B0229C29231FA6001C7E63 /* PerferenceWindow */ = {
 			isa = PBXGroup;
 			children = (
+				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
+				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
 				039F54FE294B6E29004AB940 /* EZAboutViewController.h */,
 				039F5503294B6E29004AB940 /* EZAboutViewController.m */,
 				039F5502294B6E29004AB940 /* EZAboutViewController.xib */,
-				039F54FC294B6E29004AB940 /* EZGeneralViewController.h */,
-				039F5501294B6E29004AB940 /* EZGeneralViewController.m */,
-				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
-				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
+				039F54FC294B6E29004AB940 /* EZSettingViewController.h */,
+				039F5501294B6E29004AB940 /* EZSettingViewController.m */,
+				037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */,
+				037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */,
 			);
 			path = PerferenceWindow;
 			sourceTree = "<group>";
@@ -1198,15 +1199,6 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
-		03F14A3C2956BDA700CB7379 /* Tencent */ = {
-			isa = PBXGroup;
-			children = (
-				03F14A3D2956BDB800CB7379 /* EZTencentTranslate.h */,
-				03F14A3E2956BDB800CB7379 /* EZTencentTranslate.m */,
-			);
-			path = Tencent;
-			sourceTree = "<group>";
-		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1433,7 +1425,6 @@
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
-				03F14A3F2956BDB800CB7379 /* EZTencentTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
@@ -1461,7 +1452,7 @@
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
-				039F5506294B6E29004AB940 /* EZGeneralViewController.m in Sources */,
+				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
 				03B0233429231FA6001C7E63 /* MMConsoleLogFormatter.m in Sources */,
@@ -1476,6 +1467,7 @@
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
+				037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */,
 				03B0230029231FA6001C7E63 /* EZQueryCell.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,

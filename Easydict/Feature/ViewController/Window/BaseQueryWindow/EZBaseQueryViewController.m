@@ -21,6 +21,7 @@
 #import "EZAppleService.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
+#import "EZConfiguration.h"
 
 static NSString *const EZQueryCellId = @"EZQueryCellId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -276,6 +277,11 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
+        
+        BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
+        if (autoSnipTranslate) {
+            [self startQueryText];
+        }
     }];
 }
 

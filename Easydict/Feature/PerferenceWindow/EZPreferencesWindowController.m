@@ -7,9 +7,9 @@
 //
 
 #import "EZPreferencesWindowController.h"
-#import "EZGeneralViewController.h"
+#import "EZSettingViewController.h"
 #import "EZAboutViewController.h"
-
+#import "EZShortcutViewContorller.h"
 
 @interface EZPreferencesWindowController ()
 
@@ -24,7 +24,8 @@ static EZPreferencesWindowController *_instance;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             NSArray *viewControllers = @[
-                [[EZGeneralViewController alloc] init],
+                [[EZSettingViewController alloc] init],
+                [[EZShortcutViewContorller alloc] init],
                 [[EZAboutViewController alloc] init],
             ];
             

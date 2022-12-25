@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "toolbar_general.png",
       "idiom" : "universal",
-      "filename" : "toolbar_about.png",
       "scale" : "1x"
     },
     {
+      "filename" : "toolbar_general@2x.png",
       "idiom" : "universal",
-      "filename" : "toolbar_about@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "toolbar_general@3x.png",
       "idiom" : "universal",
-      "filename" : "toolbar_about@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }
