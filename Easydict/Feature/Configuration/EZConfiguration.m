@@ -16,6 +16,7 @@ static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupK
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
+static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTranslateKey";
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
@@ -47,6 +48,7 @@ static EZConfiguration *_instance;
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
+    self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -91,6 +93,12 @@ static EZConfiguration *_instance;
     _hideMainWindow = hideMainWindow;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
+}
+
+- (void)setAutoSnipTranslate:(BOOL)autoSnipTranslate {
+    _autoSnipTranslate = autoSnipTranslate;
+
+    [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoSnipTranslateKey];
 }
 
 

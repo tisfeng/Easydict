@@ -1,8 +1,8 @@
 //
-//  EZGeneralViewController.m
+//  EZShortcutViewContorller.h
 //  Easydict
 //
-//  Created by tisfeng on 2022/12/15.
+//  Created by tisfeng on 2022/12/24.
 //  Copyright © 2022 izual. All rights reserved.
 //
 
@@ -11,8 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-@interface EZGeneralViewController : NSViewController <MASPreferencesViewController>
+@interface EZShortcutViewContorller : NSViewController <MASPreferencesViewController>
 
 @end
 
