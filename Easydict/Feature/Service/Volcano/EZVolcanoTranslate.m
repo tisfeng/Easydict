@@ -21,7 +21,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self.webViewTranslator preloadURL:kVolcanoLTranslateURL]; // Preload webView.
+//        [self.webViewTranslator preloadURL:kVolcanoLTranslateURL]; // Preload webView.
     }
     return self;
 }

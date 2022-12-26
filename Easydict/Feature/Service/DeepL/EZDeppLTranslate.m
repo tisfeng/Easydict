@@ -21,7 +21,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self.webViewTranslator preloadURL:kDeepLTranslateURL]; // Preload webView.
+//        [self.webViewTranslator preloadURL:kDeepLTranslateURL]; // Preload webView.
     }
     return self;
 }

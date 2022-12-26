@@ -27,7 +27,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSMutableArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSMutableArray<EZQueryService *> *services;
 
-
 @end
 
 @implementation EZServiceViewController
@@ -40,13 +39,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     self.view.wantsLayer = YES;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     [self setup];
 }
-
 
 - (void)setup {
     self.serviceTypes = [[EZServiceTypes allServiceTypes] mutableCopy];
@@ -56,7 +53,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
     self.view.height = viewHeight;
 }
-
 
 
 #pragma mark - Getter && Setter
@@ -135,48 +131,36 @@ static NSString *const EZColumnId = @"EZColumnId";
     return [[EZServiceRowView alloc] init];
 }
 
-//- (nullable id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
-//
-//    return @"";
-//}
-
-
-- (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
-    // 将 cell 的索引写入到 pasteboard 中
-    [pboard declareTypes:@[NSPasteboardTypeString] owner:self];
-    
-    NSInteger index = [rowIndexes firstIndex];
-    EZQueryService *service = self.services[index];
-    [pboard setString:service.serviceType forType:NSPasteboardTypeString];
-    
-    return YES;
+- (nullable id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+    EZQueryService *service = self.services[row];
+    return service.serviceType;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
     if (dropOperation == NSTableViewDropAbove) {
         return NSDragOperationMove;
     }
-    
     return NSDragOperationNone;
 }
 
-
-
-- (void)moveRowAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex {
-    NSLog(@"moveRowAtIndex: %ld, toIndex: %ld", oldIndex, newIndex);
-}
-
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-    EZServiceType type = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
-    if ([self.serviceTypes containsObject:type]) {
-        [self.serviceTypes removeObject:type];
+    
+    EZServiceType oldServiceType = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
+    if ([self.serviceTypes containsObject:oldServiceType]) {
+        NSInteger oldIndex = [self.serviceTypes indexOfObject:oldServiceType];
+        NSLog(@"oldIndex: %ld, to row: %ld", oldIndex, row);
+        [self.serviceTypes insertObject:oldServiceType atIndex:row];
         
-        NSInteger index = MAX(row - 1, 0);
-        [self.serviceTypes insertObject:type atIndex:index];
+        NSInteger removedIndex = oldIndex;
+        if (row < oldIndex) {
+            removedIndex = oldIndex + 1;
+        }
+        NSLog(@"removedIndex: %ld", removedIndex);
+        [self.serviceTypes removeObjectAtIndex:removedIndex];
+
         self.services = [[EZServiceTypes servicesFromTypes:self.serviceTypes] mutableCopy];
         [self.tableView reloadData];
     }
-    
     
     return YES;
 }
