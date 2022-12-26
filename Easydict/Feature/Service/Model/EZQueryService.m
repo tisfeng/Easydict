@@ -32,7 +32,7 @@ userInfo:nil]
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.enabled = [[EZLocalStorage shared] getServiceInfo:self.serviceType].enabled;
+//        self.enabledQuery = [[EZLocalStorage shared] serviceWithType:self.serviceType].enabledQuery;
     }
     return self;
 }
@@ -44,10 +44,12 @@ userInfo:nil]
     return _aduioPlayer;
 }
 
-- (void)setEnabled:(BOOL)enabled {
-    _enabled = enabled;
+- (void)setEnabledQuery:(BOOL)enabledQuery {
+    _enabledQuery = enabledQuery;
     
-    [[EZLocalStorage shared] setServiceType:self.serviceType enabled:enabled];
+    [[EZLocalStorage shared] setServiceType:self.serviceType enabledQuery:enabledQuery];
+    
+//    [[EZLocalStorage shared] saveService:self];
 }
 
 - (void)setResult:(EZQueryResult *)translateResult {

@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) EZServiceType type;
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL enabledQuery;
+
++ (instancetype)serviceInfoWithService:(EZQueryService *)service;
 
 @end
 

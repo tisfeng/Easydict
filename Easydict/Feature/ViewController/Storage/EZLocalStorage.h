@@ -13,12 +13,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLocalStorage : NSObject
 
+@property (nonatomic, strong) NSArray<EZServiceType> *allServiceTypes;
+@property (nonatomic, strong, readonly) NSArray<EZQueryService *> *allServices;
+
 + (instancetype)shared;
 
-- (EZServiceInfo *)getServiceInfo:(EZServiceType)type;
-- (void)saveServiceInfo:(EZServiceInfo *)info type: (EZServiceType)type;
+- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type;
+- (void)saveServiceInfo:(EZServiceInfo *)service;
 
-- (void)setServiceType:(EZServiceType)type enabled:(BOOL)enable;
+- (void)saveService:(EZQueryService *)service;
+
+- (void)setServiceType:(EZServiceType)type enabledQuery:(BOOL)enabledQuery;
 
 @end
 

@@ -19,6 +19,8 @@ static NSString *const EZServiceCellLightBackgroundColor = @"#ffffff";
 
 @property (nonatomic, strong) EZQueryService *service;
 
+@property (nonatomic, copy) void (^clickToggleButton)(NSButton *);
+
 @end
 
 NS_ASSUME_NONNULL_END

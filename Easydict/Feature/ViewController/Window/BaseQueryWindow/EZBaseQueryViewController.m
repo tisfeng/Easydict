@@ -344,7 +344,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)queryWithModel:(EZQueryModel *)queryModel
                 serive:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
-    if (!service.enabled) {
+    if (!service.enabledQuery) {
         NSLog(@"service disabled: %@", service.serviceType);
         return;
     }
@@ -804,7 +804,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     // !!!: Avoid capture result, the block paramter result is different from former result.
     [resultView setClickArrowBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-        service.enabled = result.isShowing;
+        service.enabledQuery = result.isShowing;
         
         // If result is not empty, update cell and show.
         if (result.isShowing && !result.hasResult) {
