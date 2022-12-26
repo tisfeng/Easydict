@@ -24,8 +24,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSTableColumn *column;
 
 @property (nonatomic, strong) EZServiceCell *serviceCell;
-@property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
-@property (nonatomic, strong) NSArray<EZQueryService *> *services;
+@property (nonatomic, strong) NSMutableArray<EZServiceType> *serviceTypes;
+@property (nonatomic, strong) NSMutableArray<EZQueryService *> *services;
 
 
 @end
@@ -49,13 +49,14 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 
 - (void)setup {
-    self.serviceTypes = [EZServiceTypes allServiceTypes];
-    self.services = [EZServiceTypes allServices];
+    self.serviceTypes = [[EZServiceTypes allServiceTypes] mutableCopy];
+    self.services = [[EZServiceTypes allServices] mutableCopy];
     [self tableView];
     
     CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
     self.view.height = viewHeight;
 }
+
 
 
 #pragma mark - Getter && Setter
@@ -68,7 +69,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
- 
+        
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(self.view).insets(NSEdgeInsetsMake(kMargin, kMargin, kMargin, kMargin));
         }];
@@ -97,6 +98,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = 40;
+        [tableView registerForDraggedTypes:@[NSPasteboardTypeString]];
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
@@ -130,12 +132,58 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-  return [[EZServiceRowView alloc] init];
+    return [[EZServiceRowView alloc] init];
+}
+
+//- (nullable id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+//
+//    return @"";
+//}
+
+
+- (BOOL)tableView:(NSTableView *)tableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
+    // 将 cell 的索引写入到 pasteboard 中
+    [pboard declareTypes:@[NSPasteboardTypeString] owner:self];
+    
+    NSInteger index = [rowIndexes firstIndex];
+    EZQueryService *service = self.services[index];
+    [pboard setString:service.serviceType forType:NSPasteboardTypeString];
+    
+    return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id<NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)dropOperation {
+    if (dropOperation == NSTableViewDropAbove) {
+        return NSDragOperationMove;
+    }
+    
+    return NSDragOperationNone;
+}
+
+
+
+- (void)moveRowAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex {
+    NSLog(@"moveRowAtIndex: %ld, toIndex: %ld", oldIndex, newIndex);
+}
+
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
+    EZServiceType type = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
+    if ([self.serviceTypes containsObject:type]) {
+        [self.serviceTypes removeObject:type];
+        
+        NSInteger index = MAX(row - 1, 0);
+        [self.serviceTypes insertObject:type atIndex:index];
+        self.services = [[EZServiceTypes servicesFromTypes:self.serviceTypes] mutableCopy];
+        [self.tableView reloadData];
+    }
+    
+    
+    return YES;
 }
 
 
 - (void)tableView:(NSTableView *)tableView didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-
+    
 }
 
 //  select cell
