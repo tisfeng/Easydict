@@ -16,23 +16,33 @@
 @implementation EZServiceTypes
 
 + (NSArray<EZServiceType> *)allServiceTypes {
-    return [[self serviceDict] allKeys];
+    return [[self allServiceDict] allKeys];
 }
 
-+ (NSDictionary<EZServiceType, Class> *)serviceDict {
++ (NSDictionary<EZServiceType, Class> *)allServiceDict {
     NSDictionary *dict = @{
         EZServiceTypeGoogle : [EZGoogleTranslate class],
         EZServiceTypeBaidu : [EZBaiduTranslate class],
         EZServiceTypeYoudao : [EZYoudaoTranslate class],
         EZServiceTypeDeepL : [EZDeppLTranslate class],
-        EZServiceTypeVolcano: [EZVolcanoTranslate class],
+        EZServiceTypeVolcano : [EZVolcanoTranslate class],
     };
     return dict;
 }
 
 + (EZQueryService *)serviceWithType:(EZServiceType)type {
-    Class Cls = [[self serviceDict] objectForKey:type];
+    Class Cls = [[self allServiceDict] objectForKey:type];
     return [Cls new];
+}
+
++ (NSArray<EZQueryService *> *)allServices {
+    NSArray *allServiceTypes = [self allServiceTypes];
+    NSMutableArray *services = [NSMutableArray array];
+    for (EZServiceType type in allServiceTypes) {
+        EZQueryService *service = [EZServiceTypes serviceWithType:type];
+        [services addObject:service];
+    }
+    return services;
 }
 
 @end

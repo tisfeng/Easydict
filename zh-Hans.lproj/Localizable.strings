@@ -29,6 +29,7 @@
 "general" = "通用";
 "setting" = "设置";
 "shortcut" = "快捷键";
+"service" = "服务";
 
 "select_translate" = "划词翻译:";
 "input_translate" = "输入翻译:";

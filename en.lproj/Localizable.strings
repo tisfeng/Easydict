@@ -30,6 +30,7 @@
 "general" = "General";
 "setting" = "Setting";
 "shortcut" = "Shortcut";
+"service" = "Service";
 
 
 "select_translate" = "Select Translate:";

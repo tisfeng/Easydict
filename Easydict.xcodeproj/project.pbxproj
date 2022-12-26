@@ -35,6 +35,9 @@
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
 		037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */; };
+		037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AF2957FEB200D0E2CF /* EZServiceViewController.m */; };
+		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
+		037852B629588EDE00D0E2CF /* EZServiceRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZServiceRowView.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -212,6 +215,12 @@
 		0376AB5F294F659800E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcutViewContorller.h; sourceTree = "<group>"; };
 		037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcutViewContorller.m; sourceTree = "<group>"; };
+		037852AE2957FEB200D0E2CF /* EZServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceViewController.h; sourceTree = "<group>"; };
+		037852AF2957FEB200D0E2CF /* EZServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceViewController.m; sourceTree = "<group>"; };
+		037852B129583F5200D0E2CF /* EZServiceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceCell.h; sourceTree = "<group>"; };
+		037852B229583F5200D0E2CF /* EZServiceCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceCell.m; sourceTree = "<group>"; };
+		037852B429588EDE00D0E2CF /* EZServiceRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceRowView.h; sourceTree = "<group>"; };
+		037852B529588EDE00D0E2CF /* EZServiceRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceRowView.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -582,6 +591,19 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		037852AD2957FE9B00D0E2CF /* ServiceViewController */ = {
+			isa = PBXGroup;
+			children = (
+				037852AE2957FEB200D0E2CF /* EZServiceViewController.h */,
+				037852AF2957FEB200D0E2CF /* EZServiceViewController.m */,
+				037852B129583F5200D0E2CF /* EZServiceCell.h */,
+				037852B229583F5200D0E2CF /* EZServiceCell.m */,
+				037852B429588EDE00D0E2CF /* EZServiceRowView.h */,
+				037852B529588EDE00D0E2CF /* EZServiceRowView.m */,
+			);
+			path = ServiceViewController;
+			sourceTree = "<group>";
+		};
 		0383913F292FBE120009828C /* EasydictHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -888,6 +910,7 @@
 		03B0229C29231FA6001C7E63 /* PerferenceWindow */ = {
 			isa = PBXGroup;
 			children = (
+				037852AD2957FE9B00D0E2CF /* ServiceViewController */,
 				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
 				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
 				039F54FE294B6E29004AB940 /* EZAboutViewController.h */,
@@ -1436,6 +1459,7 @@
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
+				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
 				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
@@ -1501,8 +1525,10 @@
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
+				037852B629588EDE00D0E2CF /* EZServiceRowView.m in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
+				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
