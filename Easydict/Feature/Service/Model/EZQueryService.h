@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL enabledQuery;
 
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;

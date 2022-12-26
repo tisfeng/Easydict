@@ -10,6 +10,7 @@
 #import "EZServiceCell.h"
 #import "EZServiceTypes.h"
 #import "EZServiceRowView.h"
+#import "EZLocalStorage.h"
 
 static CGFloat const kMargin = 15;
 static CGFloat const kRowHeight = 40;
@@ -46,8 +47,9 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    self.serviceTypes = [[EZServiceTypes allServiceTypes] mutableCopy];
-    self.services = [[EZServiceTypes allServices] mutableCopy];
+    self.serviceTypes = [[EZLocalStorage.shared allServiceTypes] mutableCopy];
+    self.services = [[EZLocalStorage.shared allServices] mutableCopy];
+    
     [self tableView];
     
     CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
@@ -121,7 +123,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         cell.identifier = @"EZServiceCell";
     }
     
-    cell.service = self.services[row];
+    EZQueryService *service = self.services[row];
+    cell.service = service;
+    [cell setClickToggleButton:^(NSButton *button) {
+        service.enabled = button.mm_isOn;
+        [EZLocalStorage.shared saveService:service];
+    }];
     
     return cell;
     
@@ -157,8 +164,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         }
         NSLog(@"removedIndex: %ld", removedIndex);
         [self.serviceTypes removeObjectAtIndex:removedIndex];
+        EZLocalStorage.shared.allServiceTypes = self.serviceTypes;
 
-        self.services = [[EZServiceTypes servicesFromTypes:self.serviceTypes] mutableCopy];
+        self.services = [[[EZLocalStorage shared] allServices] mutableCopy];
         [self.tableView reloadData];
     }
     

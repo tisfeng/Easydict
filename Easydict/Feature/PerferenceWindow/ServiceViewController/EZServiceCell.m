@@ -38,6 +38,9 @@
         
         
         self.toggleButton = [[NSButton alloc] init];
+        [self.toggleButton setTarget:self];
+        [self.toggleButton setAction:@selector(clickToggleButton:)];
+        
         [self.toggleButton setButtonType:NSButtonTypeToggle];
         self.toggleButton.imageScaling = NSImageScaleProportionallyDown;
         self.toggleButton.bordered = NO;
@@ -82,8 +85,15 @@
     self.iconView.image = [NSImage imageNamed:imageName];
     
     self.nameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:service.name font:[NSFont systemFontOfSize:13]];
+    
+    self.toggleButton.mm_isOn = service.enabled;
 }
 
+- (void)clickToggleButton:(NSButton *)button {
+    if (self.clickToggleButton) {
+        self.clickToggleButton(button);
+    }
+}
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];

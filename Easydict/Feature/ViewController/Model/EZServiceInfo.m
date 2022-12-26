@@ -10,4 +10,13 @@
 
 @implementation EZServiceInfo
 
++ (instancetype)serviceInfoWithService:(EZQueryService *)service {
+    EZServiceInfo *serviceInfo = [[EZServiceInfo alloc] init];
+    serviceInfo.type = service.serviceType;
+    serviceInfo.enabled = service.enabled;
+    serviceInfo.enabledQuery = service.enabledQuery;
+    
+    return serviceInfo;
+}
+
 @end

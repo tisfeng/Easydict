@@ -9,6 +9,8 @@
 #import "EZLocalStorage.h"
 
 static NSString *kServiceInfoStorageKey = @"kServiceInfoStorageKey";
+static NSString *kAllServiceTypesKey = @"kAllServiceTypesKey";
+static NSString *kAllServices = @"kAllServices";
 
 @interface EZLocalStorage ()
 
@@ -49,28 +51,58 @@ static EZLocalStorage *_instance;
 - (void)setup {
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
     for (EZServiceType type in allServiceTypes) {
-        EZServiceInfo *serviceInfo = [self getServiceInfo:type];
+        EZServiceInfo *serviceInfo = [self serviceInfoWithType:type];
         if (!serviceInfo) {
-            serviceInfo = [EZServiceInfo new];
-            serviceInfo.type = type;
+            serviceInfo = [[EZServiceInfo alloc] init];
             serviceInfo.enabled = YES;
-            [self saveServiceInfo:serviceInfo type:type];
+            serviceInfo.enabledQuery = YES;
+            [self saveServiceInfo:serviceInfo];
         }
     }
 }
 
-- (void)setServiceType:(EZServiceType)type enabled:(BOOL)enable {
-    EZServiceInfo *serviceInfo = [self getServiceInfo:type];
-    serviceInfo.enabled = enable;
-    [self saveServiceInfo:serviceInfo type:type];
+- (NSArray<EZServiceType> *)allServiceTypes {
+    NSArray *allServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:kAllServiceTypesKey];
+    if (!allServiceTypes) {
+        allServiceTypes = [EZServiceTypes allServiceTypes];
+        [[NSUserDefaults standardUserDefaults] setObject:allServiceTypes forKey:kAllServiceTypesKey];
+    }
+    return allServiceTypes;
 }
 
-- (void)saveServiceInfo:(EZServiceInfo *)info type:(EZServiceType)type {
-    NSData *data = [info mj_JSONData];
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self keyForType:type]];
+- (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes {
+    [[NSUserDefaults standardUserDefaults] setObject:allServiceTypes forKey:kAllServiceTypesKey];
 }
 
-- (EZServiceInfo *)getServiceInfo:(EZServiceType)type {
+- (NSArray<EZQueryService *> *)allServices {
+    NSArray *allServices = [EZServiceTypes servicesFromTypes:[self allServiceTypes]];
+    for (EZQueryService *service in allServices) {
+        EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType];
+        service.enabled = serviceInfo.enabled;
+        service.enabledQuery = serviceInfo.enabledQuery;
+    }
+    return allServices;
+}
+
+
+- (void)setServiceType:(EZServiceType)type enabledQuery:(BOOL)enabledQuery {
+    EZServiceInfo *service = [self serviceInfoWithType:type];
+    service.enabledQuery = enabledQuery;
+    [self saveServiceInfo:service];
+}
+
+- (void)saveServiceInfo:(EZServiceInfo *)service {
+    // ???: if save EZQueryService, mj_JSONData will Dead cycle.
+    NSData *data = [service mj_JSONData];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self keyForType:service.type]];
+}
+
+- (void)saveService:(EZQueryService *)service {
+    EZServiceInfo *serviceInfo = [EZServiceInfo serviceInfoWithService:service];
+    [self saveServiceInfo:serviceInfo];
+}
+
+- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type {
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:[self keyForType:type]];
     if (data) {
         return [EZServiceInfo mj_objectWithKeyValues:data];
