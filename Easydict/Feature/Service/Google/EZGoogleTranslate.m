@@ -350,16 +350,13 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
               }
               
               NSString *message = nil;
-              if (responseObject &&
-                  [responseObject
-                   isKindOfClass:NSDictionary.class]) {
+              if (responseObject && [responseObject isKindOfClass:NSDictionary.class]) {
                   @try {
                       NSDictionary *responseDict = responseObject;
                       
                       NSString *googleFromString = responseDict[@"src"];
                       EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                       EZLanguage googleTo = langTo;
-                      
                       
                       result.text = text;
                       result.from = googleFrom;

@@ -22,6 +22,7 @@
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
 #import "EZConfiguration.h"
+#import "EZLocalStorage.h"
 
 static NSString *const EZQueryCellId = @"EZQueryCellId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -101,21 +102,21 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    self.serviceTypes = @[
-        EZServiceTypeDeepL,
-        EZServiceTypeGoogle,
-        EZServiceTypeYoudao,
-        EZServiceTypeBaidu,
-        EZServiceTypeVolcano,
-    ];
-    
+    NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
-    for (EZServiceType type in self.serviceTypes) {
-        EZQueryService *service = [EZServiceTypes serviceWithType:type];
-        service.queryModel = self.queryModel;
-        [services addObject:service];
+
+    NSArray *allServices = [EZLocalStorage.shared allServices];
+    for (EZQueryService *service in allServices) {
+        if (service.enabled) {
+            service.queryModel = self.queryModel;
+            [services addObject:service];
+            [serviceTypes addObject:service.serviceType];
+        }
     }
     self.services = services;
+    self.serviceTypes = serviceTypes;
+
+    
     [self resetQueryAndResults];
     
     [self tableView];
@@ -142,16 +143,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
             [self delayUpdateWindowViewHeight];
         }];
     }];
-    
-    //    self.kvo = [FBKVOController controllerWithObserver:self];
-    //    [self.kvo observe:self
-    //              keyPath:@"queryText"
-    //              options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-    //                block:^(id _Nullable observer, id _Nonnull object, NSDictionary<NSString *, id> *_Nonnull change) {
-    ////        NSLog(@"change: %@", change);
-    //
-    ////        NSString *queryText = change[NSKeyValueChangeNewKey];
-    //    }];
 }
 
 
