@@ -103,7 +103,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
 - (EZYoudaoTranslate *)youdao {
     if (!_youdao) {
-        _youdao = [EZYoudaoTranslate new];
+        _youdao = [[EZYoudaoTranslate alloc] init];
     }
     return _youdao;
 }
@@ -442,20 +442,27 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     result.from = googleFrom;
                     result.to = googleTo;
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
-                    
+                                        
                     // 英文查词 中文查词
+                    NSArray *phoneticArray = responseArray[0][1];
+                    EZTranslateWordResult *wordResult;
+                    
+                    if (phoneticArray.count > 3) {
+                        wordResult = [[EZTranslateWordResult alloc] init];
+                        
+                        NSString *phoneticText = phoneticArray[3];
+                        EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
+                        phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                        phonetic.value = phoneticText;
+                        phonetic.speakURL = result.fromSpeakURL;
+                        
+                        wordResult.phonetics = @[ phonetic ];
+                    }
+
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
-                        EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
-                        
-                        NSString *phoneticText = responseArray[0][1][3];
-                        if (phoneticText) {
-                            EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
-                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
-                            phonetic.value = phoneticText;
-                            phonetic.speakURL = result.fromSpeakURL;
-                            
-                            wordResult.phonetics = @[ phonetic ];
+                        if (!wordResult) {
+                            wordResult = [[EZTranslateWordResult alloc] init];
                         }
                         
                         if ([googleFrom isEqualToString:EZLanguageEnglish] &&
@@ -466,7 +473,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                 if (![obj isKindOfClass:NSArray.class]) {
                                     return;
                                 }
-                                EZTranslatePart *part = [EZTranslatePart new];
+                                EZTranslatePart *part = [[EZTranslatePart alloc] init];
                                 part.part = [obj firstObject];
                                 part.means = [obj[1] mm_where:^BOOL(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                                     return [obj isKindOfClass:NSString.class];
@@ -488,7 +495,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                 NSString *part = [obj firstObject];
                                 NSArray<NSArray *> *partWords = obj[2];
                                 [partWords enumerateObjectsUsingBlock:^(NSArray *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                    EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
+                                    EZTranslateSimpleWord *word = [[EZTranslateSimpleWord alloc] init];
                                     word.word = obj[0];
                                     word.means = [obj[1] mm_where:^BOOL(id _Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                                         return [obj isKindOfClass:NSString.class];
@@ -502,11 +509,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                 wordResult.simpleWords = simpleWords.copy;
                             }
                         }
-                        
-                        if (wordResult.parts || wordResult.simpleWords) {
-                            result.wordResult = wordResult;
-                        }
                     }
+                    
+                    result.wordResult = wordResult;
                     
                     // 普通释义
                     NSArray<NSArray *> *normalArray = responseArray[0];
