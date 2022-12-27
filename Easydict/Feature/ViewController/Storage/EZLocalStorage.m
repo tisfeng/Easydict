@@ -55,7 +55,7 @@ static EZLocalStorage *_instance;
         if (!serviceInfo) {
             serviceInfo = [[EZServiceInfo alloc] init];
             serviceInfo.enabled = YES;
-            serviceInfo.enabledQuery = YES;
+            serviceInfo.enabledQuery = NO;
             [self saveServiceInfo:serviceInfo];
         }
     }

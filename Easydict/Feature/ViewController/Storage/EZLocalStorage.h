@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *const EZServiceHasUpdatedNotification = @"EZServiceHasUpdatedNotification";
+
 @interface EZLocalStorage : NSObject
 
 @property (nonatomic, strong) NSArray<EZServiceType> *allServiceTypes;
