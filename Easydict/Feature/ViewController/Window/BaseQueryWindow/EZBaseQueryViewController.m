@@ -152,11 +152,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (void)handleServiceUpdate {
     [self setupServices];
     [self resetAllResults];
-    [self.tableView reloadData];
-
-    if (self.queryText.length > 0) {
-        [self startQueryText];
-    }
+    
+    [self reloadTableViewData:^{
+        if (self.queryText.length > 0) {
+            [self startQueryText];
+        }
+    }];
 }
 
 - (void)dealloc {
