@@ -131,6 +131,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     [cell setClickToggleButton:^(NSButton *button) {
         mm_strongify(self, service);
         service.enabled = button.mm_isOn;
+        
+        // Set enabledQuery to YES if service enabled.
+        if (service.enabled) {
+            service.enabledQuery = YES;
+        }
         [EZLocalStorage.shared saveService:service];
         [self postUpdateServiceNotification];
     }];

@@ -55,7 +55,7 @@ static EZLocalStorage *_instance;
         if (!serviceInfo) {
             serviceInfo = [[EZServiceInfo alloc] init];
             serviceInfo.enabled = YES;
-            serviceInfo.enabledQuery = NO;
+            serviceInfo.enabledQuery = YES;
             [self saveServiceInfo:serviceInfo];
         }
     }
@@ -91,10 +91,10 @@ static EZLocalStorage *_instance;
     [self saveServiceInfo:service];
 }
 
-- (void)saveServiceInfo:(EZServiceInfo *)service {
+- (void)saveServiceInfo:(EZServiceInfo *)serviceInfo {
     // ???: if save EZQueryService, mj_JSONData will Dead cycle.
-    NSData *data = [service mj_JSONData];
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self keyForType:service.type]];
+    NSData *data = [serviceInfo mj_JSONData];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self keyForType:serviceInfo.type]];
 }
 
 - (void)saveService:(EZQueryService *)service {
