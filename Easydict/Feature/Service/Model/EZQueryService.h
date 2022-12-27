@@ -21,7 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 翻译结果
 @property (nonatomic, strong) EZQueryResult *result;
 
+/// In the settings page, whether the service is enabled or not.
 @property (nonatomic, assign) BOOL enabled;
+/// In the query page, whether to allow this service query.
 @property (nonatomic, assign) BOOL enabledQuery;
 
 /// 支持的语言
