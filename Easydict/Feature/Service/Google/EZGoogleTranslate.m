@@ -511,7 +511,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         }
                     }
                     
-                    result.wordResult = wordResult;
+                    // Avoid displaying too long phonetic symbols.
+                    if (wordResult.parts || wordResult.simpleWords || text.length <= 4) {
+                        result.wordResult = wordResult;
+                    }
                     
                     // 普通释义
                     NSArray<NSArray *> *normalArray = responseArray[0];
