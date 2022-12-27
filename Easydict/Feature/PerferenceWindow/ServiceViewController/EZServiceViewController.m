@@ -125,9 +125,14 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     EZQueryService *service = self.services[row];
     cell.service = service;
+    
+    mm_weakify(self, service);
+    
     [cell setClickToggleButton:^(NSButton *button) {
+        mm_strongify(self, service);
         service.enabled = button.mm_isOn;
         [EZLocalStorage.shared saveService:service];
+        [self postUpdateServiceNotification];
     }];
     
     return cell;
@@ -165,9 +170,10 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSLog(@"removedIndex: %ld", removedIndex);
         [self.serviceTypes removeObjectAtIndex:removedIndex];
         EZLocalStorage.shared.allServiceTypes = self.serviceTypes;
-
         self.services = [[[EZLocalStorage shared] allServices] mutableCopy];
         [self.tableView reloadData];
+        
+        [self postUpdateServiceNotification];
     }
     
     return YES;
@@ -187,6 +193,12 @@ static NSString *const EZColumnId = @"EZColumnId";
     
 }
 
+#pragma mark -
+
+- (void)postUpdateServiceNotification {
+    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
 
 #pragma mark - MASPreferencesViewController
 

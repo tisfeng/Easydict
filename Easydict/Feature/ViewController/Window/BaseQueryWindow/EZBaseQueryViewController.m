@@ -102,23 +102,9 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
     
-    NSMutableArray *serviceTypes = [NSMutableArray array];
-    NSMutableArray *services = [NSMutableArray array];
-
-    NSArray *allServices = [EZLocalStorage.shared allServices];
-    for (EZQueryService *service in allServices) {
-        if (service.enabled) {
-            service.queryModel = self.queryModel;
-            [services addObject:service];
-            [serviceTypes addObject:service.serviceType];
-        }
-    }
-    self.services = services;
-    self.serviceTypes = serviceTypes;
-
-    
+    [self setupServices];
     [self resetQueryAndResults];
-    
+
     [self tableView];
     
     self.audioPlayer = [[EZAudioPlayer alloc] init];
@@ -143,8 +129,41 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
             [self delayUpdateWindowViewHeight];
         }];
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate) name:EZServiceHasUpdatedNotification object:nil];
 }
 
+- (void)setupServices {
+    NSMutableArray *serviceTypes = [NSMutableArray array];
+    NSMutableArray *services = [NSMutableArray array];
+
+    NSArray *allServices = [EZLocalStorage.shared allServices];
+    for (EZQueryService *service in allServices) {
+        if (service.enabled) {
+            service.queryModel = self.queryModel;
+            [services addObject:service];
+            [serviceTypes addObject:service.serviceType];
+        }
+    }
+    self.services = services;
+    self.serviceTypes = serviceTypes;
+}
+
+- (void)handleServiceUpdate {
+    [self setupServices];
+    [self resetAllResults];
+    [self.tableView reloadData];
+
+    if (self.queryText.length > 0) {
+        [self startQueryText];
+    }
+}
+
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
+}
 
 #pragma mark - Getter && Setter
 
@@ -572,7 +591,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         result.isLoading = NO;
         service.result = result;
         
-        [self updateResultCell:service.result];
+//        [self updateResultCell:service.result];
     }
 }
 
