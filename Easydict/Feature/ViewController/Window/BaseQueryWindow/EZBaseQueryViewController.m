@@ -23,6 +23,7 @@
 #import "EZLog.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
+#import "EZResultRowView.h"
 
 static NSString *const EZQueryCellId = @"EZQueryCellId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -425,6 +426,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     return resultCell;
 }
 
+- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+    return [[EZResultRowView alloc] init];
+}
+
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
     CGFloat height;
     
@@ -763,12 +768,18 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     EZQueryService *service = [self serviceAtRow:row];
     
     // MARK: Currently, the cells may not be released in time because the cells are not reused. In this case, manually remove the loading animation, otherwise the animation will continue to execute.
-    EZResultCell *oldResultCell = [self resultCellOfResult:service.result];
-    [oldResultCell.resultView removeLoadingAnimation];
-    [oldResultCell.resultView removeFromSuperview];
-    oldResultCell = nil;
+//    EZResultCell *oldResultCell = [self resultCellOfResult:service.result];
+//    [oldResultCell.resultView removeLoadingAnimation];
+//    [oldResultCell.resultView removeFromSuperview];
+//    oldResultCell = nil;
     
-    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
+    EZResultCell *resultCell = [self.tableView makeViewWithIdentifier:EZResultCellId owner:self];
+    if (!resultCell) {
+        resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
+        resultCell.identifier = EZResultCellId;
+    }
+    
+//    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
     resultCell.identifier = EZResultCellId;
     resultCell.result = service.result;
     [self setupResultCell:resultCell];

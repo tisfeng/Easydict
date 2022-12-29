@@ -31,9 +31,9 @@
 
 - (void)updateConstraints {
     [self.resultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.equalTo(self);
-        make.top.left.right.equalTo(self);
-        make.bottom.lessThanOrEqualTo(self); // resultView height >= cell
+        make.edges.equalTo(self);
+//        make.top.left.right.equalTo(self);
+//        make.bottom.lessThanOrEqualTo(self); // resultView height >= cell
     }];
 
     [super updateConstraints];

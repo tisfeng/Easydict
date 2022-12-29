@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZResultCell : NSTableRowView
+@interface EZResultCell : NSView
 
 @property (nonatomic, strong) EZQueryResult *result;
 @property (nonatomic, strong) EZResultView *resultView;

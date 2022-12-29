@@ -15,7 +15,7 @@ static NSString *const EZServiceCellDarkBackgroundColor = @"#181818";
 static NSString *const EZServiceCellLightBackgroundColor = @"#ffffff";
 
 
-@interface EZServiceCell : NSTableRowView
+@interface EZServiceCell : NSView
 
 @property (nonatomic, strong) EZQueryService *service;
 
