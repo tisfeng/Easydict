@@ -23,6 +23,8 @@ static const CGFloat kResultViewMiniHeight = 30;
 
 - (void)refreshWithResult:(EZQueryResult *)result;
 
+- (void)removeLoadingAnimation;
+
 @end
 
 NS_ASSUME_NONNULL_END

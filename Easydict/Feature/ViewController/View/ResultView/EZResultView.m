@@ -268,8 +268,6 @@ static NSInteger const kAnimationDotViewCount = 5;
     self.result.viewHeight = viewHeight;
     
     // animation need right frame, but result may change, so have to layout frame.
-    //    [self observeIsLoadingState];
-    
     [self startOrEndLoadingAnimation:self.result.isLoading];
 }
 
@@ -298,8 +296,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 - (void)startLoadingAnimation {
     NSLog(@"startLoadingAnimation");
-    
-    mm_weakify(self);
 
     /**
      (subviews.count - 1) * X = kAnimationDuration / 2
@@ -312,6 +308,8 @@ static NSInteger const kAnimationDotViewCount = 5;
     CGFloat animationInterval = 0.1;
     CGFloat timerInterval = (subviews.count - 1) * delayInterval + kAnimationDuration + animationInterval; // 1.0
     
+    mm_weakify(self);
+
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval repeats:YES block:^(NSTimer * _Nonnull timer) {
         mm_strongify(self);
@@ -328,10 +326,9 @@ static NSInteger const kAnimationDotViewCount = 5;
                 });
             });
         }
-        
     }];
-    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     [self.timer fire];
 }
 
@@ -361,8 +358,15 @@ static NSInteger const kAnimationDotViewCount = 5;
 - (void)removeLoadingAnimation {
     self.loadingView.hidden = YES;
     [self.timer invalidate];
+    self.timer = nil;
 }
 
+// ???: I don't know why, when the tableView is updating at the beginning, the cells will not be released, but will be released normally only when the accumulated cells reach a certain number?
+- (void)dealloc {
+    NSLog(@"EZResultView dealloc: %@", self);
+    [self.timer invalidate];
+    self.timer = nil;
+}
 
 #pragma mark -
 
