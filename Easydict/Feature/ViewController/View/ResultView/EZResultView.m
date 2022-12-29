@@ -16,6 +16,9 @@
 static CGFloat const kAnimationDuration = 0.5;
 static NSInteger const kAnimationDotViewCount = 5;
 
+static CGFloat const kWordResultViewBottomOffset = 5;
+
+
 @interface EZResultView () <CAAnimationDelegate>
 
 @property (nonatomic, strong) NSView *topBarView;
@@ -236,7 +239,8 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
-        make.bottom.lessThanOrEqualTo(self).offset(-5); // Since coordinate, wordResultView is under resultView
+//        make.bottom.lessThanOrEqualTo(self).offset(-kWordResultViewBottomOffset); // Since coordinate, wordResultView is under resultView
+//        make.bottom.equalTo(self).offset(-kWordResultViewBottomOffset); // Since coordinate, wordResultView is under resultView
     }];
     
     [super updateConstraints];
@@ -256,13 +260,19 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     [self.wordResultView refreshWithResult:result];
     
+    CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
+    [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(wordResultViewHeight);
+    }];
     
     // TODO: need to optimize. This way seems to be too time consuming and can cause UI lag, such as clicking arrow buttons. Let's change to manual height calculation later.
-    [self layoutSubtreeIfNeeded];
+//    [self layoutSubtreeIfNeeded];
     
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
-        viewHeight = self.height;
+        viewHeight = kResultViewMiniHeight + wordResultViewHeight + kWordResultViewBottomOffset;
+        
+//        viewHeight = 300;
 //        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
