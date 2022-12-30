@@ -8,12 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZQueryResult.h"
+#import "EZFlippedView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 static const CGFloat kResultViewMiniHeight = 30;
 
-@interface EZResultView : NSView
+@interface EZResultView : EZFlippedView
 
 @property (nonatomic, copy) void (^clickArrowBlock)(EZQueryResult *result);
 
