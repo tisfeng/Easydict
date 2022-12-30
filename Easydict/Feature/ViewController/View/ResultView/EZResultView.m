@@ -16,9 +16,6 @@
 static CGFloat const kAnimationDuration = 0.5;
 static NSInteger const kAnimationDotViewCount = 5;
 
-static CGFloat const kWordResultViewBottomOffset = 5;
-
-
 @interface EZResultView () <CAAnimationDelegate>
 
 @property (nonatomic, strong) NSView *topBarView;
@@ -34,6 +31,8 @@ static CGFloat const kWordResultViewBottomOffset = 5;
 @property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, strong) NSTimer *timer;
+
+@property (nonatomic, strong) MASConstraint *wordResultViewHeightConstraint;
 
 @end
 
@@ -164,6 +163,7 @@ static CGFloat const kWordResultViewBottomOffset = 5;
         
         //        [self rotateArrowButton];
     }];
+    
 }
 
 
@@ -229,13 +229,11 @@ static CGFloat const kWordResultViewBottomOffset = 5;
         make.right.equalTo(lastView).offset(margin);
     }];
     
-    
     [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
-    
     
     [super updateConstraints];
 }
@@ -252,30 +250,39 @@ static CGFloat const kWordResultViewBottomOffset = 5;
     
     [self updateArrowButton];
     
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
+    NSLog(@"before refreshWithResult: %@", result);
     [self.wordResultView refreshWithResult:result];
+    NSLog(@"after refreshWithResult: %@", result);
+    
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"refreshWithResult %@, cost: %.1f ms", result.serviceType, (endTime - startTime) * 1000);
     
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
+    self.wordResultView.height = wordResultViewHeight;
+    [self.wordResultView setNeedsDisplay:YES];
     
-    [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+    [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
         
         make.height.mas_equalTo(wordResultViewHeight);
     }];
     
-    
-    // TODO: need to optimize. This way seems to be too time consuming and can cause UI lag, such as clicking arrow buttons. Let's change to manual height calculation later.
-//    [self layoutSubtreeIfNeeded];
-    
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
         viewHeight = kResultViewMiniHeight + wordResultViewHeight;
+        self.height = viewHeight;
+        [self setNeedsDisplay:YES];
         
-//        viewHeight = 300;
-//        NSLog(@"result view height: %@", @(self.height));
+        //        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
-        
+    
+//    [self setNeedsLayout:YES];
+//    [self layoutSubtreeIfNeeded];
+    
     // animation need right frame, but result may change, so have to layout frame.
     [self startOrEndLoadingAnimation:self.result.isLoading];
 }
@@ -295,6 +302,10 @@ static CGFloat const kWordResultViewBottomOffset = 5;
 
 #pragma mark - Animation
 
+- (void)updateLoadingAnimation {
+    [self startOrEndLoadingAnimation:self.result.isLoading];
+}
+
 - (void)startOrEndLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
         [self startLoadingAnimation];
@@ -305,7 +316,7 @@ static CGFloat const kWordResultViewBottomOffset = 5;
 
 - (void)startLoadingAnimation {
     NSLog(@"startLoadingAnimation");
-
+    
     /**
      (subviews.count - 1) * X = kAnimationDuration / 2
      4 * X = 0.25
@@ -314,11 +325,11 @@ static CGFloat const kWordResultViewBottomOffset = 5;
     
     NSArray *subviews = self.loadingView.subviews; // 5
     CGFloat delayInterval = 0.12;
-    CGFloat animationInterval = 0.1;
+    CGFloat animationInterval = 0.3;
     CGFloat timerInterval = (subviews.count - 1) * delayInterval + kAnimationDuration + animationInterval; // 1.0
     
     mm_weakify(self);
-
+    
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval repeats:YES block:^(NSTimer * _Nonnull timer) {
         mm_strongify(self);
@@ -327,12 +338,14 @@ static CGFloat const kWordResultViewBottomOffset = 5;
             CGFloat delayTime = delayInterval * i;
             NSView *dotView = subviews[i];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                dotView.hidden = NO;
-                [self scaleAnimateView:dotView];
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime + kAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    dotView.hidden = YES;
-                });
+                if (self.result.isLoading) {
+                    dotView.hidden = NO;
+                    [self scaleAnimateView:dotView];
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime + kAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        dotView.hidden = YES;
+                    });
+                }
             });
         }
     }];

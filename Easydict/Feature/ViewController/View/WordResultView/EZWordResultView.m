@@ -55,6 +55,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
+    __block CGFloat height = 0;
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
     NSFont *typeTextFont = textFont;
@@ -62,7 +63,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     NSString *errorMsg = result.error.localizedDescription;
     
-    __block CGFloat height = 0;
     mm_weakify(self);
     
     if (result.wordResult) {
@@ -128,7 +128,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }];
                 
                 [textField sizeToFit];
-//                height += (kVerticalMargin_12 + textField.height);
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
         }
@@ -169,7 +168,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             height += (kVerticalMargin_12 + labelSize.height);
             NSLog(@"height = %1.f", height);
-
         }];
         resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
@@ -206,7 +204,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                     height += topOffset;
                 }
             }];
-            
             NSLog(@"height = %1.f", height);
         }];
         nameTextFiled.mas_key = @"nameTextFiled_phonetics";
@@ -339,7 +336,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             height += labelSize.height;
             NSLog(@"height = %1.f", height);
-
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
@@ -435,9 +431,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                         make.top.offset(kVerticalPadding_8);
                     }
                 }];
-                
-//                [textField sizeToFit];
-//                height += (kVerticalPadding_8 + textField.height);
             }];
             partTextFiled.mas_key = @"partTextFiled_simpleWords";
             
@@ -504,7 +497,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             height += (kVerticalPadding_8 + labelSize.height + wordButton.expandValue);
             NSLog(@"height = %1.f", height);
-
         }];
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
@@ -551,14 +543,12 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.top.equalTo(self).offset(kTopMargin_10);
         }
         
-//        make.bottom.equalTo(self).offset(-kBottomMargin_5);
         make.left.offset(8);
         make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     lastView = audioButton;
     
     height += (kTopMargin_10 + EZAudioButtonWidth_25 + 5);
-//    self.height = height;
 
     _viewHeight = height;
     
@@ -590,19 +580,14 @@ static const CGFloat kVerticalPadding_8 = 8;
         make.left.equalTo(textCopyButton.mas_right).offset(kRightMargin);
         make.width.height.bottom.equalTo(audioButton);
     }];
-    
-//    CGSize buttonSize = CGSizeMake(EZAudioButtonWidth_25, EZAudioButtonWidth_25);
-//    linkButton.size = buttonSize;
-    
-    
-//    [self mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.equalTo(lastView).offset(kBottomMargin_5);
-////        make.height.mas_equalTo(height);
-//    }];
 }
 
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
+    NSLog(@"before labelSize: %@", label.string);
+
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - exceptedWidth;
     //    NSLog(@"text: %@, width: %@", label.text, @(width));
@@ -612,6 +597,9 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     //    height = [label getTextViewHeightWithWidth:width]; // 377
     //    NSLog(@"height: %@", @(height));
+    
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"labelSize cost: %.1f ms", (endTime - startTime) * 1000);
     
     return CGSizeMake(width, height);
 }

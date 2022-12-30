@@ -346,7 +346,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-            NSLog(@"service: %@, %@", service.serviceType, result);
+            NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
@@ -365,11 +365,13 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         return;
     }
     
-    // Show result if it has been queried.
-    service.result.isShowing = YES;
-    service.result.isLoading = YES;
+    EZQueryResult *result = service.result;
     
-    [self updateResultCell:service.result];
+    // Show result if it has been queried.
+    result.isShowing = YES;
+    result.isLoading = YES;
+        
+    [self updateResultLoadingAnimation:result];
     
     NSLog(@"query service: %@", service.serviceType);
     
@@ -381,6 +383,10 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [EZLog logService:service];
 }
 
+- (void)updateResultLoadingAnimation:(EZQueryResult *)result {
+    EZResultCell *resultCell = [self resultCellOfResult:result];
+    [resultCell.resultView updateLoadingAnimation];
+}
 
 #pragma mark - NSTableViewDataSource
 
@@ -392,7 +398,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    //    NSLog(@"tableView for row: %ld", row);
+        NSLog(@"tableView for row: %ld", row);
     
     // TODO: should reuse cell.
     if (row == 0) {
@@ -435,14 +441,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     if (row == 0) {
         height = self.queryModel.queryViewHeight;
-    } else if (self.windowType != EZWindowTypeMini && row == 1) {
+    } else if (row == 1 && self.windowType != EZWindowTypeMini) {
         height = 35;
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
         // A non-zero value must be set, but the initial viewHeight is 0.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
-//        NSLog(@"row: %ld, height: %@", row, @(height));
+        NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -503,6 +509,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
         result.isLoading = NO;
+//        [self updateResultLoadingAnimation:result];
+        
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
         [rowIndexes addIndex:row + [self resultCellOffset]];
@@ -536,11 +544,12 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
     
+    
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = duration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
+        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-//        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self updateWindowViewHeightWithAnimation:animateFlag];
     } completionHandler:^{
 //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
@@ -767,21 +776,14 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 - (EZResultCell *)resultCellAtRow:(NSInteger)row {
     EZQueryService *service = [self serviceAtRow:row];
     
-    // MARK: Currently, the cells may not be released in time because the cells are not reused. In this case, manually remove the loading animation, otherwise the animation will continue to execute.
-//    EZResultCell *oldResultCell = [self resultCellOfResult:service.result];
-//    [oldResultCell.resultView removeLoadingAnimation];
-//    [oldResultCell.resultView removeFromSuperview];
-//    oldResultCell = nil;
-    
     EZResultCell *resultCell = [self.tableView makeViewWithIdentifier:EZResultCellId owner:self];
     if (!resultCell) {
         resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
         resultCell.identifier = EZResultCellId;
     }
-    
-//    EZResultCell *resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
-    resultCell.identifier = EZResultCellId;
+
     resultCell.result = service.result;
+    
     [self setupResultCell:resultCell];
     
     return resultCell;
@@ -909,7 +911,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     // ???: why set window frame will change tableView height?
     [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    
+        
     // Restore tableView height.
     self.tableView.height = tableViewHeight;
     
@@ -947,7 +949,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 //        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
     }
-//    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     return scrollViewContentHeight;
 }
