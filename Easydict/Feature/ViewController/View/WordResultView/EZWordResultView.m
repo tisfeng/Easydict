@@ -84,6 +84,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 [textField sizeToFit];
                 height += (kVerticalPadding_8 + textField.height);
+                NSLog(@"height = %1.f", height);
                 
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
@@ -127,7 +128,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }];
                 
                 [textField sizeToFit];
-                height += (kVerticalMargin_12 + textField.height);
+//                height += (kVerticalMargin_12 + textField.height);
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
         }
@@ -167,6 +168,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += (kVerticalMargin_12 + labelSize.height);
+            NSLog(@"height = %1.f", height);
+
         }];
         resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
@@ -198,14 +201,17 @@ static const CGFloat kVerticalPadding_8 = 8;
                         height += kVerticalPadding_8;
                     }
                 } else {
-                    make.top.equalTo(lastView.mas_bottom).offset(5);
+                    CGFloat topOffset = 5;
+                    make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                    height += topOffset;
                 }
             }];
             
-
+            NSLog(@"height = %1.f", height);
         }];
         nameTextFiled.mas_key = @"nameTextFiled_phonetics";
-        
+        lastView = nameTextFiled;
+
         // 部分没有音标文本
         NSTextField *valueTextField = nil;
         if (obj.value.length) {
@@ -252,7 +258,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
         }];
         audioButton.mas_key = @"audioButton_phonetics";
-        lastView = audioButton;
     }];
     
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -280,13 +285,15 @@ static const CGFloat kVerticalPadding_8 = 8;
                     exceptedWidth += kHorizontalMargin_8;
                     
                     if (lastView) {
+                        CGFloat topOffset = kVerticalPadding_8;
                         if (idx == 0) {
-                            make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
-                        } else {
-                            make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
+                            topOffset = kVerticalMargin_12;
                         }
+                        make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                        height += topOffset;
                     } else {
                         make.top.offset(kVerticalMargin_12);
+                        height += kVerticalMargin_12;
                     }
                 }];
             }];
@@ -331,6 +338,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += labelSize.height;
+            NSLog(@"height = %1.f", height);
+
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
@@ -372,8 +381,10 @@ static const CGFloat kVerticalPadding_8 = 8;
                     height += kHorizontalMargin_8;
                 }
             }];
+            NSLog(@"height = %1.f", height);
         }];
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
+        lastView = nameTextFiled;
         
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
@@ -397,8 +408,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
             }];
             wordButton.mas_key = @"wordButton_words";
-            
-            lastView = wordButton;
         }];
     }];
     
@@ -494,6 +503,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += (kVerticalPadding_8 + labelSize.height + wordButton.expandValue);
+            NSLog(@"height = %1.f", height);
+
         }];
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
@@ -540,15 +551,17 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.top.equalTo(self).offset(kTopMargin_10);
         }
         
-        // ???: Must set bottom ?
-        make.bottom.equalTo(self);
+//        make.bottom.equalTo(self).offset(-kBottomMargin_5);
         make.left.offset(8);
         make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     lastView = audioButton;
     
-    height += (kTopMargin_10 + EZAudioButtonWidth_25);
+    height += (kTopMargin_10 + EZAudioButtonWidth_25 + 5);
+//    self.height = height;
+
     _viewHeight = height;
+    
     NSLog(@"word result view height: %.1f", height);
 
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -583,29 +596,11 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     
 //    [self mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.equalTo(lastView);
+//        make.bottom.equalTo(lastView).offset(kBottomMargin_5);
+////        make.height.mas_equalTo(height);
 //    }];
 }
 
-/// Calcuate label height manually.
-//- (CGFloat)updateLabelHeight:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
-//    // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-//    CGFloat width = self.width - exceptedWidth;
-//    //    NSLog(@"text: %@, width: %@", label.text, @(width));
-//
-//    CGFloat height = [label getHeightWithWidth:width]; // 397 ?
-//    //    NSLog(@"height: %@", @(height));
-//
-//    //    height = [label getTextViewHeightWithWidth:width]; // 377
-//    //    NSLog(@"height: %@", @(height));
-//
-//    [label mas_updateConstraints:^(MASConstraintMaker *make) {
-//        make.height.equalTo(@(height));
-//        make.width.mas_equalTo(width);
-//    }];
-//
-//    return height;
-//}
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑

@@ -236,12 +236,6 @@ static CGFloat const kWordResultViewBottomOffset = 5;
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
     
-    [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.topBarView.mas_bottom);
-        make.left.right.equalTo(self);
-//        make.bottom.lessThanOrEqualTo(self).offset(-kWordResultViewBottomOffset); // Since coordinate, wordResultView is under resultView
-//        make.bottom.equalTo(self).offset(-kWordResultViewBottomOffset); // Since coordinate, wordResultView is under resultView
-    }];
     
     [super updateConstraints];
 }
@@ -261,22 +255,27 @@ static CGFloat const kWordResultViewBottomOffset = 5;
     [self.wordResultView refreshWithResult:result];
     
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
+    
     [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.topBarView.mas_bottom);
+        make.left.right.equalTo(self);
+        
         make.height.mas_equalTo(wordResultViewHeight);
     }];
+    
     
     // TODO: need to optimize. This way seems to be too time consuming and can cause UI lag, such as clicking arrow buttons. Let's change to manual height calculation later.
 //    [self layoutSubtreeIfNeeded];
     
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
-        viewHeight = kResultViewMiniHeight + wordResultViewHeight + kWordResultViewBottomOffset;
+        viewHeight = kResultViewMiniHeight + wordResultViewHeight;
         
 //        viewHeight = 300;
 //        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
-    
+        
     // animation need right frame, but result may change, so have to layout frame.
     [self startOrEndLoadingAnimation:self.result.isLoading];
 }
