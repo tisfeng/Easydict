@@ -18,6 +18,7 @@
 "explain" = "explain:";
 "us_phonetic" = "us";
 "uk_phonetic" = "uk";
+"chinese_phonetic" = "yin";
 "singular" = "singular";
 "plural" = "plural";
 "comparative" = "comparative";

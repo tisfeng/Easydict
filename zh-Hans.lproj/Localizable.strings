@@ -17,6 +17,8 @@
 "explain" = "释义:";
 "us_phonetic" = "美";
 "uk_phonetic" = "英";
+"chinese_phonetic" = "音";
+
 "singular" = "第三人称单数";
 "plural" = "复数";
 "comparative" = "比较级";

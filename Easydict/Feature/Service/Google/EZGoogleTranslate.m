@@ -453,6 +453,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         NSString *phoneticText = phoneticArray[3];
                         EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
                         phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                        if ([EZLanguageManager isChineseLanguage:from]) {
+                            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+                        }
+                        
                         phonetic.value = phoneticText;
                         phonetic.speakURL = result.fromSpeakURL;
                         
