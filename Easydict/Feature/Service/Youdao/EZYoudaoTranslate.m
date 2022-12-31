@@ -394,24 +394,33 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         return;
     }
     
-    [self translate:text from:from to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-        if (result) {
-            if (result.fromSpeakURL.length) {
-                completion(result.fromSpeakURL, nil);
-            } else {
-                NSDictionary *params = @{
-                    EZTranslateErrorRequestParamKey : @{
-                        @"text" : text ?: @"",
-                        @"from" : from,
-                    },
-                };
-                completion(nil, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, @"有道翻译不支持获取该语言音频", params));
-            }
-        } else {
-            completion(nil, error);
-        }
-    }];
+    [super textToAudio:text fromLanguage:EZLanguageAuto completion:completion];
 }
+
+//- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+//    if (!text.length) {
+//        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
+//        return;
+//    }
+//
+//    [self translate:text from:from to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+//        if (result) {
+//            if (result.fromSpeakURL.length) {
+//                completion(result.fromSpeakURL, nil);
+//            } else {
+//                NSDictionary *params = @{
+//                    EZTranslateErrorRequestParamKey : @{
+//                        @"text" : text ?: @"",
+//                        @"from" : from,
+//                    },
+//                };
+//                completion(nil, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, @"有道翻译不支持获取该语言音频", params));
+//            }
+//        } else {
+//            completion(nil, error);
+//        }
+//    }];
+//}
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion {
     if (!image) {
