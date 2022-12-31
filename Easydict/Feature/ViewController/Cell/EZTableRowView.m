@@ -6,9 +6,9 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZResultRowView.h"
+#import "EZTableRowView.h"
 
-@implementation EZResultRowView
+@implementation EZTableRowView
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];

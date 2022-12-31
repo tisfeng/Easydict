@@ -8,21 +8,19 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZQueryResult.h"
-#import "EZFlippedView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 static const CGFloat kResultViewMiniHeight = 30;
 
-@interface EZResultView : EZFlippedView
+@interface EZResultView : NSView
+
+@property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, copy) void (^clickArrowBlock)(EZQueryResult *result);
-
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
 @property (nonatomic, copy) void (^clickTextBlock)(NSString *word);
-
-- (void)refreshWithResult:(EZQueryResult *)result;
 
 - (void)updateLoadingAnimation;
 
