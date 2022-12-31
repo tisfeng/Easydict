@@ -9,6 +9,7 @@
 #import "EZYoudaoTranslate.h"
 #import "EZYoudaoTranslateResponse.h"
 #import "EZYoudaoOCRResponse.h"
+#import "EZYoudaoDictModel.h"
 
 static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 
@@ -56,12 +57,18 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 // youdao support 4 languages: en, ja, ko, fr, and to Chinese
 // means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
 - (NSString *)wordLink {
+    NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+
+    return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoTranslateURL, encodedWord, foreignLangauge];
+}
+
+- (nullable NSString *)youdaoDictForeignLangauge {
     EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
     EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
     
     NSString *youdaoFrom = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
     NSString *youdaoTo = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     NSArray *youdaoLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
     NSMutableArray *youdaoLanguageCodes = [NSMutableArray array];
@@ -78,10 +85,8 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     if ([youdaoLanguageCodes containsObject:youdaoFrom]) {
         foreignLangauge = youdaoFrom;
     }
-    
-    return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoTranslateURL, encodedWord, foreignLangauge];
+    return foreignLangauge;
 }
-
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
@@ -137,12 +142,69 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     return orderedDict;
 }
 
+- (void)youdaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    if (!text.length) {
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        return;
+    }
+    
+    NSString *url = @"https://dict.youdao.com/jsonapi";
+    NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+    NSArray *dictArray = @[@[@"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest"]];
+
+    NSDictionary *dicts = @{
+        @"count" : @(99),
+        @"dicts" : dictArray,
+    };
+        
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dicts options:0 error:nil];
+    NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"str: %@", str);
+    
+//    NSString *dictsString = [str stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+//    url = [NSString stringWithFormat:@"%@?%@", url, encodedQueryString];
+    
+    // https://dict.youdao.com/jsonapi?q=good&le=en&dicts=%7B%22count%22%3A99%2C%22dicts%22%3A%5B%5B%22web_trans%22%2C%22ec%22%2C%22ce%22%2C%22newhh%22%2C%22baike%22%2C%22wikipedia_digest%22%5D%5D%7D
+    
+    
+    NSDictionary *params = @{
+        @"q" : text,
+        @"le" : foreignLangauge,
+        @"dicts" : str,
+    };
+    
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
+        
+    mm_weakify(self);
+    [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        mm_strongify(self);
+        NSString *message = nil;
+        if (responseObject) {
+            @try {
+                EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
+                NSLog(@"model: %@", model);
+                
+            } @catch (NSException *exception) {
+                MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
+                message = @"有道翻译翻译接口数据解析异常";
+            }
+        }
+        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+    }];
+}
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
+    
+    [self youdaoDict:text from:from to:to completion:completion];
     
     NSString *url = @"https://aidemo.youdao.com/trans";
     NSDictionary *params = @{
