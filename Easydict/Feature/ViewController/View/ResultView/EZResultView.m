@@ -249,16 +249,9 @@ static NSInteger const kAnimationDotViewCount = 5;
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     
     [self updateArrowButton];
-    
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
-    NSLog(@"before refreshWithResult: %@", result);
+        
     [self.wordResultView refreshWithResult:result];
-    NSLog(@"after refreshWithResult: %@", result);
-    
-    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"refreshWithResult %@, cost: %.1f ms", result.serviceType, (endTime - startTime) * 1000);
-    
+
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     self.wordResultView.height = wordResultViewHeight;
     [self.wordResultView setNeedsDisplay:YES];

@@ -84,7 +84,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 [textField sizeToFit];
                 height += (kVerticalPadding_8 + textField.height);
-                NSLog(@"height = %1.f", height);
+//                NSLog(@"height = %1.f", height);
                 
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
@@ -167,7 +167,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += (kVerticalMargin_12 + labelSize.height);
-            NSLog(@"height = %1.f", height);
+//            NSLog(@"height = %1.f", height);
         }];
         resultLabel.mas_key = @"resultLabel_normalResults";
         lastView = resultLabel;
@@ -204,7 +204,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     height += topOffset;
                 }
             }];
-            NSLog(@"height = %1.f", height);
+//            NSLog(@"height = %1.f", height);
         }];
         nameTextFiled.mas_key = @"nameTextFiled_phonetics";
         lastView = nameTextFiled;
@@ -335,7 +335,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += labelSize.height;
-            NSLog(@"height = %1.f", height);
+//            NSLog(@"height = %1.f", height);
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
@@ -377,7 +377,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     height += kHorizontalMargin_8;
                 }
             }];
-            NSLog(@"height = %1.f", height);
+//            NSLog(@"height = %1.f", height);
         }];
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         lastView = nameTextFiled;
@@ -496,7 +496,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize);
             
             height += (kVerticalPadding_8 + labelSize.height + wordButton.expandValue);
-            NSLog(@"height = %1.f", height);
+//            NSLog(@"height = %1.f", height);
         }];
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
@@ -552,7 +552,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     _viewHeight = height;
     
-    NSLog(@"word result view height: %.1f", height);
+//    NSLog(@"word result view height: %.1f", height);
 
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(audioButton.mas_right).offset(kRightMargin);
@@ -584,10 +584,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
-    NSLog(@"before labelSize: %@", label.string);
-
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     CGFloat width = self.width - exceptedWidth;
     //    NSLog(@"text: %@, width: %@", label.text, @(width));
@@ -597,9 +593,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     //    height = [label getTextViewHeightWithWidth:width]; // 377
     //    NSLog(@"height: %@", @(height));
-    
-    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"labelSize cost: %.1f ms", (endTime - startTime) * 1000);
     
     return CGSizeMake(width, height);
 }
