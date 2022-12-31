@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZSelectLanguageCell : NSTableRowView
+@interface EZSelectLanguageCell : NSView
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
 

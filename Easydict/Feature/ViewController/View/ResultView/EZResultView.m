@@ -28,8 +28,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
-@property (nonatomic, strong) EZQueryResult *result;
-
 @property (nonatomic, strong) NSTimer *timer;
 
 @property (nonatomic, strong) MASConstraint *wordResultViewHeightConstraint;
@@ -238,8 +236,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     [super updateConstraints];
 }
 
-
-- (void)refreshWithResult:(EZQueryResult *)result {
+- (void)setResult:(EZQueryResult *)result {
     _result = result;
     
     EZServiceType serviceType = result.serviceType;
@@ -253,9 +250,6 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.wordResultView refreshWithResult:result];
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
-    self.wordResultView.height = wordResultViewHeight;
-    [self.wordResultView setNeedsDisplay:YES];
-    
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
@@ -266,19 +260,14 @@ static NSInteger const kAnimationDotViewCount = 5;
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
         viewHeight = kResultViewMiniHeight + wordResultViewHeight;
-        self.height = viewHeight;
-        [self setNeedsDisplay:YES];
-        
         //        NSLog(@"result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
     
-//    [self setNeedsLayout:YES];
-//    [self layoutSubtreeIfNeeded];
-    
     // animation need right frame, but result may change, so have to layout frame.
     [self startOrEndLoadingAnimation:self.result.isLoading];
 }
+
 
 - (void)updateArrowButton {
     NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];

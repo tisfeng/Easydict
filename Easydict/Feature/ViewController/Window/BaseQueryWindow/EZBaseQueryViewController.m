@@ -7,8 +7,6 @@
 //
 
 #import "EZBaseQueryViewController.h"
-#import "EZQueryCell.h"
-#import "EZResultCell.h"
 #import "EZDetectManager.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
@@ -23,11 +21,11 @@
 #import "EZLog.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
-#import "EZResultRowView.h"
+#import "EZTableRowView.h"
 
-static NSString *const EZQueryCellId = @"EZQueryCellId";
+static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
-static NSString *const EZResultCellId = @"EZResultCellId";
+static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
 
@@ -39,7 +37,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
 
-@property (nonatomic, strong) EZQueryCell *queryCell;
 @property (nonatomic, strong) EZQueryView *queryView;
 
 
@@ -103,7 +100,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [self setupServices];
     [self resetQueryAndResults];
-
+    
     [self tableView];
     
     self.audioPlayer = [[EZAudioPlayer alloc] init];
@@ -124,7 +121,7 @@ static NSString *const EZColumnId = @"EZColumnId";
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
-                        
+            
             [self updateWindowViewHeight];
         }];
     }];
@@ -135,7 +132,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)setupServices {
     NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
-
+    
     NSArray *allServices = [EZLocalStorage.shared allServices];
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
@@ -230,13 +227,6 @@ static NSString *const EZColumnId = @"EZColumnId";
         [tableView sizeLastColumnToFit]; // must put in the end
     }
     return _tableView;
-}
-
-- (EZQueryCell *)queryCell {
-    if (!_queryCell) {
-        _queryCell = [self createQueryCell];
-    }
-    return _queryCell;
 }
 
 - (void)setQueryText:(NSString *)queryText {
@@ -343,7 +333,7 @@ static NSString *const EZColumnId = @"EZColumnId";
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-//            NSLog(@"update service: %@, %@", service.serviceType, result);
+            //            NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
@@ -367,7 +357,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     // Show result if it has been queried.
     result.isShowing = YES;
     result.isLoading = YES;
-        
+    
     [self updateResultLoadingAnimation:result];
     
     NSLog(@"query service: %@", service.serviceType);
@@ -381,8 +371,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)updateResultLoadingAnimation:(EZQueryResult *)result {
-    EZResultCell *resultCell = [self resultCellOfResult:result];
-    [resultCell.resultView updateLoadingAnimation];
+    EZResultView *resultView = [self resultCellOfResult:result];
+    [resultView updateLoadingAnimation];
 }
 
 #pragma mark - NSTableViewDataSource
@@ -395,18 +385,15 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-//        NSLog(@"tableView for row: %ld", row);
+    //        NSLog(@"tableView for row: %ld", row);
     
     // TODO: should reuse cell.
     if (row == 0) {
-        EZQueryCell *queryCell = [self createQueryCell];
-        self.queryView = queryCell.queryView;
+        self.queryView = [self createQueryView];
         self.queryView.windowType = self.windowType;
         [self.queryView initializeAimatedButtonAlphaValue:self.queryModel];
         self.queryView.queryModel = self.queryModel;
-        self.queryCell = queryCell;
-        
-        return queryCell;
+        return self.queryView;
     }
     
     if (self.windowType != EZWindowTypeMini && row == 1) {
@@ -425,12 +412,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         return selectLanguageCell;
     }
     
-    EZResultCell *resultCell = [self resultCellAtRow:row];
+    EZResultView *resultCell = [self resultCellAtRow:row];
     return resultCell;
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-    return [[EZResultRowView alloc] init];
+    return [[EZTableRowView alloc] init];
 }
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row {
@@ -445,7 +432,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         // A non-zero value must be set, but the initial viewHeight is 0.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
-//        NSLog(@"row: %ld, height: %@", row, @(height));
+    //        NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -494,7 +481,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-
     [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
 }
 
@@ -506,7 +492,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
         result.isLoading = NO;
-//        [self updateResultLoadingAnimation:result];
+        //        [self updateResultLoadingAnimation:result];
         
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
@@ -528,10 +514,9 @@ static NSString *const EZColumnId = @"EZColumnId";
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
                 completionHandler:(void (^)(void))completionHandler {
-//    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
-
+    //    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
+    
     if (reloadData) {
-        
         // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
         
         // ???: need to check.
@@ -545,11 +530,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = duration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-//        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+        //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
         [self updateWindowViewHeight];
     } completionHandler:^{
-//        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+        //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
             completionHandler();
         }
@@ -603,26 +588,26 @@ static NSString *const EZColumnId = @"EZColumnId";
         result.isLoading = NO;
         service.result = result;
         
-//        [self updateResultCell:service.result];
+        //        [self updateResultCell:service.result];
     }
 }
 
-- (nullable EZResultCell *)resultCellOfResult:(EZQueryResult *)result {
+- (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
     NSInteger index = [self.services indexOfObject:result.service];
-    NSInteger row =  index + [self resultCellOffset];
+    NSInteger row = index + [self resultCellOffset];
     
-    EZResultCell *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+    EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
     
     // ???: Why is it possible to return a EZSelectLanguageCell ?
-    if ([resultCell isKindOfClass:[EZResultCell class]]) {
+    if ([resultCell isKindOfClass:[EZResultView class]]) {
         return resultCell;
     }
     return nil;
 }
 
 - (void)updateResultCell:(EZQueryResult *)result {
-    EZResultCell *resultCell = [self resultCellOfResult:result];
-    resultCell.result = result;
+    EZResultView *resultView = [self resultCellOfResult:result];
+    resultView.result = result;
 }
 
 - (void)delayDetectQueryText {
@@ -663,7 +648,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     //    rowCount -= startIndex;
     //
     //    for (int i = (int)startIndex; i < rowCount; i++) {
-    //        EZResultCell *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
+    //        EZResultView *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
     //        EZQueryResult *result = resultCell.result;
     //        if (result.isShowing) {
     //            [results addObject:result];
@@ -697,38 +682,35 @@ static NSString *const EZColumnId = @"EZColumnId";
     return rect;
 }
 
-- (EZQueryCell *)createQueryCell {
-    EZQueryCell *queryCell = [[EZQueryCell alloc] initWithFrame:[self tableViewContentBounds]];
-    queryCell.identifier = EZQueryCellId;
-    
-    EZQueryView *queryView = queryCell.queryView;
+- (EZQueryView *)createQueryView {
+    EZQueryView *queryView = [self.tableView makeViewWithIdentifier:EZQueryViewId owner:self];
+    if (!queryView) {
+        queryView = [[EZQueryView alloc] initWithFrame:[self tableViewContentBounds]];
+        queryView.identifier = EZQueryViewId;
+    }
     
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
         mm_strongify(self);
-//        NSLog(@"UpdateQueryTextBlock");
+        //        NSLog(@"UpdateQueryTextBlock");
         
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
         
         // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
         
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
-       
+        
         // Reduce the update frequency, update only when the queryText or height changes.
         if ([self.queryText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
             return;
         }
         
-//        NSLog(@"before set queryText");
         self.queryText = text;
-//        NSLog(@"after set queryText");
-
+        
         [self delayDetectQueryText];
-//        NSLog(@"after delayDetectQueryText");
-
+        
         self.queryModel.queryViewHeight = queryViewHeight;
         [self updateQueryCell];
-//            NSLog(@"after updateQueryCell");
     }];
     
     [queryView setEnterActionBlock:^(NSString *text) {
@@ -738,7 +720,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self.audioPlayer  playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
+        [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -758,7 +740,6 @@ static NSString *const EZColumnId = @"EZColumnId";
                 [self resetQueryAndResults];
             }];
         }];
-        
     }];
     
     [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
@@ -767,18 +748,18 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self startQueryText];
     }];
     
-    return queryCell;
+    return queryView;
 }
 
-- (EZResultCell *)resultCellAtRow:(NSInteger)row {
+- (EZResultView *)resultCellAtRow:(NSInteger)row {
     EZQueryService *service = [self serviceAtRow:row];
     
-    EZResultCell *resultCell = [self.tableView makeViewWithIdentifier:EZResultCellId owner:self];
+    EZResultView *resultCell = [self.tableView makeViewWithIdentifier:EZResultViewId owner:self];
     if (!resultCell) {
-        resultCell = [[EZResultCell alloc] initWithFrame:[self tableViewContentBounds]];
-        resultCell.identifier = EZResultCellId;
+        resultCell = [[EZResultView alloc] initWithFrame:[self tableViewContentBounds]];
+        resultCell.identifier = EZResultViewId;
     }
-
+    
     resultCell.result = service.result;
     
     [self setupResultCell:resultCell];
@@ -815,9 +796,8 @@ static NSString *const EZColumnId = @"EZColumnId";
     return self.services[index];
 }
 
-- (void)setupResultCell:(EZResultCell *)resultCell {
-    EZResultView *resultView = resultCell.resultView;
-    EZQueryResult *result = resultCell.result;
+- (void)setupResultCell:(EZResultView *)resultView {
+    EZQueryResult *result = resultView.result;
     EZQueryService *service = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
@@ -833,7 +813,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self copyTextToPasteboard:text];
     }];
     
-    [resultView setClickTextBlock:^(NSString * _Nonnull word) {
+    [resultView setClickTextBlock:^(NSString *_Nonnull word) {
         mm_strongify(self);
         [self startQueryText:word];
     }];
@@ -879,7 +859,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     CGFloat tableViewHeight = [self getScrollViewContentHeight];
     CGFloat height = [self getRestrainedScrollViewHeight:tableViewHeight];
-//            NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
+    //            NSLog(@"getRestrainedScrollViewHeight: %@", @(height));
     
     CGSize maxWindowSize = [EZLayoutManager.shared maximumWindowSize:self.windowType];
     
@@ -909,7 +889,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
     [self.window setFrame:safeFrame display:NO animate:animateFlag];
-        
+    
     // Restore tableView height.
     self.tableView.height = tableViewHeight;
     
@@ -944,10 +924,10 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSInteger rowCount = [self numberOfRowsInTableView:self.tableView];
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
-//        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
+        //        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
     }
-//    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+    //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     return scrollViewContentHeight;
 }
