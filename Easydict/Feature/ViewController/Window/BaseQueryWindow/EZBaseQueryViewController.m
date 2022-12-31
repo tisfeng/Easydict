@@ -31,8 +31,6 @@ static NSString *const EZResultCellId = @"EZResultCellId";
 
 static NSString *const EZColumnId = @"EZColumnId";
 
-static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
-
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) EZTitlebar *titleBar;
@@ -87,7 +85,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [super viewDidLoad];
     
     [self setup];
-    [self updateWindowViewHeightWithAnimation:NO];
+    [self updateWindowViewHeight];
 }
 
 - (void)viewWillAppear {
@@ -126,8 +124,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
             
             NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
             [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
-            
-            [self delayUpdateWindowViewHeight];
+                        
+            [self updateWindowViewHeight];
         }];
     }];
     
@@ -549,7 +547,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
 //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-        [self updateWindowViewHeightWithAnimation:NO];
+        [self updateWindowViewHeight];
     } completionHandler:^{
 //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
@@ -862,8 +860,8 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 #pragma mark - Update Window Height
 
-- (void)updateWindowViewHeightWithAnimation:(BOOL)animated {
-    [self updateWindowViewHeightWithAnimation:animated display:YES];
+- (void)updateWindowViewHeight {
+    [self updateWindowViewHeightWithAnimation:NO display:YES];
 }
 
 - (void)updateWindowViewHeightWithAnimation:(BOOL)animateFlag display:(BOOL)displayFlag {
@@ -969,16 +967,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
     CGFloat queryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
     return queryViewHeight;
-}
-
-/// Delay update, to avoid reload tableView frequently.
-- (void)delayUpdateWindowViewHeight {
-    [self cancelUpdateWindowViewHeight];
-    [self performSelector:@selector(updateWindowViewHeightWithAnimation:) withObject:@(NO) afterDelay:kDelayUpdateWindowViewTime];
-}
-
-- (void)cancelUpdateWindowViewHeight {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateWindowViewHeightWithAnimation:) object:@(NO)];
 }
 
 @end
