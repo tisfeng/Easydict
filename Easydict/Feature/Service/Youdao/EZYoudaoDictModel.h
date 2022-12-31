@@ -28,6 +28,14 @@
 @class EZTran;
 @class EZTranSummary;
 
+@class EZCe;
+@class EZCeWord;
+@class EZNewhh;
+@class EZDataList;
+@class EZSense;
+@class EZSubsense;
+@class EZNewhhSource;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBaike : NSObject
@@ -78,7 +86,16 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface EZTrL : NSObject
-@property (nonatomic, copy) NSArray<NSString *> *i;
+@property (nonatomic, copy) NSString *tran; // 好的，优良的；
+@property (nonatomic, copy) NSArray<id> *i; // Two types:  ec: NSString, ce: EZTextWord
+@property (nonatomic, copy) NSString *pos; // adv.
+@end
+
+@interface EZTextWord : NSObject
+@property (nonatomic, copy) NSString *action;
+@property (nonatomic, copy) NSString *href;
+@property (nonatomic, copy) NSString *text;
+
 @end
 
 @interface EZWfElement : NSObject
@@ -135,10 +152,55 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
+// ce
+@interface EZCe : NSObject
+@property (nonatomic, strong) EZSource *source;
+@property (nonatomic, copy)   NSArray<EZCeWord *> *word;
+@end
+
+@interface EZCeWord : NSObject
+@property (nonatomic, copy)   NSString *phone;
+@property (nonatomic, strong) EZReturnPhrase *returnPhrase;
+@property (nonatomic, copy)   NSArray<EZWordTr *> *trs;
+@end
+
+@interface EZNewhh : NSObject
+@property (nonatomic, copy)   NSArray<EZDataList *> *dataList;
+@property (nonatomic, strong) EZNewhhSource *source;
+@property (nonatomic, copy)   NSString *word;
+@end
+
+@interface EZDataList : NSObject
+@property (nonatomic, copy) NSString *pinyin;
+@property (nonatomic, copy) NSString *seealso;
+@property (nonatomic, copy) NSArray<EZSense *> *sense;
+@property (nonatomic, copy) NSString *word;
+@end
+
+@interface EZSense : NSObject
+@property (nonatomic, copy)           NSString *cat;
+@property (nonatomic, nullable, copy) NSArray<NSString *> *def;
+@property (nonatomic, nullable, copy) NSArray<NSString *> *examples;
+@property (nonatomic, nullable, copy) NSArray<EZSubsense *> *subsense;
+@end
+
+@interface EZSubsense : NSObject
+@property (nonatomic, copy) NSString *def;
+@property (nonatomic, copy) NSArray<NSString *> *examples;
+@end
+
+@interface EZNewhhSource : NSObject
+@property (nonatomic, copy) NSString *name;
+@end
+
+
 @interface EZYoudaoDictModel : NSObject
 
 @property (nonatomic, strong) EZBaike *baike;
 @property (nonatomic, strong) EZEc *ec;
+@property (nonatomic, strong) EZCe *ce;
+@property (nonatomic, strong) EZNewhh *newhh; // 现代汉语规范词典
+
 @property (nonatomic, copy)   NSString *input;
 @property (nonatomic, copy)   NSString *lang;
 @property (nonatomic, copy)   NSString *le;
