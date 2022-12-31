@@ -271,7 +271,6 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
-        NSLog(@"close all result");
         self.queryText = text;
         [self queryCurrentModel];
     }];
@@ -346,7 +345,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-            NSLog(@"update service: %@, %@", service.serviceType, result);
+//            NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
     }
@@ -398,7 +397,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-        NSLog(@"tableView for row: %ld", row);
+//        NSLog(@"tableView for row: %ld", row);
     
     // TODO: should reuse cell.
     if (row == 0) {
@@ -448,7 +447,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // A non-zero value must be set, but the initial viewHeight is 0.
         height = MAX(result.viewHeight, kResultViewMiniHeight);
     }
-        NSLog(@"row: %ld, height: %@", row, @(height));
+//        NSLog(@"row: %ld, height: %@", row, @(height));
     
     return height;
 }
@@ -548,7 +547,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
         context.duration = duration;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+//        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
         [self updateWindowViewHeightWithAnimation:NO];
     } completionHandler:^{
@@ -950,7 +949,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
 //        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
         scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
     }
-    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
+//    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
     
     return scrollViewContentHeight;
 }
