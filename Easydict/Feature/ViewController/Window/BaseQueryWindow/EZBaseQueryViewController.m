@@ -550,7 +550,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
         // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
         NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
         [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-        [self updateWindowViewHeightWithAnimation:animateFlag];
+        [self updateWindowViewHeightWithAnimation:NO];
     } completionHandler:^{
 //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
         if (completionHandler) {
@@ -910,6 +910,7 @@ static NSTimeInterval const kDelayUpdateWindowViewTime = 0.01;
     CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:newFrame];
     
     // ???: why set window frame will change tableView height?
+    // ???: why this window animation will block cell rendering?
     [self.window setFrame:safeFrame display:NO animate:animateFlag];
         
     // Restore tableView height.
