@@ -492,11 +492,14 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
         result.isLoading = NO;
-        //        [self updateResultLoadingAnimation:result];
         
         EZServiceType serviceType = result.serviceType;
         NSInteger row = [self.serviceTypes indexOfObject:serviceType];
-        [rowIndexes addIndex:row + [self resultCellOffset]];
+        
+        // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
+        if (row != NSNotFound) {
+            [rowIndexes addIndex:row + [self resultCellOffset]];
+        }
     }
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:completionHandler];
 }
