@@ -142,3 +142,7 @@
 @implementation EZWfElement
 
 @end
+
+@implementation EZTrL
+
+@end
