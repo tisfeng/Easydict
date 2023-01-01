@@ -18,7 +18,6 @@
 
 @end
 
-
 @implementation EZSelectLanguageButton
 
 DefineMethodMMMake_m(EZSelectLanguageButton);
@@ -76,7 +75,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     __block CGFloat padding = 0;
     CGFloat imageViewWidth = 8;
     [self.imageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        CGFloat leftOffset = 6;
+        CGFloat leftOffset = 8;
         padding += leftOffset;
         make.left.equalTo(self).offset(leftOffset);
         make.centerY.equalTo(self).offset(1);
@@ -91,7 +90,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         padding += leftOffset;
         make.left.equalTo(self.imageView.mas_right).offset(leftOffset);
         
-        CGFloat rightOffset = 1;
+        CGFloat rightOffset = 3;
         padding += rightOffset;
         make.right.equalTo(self).offset(-rightOffset);
         make.centerY.equalTo(self);
