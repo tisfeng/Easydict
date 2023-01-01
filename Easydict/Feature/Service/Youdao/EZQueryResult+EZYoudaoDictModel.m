@@ -84,6 +84,27 @@
                 self.wordResult.exchanges = exchanges;
             }
         }
+        
+        EZWebTrans *webTrans = model.webTrans;
+        if (webTrans) {
+            NSMutableArray *webExplanations = [NSMutableArray array];
+            for (EZWebTranslation *webTranslation in webTrans.webTranslation) {
+                EZTranslateSimpleWord *simpleWord = [[EZTranslateSimpleWord alloc] init];
+                simpleWord.word = webTranslation.key;
+                
+                NSMutableArray *explanations = [NSMutableArray array];
+                for (EZTran *trans in webTranslation.trans) {
+                    [explanations addObject:trans.value];
+                }
+                simpleWord.means = explanations;
+                
+                [webExplanations addObject:simpleWord];
+            }
+            
+            if (webExplanations.count) {
+                self.wordResult.simpleWords = [webExplanations subarrayWithRange:NSMakeRange(0, 4)];
+            }
+        }
     }
     
     if (model.ce) {
