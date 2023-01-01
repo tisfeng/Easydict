@@ -86,9 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface EZTrL : NSObject
-@property (nonatomic, copy) NSString *tran; // 好的，优良的；
+@property (nonatomic, copy, nullable) NSString *tran; // 好的，优良的；
 @property (nonatomic, copy) NSArray<id> *i; // Two types:  ec: NSString, ce: EZTextWord
-@property (nonatomic, copy) NSString *pos; // adv.
+@property (nonatomic, copy, nullable) NSString *pos; // adv.
 @end
 
 @interface EZTextWord : NSObject
