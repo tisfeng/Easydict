@@ -69,6 +69,21 @@
         if (wordResult.parts || wordResult.simpleWords) {
             self.wordResult = wordResult;
         }
+        
+        NSArray<EZWfElement *> *wfs = word.wfs;
+        if (wfs.count) {
+            NSMutableArray *exchanges = [NSMutableArray array];
+            for (EZWfElement *element in wfs) {
+                EZTranslateExchange *exchange = [[EZTranslateExchange alloc] init];
+                exchange.name = element.wf.name;
+                exchange.words = @[element.wf.value];
+                [exchanges addObject:exchange];
+            }
+            
+            if (exchanges.count) {
+                self.wordResult.exchanges = exchanges;
+            }
+        }
     }
     
     if (model.ce) {
