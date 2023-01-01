@@ -18,10 +18,7 @@
 @implementation EZBaseQueryWindow
 
 - (instancetype)initWithWindowType:(EZWindowType)type {
-    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
-#if DEBUG
-    style |= NSWindowStyleMaskResizable;
-#endif
+    NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskClosable;
     
     if (self = [super initWithContentRect:CGRectZero styleMask:style backing:NSBackingStoreBuffered defer:YES]) {
         self.windowType = type;
