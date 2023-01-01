@@ -200,7 +200,7 @@
 }
 
 - (NSImage *)toolbarItemImage {
-    return [NSImage imageNamed:@"toolbar_general"];
+    return [NSImage imageNamed:@"toolbar_setting"];
 }
 
 - (BOOL)hasResizableWidth {
