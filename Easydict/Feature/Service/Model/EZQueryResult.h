@@ -64,9 +64,11 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 @property (nonatomic, copy, nullable) NSString *part; // adj.
 /// 单词或短语意思
 @property (nonatomic, strong, nullable) NSArray<NSString *> *means; // 美好的
+
 @property (nonatomic, copy) NSString *meansText; // means join @"; "
 
-@property (nonatomic, strong, readonly) NSString *partMeansText; // adj. 美好的
+///  move part to meansText
+@property (nonatomic, assign) BOOL showPartMeans; // adj. 美好的
 
 @end
 

@@ -81,10 +81,14 @@ NSString *getPartName(NSString *part) {
     return _meansText;
 }
 
-- (NSString *)partMeansText {
-    NSString *pos = self.part ? [NSString stringWithFormat:@"%@  ", self.part] : @"";
-    NSString *text = [NSString stringWithFormat:@"%@%@", pos, self.meansText];
-    return text;
+- (void)setShowPartMeans:(BOOL)showPartMeans {
+    _showPartMeans = showPartMeans;
+    
+    if (showPartMeans) {
+        NSString *pos = self.part ? [NSString stringWithFormat:@"%@  ", self.part] : @"";
+        NSString *partMeansText = [NSString stringWithFormat:@"%@%@", pos, self.meansText];
+        self.meansText = partMeansText;
+    }
 }
 
 @end

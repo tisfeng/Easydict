@@ -121,9 +121,7 @@
             simpleWord.word = text;
             simpleWord.part = l.pos;
             simpleWord.means = @[l.tran];
-            simpleWord.meansText = simpleWord.partMeansText;
-            simpleWord.part = nil; // Since 'part' also becomes part of the explanation, there is no need to show 'part'
-            
+            simpleWord.showPartMeans = YES;            
             [wordArray addObject:simpleWord];
         }];
         if (wordArray.count) {
