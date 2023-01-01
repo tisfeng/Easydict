@@ -159,6 +159,11 @@
 
 @end
 
+
+@implementation EZWfWf
+
+@end
+
 @implementation EZTrL
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
