@@ -117,11 +117,14 @@
             }
             NSString *text = [texts componentsJoinedByString:@" "];
             
-            EZTranslateSimpleWord * simpleWord = [[EZTranslateSimpleWord alloc] init];
+            EZTranslateSimpleWord *simpleWord = [[EZTranslateSimpleWord alloc] init];
             simpleWord.word = text;
             simpleWord.part = l.pos;
-            simpleWord.means = @[l.tran];
-            simpleWord.showPartMeans = YES;            
+            NSString *means = l.tran;
+            if (means) {
+                simpleWord.means = @[means];
+            }
+            simpleWord.showPartMeans = YES;
             [wordArray addObject:simpleWord];
         }];
         if (wordArray.count) {
