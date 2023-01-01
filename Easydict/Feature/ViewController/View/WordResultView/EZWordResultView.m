@@ -311,7 +311,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled);
-                CGFloat leftLeading = 5;
+                CGFloat leftLeading = 2;
                 make.left.equalTo(partTextFiled.mas_right).offset(leftLeading);
                 exceptedWidth += leftLeading;
             } else {

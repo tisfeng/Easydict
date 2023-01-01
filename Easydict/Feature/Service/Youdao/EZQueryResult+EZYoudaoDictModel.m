@@ -53,7 +53,7 @@
 
             EZTranslatePart *partObject = [[EZTranslatePart alloc] init];
             if (pos.length < 5) {
-                partObject.part = pos;
+                partObject.part = [NSString stringWithFormat:@"%@.", pos];
                 array = [array subarrayWithRange:NSMakeRange(1, array.count - 1)];
                 means = [[array componentsJoinedByString:@"."] trim];
             }
