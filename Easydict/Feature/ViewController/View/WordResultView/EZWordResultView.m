@@ -373,8 +373,8 @@ static const CGFloat kVerticalPadding_8 = 8;
                     make.top.equalTo(lastView.mas_bottom).offset(topPadding);
                     height += topPadding;
                 } else {
-                    make.top.offset(kHorizontalMargin_8);
-                    height += kHorizontalMargin_8;
+                    make.top.offset(kVerticalPadding_8);
+                    height += kVerticalPadding_8;
                 }
             }];
 //            NSLog(@"height = %1.f", height);
@@ -412,7 +412,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
-            // 添加 part label
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
                 mm_strongify(self);
                 
@@ -423,6 +422,10 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
+                
+                [textField sizeToFit];
+                height += textField.height;
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin_8);
                     if (lastView) {
@@ -430,6 +433,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     } else {
                         make.top.offset(kVerticalPadding_8);
                     }
+                    height += kVerticalPadding_8;
                 }];
             }];
             partTextFiled.mas_key = @"partTextFiled_simpleWords";

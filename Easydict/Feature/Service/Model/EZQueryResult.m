@@ -17,12 +17,49 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
 NSString *const EZServiceTypeVolcano = @"Volcano";
 
 
+/// Convert part
+/**
+ adjective -> adj.
+    adverb -> adv.
+    verb -> v.
+    noun -> n.
+    pronoun -> pron.
+    preposition -> prep.
+    conjunction -> conj.
+    interjection -> interj.
+ */
+NSString *getPartName(NSString *part) {
+    NSDictionary *dict = @{
+        @"adjective" : @"adj.",
+        @"adverb" : @"adv.",
+        @"verb" : @"v.",
+        @"noun" : @"n.",
+        @"pronoun" : @"pron.",
+        @"preposition" : @"prep.",
+        @"conjunction" : @"conj.",
+        @"interjection" : @"interj.",
+    };
+    
+    NSString *partName = dict[part];
+    if (!partName) {
+        partName = part;
+    }
+    
+    return partName;
+}
+
+
 @implementation EZTranslatePhonetic : NSObject
 
 @end
 
 
 @implementation EZTranslatePart : NSObject
+
+- (void)setPart:(NSString *)part {
+    _part = getPartName(part);
+}
+
 
 @end
 
@@ -33,6 +70,10 @@ NSString *const EZServiceTypeVolcano = @"Volcano";
 
 
 @implementation EZTranslateSimpleWord : NSObject
+
+- (void)setPart:(NSString *)part {
+    _part = getPartName(part);
+}
 
 @end
 
@@ -46,8 +87,6 @@ NSString *const EZServiceTypeVolcano = @"Volcano";
 
 - (instancetype)init {
     if (self = [super init]) {
-        //        _normalResults = @[@""];
-        //        _isShowing = [[EZServiceStorage shared] getServiceInfo:self.serviceType].enabled;
     }
     return self;
 }
