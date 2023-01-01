@@ -32,7 +32,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         self.autoSelectedLanguage = EZLanguageAuto;
         
         mm_weakify(self)
-        [self setClickBlock:^(EZButton * _Nonnull button) {
+        [self setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self)
             // 显示menu
             [self setupMenu];
@@ -51,7 +51,6 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         } drak:^(NSImageView *imageView) {
             imageView.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
         }];
-        
     }];
     
     self.textField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
@@ -81,10 +80,10 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         make.centerY.equalTo(self).offset(1);
         make.width.height.mas_equalTo(imageViewWidth);
     }];
-        
+    
     [self.textField sizeToFit];
     CGFloat textFieldWidth = self.textField.width;
-
+    
     [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
         CGFloat leftOffset = 3;
         padding += leftOffset;
@@ -132,7 +131,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     }
     [self.customMenu removeAllItems];
     
-    [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage  _Nonnull key, NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.languageDict enumerateKeysAndObjectsUsingBlock:^(EZLanguage _Nonnull key, NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:obj action:@selector(clickItem:) keyEquivalent:@""];
         item.tag = idx;
         item.target = self;
@@ -151,10 +150,6 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         self.selectedMenuItemBlock(selectedLanguage);
     }
     self.customMenu = nil;
-    
-//        [self setNeedsUpdateConstraints:YES];
-        
-//        [self layoutSubtreeIfNeeded];
 }
 
 
@@ -188,8 +183,8 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         
         [self updateLanguageMenuItem:oldSelectedLanguage state:NSControlStateValueOff];
         [self updateLanguageMenuItem:selectedLanguage state:NSControlStateValueOn];
-                
-        [self setNeedsUpdateConstraints:YES];        
+        
+        [self setNeedsUpdateConstraints:YES];
     }
 }
 
