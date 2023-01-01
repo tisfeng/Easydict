@@ -76,7 +76,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextDarkColor];
             }];
-            textField.font = [NSFont boldSystemFontOfSize:22];
+            textField.font = [NSFont boldSystemFontOfSize:24];
             textField.selectable = YES;
             textField.editable = NO;
             textField.bordered = NO;
@@ -91,7 +91,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 } else {
                     make.top.offset(kVerticalPadding_8);
                 }
-                make.left.mas_equalTo(kHorizontalMargin_8);
+                make.left.mas_equalTo(kHorizontalMargin_8 + 1);
                 make.height.mas_equalTo(textField.height);
             }];
         }];
