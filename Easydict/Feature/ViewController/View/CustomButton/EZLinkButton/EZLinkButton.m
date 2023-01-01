@@ -9,7 +9,7 @@
 #import "EZLinkButton.h"
 #import "EZWindowManager.h"
 
-static NSString * const EZQueryKey = @"{Query}";
+static NSString *const EZQueryKey = @"{Query}";
 
 @interface EZLinkButton ()
 
@@ -28,21 +28,21 @@ static NSString * const EZQueryKey = @"{Query}";
 
 - (void)link_setup {
     mm_weakify(self);
-    [self setClickBlock:^(EZButton * _Nonnull button) {
+    [self setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self openLink];
     }];
-    
+
     self.cornerRadius = 5;
-      
+
     // !!!: Must set different Hover color from EZHoverButton, because link button is used in titleBar, and window has the same background color as EZHoverButton.
-    
+
     NSColor *lightHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
     NSColor *lightHighlightColor = [NSColor mm_colorWithHexString:@"#DADADA"];
-    
+
     NSColor *darkHoverColor = [NSColor mm_colorWithHexString:@"#3F3F3F"];
     NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#525252"];
-    
+
     [self excuteLight:^(EZButton *button) {
         button.contentTintColor = [NSColor imageTintLightColor];
         button.backgroundHoverColor = lightHoverColor;
@@ -65,21 +65,23 @@ static NSString * const EZQueryKey = @"{Query}";
         NSLog(@"open link is empty");
         return;
     }
-    
+
     self.text = text;
     NSString *queryText = text ?: @"";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    
+
     NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
-    
+
     if ([url containsString:@"%@"]) {
         url = [NSString stringWithFormat:url, encodedText];
     }
     NSLog(@"open url: %@", url);
-    
+
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
     if (success) {
-        [[EZWindowManager shared] closeFloatingWindow];
+        if (EZWindowManager.shared.floatingWindowType != EZWindowTypeMain) {
+            [[EZWindowManager shared] closeFloatingWindow];
+        }
     }
 }
 
