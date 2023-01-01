@@ -588,7 +588,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @"client" : @"webapp",
         @"sl" : souceLangCode, //
         @"tl" : targetLangCode,
-        @"hl" : preferredLangCode, // zh-CN, en
+        @"hl" : @"en", // zh-CN, en
         @"otf" : @"2",
         @"ssel" : @"3",
         @"tsel" : @"0",
