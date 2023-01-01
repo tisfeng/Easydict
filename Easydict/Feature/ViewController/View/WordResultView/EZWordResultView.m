@@ -447,13 +447,16 @@ static const CGFloat kVerticalPadding_8 = 8;
             exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partTextFiled) {
-                make.top.equalTo(partTextFiled.mas_bottom).offset(5);
+                CGFloat topOffset = 3;
+                height += topOffset;
+                make.top.equalTo(partTextFiled.mas_bottom).offset(topOffset);
             } else {
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
                 } else {
                     make.top.offset(kHorizontalMargin_8);
                 }
+                height += kHorizontalMargin_8;
             }
         }];
         
@@ -483,7 +486,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(wordButton).offset(3); // Since word button has expand vlaue
+            CGFloat topOffset = wordButton.expandValue / 2; // expandValue = 6;
+            make.top.equalTo(wordButton).offset(topOffset); // Since word button has expand vlaue
             
             CGFloat leftOffset = 2;
             make.left.equalTo(wordButton.mas_right).offset(leftOffset);
@@ -495,7 +499,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             CGSize labelSize = [self labelSize:meanLabel exceptedWidth:exceptedWidth];
             make.size.mas_equalTo(labelSize);
             
-            height += (kVerticalPadding_8 + labelSize.height + wordButton.expandValue);
+            height += (labelSize.height + topOffset);
 //            NSLog(@"height = %1.f", height);
         }];
         

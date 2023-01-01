@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryResult (EZYoudaoDictModel)
 
-+ (instancetype)resultWithYoudaoDictModel:(EZYoudaoDictModel *)model;
-
 - (instancetype)setupWithYoudaoDictModel:(EZYoudaoDictModel *)model;
 
 @end
