@@ -391,7 +391,10 @@ static EZWindowManager *_instance;
         // Reset window height first, avoid being affected by previous window height.
         [window.queryViewController resetTableView:^{
             [self showFloatingWindowType:windowType queryText:nil];
-            [window.queryViewController startQueryWithImage:image];
+            // Avoid block main thread, system ocr image cost ~0.4s
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [window.queryViewController startQueryWithImage:image];
+            });
         }];
     }];
 }
