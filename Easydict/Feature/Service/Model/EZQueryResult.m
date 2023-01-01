@@ -60,7 +60,6 @@ NSString *getPartName(NSString *part) {
     _part = getPartName(part);
 }
 
-
 @end
 
 
@@ -73,6 +72,19 @@ NSString *getPartName(NSString *part) {
 
 - (void)setPart:(NSString *)part {
     _part = getPartName(part);
+}
+
+- (NSString *)meansText {
+    if (!_meansText) {
+        _meansText = [self.means componentsJoinedByString:@"; "] ?: @"";
+    }
+    return _meansText;
+}
+
+- (NSString *)partMeansText {
+    NSString *pos = self.part ? [NSString stringWithFormat:@"%@  ", self.part] : @"";
+    NSString *text = [NSString stringWithFormat:@"%@%@", pos, self.meansText];
+    return text;
 }
 
 @end

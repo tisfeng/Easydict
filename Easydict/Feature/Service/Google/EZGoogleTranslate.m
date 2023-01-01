@@ -581,8 +581,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
-    NSString *preferredLanguage = [EZLanguageManager firstLanguage];
-    NSString *preferredLangCode = [self languageCodeForLanguage:preferredLanguage];
+//    NSString *preferredLanguage = [EZLanguageManager firstLanguage];
+//    NSString *preferredLangCode = [self languageCodeForLanguage:preferredLanguage];
     
     NSDictionary *params = @{
         @"client" : @"webapp",
