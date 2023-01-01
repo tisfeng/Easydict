@@ -127,6 +127,7 @@
 		03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB7F2923A2FA00C48725 /* white-black-icon@3x.png */; };
 		03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC67295F4B87004E033E /* EZYoudaoDictModel.m */; };
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
+		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
@@ -387,6 +388,8 @@
 		03BFFC67295F4B87004E033E /* EZYoudaoDictModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZYoudaoDictModel.m; sourceTree = "<group>"; };
 		03BFFC6C295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZYoudaoDictModel.h"; sourceTree = "<group>"; };
 		03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZYoudaoDictModel.m"; sourceTree = "<group>"; };
+		03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZConvenience.h"; sourceTree = "<group>"; };
+		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
 		03D043502928935300E7559E /* EZMainQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainQueryWindow.h; sourceTree = "<group>"; };
@@ -1186,6 +1189,8 @@
 				039CC90C292F664E0037B91E /* NSView+EZWindowType.m */,
 				039CC90E292F86F40037B91E /* NSImage+EZResize.h */,
 				039CC90F292F86F40037B91E /* NSImage+EZResize.m */,
+				03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */,
+				03BFFC7029612E10004E033E /* NSString+EZConvenience.m */,
 			);
 			path = EZCategory;
 			sourceTree = "<group>";
@@ -1457,6 +1462,7 @@
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
+				03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,

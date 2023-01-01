@@ -38,3 +38,4 @@
 #import "MMLog.h"
 
 #import "EZConst.h"
+#import "NSString+EZConvenience.h"

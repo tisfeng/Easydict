@@ -44,13 +44,25 @@
         
         NSMutableArray *partArray = [NSMutableArray array];
         [word.trs enumerateObjectsUsingBlock:^(EZWordTr * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            // adj. 好的，优良的；能干的，擅长的；好的，符合心愿的；
             NSString *explanation = obj.tr.firstObject.l.i.firstObject;
-            EZTranslatePart *part = [EZTranslatePart new];
-            part.means = @[ explanation ];
-            [partArray addObject:part];
+                        
+            NSArray *array = [explanation componentsSeparatedByString:@"."];
+            NSString *pos = array.firstObject;
+            NSString *means = explanation;
+
+            EZTranslatePart *partObject = [[EZTranslatePart alloc] init];
+            if (pos.length < 5) {
+                partObject.part = pos;
+                array = [array subarrayWithRange:NSMakeRange(1, array.count - 1)];
+                means = [[array componentsJoinedByString:@"."] trim];
+            }
+            partObject.means = @[ means ];
+            
+            [partArray addObject:partObject];
         }];
         if (partArray.count) {
-            wordResult.parts = partArray.copy;
+            wordResult.parts = [partArray copy];
         }
         
         // 至少要有词义或单词组才认为有单词翻译结果
