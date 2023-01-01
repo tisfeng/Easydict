@@ -13,9 +13,9 @@
 - (instancetype)setupWithYoudaoDictModel:(EZYoudaoDictModel *)model {
     self.raw = model;
     self.text = model.input;
-
+    
     EZTranslateWordResult *wordResult = [[EZTranslateWordResult alloc] init];
-
+    
     if (model.ec) {
         // 解析音频
         NSMutableArray *phoneticArray = [NSMutableArray array];
@@ -43,14 +43,14 @@
         }
         
         NSMutableArray *partArray = [NSMutableArray array];
-        [word.trs enumerateObjectsUsingBlock:^(EZWordTr * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [word.trs enumerateObjectsUsingBlock:^(EZWordTr *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             // adj. 好的，优良的；能干的，擅长的；好的，符合心愿的；
             NSString *explanation = obj.tr.firstObject.l.i.firstObject;
-                        
+            
             NSArray *array = [explanation componentsSeparatedByString:@"."];
             NSString *pos = array.firstObject;
             NSString *means = explanation;
-
+            
             EZTranslatePart *partObject = [[EZTranslatePart alloc] init];
             if (pos.length < 5) {
                 partObject.part = [NSString stringWithFormat:@"%@.", pos];
@@ -65,44 +65,18 @@
             wordResult.parts = [partArray copy];
         }
         
-        // 至少要有词义或单词组才认为有单词翻译结果
-        if (wordResult.parts || wordResult.simpleWords) {
-            self.wordResult = wordResult;
-        }
-        
         NSArray<EZWfElement *> *wfs = word.wfs;
         if (wfs.count) {
             NSMutableArray *exchanges = [NSMutableArray array];
             for (EZWfElement *element in wfs) {
                 EZTranslateExchange *exchange = [[EZTranslateExchange alloc] init];
                 exchange.name = element.wf.name;
-                exchange.words = @[element.wf.value];
+                exchange.words = @[ element.wf.value ];
                 [exchanges addObject:exchange];
             }
             
             if (exchanges.count) {
-                self.wordResult.exchanges = exchanges;
-            }
-        }
-        
-        EZWebTrans *webTrans = model.webTrans;
-        if (webTrans) {
-            NSMutableArray *webExplanations = [NSMutableArray array];
-            for (EZWebTranslation *webTranslation in webTrans.webTranslation) {
-                EZTranslateSimpleWord *simpleWord = [[EZTranslateSimpleWord alloc] init];
-                simpleWord.word = webTranslation.key;
-                
-                NSMutableArray *explanations = [NSMutableArray array];
-                for (EZTran *trans in webTranslation.trans) {
-                    [explanations addObject:trans.value];
-                }
-                simpleWord.means = explanations;
-                
-                [webExplanations addObject:simpleWord];
-            }
-            
-            if (webExplanations.count) {
-                self.wordResult.simpleWords = [webExplanations subarrayWithRange:NSMakeRange(0, 4)];
+                wordResult.exchanges = exchanges;
             }
         }
     }
@@ -122,7 +96,7 @@
         }
         
         NSMutableArray *wordArray = [NSMutableArray array];
-        [word.trs enumerateObjectsUsingBlock:^(EZWordTr * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [word.trs enumerateObjectsUsingBlock:^(EZWordTr *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             EZTrL *l = obj.tr.firstObject.l;
             NSMutableArray *words = [NSMutableArray array];
             for (NSDictionary *wordDict in l.i) {
@@ -143,7 +117,7 @@
             simpleWord.part = l.pos;
             NSString *means = l.tran;
             if (means) {
-                simpleWord.means = @[means];
+                simpleWord.means = @[ means ];
             }
             simpleWord.showPartMeans = YES;
             [wordArray addObject:simpleWord];
@@ -151,20 +125,40 @@
         if (wordArray.count) {
             wordResult.simpleWords = [wordArray copy];
         }
-        
-        // 至少要有词义或单词组才认为有单词翻译结果
-        if (wordResult.parts || wordResult.simpleWords) {
-            self.wordResult = wordResult;
+    }
+    
+    EZWebTrans *webTrans = model.webTrans;
+    if (webTrans) {
+        NSMutableArray *webExplanations = [NSMutableArray array];
+        for (EZWebTranslation *webTranslation in webTrans.webTranslation) {
+            EZTranslateSimpleWord *simpleWord = [[EZTranslateSimpleWord alloc] init];
+            simpleWord.word = webTranslation.key;
+            
+            NSMutableArray *explanations = [NSMutableArray array];
+            for (EZTran *trans in webTranslation.trans) {
+                [explanations addObject:trans.value];
+            }
+            simpleWord.means = explanations;
+            
+            [webExplanations addObject:simpleWord];
         }
         
+        if (webExplanations.count) {
+            NSArray *webWords = [webExplanations subarrayWithRange:NSMakeRange(0, 4)];
+            NSMutableArray *simpleWords = [NSMutableArray arrayWithArray:wordResult.simpleWords];
+            wordResult.simpleWords = [simpleWords arrayByAddingObjectsFromArray:webWords];
+        }
     }
     
     if (model.newhh) {
-        
+    }
+    
+    // 至少要有词义或单词组才认为有单词翻译结果
+    if (wordResult.parts || wordResult.simpleWords) {
+        self.wordResult = wordResult;
     }
     
     return self;
 }
-
 
 @end
