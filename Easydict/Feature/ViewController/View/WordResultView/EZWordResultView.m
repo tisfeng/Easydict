@@ -411,7 +411,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
-        if (obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
+        if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
                 mm_strongify(self);
                 
