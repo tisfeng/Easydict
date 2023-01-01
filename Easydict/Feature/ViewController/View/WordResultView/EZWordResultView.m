@@ -476,11 +476,9 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
         
-        
-        NSString *meanText = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "] ?: @"";
-        
+                
         EZLabel *meanLabel = [[EZLabel alloc] init];
-        meanLabel.text = meanText;
+        meanLabel.text = obj.meansText;
         
         [self addSubview:meanLabel];
         [meanLabel excuteLight:^(id _Nonnull x) {
