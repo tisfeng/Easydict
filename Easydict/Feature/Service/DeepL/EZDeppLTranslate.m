@@ -8,6 +8,7 @@
 
 #import "EZDeppLTranslate.h"
 #import "EZWebViewTranslator.h"
+#import "EZTranslateError.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
@@ -56,6 +57,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
+    if (!from || !to) {
+        return nil;
+    }
+    
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kDeepLTranslateURL, from, to, text];
 }
 
@@ -99,6 +104,19 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    if (!self.wordLink) {
+        NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
+        
+        NSString *errorMsg = self.queryModel.queryFromLanguage;
+        if (!to) {
+            errorMsg = self.queryModel.queryTargetLanguage;
+        }
+        
+        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, errorMsg ?: @"翻译失败", nil);
+        completion(self.result, error);
+        return;
+    }
+    
     [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         self.result.normalResults = texts;
         completion(self.result, error);

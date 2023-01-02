@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLinkButton : EZButton
 
-@property (nonatomic, copy) NSString *link;
+@property (nonatomic, copy, nullable) NSString *link;
 
 - (void)openLink;
 
