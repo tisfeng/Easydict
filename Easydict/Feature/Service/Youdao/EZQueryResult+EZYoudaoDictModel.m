@@ -143,12 +143,15 @@
             simpleWord.means = explanations;
             
             [webExplanations addObject:simpleWord];
+            
+            if (webExplanations.count > 4) {
+                webExplanations = [[webExplanations subarrayWithRange:NSMakeRange(0, 4)] mutableCopy];
+            }
         }
         
         if (webExplanations.count) {
-            NSArray *webWords = [webExplanations subarrayWithRange:NSMakeRange(0, 4)];
             NSMutableArray *simpleWords = [NSMutableArray arrayWithArray:wordResult.simpleWords];
-            wordResult.simpleWords = [simpleWords arrayByAddingObjectsFromArray:webWords];
+            wordResult.simpleWords = [simpleWords arrayByAddingObjectsFromArray:webExplanations];
         }
     }
     
