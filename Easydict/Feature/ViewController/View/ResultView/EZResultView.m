@@ -21,7 +21,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 @property (nonatomic, strong) NSView *topBarView;
 @property (nonatomic, strong) NSImageView *typeImageView;
 @property (nonatomic, strong) NSTextField *typeLabel;
-@property (nonatomic, strong) NSImageView *disableImageView;
+@property (nonatomic, strong) NSImageView *warningImageView;
 @property (nonatomic, strong) NSView *loadingView;
 
 @property (nonatomic, strong) NSButton *arrowButton;
@@ -93,14 +93,14 @@ static NSInteger const kAnimationDotViewCount = 5;
     }];
     self.typeLabel.mas_key = @"typeLabel";
     
-    self.disableImageView = [NSImageView mm_make:^(NSImageView *imageView) {
+    self.warningImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
         imageView.hidden = YES;
         NSImage *image = [NSImage imageNamed:@"disabled"];
         [imageView setImage:image];
     }];
-    self.disableImageView.mas_key = @"disableImageView";
+    self.warningImageView.mas_key = @"warningImageView";
     
     NSView *loadingView = [[NSView alloc] init];
     [self addSubview:loadingView];
@@ -186,7 +186,7 @@ static NSInteger const kAnimationDotViewCount = 5;
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
-    [self.disableImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.warningImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
@@ -248,6 +248,8 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self updateArrowButton];
         
     [self.wordResultView refreshWithResult:result];
+    
+    self.warningImageView.hidden = !result.error;
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
