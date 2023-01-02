@@ -257,6 +257,55 @@ static const CGFloat kVerticalPadding_8 = 8;
         audioButton.mas_key = @"audioButton_phonetics";
     }];
     
+    __block NSButton *lastTagLabel = nil;
+    [wordResult.tags enumerateObjectsUsingBlock:^(NSString * _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSButton *tagButton = [[NSButton alloc] init];
+        [self addSubview:tagButton];
+        
+        NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
+
+        tagButton.wantsLayer = YES;
+        tagButton.layer.borderWidth = 1.0;
+        tagButton.layer.cornerRadius = 3;
+        tagButton.layer.borderColor = tagColor.CGColor;
+        tagButton.bordered = NO;
+                
+        NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tag font:[NSFont systemFontOfSize:12] color:tagColor];
+        tagButton.attributedTitle = attributedString;
+        
+        [tagButton sizeToFit];
+        CGSize size = tagButton.size;
+        CGFloat expandValue = 3;
+        CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
+        
+
+        [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(newSize);
+            
+            if (lastTagLabel) {
+                make.left.equalTo(lastTagLabel.mas_right).offset(8);
+                make.centerY.equalTo(lastTagLabel);
+            } else {
+                make.left.offset(kHorizontalMargin_8 + 2);
+                if (lastView) {
+                    CGFloat topOffset = kVerticalPadding_8;
+                    if (idx == 0) {
+                        topOffset = kVerticalMargin_12;
+                    }
+                    make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                } else {
+                    make.top.offset(kVerticalMargin_12);
+                }
+            }
+        }];
+        lastTagLabel = tagButton;
+    }];
+    
+    if (lastTagLabel) {
+        lastView = lastTagLabel;
+        height += (lastTagLabel.height + kVerticalMargin_12);
+    }
+
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         __block CGFloat exceptedWidth = 0;

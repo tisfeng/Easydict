@@ -76,13 +76,16 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 @interface EZTranslateWordResult : NSObject
 
 /// 音标
-@property (nonatomic, strong, nullable) NSArray<EZTranslatePhonetic *> *phonetics;
+@property (nonatomic, copy, nullable) NSArray<EZTranslatePhonetic *> *phonetics;
 /// 词性词义
-@property (nonatomic, strong, nullable) NSArray<EZTranslatePart *> *parts;
+@property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *parts;
 /// 其他形式
-@property (nonatomic, strong, nullable) NSArray<EZTranslateExchange *> *exchanges;
+@property (nonatomic, copy, nullable) NSArray<EZTranslateExchange *> *exchanges;
 /// 中文查词时会有，单词短语数组
-@property (nonatomic, strong, nullable) NSArray<EZTranslateSimpleWord *> *simpleWords;
+@property (nonatomic, copy, nullable) NSArray<EZTranslateSimpleWord *> *simpleWords;
+
+/// 标签：四级，六级，考研
+@property (nonatomic, copy, nullable) NSArray<NSString *> *tags;
 
 @end
 

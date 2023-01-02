@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface EZEc : NSObject
-@property (nonatomic, copy)   NSArray<NSString *> *examType;
+@property (nonatomic, copy, nullable)   NSArray<NSString *> *examType;
 @property (nonatomic, strong) EZSource *source;
 @property (nonatomic, copy)   NSArray<EZEcWord *> *word;
 @end
