@@ -97,10 +97,10 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 @property (nonatomic, copy) EZServiceType serviceType;
 @property (nonatomic, weak) EZQueryService *service;
 
-@property (nonatomic, assign) BOOL isShowing;
+@property (assign) BOOL isShowing;
 @property (nonatomic, assign) CGFloat viewHeight;
 
-@property (nonatomic, assign) BOOL isLoading;
+@property (assign) BOOL isLoading;
 
 
 /// 此次查询的文本

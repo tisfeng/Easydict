@@ -127,6 +127,12 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate) name:EZServiceHasUpdatedNotification object:nil];
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self
+               selector:@selector(boundsDidChangeNotification:)
+                   name:NSViewBoundsDidChangeNotification
+                 object:[self.scrollView contentView]];
 }
 
 - (void)setupServices {
@@ -145,6 +151,15 @@ static NSString *const EZColumnId = @"EZColumnId";
     self.serviceTypes = serviceTypes;
 }
 
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
+}
+
+
+#pragma mark - NSNotificationCenter
+
 - (void)handleServiceUpdate {
     [self setupServices];
     [self resetAllResults];
@@ -156,10 +171,10 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
 }
 
-- (void)dealloc {
-    NSLog(@"dealloc: %@", self);
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
+- (void)boundsDidChangeNotification:(NSNotification *)notification {
+    // Manually update the cell height, because the reused cell will not self-adjust the height.
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
+    [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
 }
 
 #pragma mark - Getter && Setter
@@ -397,7 +412,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
     
     if (self.windowType != EZWindowTypeMini && row == 1) {
-        EZSelectLanguageCell *selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
+        EZSelectLanguageCell *selectLanguageCell = [self.tableView makeViewWithIdentifier:EZSelectLanguageCellId owner:self];
+        if (!selectLanguageCell) {
+            selectLanguageCell = [[EZSelectLanguageCell alloc] initWithFrame:[self tableViewContentBounds]];
+            selectLanguageCell.identifier = EZSelectLanguageCellId;
+        }
         selectLanguageCell.queryModel = self.queryModel;
         
         mm_weakify(self);
@@ -429,8 +448,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         height = 35;
     } else {
         EZQueryResult *result = [self serviceAtRow:row].result;
-        // A non-zero value must be set, but the initial viewHeight is 0.
-        height = MAX(result.viewHeight, kResultViewMiniHeight);
+        if (result.isShowing) {
+            // A non-zero value must be set, but the initial viewHeight is 0.
+            height = MAX(result.viewHeight, kResultViewMiniHeight);
+        } else {
+            height = kResultViewMiniHeight;
+        }
     }
     //        NSLog(@"row: %ld, height: %@", row, @(height));
     
@@ -645,19 +668,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 // TODO: need to check, use true cell result, rather than self result
 - (NSArray *)allShowingResults {
     NSMutableArray *results = [NSMutableArray array];
-    
-    //    NSInteger rowCount = [self.tableView numberOfRows];
-    //    NSInteger startIndex = [self resultCellOffset];
-    //    rowCount -= startIndex;
-    //
-    //    for (int i = (int)startIndex; i < rowCount; i++) {
-    //        EZResultView *resultCell = [[[self.tableView rowViewAtRow:i makeIfNecessary:NO] subviews] firstObject];
-    //        EZQueryResult *result = resultCell.result;
-    //        if (result.isShowing) {
-    //            [results addObject:result];
-    //        }
-    //    }
-    
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         if (result.isShowing) {
@@ -756,8 +766,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (EZResultView *)resultCellAtRow:(NSInteger)row {
     EZQueryService *service = [self serviceAtRow:row];
-    
     EZResultView *resultCell = [self.tableView makeViewWithIdentifier:EZResultViewId owner:self];
+    
     if (!resultCell) {
         resultCell = [[EZResultView alloc] initWithFrame:[self tableViewContentBounds]];
         resultCell.identifier = EZResultViewId;
