@@ -35,18 +35,14 @@ NSString *const EZTranslateErrorRequestErrorKey = @"Error";
             errorString = @"不支持的语言";
             break;
         default:
+            errorString = @"未知错误";
             break;
     }
-    if (message.length) {
-        if (errorString.length) {
-            errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
-        } else {
-            errorString = message;
-        }
+    if (message.length == 0) {
+        message = @"";
     }
-    if (!errorString.length) {
-        errorString = @"未知错误";
-    }
+    errorString = [NSString stringWithFormat:@"翻译失败，%@: %@", errorString, message];
+ 
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
     if (request) {

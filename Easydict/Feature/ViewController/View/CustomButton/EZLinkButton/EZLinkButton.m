@@ -54,6 +54,14 @@ static NSString *const EZQueryKey = @"{Query}";
     }];
 }
 
+- (void)setLink:(NSString *)link {
+    _link = link;
+    
+    if (link.length == 0) {
+        self.enabled = NO;
+    }
+}
+
 - (void)openLink {
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
     NSString *queryText = viewController.queryText;
