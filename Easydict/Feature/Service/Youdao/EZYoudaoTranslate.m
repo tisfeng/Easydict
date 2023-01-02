@@ -11,17 +11,28 @@
 #import "EZYoudaoOCRResponse.h"
 #import "EZYoudaoDictModel.h"
 #import "EZQueryResult+EZYoudaoDictModel.h"
+#import "EZWebViewTranslator.h"
 
 static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 
 @interface EZYoudaoTranslate ()
 
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
+@property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @end
 
 
 @implementation EZYoudaoTranslate
+
+- (EZWebViewTranslator *)webViewTranslator {
+    if (!_webViewTranslator) {
+        NSString *selector = @"p.trans-content";
+        _webViewTranslator = [[EZWebViewTranslator alloc] init];
+        _webViewTranslator.querySelector = selector;
+    }
+    return _webViewTranslator;
+}
 
 - (AFHTTPSessionManager *)jsonSession {
     if (!_jsonSession) {
@@ -185,8 +196,17 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             @try {
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
                 [self.result setupWithYoudaoDictModel:model];
-                completion(self.result, nil);
-                return;
+                if (self.result.wordResult) {
+                    completion(self.result, nil);
+                    return;
+                }
+                if (self.wordLink) {
+                    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+                        self.result.normalResults = texts;
+                        completion(self.result, error);
+                    }];
+                    return;
+                }
             } @catch (NSException *exception) {
                 MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
                 message = @"有道翻译翻译接口数据解析异常";
