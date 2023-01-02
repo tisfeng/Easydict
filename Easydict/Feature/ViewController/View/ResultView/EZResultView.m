@@ -262,9 +262,11 @@ static NSInteger const kAnimationDotViewCount = 5;
     CGFloat viewHeight = kResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
         viewHeight = kResultViewMiniHeight + wordResultViewHeight;
-        //        NSLog(@"result view height: %@", @(self.height));
+        //        NSLog(@"show result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
+    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
+
     
     // animation need right frame, but result may change, so have to layout frame.
     [self startOrEndLoadingAnimation:self.result.isLoading];
