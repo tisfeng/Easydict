@@ -71,33 +71,34 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 - (NSString *)wordLink {
     NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *foreignLangauge = [self youdaoDictForeignLangauge];
-
+    if (!foreignLangauge) {
+        return nil;
+    }
     return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoTranslateURL, encodedWord, foreignLangauge];
 }
 
 - (nullable NSString *)youdaoDictForeignLangauge {
     EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
     EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
-    
-    NSString *youdaoFrom = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *youdaoTo = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    
-    NSArray *youdaoLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
-    NSMutableArray *youdaoLanguageCodes = [NSMutableArray array];
-    for (EZLanguage langauge in youdaoLanguags) {
+
+    NSArray *youdaoSupportedLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
+    NSMutableArray *youdaoSupportedLanguageCodes = [NSMutableArray array];
+    for (EZLanguage langauge in youdaoSupportedLanguags) {
         NSString *code = [self languageCodeForLanguage:langauge];
-        [youdaoLanguageCodes addObject:code];
+        [youdaoSupportedLanguageCodes addObject:code];
     }
     
-    if (![EZLanguageManager isChineseLanguage:fromLanguage] && ![EZLanguageManager isChineseLanguage:toLanguage]) {
-        return nil;
+    NSString *foreignLangauge = nil; // en,fr,
+    if ([EZLanguageManager isChineseLanguage:fromLanguage]) {
+        foreignLangauge = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
+    } else if ([EZLanguageManager isChineseLanguage:toLanguage]) {
+        foreignLangauge = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
     }
     
-    NSString *foreignLangauge = youdaoTo;
-    if ([youdaoLanguageCodes containsObject:youdaoFrom]) {
-        foreignLangauge = youdaoFrom;
+    if ([youdaoSupportedLanguageCodes containsObject:foreignLangauge]) {
+        return foreignLangauge;
     }
-    return foreignLangauge;
+    return nil;
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
@@ -169,23 +170,26 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         return;
     }
     
-    NSString *url = @"https://dict.youdao.com/jsonapi";
     NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+    if (!foreignLangauge) {
+        [self translateYoudaoAPI:text from:from to:to completion:completion];
+        return;
+    }
+    
     NSArray *dictArray = @[@[@"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest"]];
-
     NSDictionary *dicts = @{
         @"count" : @(99),
         @"dicts" : dictArray,
     };
         
     NSData *data = [NSJSONSerialization dataWithJSONObject:dicts options:0 error:nil];
-    NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *dicts_string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSDictionary *params = @{
         @"q" : text,
         @"le" : foreignLangauge,
-        @"dicts" : str,
+        @"dicts" : dicts_string,
     };
-    
+    NSString *url = @"https://dict.youdao.com/jsonapi";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         
     mm_weakify(self);
