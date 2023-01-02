@@ -47,7 +47,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"youdao_translate", nil);
+    return NSLocalizedString(@"youdao_dict", nil);
 }
 
 - (NSString *)link {
