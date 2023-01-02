@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 static const CGFloat kResultViewMiniHeight = 30;
 
-// ???: If don't inherit from NSTableRowView, NSTextField cannot selectable.
-@interface EZResultView : NSTableRowView
+// ???: If don't inherit from NSTableRowView, NSTextField in cell cannot selectable.
+@interface EZResultView : NSView
 
 @property (nonatomic, strong) EZQueryResult *result;
 

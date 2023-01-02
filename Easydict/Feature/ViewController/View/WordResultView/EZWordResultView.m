@@ -311,10 +311,11 @@ static const CGFloat kVerticalPadding_8 = 8;
         [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(newSize);
             make.centerY.equalTo(tagLabel);
+            CGFloat padding = 6;
             if (lastTagButton) {
-                make.left.equalTo(lastTagButton.mas_right).offset(6);
+                make.left.equalTo(lastTagButton.mas_right).offset(padding);
             } else {
-                make.left.equalTo(tagLabel.mas_right).offset(8);
+                make.left.equalTo(tagLabel.mas_right).offset(padding);
             }
         }];
         lastTagButton = tagButton;
