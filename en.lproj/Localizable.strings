@@ -18,7 +18,7 @@
 "explain" = "explain:";
 "us_phonetic" = "us";
 "uk_phonetic" = "uk";
-"chinese_phonetic" = "yin";
+"chinese_phonetic" = "phonetic";
 "singular" = "singular";
 "plural" = "plural";
 "comparative" = "comparative";
@@ -27,6 +27,8 @@
 "past_participle" = "past participle";
 "present_participle" = "present articiple";
 "root" = "root";
+
+"tag" = "tags:";
 
 "general" = "General";
 "setting" = "Setting";
