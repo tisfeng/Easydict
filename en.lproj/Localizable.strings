@@ -10,7 +10,7 @@
 
 "google_translate" = "Google Translate";
 "baidu_translate" = "Baidu Translate";
-"youdao_translate" = "Youdao Translate";
+"youdao_dict" = "Youdao Dictionary";
 "deepL_translate" = "DeepL Translate";
 "system_translate" = "System Translate";
 "volcano_translate" = "Volcano Translate";
