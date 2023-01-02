@@ -79,6 +79,8 @@
                 wordResult.exchanges = exchanges;
             }
         }
+        
+        wordResult.tags = model.ec.examType;
     }
     
     if (model.ce) {
