@@ -65,6 +65,10 @@
 - (void)mouseEntered:(NSEvent *)event {
     //        NSLog(@"mouseEntered");
     
+    if (!self.enabled) {
+        return;
+    }
+    
     if (self.mouseEnterBlock) {
         self.mouseEnterBlock(self);
     }
@@ -76,6 +80,10 @@
 
 - (void)mouseExited:(NSEvent *)event {
     //        NSLog(@"mouseExited");
+    
+    if (!self.enabled) {
+        return;
+    }
     
     if (self.mouseExitedBlock) {
         self.mouseExitedBlock(self);
@@ -92,6 +100,10 @@
 - (void)mouseDown:(NSEvent *)event {
     //    NSLog(@"mouseDown");
     
+    if (!self.enabled) {
+        return;
+    }
+    
     if (self.mouseDownBlock) {
         self.mouseDownBlock(self);
     }
@@ -104,6 +116,10 @@
 
 - (void)mouseUp:(NSEvent *)event {
     //    NSLog(@"mouseUp");
+    
+    if (!self.enabled) {
+        return;
+    }
     
     if (self.mouseUpBlock) {
         self.mouseUpBlock(self);
@@ -131,6 +147,10 @@
 
 - (void)mouseDragged:(NSEvent *)event {
     //    NSLog(@"mouseDragged");
+    
+    if (!self.enabled) {
+        return;
+    }
     
     CGPoint point = event.locationInWindow;
     CGPoint innerPoint = [self convertPoint:point fromView:self.window.contentView];
