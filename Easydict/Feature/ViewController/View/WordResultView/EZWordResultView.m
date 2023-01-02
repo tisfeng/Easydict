@@ -257,54 +257,69 @@ static const CGFloat kVerticalPadding_8 = 8;
         audioButton.mas_key = @"audioButton_phonetics";
     }];
     
-    __block NSButton *lastTagLabel = nil;
+    NSTextField *tagLabel = nil;
+    if (wordResult.tags.count) {
+        tagLabel = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
+            mm_strongify(self);
+            
+            [self addSubview:textField];
+            textField.stringValue = NSLocalizedString(@"tag", nil);
+            textField.textColor = typeTextColor;
+            textField.font = typeTextFont;
+            textField.editable = NO;
+            textField.bordered = NO;
+            textField.backgroundColor = NSColor.clearColor;
+            [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+            
+            [textField sizeToFit];
+            
+            [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(textField.height);
+                make.left.offset(kHorizontalMargin_8);
+                
+                if (lastView) {
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                } else {
+                    make.top.offset(kVerticalMargin_12);
+                }
+                height += (textField.height + kVerticalMargin_12);
+
+            }];
+        }];
+        tagLabel.mas_key = @"tagLabel";
+        lastView = tagLabel;
+    }
+    
+    __block NSButton *lastTagButton = nil;
     [wordResult.tags enumerateObjectsUsingBlock:^(NSString * _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
         NSButton *tagButton = [[NSButton alloc] init];
         [self addSubview:tagButton];
-        
-        NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-
-        tagButton.wantsLayer = YES;
-        tagButton.layer.borderWidth = 1.0;
-        tagButton.layer.cornerRadius = 3;
-        tagButton.layer.borderColor = tagColor.CGColor;
-        tagButton.bordered = NO;
-                
-        NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tag font:[NSFont systemFontOfSize:12] color:tagColor];
-        tagButton.attributedTitle = attributedString;
+        tagButton.title = tag;
+        [tagButton excuteLight:^(NSButton *tagButton) {
+            NSColor *tagColor = [NSColor mm_colorWithHexString:@"#878785"];
+            [self updateTagButton:tagButton tagColor:tagColor];
+        } drak:^(NSButton *tagButton) {
+            NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
+            [self updateTagButton:tagButton tagColor:tagColor];
+        }];
         
         [tagButton sizeToFit];
         CGSize size = tagButton.size;
         CGFloat expandValue = 3;
         CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
-        
 
         [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(newSize);
-            
-            if (lastTagLabel) {
-                make.left.equalTo(lastTagLabel.mas_right).offset(8);
-                make.centerY.equalTo(lastTagLabel);
+            make.centerY.equalTo(tagLabel);
+            if (lastTagButton) {
+                make.left.equalTo(lastTagButton.mas_right).offset(6);
             } else {
-                make.left.offset(kHorizontalMargin_8 + 2);
-                if (lastView) {
-                    CGFloat topOffset = kVerticalPadding_8;
-                    if (idx == 0) {
-                        topOffset = kVerticalMargin_12;
-                    }
-                    make.top.equalTo(lastView.mas_bottom).offset(topOffset);
-                } else {
-                    make.top.offset(kVerticalMargin_12);
-                }
+                make.left.equalTo(tagLabel.mas_right).offset(8);
             }
         }];
-        lastTagLabel = tagButton;
+        lastTagButton = tagButton;
     }];
-    
-    if (lastTagLabel) {
-        lastView = lastTagLabel;
-        height += (lastTagLabel.height + kVerticalMargin_12);
-    }
+
 
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
@@ -637,6 +652,16 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
 }
 
+- (void)updateTagButton:(NSButton *)tagButton tagColor:(NSColor *)tagColor {
+    tagButton.wantsLayer = YES;
+    tagButton.layer.borderWidth = 1.2;
+    tagButton.layer.cornerRadius = 3;
+    tagButton.layer.borderColor = tagColor.CGColor;
+    tagButton.bordered = NO;
+            
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12] color:tagColor];
+    tagButton.attributedTitle = attributedString;
+}
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑

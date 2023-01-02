@@ -17,7 +17,7 @@
 "explain" = "释义:";
 "us_phonetic" = "美";
 "uk_phonetic" = "英";
-"chinese_phonetic" = "音";
+"chinese_phonetic" = "发音";
 
 "singular" = "第三人称单数";
 "plural" = "复数";
@@ -27,6 +27,8 @@
 "past_participle" = "过去分词";
 "present_participle" = "现在分词";
 "root" = "词根";
+
+"tag" = "标签:";
 
 "general" = "通用";
 "setting" = "设置";

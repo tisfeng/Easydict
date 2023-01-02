@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 static CGFloat EZExceptInputViewHeight = 30;
 
-@interface EZQueryView : NSView
+@interface EZQueryView : NSTableRowView
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
