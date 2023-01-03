@@ -10,12 +10,8 @@
 #import <WebKit/WebKit.h>
 #import "EZURLSchemeHandler.h"
 
-// Max query duration seconds
-static NSTimeInterval const MAX_QUERY_SECONDS = 10.0;
-
 // Delay query seconds
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
-
 
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
@@ -162,7 +158,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         void (^retryBlock)(void) = ^{
             // 如果页面中不存在目标元素，则延迟一段时间后再次判断
             self.retryCount++;
-            NSInteger maxRetryCount = ceil(MAX_QUERY_SECONDS / DELAY_SECONDS);
+            NSInteger maxRetryCount = ceil(EZNetWorkTimeoutInterval / DELAY_SECONDS);
             if (self.retryCount < maxRetryCount && self.completionHandler) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self getTextContentOfElement:selector completion:completion];
@@ -170,7 +166,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 NSLog(@"finish, retry count: %ld", self.retryCount);
                 if (completion) {
-                    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", MAX_QUERY_SECONDS];
+                    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
                     NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:@{NSLocalizedDescriptionKey : errorString}];
                     completion(nil, error);
                 }

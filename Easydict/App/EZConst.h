@@ -27,4 +27,6 @@ static NSString *const EZUserAgent = @"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 
 // ???: If value is not 0.2, it seems will block animation, because default animationResizeTime is 0.2 ?
 static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
+static NSTimeInterval const EZNetWorkTimeoutInterval = 30.0;
+
 #endif /* EZConst_h */

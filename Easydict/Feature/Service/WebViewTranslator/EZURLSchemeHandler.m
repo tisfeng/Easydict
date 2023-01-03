@@ -164,6 +164,8 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         Method swizzledMethod = class_getClassMethod([self class], @selector(ez_handlesURLScheme:));
         method_exchangeImplementations(originalMethod, swizzledMethod);
     });
+    
+    [AFHTTPRequestSerializer serializer].timeoutInterval = EZNetWorkTimeoutInterval;
 }
 
 + (BOOL)ez_handlesURLScheme:(NSString *)urlScheme {
@@ -282,19 +284,6 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 - (nullable EZURLSessionTaskCompletionHandler)completionHandlerForURL:(NSURL *)URL {
     // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
-    
-//    NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:NO];
-//    // Remove url query.
-//    components.query = nil;
-//    NSString *baseURLString = components.URL.absoluteString;
-//
-//    for (NSString *monitorURL in self.monitorDictionary.allKeys) {
-//        if ([monitorURL hasPrefix:baseURLString]) {
-//            EZURLSessionTaskCompletionHandler completionHandler = self.monitorDictionary[monitorURL];
-//            return completionHandler;
-//        }
-//    }
-//    return nil;
     
     NSString *monitorURL = [self monitorURLForURL:URL];
     if (monitorURL) {
