@@ -258,6 +258,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     
     NSTextField *tagLabel = nil;
+    __block NSScrollView *tagScrollView = nil;
     if (wordResult.tags.count) {
         tagLabel = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             mm_strongify(self);
@@ -288,39 +289,76 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         tagLabel.mas_key = @"tagLabel";
         lastView = tagLabel;
-    }
-    
-    __block NSButton *lastTagButton = nil;
-    [wordResult.tags enumerateObjectsUsingBlock:^(NSString * _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSButton *tagButton = [[NSButton alloc] init];
-        [self addSubview:tagButton];
-        tagButton.title = tag;
-        [tagButton excuteLight:^(NSButton *tagButton) {
-            NSColor *tagColor = [NSColor mm_colorWithHexString:@"#878785"];
-            [self updateTagButton:tagButton tagColor:tagColor];
-        } drak:^(NSButton *tagButton) {
-            NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
-            [self updateTagButton:tagButton tagColor:tagColor];
+        
+        __block NSView *tagContentView = nil;
+        __block CGFloat tagContentViewWidth = 0;
+        CGFloat padding = 6;
+
+        __block NSButton *lastTagButton = nil;
+        [wordResult.tags enumerateObjectsUsingBlock:^(NSString * _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSButton *tagButton = [[NSButton alloc] init];
+            tagButton.title = tag;
+            [tagButton excuteLight:^(NSButton *tagButton) {
+                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#878785"];
+                [self updateTagButton:tagButton tagColor:tagColor];
+            } drak:^(NSButton *tagButton) {
+                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
+                [self updateTagButton:tagButton tagColor:tagColor];
+            }];
+            
+            [tagButton sizeToFit];
+            CGSize size = tagButton.size;
+            CGFloat expandValue = 3;
+            CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
+
+            if (!tagScrollView) {
+                tagScrollView = [[NSScrollView alloc] init];
+                [self addSubview:tagScrollView];
+                [tagScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.left.equalTo(tagLabel.mas_right).offset(padding);
+                    make.height.mas_equalTo(newSize.height);
+                    make.centerY.equalTo(tagLabel);
+                }];
+                
+                tagContentView = [[NSView alloc] init];
+                [tagScrollView addSubview:tagContentView];
+                tagContentView.wantsLayer = YES;
+                [tagContentView.layer excuteLight:^(CALayer *layer) {
+                    layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+                } drak:^(CALayer *layer) {
+                    layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+                }];
+                
+                tagContentView.height = newSize.height;
+                tagScrollView.documentView = tagContentView;
+                tagScrollView.horizontalScrollElasticity = NSScrollElasticityNone;
+                tagScrollView.verticalScrollElasticity = NSScrollElasticityNone;
+                tagScrollView.hasHorizontalScroller = NO;
+            }
+            [tagContentView addSubview:tagButton];
+            
+            [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.size.mas_equalTo(newSize);
+                make.centerY.equalTo(tagLabel);
+                if (lastTagButton) {
+                    make.left.equalTo(lastTagButton.mas_right).offset(padding);
+                } else {
+                    make.left.equalTo(tagContentView);
+                }
+            }];
+            lastTagButton = tagButton;
+            tagContentViewWidth += (newSize.width + padding);
         }];
         
-        [tagButton sizeToFit];
-        CGSize size = tagButton.size;
-        CGFloat expandValue = 3;
-        CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
-
-        [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(newSize);
-            make.centerY.equalTo(tagLabel);
-            CGFloat padding = 6;
-            if (lastTagButton) {
-                make.left.equalTo(lastTagButton.mas_right).offset(padding);
-            } else {
-                make.left.equalTo(tagLabel.mas_right).offset(padding);
-            }
+        tagContentView.width = tagContentViewWidth;
+        
+        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + tagLabel.width + padding);
+        CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
+        [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(tagScrollViewWidth);
         }];
-        lastTagButton = tagButton;
-    }];
-
+    }
+    
 
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
