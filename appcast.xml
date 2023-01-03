@@ -3,18 +3,18 @@
   <channel>
     <title>Easydict</title>
     <item>
-      <title>0.4.4</title>
-      <pubDate>Sat, 17 Dec 2022 22:00:00 +0000</pubDate>
+      <title>1.0.0</title>
+      <pubDate>Tue, 3 Jan 2023 23:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/0.4.4/Easydict.zip"
-        sparkle:version="5"
-        sparkle:shortVersionString="0.4.4"
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.0.0/Easydict.zip"
+        sparkle:version="7"
+        sparkle:shortVersionString="1.0.0"
         type="application/octet-stream"
-        sparkle:edSignature="4y0LD1C2bgA+q2dBVrafH0NVNBcBSmmWCo2Q64AOPvPuscyZZRiDm/UvOdLYBBz7pWMUWTjzjXlePKorMrRrDw=="
-        length="6345317" />
+        sparkle:edSignature="oIpBXuL4KVII8DwQ4oP+IQXJwuqyPSqr7k0osIrO8Ilz2aunbjig5uF0kO77h/Pq3y1r70JmB8UeG6OkpwakBA=="
+        length="8869528" />
       <description><![CDATA[
       <ul>
-      <li>0.4.4</li>
+      <li>1.0.0</li>
       </ul>
       ]]>      
     </description>
