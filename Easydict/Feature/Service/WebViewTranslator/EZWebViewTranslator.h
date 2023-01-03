@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *querySelector;
 
+@property (nonatomic, copy) NSString *jsBlock;
+
+
 /// Preload url.
 - (void)preloadURL:(NSString *)URL;
 

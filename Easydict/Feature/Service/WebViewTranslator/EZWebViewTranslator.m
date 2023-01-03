@@ -142,10 +142,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
-    // 先判断页面中是否存在目标元素
-    NSString *queryElement = [NSString stringWithFormat:@"document.querySelector('%@')", selector];
-    NSString *checkIfElementExist = [NSString stringWithFormat:@"%@ != null", queryElement];
-    // NSString *js = @"document.body.innerHTML";
+    // 打印页面 HTML： document.documentElement.outerHTML
+    NSString *checkIfElementExist = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
     [self.webView evaluateJavaScript:checkIfElementExist completionHandler:^(NSString *_Nullable result, NSError *_Nullable error) {
         if (error) {
             // 如果执行出错，则直接返回
@@ -174,17 +172,23 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         };
         
         if ([result boolValue]) {
-            // 如果页面中存在目标元素，则执行下面的代码获取它的 textContent 属性
-            NSString *elementTextContent = [NSString stringWithFormat:@"%@.textContent", queryElement];
-            [self.webView evaluateJavaScript:elementTextContent completionHandler:^(NSString *_Nullable result, NSError *_Nullable error) {
+            NSString *elementTextContent = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).map(el => el.textContent)", selector];
+//            elementTextContent = @"document.body.innerHTML";
+            
+            if (self.jsBlock.length) {
+                elementTextContent = self.jsBlock;
+            }
+            
+            [self.webView evaluateJavaScript:elementTextContent completionHandler:^(NSArray<NSString *> *_Nullable texts, NSError *_Nullable error) {
                 if (error) {
                     // 如果执行出错，则直接返回
                     if (completion) {
                         completion(nil, error);
+                        return;
                     }
                 }
                 // !!!: Trim text, and wait translatedText length > 0
-                NSArray *translatedTexts = [self getValidTranslatedTexts:result];
+                NSArray *translatedTexts = [self getValidTranslatedTexts:texts];
                 if (completion && translatedTexts) {
                     completion(translatedTexts, nil);
                 } else {
@@ -197,18 +201,19 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     }];
 }
 
-- (nullable NSArray<NSString *> *)getValidTranslatedTexts:(NSString *)text {
+- (nullable NSArray<NSString *> *)getValidTranslatedTexts:(NSArray<NSString *> *)texts {
+    NSString *text = [texts componentsJoinedByString:@"\n"];
     NSString *translatedText = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (translatedText.length == 0) {
         return nil;
     }
     
-    // Volcano translatesometimes returns ... first, this is invalid.
+    // Volcano translate sometimes returns ... first, this is invalid.
     if ([translatedText isEqualToString:@"..."]) {
         return nil;
     }
     
-    NSArray *texts = [translatedText componentsSeparatedByString:@"\n"];
+    texts = [translatedText componentsSeparatedByString:@"\n"];
     return texts;
 }
 
