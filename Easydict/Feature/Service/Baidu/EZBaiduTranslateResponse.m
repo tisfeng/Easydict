@@ -40,6 +40,11 @@
 
 @end
 
+@implementation EZBaiduTranslateResponseTags
+
+
+@end
+
 
 @implementation EZBaiduTranslateResponseDictResult
 
