@@ -191,6 +191,13 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                     // 解析单词释义
                     [response.dict_result.simple_means mm_anyPut:^(EZBaiduTranslateResponseSimpleMean *_Nonnull simple_means) {
                         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
+                        NSMutableArray *tags = [NSMutableArray arrayWithArray:simple_means.tags.core];
+                        for (NSString *tag in simple_means.tags.other) {
+                            if (tag.length) {
+                                [tags addObject:tag];
+                            }
+                        }
+                        wordResult.tags = tags;
                         
                         [simple_means.symbols.firstObject mm_anyPut:^(EZBaiduTranslateResponseSymbol *_Nonnull symbol) {
                             // 解析音标

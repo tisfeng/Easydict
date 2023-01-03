@@ -34,6 +34,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface EZBaiduTranslateResponseTags : NSObject
+
+@property (nonatomic, copy, nullable) NSArray<NSString *> *core;
+@property (nonatomic, copy, nullable) NSArray<NSString *> *other;
+
+@end
 
 @interface EZBaiduTranslateResponseExchange : NSObject
 
@@ -61,6 +67,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 虽然这是一个数组，但是它一直都只有一个元素
 @property (nonatomic, strong) NSArray<EZBaiduTranslateResponseSymbol *> *symbols;
+
+@property (nonatomic, strong) EZBaiduTranslateResponseTags *tags;
+
 /// 单词的其他变形
 @property (nonatomic, strong) EZBaiduTranslateResponseExchange *exchange;
 /// 中文查词时会有
