@@ -1,3 +1,67 @@
-# Easydict
+<p align="center">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
+  <h1 align="center">Easydict</h1>
+  <h4 align="center"> Easy to look up words or translate text</h4>
+<p align="center">🇨🇳 🇺🇸 🇯🇵 🇰🇷 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇷🇺 🇩🇪 🇸🇦 🇸🇪 🇳🇱 🇷🇴 🇹🇭 🇸🇰 🇭🇺 🇬🇷 🇩🇰 🇫🇮 🇵🇱 🇨🇿 🇹🇷 🇱🇹 🇱🇻 🇺🇦 🇧🇬 🇮🇩 🇲🇾 🇸🇮 🇪🇪 🇻🇳 🇮🇷 🇵🇰 🇹🇱 🇹🇦 🇮🇳 🇵🇭 🇫🇮 🇰🇭 🇱🇦 🇧🇳 🇲🇲 🇳🇴 🇷🇸 🇭🇷 🇲🇳 🇮🇱 </p>
+</p>
 
-A concise and elegant Dictionary App for looking up words and translating text. An open source version of Bob.
+
+## Easydict（易词典）
+
+`Easydict` 是一个简洁易用的翻译词典 macOS App，可轻松优雅地查找单词或翻译文本，一个开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)，且永久免费。开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
+
+![iShot_2023-01-04_23.00.18-1672844527](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_23.00.18-1672844527.png)
+
+## 功能
+
+- [x] 开箱即用，便捷查询单词或翻译文本。
+- [x] 自动识别输入语言，自动查询目标偏好语言。
+- [x] 自动划词查询，划词后自动显示查询图标，鼠标悬浮即可查询。
+- [x] 支持系统 OCR 截图翻译。
+- [x] 支持系统 TTS。
+- [x] 支持有道词典，DeepL，Google，百度和火山翻译，不需要 Key，完全免费！
+- [x] 支持 48 种语言。
+
+下一步：
+
+- [ ] 支持 macOS 系统翻译。
+- [ ] 支持更多查询服务。
+
+**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
+
+
+### 使用
+
+Easydict 启动之后，除了应用主界面，还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
+
+![iShot_2023-01-04_17.01.56](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png)
+
+### 功能
+
+| 方式         | 描述                                     | 预览                                                         |
+| ------------ | ---------------------------------------- | ---------------------------------- |
+| 自动划词翻译 | 划词后自动显示查询图标，鼠标悬浮即可查询 | ![iShot_2023-01-04_17.50.20-1672826223](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.50.20-1672826223-1672827557.gif) |
+| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）| ![iShot_2023-01-04_17.55.18-1672826243](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.55.18-1672826243.gif) |
+| 截图翻译 | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域 |  ![iShot_2023-01-04_18.11.44-1672827138](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.11.44-1672827138.gif) |
+| 输入翻译 | 按下输入翻译快捷键（默认 `⌥ + A`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-04_18.15.40-1672827365](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.15.40-1672827365.gif) |
+
+
+### 偏好设置
+
+可在偏好设置页修改翻译快捷键，开启、关闭服务，或调整服务顺序。
+
+![iShot_2023-01-04_18.41.55](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.41.55-1672829006.png)
+
+## 动机
+
+查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，上架了苹果商店之后也不再免费提供应用更新。
+
+作为一名开发者，也是众多开源软件的受益者，我觉得，世界上应该存在一个免费开源版本的 [Bob](https://github.com/ripperhe/Bob)，于是我开发了 [Easydict](https://github.com/tisfeng/Easydict)。我很喜欢它，每天都在使用它，也希望能够让更多的人了解它、使用它。
+
+开源，让世界更美好。
+
+## 感谢
+
+这个项目的灵感来自 Bob，且初始版本是以 [Bob](https://github.com/cheonvo/Bob) 为基础，Easydict 在原项目上进行了许多改进和优化，希望大家喜欢。
+
+> [`Bob`](https://bobtranslate.com/) 是一款 macOS 平台 **翻译** 和 **OCR** 软件。
