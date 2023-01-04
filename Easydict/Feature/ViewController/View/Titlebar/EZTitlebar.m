@@ -83,6 +83,7 @@
     EZLinkButton *googleButton = [[EZLinkButton alloc] init];
     [self addSubview:googleButton];
     self.googleButton = googleButton;
+    self.favoriteButton = googleButton;
     
     googleButton.link = @"https://www.google.com/search?q=%@";
     googleButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
