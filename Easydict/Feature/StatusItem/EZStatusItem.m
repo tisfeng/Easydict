@@ -50,7 +50,7 @@ static EZStatusItem *_instance;
     if (self.statusItem) return;
 
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
-    [item.button setToolTip:@"Bob"];
+    [item.button setToolTip:@"Easydict"];
 #if DEBUG
     NSImage *image = [NSImage imageNamed:@"menu-icon-2"];
 #else
@@ -63,7 +63,7 @@ static EZStatusItem *_instance;
     self.statusItem = item;
 
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    self.bobItem.title = [NSString stringWithFormat:@"Easydict %@", version];
+    self.bobItem.title = [NSString stringWithFormat:@"Easydict  v%@", version];
 }
 
 - (void)remove {
