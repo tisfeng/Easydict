@@ -183,6 +183,10 @@
 
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.hideMainWindow = sender.mm_isOn;
+    
+    if (sender.mm_isOn) {
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+    }
 }
 
 - (void)snipTranslateButtonClicked:(NSButton *)sender {
