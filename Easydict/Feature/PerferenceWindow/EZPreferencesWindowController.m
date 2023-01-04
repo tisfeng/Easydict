@@ -41,11 +41,17 @@ static EZPreferencesWindowController *_instance;
 #pragma mark -
 
 - (void)show {
+    _isShowing = YES;
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
         [NSApp activateIgnoringOtherApps:YES];
     }
     [self.window center];
+    self.window.level = EZFloatingWindowLevel;
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    _isShowing = NO;
 }
 
 @end

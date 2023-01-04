@@ -12,6 +12,7 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "EZCoordinateTool.h"
+#import "EZPreferencesWindowController.h"
 
 @interface EZWindowManager ()
 
@@ -81,6 +82,7 @@ static EZWindowManager *_instance;
         [self.popButtonWindow setFrameOrigin:safePoint];
         
         [self.popButtonWindow orderFrontRegardless];
+        self.popButtonWindow.level = kCGMaximumWindowLevel;
         
         [self->_mainWindow orderBack:nil];
     }];
@@ -237,6 +239,8 @@ static EZWindowManager *_instance;
         return;
     }
     
+    [EZPreferencesWindowController.shared.window close];
+    
     // get safe window position
     CGPoint safeLocation = [EZCoordinateTool getFrameSafePoint:window.frame moveToPoint:point];
     [window setFrameOrigin:safeLocation];
@@ -246,7 +250,7 @@ static EZWindowManager *_instance;
     // TODO: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     [_mainWindow orderOut:nil];
 
-    window.level = kCGAssistiveTechHighWindowLevel;
+    window.level = EZFloatingWindowLevel;
     [window.queryViewController focusInputTextView];
     
     // Avoid floating windows being closed immediately.

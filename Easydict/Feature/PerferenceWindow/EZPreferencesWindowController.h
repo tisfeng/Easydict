@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZPreferencesWindowController : MASPreferencesWindowController
 
+@property (nonatomic, assign, readonly) BOOL isShowing;
+
 + (instancetype)shared;
 
 - (void)show;
