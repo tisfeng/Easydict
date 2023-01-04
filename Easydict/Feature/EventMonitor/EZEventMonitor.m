@@ -10,6 +10,7 @@
 #include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
 #import "EZConfiguration.h"
+#import "EZPreferencesWindowController.h"
 
 static CGFloat kDismissPopButtonDelayTime = 1.0;
 
@@ -348,6 +349,8 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 - (void)dismissIfMouseLocationInFloatingWindows {
+    [[EZPreferencesWindowController shared].window close];
+    
     EZWindowManager *windowManager = EZWindowManager.shared;
     if (windowManager.floatingWindowType == EZWindowTypeMini) {
         BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
