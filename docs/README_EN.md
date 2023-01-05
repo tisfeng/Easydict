@@ -7,7 +7,7 @@
 
 
 
-## Easydict（易词典）
+## Easydict 易词典
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. It is an open-source version of [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac) and is permanently free. Easydict is ready to use out of the box, can automatically recognize the language of the input text, and supports input translation, word translation, and OCR screenshot translation. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
