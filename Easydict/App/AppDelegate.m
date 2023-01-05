@@ -33,7 +33,7 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     [EZStatusItem.shared setup];
     [EZShortcut setup];
     
-    [self showMainWindow];
+    [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
     
     [self setupCrashLogService];
 
@@ -52,19 +52,6 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     // Firebase
     [FIRApp configure];
 #endif
-}
-
-- (void)showMainWindow {
-    NSApplicationActivationPolicy activationPolicy = NSApplicationActivationPolicyAccessory;
-    if (!EZConfiguration.shared.hideMainWindow) {
-        activationPolicy = NSApplicationActivationPolicyRegular;
-
-        EZWindowManager *windowManager = [EZWindowManager shared];
-        [windowManager.mainWindow setFrameOrigin:CGPointMake(120, 600)];
-        [windowManager.mainWindow center];
-        [windowManager.mainWindow makeKeyAndOrderFront:nil];
-    }
-    [NSApp setActivationPolicy:activationPolicy];
 }
 
 ///
