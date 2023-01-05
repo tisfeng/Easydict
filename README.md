@@ -6,10 +6,9 @@
 </p>
 
 
+## Easydict（易词典）[[English](https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md)]
 
-## Easydict（易词典）
-
-`Easydict` 是一个简洁易用的翻译词典 macOS App，可轻松优雅地查找单词或翻译文本，一个开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)，且永久免费。开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的翻译词典 macOS App，它能够轻松优雅地查找单词或翻译文本，一个开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)，并且永久免费。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
 ![iShot_2023-01-05_11.32.00-1672889552](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-05_11.32.00-1672889552.png)
 
@@ -36,8 +35,6 @@
 Easydict 启动之后，除了应用主界面（可隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
 ![iShot_2023-01-04_17.01.56](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png)
-
-### 功能
 
 | 方式         | 描述                                     | 预览                                                         |
 | ------------ | ---------------------------------------- | ---------------------------------- |
@@ -104,6 +101,8 @@ Easydict 启动之后，除了应用主界面（可隐藏），还会有一个�
 | 克罗地亚语   |    ❌    |  ❌   |     ✅      |    ✅    |    ✅    |
 | 蒙古语       |    ❌    |  ❌   |     ✅      |    ✅    |    ✅    |
 | 希伯来语     |    ❌    |  ❌   |     ✅      |    ✅    |    ✅    |
+
+> 注意：⚠️ 表示不支持将源语言翻译为繁体中文，如 DeepL 和系统翻译。若输入繁体中文进行翻译，将被视为简体中文。
 
 
 ### 偏好设置
