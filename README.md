@@ -6,7 +6,7 @@
 </p>
 
 
-## Easydict（易词典）[[English](https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md)]
+## Easydict（易词典）[【English】](https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md)
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，它能够轻松优雅地查找单词或翻译文本，一个开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)，并且永久免费。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
@@ -29,6 +29,11 @@
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
+
+
+### 安装
+
+[下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
 ### 使用
 
