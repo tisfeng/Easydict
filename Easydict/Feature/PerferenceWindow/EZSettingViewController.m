@@ -9,6 +9,7 @@
 #import "EZSettingViewController.h"
 #import "EZShortcut.h"
 #import "EZConfiguration.h"
+#import "EZWindowManager.h"
 
 @interface EZSettingViewController ()
 
@@ -184,9 +185,7 @@
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.hideMainWindow = sender.mm_isOn;
     
-    if (sender.mm_isOn) {
-        [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
-    }
+    [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
 }
 
 - (void)snipTranslateButtonClicked:(NSButton *)sender {

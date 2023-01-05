@@ -13,6 +13,7 @@
 #import "Snip.h"
 #import "EZCoordinateTool.h"
 #import "EZPreferencesWindowController.h"
+#import "EZConfiguration.h"
 
 @interface EZWindowManager ()
 
@@ -343,6 +344,22 @@ static EZWindowManager *_instance;
     }
     
     self.lastFrontmostApplication = frontmostApplication;
+}
+
+- (void)showOrHideDockAppAndMainWindow {
+    NSApplicationActivationPolicy activationPolicy = NSApplicationActivationPolicyAccessory;
+
+    EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
+    if (!EZConfiguration.shared.hideMainWindow) {
+        activationPolicy = NSApplicationActivationPolicyRegular;
+
+        [mainWindow center];
+        [mainWindow makeKeyAndOrderFront:nil];
+    } else {
+        // ???: Why does closing the window prevent the main window from show again?
+        [mainWindow orderOut:nil];
+    }
+    [NSApp setActivationPolicy:activationPolicy];
 }
 
 #pragma mark - Menu Actions
