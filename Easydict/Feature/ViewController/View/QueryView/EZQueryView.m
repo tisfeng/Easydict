@@ -25,10 +25,6 @@
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
-@property (nonatomic, copy) NSString *typingText;
-
-@property (nonatomic, assign) BOOL typing;
-
 @end
 
 @implementation EZQueryView
@@ -200,12 +196,6 @@
     [self updateButtonsDisplayState:queryText];
 }
 
-- (void)setQueryText:(NSString *)queryText {
-    if (queryText) {
-        self.textView.string = queryText;
-    }
-}
-
 - (void)setWindowType:(EZWindowType)windowType {
     [super setWindowType:windowType];
     
@@ -266,7 +256,10 @@
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
 //    NSLog(@"didProcessEditing: %@", [self copiedText]);
+    
     // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
+    
+    // TODO: need to optimize. This is not an accurate way to determine whether the user is a candidate for input and may cause typing to be true all the time.
     self.typing = YES;
 }
 
