@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
-<p align="center">🇨🇳 🇺🇸 🇯🇵 🇰🇷 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇷🇺 🇩🇪 🇸🇦 🇸🇪 🇳🇱 🇷🇴 🇹🇭 🇸🇰 🇭🇺 🇬🇷 🇩🇰 🇫🇮 🇵🇱 🇨🇿 🇹🇷 🇱🇹 🇱🇻 🇺🇦 🇧🇬 🇮🇩 🇲🇾 🇸🇮 🇪🇪 🇻🇳 🇮🇷 🇵🇰 🇹🇱 🇹🇦 🇮🇳 🇵🇭 🇫🇮 🇰🇭 🇱🇦 🇧🇳 🇲🇲 🇳🇴 🇷🇸 🇭🇷 🇲🇳 🇮🇱 </p>
+<p align="center">🇨🇳 🇬🇧 🇯🇵 🇰🇷 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇷🇺 🇩🇪 🇸🇦 🇸🇪 🇳🇱 🇷🇴 🇹🇭 🇸🇰 🇭🇺 🇬🇷 🇩🇰 🇫🇮 🇵🇱 🇨🇿 🇹🇷 🇱🇹 🇱🇻 🇺🇦 🇧🇬 🇮🇩 🇲🇾 🇸🇮 🇪🇪 🇻🇳 🇮🇷 🇵🇰 🇹🇱 🇹🇦 🇮🇳 🇵🇭 🇫🇮 🇰🇭 🇱🇦 🇧🇳 🇲🇲 🇳🇴 🇷🇸 🇭🇷 🇲🇳 🇮🇱 </p>
 </p>
 
 
@@ -10,7 +10,7 @@
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，可轻松优雅地查找单词或翻译文本，一个开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)，且永久免费。开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
-![iShot_2023-01-04_23.00.18-1672844527](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_23.00.18-1672844527.png)
+![iShot_2023-01-05_11.32.00-1672889552](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-05_11.32.00-1672889552.png)
 
 ## 功能
 
@@ -52,16 +52,20 @@ Easydict 启动之后，除了应用主界面，还会有一个菜单图标，�
 
 ![iShot_2023-01-04_18.41.55](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.41.55-1672829006.png)
 
+## 相关项目
+
+- [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) 是一个 Raycast 扩展版本的 Easydict。
+
 ## 动机
 
-查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，上架了苹果商店之后也不再免费提供应用更新。
+查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架了苹果商店后也不再免费提供应用更新。
 
-作为一名开发者，也是众多开源软件的受益者，我觉得，世界上应该存在一个免费开源版本的 [Bob](https://github.com/ripperhe/Bob)，于是我开发了 [Easydict](https://github.com/tisfeng/Easydict)。我很喜欢它，每天都在使用它，也希望能够让更多的人了解它、使用它。
+作为一名开发者，也是众多开源软件的受益者，我觉得，这世界上应该存在一个免费开源版本的 [Bob](https://github.com/ripperhe/Bob)，于是我开发了 [Easydict](https://github.com/tisfeng/Easydict)。现在，我每天都在大量使用 Easydict，我很喜欢它，也希望能够让更多的人了解它、使用它。
 
 开源，让世界更美好。
 
 ## 感谢
 
-这个项目的灵感来自 Bob，且初始版本是以 [Bob](https://github.com/cheonvo/Bob) 为基础，Easydict 在原项目上进行了许多改进和优化，希望大家喜欢。
+这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob](https://github.com/cheonvo/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，并且很多功能和 UI 都参考了 Bob，感谢原作者 [ripperhe](https://github.com/ripperhe)。
 
 > [`Bob`](https://bobtranslate.com/) 是一款 macOS 平台 **翻译** 和 **OCR** 软件。
