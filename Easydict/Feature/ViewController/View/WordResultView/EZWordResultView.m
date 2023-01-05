@@ -315,7 +315,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 tagScrollView = [[NSScrollView alloc] init];
                 [self addSubview:tagScrollView];
                 [tagScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-                    make.left.equalTo(tagLabel.mas_right).offset(padding);
+                    make.left.equalTo(tagLabel.mas_right).offset(padding + 2);
                     make.height.mas_equalTo(newSize.height);
                     make.centerY.equalTo(tagLabel);
                 }];
