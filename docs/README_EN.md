@@ -30,6 +30,12 @@ Next step.
 _**If you like this extension, please give it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks!**_
 
 
+
+### Installation
+
+[Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
+
+
 ### Usage
 
 Once Easydict is launched, in addition to the main window (which can be hidden), there will be a menu icon, and clicking on the menu option will trigger the corresponding function, as follows:
