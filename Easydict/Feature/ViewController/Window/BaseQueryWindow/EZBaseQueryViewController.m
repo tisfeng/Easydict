@@ -272,6 +272,8 @@ static NSString *const EZColumnId = @"EZColumnId";
         return;
     }
     
+    self.queryView.typing = NO;
+    
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         self.queryText = text;

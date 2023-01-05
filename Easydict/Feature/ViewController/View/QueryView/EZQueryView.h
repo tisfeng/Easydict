@@ -17,10 +17,9 @@ static CGFloat EZExceptInputViewHeight = 30;
 @interface EZQueryView : NSTableRowView
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
-
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
-
+@property (nonatomic, assign) BOOL typing;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 

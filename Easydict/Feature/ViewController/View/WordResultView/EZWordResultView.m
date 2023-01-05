@@ -697,8 +697,9 @@ static const CGFloat kVerticalPadding_8 = 8;
     tagButton.layer.cornerRadius = 3;
     tagButton.layer.borderColor = tagColor.CGColor;
     tagButton.bordered = NO;
-            
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12] color:tagColor];
+
+    NSString *title = tagButton.title ?: @"";
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:title font:[NSFont systemFontOfSize:12] color:tagColor];
     tagButton.attributedTitle = attributedString;
 }
 

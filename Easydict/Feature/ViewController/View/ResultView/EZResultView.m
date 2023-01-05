@@ -294,6 +294,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 - (void)startOrEndLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
+        self.warningImageView.hidden = YES;
         [self startLoadingAnimation];
     } else {
         [self removeLoadingAnimation];
