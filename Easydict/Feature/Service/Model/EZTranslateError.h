@@ -37,6 +37,8 @@ typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
                    message:(NSString *_Nullable)message
                    request:(id _Nullable)request;
 
++ (NSError *)timeoutError;
+
 @end
 
 NS_ASSUME_NONNULL_END

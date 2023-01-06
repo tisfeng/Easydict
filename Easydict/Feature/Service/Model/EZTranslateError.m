@@ -52,4 +52,10 @@ NSString *const EZTranslateErrorRequestErrorKey = @"Error";
     return [NSError errorWithDomain:@"com.izual.easydict" code:type userInfo:userInfo.copy];
 }
 
++ (NSError *)timeoutError {
+    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
+    NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:@{NSLocalizedDescriptionKey : errorString}];
+    return error;
+}
+
 @end
