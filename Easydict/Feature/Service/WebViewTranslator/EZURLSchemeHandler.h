@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)monitorBaseURLString:(NSString *)url completionHandler:(nullable void (^)(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error))completionHandler;
 
 - (void)removeMonitorBaseURLString:(NSString *)url;
+- (BOOL)containsMonitorBaseURLString:(NSString *)url;
 
 @end
 
