@@ -12,6 +12,7 @@
 #import "EZYoudaoTranslate.h"
 #import "EZDeppLTranslate.h"
 #import "EZVolcanoTranslate.h"
+#import "EZAppleService.h"
 
 @implementation EZServiceTypes
 
@@ -24,6 +25,7 @@
         EZServiceTypeYoudao : [EZYoudaoTranslate class],
         EZServiceTypeDeepL : [EZDeppLTranslate class],
         EZServiceTypeGoogle : [EZGoogleTranslate class],
+        EZServiceTypeApple : [EZAppleService class],
         EZServiceTypeBaidu : [EZBaiduTranslate class],
         EZServiceTypeVolcano : [EZVolcanoTranslate class],
     };
