@@ -12,10 +12,10 @@
 
 /// Run AppleScript
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result))completionHandler {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSTask *task = [[NSTask alloc] init];
         task.launchPath = @"/usr/bin/osascript";
-        task.arguments = @[@"-e", script];
+        task.arguments = @[ @"-e", script ];
         
         NSPipe *pipe = [NSPipe pipe];
         task.standardOutput = pipe;
@@ -25,7 +25,10 @@
         NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSString *result = [output trim];
         NSLog(@"Apple translate result: %@", result);
-        completionHandler(result);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(result);
+        });
     });
 }
 
@@ -45,7 +48,7 @@
 }
 
 - (void)runTranslateShortcut:(NSDictionary *)parameters
-  completionHandler:(void (^)(NSString *result))completionHandler {
+           completionHandler:(void (^)(NSString *result))completionHandler {
     NSString *appleScript = [self shortcutsAppleScript:@"Easydict-Translate-V1.2.0" parameters:parameters];
     [self runAppleScript:appleScript completionHandler:completionHandler];
 }

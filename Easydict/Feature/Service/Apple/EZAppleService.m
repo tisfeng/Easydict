@@ -178,7 +178,8 @@
         @"from" : appleFromLangCode,
         @"to" : appleToLangCode,
     };
-
+    NSLog(@"Apple translate paramters: %@", paramters);
+    
     [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result) {
         self.result.normalResults = @[result];
         completion(self.result, nil);
