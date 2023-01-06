@@ -223,6 +223,10 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     self.monitorDictionary[url] = completionHandler;
 }
 
+- (void)removeMonitorBaseURLString:(NSString *)url {
+    [self.monitorDictionary removeObjectForKey:url];
+}
+
 #pragma mark - WKURLSchemeHandler
 
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {

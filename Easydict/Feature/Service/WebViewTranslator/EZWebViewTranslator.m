@@ -9,6 +9,7 @@
 #import "EZWebViewTranslator.h"
 #import <WebKit/WebKit.h>
 #import "EZURLSchemeHandler.h"
+#import "EZTranslateError.h"
 
 // Delay query seconds
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
@@ -88,6 +89,14 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:completionHandler];
     [self loadURL:URL];
+    
+    // Handle timeout.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZNetWorkTimeoutInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.urlSchemeHandler removeMonitorBaseURLString:URL];
+        
+        NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:URL] statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:@{@"Content-Type": @"application/json"}];
+        completionHandler(response, nil, [EZTranslateError timeoutError]);
+    });
 }
 
 /// Query webView rranslate url result.
@@ -164,9 +173,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 NSLog(@"finish, retry count: %ld", self.retryCount);
                 if (completion) {
-                    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
-                    NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:@{NSLocalizedDescriptionKey : errorString}];
-                    completion(nil, error);
+                    completion(nil, [EZTranslateError timeoutError]);
                 }
             }
         };
