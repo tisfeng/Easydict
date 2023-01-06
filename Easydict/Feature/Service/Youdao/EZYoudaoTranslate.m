@@ -192,6 +192,8 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     NSString *url = @"https://dict.youdao.com/jsonapi";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         
+    [self translateYoudaoAPI:text from:from to:to completion:completion];
+
     mm_weakify(self);
     [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self);
@@ -202,25 +204,25 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                 [self.result setupWithYoudaoDictModel:model];
                 if (self.result.wordResult) {
                     completion(self.result, nil);
-                    return;
+                } else {
+                    if (self.wordLink) {
+                        [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+                            self.result.normalResults = texts;
+                            completion(self.result, error);
+                        }];
+                    }
                 }
-                if (self.wordLink) {
-                    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-                        self.result.normalResults = texts;
-                        completion(self.result, error);
-                    }];
-                    return;
-                }
+                return;
             } @catch (NSException *exception) {
                 MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
                 message = @"有道翻译翻译接口数据解析异常";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"", reqDict));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"", reqDict));
     }];
 }
 
@@ -376,7 +378,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         return;
                     }
                 } else {
-                    message = [NSString stringWithFormat:@"翻译失败，错误码 %@", response.errorCode];
+                    message = [NSString stringWithFormat:@"错误码 %@", response.errorCode];
                 }
             } @catch (NSException *exception) {
                 MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
@@ -384,10 +386,10 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
     }];
 }
 

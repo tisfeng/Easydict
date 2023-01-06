@@ -118,13 +118,13 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 /// This is normalResults joined by @"\n"
 @property (nonatomic, copy) NSString *translatedText;
 
-/// If wordResult and normalResults are nil, isEmpty = YES.
-@property (nonatomic, assign) BOOL isEmpty;
-
 @property (nonatomic, strong, nullable) NSError *error;
 
-/// If self.isEmpty == NO || self.error != nil, then hasResult = YES, that means will show result view.
-@property (nonatomic, assign) BOOL hasResult;
+/// If (self.hasTranslatedResult || self.error), then hasResult = YES, that means will show result view.
+@property (nonatomic, assign, readonly) BOOL hasResult;
+/// If (self.wordResult && self.translatedText.length), YES
+@property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
+
 
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;

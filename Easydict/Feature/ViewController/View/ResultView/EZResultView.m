@@ -245,11 +245,17 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     
-    [self updateArrowButton];
         
     [self.wordResultView refreshWithResult:result];
     
-    self.warningImageView.hidden = !result.error;
+    BOOL hideWarningImage = YES;
+    if (!result.hasTranslatedResult && result.error) {
+        hideWarningImage = NO;
+    }
+    self.warningImageView.hidden = hideWarningImage;
+    
+    [self updateArrowButton];
+
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {

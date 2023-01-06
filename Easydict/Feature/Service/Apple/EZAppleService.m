@@ -168,7 +168,7 @@
             notSupportedLanguage = to;
         }
         
-        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, notSupportedLanguage ?: @"翻译失败", nil);
+        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, notSupportedLanguage, nil);
         completion(self.result, error);
         return;
     }

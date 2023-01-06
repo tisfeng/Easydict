@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define EZTranslateError(type, msg, req) [EZTranslateError errorWithType:(type) message:(msg)request:(req)]
+#define EZTranslateError(type, msg, req) [EZTranslateError errorWithType:(type) message:(msg) request:(req)]
 
 /// 报错时的请求信息
 extern NSString *const EZTranslateErrorRequestKey;

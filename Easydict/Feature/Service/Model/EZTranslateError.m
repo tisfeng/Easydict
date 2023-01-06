@@ -38,10 +38,11 @@ NSString *const EZTranslateErrorRequestErrorKey = @"Error";
             errorString = @"未知错误";
             break;
     }
-    if (message.length == 0) {
-        message = @"";
+
+    errorString = [NSString stringWithFormat:@"翻译失败，%@", errorString];
+    if (message.length) {
+        errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
     }
-    errorString = [NSString stringWithFormat:@"翻译失败，%@: %@", errorString, message];
  
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];

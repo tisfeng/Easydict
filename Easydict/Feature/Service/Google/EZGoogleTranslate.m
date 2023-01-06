@@ -223,13 +223,13 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             completion(responseObject, sign, reqDict, nil);
         } else {
             completion(nil, nil, nil,
-                       EZTranslateError(EZTranslateErrorTypeAPI, @"翻译失败", reqDict));
+                       EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
         }
     }
                   failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
         completion(nil, nil, nil,
-                   EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+                   EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
     }];
 }
 
@@ -391,10 +391,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                   }
               }
               [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-              completion(result,
-                         EZTranslateError(EZTranslateErrorTypeAPI,
-                                          message ?: @"翻译失败",
-                                          reqDict));
+              completion(result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict));
           }];
       };
     
@@ -602,11 +599,11 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         if (responseObject) {
             completion(responseObject, sign, reqDict, nil);
         } else {
-            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, @"翻译失败", reqDict));
+            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+        completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
     }];
 }
 
