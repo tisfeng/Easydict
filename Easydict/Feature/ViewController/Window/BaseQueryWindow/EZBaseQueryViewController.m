@@ -350,6 +350,10 @@ static NSString *const EZColumnId = @"EZColumnId";
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
+            result.isShowing = YES;
+            if (!result.hasTranslatedResult && result.error) {
+                result.isShowing = NO;
+            }
             //            NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
         }];
@@ -841,6 +845,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         // If result is not empty, update cell and show.
         if (result.isShowing && !result.hasResult) {
             [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+                if (!result.hasTranslatedResult && result.error) {
+                    result.isLoading = NO;
+                }
                 [self updateCellWithResult:result reloadData:YES];
             }];
         } else {

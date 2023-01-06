@@ -112,7 +112,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             errorMsg = self.queryModel.queryTargetLanguage;
         }
         
-        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, errorMsg ?: @"翻译失败", nil);
+        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, errorMsg, nil);
         completion(self.result, error);
         return;
     }

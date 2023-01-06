@@ -164,7 +164,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"翻译失败", reqDict));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
     }];
 }
 
@@ -376,7 +376,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                         message = @"百度翻译获取 token 失败";
                     }
                 } else {
-                    message = [NSString stringWithFormat:@"翻译失败，错误码 %zd", response.error];
+                    message = [NSString stringWithFormat:@"错误码 %zd", response.error];
                 }
             }
         } @catch (NSException *exception) {
@@ -385,7 +385,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
     }
     
-    NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict);
+    NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict);
     NSLog(@"baidu API error: %@", error);
     
     [self webViewTranslate:completion];

@@ -103,7 +103,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSTextField *typeTextField;
         __block CGFloat exceptedWidth = 0;
         
-        if (result.wordResult) {
+        if (result.wordResult && result.normalResults.count) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 mm_strongify(self);
                 
@@ -134,43 +134,49 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         exceptedWidth += ceil(typeTextField.width);
         
-        NSString *text = errorMsg;
+        NSString *text = nil;
         if (result.translatedText.length > 0) {
             text = result.translatedText;
+        } else if (!result.wordResult && errorMsg.length) {
+            text = errorMsg;
+        } else if (!result.hasTranslatedResult) {
+            text = @"No Result.";
         }
         
-        EZLabel *resultLabel = [[EZLabel alloc] init];
-        [self addSubview:resultLabel];
-        resultLabel.text = text;
-        resultLabel.delegate = self;
+        if (text.length) {
+            EZLabel *resultLabel = [[EZLabel alloc] init];
+            [self addSubview:resultLabel];
+            resultLabel.text = text;
+            resultLabel.delegate = self;
+                    
+            [resultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.right.equalTo(self).offset(-kHorizontalMargin_8);
+                exceptedWidth += kHorizontalMargin_8;
                 
-        [resultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self).offset(-kHorizontalMargin_8);
-            exceptedWidth += kHorizontalMargin_8;
-            
-            if (typeTextField) {
-                make.top.equalTo(typeTextField);
-                make.left.equalTo(typeTextField.mas_right);
-            } else {
-                if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                if (typeTextField) {
+                    make.top.equalTo(typeTextField);
+                    make.left.equalTo(typeTextField.mas_right);
                 } else {
-                    make.top.equalTo(self).offset(kVerticalMargin_12);
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                    } else {
+                        make.top.equalTo(self).offset(kVerticalMargin_12);
+                    }
+                    
+                    CGFloat leftPadding = 5;
+                    exceptedWidth += leftPadding;
+                    make.left.equalTo(self).offset(leftPadding);
                 }
                 
-                CGFloat leftPadding = 5;
-                exceptedWidth += leftPadding;
-                make.left.equalTo(self).offset(leftPadding);
-            }
-            
-            CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
-            make.size.mas_equalTo(labelSize);
-            
-            height += (kVerticalMargin_12 + labelSize.height);
-//            NSLog(@"height = %1.f", height);
-        }];
-        resultLabel.mas_key = @"resultLabel_normalResults";
-        lastView = resultLabel;
+                CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
+                make.size.mas_equalTo(labelSize);
+                
+                height += (kVerticalMargin_12 + labelSize.height);
+    //            NSLog(@"height = %1.f", height);
+            }];
+            resultLabel.mas_key = @"resultLabel_normalResults";
+            lastView = resultLabel;
+        }
     }
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

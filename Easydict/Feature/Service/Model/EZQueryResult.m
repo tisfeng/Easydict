@@ -112,15 +112,15 @@ NSString *getPartName(NSString *part) {
     return text;
 }
 
-- (BOOL)isEmpty {
-    if (!self.wordResult && self.translatedText.length == 0 && !self.error) {
+- (BOOL)hasResult {
+    if (self.hasTranslatedResult || self.error) {
         return YES;
     }
     return NO;
 }
 
-- (BOOL)hasResult {
-    if (self.isEmpty == NO || self.error != nil) {
+- (BOOL)hasTranslatedResult {
+    if (self.wordResult || self.translatedText.length) {
         return YES;
     }
     return NO;
