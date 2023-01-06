@@ -54,6 +54,7 @@ static EZLocalStorage *_instance;
         EZServiceInfo *serviceInfo = [self serviceInfoWithType:type];
         if (!serviceInfo) {
             serviceInfo = [[EZServiceInfo alloc] init];
+            serviceInfo.type = type;
             serviceInfo.enabled = YES;
             serviceInfo.enabledQuery = YES;
             [self saveServiceInfo:serviceInfo];
@@ -62,12 +63,24 @@ static EZLocalStorage *_instance;
 }
 
 - (NSArray<EZServiceType> *)allServiceTypes {
-    NSArray *allServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:kAllServiceTypesKey];
-    if (!allServiceTypes) {
-        allServiceTypes = [EZServiceTypes allServiceTypes];
-        [[NSUserDefaults standardUserDefaults] setObject:allServiceTypes forKey:kAllServiceTypesKey];
+    NSArray *storedServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:kAllServiceTypesKey];
+    if (!storedServiceTypes) {
+        storedServiceTypes = [EZServiceTypes allServiceTypes];
+        [[NSUserDefaults standardUserDefaults] setObject:storedServiceTypes forKey:kAllServiceTypesKey];
+    } else {
+        NSMutableArray *array = [NSMutableArray arrayWithArray:storedServiceTypes];
+        NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+        if (storedServiceTypes.count != allServiceTypes.count) {
+            for (EZServiceType type in allServiceTypes) {
+                if ([storedServiceTypes indexOfObject:type] == NSNotFound) {
+                    [array insertObject:type atIndex:0];
+                }
+            }
+        }
+        storedServiceTypes = [array copy];
     }
-    return allServiceTypes;
+    
+    return storedServiceTypes;
 }
 
 - (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes {

@@ -440,7 +440,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
-- (void)getSelectedText:(BOOL)checkTextFrame {
+- (void)getSelectedText:(BOOL)checkTextFrame {    
     BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
     if (!enableAutoSelectText) {
         NSLog(@"user did not enableAutoSelectText");
@@ -478,19 +478,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }
 }
 
-- (void)useAppScriptSelectText {
-    NSString *appleScript = [self getSelectedTextScript];
-    [self runAppleScript:appleScript completionHandler:^(NSAppleEventDescriptor *_Nullable eventDescriptor) {
-        NSString *selectedText = eventDescriptor.stringValue;
-        NSLog(@"appleScript selectedText: %@", selectedText);
-
-        NSString *trimText = [selectedText stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-        if (trimText.length > 0 && self.selectedTextBlock) {
-            self.selectedTextBlock(trimText);
-        }
-    }];
-}
-
 
 // Get the frontmost window
 - (void)getFrontmostWindow:(void (^)(NSString *_Nullable))completion {
@@ -511,60 +498,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     return app;
 }
-
-// Run AppleScript
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSAppleEventDescriptor *_Nullable eventDescriptor))completionHandler {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
-
-        //        NSURL *scriptURL = [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:@"applescripts" ofType:@"scpt"]];
-        //        appleScript = [[NSAppleScript alloc] initWithContentsOfURL:scriptURL error:nil];
-
-        NSAppleEventDescriptor *eventDescriptor = [appleScript executeAndReturnError:nil];
-        NSLog(@"eventDescriptor: %@", eventDescriptor);
-        completionHandler(eventDescriptor);
-    });
-}
-
-// An apple script to get the selected text
-- (NSString *)getSelectedTextScript {
-    NSString *script = @"tell application \"System Events\"\n"
-                       @"set frontApp to name of first application process whose frontmost is true\n"
-                       @"set selectedText to value of (text area 1 of window 1 of application process frontApp)\n"
-                       @"end tell\n"
-                       @"return selectedText";
-
-    NSRunningApplication *app = [self getFrontmostApp];
-    NSString *appName = app.localizedName;
-    NSString *bundleID = app.bundleIdentifier;
-    NSLog(@"appName: %@, bundleID: %@", appName, bundleID);
-
-    script = @"tell application \"Safari\" \
-    activate \
-end tell \
-tell application \"System Events\" \
-        keystroke \"c\" using {command down} \
-        delay 0.2 \
-        set myData to (the clipboard) as text \
-        return myData \
-end tell";
-
-    return script;
-}
-
-/**
- tell application "Xcode"
- activate
- end tell
-
- tell application "System Events"
- keystroke "c" using {command down}
- delay 0.1
- set myData to (the clipboard) as text
- return myData
- end tell
- */
-
 
 - (AXUIElementRef)focusedElement2 {
     pid_t pid = [self getFrontmostApp].processIdentifier;

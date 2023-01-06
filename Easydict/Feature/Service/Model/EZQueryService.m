@@ -122,14 +122,12 @@ userInfo:nil]
     return nil;
 }
 
-- (NSString *)link {
-    MethodNotImplemented();
+- (nullable NSString *)link {
     return nil;
 }
 
 /// 单词直达链接 
 - (nullable NSString *)wordLink {
-    MethodNotImplemented();
     return nil;
 }
 

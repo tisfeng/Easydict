@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)name;
 
 /// 翻译网站首页
-- (NSString *)link;
+- (nullable NSString *)link;
 
 /// 单词直达链接
 - (nullable NSString *)wordLink;
