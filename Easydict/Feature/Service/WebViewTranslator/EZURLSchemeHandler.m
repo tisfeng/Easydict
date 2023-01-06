@@ -227,6 +227,10 @@ static EZURLSchemeHandler *_sharedInstance = nil;
     [self.monitorDictionary removeObjectForKey:url];
 }
 
+- (BOOL)containsMonitorBaseURLString:(NSString *)url {
+    return [self.monitorDictionary.allKeys containsObject:url];
+}
+
 #pragma mark - WKURLSchemeHandler
 
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
@@ -274,7 +278,10 @@ static EZURLSchemeHandler *_sharedInstance = nil;
         NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
         [task resume];
         
-        [self.monitorDictionary removeObjectForKey:URL.absoluteString];
+        NSString *monitorURL = [self monitorURLForURL:URL];
+        if (monitorURL) {
+            [self.monitorDictionary removeObjectForKey:monitorURL];
+        }
     }
 }
 
