@@ -23,7 +23,7 @@ extern NSString *const EZTranslateErrorRequestErrorKey;
 typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
     /// 参数异常
     EZTranslateErrorTypeParam,
-    /// 请求异常
+    /// 网络异常
     EZTranslateErrorTypeNetwork,
     /// 接口异常
     EZTranslateErrorTypeAPI,
@@ -32,7 +32,8 @@ typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
 };
 
 
-FOUNDATION_EXPORT NSError * EZQueryNotSupportedLanguageError(EZQueryService *service);
+/// 错误，不支持的语言
+FOUNDATION_EXPORT NSError * EZQueryUnsupportedLanguageError(EZQueryService *service);
 
 
 @interface EZTranslateError : NSObject

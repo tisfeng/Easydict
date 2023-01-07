@@ -105,7 +105,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!self.wordLink) {
-        completion(self.result, EZQueryNotSupportedLanguageError(self));
+        completion(self.result, EZQueryUnsupportedLanguageError(self));
         return;
     }
     
