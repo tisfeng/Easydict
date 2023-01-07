@@ -71,10 +71,9 @@
             for (EZWfElement *element in wfs) {
                 EZTranslateExchange *exchange = [[EZTranslateExchange alloc] init];
                 exchange.name = element.wf.name;
-                exchange.words = @[ element.wf.value ];
+                exchange.words = [element.wf.value componentsSeparatedByString:@"或"]; // input或inputted
                 [exchanges addObject:exchange];
             }
-            
             if (exchanges.count) {
                 wordResult.exchanges = exchanges;
             }
