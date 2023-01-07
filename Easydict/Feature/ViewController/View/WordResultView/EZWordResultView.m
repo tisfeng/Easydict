@@ -302,6 +302,10 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         __block NSButton *lastTagButton = nil;
         [wordResult.tags enumerateObjectsUsingBlock:^(NSString * _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (tag.length == 0) {
+                return;
+            }
+            
             NSButton *tagButton = [[NSButton alloc] init];
             tagButton.title = tag;
             [tagButton excuteLight:^(NSButton *tagButton) {
@@ -704,8 +708,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     tagButton.layer.borderColor = tagColor.CGColor;
     tagButton.bordered = NO;
 
-    NSString *title = tagButton.title ?: @"";
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:title font:[NSFont systemFontOfSize:12] color:tagColor];
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12] color:tagColor];
     tagButton.attributedTitle = attributedString;
 }
 
