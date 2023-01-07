@@ -355,7 +355,10 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                         
                         // 至少要有词义或单词组才认为有单词翻译结果
                         if (wordResult.parts || wordResult.simpleWords) {
-                            result.wordResult = wordResult;
+                            // If has assigned Youdao dict data, use it directly.
+                            if (!result.wordResult) {
+                                result.wordResult = wordResult;
+                            }
                             // 如果是单词或短语，优先使用美式发音
                             if ([result.from isEqualToString:EZLanguageEnglish] && [result.to isEqualToString:EZLanguageSimplifiedChinese] && wordResult.phonetics.firstObject.speakURL.length) {
                                 result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
