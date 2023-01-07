@@ -10,7 +10,6 @@
 #import "EZServiceTypes.h"
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
-#import "EZConst.h"
 #import "NSView+EZAnimatedHidden.h"
 
 static CGFloat const kAnimationDuration = 0.5;
@@ -29,8 +28,6 @@ static NSInteger const kAnimationDotViewCount = 5;
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
 @property (nonatomic, strong) NSTimer *timer;
-
-@property (nonatomic, strong) MASConstraint *wordResultViewHeightConstraint;
 
 @end
 
@@ -162,10 +159,7 @@ static NSInteger const kAnimationDotViewCount = 5;
         //        [self rotateArrowButton];
     }];
     
-}
-
-
-- (void)updateConstraints {
+    
     CGSize iconSize = CGSizeMake(16, 16);
     
     [self updateArrowButton];
@@ -197,6 +191,19 @@ static NSInteger const kAnimationDotViewCount = 5;
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
+    
+    
+    [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.topBarView.mas_right).offset(-5);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(CGSizeMake(22, 22));
+    }];
+    
+    [self setupLoadingDotViews];
+}
+
+
+- (void)setupLoadingDotViews {
     [self.loadingView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
     NSView *lastView = nil;
@@ -226,14 +233,6 @@ static NSInteger const kAnimationDotViewCount = 5;
     [self.loadingView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(lastView).offset(margin);
     }];
-    
-    [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.topBarView.mas_right).offset(-5);
-        make.centerY.equalTo(self.topBarView);
-        make.size.mas_equalTo(CGSizeMake(22, 22));
-    }];
-    
-    [super updateConstraints];
 }
 
 - (void)setResult:(EZQueryResult *)result {
@@ -275,7 +274,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 
     
     // animation need right frame, but result may change, so have to layout frame.
-    [self startOrEndLoadingAnimation:self.result.isLoading];
+    [self updateLoadingAnimation];
 }
 
 
