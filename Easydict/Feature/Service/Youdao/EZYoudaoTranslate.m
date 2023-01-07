@@ -192,8 +192,6 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     NSString *url = @"https://dict.youdao.com/jsonapi";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         
-    [self translateYoudaoAPI:text from:from to:to completion:completion];
-
     mm_weakify(self);
     [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self);
@@ -203,19 +201,27 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
                 [self.result setupWithYoudaoDictModel:model];
                 if (self.result.wordResult) {
-                    completion(self.result, nil);
+                    [self translateYoudaoAPI:text from:from to:to completion:completion];
                 } else {
-                    if (self.wordLink) {
-                        [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-                            self.result.normalResults = texts;
-                            completion(self.result, error);
-                        }];
-                    }
+                    [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+                        if (!error) {
+                            completion(self.result, nil);
+                        } else {
+                            if (self.wordLink) {
+                                [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+                                    self.result.normalResults = texts;
+                                    completion(self.result, error);
+                                }];
+                            } else {
+                                completion(self.result, EZQueryNotSupportedLanguageError(self));
+                            }
+                        }
+                    }];
                 }
                 return;
             } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译翻译接口数据解析异常 %@", exception);
-                message = @"有道翻译翻译接口数据解析异常";
+                MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
+                message = @"有道翻译接口数据解析异常";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
