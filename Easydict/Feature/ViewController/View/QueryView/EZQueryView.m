@@ -65,7 +65,7 @@
     [self addSubview:audioButton];
     self.audioButton = audioButton;
     audioButton.image = [NSImage imageNamed:@"audio"];
-    audioButton.toolTip = @"播放音频";
+    audioButton.toolTip = @"Play";
     
     mm_weakify(self)
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
@@ -82,7 +82,7 @@
     self.textCopyButton = textCopyButton;
     
     textCopyButton.image = [NSImage imageNamed:@"copy"];
-    textCopyButton.toolTip = @"复制";
+    textCopyButton.toolTip = @"Copy";
     
     [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"copyActionBlock");
