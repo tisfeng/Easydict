@@ -172,10 +172,13 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     }
     
     NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+    
+    // If Youdao Dictionary does not support the language, try querying translate API.
     if (!foreignLangauge) {
         [self translateYoudaoAPI:text from:from to:to completion:completion];
         return;
     }
+    
     
     NSArray *dictArray = @[@[@"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest"]];
     NSDictionary *dicts = @{
@@ -192,8 +195,12 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     };
     NSString *url = @"https://dict.youdao.com/jsonapi";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
-        
+    
+    dispatch_group_t group = dispatch_group_create();
     mm_weakify(self);
+    
+    // 1.Query Youdao dict.
+    dispatch_group_enter(group);
     [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         mm_strongify(self);
         NSString *message = nil;
@@ -201,24 +208,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             @try {
                 EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
                 [self.result setupWithYoudaoDictModel:model];
-                if (self.result.wordResult) {
-                    [self translateYoudaoAPI:text from:from to:to completion:completion];
-                } else {
-                    [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
-                        if (!error) {
-                            completion(self.result, nil);
-                        } else {
-                            if (self.wordLink) {
-                                [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-                                    self.result.normalResults = texts;
-                                    completion(self.result, error);
-                                }];
-                            } else {
-                                completion(self.result, EZQueryUnsupportedLanguageError(self));
-                            }
-                        }
-                    }];
-                }
+                dispatch_group_leave(group);
                 return;
             } @catch (NSException *exception) {
                 MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
@@ -226,11 +216,40 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"", reqDict));
+        self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"", reqDict);
+
+        dispatch_group_leave(group);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, @"", reqDict));
+        self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, @"", reqDict);
+        
+        dispatch_group_leave(group);
     }];
+    
+    // 2.Query Youdao translate.
+    dispatch_group_enter(group);
+    [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+        if (error) {
+            self.result.error = error;
+        }
+        dispatch_group_leave(group);
+    }];
+    
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (self.result.error) {
+            if (self.wordLink) {
+                [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+                    self.result.normalResults = texts;
+                    completion(self.result, error);
+                }];
+            } else {
+                completion(self.result, EZQueryUnsupportedLanguageError(self));
+            }
+        } else {
+            completion(self.result, nil);
+        }
+    });
 }
 
 - (void)translateYoudaoAPI:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
