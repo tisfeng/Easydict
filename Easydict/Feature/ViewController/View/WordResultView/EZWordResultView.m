@@ -244,7 +244,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         EZHoverButton *audioButton = [[EZHoverButton alloc] init];
         [self addSubview:audioButton];
         audioButton.image = [NSImage imageNamed:@"audio"];
-        audioButton.toolTip = @"播放音频";
+        audioButton.toolTip = @"Play";
         [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
             NSView *leftView = valueTextField ?: nameTextFiled;
             make.left.equalTo(leftView.mas_right).offset(4);
@@ -627,7 +627,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     audioButton.image = [NSImage imageNamed:@"audio"];
-    audioButton.toolTip = @"播放音频";
+    audioButton.toolTip = @"Play";
     
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"audioActionBlock");
@@ -643,7 +643,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self addSubview:textCopyButton];
     
     textCopyButton.image = [NSImage imageNamed:@"copy"];
-    textCopyButton.toolTip = @"复制";
+    textCopyButton.toolTip = @"Copy";
     
     [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"copyActionBlock");
