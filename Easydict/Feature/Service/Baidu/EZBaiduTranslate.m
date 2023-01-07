@@ -475,6 +475,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                         EZLanguageKhmer, @"khm",
                                         EZLanguageLao, @"lo",
                                         EZLanguageBengali, @"ben",
+                                        EZLanguageBurmese, @"bur",
                                         EZLanguageNorwegian, @"nor",
                                         EZLanguageSerbian, @"srp",
                                         EZLanguageCroatian, @"hrv",

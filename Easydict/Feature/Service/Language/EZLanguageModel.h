@@ -60,7 +60,7 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageFilipino;
 FOUNDATION_EXPORT EZLanguage const EZLanguageKhmer;
 FOUNDATION_EXPORT EZLanguage const EZLanguageLao;
 FOUNDATION_EXPORT EZLanguage const EZLanguageBengali;
-FOUNDATION_EXPORT EZLanguage const EZLanguageMyanmar;
+FOUNDATION_EXPORT EZLanguage const EZLanguageBurmese;
 FOUNDATION_EXPORT EZLanguage const EZLanguageNorwegian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageSerbian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageCroatian;

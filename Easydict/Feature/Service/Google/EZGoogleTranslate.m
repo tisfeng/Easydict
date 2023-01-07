@@ -302,6 +302,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                         EZLanguageKhmer, @"km",
                                         EZLanguageLao, @"lo",
                                         EZLanguageBengali, @"bn",
+                                        EZLanguageBurmese, @"my",
                                         EZLanguageNorwegian, @"no",
                                         EZLanguageSerbian, @"sr",
                                         EZLanguageCroatian, @"hr",
