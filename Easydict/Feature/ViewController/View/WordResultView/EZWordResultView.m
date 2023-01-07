@@ -628,6 +628,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self addSubview:audioButton];
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"Play";
+    audioButton.enabled = result.translatedText.length > 0;
     
     [audioButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"audioActionBlock");
