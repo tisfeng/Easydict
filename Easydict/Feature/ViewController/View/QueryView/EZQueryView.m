@@ -100,6 +100,8 @@
     
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
+        
+        self.enableAutoDetect = NO;
         if (self.selectedLanguageBlock) {
             self.selectedLanguageBlock(language);
         }
@@ -271,6 +273,7 @@
 //    NSLog(@"textDidChange: %@", text);
     
     self.typing = NO;
+    self.enableAutoDetect = YES;
     
     [self updateButtonsDisplayState:text];
     

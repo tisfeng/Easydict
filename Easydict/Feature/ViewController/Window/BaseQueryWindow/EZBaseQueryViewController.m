@@ -335,10 +335,14 @@ static NSString *const EZColumnId = @"EZColumnId";
     // !!!: Reset all result before new query.
     [self resetAllResults];
     
-    // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
-    [self detectQueryText:^{
+    if (self.queryView.enableAutoDetect) {
+        // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
+        [self detectQueryText:^{
+            [self queryAllSerives:self.queryModel];
+        }];
+    } else {
         [self queryAllSerives:self.queryModel];
-    }];
+    }
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
@@ -643,8 +647,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)delayDetectQueryText {
-    [self cancelDelayDetectQueryText];
-    [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:1.0];
+    if (self.queryView.enableAutoDetect) {
+        [self cancelDelayDetectQueryText];
+        [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:1.0];
+    }
 }
 
 - (void)cancelDelayDetectQueryText {
