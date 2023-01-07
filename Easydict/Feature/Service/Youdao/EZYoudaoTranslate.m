@@ -213,7 +213,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                                     completion(self.result, error);
                                 }];
                             } else {
-                                completion(self.result, EZQueryNotSupportedLanguageError(self));
+                                completion(self.result, EZQueryUnsupportedLanguageError(self));
                             }
                         }
                     }];

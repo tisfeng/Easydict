@@ -50,3 +50,10 @@
 "main_window" = "主窗口:";
 "hide_main_window" = "启动后自动隐藏主窗口";
 "auto_snip_translate" = "截图后自动翻译";
+
+"error_parameter" = "参数异常";
+"error_network" = "网络异常";
+"error_api" = "接口异常";
+"error_unsupport_language" = "不支持的语言";
+"error_unknown" = "未知错误";
+"translate_failed" = "翻译失败，";

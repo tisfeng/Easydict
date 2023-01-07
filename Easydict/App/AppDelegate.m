@@ -85,6 +85,8 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     
     [EZLog logWindowAppear:EZWindowTypeMain];
     
+    // Show main window, do not close window.
+    
     return YES;
 }
 

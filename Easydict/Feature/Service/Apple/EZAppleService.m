@@ -163,13 +163,7 @@
     NSString *appleFromLangCode = [self languageCodeForLanguage:from];
     NSString *appleToLangCode = [self languageCodeForLanguage:to];
     if (!appleFromLangCode || !appleToLangCode) {
-        NSString *notSupportedLanguage = from;
-        if (!appleToLangCode) {
-            notSupportedLanguage = to;
-        }
-        
-        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, notSupportedLanguage, nil);
-        completion(self.result, error);
+        completion(self.result, EZQueryUnsupportedLanguageError(self));
         return;
     }
 

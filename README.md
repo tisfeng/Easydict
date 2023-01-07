@@ -10,7 +10,7 @@
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，它能够轻松优雅地查找单词或翻译文本，一个免费开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务，目前支持[有道词典](https://www.youdao.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
-![iShot_2023-01-05_11.32.00-1672889552](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-05_11.32.00-1672889552.png)
+![iShot_2023-01-07_19.33.01的副本-1673091295](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-07_19.33.01的副本-1673091295.png)
 
 ## 功能
 

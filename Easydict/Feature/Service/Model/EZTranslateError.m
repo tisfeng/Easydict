@@ -8,13 +8,13 @@
 
 #import "EZTranslateError.h"
 
-NSString *const EZTranslateErrorRequestKey = @"TranslateErrorRequestKey";
-NSString *const EZTranslateErrorRequestURLKey = @"URL";
-NSString *const EZTranslateErrorRequestParamKey = @"Param";
-NSString *const EZTranslateErrorRequestResponseKey = @"Response";
-NSString *const EZTranslateErrorRequestErrorKey = @"Error";
+NSString *const EZTranslateErrorRequestKey = @"EZTranslateErrorRequestKey";
+NSString *const EZTranslateErrorRequestURLKey = @"EZTranslateErrorRequestURLKey";
+NSString *const EZTranslateErrorRequestParamKey = @"EZTranslateErrorRequestParamKey";
+NSString *const EZTranslateErrorRequestResponseKey = @"EZTranslateErrorRequestResponseKey";
+NSString *const EZTranslateErrorRequestErrorKey = @"EZTranslateErrorRequestErrorKey";
 
-NSError * EZQueryNotSupportedLanguageError(EZQueryService *service) {
+NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     NSString *to = [service languageCodeForLanguage:service.queryModel.queryTargetLanguage];
     NSString *errorMsg = service.queryModel.queryFromLanguage;
     if (!to) {
@@ -33,27 +33,27 @@ NSError * EZQueryNotSupportedLanguageError(EZQueryService *service) {
     NSString *errorString = nil;
     switch (type) {
         case EZTranslateErrorTypeParam:
-            errorString = @"参数异常";
+            errorString = NSLocalizedString(@"error_parameter", nil);
             break;
         case EZTranslateErrorTypeNetwork:
-            errorString = @"请求异常";
+            errorString = NSLocalizedString(@"error_network", nil);
             break;
         case EZTranslateErrorTypeAPI:
-            errorString = @"接口异常";
+            errorString = NSLocalizedString(@"error_api", nil);
             break;
         case EZTranslateErrorTypeUnsupportLanguage:
-            errorString = @"不支持的语言";
+            errorString = NSLocalizedString(@"error_unsupport_language", nil);
             break;
         default:
-            errorString = @"未知错误";
+            errorString = NSLocalizedString(@"error_unknown", nil);
             break;
     }
 
-    errorString = [NSString stringWithFormat:@"翻译失败，%@", errorString];
+    errorString = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"translate_failed", nil), errorString];
     if (message.length) {
         errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
     }
- 
+
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
     if (request) {

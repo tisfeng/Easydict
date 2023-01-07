@@ -50,3 +50,10 @@
 "main_window" = "Main Window:";
 "hide_main_window" = "Hide Main Window When Launch";
 "auto_snip_translate" = "Auto Snip Translate";
+
+"error_parameter" = "Parameter error";
+"error_network" = "Network error";
+"error_api" = "API error";
+"error_unsupport_language" = "Unsupported language";
+"error_unknown" = "Unknown error";
+"translate_failed" = "Translate failed, ";
