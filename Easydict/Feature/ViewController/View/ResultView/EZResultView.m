@@ -166,7 +166,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
-        make.height.mas_equalTo(kResultViewMiniHeight);
+        make.height.mas_equalTo(EZResultViewMiniHeight);
     }];
     
     [self.typeImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -264,9 +264,9 @@ static NSInteger const kAnimationDotViewCount = 5;
         make.height.mas_equalTo(wordResultViewHeight);
     }];
     
-    CGFloat viewHeight = kResultViewMiniHeight;
+    CGFloat viewHeight = EZResultViewMiniHeight;
     if (result.hasResult && result.isShowing) {
-        viewHeight = kResultViewMiniHeight + wordResultViewHeight;
+        viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
         //        NSLog(@"show result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;

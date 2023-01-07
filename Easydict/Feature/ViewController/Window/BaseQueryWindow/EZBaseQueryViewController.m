@@ -172,7 +172,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
-    // Manually update the cell height, because the reused cell will not self-adjust the height.
+    // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
     [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
 }
@@ -456,9 +456,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         EZQueryResult *result = [self serviceAtRow:row].result;
         if (result.isShowing) {
             // A non-zero value must be set, but the initial viewHeight is 0.
-            height = MAX(result.viewHeight, kResultViewMiniHeight);
+            height = MAX(result.viewHeight, EZResultViewMiniHeight);
         } else {
-            height = kResultViewMiniHeight;
+            height = EZResultViewMiniHeight;
         }
     }
     //        NSLog(@"row: %ld, height: %@", row, @(height));
@@ -845,8 +845,10 @@ static NSString *const EZColumnId = @"EZColumnId";
         // If result is not empty, update cell and show.
         if (result.isShowing && !result.hasResult) {
             [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+                result.error = error;
+                result.isShowing = YES;
                 if (!result.hasTranslatedResult && result.error) {
-                    result.isLoading = NO;
+                    result.isShowing = NO;
                 }
                 [self updateCellWithResult:result reloadData:YES];
             }];

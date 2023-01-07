@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZQueryService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,6 +30,9 @@ typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
     /// 不支持的语言
     EZTranslateErrorTypeUnsupportLanguage,
 };
+
+
+FOUNDATION_EXPORT NSError * EZQueryNotSupportedLanguageError(EZQueryService *service);
 
 
 @interface EZTranslateError : NSObject
