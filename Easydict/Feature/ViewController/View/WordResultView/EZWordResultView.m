@@ -495,16 +495,17 @@ static const CGFloat kVerticalPadding_8 = 8;
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         lastView = nameTextFiled;
         
+        __block EZBlueTextButton *lastWordButton = nil;
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
             [self addSubview:wordButton];
             [wordButton setTitle:word];
             
             [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
-                if (idx == 0) {
+                if (!lastWordButton) {
                     make.left.equalTo(nameTextFiled.mas_right);
                 } else {
-                    make.left.equalTo(lastView.mas_right).offset(5);
+                    make.left.equalTo(lastWordButton.mas_right).offset(3);
                 }
                 make.centerY.equalTo(nameTextFiled);
             }];
@@ -517,6 +518,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
             }];
             wordButton.mas_key = @"wordButton_words";
+            lastWordButton = wordButton;
         }];
     }];
     
