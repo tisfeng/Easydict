@@ -20,6 +20,7 @@ static CGFloat EZExceptInputViewHeight = 30;
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, assign) BOOL typing;
+@property (nonatomic, assign) BOOL enableAutoDetect;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 
