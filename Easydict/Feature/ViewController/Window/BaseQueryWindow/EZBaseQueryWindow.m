@@ -102,13 +102,11 @@
     NSLog(@"dealloc: %@", self);
 }
 
-#pragma makr - NSWindowDelegate
+#pragma makr - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
 //        NSLog(@"windowDidBecomeKey: %@", self);
 }
-
-#pragma mark - NSNotification
 
 - (void)windowDidResize:(NSNotification *)aNotification {
     //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
@@ -140,6 +138,15 @@
     if (!floatingWindow.pin && floatingWindow.windowType != EZWindowTypeMain) {
         [[EZWindowManager shared] closeFloatingWindow];
     }
+}
+
+- (BOOL)windowShouldClose:(NSWindow *)sender {
+    if (self.windowType == EZWindowTypeMain) {
+        [self orderOut:nil];
+        return NO;
+    }
+    
+    return YES;
 }
 
 // Window is hidden or showing.

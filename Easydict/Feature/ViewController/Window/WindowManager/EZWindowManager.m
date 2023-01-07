@@ -347,19 +347,22 @@ static EZWindowManager *_instance;
 }
 
 - (void)showOrHideDockAppAndMainWindow {
-    NSApplicationActivationPolicy activationPolicy = NSApplicationActivationPolicyAccessory;
+    BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
+    [self showMainWindow:showFlag];
 
+    NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
+    [NSApp setActivationPolicy:activationPolicy];
+}
+
+- (void)showMainWindow:(BOOL)showFlag {
     EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
-    if (!EZConfiguration.shared.hideMainWindow) {
-        activationPolicy = NSApplicationActivationPolicyRegular;
-
+    if (showFlag) {
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
     } else {
         // ???: Why does closing the window prevent the main window from show again?
         [mainWindow orderOut:nil];
     }
-    [NSApp setActivationPolicy:activationPolicy];
 }
 
 #pragma mark - Menu Actions

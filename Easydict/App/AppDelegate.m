@@ -81,12 +81,10 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
-    [EZWindowManager.shared.mainWindow makeKeyAndOrderFront:nil];
+    [EZWindowManager.shared showMainWindow:YES];
     
     [EZLog logWindowAppear:EZWindowTypeMain];
-    
-    // Show main window, do not close window.
-    
+        
     return YES;
 }
 
