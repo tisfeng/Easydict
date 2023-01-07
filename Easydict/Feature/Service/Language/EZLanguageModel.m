@@ -51,6 +51,7 @@ NSString *const EZLanguageFilipino = @"Filipino";
 NSString *const EZLanguageKhmer = @"Khmer";
 NSString *const EZLanguageLao = @"Lao";
 NSString *const EZLanguageBengali = @"Bengali";
+NSString *const EZLanguageBurmese = @"Burmese";
 NSString *const EZLanguageNorwegian = @"Norwegian";
 NSString *const EZLanguageSerbian = @"Serbian";
 NSString *const EZLanguageCroatian = @"Croatian";
@@ -446,6 +447,14 @@ NSString *const EZLanguageHebrew = @"Hebrew";
         bengaliLang.flagEmoji = @"🇧🇩";
         bengaliLang.localeIdentifier = @"bn_BD";
         [allLanguages setObject:bengaliLang forKey:EZLanguageBengali];
+
+        EZLanguageModel *burmeseLang = [[EZLanguageModel alloc] init];
+        burmeseLang.chineseName = @"缅甸语";
+        burmeseLang.englishName = EZLanguageBurmese;
+        burmeseLang.localName = @"ဗမာစာ";
+        burmeseLang.flagEmoji = @"🇲🇲";
+        burmeseLang.localeIdentifier = @"my_MM";
+        [allLanguages setObject:burmeseLang forKey:EZLanguageBurmese];
 
         EZLanguageModel *norwegianLang = [[EZLanguageModel alloc] init];
         norwegianLang.chineseName = @"挪威语";

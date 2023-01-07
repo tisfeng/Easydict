@@ -146,6 +146,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                                         EZLanguageKhmer, @"km",
                                         EZLanguageLao, @"lo",
                                         EZLanguageBengali, @"bn",
+                                        EZLanguageBurmese, @"my",
                                         EZLanguageNorwegian, @"no",
                                         EZLanguageSerbian, @"sr",
                                         EZLanguageCroatian, @"hr",
