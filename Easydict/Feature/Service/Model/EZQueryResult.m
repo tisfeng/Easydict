@@ -112,7 +112,7 @@ NSString *getPartName(NSString *part) {
     return text;
 }
 
-- (BOOL)hasResult {
+- (BOOL)hasShowingResult {
     if (self.hasTranslatedResult || self.error) {
         return YES;
     }

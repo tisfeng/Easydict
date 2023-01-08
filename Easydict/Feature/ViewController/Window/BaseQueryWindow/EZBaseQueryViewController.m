@@ -849,7 +849,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         service.enabledQuery = result.isShowing;
         
         // If result is not empty, update cell and show.
-        if (result.isShowing && !result.hasResult) {
+        if (result.isShowing && !result.hasShowingResult) {
             [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 result.error = error;
                 result.isShowing = YES;
