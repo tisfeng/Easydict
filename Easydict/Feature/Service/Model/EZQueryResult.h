@@ -120,8 +120,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 
 @property (nonatomic, strong, nullable) NSError *error;
 
-/// If (self.hasTranslatedResult || self.error), then hasResult = YES, that means will show result view.
-@property (nonatomic, assign, readonly) BOOL hasResult;
+/// If (self.hasTranslatedResult || self.error), then hasShowingResult = YES, that means will show result view.
+@property (nonatomic, assign, readonly) BOOL hasShowingResult;
 /// If (self.wordResult && self.translatedText.length), YES
 @property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
 

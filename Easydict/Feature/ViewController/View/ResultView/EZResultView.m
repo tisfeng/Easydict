@@ -129,7 +129,7 @@
     [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         
-        if (!self.result.hasResult && self.result.queryModel.queryText.length == 0) {
+        if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
             NSLog(@"query text is empty");
             return;
         }
@@ -222,7 +222,7 @@
     }];
     
     CGFloat viewHeight = EZResultViewMiniHeight;
-    if (result.hasResult && result.isShowing) {
+    if (result.hasShowingResult && result.isShowing) {
         viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
         //        NSLog(@"show result view height: %@", @(self.height));
     }

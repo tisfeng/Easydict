@@ -237,7 +237,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         mm_strongify(self);
-        if (self.result.error) {
+        if (self.result.error && !self.result.hasTranslatedResult) {
             if (self.wordLink) {
                 [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
                     self.result.normalResults = texts;
