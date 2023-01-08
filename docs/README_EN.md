@@ -9,7 +9,7 @@
 
 ## Easydict 易词典
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. It is an open-source version of [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac) and is permanently free. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. It is an open-source version of [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac) and is permanently free. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS system translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![iShot_2023-01-07_19.33.01的副本-1673091295](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-07_19.33.01的副本-1673091295.png)
 
@@ -20,6 +20,7 @@
 - [x] Auto select translate, automatically display the query icon after word search, mouse hover to query.
 - [x] Support system OCR screenshot translation.
 - [x] Support system TTS.
+- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS%F0%9F%8D%8Esystem-translation-in-Easydict.md)_)
 - [x] Support Youdao Dictionary, DeepL, Google, Baidu and Volcano Translator, no Key required, totally free!
 - [x] Support for 48 languages.
 
@@ -52,7 +53,7 @@ Once Easydict is launched, in addition to the main window (which can be hidden),
 
 ### Services
 
-**Currently, we support Youdao Dictionary, DeepL, Google, Baidu and Volcano translation, total 5 translation services.**
+**Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
 
 > Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
@@ -60,56 +61,56 @@ Once Easydict is launched, in addition to the main window (which can be hidden),
 Supported languages:
 
 
-| Languages             | Youdao | DeepL | Google | Baidu | Volcano |
-| :-------------------- | :----: | :---: | :----: | :---: | :-----: |
-| Chinese (Simplified)  |   ✅   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Chinese (Traditional) |   ✅   |  ⚠️   |   ✅   |  ✅   |   ✅    |
-| English               |   ✅   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Japanese              |   ✅   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Korean                |   ✅   |  ❌   |   ✅   |  ✅   |   ✅    |
-| French                |   ✅   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Spanish               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Portuguese            |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Italian               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| German                |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Russian               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Arabic                |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Swedish               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Romanian              |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Thai                  |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Slovak                |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Dutch                 |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Hungarian             |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Greek                 |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Danish                |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Finnish               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Polish                |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Czech                 |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Turkish               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Lithuanian            |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Latvian               |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Ukrainian             |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Bulgarian             |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Indonesian            |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Malay                 |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Slovenian             |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Estonian              |   ❌   |  ✅   |   ✅   |  ✅   |   ✅    |
-| Vietnamese            |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Persian               |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Hindi                 |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Telugu                |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Tamil                 |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Urdu                  |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Filipino              |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Khmer                 |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Lao                   |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Bengali               |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Burmese               |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Norwegian             |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Serbian               |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Croatian              |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Mongolian             |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
-| Hebrew                |   ❌   |  ❌   |   ✅   |  ✅   |   ✅    |
+| Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
+| :-------------------- | :----: | :---: | :----: | :---: | :-----: | :-----: |
+| Chinese (Simplified)  |   ✅   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Chinese (Traditional) |   ✅   |  ⚠️   |  ❌  |   ✅   |  ✅   |   ✅    |
+| English               |   ✅   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Japanese              |   ✅   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Korean                |   ✅   |  ❌   |  ✅  |   ✅   |  ✅   |   ✅    |
+| French                |   ✅   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Spanish               |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Portuguese            |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Italian               |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| German                |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Russian               |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Arabic                |   ❌   |  ❌   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Swedish               |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Romanian              |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Thai                  |   ❌   |  ❌   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Slovak                |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Dutch                 |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Hungarian             |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Greek                 |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Danish                |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Finnish               |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Polish                |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Czech                 |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Turkish               |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Lithuanian            |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Latvian               |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Ukrainian             |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Bulgarian             |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Indonesian            |   ❌   |  ✅   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Malay                 |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Slovenian             |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Estonian              |   ❌   |  ✅   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Vietnamese            |   ❌   |  ❌   |  ✅  |   ✅   |  ✅   |   ✅    |
+| Persian               |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Hindi                 |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Telugu                |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Tamil                 |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Urdu                  |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Filipino              |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Khmer                 |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Lao                   |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Bengali               |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Burmese               |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Norwegian             |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Serbian               |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Croatian              |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Mongolian             |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
+| Hebrew                |   ❌   |  ❌   |  ❌  |   ✅   |  ✅   |   ✅    |
 > Note: ⚠️ means the translation of source language to Traditional Chinese is not supported, such as DeepL. If you enter Traditional Chinese for translation, it will be treated as Simplified Chinese.
 
 
@@ -117,7 +118,7 @@ Supported languages:
 
 The settings page provides some preference modifications, such as hiding the main interface, modifying translation shortcuts, turning services on and off, or adjusting the order of services.
 
-![iShot_2023-01-04_18.41.55](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.41.55-1672829006.png)
+![iShot_2023-01-08_10.14.54-1673144099](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.14.54-1673144099.png)
 
 ## Related Projects
 
