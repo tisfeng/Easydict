@@ -11,6 +11,7 @@
 #import "EZHoverButton.h"
 #import "EZWordResultView.h"
 #import "NSView+EZAnimatedHidden.h"
+#import "EZLoadingAnimationView.h"
 
 static CGFloat const kAnimationDuration = 0.5;
 static NSInteger const kAnimationDotViewCount = 5;
@@ -21,13 +22,11 @@ static NSInteger const kAnimationDotViewCount = 5;
 @property (nonatomic, strong) NSImageView *typeImageView;
 @property (nonatomic, strong) NSTextField *typeLabel;
 @property (nonatomic, strong) NSImageView *warningImageView;
-@property (nonatomic, strong) NSView *loadingView;
+@property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 
 @property (nonatomic, strong) NSButton *arrowButton;
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
-
-@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -99,7 +98,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     }];
     self.warningImageView.mas_key = @"warningImageView";
     
-    NSView *loadingView = [[NSView alloc] init];
+    EZLoadingAnimationView *loadingView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingView];
     self.loadingView = loadingView;
     
@@ -150,11 +149,11 @@ static NSInteger const kAnimationDotViewCount = 5;
         
         [self updateArrowButton];
         
-        //        [self setNeedsUpdateConstraints:YES];
-        
         if (self.clickArrowBlock) {
             self.clickArrowBlock(self.result);
         }
+        
+        // TODO: add arrow roate animation.
         
         //        [self rotateArrowButton];
     }];
@@ -164,76 +163,42 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     [self updateArrowButton];
     
-    [self.topBarView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_equalTo(EZResultViewMiniHeight);
     }];
     
-    [self.typeImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.typeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topBarView).offset(9);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
-    [self.typeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeImageView.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
     
-    [self.warningImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.warningImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
     
-    [self.loadingView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
     
     
-    [self.arrowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
-    
-    [self setupLoadingDotViews];
 }
 
-
-- (void)setupLoadingDotViews {
-    [self.loadingView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    NSView *lastView = nil;
-    CGFloat width = 4;
-    CGFloat padding = 1.8 * width;
-    CGFloat margin = width;
-    for (int i = 0; i < kAnimationDotViewCount; i++) {
-        CGRect rect = CGRectMake(0, 0, width, width);
-        NSView *dotView = [[NSView alloc] initWithFrame:rect];
-        dotView.wantsLayer = YES;
-        dotView.hidden = YES;
-        dotView.layer.backgroundColor = [NSColor mm_colorWithHexString:@"#FF8E27"].CGColor;
-        dotView.layer.cornerRadius = width / 2;
-        [self.loadingView addSubview:dotView];
-        
-        [dotView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            if (lastView) {
-                make.left.equalTo(lastView.mas_right).offset(padding);
-            } else {
-                make.left.equalTo(self.loadingView).offset(margin);
-            }
-            make.centerY.equalTo(self.loadingView);
-            make.size.mas_equalTo(CGSizeMake(width, width));
-        }];
-        lastView = dotView;
-    }
-    [self.loadingView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(lastView).offset(margin);
-    }];
-}
 
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
@@ -291,95 +256,17 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 
-#pragma mark - Animation
+#pragma mark - Public Methods
 
 - (void)updateLoadingAnimation {
-    [self startOrEndLoadingAnimation:self.result.isLoading];
+    [self startOrStopLoadingAnimation:self.result.isLoading];
 }
 
-- (void)startOrEndLoadingAnimation:(BOOL)isLoading {
+- (void)startOrStopLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
         self.warningImageView.hidden = YES;
-        [self startLoadingAnimation];
-    } else {
-        [self removeLoadingAnimation];
     }
-}
-
-- (void)startLoadingAnimation {
-    NSLog(@"startLoadingAnimation");
-    
-    /**
-     (subviews.count - 1) * X = kAnimationDuration / 2
-     4 * X = 0.25
-     X = 0.12
-     */
-    
-    NSArray *subviews = self.loadingView.subviews; // 5
-    CGFloat delayInterval = 0.12;
-    CGFloat animationInterval = 0.3;
-    CGFloat timerInterval = (subviews.count - 1) * delayInterval + kAnimationDuration + animationInterval; // 1.0
-    
-    mm_weakify(self);
-    
-    [self.timer invalidate];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval repeats:YES block:^(NSTimer * _Nonnull timer) {
-        mm_strongify(self);
-        
-        for (int i = 0; i < subviews.count; i++) {
-            CGFloat delayTime = delayInterval * i;
-            NSView *dotView = subviews[i];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (self.result.isLoading) {
-                    dotView.hidden = NO;
-                    [self scaleAnimateView:dotView];
-                    
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime + kAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        dotView.hidden = YES;
-                    });
-                }
-            });
-        }
-    }];
-    
-    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
-    [self.timer fire];
-}
-
-- (void)scaleAnimateView:(NSView *)view {
-    self.loadingView.hidden = NO;
-    
-    [view.layer removeAllAnimations];
-    
-    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-    scaleAnimation.values = @[ @1.0, @2.0, @1.0 ];
-    scaleAnimation.removedOnCompletion = NO;
-    scaleAnimation.fillMode = kCAFillModeForwards;
-    scaleAnimation.calculationMode = kCAAnimationLinear;
-    
-    CGRect oldRect = view.layer.frame;
-    view.layer.anchorPoint = CGPointMake(0.5, 0.5);
-    view.layer.frame = oldRect;
-    
-    CAAnimationGroup *group = [CAAnimationGroup animation];
-    group.animations = @[ scaleAnimation ];
-    group.duration = kAnimationDuration;
-    group.delegate = self;
-    group.repeatCount = 0;
-    [view.layer addAnimation:group forKey:@"group"];
-}
-
-- (void)removeLoadingAnimation {
-    self.loadingView.hidden = YES;
-    [self.timer invalidate];
-    self.timer = nil;
-}
-
-// ???: I don't know why, when the tableView is updating at the beginning, the cells will not be released, but will be released normally only when the accumulated cells reach a certain number?
-- (void)dealloc {
-    NSLog(@"EZResultView dealloc: %@", self);
-    [self.timer invalidate];
-    self.timer = nil;
+    [self.loadingView startLoading:isLoading];
 }
 
 #pragma mark -

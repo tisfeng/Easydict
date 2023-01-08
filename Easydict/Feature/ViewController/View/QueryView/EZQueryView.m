@@ -340,8 +340,8 @@
 }
 
 - (void)updateButtonsDisplayState:(NSString *)text {    
-    BOOL isHidden = text.length == 0;
-    [self setClearButtonAnimatedHidden:isHidden];
+    BOOL isEmpty = text.length == 0;
+    [self setClearButtonAnimatedHidden:isEmpty];
     
     [self updateDetectButton];
 }
