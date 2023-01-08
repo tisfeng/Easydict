@@ -61,6 +61,16 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     
+    EZLoadingAnimationView *loadingAnimationView = [[EZLoadingAnimationView alloc] init];
+    [self addSubview:loadingAnimationView];
+    self.loadingAnimationView = loadingAnimationView;
+    
+    [self.loadingAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(textView).offset(5);
+        make.left.equalTo(textView).offset(10);
+        make.height.mas_equalTo(30);
+    }];
+    
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
@@ -128,7 +138,7 @@
     }];
 }
 
-#pragma mark - Public
+#pragma mark - Public Methods
 
 - (CGFloat)heightOfQueryView {
     return [self heightOfTextView] + EZExceptInputViewHeight;
@@ -136,6 +146,18 @@
 
 - (void)setClearButtonAnimatedHidden:(BOOL)hidden {
     [self.clearButton setAnimatedHidden:hidden];
+}
+
+- (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel {
+    // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
+    
+    self.clearButton.alphaValue = queryModel.queryText.length ? 1.0 : 0;
+    self.detectButton.alphaValue = [queryModel.detectedLanguage isEqualToString:EZLanguageAuto] ? 0 : 1.0;
+}
+
+- (void)startLoadingAnimation:(BOOL)isLoading {
+    self.textView.editable = !isLoading;
+    [self.loadingAnimationView startLoading:isLoading];
 }
 
 #pragma mark - Rewrite
@@ -344,14 +366,6 @@
     NSScrollView *scrollView = self.scrollView;
     CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
     [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
-}
-
-
-- (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel {
-    // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
-    
-    self.clearButton.alphaValue = queryModel.queryText.length ? 1.0 : 0;
-    self.detectButton.alphaValue = [queryModel.detectedLanguage isEqualToString:EZLanguageAuto] ? 0 : 1.0;
 }
 
 @end

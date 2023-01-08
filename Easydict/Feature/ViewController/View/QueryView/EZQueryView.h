@@ -9,6 +9,7 @@
 #import "EZTextView.h"
 #import "EZQueryModel.h"
 #import "NSView+EZWindowType.h"
+#import "EZLoadingAnimationView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +20,7 @@ static CGFloat EZExceptInputViewHeight = 30;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
+@property (nonatomic, strong) EZLoadingAnimationView *loadingAnimationView;
 @property (nonatomic, assign) BOOL typing;
 @property (nonatomic, assign) BOOL enableAutoDetect;
 
@@ -38,6 +40,8 @@ static CGFloat EZExceptInputViewHeight = 30;
 - (void)setClearButtonAnimatedHidden:(BOOL)show;
 
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
+
+- (void)startLoadingAnimation:(BOOL)isLoading;
 
 @end
 
