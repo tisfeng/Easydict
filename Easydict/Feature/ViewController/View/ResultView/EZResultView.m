@@ -13,23 +13,18 @@
 #import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
 
-static CGFloat const kAnimationDuration = 0.5;
-static NSInteger const kAnimationDotViewCount = 5;
-
-@interface EZResultView () <CAAnimationDelegate>
+@interface EZResultView ()
 
 @property (nonatomic, strong) NSView *topBarView;
 @property (nonatomic, strong) NSImageView *typeImageView;
 @property (nonatomic, strong) NSTextField *typeLabel;
 @property (nonatomic, strong) NSImageView *warningImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
-
 @property (nonatomic, strong) NSButton *arrowButton;
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
 @end
-
 
 @implementation EZResultView
 
@@ -78,9 +73,6 @@ static NSInteger const kAnimationDotViewCount = 5;
         label.bordered = NO;
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
-        NSString *title = @"系统翻译";
-        label.attributedStringValue = [[NSAttributedString alloc] initWithString:title];
-        
         [label excuteLight:^(NSTextField *label) {
             label.textColor = NSColor.resultTextLightColor;
         } drak:^(NSTextField *label) {
@@ -209,7 +201,7 @@ static NSInteger const kAnimationDotViewCount = 5;
     
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
     
-        
+    
     [self.wordResultView refreshWithResult:result];
     
     BOOL hideWarningImage = YES;
@@ -219,8 +211,8 @@ static NSInteger const kAnimationDotViewCount = 5;
     self.warningImageView.hidden = hideWarningImage;
     
     [self updateArrowButton];
-
-
+    
+    
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
@@ -235,8 +227,8 @@ static NSInteger const kAnimationDotViewCount = 5;
         //        NSLog(@"show result view height: %@", @(self.height));
     }
     self.result.viewHeight = viewHeight;
-//    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
-
+    //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
+    
     
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
