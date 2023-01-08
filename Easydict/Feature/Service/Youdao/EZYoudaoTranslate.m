@@ -80,7 +80,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
 - (nullable NSString *)youdaoDictForeignLangauge {
     EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
     EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
-
+    
     NSArray *youdaoSupportedLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
     NSMutableArray *youdaoSupportedLanguageCodes = [NSMutableArray array];
     for (EZLanguage langauge in youdaoSupportedLanguags) {
@@ -180,12 +180,12 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     }
     
     
-    NSArray *dictArray = @[@[@"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest"]];
+    NSArray *dictArray = @[ @[ @"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest" ] ];
     NSDictionary *dicts = @{
         @"count" : @(99),
         @"dicts" : dictArray,
     };
-        
+    
     NSData *data = [NSJSONSerialization dataWithJSONObject:dicts options:0 error:nil];
     NSString *dicts_string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSDictionary *params = @{
@@ -216,25 +216,22 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"", reqDict);
-
+        self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
         dispatch_group_leave(group);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, @"", reqDict);
-        
+        self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
         dispatch_group_leave(group);
     }];
     
     // 2.Query Youdao translate.
     dispatch_group_enter(group);
-    [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult * _Nullable result, NSError * _Nullable error) {
+    [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (error) {
             self.result.error = error;
         }
         dispatch_group_leave(group);
     }];
-    
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         if (self.result.error) {
