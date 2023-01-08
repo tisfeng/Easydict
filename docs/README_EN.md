@@ -25,7 +25,7 @@
 - [x] Support for 48 languages.
 
 Next step.
-- [ ] Support for macOS system translation.
+- [ ] Support for macOS system dictionary.
 - [ ] Support more query services.
 
 _**If you like this extension, please give it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks!**_
