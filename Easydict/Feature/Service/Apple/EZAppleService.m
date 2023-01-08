@@ -217,19 +217,19 @@
 }
 
 
-/// Apple System ocr. Use Vision to recognize text in the image. Cost ~400ms
+/// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    // Convert NSImage to CGImage
-    CGImageRef cgImage = [queryModel.ocrImage CGImageForProposedRect:NULL context:nil hints:nil];
-    
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
-    // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
-    
-    // Create a new image-request handler. macos(10.13)
-    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
-    // Create a new request to recognize text.
-    if (@available(macOS 10.15, *)) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Convert NSImage to CGImage
+        CGImageRef cgImage = [queryModel.ocrImage CGImageForProposedRect:NULL context:nil hints:nil];
+        
+        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+        
+        // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
+        
+        // Create a new image-request handler. macos(10.13)
+        VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
+        // Create a new request to recognize text.
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
             NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
@@ -255,9 +255,10 @@
             
             NSLog(@"ocr text: %@", recognizedStrings);
             
-            completion(result, nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result, nil);
+            });
         }];
-        
         
         if (@available(macOS 12.0, *)) {
             //            NSError *error;
@@ -304,9 +305,7 @@
         
         // Perform the text-recognition request.
         [requestHandler performRequests:@[ request ] error:nil];
-    } else {
-        // Fallback on earlier versions
-    }
+    });
 }
 
 
