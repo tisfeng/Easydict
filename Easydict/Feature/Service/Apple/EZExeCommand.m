@@ -35,7 +35,9 @@
 
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];
         NSString *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
-        if (task.terminationStatus != 0) {
+        
+        //  *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -[NSConcreteTask terminationStatus]: task still running'
+        if (errorString.length) {
             // 34:114: execution error: “Shortcuts Events”遇到一个错误：不能获得“shortcut "123abc"”。 (-1728)
             errorString = [errorString trim];
             NSArray *array = [errorString componentsSeparatedByString:@"execution error: "];
