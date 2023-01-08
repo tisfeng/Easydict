@@ -174,9 +174,11 @@
     };
     NSLog(@"Apple translate paramters: %@", paramters);
     
-    [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result) {
-        self.result.normalResults = @[ result ];
-        completion(self.result, nil);
+    [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
+        if (!error) {
+            self.result.normalResults = @[ result ];
+        }
+        completion(self.result, error);
     }];
 }
 
