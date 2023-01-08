@@ -40,6 +40,7 @@
 // Get user system preferred languages
 + (NSArray<EZLanguage> *)systemPreferredLanguages {
     // "en-CN", "zh-Hans", "zh-Hans-CN"
+    // ???: Why has changed to [ "zh-CN", "zh-Hans-CN", "en-CN" ]
     NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
@@ -50,8 +51,9 @@
         // Convert to EZLanguage
         EZAppleService *appleService = [[EZAppleService alloc] init];
         EZLanguage ezLanguage = [appleService appleLanguageEnumFromCode:languageCode];
-
-        [languages addObject:ezLanguage];
+        if (![ezLanguage isEqualToString:EZLanguageAuto]) {
+            [languages addObject:ezLanguage];
+        }
     }
 
     // This method seems to be the same.

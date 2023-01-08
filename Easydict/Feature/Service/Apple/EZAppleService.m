@@ -123,6 +123,7 @@
     return orderedDict;
 }
 
+// zh-Hans --> Chinese-Simplified
 - (EZLanguage)appleLanguageEnumFromCode:(NSString *)langString {
     EZLanguage language = [self.appleLangEnumFromStringDict objectForKey:langString];
     if (!language) {
@@ -130,8 +131,10 @@
     }
     return language;
 }
+
+// Chinese-Simplified --> zh-Hans
 - (NSString *)appleLanguageCodeForLanguage:(EZLanguage)lang {
-    return [self.appleLangEnumFromStringDict objectForKey:lang];
+    return [self.appleLanguagesDictionary objectForKey:lang];
 }
 
 
