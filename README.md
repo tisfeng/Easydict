@@ -25,7 +25,7 @@
 
 下一步：
 
-- [ ] 支持 macOS 系统翻译。
+- [ ] 支持 macOS 系统词典。
 - [ ] 支持更多查询服务。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
