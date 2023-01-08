@@ -219,6 +219,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
         self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
         dispatch_group_leave(group);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        mm_strongify(self);
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
         self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
         dispatch_group_leave(group);
@@ -227,6 +228,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     // 2.Query Youdao translate.
     dispatch_group_enter(group);
     [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        mm_strongify(self);
         if (error) {
             self.result.error = error;
         }
@@ -234,6 +236,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     }];
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        mm_strongify(self);
         if (self.result.error) {
             if (self.wordLink) {
                 [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
