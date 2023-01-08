@@ -3,15 +3,15 @@
   <channel>
     <title>Easydict</title>
     <item>
-      <title>1.1.1</title>
+      <title>1.1.2</title>
       <pubDate>Sun, 8 Jan 2023 16:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.1.1/Easydict.zip"
-        sparkle:version="9"
-        sparkle:shortVersionString="1.1.1"
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.1.2/Easydict.zip"
+        sparkle:version="10"
+        sparkle:shortVersionString="1.1.2"
         type="application/octet-stream"
-        sparkle:edSignature="h+XjVKjxCLGNeGZ4lTLpdHNCOFmluiLqFcXVjxfum1JG8MqZOf2AXSqwXH0j/8kyAMVLx2rwmIwXFOYcCnkNAw=="
-        length="8219028" />
+        sparkle:edSignature="QbFjDN0z+sUOPSRvN3vEuJH8XVq141Ums1/cOusqr8OJOxHAlyzb8lRd1czt2xYPn3miznS9a30RSWsylL/UDg=="
+        length="8217501" />
       <description><![CDATA[
       <ul>
       <li>Add support for macOS System Translation.</li>
