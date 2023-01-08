@@ -284,13 +284,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
     
-    mm_weakify(self);
-    
     self.queryModel.ocrImage = image;
-    
+    mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
-        
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
         
