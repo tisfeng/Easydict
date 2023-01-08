@@ -44,6 +44,8 @@ FOUNDATION_EXPORT NSError * EZQueryUnsupportedLanguageError(EZQueryService *serv
 
 + (NSError *)timeoutError;
 
++ (NSError *)errorWithString:(NSString *)string;
+
 @end
 
 NS_ASSUME_NONNULL_END

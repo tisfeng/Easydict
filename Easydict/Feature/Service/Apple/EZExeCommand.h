@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZExeCommand : NSObject
 
 - (void)runTranslateShortcut:(NSDictionary *)parameters
-           completionHandler:(void (^)(NSString *result))completionHandler;
+           completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
 @end
 
 NS_ASSUME_NONNULL_END
