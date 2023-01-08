@@ -65,7 +65,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     mm_weakify(self);
     
-    if (result.wordResult) {
+    if (result.wordResult && result.text.length < 15) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             mm_strongify(self);
