@@ -45,17 +45,20 @@
         NSMutableArray *partArray = [NSMutableArray array];
         [word.trs enumerateObjectsUsingBlock:^(EZWordTr *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             // adj. 好的，优良的；能干的，擅长的；好的，符合心愿的；
+            // 行政助理 [administrative assistants]
             NSString *explanation = obj.tr.firstObject.l.i.firstObject;
             
-            NSArray *array = [explanation componentsSeparatedByString:@"."];
-            NSString *pos = array.firstObject;
-            NSString *means = explanation;
-            
             EZTranslatePart *partObject = [[EZTranslatePart alloc] init];
-            if (pos.length < 5) {
-                partObject.part = [NSString stringWithFormat:@"%@.", pos];
-                array = [array subarrayWithRange:NSMakeRange(1, array.count - 1)];
-                means = [[array componentsJoinedByString:@"."] trim];
+            NSString *means = explanation;
+
+            NSString *delimiterSymbol = @".";
+            NSArray *array = [explanation componentsSeparatedByString:delimiterSymbol];
+            if (array.count > 1) {
+                NSString *pos = array.firstObject;
+                if (pos.length < 5) {
+                    partObject.part = [NSString stringWithFormat:@"%@%@", pos, delimiterSymbol];
+                    means = [array[1] trim];
+                }
             }
             partObject.means = @[ means ];
             
