@@ -556,19 +556,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         }];
     };
     
-    if ([from isEqualToString:EZLanguageAuto]) {
-        // 需要先识别语言，用于指定目标语言
-        [self detectText:text
-              completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
-            if (error) {
-                completion(self.result, error);
-                return;
-            }
-            translateBlock(text, detectedLanguage, to);
-        }];
-    } else {
-        translateBlock(text, from, to);
-    }
+    translateBlock(text, from, to);
 }
 
 - (void)sendTranslateTKKText:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error))completion {
@@ -690,11 +678,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 NSArray *responseArray = responseObject;
                 if (responseArray.count >= 3) {
                     NSString *googleFromString = responseArray[2];
-                    EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
-                    if (googleFrom != EZLanguageAuto) {
-                        completion(googleFrom, nil);
-                        return;
-                    }
+                    // !!!: Note: it may be auto if it's unsupported language.
+                    EZLanguage googleFromLanguage = [self languageEnumFromCode:googleFromString];
+                    completion(googleFromLanguage, nil);
                 }
             }
         } @catch (NSException *exception) {
