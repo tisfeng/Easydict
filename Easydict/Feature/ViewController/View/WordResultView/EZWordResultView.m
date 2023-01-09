@@ -205,7 +205,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                         height += kVerticalPadding_8;
                     }
                 } else {
-                    CGFloat topOffset = 5;
+                    CGFloat topOffset = kVerticalPadding_8;
                     make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                     height += topOffset;
                 }
@@ -410,7 +410,6 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
 
         EZLabel *meanLabel = [[EZLabel alloc] init];
-        ;
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
@@ -567,7 +566,6 @@ static const CGFloat kVerticalPadding_8 = 8;
         [self addSubview:wordButton];
 
         CGFloat maxButtonWidth = self.width / 2;
-
         NSString *title = [self multipleLineText:obj.word font:[NSFont systemFontOfSize:14] lineWidth:maxButtonWidth];
         [wordButton setTitle:title];
 
@@ -592,6 +590,9 @@ static const CGFloat kVerticalPadding_8 = 8;
                 CGFloat topOffset = kHorizontalMargin_8;
                 if (lastView) {
                     topOffset = 5;
+                    if (idx == 0) {
+                        topOffset = 8;
+                    }
                     make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                 } else {
                     make.top.offset(topOffset);
