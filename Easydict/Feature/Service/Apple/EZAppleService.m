@@ -404,11 +404,11 @@
 - (NSDictionary<NLLanguage, NSNumber *> *)customLanguageHints {
     // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
-        NLLanguageEnglish : @(2.0),
+        NLLanguageEnglish : @(3.0),
         NLLanguageSimplifiedChinese : @(0.8),
         NLLanguageJapanese : @(0.7),
-        NLLanguageFrench : @(0.45), // const, ex
-        NLLanguageKorean : @(0.4),
+        NLLanguageFrench : @(0.25), // const, ex, delimiter
+        NLLanguageKorean : @(0.2),
         NLLanguageTraditionalChinese : @(0.2),
         NLLanguageItalian : @(0.1),     // via
         NLLanguageSpanish : @(0.1),     // favor
@@ -442,8 +442,6 @@
      3. Japanese, + 0.1
      4. ........, + 0.1
      
-     Since English is so widely used, we need to add additional weighting, + 0.3
-     
      */
     NSMutableDictionary<EZLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionary];
     for (NSInteger i = 0; i < preferredLanguages.count; i++) {
@@ -463,6 +461,7 @@
         languageProbabilities[language] = @(weight);
     }
     
+    // Since English is so widely used, we need to add additional weighting 0.2, even it's not preferred language.
     if (![preferredLanguages containsObject:EZLanguageEnglish]) {
         languageProbabilities[EZLanguageEnglish] = @(0.2);
     }
