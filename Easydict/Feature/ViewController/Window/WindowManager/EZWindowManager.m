@@ -26,6 +26,8 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 
+@property (nonatomic, copy) EZQueryType queryType;
+
 @end
 
 
@@ -151,6 +153,7 @@ static EZWindowManager *_instance;
         [_popButtonWindow.popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
             [self->_popButtonWindow close];
+            self.queryType = EZQueryTypeAutoSelect;
             [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
         }];
     }
@@ -206,7 +209,7 @@ static EZWindowManager *_instance;
     CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
-    [window.queryViewController startQueryText:text];
+    [window.queryViewController startQueryText:text queyType:self.queryType];
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
@@ -227,7 +230,7 @@ static EZWindowManager *_instance;
             // !!!: location is bottom-left point, we need to convert it to top-left point,
             CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
             [self showFloatingWindow:window atPoint:correctedPosition];
-            [window.queryViewController startQueryText:text];
+            [window.queryViewController startQueryText:text queyType:self.queryType];
         }];
     }
 }
@@ -380,6 +383,7 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
         self.selectedText = text;
+        self.queryType = EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
     }];
 }
@@ -427,11 +431,13 @@ static EZWindowManager *_instance;
         return;
     }
 
+    self.queryType = EZQueryTypeInput;
     [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:nil];
 }
 
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
+    self.queryType = EZQueryTypeInput;
     [self showFloatingWindowType:EZWindowTypeMini atLastPoint:YES queryText:nil];
 }
 

@@ -9,6 +9,11 @@
 #import "EZQueryModel.h"
 #import "EZConfiguration.h"
 
+NSString *const EZQueryTypeAutoSelect = @"auto_select_query";
+NSString *const EZQueryTypeShortcut = @"shortcut_query";
+NSString *const EZQueryTypeInput = @"input_query";
+NSString *const EZQueryTypeOCR = @"ocr_query";
+
 @implementation EZQueryModel
 
 - (instancetype)init {
@@ -16,6 +21,7 @@
         self.userSourceLanguage = EZConfiguration.shared.from;
         self.userTargetLanguage = EZConfiguration.shared.to;
         self.detectedLanguage = EZLanguageAuto;
+        self.queryType = EZQueryTypeInput;
     }
     return self;
 }

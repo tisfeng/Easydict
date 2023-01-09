@@ -10,7 +10,6 @@
 #import "EZDetectManager.h"
 #import "EZQueryView.h"
 #import "EZResultView.h"
-#import "EZQueryModel.h"
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
 #import "EZCoordinateTool.h"
@@ -268,10 +267,15 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 /// Close all result view, then query text.
 - (void)startQueryText:(NSString *)text {
+    [self startQueryText:text queyType:EZQueryTypeInput];
+}
+
+- (void)startQueryText:(NSString *)text queyType:(EZQueryType)queryType {
     if (!text) {
         return;
     }
     
+    self.queryModel.queryType = queryType;
     self.queryView.typing = NO;
     
     // Close all resultView before querying new text.
@@ -285,6 +289,8 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"startQueryImage");
     
     self.queryModel.ocrImage = image;
+    self.queryModel.queryType = EZQueryTypeOCR;
+    
     [self.queryView startLoadingAnimation:YES];
     
     mm_weakify(self);

@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZLayoutManager.h"
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,7 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
-- (void)startQueryText:(nullable NSString *)text;
+- (void)startQueryText:(nullable NSString *)text queyType:(EZQueryType)queryType;
+
 - (void)startQueryWithImage:(NSImage *)image;
 - (void)retry;
 
