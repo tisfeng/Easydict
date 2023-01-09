@@ -114,4 +114,18 @@
     [self.ocrService ocr:self.queryModel completion:completion];
 }
 
+/// Check if has proxy.
+- (BOOL)checkIfHasProxy {
+    CFDictionaryRef proxies = SCDynamicStoreCopyProxies(NULL);
+
+    CFTypeRef httpProxy = CFDictionaryGetValue(proxies, kSCPropNetProxiesHTTPProxy);
+    NSNumber *httpEnable = (__bridge NSNumber *)(CFDictionaryGetValue(proxies, kSCPropNetProxiesHTTPEnable));
+
+    if (httpProxy && httpEnable && [httpEnable integerValue]) {
+        return YES;
+    }
+
+    return NO;
+}
+
 @end
