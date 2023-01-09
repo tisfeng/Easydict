@@ -9,9 +9,11 @@
 #import "EZDetectManager.h"
 #import "EZBaiduTranslate.h"
 #import "EZAppleService.h"
+#import "EZGoogleTranslate.h"
 
 @interface EZDetectManager ()
 
+@property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
 
 @end
@@ -33,6 +35,13 @@
     return self;
 }
 
+- (EZGoogleTranslate *)googleService {
+    if (!_googleService) {
+        _googleService = [[EZGoogleTranslate alloc] init];
+    }
+    return _googleService;
+}
+
 - (EZBaiduTranslate *)baiduService {
     if (!_baiduService) {
         _baiduService = [[EZBaiduTranslate alloc] init];
@@ -52,6 +61,7 @@
     }];
 }
 
+/// Detect text language. Apple System detect > Google detect > Baidu detect.
 - (void)detectText:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     NSString *queryText = self.queryModel.queryText;
     if (queryText.length == 0) {
@@ -59,16 +69,31 @@
         return;
     }
 
-    [self.detectTextService detectText:queryText completion:^(EZLanguage language, NSError *_Nullable error) {
-        if ([language isEqualToString:EZLanguageAuto]) {
-            [self.baiduService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
-                NSLog(@"baidu detected: %@", language); // Apple detect 123 will fail.
-                [self handleDetectedLanguage:language error:error completion:completion];
-            }];
+    [self.detectTextService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
+        BOOL isPreferredLanguage = [[EZLanguageManager systemPreferredLanguages] containsObject:appleDetectdedLanguage];
+        if (isPreferredLanguage) {
+            [self handleDetectedLanguage:appleDetectdedLanguage error:error completion:completion];
             return;
         }
 
-        [self handleDetectedLanguage:language error:error completion:completion];
+        // If language is not preferred, try to use google detect.
+        [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+            NSLog(@"google detected: %@", language);
+            if (!error) {
+                [self handleDetectedLanguage:language error:error completion:completion];
+                return;
+            }
+
+            // If google detect failed, use baidu detect.
+            [self.baiduService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+                NSLog(@"baidu detected: %@", language);
+                EZLanguage detectedLanguage = appleDetectdedLanguage;
+                if (!error) {
+                    detectedLanguage = language;
+                }
+                [self handleDetectedLanguage:detectedLanguage error:error completion:completion];
+            }];
+        }];
     }];
 }
 
