@@ -252,6 +252,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     });
 }
 
+// TODO: Use a stable Youdao translation API.
 - (void)translateYoudaoAPI:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
