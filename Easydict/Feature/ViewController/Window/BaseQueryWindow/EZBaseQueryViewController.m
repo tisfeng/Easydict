@@ -771,6 +771,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         mm_strongify(self);
         self.queryModel.detectedLanguage = language;
         [self startQueryText];
+        [self updateSelectLanguageCell];
     }];
     
     return queryView;
