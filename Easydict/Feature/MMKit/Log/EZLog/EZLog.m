@@ -24,7 +24,7 @@
     EZQueryModel *model = service.queryModel;
     NSDictionary *dict = @{
         @"serviceType" : service.serviceType,
-//        @"queryText" : model.queryText,
+        @"queryType" : model.queryType,
         @"from" : model.queryFromLanguage,
         @"to" : model.queryTargetLanguage,
     };

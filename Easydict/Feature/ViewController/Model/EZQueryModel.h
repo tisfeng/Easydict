@@ -11,6 +11,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NSString *EZQueryType NS_STRING_ENUM;
+
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeAutoSelect;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeShortcut;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeInput;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
+
 @interface EZQueryModel : NSObject
 
 @property (nonatomic, copy) NSString *queryText;
@@ -24,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSImage *ocrImage;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
+
+@property (nonatomic, copy) EZQueryType queryType;
 
 @end
 
