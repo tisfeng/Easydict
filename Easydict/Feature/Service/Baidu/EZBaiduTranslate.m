@@ -168,6 +168,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }];
 }
 
+// TODO: need to optimize the results of Baidu query words.
 - (void)parseResponseObject:(id _Nullable)responseObject completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     EZQueryResult *result = self.result;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
@@ -288,51 +289,53 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                             }
                             wordResult.exchanges = exchanges.count ? exchanges.copy : nil;
                         }];
-                        
-                        // 解析中文查词
-                        if (simple_means.word_means.count) {
-                            // 这个时候去解析 simple_means["symbols"][0]["parts"][0]["means"]
-                            NSMutableArray<EZTranslateSimpleWord *> *words = [NSMutableArray array];
-                            NSArray<NSDictionary *> *means = simple_means.symbols.firstObject.parts.firstObject.means;
-                            [means enumerateObjectsUsingBlock:^(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                                if ([obj isKindOfClass:NSDictionary.class]) {
-                                    /**
-                                     "text": "rejoice",
-                                     "part": "v.",
-                                     "word_mean": "rejoice",
-                                     "means": ["\u975e\u5e38\u9ad8\u5174", "\u6df1\u611f\u6b23\u559c"]
-                                     "isSeeAlso": "1"
-                                     */
-                                    if (![obj objectForKey:@"isSeeAlso"]) {
-                                        EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
-                                        simpleWord.word = [obj objectForKey:@"text"];
-                                        simpleWord.part = [obj objectForKey:@"part"];
-                                        if (!simpleWord.part.length) {
-                                            simpleWord.part = @"misc.";
-                                        }
-                                        NSArray *means = [obj objectForKey:@"means"];
-                                        if ([means isKindOfClass:NSArray.class]) {
-                                            simpleWord.means = [means mm_where:^BOOL(id _Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
-                                                return [mean isKindOfClass:NSString.class];
-                                            }];
-                                        }
-                                        if (simpleWord.word.length) {
-                                            [words addObject:simpleWord];
-                                        }
+                                                
+                        // 解析 simple_means["symbols"][0]["parts"][0]["means"]
+                        NSMutableArray<EZTranslateSimpleWord *> *words = [NSMutableArray array];
+                        NSArray<NSDictionary *> *means = simple_means.symbols.firstObject.parts.firstObject.means;
+                        [means enumerateObjectsUsingBlock:^(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                            if ([obj isKindOfClass:NSDictionary.class]) {
+                                /**
+                                 "text": "rejoice",
+                                 "part": "v.",
+                                 "word_mean": "rejoice",
+                                 "means": ["\u975e\u5e38\u9ad8\u5174", "\u6df1\u611f\u6b23\u559c"]
+                                 "isSeeAlso": "1"
+                                 */
+                                if (![obj objectForKey:@"isSeeAlso"]) {
+                                    EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
+                                    simpleWord.word = [obj objectForKey:@"text"];
+                                    simpleWord.part = [obj objectForKey:@"part"];
+                                    if (!simpleWord.part.length) {
+                                        simpleWord.part = @"misc.";
+                                    }
+                                    NSArray *means = [obj objectForKey:@"means"];
+                                    if ([means isKindOfClass:NSArray.class]) {
+                                        simpleWord.means = [means mm_where:^BOOL(id _Nonnull mean, NSUInteger idx, BOOL *_Nonnull stop) {
+                                            return [mean isKindOfClass:NSString.class];
+                                        }];
+                                    }
+                                    if (simpleWord.word.length) {
+                                        [words addObject:simpleWord];
                                     }
                                 }
-                            }];
-                            if (words.count) {
-                                wordResult.simpleWords = [words sortedArrayUsingComparator:^NSComparisonResult(EZTranslateSimpleWord *_Nonnull obj1, EZTranslateSimpleWord *_Nonnull obj2) {
-                                    if ([obj2.part isEqualToString:@"misc."]) {
-                                        return NSOrderedAscending;
-                                    } else if ([obj1.part isEqualToString:@"misc."]) {
-                                        return NSOrderedDescending;
-                                    } else {
-                                        return [obj1.part compare:obj2.part];
-                                    }
-                                }];
                             }
+                        }];
+                        if (words.count) {
+                            wordResult.simpleWords = [words sortedArrayUsingComparator:^NSComparisonResult(EZTranslateSimpleWord *_Nonnull obj1, EZTranslateSimpleWord *_Nonnull obj2) {
+                                if ([obj2.part isEqualToString:@"misc."]) {
+                                    return NSOrderedAscending;
+                                } else if ([obj1.part isEqualToString:@"misc."]) {
+                                    return NSOrderedDescending;
+                                } else {
+                                    return [obj1.part compare:obj2.part];
+                                }
+                            }];
+                        }
+                        
+                        // ???: use word_means as normalResults?
+                        if (simple_means.word_means.count) {
+                            result.normalResults = @[simple_means.word_means.firstObject];
                         }
                         
                         // 至少要有词义或单词组才认为有单词翻译结果
@@ -341,12 +344,16 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                         }
                     }];
                     
+                    
                     // 解析普通释义
                     NSMutableArray *normalResults = [NSMutableArray array];
                     [response.trans_result.data enumerateObjectsUsingBlock:^(EZBaiduTranslateResponseData *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         [normalResults addObject:obj.dst];
                     }];
-                    result.normalResults = normalResults.count ? normalResults.copy : nil;
+                    
+                    if (normalResults.count) {
+                        result.normalResults = normalResults.copy;
+                    }
                     
                     // 原始数据
                     result.raw = responseObject;
