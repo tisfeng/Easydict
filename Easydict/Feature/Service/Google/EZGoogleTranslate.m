@@ -681,6 +681,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     // !!!: Note: it may be auto if it's unsupported language.
                     EZLanguage googleFromLanguage = [self languageEnumFromCode:googleFromString];
                     completion(googleFromLanguage, nil);
+                    return;
                 }
             }
         } @catch (NSException *exception) {
