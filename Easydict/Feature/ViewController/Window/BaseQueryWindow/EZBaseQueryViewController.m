@@ -205,7 +205,8 @@ static NSString *const EZColumnId = @"EZColumnId";
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
         
-        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 6, 0);
+        CGFloat bottomInset = EZHorizontalCellSpacing_12 - EZVerticalCellSpacing_8 / 2;
+        scrollView.contentInsets = NSEdgeInsetsMake(0, 0, bottomInset, 0);
     }
     return _scrollView;
 }
