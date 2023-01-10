@@ -11,14 +11,16 @@
 #import <Sparkle/Sparkle.h>
 #import <ApplicationServices/ApplicationServices.h>
 
+static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
+
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTranslateKey";
+static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 
-static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
 @implementation EZConfiguration
 
@@ -101,6 +103,11 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoSnipTranslateKey];
 }
 
+- (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
+    _autoPlayAudio = autoPlayAudio;
+
+    [NSUserDefaults mm_write:@(autoPlayAudio) forKey:kAutoPlayAudioKey];
+}
 
 #pragma mark -
 

@@ -50,6 +50,8 @@
 "main_window" = "Main Window:";
 "hide_main_window" = "Hide Main Window When Launch";
 "auto_snip_translate" = "Auto Snip Translate";
+"play_audio" = "Play Word Audio:";
+"auto_play_audio" = "Auto Play English Word After Query";
 
 "error_parameter" = "Parameter error";
 "error_network" = "Network error";

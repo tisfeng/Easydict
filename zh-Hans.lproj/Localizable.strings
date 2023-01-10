@@ -50,6 +50,8 @@
 "main_window" = "主窗口:";
 "hide_main_window" = "启动后自动隐藏主窗口";
 "auto_snip_translate" = "截图后自动翻译";
+"play_audio" = "播放单词发音:";
+"auto_play_audio" = "查询英语单词后自动播放发音";
 
 "error_parameter" = "参数异常";
 "error_network" = "网络异常";
