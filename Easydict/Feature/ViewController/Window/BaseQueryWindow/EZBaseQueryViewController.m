@@ -289,7 +289,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"startQueryImage");
     
     self.queryModel.ocrImage = image;
-    self.queryModel.queryType = EZQueryTypeOCR;
     
     [self.queryView startLoadingAnimation:YES];
     
@@ -300,16 +299,18 @@ static NSString *const EZColumnId = @"EZColumnId";
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
         
+        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
+        
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
-            [self startQueryText];
+            [self startQueryWithType:EZQueryTypeOCR];
         }
     }];
 }
 
 - (void)retry {
     NSLog(@"retry");
-    [self startQueryText];
+    [self startQueryWithType:self.queryModel.queryType];
 }
 
 - (void)focusInputTextView {
@@ -327,6 +328,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 /// Close all result view, then query.
 - (void)startQueryText {
     [self startQueryText:self.queryModel.queryText];
+}
+
+- (void)startQueryWithType:(EZQueryType)queryType {
+    [self startQueryText:self.queryText queyType:queryType];
 }
 
 /// Directly query model.
@@ -775,9 +780,19 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
         mm_strongify(self);
-        self.queryModel.detectedLanguage = language;
-        [self startQueryText];
-        [self updateSelectLanguageCell];
+        
+        EZLanguage detectedLanguage = self.queryModel.detectedLanguage;
+        if (![detectedLanguage isEqualToString:language]) {
+            self.queryModel.detectedLanguage = language;
+            [self startQueryText];
+            [self updateSelectLanguageCell];
+            
+            NSDictionary *dict = @{
+                @"autoDetect" : detectedLanguage,
+                @"userSelect" : language,
+            };
+            [EZLog logEventWithName:@"change_detected_language" parameters:dict];
+        }
     }];
     
     return queryView;
