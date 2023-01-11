@@ -17,14 +17,12 @@
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSTextField *snipTranslateLabel;
 
-@property (nonatomic, strong) NSTextField *checkUpdateLabel;
 @property (nonatomic, strong) NSTextField *hideMainWindowLabel;
 @property (nonatomic, strong) NSTextField *launchLabel;
 
 @property (strong) NSButton *autoSelectTextButton;
 @property (strong) NSButton *autoPlayAudioButton;
 @property (strong) NSButton *snipTranslateButton;
-@property (strong) NSButton *autoCheckUpdateButton;
 @property (strong) NSButton *hideMainWindowButton;
 @property (strong) NSButton *launchAtStartupButton;
 
@@ -50,8 +48,7 @@
     NSString *autoSelectTextTitle = NSLocalizedString(@"auto_show_icon", nil);
     self.autoSelectTextButton = [NSButton checkboxWithTitle:autoSelectTextTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.autoSelectTextButton];
-    [self.autoCheckUpdateButton setButtonType:NSButtonTypeSwitch];
-    
+
     NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_audio", nil)];
     [self.contentView addSubview:playAudioLabel];
     self.playAudioLabel = playAudioLabel;
@@ -68,14 +65,6 @@
     NSString *snipTranslateTitle = NSLocalizedString(@"auto_snip_translate", nil);
     self.snipTranslateButton = [NSButton checkboxWithTitle:snipTranslateTitle target:self action:@selector(snipTranslateButtonClicked:)];
     [self.contentView addSubview:self.snipTranslateButton];
-    
-    NSTextField *checkUpdateLabel = [NSTextField labelWithString:NSLocalizedString(@"check_update", nil)];
-    [self.contentView addSubview:checkUpdateLabel];
-    self.checkUpdateLabel = checkUpdateLabel;
-    
-    NSString *autoCheckUpdateTitle = NSLocalizedString(@"auto_check_update", nil);
-    self.autoCheckUpdateButton = [NSButton checkboxWithTitle:autoCheckUpdateTitle target:self action:@selector(autoCheckUpdateButtonClicked:)];
-    [self.contentView addSubview:self.autoCheckUpdateButton];
     
     NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"main_window", nil)];
     [self.contentView addSubview:hideMainWindowLabel];
@@ -96,7 +85,6 @@
     
     self.autoSelectTextButton.mm_isOn = EZConfiguration.shared.autoSelectText;
     self.launchAtStartupButton.mm_isOn = EZConfiguration.shared.launchAtStartup;
-    self.autoCheckUpdateButton.mm_isOn = EZConfiguration.shared.automaticallyChecksForUpdates;
     self.hideMainWindowButton.mm_isOn = EZConfiguration.shared.hideMainWindow;
     self.snipTranslateButton.mm_isOn = EZConfiguration.shared.autoSnipTranslate;
 }
@@ -134,20 +122,11 @@
         make.left.equalTo(self.snipTranslateLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.snipTranslateLabel);
     }];
-    
-    [self.checkUpdateLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.selectTextLabel);
-        make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    
-    [self.autoCheckUpdateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.checkUpdateLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.checkUpdateLabel);
-    }];
+
     
     [self.hideMainWindowLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
-        make.top.equalTo(self.autoCheckUpdateButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
     }];
     
     [self.hideMainWindowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -189,10 +168,6 @@
 
 - (void)launchAtStartupButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.launchAtStartup = sender.mm_isOn;
-}
-
-- (void)autoCheckUpdateButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
 }
 
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
