@@ -11,8 +11,6 @@
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
 
-static CGFloat const kMargin = 0;
-
 @interface EZSettingViewController ()
 
 @property (nonatomic, strong) NSTextField *selectTextLabel;
@@ -34,12 +32,6 @@ static CGFloat const kMargin = 0;
 
 
 @implementation EZSettingViewController
-
-
-- (void)loadView {
-    CGRect frame = CGRectMake(0, 0, 450, 300);
-    self.view = [[NSView alloc] initWithFrame:frame];
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
