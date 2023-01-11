@@ -125,7 +125,8 @@ static EZStatusItem *_instance;
 
 - (IBAction)documentationAction:(NSMenuItem *)sender {
     NSLog(@"反馈问题");
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/tisfeng/Easydict"]];
+    NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZRepoGithubURL];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
 }
 
 - (IBAction)exportLogAction:(id)sender {
