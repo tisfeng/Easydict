@@ -50,13 +50,19 @@
     [self.contentView addSubview:versionValueTextField];
     self.versionTextField = versionValueTextField;
 
-    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github", nil)];
+    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github:", nil)];
     [self.contentView addSubview:githubTextField];
     self.githubTextField = githubTextField;
 
-    EZBlueTextButton *githuLinkButton = [EZBlueTextButton buttonWithTitle:@"https://github.com/tisfeng/Easydict" target:self action:@selector(githubTextFieldClicked:)];
-    [self.contentView addSubview:githuLinkButton];
-    self.githubLinkButton = githuLinkButton;
+    EZBlueTextButton *githubLinkButton = [[EZBlueTextButton alloc] init];
+    [self.contentView addSubview:githubLinkButton];
+    self.githubLinkButton = githubLinkButton;
+    
+    githubLinkButton.title = EZRepoGithubURL;
+    [githubLinkButton setClickBlock:^(EZButton * _Nonnull button) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:EZRepoGithubURL]];
+        [self.view.window close];
+    }];
 }
 
 - (void)updateViewConstraints {
@@ -81,20 +87,14 @@
     }];
     self.leftmostView = self.githubTextField;
 
-    [self.githubLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.githubLinkButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.githubTextField);
-        make.left.equalTo(self.githubTextField.mas_right).offset(self.horizontalPadding);
+        make.left.equalTo(self.githubTextField.mas_right).offset(2);
     }];
     self.rightmostView = self.githubLinkButton;
     self.bottommostView = self.githubLinkButton;
 
     [super updateViewConstraints];
-}
-
-
-- (void)githubTextFieldClicked:(NSClickGestureRecognizer *)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:self.githubLinkButton.title]];
-    [self.view.window close];
 }
 
 
