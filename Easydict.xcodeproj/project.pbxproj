@@ -55,6 +55,7 @@
 		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
+		039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039E5020296E5D9900072344 /* EZScrollViewController.m */; };
 		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
 		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
 		039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5502294B6E29004AB940 /* EZAboutViewController.xib */; };
@@ -256,6 +257,8 @@
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
+		039E501F296E5D9900072344 /* EZScrollViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScrollViewController.h; sourceTree = "<group>"; };
+		039E5020296E5D9900072344 /* EZScrollViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScrollViewController.m; sourceTree = "<group>"; };
 		039F54FC294B6E29004AB940 /* EZSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSettingViewController.h; sourceTree = "<group>"; };
 		039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPreferencesWindowController.m; sourceTree = "<group>"; };
 		039F54FE294B6E29004AB940 /* EZAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAboutViewController.h; sourceTree = "<group>"; };
@@ -944,6 +947,8 @@
 				039F5501294B6E29004AB940 /* EZSettingViewController.m */,
 				037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */,
 				037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */,
+				039E501F296E5D9900072344 /* EZScrollViewController.h */,
+				039E5020296E5D9900072344 /* EZScrollViewController.m */,
 			);
 			path = PerferenceWindow;
 			sourceTree = "<group>";
@@ -1523,6 +1528,7 @@
 				037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
+				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,
 				039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
