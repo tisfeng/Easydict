@@ -7,30 +7,94 @@
 //
 
 #import "EZAboutViewController.h"
-
+#import "EZBlueTextButton.h"
 
 @interface EZAboutViewController ()
 
-@property (weak) IBOutlet NSTextField *versionTextField;
-@property (weak) IBOutlet NSTextField *githubTextField;
+@property (nonatomic, strong) NSImageView *logoImageView;
+@property (nonatomic, strong) NSTextField *appNameTextField;
+@property (nonatomic, strong) NSTextField *versionTextField;
+@property (nonatomic, strong) NSTextField *githubTextField;
+@property (nonatomic, strong) EZBlueTextButton *githubLinkButton;
 
 @end
 
 
 @implementation EZAboutViewController
 
-- (instancetype)init {
-    return [super initWithNibName:[self className] bundle:nil];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.versionTextField.stringValue = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [self setupUI];
+
+    [self updateViewSize];
 }
 
-- (IBAction)githubTextFieldClicked:(NSClickGestureRecognizer *)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:self.githubTextField.stringValue]];
+- (void)setupUI {
+    NSImageView *logoImageView = [[NSImageView alloc] init];
+    logoImageView.image = [NSImage imageNamed:@"logo"];
+    [self.contentView addSubview:logoImageView];
+    self.logoImageView = logoImageView;
+
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    NSTextField *appNameTextField = [NSTextField labelWithString:appName];
+    appNameTextField.font = [NSFont systemFontOfSize:20 weight:NSFontWeightSemibold];
+    [self.contentView addSubview:appNameTextField];
+    self.appNameTextField = appNameTextField;
+
+   
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *versionString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"version", nil), version];
+    NSTextField *versionValueTextField = [NSTextField labelWithString:versionString];
+
+    [self.contentView addSubview:versionValueTextField];
+    self.versionTextField = versionValueTextField;
+
+    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github", nil)];
+    [self.contentView addSubview:githubTextField];
+    self.githubTextField = githubTextField;
+
+    EZBlueTextButton *githuLinkButton = [EZBlueTextButton buttonWithTitle:@"https://github.com/tisfeng/Easydict" target:self action:@selector(githubTextFieldClicked:)];
+    [self.contentView addSubview:githuLinkButton];
+    self.githubLinkButton = githuLinkButton;
+}
+
+- (void)updateViewConstraints {
+    [self.logoImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.contentView);
+        make.width.height.mas_equalTo(100);
+    }];
+    self.topmostView = self.logoImageView;
+
+    [self.appNameTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.logoImageView.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.centerX.equalTo(self.contentView);
+    }];
+
+    [self.versionTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.appNameTextField.mas_bottom).offset(self.verticalPadding);
+        make.centerX.equalTo(self.contentView);
+    }];
+
+    [self.githubTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.versionTextField.mas_bottom).offset(self.verticalPadding);
+    }];
+    self.leftmostView = self.githubTextField;
+
+    [self.githubLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.githubTextField);
+        make.left.equalTo(self.githubTextField.mas_right).offset(self.horizontalPadding);
+    }];
+    self.rightmostView = self.githubLinkButton;
+    self.bottommostView = self.githubLinkButton;
+
+    [super updateViewConstraints];
+}
+
+
+- (void)githubTextFieldClicked:(NSClickGestureRecognizer *)sender {
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:self.githubLinkButton.title]];
+    [self.view.window close];
 }
 
 

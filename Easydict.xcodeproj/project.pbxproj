@@ -58,7 +58,6 @@
 		039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039E5020296E5D9900072344 /* EZScrollViewController.m */; };
 		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
 		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
-		039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 039F5502294B6E29004AB940 /* EZAboutViewController.xib */; };
 		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
@@ -264,7 +263,6 @@
 		039F54FE294B6E29004AB940 /* EZAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAboutViewController.h; sourceTree = "<group>"; };
 		039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPreferencesWindowController.h; sourceTree = "<group>"; };
 		039F5501294B6E29004AB940 /* EZSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZSettingViewController.m; sourceTree = "<group>"; };
-		039F5502294B6E29004AB940 /* EZAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZAboutViewController.xib; sourceTree = "<group>"; };
 		039F5503294B6E29004AB940 /* EZAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZAboutViewController.m; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
 		03B0221C29231FA6001C7E63 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -942,7 +940,6 @@
 				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
 				039F54FE294B6E29004AB940 /* EZAboutViewController.h */,
 				039F5503294B6E29004AB940 /* EZAboutViewController.m */,
-				039F5502294B6E29004AB940 /* EZAboutViewController.xib */,
 				039F54FC294B6E29004AB940 /* EZSettingViewController.h */,
 				039F5501294B6E29004AB940 /* EZSettingViewController.m */,
 				037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */,
@@ -1397,7 +1394,6 @@
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
-				039F5507294B6E29004AB940 /* EZAboutViewController.xib in Resources */,
 				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,

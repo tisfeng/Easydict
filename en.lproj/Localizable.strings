@@ -53,6 +53,9 @@
 "play_audio" = "Play Word Audio:";
 "auto_play_audio" = "Auto Play English Word After Query";
 
+"version" = "Version";
+
+
 "error_parameter" = "Parameter error";
 "error_network" = "Network error";
 "error_api" = "API error";
