@@ -24,6 +24,7 @@
     [self sizeToFit];
     CGSize size = self.size;
     CGSize expandSize = CGSizeMake(size.width + self.expandValue, size.height + self.expandValue);
+    self.size = expandSize;
     
     [self mas_updateConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(expandSize);

@@ -52,8 +52,8 @@ static CGFloat const kMargin = 0;
 }
 
 - (void)_setupUI {
-    NSColor *lightBgColor = [NSColor mm_colorWithHexString:@"#F2F0F1"];
-    NSColor *darkBgColor = [NSColor mm_colorWithHexString:@"#353131"];
+    NSColor *lightBgColor = [NSColor resultViewBgLightColor];  // [NSColor mm_colorWithHexString:@"#F2F0F1"];
+    NSColor *darkBgColor = [NSColor resultViewBgDarkColor]; // [NSColor mm_colorWithHexString:@"#353131"];
 
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
     scrollView.hasVerticalScroller = YES;
