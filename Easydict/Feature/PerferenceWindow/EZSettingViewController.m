@@ -44,7 +44,7 @@ static CGFloat const kMargin = 0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-
+    
     [self setupUI];
     
     [self updateViewSize];
@@ -59,49 +59,49 @@ static CGFloat const kMargin = 0;
     self.autoSelectTextButton = [NSButton checkboxWithTitle:autoSelectTextTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.autoSelectTextButton];
     [self.autoCheckUpdateButton setButtonType:NSButtonTypeSwitch];
-
+    
     NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_audio", nil)];
     [self.contentView addSubview:playAudioLabel];
     self.playAudioLabel = playAudioLabel;
-
+    
     NSString *autoPlayAudioTitle = NSLocalizedString(@"auto_play_audio", nil);
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
-
-
+    
+    
     NSTextField *snipTranslateLabel = [NSTextField labelWithString:NSLocalizedString(@"snip_translate", nil)];
     [self.contentView addSubview:snipTranslateLabel];
     self.snipTranslateLabel = snipTranslateLabel;
-
+    
     NSString *snipTranslateTitle = NSLocalizedString(@"auto_snip_translate", nil);
     self.snipTranslateButton = [NSButton checkboxWithTitle:snipTranslateTitle target:self action:@selector(snipTranslateButtonClicked:)];
     [self.contentView addSubview:self.snipTranslateButton];
-
+    
     NSTextField *checkUpdateLabel = [NSTextField labelWithString:NSLocalizedString(@"check_update", nil)];
     [self.contentView addSubview:checkUpdateLabel];
     self.checkUpdateLabel = checkUpdateLabel;
-
+    
     NSString *autoCheckUpdateTitle = NSLocalizedString(@"auto_check_update", nil);
     self.autoCheckUpdateButton = [NSButton checkboxWithTitle:autoCheckUpdateTitle target:self action:@selector(autoCheckUpdateButtonClicked:)];
     [self.contentView addSubview:self.autoCheckUpdateButton];
-
+    
     NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"main_window", nil)];
     [self.contentView addSubview:hideMainWindowLabel];
     self.hideMainWindowLabel = hideMainWindowLabel;
-
+    
     NSString *hideMainWindowTitle = NSLocalizedString(@"hide_main_window", nil);
     self.hideMainWindowButton = [NSButton checkboxWithTitle:hideMainWindowTitle target:self action:@selector(hideMainWindowButtonClicked:)];
     [self.contentView addSubview:self.hideMainWindowButton];
-
+    
     NSTextField *launchLabel = [NSTextField labelWithString:NSLocalizedString(@"launch", nil)];
     [self.contentView addSubview:launchLabel];
     self.launchLabel = launchLabel;
-
+    
     NSString *launchAtStartupTitle = NSLocalizedString(@"launch_at_startup", nil);
     self.launchAtStartupButton = [NSButton checkboxWithTitle:launchAtStartupTitle target:self action:@selector(launchAtStartupButtonClicked:)];
     [self.contentView addSubview:self.launchAtStartupButton];
-
-
+    
+    
     self.autoSelectTextButton.mm_isOn = EZConfiguration.shared.autoSelectText;
     self.launchAtStartupButton.mm_isOn = EZConfiguration.shared.launchAtStartup;
     self.autoCheckUpdateButton.mm_isOn = EZConfiguration.shared.automaticallyChecksForUpdates;
@@ -110,79 +110,71 @@ static CGFloat const kMargin = 0;
 }
 
 - (void)updateViewConstraints {
-    CGFloat buttonHeight = 20;
-    
     [self.selectTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.contentView).offset(self.horizontalMargin).priorityLow();
         make.top.equalTo(self.contentView).offset(self.verticalMargin).priorityLow();
     }];
     self.topmostView = self.selectTextLabel;
-
+    
     [self.autoSelectTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.selectTextLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.selectTextLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
     self.rightmostView = self.autoSelectTextButton;
-
+    
     [self.playAudioLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
         make.top.equalTo(self.autoSelectTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     self.leftmostView = self.playAudioLabel;
-
+    
     [self.autoPlayAudioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.playAudioLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.playAudioLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
-
+    
     [self.snipTranslateLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
     [self.snipTranslateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.snipTranslateLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.snipTranslateLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
-
+    
     [self.checkUpdateLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
         make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
     [self.autoCheckUpdateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.checkUpdateLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.checkUpdateLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
-
+    
     [self.hideMainWindowLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
         make.top.equalTo(self.autoCheckUpdateButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
     [self.hideMainWindowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.hideMainWindowLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.hideMainWindowLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
-
-
+    
+    
     [self.launchLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
         make.top.equalTo(self.hideMainWindowButton.mas_bottom).offset(self.verticalPadding);
     }];
-
+    
     [self.launchAtStartupButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.launchLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.launchLabel);
-        make.height.mas_equalTo(buttonHeight);
     }];
     self.bottommostView = self.launchAtStartupButton;
-
+    
     [super updateViewConstraints];
 }
 
@@ -190,7 +182,7 @@ static CGFloat const kMargin = 0;
 
 - (void)autoSelectTextButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoSelectText = sender.mm_isOn;
-
+    
     if (sender.mm_isOn) {
         [self checkAppIsTrusted];
     }
@@ -199,7 +191,7 @@ static CGFloat const kMargin = 0;
 - (BOOL)checkAppIsTrusted {
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
     NSLog(@"isTrusted: %d", isTrusted);
-
+    
     return isTrusted == YES;
 }
 
@@ -213,7 +205,7 @@ static CGFloat const kMargin = 0;
 
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.hideMainWindow = sender.mm_isOn;
-
+    
     [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
 }
 
