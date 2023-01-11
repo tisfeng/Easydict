@@ -7,12 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZScrollViewController.h"
 #import <MASPreferences/MASPreferences.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 
-@interface EZAboutViewController : NSViewController <MASPreferencesViewController>
+@interface EZAboutViewController : EZScrollViewController <MASPreferencesViewController>
 
 @end
 

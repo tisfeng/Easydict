@@ -30,6 +30,7 @@
 
 "tag" = "标签:";
 
+// setting
 "general" = "通用";
 "setting" = "设置";
 "shortcut" = "快捷键";
@@ -53,6 +54,9 @@
 "play_audio" = "播放单词发音:";
 "auto_play_audio" = "查询英语单词后自动播放发音";
 
+"version" = "当前版本";
+
+// error msg
 "error_parameter" = "参数异常";
 "error_network" = "网络异常";
 "error_api" = "接口异常";
