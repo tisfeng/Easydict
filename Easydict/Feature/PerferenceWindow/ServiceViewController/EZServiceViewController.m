@@ -18,7 +18,7 @@ static CGFloat const kRowHeight = 40;
 static NSString *const EZServiceCellId = @"EZServiceCellId";
 static NSString *const EZColumnId = @"EZColumnId";
 
-@interface EZServiceViewController ()<NSTableViewDelegate, NSTableViewDataSource>
+@interface EZServiceViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -32,12 +32,15 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 @implementation EZServiceViewController
 
-
-/// 用代码创建 NSViewController 貌似不会自动创建 view，需要手动初始化
 - (void)loadView {
     CGRect frame = CGRectMake(0, 0, 300, 300);
     self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
+    //    [self.view excuteLight:^(NSView *view) {
+    //        view.layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+    //    } drak:^(NSView *view) {
+    //        view.layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+    //    }];
 }
 
 - (void)viewDidLoad {
@@ -86,6 +89,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
         
+        [tableView excuteLight:^(NSTableView *view) {
+            view.backgroundColor = NSColor.whiteColor;
+        } drak:^(NSTableView *view) {
+            view.backgroundColor = NSColor.resultViewBgDarkColor;
+        }];
+        
         tableView.style = NSTableViewStylePlain;
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
@@ -96,7 +105,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = 40;
-        [tableView registerForDraggedTypes:@[NSPasteboardTypeString]];
+        [tableView registerForDraggedTypes:@[ NSPasteboardTypeString ]];
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
         
@@ -141,14 +150,14 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
     
     return cell;
-    
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-    return [[EZServiceRowView alloc] init];
+    EZServiceRowView *rowView = [[EZServiceRowView alloc] init];
+    return rowView;
 }
 
-- (nullable id <NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+- (nullable id<NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
     EZQueryService *service = self.services[row];
     return service.serviceType;
 }
@@ -161,7 +170,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-    
     EZServiceType oldServiceType = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
     if ([self.serviceTypes containsObject:oldServiceType]) {
         NSInteger oldIndex = [self.serviceTypes indexOfObject:oldServiceType];
@@ -186,7 +194,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 
 - (void)tableView:(NSTableView *)tableView didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-    
 }
 
 //  select cell
@@ -195,7 +202,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
-    
 }
 
 #pragma mark -
