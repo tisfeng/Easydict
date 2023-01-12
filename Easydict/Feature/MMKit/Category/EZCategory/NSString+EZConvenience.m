@@ -20,4 +20,8 @@
     return encodedText;
 }
 
+- (void)copyToPasteboard {
+    [NSPasteboard mm_generalPasteboardSetString:self];
+}
+
 @end

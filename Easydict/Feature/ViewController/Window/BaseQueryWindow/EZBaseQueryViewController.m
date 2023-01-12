@@ -266,7 +266,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 #pragma mark - Public Methods
 
-/// Close all result view, then query text.
+/// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
     [self startQueryText:text queyType:EZQueryTypeInput];
 }
@@ -290,7 +290,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"startQueryImage");
     
     self.queryModel.ocrImage = image;
-    
     [self.queryView startLoadingAnimation:YES];
     
     mm_weakify(self);
@@ -300,11 +299,15 @@ static NSString *const EZColumnId = @"EZColumnId";
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
         
-        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
         
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
             [self startQueryWithType:EZQueryTypeOCR];
+        }
+        
+        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
+        if (EZConfiguration.shared.autoCopyOCRText) {
+            [self.queryText copyToPasteboard];
         }
     }];
 }
@@ -772,8 +775,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
-        mm_strongify(self);
-        [self copyTextToPasteboard:text];
+        [text copyToPasteboard];
     }];
     
     [queryView setClearBlock:^(NSString *_Nonnull text) {
@@ -872,8 +874,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
-        mm_strongify(self);
-        [self copyTextToPasteboard:text];
+        [text copyToPasteboard];
     }];
     
     [resultView setClickTextBlock:^(NSString *_Nonnull word) {
@@ -900,10 +901,6 @@ static NSString *const EZColumnId = @"EZColumnId";
             [self updateCellWithResult:result reloadData:YES];
         }
     }];
-}
-
-- (void)copyTextToPasteboard:(NSString *)text {
-    [NSPasteboard mm_generalPasteboardSetString:text];
 }
 
 #pragma mark - Update Window Height

@@ -25,7 +25,7 @@ static CGFloat const kMargin = 0;
         self.verticalMargin = 30;
         self.horizontalMargin = 50;
         self.verticalPadding = 15;
-        self.horizontalPadding = 10;
+        self.horizontalPadding = 8;
 
         self.topMargin = self.verticalMargin;
         self.bottomMargin = self.verticalMargin;
