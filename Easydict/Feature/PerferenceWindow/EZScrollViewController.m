@@ -21,11 +21,16 @@ static CGFloat const kMargin = 0;
 - (instancetype)init {
     if (self = [super init]) {
         self.maxViewSize = CGSizeMake(800, 500);
-        
-        self.verticalMargin = 25;
+
+        self.verticalMargin = 30;
         self.horizontalMargin = 50;
         self.verticalPadding = 15;
-        self.horizontalPadding = 8;
+        self.horizontalPadding = 10;
+
+        self.topMargin = self.verticalMargin;
+        self.bottomMargin = self.verticalMargin;
+        self.leftMargin = self.horizontalMargin;
+        self.rightMargin = self.horizontalMargin;
     }
     return self;
 }
@@ -37,13 +42,13 @@ static CGFloat const kMargin = 0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self _setupUI];
 }
 
 - (void)updateViewSize {
     [self.view layoutSubtreeIfNeeded];
-    
+
     CGSize viewSize = self.scrollView.documentView.size;
     if (viewSize.height > self.maxViewSize.height) {
         viewSize.height = self.maxViewSize.height;
@@ -54,24 +59,24 @@ static CGFloat const kMargin = 0;
 - (void)_setupUI {
     NSColor *lightBgColor = [NSColor resultViewBgLightColor]; // [NSColor mm_colorWithHexString:@"#F2F0F1"];
     NSColor *darkBgColor = [NSColor resultViewBgDarkColor];   // [NSColor mm_colorWithHexString:@"#353131"];
-    
+
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     self.scrollView = scrollView;
     [self.view addSubview:scrollView];
-    
+
     NSView *contentView = [[NSView alloc] initWithFrame:self.view.bounds];
     scrollView.documentView = contentView;
     contentView.wantsLayer = YES;
     self.contentView = contentView;
-    
+
     [contentView.layer excuteLight:^(CALayer *layer) {
         layer.backgroundColor = lightBgColor.CGColor;
     } drak:^(CALayer *layer) {
         layer.backgroundColor = darkBgColor.CGColor;
     }];
-    
+
     [scrollView.contentView excuteLight:^(NSClipView *contentView) {
         contentView.backgroundColor = lightBgColor;
     } drak:^(NSClipView *contentView) {
@@ -83,16 +88,16 @@ static CGFloat const kMargin = 0;
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.inset(kMargin);
     }];
-    
+
     if (self.topmostView && self.bottommostView && self.leftmostView && self.rightmostView) {
         [self.contentView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.topmostView).offset(-self.verticalMargin);
-            make.bottom.equalTo(self.bottommostView).offset(self.verticalMargin);
-            make.right.equalTo(self.rightmostView).offset(self.horizontalMargin);
-            make.left.equalTo(self.leftmostView).offset(-self.horizontalMargin);
+            make.top.equalTo(self.topmostView).offset(-self.topMargin);
+            make.bottom.equalTo(self.bottommostView).offset(self.bottomMargin);
+            make.left.equalTo(self.leftmostView).offset(-self.leftMargin);
+            make.right.equalTo(self.rightmostView).offset(self.rightMargin);
         }];
     }
-    
+
     [super updateViewConstraints];
 }
 
