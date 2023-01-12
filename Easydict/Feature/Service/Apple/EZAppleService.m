@@ -311,11 +311,6 @@
     });
 }
 
-
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"Apple can play text audio directly, please use -playTextAudio");
-}
-
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
     NSString *voiceIdentifier = nil;
     EZLanguageModel *languageModel = [EZLanguageManager languageModelFromLanguage:language];
