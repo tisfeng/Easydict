@@ -384,35 +384,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
 }
 
-- (void)autoPlayEnglishWordAudio {
-    if (!EZConfiguration.shared.autoPlayAudio) {
-        return;
-    }
-    
-    BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
-    if (!isEnglishWord) {
-        NSLog(@"query text is not an English word");
-        return;
-    }
-    
-    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-    if (youdaoService.result.wordResult) {
-        NSString *audioURL = youdaoService.result.fromSpeakURL;
-        if (audioURL.length) {
-            [self.audioPlayer playAudioURL:audioURL];
-            return;
-        }
-    }
-    
-    BOOL tooLong = self.queryText.length > EZEnglishWordMaxLength;
-    if (tooLong) {
-        NSLog(@"query text too long");
-        return;
-    }
-    
-    [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
-}
-
 // TODO: service already has the model property.
 - (void)queryWithModel:(EZQueryModel *)queryModel
                 serive:(EZQueryService *)service
@@ -794,7 +765,10 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
+        
+        if (![self playYoudaoWordAudio:text]) {
+            [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
+        }
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -1041,6 +1015,44 @@ static NSString *const EZColumnId = @"EZColumnId";
     CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMiniHeight:self.windowType];
     CGFloat queryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
     return queryViewHeight;
+}
+
+#pragma mark - Others
+
+- (void)autoPlayEnglishWordAudio {
+    if (!EZConfiguration.shared.autoPlayAudio) {
+        return;
+    }
+    
+    BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
+    if (!isEnglishWord) {
+        NSLog(@"query text is not an English word");
+        return;
+    }
+    
+    if ([self playYoudaoWordAudio:self.queryText]) {
+        return;
+    }
+    
+    BOOL tooLong = self.queryText.length > EZEnglishWordMaxLength;
+    if (tooLong) {
+        NSLog(@"query text is too long");
+        return;
+    }
+    
+    [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
+}
+
+- (BOOL)playYoudaoWordAudio:(NSString *)text {
+    EZQueryResult *result = [self serviceWithType:EZServiceTypeYoudao].result;
+    if (result.wordResult) {
+        NSString *audioURL = result.fromSpeakURL;
+        if (audioURL.length && [[result.queryText trim] isEqualToString:[text trim]]) {
+            [self.audioPlayer playAudioURL:audioURL];
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

@@ -359,7 +359,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                       EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
                       EZLanguage googleTo = langTo;
                       
-                      result.text = text;
+                      result.queryText = text;
                       result.from = googleFrom;
                       result.to = googleTo;
                       result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
@@ -436,7 +436,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     EZLanguage googleTo = langTo;
                     
                     result.raw = responseObject;
-                    result.text = text;
+                    result.queryText = text;
                     result.from = googleFrom;
                     result.to = googleTo;
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];

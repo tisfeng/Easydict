@@ -65,12 +65,12 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     mm_weakify(self);
 
-    if (result.wordResult && result.text.length < 15) {
+    if (result.wordResult && result.queryText.length < EZEnglishWordMaxLength) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             mm_strongify(self);
             [self addSubview:textField];
-            textField.stringValue = result.text;
+            textField.stringValue = result.queryText;
             [textField excuteLight:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextLightColor];
             } drak:^(id _Nonnull x) {
@@ -257,7 +257,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             NSLog(@"click audioButton");
             mm_strongify(self);
             if (self.playAudioBlock) {
-                self.playAudioBlock(self, result.text);
+                self.playAudioBlock(self, result.queryText);
             }
         }];
         audioButton.mas_key = @"audioButton_phonetics";

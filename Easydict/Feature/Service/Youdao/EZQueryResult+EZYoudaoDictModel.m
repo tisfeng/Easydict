@@ -12,7 +12,7 @@
 
 - (instancetype)setupWithYoudaoDictModel:(EZYoudaoDictModel *)model {
     self.raw = model;
-    self.text = model.input;
+    self.queryText = model.input;
     
     EZTranslateWordResult *wordResult = [[EZTranslateWordResult alloc] init];
     

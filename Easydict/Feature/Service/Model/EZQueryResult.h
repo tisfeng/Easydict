@@ -104,7 +104,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 
 
 /// 此次查询的文本
-@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSString *queryText;
 
 /// 由翻译接口提供的源语种，可能会与查询对象的 from 不同
 @property (nonatomic, assign) EZLanguage from;

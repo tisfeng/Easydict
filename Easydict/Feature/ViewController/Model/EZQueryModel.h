@@ -20,7 +20,9 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 
 @interface EZQueryModel : NSObject
 
+@property (nonatomic, copy) EZQueryType queryType;
 @property (nonatomic, copy) NSString *queryText;
+
 @property (nonatomic, assign) EZLanguage userSourceLanguage;
 @property (nonatomic, assign) EZLanguage userTargetLanguage;
 
@@ -28,11 +30,9 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 @property (nonatomic, assign) EZLanguage queryFromLanguage;
 @property (nonatomic, assign) EZLanguage queryTargetLanguage;
 
-@property (nonatomic, strong) NSImage *ocrImage;
+@property (nonatomic, strong, nullable) NSImage *ocrImage;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
-
-@property (nonatomic, copy) EZQueryType queryType;
 
 @end
 
