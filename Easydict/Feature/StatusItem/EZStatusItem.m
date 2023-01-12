@@ -95,26 +95,6 @@ static EZStatusItem *_instance;
 }
 
 
-- (IBAction)baiduTranslationWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://fanyi.baidu.com/"]];
-}
-
-- (IBAction)youdaoTranslationWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://fanyi.youdao.com/"]];
-}
-
-- (IBAction)youdaoDictWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://dict.youdao.com/"]];
-}
-
-- (IBAction)googleCNTranslationWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://translate.google.cn/"]];
-}
-
-- (IBAction)googleTranslationWebsite:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://translate.google.com/"]];
-}
-
 - (IBAction)preferenceAction:(NSMenuItem *)sender {
     NSLog(@"偏好设置");
     if (Snip.shared.isSnapshotting) {
@@ -162,17 +142,11 @@ static EZStatusItem *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
-//        [[[NSApplication sharedApplication] keyWindow] close];
-        
         [EZWindowManager.shared closeFloatingWindow];
         [EZWindowManager.shared activeLastFrontmostApplication];
     }
 }
 
-- (IBAction)qqGroupAction:(id)sender {
-    NSLog(@"QQ 群");
-    [NSPasteboard mm_generalPasteboardSetString:@"971584165"];
-}
 
 #pragma mark -
 

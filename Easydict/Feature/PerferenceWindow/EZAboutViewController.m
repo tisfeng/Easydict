@@ -39,7 +39,6 @@
     [self updateViewSize];
 
     NSString *repo = @"tisfeng/Easydict";
-    [self fetchGithubRepoInfo:repo];
     [self fetchLastestRepoInfo:repo];
 }
 
