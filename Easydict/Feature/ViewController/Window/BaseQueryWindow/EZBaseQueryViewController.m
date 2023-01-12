@@ -372,8 +372,45 @@ static NSString *const EZColumnId = @"EZColumnId";
             }
             //            NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES completionHandler:nil];
+            
+            if ([service.serviceType isEqualToString:EZServiceTypeYoudao]) {
+                [self autoPlayEnglishWordAudio];
+            }
         }];
     }
+    
+    if (![self.serviceTypes containsObject:EZServiceTypeYoudao]) {
+        [self autoPlayEnglishWordAudio];
+    }
+}
+
+- (void)autoPlayEnglishWordAudio {
+    if (!EZConfiguration.shared.autoPlayAudio) {
+        return;
+    }
+    
+    BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
+    if (!isEnglishWord) {
+        NSLog(@"query text is not an English word");
+        return;
+    }
+    
+    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+    if (youdaoService.result.wordResult) {
+        NSString *audioURL = youdaoService.result.fromSpeakURL;
+        if (audioURL.length) {
+            [self.audioPlayer playAudioURL:audioURL];
+            return;
+        }
+    }
+    
+    BOOL tooLong = self.queryText.length > EZEnglishWordMaxLength;
+    if (tooLong) {
+        NSLog(@"query text too long");
+        return;
+    }
+    
+    [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
 }
 
 // TODO: service already has the model property.
@@ -839,9 +876,12 @@ static NSString *const EZColumnId = @"EZColumnId";
     return service;
 }
 
-- (EZQueryService *)serviceWithType:(EZServiceType)serviceType {
+- (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
     NSInteger index = [self.serviceTypes indexOfObject:serviceType];
-    return self.services[index];
+    if (index != NSNotFound) {
+        return self.services[index];
+    }
+    return nil;
 }
 
 - (void)setupResultCell:(EZResultView *)resultView {
@@ -849,6 +889,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     EZQueryService *service = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
+    // TODO: need to optimize, add audio URL.
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self.audioPlayer playTextAudio:text

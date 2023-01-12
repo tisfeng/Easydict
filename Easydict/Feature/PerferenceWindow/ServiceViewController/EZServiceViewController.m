@@ -72,7 +72,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         scrollView.layer.cornerRadius = EZCornerRadius_8;
         
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.view).insets(NSEdgeInsetsMake(kMargin, kMargin, kMargin, kMargin));
+            make.edges.equalTo(self.view).inset(kMargin);
         }];
         
         scrollView.hasVerticalScroller = YES;

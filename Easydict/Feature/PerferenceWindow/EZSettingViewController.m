@@ -82,11 +82,12 @@
     self.launchAtStartupButton = [NSButton checkboxWithTitle:launchAtStartupTitle target:self action:@selector(launchAtStartupButtonClicked:)];
     [self.contentView addSubview:self.launchAtStartupButton];
     
-    
-    self.autoSelectTextButton.mm_isOn = EZConfiguration.shared.autoSelectText;
-    self.launchAtStartupButton.mm_isOn = EZConfiguration.shared.launchAtStartup;
-    self.hideMainWindowButton.mm_isOn = EZConfiguration.shared.hideMainWindow;
-    self.snipTranslateButton.mm_isOn = EZConfiguration.shared.autoSnipTranslate;
+    EZConfiguration *configuration = [EZConfiguration shared];
+    self.autoSelectTextButton.mm_isOn = configuration.autoSelectText;
+    self.autoPlayAudioButton.mm_isOn = configuration.autoPlayAudio;
+    self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
+    self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
+    self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
 }
 
 - (void)updateViewConstraints {
@@ -181,7 +182,7 @@
 }
 
 - (void)autoPlayAudioButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.autoPlayAudio = self.autoPlayAudioButton.mm_isOn;
+    EZConfiguration.shared.autoPlayAudio = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController
