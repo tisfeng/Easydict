@@ -135,7 +135,7 @@ NSString *getPartName(NSString *part) {
     self.service = nil;
     self.isShowing = NO;
     self.viewHeight = 0;
-    self.text = @"";
+    self.queryText = @"";
     self.from = EZLanguageAuto;
     self.to = EZLanguageAuto;
     self.toSpeakURL = nil;

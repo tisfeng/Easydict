@@ -277,7 +277,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
             @try {
                 EZYoudaoTranslateResponse *response = [EZYoudaoTranslateResponse mj_objectWithKeyValues:responseObject];
                 if (response && response.errorCode.integerValue == 0) {
-                    result.text = text;
+                    result.queryText = text;
                     result.fromSpeakURL = response.speakUrl;
                     result.toSpeakURL = response.tSpeakUrl;
                     
@@ -553,7 +553,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
                     NSLog(@"直接输出翻译结果");
                     ocrSuccess(EZOCRResult, NO);
                     EZQueryResult *result = [EZQueryResult new];
-                    result.text = EZOCRResult.mergedText;
+                    result.queryText = EZOCRResult.mergedText;
                     result.from = EZOCRResult.from;
                     result.to = EZOCRResult.to;
                     result.normalResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

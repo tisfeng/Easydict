@@ -185,7 +185,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                 if (response.error == 0) {
                     self.error997Count = 0;
                     
-                    result.text = text;
+                    result.queryText = text;
                     result.from = [self languageEnumFromCode:response.trans_result.from] ?: from;
                     result.to = [self languageEnumFromCode:response.trans_result.to] ?: to;
                     
@@ -207,14 +207,14 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                 [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
                                     obj.name = NSLocalizedString(@"us_phonetic", nil);
                                     obj.value = symbol.ph_am;
-                                    obj.speakURL = [self getAudioURLWithText:result.text language:@"en"];
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"en"];
                                 }]];
                             }
                             if (symbol.ph_en.length) {
                                 [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
                                     obj.name = NSLocalizedString(@"uk_phonetic", nil);
                                     obj.value = symbol.ph_en;
-                                    obj.speakURL = [self getAudioURLWithText:result.text language:@"uk"];
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"uk"];
                                 }]];
                             }
                             wordResult.phonetics = phonetics.count ? phonetics.copy : nil;
