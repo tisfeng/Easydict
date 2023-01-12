@@ -36,7 +36,6 @@
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
-		037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */; };
 		037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AF2957FEB200D0E2CF /* EZServiceViewController.m */; };
 		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
 		037852B629588EDE00D0E2CF /* EZServiceRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZServiceRowView.m */; };
@@ -220,8 +219,6 @@
 		0375090D294F58E100C887B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		0376AB5D294F659700E2E2A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0376AB5F294F659800E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcutViewContorller.h; sourceTree = "<group>"; };
-		037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcutViewContorller.m; sourceTree = "<group>"; };
 		037852AE2957FEB200D0E2CF /* EZServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceViewController.h; sourceTree = "<group>"; };
 		037852AF2957FEB200D0E2CF /* EZServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceViewController.m; sourceTree = "<group>"; };
 		037852B129583F5200D0E2CF /* EZServiceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceCell.h; sourceTree = "<group>"; };
@@ -942,8 +939,6 @@
 				039F5503294B6E29004AB940 /* EZAboutViewController.m */,
 				039F54FC294B6E29004AB940 /* EZSettingViewController.h */,
 				039F5501294B6E29004AB940 /* EZSettingViewController.m */,
-				037852AA295752DF00D0E2CF /* EZShortcutViewContorller.h */,
-				037852AB295752DF00D0E2CF /* EZShortcutViewContorller.m */,
 				039E501F296E5D9900072344 /* EZScrollViewController.h */,
 				039E5020296E5D9900072344 /* EZScrollViewController.m */,
 			);
@@ -1521,7 +1516,6 @@
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
-				037852AC295752DF00D0E2CF /* EZShortcutViewContorller.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,

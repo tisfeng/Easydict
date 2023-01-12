@@ -12,7 +12,7 @@
 #import "EZServiceRowView.h"
 #import "EZLocalStorage.h"
 
-static CGFloat const kMargin = 15;
+static CGFloat const kMargin = 20;
 static CGFloat const kRowHeight = 40;
 
 static NSString *const EZServiceCellId = @"EZServiceCellId";

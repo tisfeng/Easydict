@@ -9,7 +9,6 @@
 #import "EZPreferencesWindowController.h"
 #import "EZSettingViewController.h"
 #import "EZAboutViewController.h"
-#import "EZShortcutViewContorller.h"
 #import "EZServiceViewController.h"
 
 @interface EZPreferencesWindowController ()
@@ -27,7 +26,6 @@ static EZPreferencesWindowController *_instance;
             NSArray *viewControllers = @[
                 [[EZServiceViewController alloc] init],
                 [[EZSettingViewController alloc] init],
-                [[EZShortcutViewContorller alloc] init],
                 [[EZAboutViewController alloc] init],
             ];
             

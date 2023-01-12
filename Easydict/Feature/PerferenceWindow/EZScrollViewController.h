@@ -21,10 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) CGSize maxViewSize; // 最大的view的size
 
-@property (nonatomic, assign) CGFloat verticalMargin; // 顶部和底部的间距 25
+@property (nonatomic, assign) CGFloat verticalMargin; // 顶部和底部的间距 30
 @property (nonatomic, assign) CGFloat horizontalMargin; // 左右的间距 50
 @property (nonatomic, assign) CGFloat verticalPadding; // 垂直内容的间距 15
-@property (nonatomic, assign) CGFloat horizontalPadding; // 水平内容的间距 8
+@property (nonatomic, assign) CGFloat horizontalPadding; // 水平内容的间距 10
+
+@property (nonatomic, assign) CGFloat topMargin; // 顶部的间距 30
+@property (nonatomic, assign) CGFloat bottomMargin; // 底部的间距 30
+@property (nonatomic, assign) CGFloat leftMargin; // 左边的间距 50
+@property (nonatomic, assign) CGFloat rightMargin; // 右边的间距 50
 
 - (void)updateViewSize;
 
