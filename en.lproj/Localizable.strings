@@ -57,6 +57,7 @@
 "auto_copy_selected_text" = "Auto Copy Selected Text";
 "auto_copy_ocr_text" = "Auto Copy OCR Text";
 
+"about" = "about";
 "current_version" = "Version";
 "lastest_version" = "Lastest Version";
 "author" = "Author:";
