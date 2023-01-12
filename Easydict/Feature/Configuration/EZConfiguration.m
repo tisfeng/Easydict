@@ -45,10 +45,12 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    
+    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.autoPlayAudio = [[NSUserDefaults mm_read:kAutoPlayAudioKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
+    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }

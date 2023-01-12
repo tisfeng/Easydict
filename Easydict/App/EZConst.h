@@ -32,5 +32,6 @@ static NSTimeInterval const EZNetWorkTimeoutInterval = 30.0;
 
 static NSTimeInterval const EZFloatingWindowLevel = kCGUtilityWindowLevel;
 
+static NSInteger const EZEnglishWordMaxLength = 15;
 
 #endif /* EZConst_h */

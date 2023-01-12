@@ -30,6 +30,8 @@
             // usspeech: "good&type=2"
             phonetic.speakURL = [NSString stringWithFormat:@"%@%@", aduioURL, word.usspeech];
             [phoneticArray addObject:phonetic];
+            
+            self.fromSpeakURL = phonetic.speakURL;
         }
         if (word.ukphone) {
             EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
