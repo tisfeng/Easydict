@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL hideMainWindow;
 @property (nonatomic, assign) BOOL autoSnipTranslate;
 @property (nonatomic, assign) BOOL autoPlayAudio;
+@property (nonatomic, assign) BOOL autoCopySelectedText;
+@property (nonatomic, assign) BOOL autoCopyOCRText;
 
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;

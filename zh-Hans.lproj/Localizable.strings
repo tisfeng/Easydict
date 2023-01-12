@@ -44,15 +44,19 @@
 
 "check_update" = "更新:";
 "auto_check_update" = "自动检查应用程序更新";
-"show_icon" = "查询图标:";
+"show_icon" = "显示查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
 "main_window" = "主窗口:";
 "hide_main_window" = "启动后自动隐藏主窗口";
-"auto_snip_translate" = "截图后自动翻译";
+"auto_snip_translate" = "截图 OCR 后自动翻译";
 "play_audio" = "播放单词发音:";
 "auto_play_audio" = "查询英语单词后自动播放发音";
+
+"auto_copy_text" = "自动复制:";
+"auto_copy_selected_text" = "自动复制划词选择文本";
+"auto_copy_ocr_text" = "自动复制截图 OCR 结果";
 
 "current_version" = "版本";
 "lastest_version" = "最新版本";

@@ -20,6 +20,8 @@ static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTranslateKey";
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
+static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
+static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
 
 
 @implementation EZConfiguration
@@ -47,12 +49,14 @@ static EZConfiguration *_instance;
 - (void)setup {
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    
+
     self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoPlayAudio = [[NSUserDefaults mm_read:kAutoPlayAudioKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -109,6 +113,18 @@ static EZConfiguration *_instance;
     _autoPlayAudio = autoPlayAudio;
 
     [NSUserDefaults mm_write:@(autoPlayAudio) forKey:kAutoPlayAudioKey];
+}
+
+- (void)setAutoCopySelectedText:(BOOL)autoCopySelectedText {
+    _autoCopySelectedText = autoCopySelectedText;
+
+    [NSUserDefaults mm_write:@(autoCopySelectedText) forKey:kAutoCopySelectedTextKey];
+}
+
+- (void)setAutoCopyOCRText:(BOOL)autoCopyOCRText {
+    _autoCopyOCRText = autoCopyOCRText;
+
+    [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
 }
 
 #pragma mark -

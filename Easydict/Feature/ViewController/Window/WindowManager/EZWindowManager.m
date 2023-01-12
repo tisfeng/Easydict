@@ -231,6 +231,10 @@ static EZWindowManager *_instance;
             CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
             [self showFloatingWindow:window atPoint:correctedPosition];
             [window.queryViewController startQueryText:text queyType:self.queryType];
+            
+            if (EZConfiguration.shared.autoCopySelectedText) {
+                [text copyToPasteboard];
+            }
         }];
     }
 }

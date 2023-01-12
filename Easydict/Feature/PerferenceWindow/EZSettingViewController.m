@@ -34,6 +34,11 @@
 @property (nonatomic, strong) NSTextField *snipTranslateLabel;
 @property (nonatomic, strong) NSButton *snipTranslateButton;
 
+
+@property (nonatomic, strong) NSTextField *autoCopyTextLabel;
+@property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
+@property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
+
 @property (nonatomic, strong) NSView *separatorView2;
 
 @property (nonatomic, strong) NSTextField *hideMainWindowLabel;
@@ -134,6 +139,19 @@
     self.snipTranslateButton = [NSButton checkboxWithTitle:snipTranslateTitle target:self action:@selector(snipTranslateButtonClicked:)];
     [self.contentView addSubview:self.snipTranslateButton];
 
+    NSTextField *autoCopyTextLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_copy_text", nil)];
+    autoCopyTextLabel.font = font;
+    [self.contentView addSubview:autoCopyTextLabel];
+    self.autoCopyTextLabel = autoCopyTextLabel;
+
+    NSString *autoCopySelectedText = NSLocalizedString(@"auto_copy_selected_text", nil);
+    self.autoCopySelectedTextButton = [NSButton checkboxWithTitle:autoCopySelectedText target:self action:@selector(autoCopySelectedTextButtonClicked:)];
+    [self.contentView addSubview:self.autoCopySelectedTextButton];
+
+    NSString *autoCopyOCRText = NSLocalizedString(@"auto_copy_ocr_text", nil);
+    self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
+    [self.contentView addSubview:self.autoCopyOCRTextButton];
+
 
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -169,6 +187,8 @@
     self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
     self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
+    self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
+    self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
 }
 
 - (void)updateViewConstraints {
@@ -254,9 +274,25 @@
         make.centerY.equalTo(self.snipTranslateLabel);
     }];
 
+    [self.autoCopyTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectTextLabel);
+        make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
+    }];
+
+    [self.autoCopySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoCopyTextLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.autoCopyTextLabel);
+    }];
+
+    [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoCopySelectedTextButton.mas_left);
+        make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+
+    }];
+
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.snipTranslateLabel.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
 
@@ -318,6 +354,15 @@
 - (void)autoPlayAudioButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoPlayAudio = sender.mm_isOn;
 }
+
+- (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoCopySelectedText = sender.mm_isOn;
+}
+
+- (void)autoCopyOCRTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoCopyOCRText = sender.mm_isOn;
+}
+
 
 #pragma mark - MASPreferencesViewController
 

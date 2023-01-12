@@ -53,6 +53,10 @@
 "play_audio" = "Play Word Audio:";
 "auto_play_audio" = "Auto Play English Word After Query";
 
+"auto_copy_text" = "Auto Copy Text:";
+"auto_copy_selected_text" = "Auto Copy Selected Text";
+"auto_copy_ocr_text" = "Auto Copy OCR Text";
+
 "current_version" = "Version";
 "lastest_version" = "Lastest Version";
 "author" = "Author:";
