@@ -13,8 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZWebViewTranslator : NSObject
 
 @property (nonatomic, copy) NSString *querySelector;
-
 @property (nonatomic, copy) NSString *jsCode;
+
+// if querySelector failed, delay to use delayQuerySelector.
+@property (nonatomic, copy) NSString *delayQuerySelector;
+@property (nonatomic, copy) NSString *delayJsCode;
 
 
 /// Preload url.

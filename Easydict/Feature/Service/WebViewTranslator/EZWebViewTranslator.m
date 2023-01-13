@@ -11,8 +11,10 @@
 #import "EZURLSchemeHandler.h"
 #import "EZTranslateError.h"
 
-// Delay query seconds
+// Query time interval
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
+
+static NSInteger const kDelayRetryCount = 5;
 
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
@@ -43,6 +45,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
+        configuration.applicationNameForUserAgent = EZUserAgent;
         [configuration setURLSchemeHandler:self.urlSchemeHandler forURLScheme:@"https"];
 
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
@@ -175,9 +178,15 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
-    // 打印页面 HTML： document.documentElement.outerHTML
+    if (self.retryCount > kDelayRetryCount) {
+        if (self.delayQuerySelector.length) {
+            selector = self.delayQuerySelector;
+        }
+    }
+    
     NSString *checkIfElementExist = [NSString stringWithFormat:@"document.querySelector('%@') != null", selector];
-    //    checkIfElementExist = @"document.body.innerHTML";
+//        checkIfElementExist = @"document.body.innerHTML";
+        
     [self.webView evaluateJavaScript:checkIfElementExist completionHandler:^(NSString *_Nullable result, NSError *_Nullable error) {
         if (error) {
             // 如果执行出错，则直接返回
@@ -204,12 +213,16 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         };
 
         if ([result boolValue]) {
-            NSString *elementTextContent = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).map(el => el.textContent)", selector];
-            if (self.jsCode.length) {
-                elementTextContent = self.jsCode;
+            NSString *queryAllElementTextContent = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).map(el => el.textContent)", selector];
+            
+            if (self.jsCode.length && [selector isEqualToString:self.querySelector]) {
+                queryAllElementTextContent = self.jsCode;
+            }
+            if (self.delayJsCode.length && [selector isEqualToString:self.delayQuerySelector]) {
+                queryAllElementTextContent = self.delayJsCode;
             }
 
-            [self.webView evaluateJavaScript:elementTextContent completionHandler:^(NSArray<NSString *> *_Nullable texts, NSError *_Nullable error) {
+            [self.webView evaluateJavaScript:queryAllElementTextContent completionHandler:^(NSArray<NSString *> *_Nullable texts, NSError *_Nullable error) {
                 if (error) {
                     // 如果执行出错，则直接返回
                     if (completion) {
