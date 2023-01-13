@@ -34,13 +34,14 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
         //        NSString *selector = @"[contenteditable=false] [data-slate-string]"; // mobile
         //        NSString *selector = @".translate-area-result"; // old desktop
         
-        NSString *selector = @".arco-textarea.text-area.text-area-focus.text-area-display"; // 2023.1.13
+        // WTF, why is the result of the volcano translation so disgusting...
+        _webViewTranslator.querySelector = @".translate-dictionary-content-target-text"; // dict;
         
-        _webViewTranslator.querySelector = selector;
+        NSString *delayQuerySelector = @".arco-textarea.text-area.text-area-focus.text-area-display"; // non-dict, 2023.1.13
+        _webViewTranslator.delayQuerySelector = delayQuerySelector;
         
         // a[0] is source text, a[1] is translated text.
-        _webViewTranslator.jsCode = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).slice(-1).map(el=>el.textContent)", selector];
-        ;
+        _webViewTranslator.delayJsCode = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).slice(-1).map(el=>el.textContent)", delayQuerySelector];
     }
     return _webViewTranslator;
 }
@@ -139,17 +140,21 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     
     // https://translate.volcengine.com/web/translate/v1/?msToken=&X-Bogus=DFSzKwGLQDGhFUIXSkg53N7TlqSz&_signature=_02B4Z6wo00001JPEP6AAAIDDBxJkrN0CktiT1DsAAEdZbuaHXanY5YK83lzLs2IvC-TGG2SrwAfASYu0RlxzNxrvOYDTyy2LHOGiN98QnTNZfEC6O0BSwWWTr5KNbw3TykBrdkDs6PsVqDcOc9
     
+    // https://translate.volcengine.com/web/dict/detail/v1/?msToken=&X-Bogus=DFSzswVmQDGy-4zDSZ1KKKIkirE-&_signature=_02B4Z6wo00001WxCnygAAIDADDchOBSP91VsQpuAADjVa6
+    
     // ???: Why does this method cause a persistent memory leak? But DeepL does not?
-    //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    //    NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1/?msToken";
-    //    [self.webViewTranslator monitorBaseURLString:monitorURL
-    //                                         loadURL:self.wordLink
-    //                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-    //        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    //        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-    //
-    //        //        NSLog(@"deepL responseObject: %@", responseObject);
-    //    }];
+//        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//        NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1/?msToken";
+//        monitorURL = @"https://translate.volcengine.com/web/dict/detail/v1";
+//
+//        [self.webViewTranslator monitorBaseURLString:monitorURL
+//                                             loadURL:self.wordLink
+//                                   completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+//            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+//            NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+//
+//            //        NSLog(@"deepL responseObject: %@", responseObject);
+//        }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {

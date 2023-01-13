@@ -202,8 +202,13 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 - (AFURLSessionManager *)urlSession {
     if (!_urlSession) {
-        AFURLSessionManager *jsonSession = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-        _urlSession = jsonSession;
+        AFURLSessionManager *sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        
+        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", nil];
+        sessionManager.responseSerializer = responseSerializer;
+        
+        _urlSession = sessionManager;
     }
     return _urlSession;
 }
@@ -256,7 +261,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
      fra -> zh: https://fanyi.baidu.com/v2transapi?from=fra&to=zh
      */
     
-    EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerForURL:URL];
+    EZURLSessionTaskCompletionHandler completionHandler = [self completionHandlerForMonitorURL:URL];
     if (completionHandler) {
 //        NSData *bodyData = request.HTTPBody;
 //        if (bodyData) {
@@ -293,7 +298,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 
 #pragma mark -
 
-- (nullable EZURLSessionTaskCompletionHandler)completionHandlerForURL:(NSURL *)URL {
+- (nullable EZURLSessionTaskCompletionHandler)completionHandlerForMonitorURL:(NSURL *)URL {
     // Convert https://fanyi.baidu.com/v2transapi?from=en&to=zh to https://fanyi.baidu.com/v2transapi
     
     NSString *monitorURL = [self monitorURLForURL:URL];
