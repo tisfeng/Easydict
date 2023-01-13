@@ -22,8 +22,8 @@
 
 + (NSDictionary<EZServiceType, Class> *)allServiceDict {
     NSDictionary *dict = @{
-        EZServiceTypeYoudao : [EZYoudaoTranslate class],
         EZServiceTypeApple : [EZAppleService class],
+        EZServiceTypeYoudao : [EZYoudaoTranslate class],
         EZServiceTypeDeepL : [EZDeppLTranslate class],
         EZServiceTypeGoogle : [EZGoogleTranslate class],
         EZServiceTypeBaidu : [EZBaiduTranslate class],
