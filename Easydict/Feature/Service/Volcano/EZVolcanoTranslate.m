@@ -9,7 +9,7 @@
 #import "EZVolcanoTranslate.h"
 #import "EZWebViewTranslator.h"
 
-static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/translate";
+static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 
 @interface EZVolcanoTranslate ()
 
@@ -32,8 +32,15 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
         
         // Note that the desktop and mobile versions of the volcano have different web elements
         //        NSString *selector = @"[contenteditable=false] [data-slate-string]"; // mobile
-        NSString *selector = @".translate-area-result"; // desktop
+        //        NSString *selector = @".translate-area-result"; // old desktop
+        
+        NSString *selector = @".arco-textarea.text-area.text-area-focus.text-area-display"; // 2023.1.13
+        
         _webViewTranslator.querySelector = selector;
+        
+        // a[0] is source text, a[1] is translated text.
+        _webViewTranslator.jsCode = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).slice(-1).map(el=>el.textContent)", selector];
+        ;
     }
     return _webViewTranslator;
 }
@@ -122,6 +129,9 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com/tran
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    // https://translate.volcengine.com/?category=&home_language=zh&source_language=en&target_language=zh&text=good
+    // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=en&target_language=zh&text=good
+    
     [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         self.result.normalResults = texts;
         completion(self.result, error);
