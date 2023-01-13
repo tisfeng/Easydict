@@ -15,7 +15,6 @@
 
 @end
 
-
 @implementation EZPreferencesWindowController
 
 static EZPreferencesWindowController *_instance;
@@ -24,8 +23,8 @@ static EZPreferencesWindowController *_instance;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             NSArray *viewControllers = @[
-                [[EZServiceViewController alloc] init],
                 [[EZSettingViewController alloc] init],
+                [[EZServiceViewController alloc] init],
                 [[EZAboutViewController alloc] init],
             ];
             
