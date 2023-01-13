@@ -186,7 +186,11 @@ static NSString *const EZColumnId = @"EZColumnId";
         self.services = [[[EZLocalStorage shared] allServices] mutableCopy];
         [self.tableView reloadData];
         
-        [self postUpdateServiceNotification];
+        row = MIN(row, self.serviceTypes.count - 1);
+        EZQueryService *service = self.services[row];
+        if (service.enabled) {
+            [self postUpdateServiceNotification];
+        }
     }
     
     return YES;
