@@ -31,6 +31,22 @@
     }];
 }
 
+- (void)setOpenURL:(NSString *)openURL {
+    _openURL = openURL;
+    
+    if ([openURL isHttpURL]) {
+        mm_weakify(self);
+        [self setClickBlock:^(EZButton * _Nonnull button) {
+            mm_strongify(self);
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:openURL]];
+            
+            if (self.closeWindowAfterOpeningURL) {
+                [self.window close];
+            }
+        }];
+    }
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
