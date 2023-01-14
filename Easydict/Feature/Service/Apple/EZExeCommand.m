@@ -17,12 +17,12 @@
         NSTask *task = [[NSTask alloc] init];
         task.launchPath = @"/usr/bin/osascript";
         task.arguments = @[ @"-e", script ];
-
+        
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
         NSPipe *errorPipe = [NSPipe pipe];
         task.standardError = errorPipe;
-
+        
         NSString *result;
         // This method can only catch errors inside the NSTask object, and the error of executing the task needs to be used with standardError.
         NSError *error;
@@ -32,7 +32,7 @@
             result = [output trim];
             NSLog(@"Apple translate result: %@", result);
         }
-
+        
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];
         NSString *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
         
@@ -46,7 +46,7 @@
                 error = [EZTranslateError errorWithString:errorString];
             }
         }
-
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(result, error);
         });
@@ -56,13 +56,13 @@
 - (NSString *)shortcutsAppleScript:(NSString *)shortcutName parameters:(NSDictionary *)parameters {
     NSString *queryString = AFQueryStringFromParameters(parameters);
     NSString *appleScript = [NSString stringWithFormat:@"tell application \"Shortcuts Events\" \n run the shortcut named \"%@\" with input \"%@\" \n end tell", shortcutName, queryString];
-
+    
     return appleScript;
 }
 
 - (void)runShortcut:(NSString *)shortcutName
-           parameters:(NSDictionary *)parameters
-    completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+         parameters:(NSDictionary *)parameters
+  completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     // @"tell application \"Shortcuts Events\" \n run the shortcut named \"Easydict-Translate-V1.2.0\" with input \"text=apple&from=en_US&to=zh_CN\" \n end tell"
     NSString *appleScript = [self shortcutsAppleScript:shortcutName parameters:parameters];
     [self runAppleScript:appleScript completionHandler:completionHandler];
