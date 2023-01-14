@@ -700,7 +700,9 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self addSubview:audioButton];
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"Play";
-    audioButton.enabled = result.translatedText.length > 0;
+    
+    BOOL hasTranslatedText = result.translatedText.length > 0;
+    audioButton.enabled = hasTranslatedText;
 
     [audioButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"audioActionBlock");
@@ -717,6 +719,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     textCopyButton.image = [NSImage imageNamed:@"copy"];
     textCopyButton.toolTip = @"Copy";
+    textCopyButton.enabled = hasTranslatedText;
 
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
