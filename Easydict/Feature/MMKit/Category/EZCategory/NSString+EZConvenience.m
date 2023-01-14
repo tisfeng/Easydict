@@ -24,4 +24,18 @@
     [NSPasteboard mm_generalPasteboardSetString:self];
 }
 
+// use NSDataDetector to check if the string is a valid http url
+- (BOOL)isHttpURL {
+    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+    NSArray *matches = [detector matchesInString:self options:0 range:NSMakeRange(0, self.length)];
+    if (matches.count == 0) {
+        return NO;
+    }
+    NSTextCheckingResult *result = matches.firstObject;
+    if (result.resultType == NSTextCheckingTypeLink && result.URL) {
+        return YES;
+    }
+    return NO;
+}
+
 @end

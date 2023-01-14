@@ -85,7 +85,7 @@ static EZWindowManager *_instance;
         [self.popButtonWindow setFrameOrigin:safePoint];
         
         [self.popButtonWindow orderFrontRegardless];
-        self.popButtonWindow.level = kCGMaximumWindowLevel;
+        self.popButtonWindow.level = EZFloatingWindowLevel;
         
         [self->_mainWindow orderBack:nil];
     }];

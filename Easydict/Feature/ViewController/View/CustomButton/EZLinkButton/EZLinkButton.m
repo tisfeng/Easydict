@@ -13,8 +13,6 @@ static NSString *const EZQueryKey = @"{Query}";
 
 @interface EZLinkButton ()
 
-@property (nonatomic, copy) NSString *text;
-
 @end
 
 @implementation EZLinkButton
@@ -57,24 +55,21 @@ static NSString *const EZQueryKey = @"{Query}";
 - (void)setLink:(NSString *)link {
     _link = link;
     
-    if (link.length == 0) {
-        self.enabled = NO;
-    }
+    self.enabled = link.length > 0;
 }
 
 - (void)openLink {
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
     NSString *queryText = viewController.queryText;
-    [self openLinkWithText:queryText];
+    [self openURLWithQueryText:queryText];
 }
 
-- (void)openLinkWithText:(NSString *)text {
+- (void)openURLWithQueryText:(NSString *)text {
     if (self.link.length == 0) {
         NSLog(@"open link is empty");
         return;
     }
 
-    self.text = text;
     NSString *queryText = text ?: @"";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 

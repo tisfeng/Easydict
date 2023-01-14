@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyToPasteboard;
 
+- (BOOL)isHttpURL;
+
 @end
 
 NS_ASSUME_NONNULL_END

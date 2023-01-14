@@ -83,11 +83,8 @@
     self.authorLinkButton = authorLinkButton;
 
     authorLinkButton.title = @"Tisfeng";
-    [authorLinkButton setClickBlock:^(EZButton *_Nonnull button) {
-        NSString *authorURL = [EZRepoGithubURL stringByDeletingLastPathComponent];
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:authorURL]];
-        [self.view.window close];
-    }];
+    authorLinkButton.openURL = [EZRepoGithubURL stringByDeletingLastPathComponent];
+    authorLinkButton.closeWindowAfterOpeningURL = YES;
 
     NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github:", nil)];
     [self.contentView addSubview:githubTextField];
@@ -98,10 +95,8 @@
     self.githubLinkButton = githubLinkButton;
 
     githubLinkButton.title = EZRepoGithubURL;
-    [githubLinkButton setClickBlock:^(EZButton *_Nonnull button) {
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:EZRepoGithubURL]];
-        [self.view.window close];
-    }];
+    githubLinkButton.openURL = EZRepoGithubURL;
+    githubLinkButton.closeWindowAfterOpeningURL = YES;
 }
 
 - (void)updateViewConstraints {
