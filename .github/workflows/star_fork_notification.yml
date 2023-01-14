@@ -33,9 +33,9 @@ jobs:
 
       - name: Convert body to HTML
         run: |
-          html_body="<h1>${{env.repo_name}}</h1> <br><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{env.event_name}}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Total stars: <b>${{env.repo_stars}}</b>  <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
+          html_body="<h1>${{ env.repo_name }}</h1> <br><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{ env.event_name }}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Total stars: <b>${{ env.repo_stars }}</b>  <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
           echo "html_body=$html_body" >> $GITHUB_ENV
-          echo "html body: ${{env.html_body}}"
+          echo "html body: ${{ env.html_body }}"
 
       - name: "Send mail"
         uses: dawidd6/action-send-mail@v3
@@ -44,8 +44,8 @@ jobs:
           server_port: 465
           username: ${{ secrets.GMAIL_BOT_USERNAME }}
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
-          subject: ${{env.repo_name}} has been ${{env.event_name}}!
+          subject: ${{ env.repo_name }} has been ${{ env.event_name }}!
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
-          html_body: ${{env.html_body}}
+          html_body: ${{ env.html_body }}
           to: ${{ secrets.RECEIVER_EMAIL }}
           from: GitHub Actions
