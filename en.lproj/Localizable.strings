@@ -16,6 +16,8 @@
 "volcano_translate" = "Volcano Translate";
 
 "explain" = "explain:";
+"tag" = "tags:";
+"please_look" = "Please look 👉";
 "us_phonetic" = "us";
 "uk_phonetic" = "uk";
 "chinese_phonetic" = "phonetic";
@@ -28,7 +30,6 @@
 "present_participle" = "present articiple";
 "root" = "root";
 
-"tag" = "tags:";
 
 "general" = "General";
 "setting" = "Setting";

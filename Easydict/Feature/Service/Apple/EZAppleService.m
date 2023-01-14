@@ -180,6 +180,15 @@
     [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
         if (!error) {
             self.result.normalResults = @[ result ];
+        } else {
+            self.result.promptTitle = @"如何在 Easydict 中使用 🍎 macOS 系统翻译？";
+            // https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS%F0%9F%8D%8Esystem-translation-in-Easydict-zh.md
+            NSString *docsURL = @"https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS%F0%9F%8D%8Esystem-translation-in-Easydict-%@.md";
+            NSString *language = @"zh";
+            if ([to isEqualToString:EZLanguageEnglish]) {
+                language = @"en";
+            }
+            self.result.promptURL = [NSString stringWithFormat:docsURL, language];
         }
         completion(self.result, error);
     }];

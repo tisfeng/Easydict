@@ -15,6 +15,8 @@
 "volcano_translate" = "火山翻译";
 
 "explain" = "释义:";
+"tag" = "标签:";
+"please_look" = "请看👉";
 "us_phonetic" = "美";
 "uk_phonetic" = "英";
 "chinese_phonetic" = "发音";
@@ -28,7 +30,6 @@
 "present_participle" = "现在分词";
 "root" = "词根";
 
-"tag" = "标签:";
 
 // setting
 "general" = "通用";
