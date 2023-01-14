@@ -45,7 +45,6 @@ static NSInteger const kDelayRetryCount = 5;
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
-        configuration.applicationNameForUserAgent = EZUserAgent;
         [configuration setURLSchemeHandler:self.urlSchemeHandler forURLScheme:@"https"];
 
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];

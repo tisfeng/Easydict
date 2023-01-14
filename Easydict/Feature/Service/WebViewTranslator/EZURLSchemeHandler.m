@@ -241,7 +241,7 @@ static EZURLSchemeHandler *_sharedInstance = nil;
 - (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
     NSURLRequest *request = [urlSchemeTask request];
     NSURL *URL = request.URL;
-    //    NSLog(@"url: %@", url);
+//        NSLog(@"url: %@", URL.absoluteString);
     
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
     [mutableRequest setValue:[self getRequestCookieHeaderForURL:request.URL] forHTTPHeaderField:@"Cookie"];
