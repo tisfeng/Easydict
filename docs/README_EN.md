@@ -20,7 +20,7 @@
 - [x] Auto select translate, automatically display the query icon after word search, mouse hover to query.
 - [x] Support system OCR screenshot translation.
 - [x] Support system TTS.
-- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS%F0%9F%8D%8Esystem-translation-in-Easydict.md)_)
+- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-en.md)_)
 - [x] Support Youdao Dictionary, DeepL, Google, Baidu and Volcano Translator, no Key required, totally free!
 - [x] Support for 48 languages.
 
