@@ -177,6 +177,47 @@ static const CGFloat kVerticalPadding_8 = 8;
             resultLabel.mas_key = @"resultLabel_normalResults";
             lastView = resultLabel;
         }
+        
+        if (result.promptTitle.length && result.promptURL.length) {
+            NSTextField *promptTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
+                [self addSubview:textField];
+                textField.stringValue = NSLocalizedString(@"please_look", nil);
+                textField.font = [NSFont systemFontOfSize:14];
+                textField.editable = NO;
+                textField.bordered = NO;
+                textField.backgroundColor = NSColor.clearColor;
+                [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+
+                [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+                    CGFloat topOffset = 20;
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                    } else {
+                        make.top.offset(topOffset);
+                    }
+                    height += topOffset;
+
+                    make.left.mas_equalTo(kHorizontalMargin_8);
+                }];
+                [textField sizeToFit];
+            }];
+            promptTextField.mas_key = @"promptTextField";
+            
+            EZBlueTextButton *promptButton = [[EZBlueTextButton alloc] init];
+            [self addSubview:promptButton];
+            [promptButton setTitle:result.promptTitle];
+            promptButton.openURL = result.promptURL;
+
+            [promptButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.equalTo(promptTextField.mas_right).offset(0);
+                make.centerY.equalTo(promptTextField);
+            }];
+            
+            height += promptButton.height;
+
+            promptButton.mas_key = @"promptButton";
+            lastView = promptButton;
+        }
     }
 
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

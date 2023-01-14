@@ -133,6 +133,9 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 /// 翻译接口提供的原始的、未经转换的查询结果
 @property (nonatomic, strong, nullable) id raw;
 
+@property (nonatomic, copy, nullable) NSString *promptTitle;
+@property (nonatomic, copy, nullable) NSString *promptURL;
+
 
 - (void)reset;
 
