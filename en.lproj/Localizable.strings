@@ -30,18 +30,15 @@
 "present_participle" = "present articiple";
 "root" = "root";
 
-
 "general" = "General";
 "setting" = "Setting";
 "shortcut" = "Shortcut";
 "service" = "Service";
 
-
 "select_translate" = "Select Translate:";
 "input_translate" = "Input Translate:";
 "snip_translate" = "Snip Translate:";
 "show_mini_window" = "Show Mini Window:";
-
 "check_update" = "Update:";
 "auto_check_update" = "Auto Check App Update";
 "show_icon" = "Show Icon:";
@@ -53,10 +50,13 @@
 "auto_snip_translate" = "Auto Snip Translate";
 "play_audio" = "Play Word Audio:";
 "auto_play_audio" = "Auto Play English Word After Query";
-
 "auto_copy_text" = "Auto Copy Text:";
 "auto_copy_selected_text" = "Auto Copy Selected Text";
 "auto_copy_ocr_text" = "Auto Copy OCR Text";
+
+"mini_window" = "Mini Window";
+"fixed_window" = "Fixed Window";
+"main_window" = "Main Window";
 
 "about" = "about";
 "current_version" = "Version";
