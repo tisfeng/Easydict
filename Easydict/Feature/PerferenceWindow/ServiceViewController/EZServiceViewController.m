@@ -30,6 +30,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSMutableArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSMutableArray<EZQueryService *> *services;
 
+@property (nonatomic, assign) EZWindowType windowType;
+@property (nonatomic, copy) NSDictionary<NSNumber *, NSNumber *> *windowTypesDictionary;
+
+
 @end
 
 @implementation EZServiceViewController
@@ -52,19 +56,27 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    self.serviceTypes = [[EZLocalStorage.shared allServiceTypes] mutableCopy];
-    self.services = [[EZLocalStorage.shared allServices] mutableCopy];
+    self.windowTypesDictionary = @{
+        @(0) : @(EZWindowTypeMini),
+        @(1) : @(EZWindowTypeFixed),
+        @(2) : @(EZWindowTypeMain),
+    };
+    
+    [self setupDataWithWindowType:EZWindowTypeMini];
 
     // Just to be able to get tableView height automatically.
     self.scrollView.height = 0;
     [self tableView];
-    
+
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(self.tableView.height);
     }];
-    
-//    CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
-//    self.view.height = viewHeight;
+}
+
+- (void)setupDataWithWindowType:(EZWindowType)windowType {
+    self.windowType = windowType;
+    self.serviceTypes = [[EZLocalStorage.shared allServiceTypes:windowType] mutableCopy];
+    self.services = [[EZLocalStorage.shared allServices:windowType] mutableCopy];
 }
 
 
@@ -174,7 +186,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         if (service.enabled) {
             service.enabledQuery = YES;
         }
-        [EZLocalStorage.shared saveService:service];
+        [EZLocalStorage.shared setService:service windowType:self.windowType];
         [self postUpdateServiceNotification];
     }];
 
@@ -211,8 +223,10 @@ static NSString *const EZColumnId = @"EZColumnId";
         }
         NSLog(@"removedIndex: %ld", removedIndex);
         [self.serviceTypes removeObjectAtIndex:removedIndex];
-        EZLocalStorage.shared.allServiceTypes = self.serviceTypes;
-        self.services = [[[EZLocalStorage shared] allServices] mutableCopy];
+
+        EZLocalStorage *localStorage = [EZLocalStorage shared];
+        [localStorage setAllServiceTypes:self.serviceTypes windowType:self.windowType];
+        self.services = [[localStorage allServices:self.windowType] mutableCopy];
         [self.tableView reloadData];
 
         row = MIN(row, self.serviceTypes.count - 1);
@@ -240,7 +254,12 @@ static NSString *const EZColumnId = @"EZColumnId";
 #pragma mark - Actions
 
 - (void)segmentedControlClicked:(NSSegmentedControl *)sender {
-    NSLog(@"Selected segment: %ld", [sender selectedSegment]);
+    NSInteger index = [sender selectedSegment];
+    NSLog(@"Selected segment: %ld", index);
+    
+    EZWindowType windowType = [self.windowTypesDictionary[@(index)] integerValue];
+    [self setupDataWithWindowType:windowType];
+    [self.tableView reloadData];
 }
 
 #pragma mark -

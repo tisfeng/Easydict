@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZServiceInfo.h"
+#import "EZLayoutManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,17 +16,19 @@ static NSString *const EZServiceHasUpdatedNotification = @"EZServiceHasUpdatedNo
 
 @interface EZLocalStorage : NSObject
 
-@property (nonatomic, strong) NSArray<EZServiceType> *allServiceTypes;
-@property (nonatomic, strong, readonly) NSArray<EZQueryService *> *allServices;
-
 + (instancetype)shared;
 
-- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type;
-- (void)saveServiceInfo:(EZServiceInfo *)service;
+- (NSArray<EZServiceType> *)allServiceTypes:(EZWindowType)windowType;
+- (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes windowType:(EZWindowType)windowType;
 
-- (void)saveService:(EZQueryService *)service;
+- (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType;
 
-- (void)setServiceType:(EZServiceType)type enabledQuery:(BOOL)enabledQuery;
+- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType;
+- (void)setServiceInfo:(EZServiceInfo *)service windowType:(EZWindowType)windowType;
+
+- (void)setService:(EZQueryService *)service windowType:(EZWindowType)windowType;
+
+- (void)setEnabledQuery:(BOOL)enabledQuery serviceType:(EZServiceType)serviceType windowType:(EZWindowType)windowType;
 
 @end
 
