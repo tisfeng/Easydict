@@ -28,6 +28,8 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)setupUI {
+    self.hidden = YES;
+    
     NSView *lastView = nil;
     CGFloat width = 4;
     CGFloat padding = 1.8 * width;
@@ -95,7 +97,6 @@ static NSInteger const kAnimationDotViewCount = 5;
             NSView *dotView = subviews[i];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (self.isLoading) {
-                    dotView.hidden = NO;
                     [self scaleAnimateView:dotView];
                     
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime + kAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -112,6 +113,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 
 - (void)scaleAnimateView:(NSView *)view {
     self.hidden = NO;
+    view.hidden = NO;
     
     [view.layer removeAllAnimations];
     
