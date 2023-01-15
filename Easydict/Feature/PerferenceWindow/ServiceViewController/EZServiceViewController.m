@@ -211,11 +211,12 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-    EZServiceType oldServiceType = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
-    if ([self.serviceTypes containsObject:oldServiceType]) {
-        NSInteger oldIndex = [self.serviceTypes indexOfObject:oldServiceType];
+    EZServiceType draggedServiceType = [info.draggingPasteboard stringForType:NSPasteboardTypeString];
+    NSArray *oldEnabledServiceTypes = [self enabledServiceTypes:self.services];
+    if ([self.serviceTypes containsObject:draggedServiceType]) {
+        NSInteger oldIndex = [self.serviceTypes indexOfObject:draggedServiceType];
         NSLog(@"oldIndex: %ld, to row: %ld", oldIndex, row);
-        [self.serviceTypes insertObject:oldServiceType atIndex:row];
+        [self.serviceTypes insertObject:draggedServiceType atIndex:row];
 
         NSInteger removedIndex = oldIndex;
         if (row < oldIndex) {
@@ -229,14 +230,22 @@ static NSString *const EZColumnId = @"EZColumnId";
         self.services = [[localStorage allServices:self.windowType] mutableCopy];
         [self.tableView reloadData];
 
-        row = MIN(row, self.serviceTypes.count - 1);
-        EZQueryService *service = self.services[row];
-        if (service.enabled) {
+        // If the order of enabled services is changed, need to post notification.
+        NSArray *newEnabledServiceTypes = [self enabledServiceTypes:self.services];
+        if (![newEnabledServiceTypes isEqualToArray:oldEnabledServiceTypes]) {
             [self postUpdateServiceNotification];
         }
     }
 
     return YES;
+}
+
+- (EZQueryService *)serviceWithType:(EZServiceType)type {
+    NSInteger index = [self.serviceTypes indexOfObject:type];
+    if (index != NSNotFound) {
+        return self.services[index];
+    }
+    return nil;
 }
 
 
@@ -267,6 +276,16 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)postUpdateServiceNotification {
     NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+- (NSArray *)enabledServiceTypes:(NSArray *)services {
+    NSMutableArray *array = [NSMutableArray array];
+    for (EZQueryService *service in services) {
+        if (service.enabled) {
+            [array addObject:service.serviceType];
+        }
+    }
+    return array;
 }
 
 #pragma mark - MASPreferencesViewController
