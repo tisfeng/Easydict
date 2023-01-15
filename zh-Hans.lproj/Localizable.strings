@@ -59,6 +59,10 @@
 "auto_copy_selected_text" = "自动复制划词选择文本";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
 
+"mini_window" = "迷你窗口";
+"fixed_window" = "侧悬浮窗口";
+"main_window" = "主窗口";
+
 "about" = "关于";
 "current_version" = "版本";
 "lastest_version" = "最新版本";

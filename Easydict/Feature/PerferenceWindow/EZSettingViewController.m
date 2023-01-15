@@ -193,8 +193,8 @@
 
 - (void)updateViewConstraints {
     [self.selectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(self.horizontalMargin).priorityLow();
-        make.top.equalTo(self.contentView).offset(self.verticalMargin).priorityLow();
+        make.left.equalTo(self.contentView).offset(self.leftMargin).priorityLow();
+        make.top.equalTo(self.contentView).offset(self.topMargin).priorityLow();
     }];
     self.topmostView = self.selectLabel;
 
@@ -237,7 +237,7 @@
     }];
 
     [self.separatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.inset(self.horizontalMargin / 2);
+        make.left.right.inset(self.leftMargin / 2);
         make.top.equalTo(self.showMiniLabel.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.mas_equalTo(1);
     }];

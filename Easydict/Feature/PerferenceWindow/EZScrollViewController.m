@@ -22,15 +22,13 @@ static CGFloat const kMargin = 0;
     if (self = [super init]) {
         self.maxViewSize = CGSizeMake(800, 500);
 
-        self.verticalMargin = 30;
-        self.horizontalMargin = 50;
         self.verticalPadding = 15;
         self.horizontalPadding = 8;
 
-        self.topMargin = self.verticalMargin;
-        self.bottomMargin = self.verticalMargin;
-        self.leftMargin = self.horizontalMargin;
-        self.rightMargin = self.horizontalMargin;
+        self.topMargin = 30;
+        self.bottomMargin = 30;
+        self.leftMargin = 50;
+        self.rightMargin = 50;
     }
     return self;
 }
@@ -57,8 +55,8 @@ static CGFloat const kMargin = 0;
 }
 
 - (void)_setupUI {
-    NSColor *lightBgColor = [NSColor resultViewBgLightColor]; // [NSColor mm_colorWithHexString:@"#F2F0F1"];
-    NSColor *darkBgColor = [NSColor resultViewBgDarkColor];   // [NSColor mm_colorWithHexString:@"#353131"];
+    NSColor *lightBgColor = [NSColor resultViewBgLightColor];
+    NSColor *darkBgColor = [NSColor resultViewBgDarkColor];
 
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
     scrollView.hasVerticalScroller = YES;

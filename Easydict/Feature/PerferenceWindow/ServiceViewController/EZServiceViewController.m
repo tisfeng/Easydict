@@ -13,6 +13,7 @@
 #import "EZLocalStorage.h"
 
 static CGFloat const kMargin = 20;
+static CGFloat const kPadding = 20;
 static CGFloat const kRowHeight = 40;
 
 static NSString *const EZServiceCellId = @"EZServiceCellId";
@@ -20,6 +21,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 @interface EZServiceViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
+@property (nonatomic, strong) NSSegmentedControl *segmentedControl;
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
@@ -45,40 +47,67 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self setup];
 }
 
 - (void)setup {
     self.serviceTypes = [[EZLocalStorage.shared allServiceTypes] mutableCopy];
     self.services = [[EZLocalStorage.shared allServices] mutableCopy];
-    
+
+    // Just to be able to get tableView height automatically.
+    self.scrollView.height = 0;
     [self tableView];
     
-    CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
-    self.view.height = viewHeight;
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(self.tableView.height);
+    }];
+    
+//    CGFloat viewHeight = kMargin * 2 + self.services.count * (kRowHeight + EZVerticalCellSpacing_8);
+//    self.view.height = viewHeight;
 }
 
 
 #pragma mark - Getter && Setter
+
+- (NSSegmentedControl *)segmentedControl {
+    if (!_segmentedControl) {
+        NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] init];
+        [self.view addSubview:segmentedControl];
+        [segmentedControl setSegmentCount:3];
+        [segmentedControl setLabel:NSLocalizedString(@"mini_window", nil) forSegment:0];
+        [segmentedControl setLabel:NSLocalizedString(@"fixed_window", nil) forSegment:1];
+        [segmentedControl setLabel:NSLocalizedString(@"main_window", nil) forSegment:2];
+        [segmentedControl setTarget:self];
+        [segmentedControl setAction:@selector(segmentedControlClicked:)];
+        [segmentedControl setSelectedSegment:0];
+        [segmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.inset(kMargin);
+            make.height.mas_equalTo(25);
+        }];
+        _segmentedControl = segmentedControl;
+    }
+    return _segmentedControl;
+}
 
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
         NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
-        
+
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
-        
+
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.view).inset(kMargin);
+            make.top.equalTo(self.segmentedControl.mas_bottom).offset(kPadding);
+            make.left.right.bottom.inset(kMargin);
         }];
-        
+
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
-        
+
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 0, 0);
     }
     return _scrollView;
@@ -88,27 +117,27 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-        
+
         [tableView excuteLight:^(NSTableView *view) {
             view.backgroundColor = NSColor.whiteColor;
         } drak:^(NSTableView *view) {
             view.backgroundColor = NSColor.resultViewBgDarkColor;
         }];
-        
+
         tableView.style = NSTableViewStylePlain;
-        
+
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
         [tableView addTableColumn:column];
-        
+
         tableView.delegate = self;
         tableView.dataSource = self;
-        tableView.rowHeight = 40;
+        tableView.rowHeight = kRowHeight;
         [tableView registerForDraggedTypes:@[ NSPasteboardTypeString ]];
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
-        
+
         tableView.headerView = nil;
         tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_8);
         tableView.gridColor = NSColor.clearColor;
@@ -131,16 +160,16 @@ static NSString *const EZColumnId = @"EZColumnId";
         cell = [[EZServiceCell alloc] init];
         cell.identifier = @"EZServiceCell";
     }
-    
+
     EZQueryService *service = self.services[row];
     cell.service = service;
-    
+
     mm_weakify(self, service);
-    
+
     [cell setClickToggleButton:^(NSButton *button) {
         mm_strongify(self, service);
         service.enabled = button.mm_isOn;
-        
+
         // Set enabledQuery to YES if service enabled.
         if (service.enabled) {
             service.enabledQuery = YES;
@@ -148,7 +177,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [EZLocalStorage.shared saveService:service];
         [self postUpdateServiceNotification];
     }];
-    
+
     return cell;
 }
 
@@ -175,7 +204,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSInteger oldIndex = [self.serviceTypes indexOfObject:oldServiceType];
         NSLog(@"oldIndex: %ld, to row: %ld", oldIndex, row);
         [self.serviceTypes insertObject:oldServiceType atIndex:row];
-        
+
         NSInteger removedIndex = oldIndex;
         if (row < oldIndex) {
             removedIndex = oldIndex + 1;
@@ -185,14 +214,14 @@ static NSString *const EZColumnId = @"EZColumnId";
         EZLocalStorage.shared.allServiceTypes = self.serviceTypes;
         self.services = [[[EZLocalStorage shared] allServices] mutableCopy];
         [self.tableView reloadData];
-        
+
         row = MIN(row, self.serviceTypes.count - 1);
         EZQueryService *service = self.services[row];
         if (service.enabled) {
             [self postUpdateServiceNotification];
         }
     }
-    
+
     return YES;
 }
 
@@ -206,6 +235,12 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn {
+}
+
+#pragma mark - Actions
+
+- (void)segmentedControlClicked:(NSSegmentedControl *)sender {
+    NSLog(@"Selected segment: %ld", [sender selectedSegment]);
 }
 
 #pragma mark -

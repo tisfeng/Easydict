@@ -102,7 +102,7 @@
 - (void)updateViewConstraints {
     [self.logoImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.contentView);
-        make.width.height.mas_equalTo(100);
+        make.width.height.mas_equalTo(110);
     }];
     self.topmostView = self.logoImageView;
 
