@@ -274,7 +274,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 #pragma mark -
 
 - (void)postUpdateServiceNotification {
-    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil];
+    NSDictionary *userInfo = @{ EZWindowTypeKey : @(self.windowType)};
+    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
