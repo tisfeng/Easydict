@@ -138,10 +138,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
     
-    NSArray *allServices = [EZLocalStorage.shared allServices];
+    NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
             service.queryModel = self.queryModel;
+            service.windowType = self.windowType;
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
         }

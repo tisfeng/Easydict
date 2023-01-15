@@ -11,6 +11,7 @@
 #import "EZTranslateError.h"
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
+#import "EZLayoutManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL enabled;
 /// In the query page, whether to allow this service query.
 @property (nonatomic, assign) BOOL enabledQuery;
+
+@property (nonatomic, assign) EZWindowType windowType;
 
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;

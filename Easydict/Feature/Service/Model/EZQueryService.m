@@ -32,7 +32,6 @@ userInfo:nil]
 
 - (instancetype)init {
     if (self = [super init]) {
-//        self.enabledQuery = [[EZLocalStorage shared] serviceWithType:self.serviceType].enabledQuery;
     }
     return self;
 }
@@ -47,9 +46,7 @@ userInfo:nil]
 - (void)setEnabledQuery:(BOOL)enabledQuery {
     _enabledQuery = enabledQuery;
     
-    [[EZLocalStorage shared] setServiceType:self.serviceType enabledQuery:enabledQuery];
-    
-//    [[EZLocalStorage shared] saveService:self];
+    [[EZLocalStorage shared] setEnabledQuery:enabledQuery serviceType:self.serviceType windowType:self.windowType];
 }
 
 - (void)setResult:(EZQueryResult *)translateResult {

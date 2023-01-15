@@ -10,7 +10,6 @@
 
 static NSString *kServiceInfoStorageKey = @"kServiceInfoStorageKey";
 static NSString *kAllServiceTypesKey = @"kAllServiceTypesKey";
-static NSString *kAllServices = @"kAllServices";
 
 @interface EZLocalStorage ()
 
@@ -47,84 +46,96 @@ static EZLocalStorage *_instance;
     return self;
 }
 
-// init, save all service info
+// init data, save all service info
 - (void)setup {
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
-    for (EZServiceType type in allServiceTypes) {
-        EZServiceInfo *serviceInfo = [self serviceInfoWithType:type];
-        if (!serviceInfo) {
-            serviceInfo = [[EZServiceInfo alloc] init];
-            serviceInfo.type = type;
-            serviceInfo.enabled = YES;
-            serviceInfo.enabledQuery = YES;
-            [self saveServiceInfo:serviceInfo];
+    
+    NSArray *allWindowTypes = @[ @(EZWindowTypeMini), @(EZWindowTypeFixed), @(EZWindowTypeMain) ];
+    for (NSNumber *number in allWindowTypes) {
+        EZWindowType windowType = [number integerValue];
+        for (EZServiceType type in allServiceTypes) {
+            EZServiceInfo *serviceInfo = [self serviceInfoWithType:type windowType:windowType];
+            if (!serviceInfo) {
+                serviceInfo = [[EZServiceInfo alloc] init];
+                serviceInfo.type = type;
+                serviceInfo.enabled = YES;
+                serviceInfo.enabledQuery = YES;
+                [self setServiceInfo:serviceInfo windowType:windowType];
+            }
         }
     }
 }
 
-- (NSArray<EZServiceType> *)allServiceTypes {
-    NSArray *storedServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:kAllServiceTypesKey];
-    if (!storedServiceTypes) {
-        storedServiceTypes = [EZServiceTypes allServiceTypes];
-        [[NSUserDefaults standardUserDefaults] setObject:storedServiceTypes forKey:kAllServiceTypesKey];
+- (NSArray<EZServiceType> *)allServiceTypes:(EZWindowType)windowType {
+    NSString *allServiceTypesKey = [self serviceTypesKeyOfWindowType:windowType];
+    NSArray *allStoredServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:allServiceTypesKey];
+    if (!allStoredServiceTypes) {
+        allStoredServiceTypes = [EZServiceTypes allServiceTypes];
+        [[NSUserDefaults standardUserDefaults] setObject:allStoredServiceTypes forKey:allServiceTypesKey];
     } else {
-        NSMutableArray *array = [NSMutableArray arrayWithArray:storedServiceTypes];
+        NSMutableArray *array = [NSMutableArray arrayWithArray:allStoredServiceTypes];
         NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
-        if (storedServiceTypes.count != allServiceTypes.count) {
+        if (allStoredServiceTypes.count != allServiceTypes.count) {
             for (EZServiceType type in allServiceTypes) {
-                if ([storedServiceTypes indexOfObject:type] == NSNotFound) {
+                if ([allStoredServiceTypes indexOfObject:type] == NSNotFound) {
                     [array insertObject:type atIndex:0];
                 }
             }
         }
-        storedServiceTypes = [array copy];
+        allStoredServiceTypes = [array copy];
     }
     
-    return storedServiceTypes;
+    return allStoredServiceTypes;
+}
+- (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes windowType:(EZWindowType)windowType {
+    NSString *allServiceTypesKey = [self serviceTypesKeyOfWindowType:windowType];
+    [[NSUserDefaults standardUserDefaults] setObject:allServiceTypes forKey:allServiceTypesKey];
 }
 
-- (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes {
-    [[NSUserDefaults standardUserDefaults] setObject:allServiceTypes forKey:kAllServiceTypesKey];
-}
-
-- (NSArray<EZQueryService *> *)allServices {
-    NSArray *allServices = [EZServiceTypes servicesFromTypes:[self allServiceTypes]];
+- (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType {
+    NSArray *allServices = [EZServiceTypes servicesFromTypes:[self allServiceTypes:windowType]];
     for (EZQueryService *service in allServices) {
-        EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType];
+        EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
         service.enabled = serviceInfo.enabled;
         service.enabledQuery = serviceInfo.enabledQuery;
     }
     return allServices;
 }
 
-
-- (void)setServiceType:(EZServiceType)type enabledQuery:(BOOL)enabledQuery {
-    EZServiceInfo *service = [self serviceInfoWithType:type];
-    service.enabledQuery = enabledQuery;
-    [self saveServiceInfo:service];
-}
-
-- (void)saveServiceInfo:(EZServiceInfo *)serviceInfo {
+- (void)setServiceInfo:(EZServiceInfo *)serviceInfo windowType:(EZWindowType)windowType {
     // ???: if save EZQueryService, mj_JSONData will Dead cycle.
     NSData *data = [serviceInfo mj_JSONData];
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:[self keyForType:serviceInfo.type]];
+    NSString *serviceInfoKey = [self keyForServiceType:serviceInfo.type windowType:windowType];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:serviceInfoKey];
 }
-
-- (void)saveService:(EZQueryService *)service {
-    EZServiceInfo *serviceInfo = [EZServiceInfo serviceInfoWithService:service];
-    [self saveServiceInfo:serviceInfo];
-}
-
-- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type {
-    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:[self keyForType:type]];
+- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType {
+    NSString *serviceInfoKey = [self keyForServiceType:type windowType:windowType];
+    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:serviceInfoKey];
     if (data) {
         return [EZServiceInfo mj_objectWithKeyValues:data];
     }
     return nil;
 }
 
-- (NSString *)keyForType:(EZServiceType)type {
-    return [NSString stringWithFormat:@"%@-%@", kServiceInfoStorageKey, type];
+- (void)setService:(EZQueryService *)service windowType:(EZWindowType)windowType {
+    EZServiceInfo *serviceInfo = [EZServiceInfo serviceInfoWithService:service];
+    [self setServiceInfo:serviceInfo windowType:windowType];
+}
+
+- (void)setEnabledQuery:(BOOL)enabledQuery serviceType:(EZServiceType)serviceType windowType:(EZWindowType)windowType {
+    EZServiceInfo *service = [self serviceInfoWithType:serviceType windowType:windowType];
+    service.enabledQuery = enabledQuery;
+    [self setServiceInfo:service windowType:windowType];
+}
+
+#pragma mark -
+
+- (NSString *)keyForServiceType:(EZServiceType)serviceType windowType:(EZWindowType)windowType {
+    return [NSString stringWithFormat:@"%@-%@-%ld", kServiceInfoStorageKey, serviceType, windowType];
+}
+
+- (NSString *)serviceTypesKeyOfWindowType:(EZWindowType)windowType {
+    return [NSString stringWithFormat:@"%@-%ld", kAllServiceTypesKey, windowType];
 }
 
 @end
