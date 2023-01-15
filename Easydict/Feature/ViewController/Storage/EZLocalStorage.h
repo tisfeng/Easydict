@@ -13,6 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZServiceHasUpdatedNotification = @"EZServiceHasUpdatedNotification";
+static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
 
 @interface EZLocalStorage : NSObject
 

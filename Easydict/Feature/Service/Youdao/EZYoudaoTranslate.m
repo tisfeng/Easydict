@@ -230,6 +230,7 @@ static NSString *const kYoudaoTranslateURL = @"https://www.youdao.com";
     [self translateYoudaoAPI:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         mm_strongify(self);
         if (error) {
+            NSLog(@"translateYoudaoAPI error: %@", error);
             self.result.error = error;
         }
         dispatch_group_leave(group);

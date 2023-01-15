@@ -125,7 +125,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         }];
     }];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate) name:EZServiceHasUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate:) name:EZServiceHasUpdatedNotification object:nil];
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self
@@ -160,15 +160,18 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 #pragma mark - NSNotificationCenter
 
-- (void)handleServiceUpdate {
-    [self setupServices];
-    [self resetAllResults];
-    
-    [self reloadTableViewData:^{
-        if (self.queryText.length > 0) {
-            [self startQueryText];
-        }
-    }];
+- (void)handleServiceUpdate:(NSNotification *)notification {
+    EZWindowType type = [notification.userInfo[EZWindowTypeKey] integerValue];
+    if (type == self.windowType) {
+        [self setupServices];
+        [self resetAllResults];
+        
+        [self reloadTableViewData:^{
+            if (self.queryText.length > 0) {
+                [self startQueryText];
+            }
+        }];
+    }
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
@@ -1038,6 +1041,11 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSLog(@"query text is too long");
         return;
     }
+    
+//    BOOL hasWhiteSpace = [[self.queryText trim] containsString:@" "];
+//    if (hasWhiteSpace) {
+//        return;
+//    }
     
     [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
 }
