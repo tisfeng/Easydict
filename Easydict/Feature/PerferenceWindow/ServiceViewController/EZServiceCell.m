@@ -47,8 +47,13 @@
         self.toggleButton.bezelStyle = NSBezelStyleTexturedSquare;
         
         CGSize imageSize = CGSizeMake(35, 35);
-        NSImage *switchOffImage = [[NSImage imageNamed:@"toggle_off_blue"] resizeToSize:imageSize];
-        [self.toggleButton setImage:switchOffImage];
+        
+        // Since using the system's dark mode image, the image is still a dark image even after switching to light mode, so we need to switch it manually.
+        [self.toggleButton excuteLight:^(NSButton *button) {
+            button.image = [[NSImage imageNamed:@"toggle_off_blue_light"] resizeToSize:imageSize];
+        } drak:^(NSButton *button) {
+            button.image = [[NSImage imageNamed:@"toggle_off_blue_dark"] resizeToSize:imageSize];
+        }];
         
         NSImage *switchOnImage = [[NSImage imageNamed:@"toggle_on_blue"] resizeToSize:imageSize];
         [self.toggleButton setAlternateImage:switchOnImage];
