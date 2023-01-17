@@ -27,10 +27,6 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    
-    // Drawing code here.
-    
     [self excuteLight:^(id _Nonnull x) {
         [[NSColor whiteColor] setFill];
         NSRectFill(dirtyRect);
@@ -38,6 +34,9 @@
         [[NSColor resultViewBgDarkColor] setFill];
         NSRectFill(dirtyRect);
     }];
+    
+    // The super method must be called only at the end, otherwise it will overwrite the selected background color.
+    [super drawRect:dirtyRect];
 }
 
 @end
