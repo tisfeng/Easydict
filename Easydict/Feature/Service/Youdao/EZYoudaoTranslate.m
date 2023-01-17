@@ -23,12 +23,20 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 @interface EZYoudaoTranslate ()
 
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
+@property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @end
 
 
 @implementation EZYoudaoTranslate
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [self requestYoudaoCookie];
+    }
+    return self;
+}
 
 - (EZWebViewTranslator *)webViewTranslator {
     if (!_webViewTranslator) {
@@ -48,13 +56,58 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         jsonSession.requestSerializer = requestSerializer;
 
         AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/plain", nil];
+        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", @"text/plain", nil];
         jsonSession.responseSerializer = responseSerializer;
 
         _jsonSession = jsonSession;
     }
     return _jsonSession;
 }
+
+- (AFHTTPSessionManager *)htmlSession {
+    if (!_htmlSession) {
+        AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
+
+        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
+                                    @"10_15_0) AppleWebKit/537.36 (KHTML, like "
+                                    @"Gecko) Chrome/77.0.3865.120 Safari/537.36"
+                 forHTTPHeaderField:@"User-Agent"];
+        htmlSession.requestSerializer = requestSerializer;
+
+        AFHTTPResponseSerializer *responseSerializer =
+            [AFHTTPResponseSerializer serializer];
+        responseSerializer.acceptableContentTypes =
+            [NSSet setWithObjects:@"text/html", nil];
+        htmlSession.responseSerializer = responseSerializer;
+
+        _htmlSession = htmlSession;
+    }
+    return _htmlSession;
+}
+
+// Get youdao fanyi cookie, and save it to user defaults.
+- (void)requestYoudaoCookie {
+    // https://fanyi.youdao.com/index.html#/
+    NSString *URLString = [NSString stringWithFormat:@"%@/index.html#/", kYoudaoTranslatetURL];
+    [self.htmlSession GET:URLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:kYoudaoTranslatetURL]];
+        // convert to OUTFOX_SEARCH_USER_ID=1797292665@113.88.171.39; domain=.youdao.com; expires=Wed, 08-Jan-2053 02:18:55 GMT
+        NSString *cookieString = @"";
+        for (NSHTTPCookie *cookie in cookies) {
+            if ([cookie.name isEqualToString:@"OUTFOX_SEARCH_USER_ID"]) {
+                cookieString = [NSString stringWithFormat:@"%@=%@; domain=%@; expires=%@", cookie.name, cookie.value, cookie.domain, cookie.expiresDate];
+                break;
+            }
+        }
+        if (cookieString.length) {
+            [NSUserDefaults mm_write:cookieString forKey:kYoudaoCookieKey];
+        }
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        NSLog(@"request youdao cookie error: %@", error);
+    }];
+}
+
 
 #pragma mark - 重写父类方法
 
@@ -176,6 +229,8 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
 
+    [self requestYoudaoCookie];
+
     NSString *foreignLangauge = [self youdaoDictForeignLangauge];
 
     // If Youdao Dictionary does not support the language, try querying translate API.
@@ -264,8 +319,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
 
-    // TODO: get cookie from web, and save it to local storage.
-    NSString *cookie = @"OUTFOX_SEARCH_USER_ID=1797292665@113.88.171.39; domain=.youdao.com; expires=Wed, 08-Jan-2053 02:18:55 GMT";
+    //    "OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
+    NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
+    if (!cookie) {
+        cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
+    }
+    
+    // TODO: Handle cookie expiration cases.
 
     // Ref: https://mp.weixin.qq.com/s/AWL3et91N8T24cKs1v660g
     NSInteger timestamp = [[NSDate date] timeIntervalSince1970] * 1000;
