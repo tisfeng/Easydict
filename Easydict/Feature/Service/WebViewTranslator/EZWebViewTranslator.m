@@ -14,7 +14,7 @@
 // Query time interval
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
 
-static NSInteger const kDelayRetryCount = 5;
+static NSInteger const kDelayRetryCount = 10;
 
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
