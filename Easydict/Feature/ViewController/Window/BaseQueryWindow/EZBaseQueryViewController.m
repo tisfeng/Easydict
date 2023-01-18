@@ -958,7 +958,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
 //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    [self.window setFrame:safeFrame display:YES];
+    [self.window setFrame:safeFrame display:NO];
     
     // Restore tableView height.
     self.tableView.height = tableViewHeight;
