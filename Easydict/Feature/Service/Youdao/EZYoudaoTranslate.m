@@ -229,8 +229,6 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
 
-    [self requestYoudaoCookie];
-
     NSString *foreignLangauge = [self youdaoDictForeignLangauge];
 
     // If Youdao Dictionary does not support the language, try querying translate API.
@@ -316,10 +314,12 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 /// Youdao web translate API
 - (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    // update cookie.
+    [self requestYoudaoCookie];
+
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
 
-    //    "OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
     NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
     if (!cookie) {
         cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
