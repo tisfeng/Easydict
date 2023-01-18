@@ -277,8 +277,8 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 #pragma mark - Handle Event
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-//                NSLog(@"type: %lu", (unsigned long)event.type);
-    
+    //                NSLog(@"type: %lu", (unsigned long)event.type);
+
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             //                NSLog(@"mouse up");
@@ -291,7 +291,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         case NSEventTypeLeftMouseDown: {
             //                NSLog(@"mouse down");
             self.startPoint = NSEvent.mouseLocation;
-            [self dismissIfMouseLocationInFloatingWindows];
+            [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
 
             // check if it is a double click
             if (event.clickCount == 2) {
@@ -314,7 +314,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
-//            NSLog(@"key down");
+            //            NSLog(@"key down");
             [self dismissPopButton];
             break;
         }
@@ -328,8 +328,8 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         }
         case NSEventTypeFlagsChanged: {
             [self dismissPopButton];
-//            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
-            
+            //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
+
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandEvents:event];
                 if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
@@ -348,19 +348,23 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     [self updateRecoredEvents:event];
 }
 
-- (void)dismissIfMouseLocationInFloatingWindows {
-    [[EZPreferencesWindowController shared].window close];
+- (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {
+    NSWindow *preferencesWindow = [EZPreferencesWindowController shared].window;
+    BOOL outsidePreferencesWindow = ![self checkIfMouseLocationInWindow:preferencesWindow];
+    if (outsidePreferencesWindow) {
+        [preferencesWindow close];
+    }
     
     EZWindowManager *windowManager = EZWindowManager.shared;
     if (windowManager.floatingWindowType == EZWindowTypeMini) {
-        BOOL outMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
-        if (outMiniWindow && self.dismissMiniWindowBlock) {
+        BOOL outsideMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
+        if (outsideMiniWindow && self.dismissMiniWindowBlock) {
             self.dismissMiniWindowBlock();
         }
     } else {
         if (windowManager.floatingWindowType == EZWindowTypeFixed) {
-            BOOL outFixedWindow = ![self checkIfMouseLocationInWindow:windowManager.fixedWindow];
-            if (outFixedWindow && self.dismissFixedWindowBlock) {
+            BOOL outsideFixedWindow = ![self checkIfMouseLocationInWindow:windowManager.fixedWindow];
+            if (outsideFixedWindow && self.dismissFixedWindowBlock) {
                 self.dismissFixedWindowBlock();
             }
         }
@@ -440,13 +444,13 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 /// Use auxiliary to get selected text first, if failed, use cmd key to get.
-- (void)getSelectedText:(BOOL)checkTextFrame {    
+- (void)getSelectedText:(BOOL)checkTextFrame {
     BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
     if (!enableAutoSelectText) {
         NSLog(@"user did not enableAutoSelectText");
         return;
     }
-    
+
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         if (![self isValidSelectedFrame]) {
             if (checkTextFrame) {
