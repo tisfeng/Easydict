@@ -7,6 +7,7 @@
 //
 
 #import "EZLocalStorage.h"
+#import "EZLog.h"
 
 static NSString *const kServiceInfoStorageKey = @"kServiceInfoStorageKey";
 static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
@@ -133,7 +134,21 @@ static EZLocalStorage *_instance;
 
 - (void)increaseQueryCount {
     NSInteger count = [self queryCount];
+    NSInteger level = [self queryLevel:count];
     count++;
+    NSInteger newLevel = [self queryLevel:count];
+    if (count == 1 || newLevel != level) {
+        NSString *title = [self queryLevelTitle:newLevel chineseFlag:YES];
+        NSLog(@"new level: %@", title);
+
+        NSDictionary *dict = @{
+            @"count" : [NSString stringWithFormat:@"%ld", count],
+            @"level" : [NSString stringWithFormat:@"%ld", newLevel],
+            @"title" : title,
+        };
+        [EZLog logEventWithName:@"query_count" parameters:dict];
+    }
+
     [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCountKey];
 }
 
@@ -141,6 +156,64 @@ static EZLocalStorage *_instance;
     return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCountKey];
 }
 
+- (void)resetQueryCount {
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kQueryCountKey];
+}
+
+/**
+query count  | level | title
+0-10         | 1     | 黑铁 Iron
+10-100       | 2     | 青铜 Bronze
+100-500      | 3     | 白银 Silver
+500-2000     | 4     | 黄金 Gold
+2000-5000    | 5     | 铂金 Platinum
+5000-10000   | 6     | 钻石 Diamond
+10000-20000  | 7     | 大师 Master
+20000-50000  | 8     | 宗师 Grandmaster
+50000-100000 | 9     | 王者 King
+100000-∞     | 10    | 传奇 Legend
+*/
+
+- (NSInteger)queryLevel:(NSInteger)count {
+    if (count < 10) {
+        return 1;
+    } else if (count < 100) {
+        return 2;
+    } else if (count < 500) {
+        return 3;
+    } else if (count < 2000) {
+        return 4;
+    } else if (count < 5000) {
+        return 5;
+    } else if (count < 10000) {
+        return 6;
+    } else if (count < 20000) {
+        return 7;
+    } else if (count < 50000) {
+        return 8;
+    } else if (count < 100000) {
+        return 9;
+    } else {
+        return 10;
+    }
+}
+
+- (NSString *)queryLevelTitle:(NSInteger)level chineseFlag:(BOOL)chineseFlag {
+    NSString *title = nil;
+    NSArray *titles = @[ @"黑铁", @"青铜", @"白银", @"黄金", @"铂金", @"钻石", @"大师", @"宗师", @"王者", @"传奇" ];
+    NSArray *enTitles = @[ @"Iron", @"Bronze", @"Silver", @"Gold", @"Platinum", @"Diamond", @"Master", @"Grandmaster", @"King", @"Legend" ];
+
+    level = MAX(level, 1);
+    level = MIN(level, titles.count);
+
+    if (chineseFlag) {
+        title = titles[level - 1];
+    } else {
+        title = enTitles[level - 1];
+    }
+
+    return title;
+}
 
 #pragma mark -
 
