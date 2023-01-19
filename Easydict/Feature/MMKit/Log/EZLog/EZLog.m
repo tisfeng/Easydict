@@ -31,7 +31,9 @@
     [self logEventWithName:name parameters:dict];
 }
 
-/// Log event. ⚠️ Event name must contain only letters, numbers, or underscores.
+/// Log event.
+/// ⚠️ Event name must contain only letters, numbers, or underscores.
+/// ⚠️ parameters dict key and value both should be NSString.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
 //    NSLog(@"log event: %@, %@", name, dict);
     [MSACAnalytics trackEvent:name withProperties:dict];
