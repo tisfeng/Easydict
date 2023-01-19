@@ -367,6 +367,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
     
+    [[EZLocalStorage shared] increaseQueryCount];
+    
     for (EZQueryService *service in self.services) {
         [self queryWithModel:queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {

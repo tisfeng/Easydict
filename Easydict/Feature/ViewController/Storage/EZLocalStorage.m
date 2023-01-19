@@ -8,8 +8,9 @@
 
 #import "EZLocalStorage.h"
 
-static NSString *kServiceInfoStorageKey = @"kServiceInfoStorageKey";
-static NSString *kAllServiceTypesKey = @"kAllServiceTypesKey";
+static NSString *const kServiceInfoStorageKey = @"kServiceInfoStorageKey";
+static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
+static NSString *const kQueryCountKey = @"kQueryCountKey";
 
 @interface EZLocalStorage ()
 
@@ -49,7 +50,7 @@ static EZLocalStorage *_instance;
 // init data, save all service info
 - (void)setup {
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
-    
+
     NSArray *allWindowTypes = @[ @(EZWindowTypeMini), @(EZWindowTypeFixed), @(EZWindowTypeMain) ];
     for (NSNumber *number in allWindowTypes) {
         EZWindowType windowType = [number integerValue];
@@ -84,7 +85,7 @@ static EZLocalStorage *_instance;
         }
         allStoredServiceTypes = [array copy];
     }
-    
+
     return allStoredServiceTypes;
 }
 - (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes windowType:(EZWindowType)windowType {
@@ -127,6 +128,19 @@ static EZLocalStorage *_instance;
     service.enabledQuery = enabledQuery;
     [self setServiceInfo:service windowType:windowType];
 }
+
+#pragma mark - Query count
+
+- (void)increaseQueryCount {
+    NSInteger count = [self queryCount];
+    count++;
+    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCountKey];
+}
+
+- (NSInteger)queryCount {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCountKey];
+}
+
 
 #pragma mark -
 
