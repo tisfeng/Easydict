@@ -87,7 +87,9 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFrontRegardless];
         self.popButtonWindow.level = EZFloatingWindowLevel;
         
-        [self->_mainWindow orderBack:nil];
+        if (!EZConfiguration.shared.hideMainWindow) {
+            [self->_mainWindow orderBack:nil];
+        }
     }];
     
     [self.eventMonitor setDismissPopButtonBlock:^{
@@ -152,10 +154,15 @@ static EZWindowManager *_instance;
         mm_weakify(self);
         [_popButtonWindow.popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
-            [self->_popButtonWindow close];
-            self.queryType = EZQueryTypeAutoSelect;
-            [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
+            [self popButtonWindowClicked];
         }];
+        
+        if (EZConfiguration.shared.hideMainWindow) {
+            [_popButtonWindow.popButton setClickBlock:^(EZButton *button) {
+                mm_strongify(self);
+                [self popButtonWindowClicked];
+            }];
+        }
     }
     return _popButtonWindow;
 }
@@ -165,6 +172,12 @@ static EZWindowManager *_instance;
 }
 
 #pragma mark - Others
+
+- (void)popButtonWindowClicked {
+    [self->_popButtonWindow close];
+    self.queryType = EZQueryTypeAutoSelect;
+    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
+}
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
     EZBaseQueryWindow *window;
@@ -362,13 +375,14 @@ static EZWindowManager *_instance;
 }
 
 - (void)showMainWindow:(BOOL)showFlag {
-    EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
     if (showFlag) {
+        EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
     } else {
         // ???: Why does closing the window prevent the main window from show again?
-        [mainWindow orderOut:nil];
+        //        [mainWindow close];
+        //        [mainWindow orderOut:nil];
     }
 }
 
