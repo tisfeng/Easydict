@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *delayQuerySelector;
 @property (nonatomic, copy) NSString *delayJsCode;
 
+@property (nonatomic, assign) NSInteger delayRetryCount; // 10
+
 
 /// Preload url.
 - (void)preloadURL:(NSString *)URL;
