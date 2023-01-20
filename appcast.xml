@@ -3,6 +3,35 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>1.2.0</title>
+      <pubDate>Fri, 20 Jan 2023 13:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.0/Easydict.zip"
+        sparkle:version="11"
+        sparkle:shortVersionString="1.2.0"
+        type="application/octet-stream"
+        sparkle:edSignature="KEsaU8CpvTR9SzGl/bPkWdLQ4ULzjqjynb1/XXwz9SdkdjqQTRlGkVs+QJ4cuGG3PXq2cbJQjetP1QIJ2WkdBQ=="
+        length="8250737" />
+      <description><![CDATA[
+        <h2 id="-v1-2-0-2023-01-20">[v1.2.0] - 2023-01-20</h2>
+        <h3 id="-">✨ 新功能</h3>
+        <ul>
+        <li>可以为不同的窗口类型配置不同的服务。</li>
+        </ul>
+        <h3 id="-">💎 优化</h3>
+        <ul>
+        <li>优化了有道翻译。</li>
+        <li>优化了设置页。</li>
+        </ul>
+        <h3 id="-">🐞 修复</h3>
+        <ul>
+        <li>修改了一些已知问题。</li>
+        </ul>
+        <h3 id="-">祝大家新年快！🧧</h3>        
+      ]]>      
+    </description>
+    </item>
+    <item>
       <title>1.1.2</title>
       <pubDate>Sun, 8 Jan 2023 16:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
