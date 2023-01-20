@@ -163,7 +163,7 @@
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
 
-    NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"main_window", nil)];
+    NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"show_main_window", nil)];
     hideMainWindowLabel.font = font;
     [self.contentView addSubview:hideMainWindowLabel];
     self.hideMainWindowLabel = hideMainWindowLabel;

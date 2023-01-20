@@ -45,7 +45,7 @@
 "auto_show_icon" = "Auto Show Icon (Experimental)";
 "launch" = "Launch:";
 "launch_at_startup" = "Launch at Startup";
-"main_window" = "Main Window:";
+"show_main_window" = "Main Window:";
 "hide_main_window" = "Hide Main Window When Launch";
 "auto_snip_translate" = "Auto Snip Translate";
 "play_audio" = "Play Word Audio:";

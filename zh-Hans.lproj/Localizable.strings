@@ -49,7 +49,7 @@
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
-"main_window" = "主窗口:";
+"show_main_window" = "主窗口:";
 "hide_main_window" = "启动后自动隐藏主窗口";
 "auto_snip_translate" = "截图 OCR 后自动翻译";
 "play_audio" = "播放单词发音:";
