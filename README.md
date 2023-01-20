@@ -38,16 +38,16 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 ### 使用
 
-Easydict 启动之后，除了应用主界面（可隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
+Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
 ![iShot_2023-01-04_17.01.56](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png)
 
 | 方式         | 描述                                     | 预览                                                         |
 | ------------ | ---------------------------------------- | ---------------------------------- |
-| 自动划词翻译 | 划词后自动显示查询图标，鼠标悬浮即可查询 | ![iShot_2023-01-04_17.50.20-1672826223](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.50.20-1672826223-1672827557.gif) |
-| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）| ![iShot_2023-01-04_17.55.18-1672826243](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.55.18-1672826243.gif) |
-| 截图翻译 | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域 |  ![iShot_2023-01-04_18.11.44-1672827138](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.11.44-1672827138.gif) |
-| 输入翻译 | 按下输入翻译快捷键（默认 `⌥ + A`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-04_18.15.40-1672827365](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_18.15.40-1672827365.gif) |
+| 自动划词翻译 | 划词后自动显示查询图标，鼠标悬浮或点击即可查询 | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）| ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| 截图翻译 | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域 |  ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
+| 输入翻译 | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
 ### 翻译服务
 
@@ -113,9 +113,27 @@ Easydict 启动之后，除了应用主界面（可隐藏），还会有一个�
 
 ### 偏好设置
 
-设置页提供了一些偏好设置修改，如隐藏主界面，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
+设置页提供了一些偏好设置修改，如开启自动播放单词发音，修改快捷键，开启、关闭服务，或调整服务顺序等。
 
-![iShot_2023-01-08_10.14.54-1673144099](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.14.54-1673144099.png)
+#### 设置
+
+![iShot_2023-01-20_11.46.57-1674186468](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.46.57-1674186468.png)
+
+#### 服务
+
+Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
+
+- 迷你窗口：鼠标自动取词时显示。
+- 侧悬浮窗口：快捷键取词和截图翻译时显示。
+- 主窗口：默认关闭，可在设置中开启，程序启动时显示。（稍后会增强主窗口功能）
+
+![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
+
+### 其他快捷键
+
+- `Enter`: 输入文本后，按下 Enter 开始查询。
+- `Shift + Enter`: 输入换行。
+- `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。若电脑上安装了欧路词典 App，则会在 Safari 图标左边显示一个 Eudic 图标，此时 `Cmd + Enter` 动作为打开欧路词典 App 查询。
 
 ## 相关项目
 
