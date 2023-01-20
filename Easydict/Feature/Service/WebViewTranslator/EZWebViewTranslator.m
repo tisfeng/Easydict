@@ -14,8 +14,6 @@
 // Query time interval
 static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 seconds.
 
-static NSInteger const kDelayRetryCount = 10;
-
 @interface EZWebViewTranslator () <WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic, strong) WKWebView *webView;
@@ -31,6 +29,13 @@ static NSInteger const kDelayRetryCount = 10;
 
 
 @implementation EZWebViewTranslator
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.delayRetryCount = 10;
+    }
+    return self;
+}
 
 - (EZURLSchemeHandler *)urlSchemeHandler {
     if (!_urlSchemeHandler) {
@@ -177,7 +182,7 @@ static NSInteger const kDelayRetryCount = 10;
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
     NSLog(@"get result count: %ld", self.retryCount + 1);
     
-    if (self.retryCount > kDelayRetryCount) {
+    if (self.retryCount > self.delayRetryCount) {
         if (self.delayQuerySelector.length) {
             selector = self.delayQuerySelector;
         }
