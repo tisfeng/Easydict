@@ -494,7 +494,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
     
@@ -506,7 +506,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         if ([from isEqualToString:EZLanguageAuto]) {
             [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
                 if (error) {
-                    completion(nil, error);
+                    completion(self.result, error);
                     return;
                 }
                 translateBlock(lang);
@@ -524,7 +524,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             mm_strongify(self)
             MMLogInfo(@"百度翻译回调 token: %@, gtk: %@", token, gtk);
             if (error) {
-                completion(nil, error);
+                completion(self.result, error);
                 return;
             }
             self.token = token;
