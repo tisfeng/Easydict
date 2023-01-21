@@ -240,7 +240,8 @@
     NSEvent *currentEvent = NSApplication.sharedApplication.currentEvent;
     NSEventModifierFlags flags = currentEvent.modifierFlags;
     NSInteger keyCode = currentEvent.keyCode;
-    
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+
     if (commandSelector == @selector(insertNewline:)) {
         // Shift + Enter
         if (flags & NSEventModifierFlagShift) {
@@ -250,6 +251,14 @@
                 NSLog(@"enterActionBlock");
                 self.enterActionBlock(self.copiedText);
             }
+            return YES;
+        }
+    }
+    
+    if (commandSelector == @selector(insertNewlineIgnoringFieldEditor:)) {
+        // Option + Enter
+        if (flags & NSEventModifierFlagOption) {
+            [window.titleBar.eudicButton openLink];
             return YES;
         }
     }
@@ -266,11 +275,7 @@
     if (commandSelector == NSSelectorFromString(@"noop:")) {
         // Cmd + Enter
         if (flags & NSEventModifierFlagCommand && keyCode == kVK_Return) {
-            NSLog(@"Cmd + Enter");
-            
-            EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-            [window.titleBar.favoriteButton openLink];
-            
+            [window.titleBar.googleButton openLink];
             return YES;
         }
     }

@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// TODO: need to optimize, similar to EZBlueTextButton.
 @interface EZLinkButton : EZButton
 
 @property (nonatomic, copy, nullable) NSString *link;
