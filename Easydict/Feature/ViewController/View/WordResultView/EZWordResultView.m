@@ -402,7 +402,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         tagContentView.width = tagContentViewWidth;
 
-        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + tagLabel.width + padding);
+        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + tagLabel.width + padding * 2);
         CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
         [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(tagScrollViewWidth);
