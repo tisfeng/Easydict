@@ -1057,7 +1057,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (result.wordResult) {
         NSString *audioURL = result.fromSpeakURL;
         if (audioURL.length && [[result.queryText trim] isEqualToString:[text trim]]) {
-            [self.audioPlayer playAudioURL:audioURL];
+            [self.audioPlayer playWord:text audioURL:audioURL];
             return YES;
         }
     }
