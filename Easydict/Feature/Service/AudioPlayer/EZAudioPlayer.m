@@ -21,7 +21,6 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        
     }
     return self;
 }
@@ -44,6 +43,10 @@
 
 #pragma mark - Public Mehods
 
+- (void)playSystemTextAudio:(NSString *)text {
+    [self.appleService playTextAudio:text fromLanguage:EZLanguageAuto];
+}
+
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from {
     [self.appleService playTextAudio:text fromLanguage:from];
@@ -60,7 +63,7 @@
     [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
         mm_strongify(self);
         if (!error) {
-            [self playAudioURL:url];
+            [self playWord:text audioURL:url];
         } else {
             MMLogInfo(@"获取音频 URL 失败 %@", error);
         }
@@ -68,15 +71,105 @@
 }
 
 /// Directly play audio url.
-- (void)playAudioURL:(NSString *)url {
+- (void)playWord:(NSString *)word audioURL:(NSString *)url {
     MMLogInfo(@"播放音频 %@", url);
     [self.player pause];
     if (!url.length) {
         return;
     }
     
-    [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]]];
+    NSURL *URL = [NSURL URLWithString:url];
+    [self downloadWordAudio:word audioURL:URL];
+    
+    [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:URL]];
     [self.player play];
+}
+
+- (void)downloadWordAudio:(NSString *)word audioURL:(NSURL *)url {
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        NSString *filePath = [self getWordAudioFilePath:word];
+        return [NSURL fileURLWithPath:filePath];
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        NSLog(@"File downloaded to: %@", filePath);
+        BOOL canPlay = [self checkIfCanPlayAudioFile:filePath];
+        if (!canPlay) {
+            [self playSystemTextAudio:word fromLanguage:EZLanguageEnglish];
+        }
+    }];
+    [downloadTask resume];
+}
+
+// Get app cache directory
+- (NSString *)getCacheDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+}
+
+// Get audio file directory, if not exist, create it.
+- (NSString *)getAudioDirectory {
+    NSString *cachesDirectory = [self getCacheDirectory];
+    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *audioDirectory = [cachesDirectory stringByAppendingPathComponent:bundleID];
+    audioDirectory = [audioDirectory stringByAppendingPathComponent:@"audio"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:audioDirectory]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:audioDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return audioDirectory;
+}
+
+// Get word audio file path
+- (NSString *)getWordAudioFilePath:(NSString *)word {
+    NSString *audioDirectory = [self getAudioDirectory];
+    
+    // m4a
+    NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", word]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:m4aFilePath]) {
+        return m4aFilePath;
+    }
+    
+    // mp3
+    NSString *mp3FilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", word]];
+    return mp3FilePath;
+}
+
+- (BOOL)checkIfCanPlayAudioFile:(NSURL *)filePathURL {
+    OSStatus status;
+    AudioFileID audioFile;
+    AudioFileTypeID fileType;
+    
+    NSLog(@"kAudioFileWAVEType: %d", kAudioFileWAVEType);
+    
+    status = AudioFileOpenURL((__bridge CFURLRef)filePathURL, kAudioFileReadPermission, 0, &audioFile);
+    if (status == noErr) {
+        UInt32 size = sizeof(fileType);
+        status = AudioFileGetProperty(audioFile, kAudioFilePropertyFileFormat, &size, &fileType);
+        if (status == noErr) {
+            if (fileType == kAudioFileAAC_ADTSType) {
+                NSLog(@"Audio file is of type: AAC ADTS");
+            } else if (fileType == kAudioFileAIFFType) {
+                NSLog(@"Audio file is of type: AIFF");
+            } else if (fileType == kAudioFileCAFType) {
+                NSLog(@"Audio file is of type: CAF");
+            } else if (fileType == kAudioFileMP3Type) {
+                NSLog(@"Audio file is of type: MP3");
+            } else if (fileType == kAudioFileMPEG4Type) {
+                NSLog(@"Audio file is of type: MP4");
+            } else if (fileType == kAudioFileWAVEType) {
+                NSLog(@"Audio file is of type: WAVE");
+            } else {
+                NSLog(@"Audio file is of an unknown type");
+            }
+        } else {
+            NSLog(@"Error getting audio file property: %d", (int)status);
+            return NO;
+        }
+    } else {
+        NSLog(@"Error opening audio file type: %d", (int)status);
+        return NO;
+    }
+    return YES;
 }
 
 @end
