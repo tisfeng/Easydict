@@ -19,7 +19,7 @@
 - [x] 支持为不同窗口配置不同的服务。
 - [x] 支持系统 OCR 截图翻译。
 - [x] 支持系统 TTS。
-- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/如何在Easydict中使用macOS🍎系统翻译.md)
+- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，DeepL，Google，百度和火山翻译，不需要 Key，完全免费！
 - [x] 支持 48 种语言。
 
