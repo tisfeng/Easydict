@@ -3,6 +3,22 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>1.2.1</title>
+      <pubDate>Sun, 22 Jan 2023 20:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.1/Easydict.zip"
+        sparkle:version="12"
+        sparkle:shortVersionString="1.2.1"
+        type="application/octet-stream"
+        sparkle:edSignature="n810g5SL8Zo5FOj9VELqQPwXKYBwGT6prnNJxc7KY5XPUves1BFZVfqqeNzJbI7gUIgmr5IHDrTWe7dANy67Ag=="
+        length="8255174" />
+      <description><![CDATA[
+        <h2 id="-v1-2-1-2023-01-22">[v1.2.1] - 2023-01-22</h2>
+        <h3 id="-">🐞 修复了百度翻译失败会导致应用崩溃问题。</h3>
+      ]]>      
+    </description>
+    </item>
+    <item>
       <title>1.2.0</title>
       <pubDate>Fri, 20 Jan 2023 13:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
