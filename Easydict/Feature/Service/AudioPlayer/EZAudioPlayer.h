@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)language serive:(EZQueryService *)service;
 
 /// Directly play audio url.
-- (void)playWord:(NSString *)word audioURL:(NSString *)url;
+- (void)playWord:(NSString *)word audioURL:(nullable NSString *)urlString;
 
 @end
 

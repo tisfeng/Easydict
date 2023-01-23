@@ -775,9 +775,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         
-        if (![self playYoudaoWordAudio:text]) {
-            [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:self.queryModel.queryFromLanguage];
-        }
+        [self.audioPlayer playWord:text audioURL:nil];
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
