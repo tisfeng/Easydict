@@ -74,7 +74,7 @@
     MMLogInfo(@"播放音频 %@", urlString);
 
     [self.player pause];
-
+    
     NSString *filePath = [self getWordAudioFilePath:word];
     // if audio file exist, play it
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
@@ -109,16 +109,7 @@
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         NSLog(@"File downloaded to: %@", filePath);
-        BOOL canPlay = [self isAudioFilePlayable:filePath];
-
-        if (autoPlay) {
-            if (!canPlay) {
-                // TODO: try to convert wav to m4a.
-                [self playSystemTextAudio:word fromLanguage:EZLanguageEnglish];
-            } else {
-                [self playWord:word audioURL:url.path];
-            }
-        }
+        [self playLocalAudioFile:filePath.path];
     }];
     [downloadTask resume];
 }
