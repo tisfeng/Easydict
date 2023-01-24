@@ -58,21 +58,21 @@
         NSLog(@"playTextAudio is empty");
         return;
     }
-
+    
     mm_weakify(self)
-        [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-            mm_strongify(self);
-            if (!error) {
-                [self playWord:text audioURL:url];
-            } else {
-                MMLogInfo(@"获取音频 URL 失败 %@", error);
-            }
-        }];
+    [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+        mm_strongify(self);
+        if (!error) {
+            [self playWord:text audioURL:url];
+        } else {
+            MMLogInfo(@"获取音频 URL 失败 %@", error);
+        }
+    }];
 }
 
 - (void)playWord:(NSString *)word audioURL:(nullable NSString *)urlString {
     MMLogInfo(@"播放音频 %@", urlString);
-
+    
     [self.player pause];
     
     NSString *filePath = [self getWordAudioFilePath:word];
@@ -81,16 +81,16 @@
         [self playLocalAudioFile:filePath];
         return;
     }
-
+    
     if (!urlString.length) {
         if (!word.length) {
             return;
         }
-
+        
         [self playSystemTextAudio:word];
         return;
     }
-
+    
     // if audio file not exist, download it
     NSURL *URL = [NSURL URLWithString:urlString];
     [self downloadWordAudio:word audioURL:URL autoPlay:YES];
@@ -146,13 +146,13 @@
 // Get word audio file path
 - (NSString *)getWordAudioFilePath:(NSString *)word {
     NSString *audioDirectory = [self getAudioDirectory];
-
+    
     // m4a
     NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", word]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:m4aFilePath]) {
         return m4aFilePath;
     }
-
+    
     // mp3
     NSString *mp3FilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", word]];
     return mp3FilePath;
@@ -162,9 +162,9 @@
     OSStatus status;
     AudioFileID audioFile;
     AudioFileTypeID fileType;
-
+    
     NSLog(@"kAudioFileWAVEType: %d", kAudioFileWAVEType);
-
+    
     status = AudioFileOpenURL((__bridge CFURLRef)filePathURL, kAudioFileReadPermission, 0, &audioFile);
     if (status == noErr) {
         UInt32 size = sizeof(fileType);
