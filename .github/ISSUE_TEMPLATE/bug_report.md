@@ -1,7 +1,7 @@
 ---
 name: 反馈问题
 about: Easydict 安装或使用出现异常
-title: "您好，请按照模板填写，谢谢啦 🙏"
+title: "反馈问题: (您好，请按照模板填写，谢谢)"
 labels: "bug"
 ---
 
@@ -24,6 +24,8 @@ labels: "bug"
 <!--请简洁清晰地描述问题，如果涉及 UI，希望能够提供截图-->
 
 ## 运行环境
+
+<!--如果认为是功能 bug，希望能提供以下运行环境信息-->
 
 - Device: <!--e.g. MacBook Pro (Retina, 15-inch, Mid 2015)-->
 - macOS: <!--e.g. 11.0-->
