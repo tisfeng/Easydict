@@ -17,19 +17,19 @@
 @implementation EZServiceTypes
 
 + (NSArray<EZServiceType> *)allServiceTypes {
-    return [[self allServiceDict] allKeys];
+    return [[self allServiceDict] sortedKeys];
 }
 
-+ (NSDictionary<EZServiceType, Class> *)allServiceDict {
-    NSDictionary *dict = @{
-        EZServiceTypeApple : [EZAppleService class],
-        EZServiceTypeYoudao : [EZYoudaoTranslate class],
-        EZServiceTypeDeepL : [EZDeppLTranslate class],
-        EZServiceTypeGoogle : [EZGoogleTranslate class],
-        EZServiceTypeBaidu : [EZBaiduTranslate class],
-        EZServiceTypeVolcano : [EZVolcanoTranslate class],
-    };
-    return dict;
++ (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
+    MMOrderedDictionary *orderDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                      EZServiceTypeApple, [EZAppleService class],
+                                      EZServiceTypeYoudao, [EZYoudaoTranslate class],
+                                      EZServiceTypeDeepL, [EZDeppLTranslate class],
+                                      EZServiceTypeGoogle, [EZGoogleTranslate class],
+                                      EZServiceTypeBaidu, [EZBaiduTranslate class],
+                                      EZServiceTypeVolcano, [EZVolcanoTranslate class],
+                                      nil];
+    return orderDict;
 }
 
 + (EZQueryService *)serviceWithType:(EZServiceType)type {
