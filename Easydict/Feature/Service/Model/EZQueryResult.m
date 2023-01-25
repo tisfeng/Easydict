@@ -141,6 +141,8 @@ NSString *getPartName(NSString *part) {
     self.toSpeakURL = nil;
     self.fromSpeakURL = nil;
     self.raw = nil;
+    self.promptTitle = nil;
+    self.promptURL = nil;
 }
 
 @end
