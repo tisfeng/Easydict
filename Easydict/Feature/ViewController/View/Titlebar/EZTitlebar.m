@@ -86,7 +86,7 @@
     self.favoriteButton = googleButton;
     
     googleButton.link = @"https://www.google.com/search?q=%@";
-    googleButton.image = [[NSImage imageNamed:@"Browser"] resizeToSize:imageSize];
+    googleButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
     googleButton.toolTip = @"Google";
     googleButton.contentTintColor = NSColor.clearColor;
     
@@ -96,7 +96,7 @@
         if (lastView) {
             make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
         } else {
-            make.right.equalTo(self).offset(-10);
+            make.right.equalTo(self).offset(-12);
         }
     }];
     lastView = googleButton;
