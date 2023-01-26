@@ -115,7 +115,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.bordered = NO;
                 textField.textColor = typeTextColor;
                 textField.backgroundColor = NSColor.clearColor;
-                [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+                [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
 
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     if (lastView) {
@@ -186,7 +186,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-                [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+                [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
 
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     CGFloat topOffset = 20;
@@ -317,7 +317,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
-            [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+            [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
 
             [textField sizeToFit];
 
@@ -425,9 +425,14 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-                [textField setContentCompressionResistancePriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+                [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
 
                 [textField sizeToFit];
+                
+                CGSize textFieldSize = textField.size;
+                if (textFieldSize.width > 100) {
+                    NSLog(@"textFieldSize: %@", @(textFieldSize));
+                }
 
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.height.mas_equalTo(textField.height);
@@ -792,8 +797,12 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-    CGFloat width = self.width - exceptedWidth;
-    //    NSLog(@"text: %@, width: %@", label.text, @(width));
+    
+    NSWindow *window = [NSApplication sharedApplication].keyWindow;
+    CGFloat selfWidth = window ? window.width - EZHorizontalCellSpacing_12 * 2 : self.width;
+    CGFloat width = selfWidth - exceptedWidth;
+//    NSLog(@"text: %@, width: %@", label.text, @(width));
+//    NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
 
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
     //    NSLog(@"height: %@", @(height));
