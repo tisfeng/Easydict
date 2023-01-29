@@ -9,7 +9,12 @@
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，它能够轻松优雅地查找单词或翻译文本，一个免费开源版本的 [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac)。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
-![iShot_2023-01-07_19.33.01的副本-1673091295](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-07_19.33.01的副本-1673091295.png)
+
+**查单词**
+![iShot_2023-01-28_17.40.28-1674901716](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.40.28-1674901716.png)
+
+**翻译文本**
+![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
 
 ## 功能
 
@@ -44,17 +49,22 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 | 方式         | 描述                                     | 预览                                                         |
 | ------------ | ---------------------------------------- | ---------------------------------- |
-| 自动划词翻译 | 划词后自动显示查询图标，鼠标悬浮或点击即可查询 | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
 | 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）| ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| 自动划词翻译 | 划词后自动显示查询图标，鼠标悬浮或点击即可查询 | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
 | 截图翻译 | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域 |  ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译 | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
+
+#### 注意 ⚠️
+
+1.划词翻译，需要开启 `辅助功能` 权限，需先使用一次 **快捷键划词翻译**，触发申请辅助功能权限，之后才能正常使用自动划词翻译功能。
+2.截图翻译，需要开启 `屏幕录制` 权限，应用仅会在第一次使用 **截图翻译** 时会自动弹出权限申请对话框，若授权失败，后续需自己去系统设置中开启。
 
 
 ### 翻译服务
 
 **目前支持有道词典，苹果系统翻译，DeepL，Google，百度和火山翻译服务。**
 
-> 注意 ⚠️： Google 翻译中国版无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
+> 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
 各项翻译服务支持的语言详情如下：
 
