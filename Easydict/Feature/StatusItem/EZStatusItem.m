@@ -63,7 +63,7 @@ static EZStatusItem *_instance;
     self.statusItem = item;
 
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    self.bobItem.title = [NSString stringWithFormat:@"Easydict  v%@", version];
+    self.bobItem.title = [NSString stringWithFormat:@"Easydict  %@", version];
 }
 
 - (void)remove {
