@@ -176,12 +176,8 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
     // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
-    [self updateAllCellHeight];
-}
-
-- (void)updateAllCellHeight {
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
-    [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+    //    [self updateAllResultCellHeightIfNeed];
+    [self updateAllResultCellHeight];
 }
 
 #pragma mark - Getter && Setter
@@ -509,7 +505,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 
-#pragma mark - Update TableView
+#pragma mark - Update TableView and row cell.
 
 /// Reset tableView, reloadData
 - (void)resetTableView:(void (^)(void))completion {
@@ -558,13 +554,9 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSMutableIndexSet *rowIndexes = [NSMutableIndexSet indexSet];
     for (EZQueryResult *result in results) {
         result.isLoading = NO;
-        
-        EZServiceType serviceType = result.serviceType;
-        NSInteger row = [self.serviceTypes indexOfObject:serviceType];
-        
-        // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
-        if (row != NSNotFound) {
-            [rowIndexes addIndex:row + [self resultCellOffset]];
+        NSIndexSet *indexSet = [self indexSetOfResult:result];
+        if (indexSet) {
+            [rowIndexes addIndexes:indexSet];
         }
     }
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData completionHandler:completionHandler];
@@ -579,6 +571,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     [self updateTableViewRowIndexes:rowIndexes reloadData:reloadData animate:YES completionHandler:completionHandler];
 }
 
+/// Update cell row height, and reload cell data with animation.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
@@ -636,6 +629,55 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     NSIndexSet *rowIndexes = [NSMutableIndexSet indexSetWithIndex:offset - 1];
     [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
+
+// iterate all result cell, if cell height is not equal to the result cell height, update cell height.
+- (void)updateAllResultCellHeightIfNeed {
+    NSInteger offset = [self resultCellOffset];
+    NSInteger numberOfRows = [self.tableView numberOfRows];
+    for (NSInteger row = offset; row < numberOfRows; row++) {
+        EZQueryService *service = [self serviceAtRow:row];
+        EZQueryResult *result = service.result;
+        if (result) {
+            EZResultView *resultCell = [[[self.tableView rowViewAtRow:row makeIfNecessary:NO] subviews] firstObject];
+            CGFloat cellHeight = resultCell.height;
+            CGFloat resultHeight = result.viewHeight;
+            if (cellHeight != resultHeight) {
+                [self updateResultCellHeight:result];
+            }
+        }
+    }
+}
+
+- (void)updateAllResultCellHeight {
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
+    [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+}
+
+- (void)updateResultCellHeight:(EZQueryResult *)result {
+    NSIndexSet *indexSet = [self indexSetOfResult:result];
+    if (indexSet) {
+        [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
+    }
+}
+
+- (nullable NSIndexSet *)indexSetOfResult:(EZQueryResult *)result {
+    NSInteger row = [self rowIndexOfResult:result];
+    if (row == NSNotFound) {
+        return nil;
+    }
+    NSInteger index = row + [self resultCellOffset];
+    return [NSIndexSet indexSetWithIndex:index];
+}
+
+/// !!!: Maybe return NSNotFound
+
+- (NSUInteger)rowIndexOfResult:(EZQueryResult *)result {
+    EZServiceType serviceType = result.serviceType;
+    // Sometimes the query is very slow, and at that time the user may have turned off the service in the settings page.
+    NSInteger row = [self.serviceTypes indexOfObject:serviceType];
+    return row;
 }
 
 #pragma mark - Update Data.
@@ -910,7 +952,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         } else {
             [self updateCellWithResult:result reloadData:YES];
             
-            // if hide result view, we need to notify to update the cell height.
+            // if hide result view, we need to notify to update reused cell height.
             if (!isShowing) {
                 [self.tableView reloadData];
             }
@@ -968,7 +1010,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
-//    [self.window setFrame:safeFrame display:NO animate:animateFlag];
+    //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
     [self.window setFrame:safeFrame display:NO];
     
     // Restore tableView height.
@@ -1052,11 +1094,6 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSLog(@"query text is too long");
         return;
     }
-    
-//    BOOL hasWhiteSpace = [[self.queryText trim] containsString:@" "];
-//    if (hasWhiteSpace) {
-//        return;
-//    }
     
     [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
 }
