@@ -71,6 +71,19 @@
         make.height.mas_equalTo(30);
     }];
     
+    NSTextField *alertTextField = [[NSTextField alloc] init];
+    alertTextField.hidden = YES;
+    alertTextField.bordered = NO;
+    alertTextField.editable = NO;
+    alertTextField.backgroundColor = NSColor.clearColor;
+    alertTextField.font = [NSFont systemFontOfSize:14];
+    alertTextField.textColor = [NSColor redColor];
+    [self addSubview:alertTextField];
+    self.alertTextField = alertTextField;
+    [alertTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.top.right.inset(10);
+    }];
+    
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
@@ -132,6 +145,7 @@
     [clearButton setClickBlock:^(EZButton * _Nonnull button) {
         NSLog(@"clearButton");
         mm_strongify(self);
+        [self setAlertMessageHidden:YES];
         if (self.clearBlock) {
             self.clearBlock(self.copiedText);
         }
@@ -158,6 +172,19 @@
 - (void)startLoadingAnimation:(BOOL)isLoading {
     self.textView.editable = !isLoading;
     [self.loadingAnimationView startLoading:isLoading];
+}
+
+- (void)showAlertMessage:(NSString *)message {
+    if (message.length) {
+        [self setAlertMessageHidden:NO];
+        self.alertTextField.stringValue = message;
+        [self.clearButton setAnimatedHidden:NO];
+    }
+}
+
+- (void)setAlertMessageHidden:(BOOL)hidden {
+    self.alertTextField.hidden = hidden;
+    self.textView.editable = hidden;
 }
 
 #pragma mark - Rewrite
@@ -346,8 +373,11 @@
 
 - (void)updateButtonsDisplayState:(NSString *)text {    
     BOOL isEmpty = text.length == 0;
+    if (!self.alertTextField.hidden) {
+        isEmpty = NO;
+    }
     [self setClearButtonAnimatedHidden:isEmpty];
-    
+
     [self updateDetectButton];
 }
 
