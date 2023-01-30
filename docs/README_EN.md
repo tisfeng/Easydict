@@ -154,6 +154,8 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) is a Raycast extension of Easydict。
 
+![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
+
 ## Motivation
 
 Looking up words and translating text is a very useful function in daily life. I have used many translation dictionaries, but I was not satisfied until I met Bob. [`Bob`](https://bobtranslate.com/) is an excellent translation software, but it is not open source and no longer provides free application updates since it hit the Apple Store.

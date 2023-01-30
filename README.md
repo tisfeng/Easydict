@@ -149,6 +149,8 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) 是一个 Raycast 扩展版本的 Easydict。
 
+![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
+
 ## 动机
 
 查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架苹果商店后也不再免费提供应用更新。
