@@ -21,6 +21,8 @@ static CGFloat EZExceptInputViewHeight = 30;
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingAnimationView;
+@property (nonatomic, strong) NSTextField *alertTextField;
+
 @property (nonatomic, assign) BOOL typing;
 @property (nonatomic, assign) BOOL enableAutoDetect;
 
@@ -42,6 +44,8 @@ static CGFloat EZExceptInputViewHeight = 30;
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
 
 - (void)startLoadingAnimation:(BOOL)isLoading;
+
+- (void)showAlertMessage:(NSString *)message;
 
 @end
 

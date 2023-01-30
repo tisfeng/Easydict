@@ -307,7 +307,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
         if (error) {
             NSString *errorMsg = [error localizedDescription];
-            self.queryText = errorMsg;
+            [self.queryView showAlertMessage:errorMsg];
             return;
         }
         
