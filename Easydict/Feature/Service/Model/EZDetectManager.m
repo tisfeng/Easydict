@@ -66,6 +66,10 @@
     NSString *queryText = self.queryModel.queryText;
     if (queryText.length == 0) {
         NSLog(@"detectText cannot be nil");
+        
+        // !!!: There are some problems with the system OCR, for example, it may return nil when recognizing Japanese.
+        NSError *error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+        completion(self.queryModel, error);
         return;
     }
 
