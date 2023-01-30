@@ -303,13 +303,20 @@ static NSString *const EZColumnId = @"EZColumnId";
         self.queryText = queryModel.queryText;
         NSLog(@"ocr text: %@", self.queryText);
         
+        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
+
+        if (error) {
+            NSString *errorMsg = [error localizedDescription];
+            self.queryText = errorMsg;
+            return;
+        }
+        
         
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
             [self startQueryWithType:EZQueryTypeOCR];
         }
         
-        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
         if (EZConfiguration.shared.autoCopyOCRText) {
             [self.queryText copyToPasteboard];
         }
