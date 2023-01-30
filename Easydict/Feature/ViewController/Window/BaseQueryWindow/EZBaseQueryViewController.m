@@ -176,6 +176,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
     // TODO: need to optimize. Manually update the cell height, because the reused cell will not self-adjust the height.
+    [self updateAllCellHeight];
+}
+
+- (void)updateAllCellHeight {
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self.tableView numberOfRows])];
     [self.tableView noteHeightOfRowsWithIndexesChanged:indexSet];
 }
@@ -380,7 +384,7 @@ static NSString *const EZColumnId = @"EZColumnId";
                 result.isShowing = NO;
             }
             //            NSLog(@"update service: %@, %@", service.serviceType, result);
-            [self updateCellWithResult:result reloadData:YES completionHandler:nil];
+            [self updateCellWithResult:result reloadData:YES];
             
             if ([service.serviceType isEqualToString:EZServiceTypeYoudao]) {
                 [self autoPlayEnglishWordAudio];
@@ -543,7 +547,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData completionHandler:(void (^)(void))completionHandler {
-    [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:nil];
+    [self updateCellWithResults:@[ result ] reloadData:reloadData completionHandler:completionHandler];
 }
 
 - (void)updateCellWithResults:(NSArray<EZQueryResult *> *)results reloadData:(BOOL)reloadData {
@@ -889,10 +893,12 @@ static NSString *const EZColumnId = @"EZColumnId";
     // !!!: Avoid capture result, the block paramter result is different from former result.
     [resultView setClickArrowBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-        service.enabledQuery = result.isShowing;
+        
+        BOOL isShowing = result.isShowing;
+        service.enabledQuery = isShowing;
         
         // If result is not empty, update cell and show.
-        if (result.isShowing && !result.hasShowingResult) {
+        if (isShowing && !result.hasShowingResult) {
             [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 result.error = error;
                 result.isShowing = YES;
@@ -903,6 +909,11 @@ static NSString *const EZColumnId = @"EZColumnId";
             }];
         } else {
             [self updateCellWithResult:result reloadData:YES];
+            
+            // if hide result view, we need to notify to update the cell height.
+            if (!isShowing) {
+                [self.tableView reloadData];
+            }
         }
     }];
 }
