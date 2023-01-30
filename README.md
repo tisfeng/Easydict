@@ -45,7 +45,9 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
-![iShot_2023-01-04_17.01.56](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png)
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
+</div>
 
 | 方式         | 描述                                     | 预览                                                         |
 | ------------ | ---------------------------------------- | ---------------------------------- |
