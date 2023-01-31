@@ -280,6 +280,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         return;
     }
     
+    if (queryType == EZQueryTypeOCR) {
+        self.queryText = @"";
+    } else {
+        self.queryModel.ocrImage = nil;
+    }
+    
     self.queryModel.queryType = queryType;
     self.queryView.typing = NO;
     
@@ -294,6 +300,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"startQueryImage");
     
     self.queryModel.ocrImage = image;
+    
     [self.queryView startLoadingAnimation:YES];
     
     mm_weakify(self);
@@ -311,10 +318,9 @@ static NSString *const EZColumnId = @"EZColumnId";
             return;
         }
         
-        
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
-            [self startQueryWithType:EZQueryTypeOCR];
+            [self startQueryText:self.queryText queyType:EZQueryTypeOCR];
         }
         
         if (EZConfiguration.shared.autoCopyOCRText) {
@@ -346,7 +352,12 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)startQueryWithType:(EZQueryType)queryType {
-    [self startQueryText:self.queryText queyType:queryType];
+    NSImage *ocrImage = self.queryModel.ocrImage;
+    if (queryType == EZQueryTypeOCR && ocrImage) {
+        [self startQueryWithImage:ocrImage];
+    } else {
+        [self startQueryText:self.queryText queyType:queryType];
+    }
 }
 
 /// Directly query model.
@@ -473,7 +484,7 @@ static NSString *const EZColumnId = @"EZColumnId";
             self.queryModel.userTargetLanguage = to;
             self.queryModel.detectedLanguage = EZLanguageAuto;
             
-            [self startQueryText];
+            [self retry];
         }];
         return selectLanguageCell;
     }
