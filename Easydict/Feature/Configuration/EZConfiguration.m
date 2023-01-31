@@ -22,6 +22,7 @@ static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTransl
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
+static NSString *const kUsesLanguageCorrectionKey = @"EZConfiguration_kUsesLanguageCorrectionKey";
 
 
 @implementation EZConfiguration
@@ -57,6 +58,7 @@ static EZConfiguration *_instance;
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.usesLanguageCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -125,6 +127,12 @@ static EZConfiguration *_instance;
     _autoCopyOCRText = autoCopyOCRText;
 
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
+}
+
+- (void)setUsesLanguageCorrection:(BOOL)usesLanguageCorrection {
+    _usesLanguageCorrection = usesLanguageCorrection;
+
+    [NSUserDefaults mm_write:@(usesLanguageCorrection) forKey:kUsesLanguageCorrectionKey];
 }
 
 #pragma mark -

@@ -47,6 +47,9 @@
 @property (nonatomic, strong) NSTextField *launchLabel;
 @property (nonatomic, strong) NSButton *launchAtStartupButton;
 
+@property (nonatomic, strong) NSTextField *usesLanguageCorrectionLabel;
+@property (nonatomic, strong) NSButton *usesLanguageCorrectionButton;
+
 @end
 
 
@@ -152,6 +155,15 @@
     self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyOCRTextButton];
 
+    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"ocr_detect", nil)];
+    usesLanguageCorrectionLabel.font = font;
+    [self.contentView addSubview:usesLanguageCorrectionLabel];
+    self.usesLanguageCorrectionLabel = usesLanguageCorrectionLabel;
+
+    NSString *usesLanguageCorrection = NSLocalizedString(@"use_language_correction", nil);
+    self.usesLanguageCorrectionButton = [NSButton checkboxWithTitle:usesLanguageCorrection target:self action:@selector(usesLanguageCorrectionButtonClicked:)];
+    [self.contentView addSubview:self.usesLanguageCorrectionButton];
+    self.usesLanguageCorrectionButton.toolTip = @"Disabling this property returns the raw recognition results, which provides performance benefits but less accurate results.";
 
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -189,6 +201,7 @@
     self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
+    self.usesLanguageCorrectionButton.mm_isOn = configuration.usesLanguageCorrection;
 }
 
 - (void)updateViewConstraints {
@@ -287,12 +300,23 @@
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoCopySelectedTextButton.mas_left);
         make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
-
     }];
+
+
+    [self.usesLanguageCorrectionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectTextLabel);
+        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
+    }];
+
+    [self.usesLanguageCorrectionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.usesLanguageCorrectionLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.usesLanguageCorrectionLabel);
+    }];
+
 
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.usesLanguageCorrectionButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
 
@@ -363,6 +387,9 @@
     EZConfiguration.shared.autoCopyOCRText = sender.mm_isOn;
 }
 
+- (void)usesLanguageCorrectionButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.usesLanguageCorrection = sender.mm_isOn;
+}
 
 #pragma mark - MASPreferencesViewController
 

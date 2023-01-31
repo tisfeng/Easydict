@@ -11,6 +11,7 @@
 #import <NaturalLanguage/NaturalLanguage.h>
 #import <AVFoundation/AVFoundation.h>
 #import "EZExeCommand.h"
+#import "EZConfiguration.h"
 
 @interface EZAppleService ()
 
@@ -313,7 +314,7 @@
         request.recognitionLanguages = recognitionLanguages; // ISO language codes
         
         // TODO: need to test it.
-        request.usesLanguageCorrection = YES;
+        request.usesLanguageCorrection = EZConfiguration.shared.usesLanguageCorrection;
         
         // Perform the text-recognition request.
         [requestHandler performRequests:@[ request ] error:nil];
