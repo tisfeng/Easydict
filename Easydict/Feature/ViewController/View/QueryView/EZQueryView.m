@@ -53,6 +53,7 @@
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
     scrollView.autohidesScrollers = YES;
+    scrollView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     
     EZTextView *textView = [[EZTextView alloc] initWithFrame:scrollView.bounds];
     self.textView = textView;
@@ -90,10 +91,10 @@
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"Play";
     
-    mm_weakify(self)
-    [audioButton setClickBlock:^(EZButton * _Nonnull button) {
+    mm_weakify(self);
+    [audioButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"audioActionBlock");
-        mm_strongify(self)
+        mm_strongify(self);
         if (self.playAudioBlock) {
             self.playAudioBlock(self.copiedText);
         }
@@ -107,9 +108,9 @@
     textCopyButton.image = [NSImage imageNamed:@"copy"];
     textCopyButton.toolTip = @"Copy";
     
-    [textCopyButton setClickBlock:^(EZButton * _Nonnull button) {
+    [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
-        mm_strongify(self)
+        mm_strongify(self);
         if (self.copyTextBlock) {
             self.copyTextBlock(self.copiedText);
         }
@@ -123,7 +124,6 @@
     
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
-        
         self.enableAutoDetect = NO;
         if (self.selectedLanguageBlock) {
             self.selectedLanguageBlock(language);
@@ -142,7 +142,7 @@
     clearButton.image = clearImage;
     clearButton.toolTip = @"Clear";
     
-    [clearButton setClickBlock:^(EZButton * _Nonnull button) {
+    [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");
         mm_strongify(self);
         [self setAlertMessageHidden:YES];
@@ -271,7 +271,7 @@
     NSEventModifierFlags flags = currentEvent.modifierFlags;
     NSInteger keyCode = currentEvent.keyCode;
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
-
+    
     if (commandSelector == @selector(insertNewline:)) {
         // Shift + Enter
         if (flags & NSEventModifierFlagShift) {
@@ -314,7 +314,7 @@
 }
 
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
-//    NSLog(@"didProcessEditing: %@", [self copiedText]);
+    //    NSLog(@"didProcessEditing: %@", [self copiedText]);
     
     // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
     
@@ -327,7 +327,7 @@
 
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
-//    NSLog(@"textDidChange: %@", text);
+    //    NSLog(@"textDidChange: %@", text);
     
     self.typing = NO;
     self.enableAutoDetect = YES;
@@ -374,13 +374,13 @@
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
-- (void)updateButtonsDisplayState:(NSString *)text {    
+- (void)updateButtonsDisplayState:(NSString *)text {
     BOOL isEmpty = text.length == 0;
     if (!self.alertTextField.hidden) {
         isEmpty = NO;
     }
     [self setClearButtonAnimatedHidden:isEmpty];
-
+    
     [self updateDetectButton];
 }
 
