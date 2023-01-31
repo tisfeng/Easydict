@@ -33,6 +33,19 @@
     [self logEventWithName:name parameters:dict];
 }
 
+// Query with queryModel
++ (void)logQuery:(EZQueryModel *)model {
+    NSString *name = @"query";
+    NSString *textLengthRange = [self textLengthRange:model.queryText];
+    NSDictionary *dict = @{
+        @"queryType" : model.queryType,
+        @"fromLanguage" : model.queryFromLanguage,
+        @"toLanguage" : model.queryTargetLanguage,
+        @"textLength" : textLengthRange,
+    };
+    [self logEventWithName:name parameters:dict];
+}
+
 /// Get text length range, 1-10, 10-50, 50-200, 200-1000, 1000-5000
 + (NSString *)textLengthRange:(NSString *)text {
     NSInteger length = text.length;
@@ -56,8 +69,11 @@
 /// ⚠️ parameters dict key and value both should be NSString.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
     //    NSLog(@"log event: %@, %@", name, dict);
-    [MSACAnalytics trackEvent:name withProperties:dict];
-    [FIRAnalytics logEventWithName:name parameters:dict];
+    
+//#if !DEBUG
+        [MSACAnalytics trackEvent:name withProperties:dict];
+        [FIRAnalytics logEventWithName:name parameters:dict];
+//#endif
 }
 
 @end
