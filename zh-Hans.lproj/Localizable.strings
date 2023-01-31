@@ -58,6 +58,8 @@
 "auto_copy_text" = "自动复制:";
 "auto_copy_selected_text" = "自动复制划词选择文本";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
+"ocr_detect" = "OCR 识别:";
+"use_language_correction" = "自动纠正识别语言";
 
 "mini_window" = "迷你窗口";
 "fixed_window" = "侧悬浮窗口";
@@ -75,4 +77,4 @@
 "error_unsupport_language" = "不支持的语言";
 "error_unknown" = "未知错误";
 "translate_failed" = "翻译失败，";
-"ocr_result_is_empty" = "⚠️ OCR 结果为空";
+"ocr_result_is_empty" = "⚠️ OCR 结果为空，请手动选择检测语言再次尝试 😶";

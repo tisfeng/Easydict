@@ -170,6 +170,7 @@
 }
 
 - (void)startLoadingAnimation:(BOOL)isLoading {
+    [self setAlertMessageHidden:YES];
     self.textView.editable = !isLoading;
     [self.loadingAnimationView startLoading:isLoading];
 }
@@ -242,6 +243,8 @@
         
         // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
         [self.textView didChangeText];
+        
+        [self setAlertMessageHidden:YES];
     }
     
     [self updateButtonsDisplayState:queryText];

@@ -53,6 +53,8 @@
 "auto_copy_text" = "Auto Copy Text:";
 "auto_copy_selected_text" = "Auto Copy Selected Text";
 "auto_copy_ocr_text" = "Auto Copy OCR Text";
+"ocr_detect" = "OCR:";
+"use_language_correction" = "Use Language Correction";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Fixed Window";
@@ -69,4 +71,4 @@
 "error_unsupport_language" = "Unsupported language";
 "error_unknown" = "Unknown error";
 "translate_failed" = "Translate failed, ";
-"ocr_result_is_empty" = "⚠️ OCR result is empty";
+"ocr_result_is_empty" = "⚠️ OCR result is empty, please choose the OCR language manually and try again 😶";
