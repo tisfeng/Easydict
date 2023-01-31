@@ -71,4 +71,4 @@
 "error_unsupport_language" = "Unsupported language";
 "error_unknown" = "Unknown error";
 "translate_failed" = "Translate failed, ";
-"ocr_result_is_empty" = "⚠️ OCR result is empty, please choose the OCR language manually and try again 😶";
+"ocr_result_is_empty" = "⚠️ OCR result is empty.\n\n⚠️ Please manually select the source language and try again.";
