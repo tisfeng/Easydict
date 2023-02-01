@@ -104,12 +104,18 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     }
 
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:completionHandler];
+    [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        [self reset];
+        completionHandler(response, responseObject, error);
+    }];
+    
     [self loadURL:URL];
 
     // Handle timeout.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZNetWorkTimeoutInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([self.urlSchemeHandler containsMonitorBaseURLString:monitorURL]) {
             [self.urlSchemeHandler removeMonitorBaseURLString:monitorURL];
+            [self reset];
 
             NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:monitorURL] statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:@{@"Content-Type" : @"application/json"}];
             completionHandler(response, nil, [EZTranslateError timeoutError]);
@@ -143,14 +149,18 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                 NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
             }
 
-            // !!!: When finished, set completion to nil, and
-            self.completionHandler = nil;
-            self.queryURL = nil;
-
-            // ???: reset webView.
-            [self.webView loadHTMLString:@"" baseURL:nil];
+            [self reset];
         };
     }
+}
+
+- (void)reset {
+    // !!!: When finished, set completion to nil.
+    self.completionHandler = nil;
+    self.queryURL = nil;
+
+    // Destory webView, release memory.
+    self.webView = nil;
 }
 
 #pragma mark -
