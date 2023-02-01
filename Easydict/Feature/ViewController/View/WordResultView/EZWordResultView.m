@@ -68,7 +68,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     if (result.wordResult && result.queryText.length < EZEnglishWordMaxLength) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-            mm_strongify(self);
             [self addSubview:textField];
             textField.stringValue = result.queryText;
             [textField excuteLight:^(id _Nonnull x) {
@@ -105,8 +104,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         if (result.wordResult && result.normalResults.count) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
-                mm_strongify(self);
-
                 [self addSubview:textField];
                 textField.stringValue = NSLocalizedString(@"explain", nil);
                 textField.maximumNumberOfLines = 1;
@@ -222,8 +219,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-            mm_strongify(self);
-
             [self addSubview:textField];
             textField.stringValue = obj.name;
             textField.textColor = typeTextColor;
@@ -260,8 +255,6 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSTextField *valueTextField = nil;
         if (obj.value.length) {
             valueTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-                mm_strongify(self);
-
                 [self addSubview:textField];
                 textField.stringValue = [NSString stringWithFormat:@"/ %@ /", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
@@ -308,8 +301,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     __block NSScrollView *tagScrollView = nil;
     if (wordResult.tags.count) {
         tagLabel = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-            mm_strongify(self);
-
             [self addSubview:textField];
             textField.stringValue = NSLocalizedString(@"tag", nil);
             textField.textColor = typeTextColor;
@@ -416,8 +407,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         if (obj.part.length) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-                mm_strongify(self);
-
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = typeTextColor;
@@ -505,8 +494,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-            mm_strongify(self);
-
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@:", obj.name];
             [textField excuteLight:^(id _Nonnull x) {
@@ -577,8 +564,6 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSTextField *partTextFiled = nil;
         if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
-                mm_strongify(self);
-
                 [self addSubview:textField];
                 textField.stringValue = obj.part;
                 textField.textColor = typeTextColor;
