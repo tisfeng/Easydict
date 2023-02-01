@@ -9,7 +9,6 @@
 #import "SnipViewController.h"
 #import "SnipFocusView.h"
 
-
 @interface SnipViewController ()
 
 @property (nonatomic, strong) NSImageView *imageView;
@@ -33,7 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.wantsLayer = YES;
-
+    
     self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
         [self.view addSubview:imageView];
         imageView.image = self.image;
