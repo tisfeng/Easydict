@@ -114,16 +114,16 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         completion(self.result, error);
     }];
     
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-    [self.webViewTranslator monitorBaseURLString:monitorURL
-                                         loadURL:self.wordLink
-                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-        
-        //        NSLog(@"deepL responseObject: %@", responseObject);
-    }];
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
+//    [self.webViewTranslator monitorBaseURLString:monitorURL
+//                                         loadURL:self.wordLink
+//                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+//        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+//        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+//        
+//        //        NSLog(@"deepL responseObject: %@", responseObject);
+//    }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
