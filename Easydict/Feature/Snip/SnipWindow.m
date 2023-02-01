@@ -10,7 +10,6 @@
 #import "Snip.h"
 #import <Carbon/Carbon.h>
 
-
 @implementation SnipWindow
 
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {

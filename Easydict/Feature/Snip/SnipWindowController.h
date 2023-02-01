@@ -12,7 +12,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @interface SnipWindowController : NSWindowController
 
 @property (nonatomic, copy) void (^startBlock)(SnipWindowController *windowController);

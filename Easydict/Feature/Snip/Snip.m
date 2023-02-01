@@ -8,7 +8,6 @@
 
 #import "Snip.h"
 
-
 @interface Snip ()
 
 @property (nonatomic, strong) NSMutableArray<SnipWindowController *> *windowControllers;
@@ -82,32 +81,34 @@ static Snip *_instance;
         }
         return;
     }
- 
+    
     self.isSnapshotting = YES;
     self.completion = completion;
-
+    
     [self.windowControllers makeObjectsPerformSelector:@selector(close)];
     [self.windowControllers removeAllObjects];
-
+    
     [NSScreen.screens enumerateObjectsUsingBlock:^(NSScreen *_Nonnull screen, NSUInteger idx, BOOL *_Nonnull stop) {
         SnipWindowController *windowController = [SnipWindowController new];
         [windowController setStartBlock:^(SnipWindowController *_Nonnull windowController) {
             NSLog(@"截图开始");
         }];
+        mm_weakify(self);
         [windowController setEndBlock:^(SnipWindowController *_Nonnull windowController, NSImage *_Nullable image) {
             NSLog(@"截图结束：%@", image ? @"成功" : @"失败");
+            mm_strongify(self);
             [self stopWithImage:image];
         }];
         [windowController captureWithScreen:screen];
         [self.windowControllers addObject:windowController];
     }];
-
+    
     [self.mouseMoveMonitor start];
     [self.rightMouseDownMonitor start];
-
+    
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(screenChanged:) name:NSWorkspaceActiveSpaceDidChangeNotification object:[NSWorkspace sharedWorkspace]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenChanged:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
-
+    
     [self mouseMoved:nil];
 }
 
@@ -132,22 +133,22 @@ static Snip *_instance;
 
 - (void)stopWithImage:(NSImage *)image {
     self.isSnapshotting = NO;
-
+    
     [self.mouseMoveMonitor stop];
     [self.rightMouseDownMonitor stop];
     self.mouseMoveMonitor = nil;
     self.rightMouseDownMonitor = nil;
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
-
+    
     [self.windowControllers makeObjectsPerformSelector:@selector(close)];
     [self.windowControllers removeAllObjects];
-
+    
     self.currentMainWindowController = nil;
-
+    
     [CATransaction flush];
-
+    
     // 回调，中断也要回调
     if (self.completion) {
         self.completion(image);
@@ -166,7 +167,7 @@ static Snip *_instance;
 
 - (void)mouseMoved:(NSEvent *)event {
     // NSLog(@"鼠标移动 %@", self.currentMainWindowController);
-
+    
     NSPoint mouseLocation = [NSEvent mouseLocation];
     if (!self.currentMainWindowController) {
         [self.windowControllers enumerateObjectsUsingBlock:^(SnipWindowController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -180,7 +181,7 @@ static Snip *_instance;
         }];
         return;
     }
-
+    
     if (NSPointInRect(mouseLocation, self.currentMainWindowController.window.frame)) {
         // 在当前的 main window
         [self.currentMainWindowController.snipViewController showAndUpdateFocusView];
@@ -205,7 +206,7 @@ static Snip *_instance;
             }
         }
     }
-
+    
     if (!self.currentMainWindowController.window.isMainWindow ||
         !self.currentMainWindowController.window.isKeyWindow) {
         NSLog(@"设置 main window");

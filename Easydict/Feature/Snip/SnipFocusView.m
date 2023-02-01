@@ -8,7 +8,6 @@
 
 #import "SnipFocusView.h"
 
-
 @implementation SnipFocusView
 
 DefineMethodMMMake_m(SnipFocusView);
