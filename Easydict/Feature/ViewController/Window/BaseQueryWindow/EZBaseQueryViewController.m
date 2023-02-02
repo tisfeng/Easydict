@@ -311,7 +311,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSLog(@"ocr text: %@", self.queryText);
         
         [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
-
+        
         if (error) {
             NSString *errorMsg = [error localizedDescription];
             [self.queryView showAlertMessage:errorMsg];
@@ -1111,6 +1111,12 @@ static NSString *const EZColumnId = @"EZColumnId";
     BOOL tooLong = self.queryText.length > EZEnglishWordMaxLength;
     if (tooLong) {
         NSLog(@"query text is too long");
+        return;
+    }
+    
+    // count @" "
+    NSInteger spaceCount = [self.queryText componentsSeparatedByString:@" "].count - 1;
+    if (spaceCount > 1) {
         return;
     }
     
