@@ -15,7 +15,6 @@
 **Translate text**
 ![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
 
-
 ## Features
 
 - [x] Out of the box, easily look up words or translate text.
@@ -48,16 +47,12 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
 </div>
 
-
-
 | Ways                      | Description                                                                                                                         | Preview                                                                                                                                        |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                 | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
 | Auto select translate     | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                         | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
-
-
 
 #### Note ⚠️
 
@@ -171,3 +166,9 @@ Open source makes the world better.
 This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was developed based on [Bob](https://github.com/cheonvo/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob, thanks to the original author [ripperhe](https://github.com/ripperhe).
 
 > [`Bob`](https://bobtranslate.com/) is a translation and OCR software for macOS platform.
+
+## Notice
+
+Easydict is a free and open-sourced project for study purpose only. Anyone can obtain a copy of Easydict free of charge. If you believe your legal rights have been violated please contact the [author](https://github.com/tisfeng) immediately.
+
+Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) open source license, you can use the source code freely, but you must attach the license and copyright notice.
