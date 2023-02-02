@@ -170,6 +170,9 @@
 }
 
 - (void)startLoadingAnimation:(BOOL)isLoading {
+    if (isLoading) {
+        self.textView.string = @"";
+    }
     [self setAlertMessageHidden:YES];
     self.textView.editable = !isLoading;
     [self.loadingAnimationView startLoading:isLoading];
