@@ -98,6 +98,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 - (void)monitorBaseURLString:(NSString *)monitorURL
                      loadURL:(NSString *)URL
            completionHandler:(void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
+    [self.webView stopLoading];
+
     if (!URL.length || !monitorURL.length) {
         NSLog(@"loadURL or monitorURL cannot be emtpy");
         return;
@@ -123,9 +125,11 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     });
 }
 
-/// Query webView rranslate url result.
+/// Query webView translate url result.
 - (void)queryTranslateURL:(NSString *)URL
         completionHandler:(nullable void (^)(NSArray<NSString *> *_Nullable, NSError *))completionHandler {
+    [self.webView stopLoading];
+    
     if (self.querySelector.length == 0) {
         NSLog(@"querySelector is empty, url: %@", URL);
         return;
@@ -159,6 +163,10 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     self.completionHandler = nil;
     self.queryURL = nil;
 
+    [self.webView stopLoading];
+    self.webView.navigationDelegate = nil;
+    [self.webView.configuration.userContentController removeAllUserScripts];
+    
     // Destory webView, release memory.
     self.webView = nil;
 }
