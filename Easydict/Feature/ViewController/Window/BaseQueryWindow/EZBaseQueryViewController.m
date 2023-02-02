@@ -335,12 +335,15 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)focusInputTextView {
-    // Need to activate the current application first.
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    
-    //    [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-    
-    [self.window makeFirstResponder:self.queryView.textView];
+    // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
+    if (self.queryView.window == self.window) {
+        // Need to activate the current application first.
+        [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+        
+        //    [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+        
+        [self.window makeFirstResponder:self.queryView.textView];
+    }
 }
 
 
