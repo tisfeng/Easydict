@@ -166,7 +166,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
                 
                 CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
-                make.size.mas_equalTo(labelSize);
+                make.size.mas_equalTo(labelSize).priorityHigh();
                 
                 height += (kVerticalMargin_12 + labelSize.height);
                 //            NSLog(@"height = %1.f", height);
@@ -418,11 +418,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                 
                 [textField sizeToFit];
                 
-                CGSize textFieldSize = textField.size;
-                if (textFieldSize.width > 100) {
-                    NSLog(@"textFieldSize: %@", @(textFieldSize));
-                }
-                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.height.mas_equalTo(textField.height);
                     make.left.offset(kHorizontalMargin_8);
@@ -483,7 +478,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 labelSize.height = partTextFiled.height;
             }
             
-            make.size.mas_equalTo(labelSize);
+            make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelSize.height;
             //            NSLog(@"height = %1.f", height);
@@ -675,7 +670,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
             
             labelSize.height = labelHeight;
-            make.size.mas_equalTo(labelSize);
+            make.size.mas_equalTo(labelSize).priorityHigh();
             
             height += labelHeight + topOffset;
             //            NSLog(@"height = %1.f", height);
@@ -786,8 +781,8 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSWindow *window = [self topQueryWindow];
     CGFloat selfWidth = window ? window.width - EZHorizontalCellSpacing_12 * 2 : self.width;
     CGFloat width = selfWidth - exceptedWidth;
-    //    NSLog(@"text: %@, width: %@", label.text, @(width));
-    //    NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
+    //        NSLog(@"text: %@, width: %@", label.text, @(width));
+    //        NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
     
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
     //    NSLog(@"height: %@", @(height));
