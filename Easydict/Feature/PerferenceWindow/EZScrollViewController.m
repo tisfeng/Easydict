@@ -20,7 +20,7 @@ static CGFloat const kMargin = 0;
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.maxViewSize = CGSizeMake(800, 500);
+        self.maxViewSize = CGSizeMake(800, 700);
 
         self.verticalPadding = 15;
         self.horizontalPadding = 8;

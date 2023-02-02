@@ -11,6 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
 @interface EZConfiguration : NSObject
 
@@ -23,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL autoCopySelectedText;
 @property (nonatomic, assign) BOOL autoCopyOCRText;
 @property (nonatomic, assign) BOOL usesLanguageCorrection;
+@property (nonatomic, assign) BOOL showGoogleQuickLink;
+@property (nonatomic, assign) BOOL showEudicQuickLink;
 
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;
