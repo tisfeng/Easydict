@@ -43,7 +43,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
         // a[0] is source text, a[1] is translated text.
         _webViewTranslator.delayJsCode = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).slice(-1).map(el=>el.textContent)", delayQuerySelector];
         
-        _webViewTranslator.delayRetryCount = 10;
+        _webViewTranslator.delayRetryCount = 15;
     }
     return _webViewTranslator;
 }
