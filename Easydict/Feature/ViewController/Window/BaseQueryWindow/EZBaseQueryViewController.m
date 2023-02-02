@@ -407,7 +407,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         }];
     }
     
-    [[EZLocalStorage shared] increaseQueryCount];
+    [[EZLocalStorage shared] increaseQueryCount:self.queryText];
     [EZLog logQuery:queryModel];
     
     if (![self.serviceTypes containsObject:EZServiceTypeYoudao]) {
