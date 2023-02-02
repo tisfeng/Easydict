@@ -12,6 +12,7 @@
 static NSString *const kServiceInfoStorageKey = @"kServiceInfoStorageKey";
 static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
 static NSString *const kQueryCountKey = @"kQueryCountKey";
+static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
 @interface EZLocalStorage ()
 
@@ -132,7 +133,7 @@ static EZLocalStorage *_instance;
 
 #pragma mark - Query count
 
-- (void)increaseQueryCount {
+- (void)increaseQueryCount:(NSString *)queryText {
     NSInteger count = [self queryCount];
     NSInteger level = [self queryLevel:count];
     count++;
@@ -150,6 +151,10 @@ static EZLocalStorage *_instance;
     }
 
     [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCountKey];
+
+    NSInteger queryCharacterCount = [self queryCharacterCount];
+    queryCharacterCount += queryText.length;
+    [self saveQueryCharacterCount:queryCharacterCount];
 }
 
 - (NSInteger)queryCount {
@@ -159,6 +164,18 @@ static EZLocalStorage *_instance;
 - (void)resetQueryCount {
     [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kQueryCountKey];
 }
+
+#pragma mark - Query character count
+
+- (void)saveQueryCharacterCount:(NSInteger)count {
+    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCharacterCountKey];
+}
+
+- (NSInteger)queryCharacterCount {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCharacterCountKey];
+}
+
+#pragma mark -
 
 /**
 query count  | level | title
