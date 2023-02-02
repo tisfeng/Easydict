@@ -52,19 +52,19 @@ static const CGFloat kVerticalPadding_8 = 8;
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
     EZTranslateWordResult *wordResult = result.wordResult;
-
+    
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
+    
     __block CGFloat height = 0;
     __block NSView *lastView = nil;
     NSFont *textFont = [NSFont systemFontOfSize:14];
     NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#7A7A7A"];
-
+    
     NSString *errorMsg = result.error.localizedDescription;
-
+    
     mm_weakify(self);
-
+    
     if (result.wordResult && result.queryText.length < EZEnglishWordMaxLength) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
@@ -84,7 +84,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 [textField sizeToFit];
                 height += (kVerticalPadding_8 + textField.height);
                 //                NSLog(@"height = %1.f", height);
-
+                
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
                 } else {
@@ -97,11 +97,11 @@ static const CGFloat kVerticalPadding_8 = 8;
         wordTextField.mas_key = @"wordTextField";
         lastView = wordTextField;
     }
-
+    
     if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
         __block CGFloat exceptedWidth = 0;
-
+        
         if (result.wordResult && result.normalResults.count) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
@@ -113,7 +113,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.textColor = typeTextColor;
                 textField.backgroundColor = NSColor.clearColor;
                 [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
-
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     if (lastView) {
                         make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
@@ -123,14 +123,14 @@ static const CGFloat kVerticalPadding_8 = 8;
                     make.left.mas_equalTo(kHorizontalMargin_8);
                     exceptedWidth += kHorizontalMargin_8;
                 }];
-
+                
                 [textField sizeToFit];
             }];
             typeTextField.mas_key = @"typeTextField_normalResults";
         }
-
+        
         exceptedWidth += ceil(typeTextField.width);
-
+        
         NSString *text = nil;
         if (result.translatedText.length > 0) {
             text = result.translatedText;
@@ -139,17 +139,17 @@ static const CGFloat kVerticalPadding_8 = 8;
         } else if (!result.hasTranslatedResult) {
             text = @"No Result.";
         }
-
+        
         if (text.length) {
             EZLabel *resultLabel = [[EZLabel alloc] init];
             [self addSubview:resultLabel];
             resultLabel.text = text;
             resultLabel.delegate = self;
-
+            
             [resultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.right.equalTo(self).offset(-kHorizontalMargin_8);
                 exceptedWidth += kHorizontalMargin_8;
-
+                
                 if (typeTextField) {
                     make.top.equalTo(typeTextField);
                     make.left.equalTo(typeTextField.mas_right);
@@ -159,15 +159,15 @@ static const CGFloat kVerticalPadding_8 = 8;
                     } else {
                         make.top.equalTo(self).offset(kVerticalMargin_12);
                     }
-
+                    
                     CGFloat leftPadding = 5;
                     exceptedWidth += leftPadding;
                     make.left.equalTo(self).offset(leftPadding);
                 }
-
+                
                 CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
                 make.size.mas_equalTo(labelSize);
-
+                
                 height += (kVerticalMargin_12 + labelSize.height);
                 //            NSLog(@"height = %1.f", height);
             }];
@@ -184,7 +184,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
                 [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
-
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     CGFloat topOffset = 20;
                     if (lastView) {
@@ -193,7 +193,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                         make.top.offset(topOffset);
                     }
                     height += topOffset;
-
+                    
                     make.left.mas_equalTo(kHorizontalMargin_8);
                 }];
                 [textField sizeToFit];
@@ -204,19 +204,19 @@ static const CGFloat kVerticalPadding_8 = 8;
             [self addSubview:promptButton];
             [promptButton setTitle:result.promptTitle];
             promptButton.openURL = result.promptURL;
-
+            
             [promptButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(promptTextField.mas_right).offset(0);
                 make.centerY.equalTo(promptTextField);
             }];
             
             height += promptButton.height;
-
+            
             promptButton.mas_key = @"promptButton";
             lastView = promptButton;
         }
     }
-
+    
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
@@ -229,7 +229,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 [textField sizeToFit];
                 height += textField.height;
-
+                
                 make.left.offset(kHorizontalMargin_8);
                 make.height.mas_equalTo(textField.height);
                 if (idx == 0) {
@@ -250,7 +250,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         nameTextFiled.mas_key = @"nameTextFiled_phonetics";
         lastView = nameTextFiled;
-
+        
         // 部分没有音标文本
         NSTextField *valueTextField = nil;
         if (obj.value.length) {
@@ -274,7 +274,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             }];
             valueTextField.mas_key = @"valueTextField_phonetics";
         }
-
+        
         EZHoverButton *audioButton = [[EZHoverButton alloc] init];
         [self addSubview:audioButton];
         audioButton.image = [NSImage imageNamed:@"audio"];
@@ -285,7 +285,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.centerY.equalTo(valueTextField ?: nameTextFiled);
             make.width.height.mas_equalTo(23);
         }];
-
+        
         mm_weakify(self);
         [audioButton setClickBlock:^(EZButton *_Nonnull button) {
             NSLog(@"click audioButton");
@@ -296,7 +296,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         audioButton.mas_key = @"audioButton_phonetics";
     }];
-
+    
     NSTextField *tagLabel = nil;
     __block NSScrollView *tagScrollView = nil;
     if (wordResult.tags.count) {
@@ -309,13 +309,13 @@ static const CGFloat kVerticalPadding_8 = 8;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
             [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
-
+            
             [textField sizeToFit];
-
+            
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(textField.height);
                 make.left.offset(kHorizontalMargin_8);
-
+                
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
                 } else {
@@ -326,17 +326,17 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         tagLabel.mas_key = @"tagLabel";
         lastView = tagLabel;
-
+        
         __block NSView *tagContentView = nil;
         __block CGFloat tagContentViewWidth = 0;
         CGFloat padding = 6;
-
+        
         __block NSButton *lastTagButton = nil;
         [wordResult.tags enumerateObjectsUsingBlock:^(NSString *_Nonnull tag, NSUInteger idx, BOOL *_Nonnull stop) {
             if (tag.length == 0) {
                 return;
             }
-
+            
             NSButton *tagButton = [[NSButton alloc] init];
             tagButton.title = tag;
             [tagButton excuteLight:^(NSButton *tagButton) {
@@ -346,12 +346,12 @@ static const CGFloat kVerticalPadding_8 = 8;
                 NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
                 [self updateTagButton:tagButton tagColor:tagColor];
             }];
-
+            
             [tagButton sizeToFit];
             CGSize size = tagButton.size;
             CGFloat expandValue = 3;
             CGSize newSize = CGSizeMake(size.width + expandValue * 2, size.height + expandValue);
-
+            
             if (!tagScrollView) {
                 tagScrollView = [[NSScrollView alloc] init];
                 [self addSubview:tagScrollView];
@@ -360,7 +360,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     make.height.mas_equalTo(newSize.height);
                     make.centerY.equalTo(tagLabel);
                 }];
-
+                
                 tagContentView = [[NSView alloc] init];
                 [tagScrollView addSubview:tagContentView];
                 tagContentView.wantsLayer = YES;
@@ -369,7 +369,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 } drak:^(CALayer *layer) {
                     layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
                 }];
-
+                
                 tagContentView.height = newSize.height;
                 tagScrollView.documentView = tagContentView;
                 tagScrollView.horizontalScrollElasticity = NSScrollElasticityNone;
@@ -377,7 +377,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 tagScrollView.hasHorizontalScroller = NO;
             }
             [tagContentView addSubview:tagButton];
-
+            
             [tagButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.size.mas_equalTo(newSize);
                 make.centerY.equalTo(tagLabel);
@@ -390,21 +390,21 @@ static const CGFloat kVerticalPadding_8 = 8;
             lastTagButton = tagButton;
             tagContentViewWidth += (newSize.width + padding);
         }];
-
+        
         tagContentView.width = tagContentViewWidth;
-
+        
         CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + tagLabel.width + padding * 2);
         CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
         [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(tagScrollViewWidth);
         }];
     }
-
-
+    
+    
     [wordResult.parts enumerateObjectsUsingBlock:^(EZTranslatePart *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         __block CGFloat exceptedWidth = 0;
-
+        
         if (obj.part.length) {
             partTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
@@ -415,19 +415,19 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
                 [textField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
-
+                
                 [textField sizeToFit];
                 
                 CGSize textFieldSize = textField.size;
                 if (textFieldSize.width > 100) {
                     NSLog(@"textFieldSize: %@", @(textFieldSize));
                 }
-
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.height.mas_equalTo(textField.height);
                     make.left.offset(kHorizontalMargin_8);
                     exceptedWidth += kHorizontalMargin_8;
-
+                    
                     if (lastView) {
                         CGFloat topOffset = kVerticalPadding_8;
                         if (idx == 0) {
@@ -443,19 +443,19 @@ static const CGFloat kVerticalPadding_8 = 8;
             }];
             partTextFiled.mas_key = @"partTextFiled_parts";
         }
-
+        
         EZLabel *meanLabel = [[EZLabel alloc] init];
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
         meanLabel.delegate = self;
-
+        
         exceptedWidth += ceil(partTextFiled.width);
-
+        
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin_8);
             exceptedWidth += kHorizontalMargin_8;
-
+            
             if (partTextFiled) {
                 make.top.equalTo(partTextFiled);
                 CGFloat leftLeading = 2;
@@ -464,7 +464,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             } else {
                 make.left.equalTo(self).offset(kHorizontalMargin_8);
                 exceptedWidth += kHorizontalMargin_8;
-
+                
                 if (lastView) {
                     CGFloat topPadding = kVerticalPadding_8;
                     if (idx == 0) {
@@ -472,7 +472,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     }
                     make.top.equalTo(lastView.mas_bottom).offset(topPadding);
                     height += topPadding;
-
+                    
                 } else {
                     make.top.offset(kHorizontalMargin_8);
                     height += kVerticalPadding_8;
@@ -482,16 +482,16 @@ static const CGFloat kVerticalPadding_8 = 8;
             if (labelSize.height < partTextFiled.height) {
                 labelSize.height = partTextFiled.height;
             }
-
+            
             make.size.mas_equalTo(labelSize);
-
+            
             height += labelSize.height;
             //            NSLog(@"height = %1.f", height);
         }];
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
     }];
-
+    
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
@@ -506,14 +506,14 @@ static const CGFloat kVerticalPadding_8 = 8;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
-
+            
             [textField sizeToFit];
             height += textField.height;
-
+            
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.offset(kHorizontalMargin_8);
                 make.height.mas_equalTo(textField.height);
-
+                
                 if (lastView) {
                     CGFloat topPadding = kVerticalPadding_8;
                     if (idx == 0) {
@@ -530,13 +530,13 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         nameTextFiled.mas_key = @"nameTextFiled_exchanges";
         lastView = nameTextFiled;
-
+        
         __block EZBlueTextButton *lastWordButton = nil;
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
             [self addSubview:wordButton];
             [wordButton setTitle:word];
-
+            
             [wordButton mas_makeConstraints:^(MASConstraintMaker *make) {
                 if (!lastWordButton) {
                     make.left.equalTo(nameTextFiled.mas_right);
@@ -557,9 +557,9 @@ static const CGFloat kVerticalPadding_8 = 8;
             lastWordButton = wordButton;
         }];
     }];
-
+    
     __block NSString *lastSimpleWordPart = nil;
-
+    
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *partTextFiled = nil;
         if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
@@ -571,10 +571,10 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
-
+                
                 [textField sizeToFit];
                 height += textField.height;
-
+                
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.left.offset(kHorizontalMargin_8);
                     if (lastView) {
@@ -586,29 +586,29 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }];
             }];
             partTextFiled.mas_key = @"partTextFiled_simpleWords";
-
+            
             lastSimpleWordPart = obj.part;
         }
-
+        
         __block CGFloat exceptedWidth = 0;
-
+        
         EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
         wordButton.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:wordButton];
-
+        
         CGFloat maxButtonWidth = self.width / 2;
         NSString *title = [self multipleLineText:obj.word font:[NSFont systemFontOfSize:14] lineWidth:maxButtonWidth];
         [wordButton setTitle:title];
-
+        
         CGSize buttonSize = wordButton.size;
         if (buttonSize.width > maxButtonWidth) {
             buttonSize.width = maxButtonWidth;
         }
         CGFloat buttonHeight = [wordButton.title mm_heightWithFont:[NSFont systemFontOfSize:14] constrainedToWidth:maxButtonWidth];
-
-
+        
+        
         buttonSize.height = buttonHeight + wordButton.expandValue;
-
+        
         [wordButton mas_updateConstraints:^(MASConstraintMaker *make) {
             CGFloat leftOffset = kHorizontalMargin_8 - 2;
             exceptedWidth += leftOffset;
@@ -632,9 +632,9 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
             make.size.mas_equalTo(buttonSize);
         }];
-
+        
         exceptedWidth += buttonSize.width;
-
+        
         mm_weakify(self);
         [wordButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
@@ -644,48 +644,48 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
-
-
+        
+        
         EZLabel *meanLabel = [[EZLabel alloc] init];
         meanLabel.text = obj.meansText;
-
+        
         [self addSubview:meanLabel];
         [meanLabel excuteLight:^(id _Nonnull x) {
             [x setTextColor:NSColor.resultTextLightColor];
         } drak:^(id _Nonnull x) {
             [x setTextColor:NSColor.resultTextDarkColor];
         }];
-
+        
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = wordButton.expandValue / 2; // expandValue = 6;
             make.top.equalTo(wordButton).offset(topOffset); // Since word button has expand vlaue
-
+            
             CGFloat leftOffset = 4;
             make.left.equalTo(wordButton.mas_right).offset(leftOffset);
             exceptedWidth += leftOffset;
-
+            
             make.right.lessThanOrEqualTo(self).offset(-5);
             exceptedWidth += 5;
-
+            
             CGSize labelSize = [self labelSize:meanLabel exceptedWidth:exceptedWidth];
-
+            
             CGFloat labelHeight = buttonSize.height - topOffset;
             if (labelSize.height + topOffset > labelHeight) {
                 labelHeight = labelSize.height;
             }
-
+            
             labelSize.height = labelHeight;
             make.size.mas_equalTo(labelSize);
-
+            
             height += labelHeight + topOffset;
             //            NSLog(@"height = %1.f", height);
         }];
-
-
+        
+        
         meanLabel.mas_key = @"meanLabel_simpleWords";
         lastView = meanLabel;
     }];
-
+    
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];
     audioButton.image = [NSImage imageNamed:@"audio"];
@@ -693,7 +693,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     BOOL hasTranslatedText = result.translatedText.length > 0;
     audioButton.enabled = hasTranslatedText;
-
+    
     [audioButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"audioActionBlock");
         mm_strongify(self);
@@ -702,15 +702,15 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
     audioButton.mas_key = @"audioButton";
-
-
+    
+    
     EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
     [self addSubview:textCopyButton];
-
+    
     textCopyButton.image = [NSImage imageNamed:@"copy"];
     textCopyButton.toolTip = @"Copy";
     textCopyButton.enabled = hasTranslatedText;
-
+    
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
         mm_strongify(self);
@@ -719,50 +719,50 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
     textCopyButton.mas_key = @"copyButton";
-
+    
     CGFloat kMargin_8 = 8;
     CGFloat kRightMargin = 3;
-
+    
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
             make.top.equalTo(lastView.mas_bottom).offset(kMargin_8);
         } else {
             make.top.equalTo(self).offset(kMargin_8);
         }
-
+        
         make.left.offset(kMargin_8);
         make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     lastView = audioButton;
-
+    
     height += (kMargin_8 + EZAudioButtonWidth_25 + 5);
-
+    
     _viewHeight = height;
-
+    
     //    NSLog(@"word result view height: %.1f", height);
-
+    
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(audioButton.mas_right).offset(kRightMargin);
         make.width.height.bottom.equalTo(audioButton);
     }];
-
-
+    
+    
     EZLinkButton *linkButton = [[EZLinkButton alloc] init];
     [self addSubview:linkButton];
-
+    
     NSImage *linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
     linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
     linkButton.link = [result.service wordLink];
-
+    
     [linkButton excuteLight:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];
     } drak:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintDarkColor]];
     }];
     linkButton.mas_key = @"linkButton";
-
+    
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(textCopyButton.mas_right).offset(kRightMargin);
         make.width.height.bottom.equalTo(audioButton);
@@ -775,7 +775,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     tagButton.layer.cornerRadius = 3;
     tagButton.layer.borderColor = tagColor.CGColor;
     tagButton.bordered = NO;
-
+    
     NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12] color:tagColor];
     tagButton.attributedTitle = attributedString;
 }
@@ -783,19 +783,32 @@ static const CGFloat kVerticalPadding_8 = 8;
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     
-    NSWindow *window = [NSApplication sharedApplication].keyWindow;
+    NSWindow *window = [self topQueryWindow];
     CGFloat selfWidth = window ? window.width - EZHorizontalCellSpacing_12 * 2 : self.width;
     CGFloat width = selfWidth - exceptedWidth;
-//    NSLog(@"text: %@, width: %@", label.text, @(width));
-//    NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
-
+    //    NSLog(@"text: %@, width: %@", label.text, @(width));
+    //    NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
+    
     CGFloat height = [label getHeightWithWidth:width]; // 397 ?
     //    NSLog(@"height: %@", @(height));
-
+    
     //    height = [label getTextViewHeightWithWidth:width]; // 377
     //    NSLog(@"height: %@", @(height));
-
+    
     return CGSizeMake(width, height);
+}
+
+// Get the top query window from the windows stack
+- (NSWindow *)topQueryWindow {
+    // Can't use [NSApplication sharedApplication].keyWindow, because it may be the Preferences window.
+    NSArray *windows = [NSApplication sharedApplication].windows;
+    for (NSInteger i = windows.count - 1; i >= 0; i--) {
+        NSWindow *window = windows[i];
+        if ([window isKindOfClass:[EZBaseQueryWindow class]]) {
+            return window;
+        }
+    }
+    return nil;
 }
 
 - (NSString *)copiedText {
