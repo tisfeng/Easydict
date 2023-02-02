@@ -36,8 +36,15 @@
 
 
 @property (nonatomic, strong) NSTextField *autoCopyTextLabel;
-@property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
+@property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
+
+@property (nonatomic, strong) NSTextField *usesLanguageCorrectionLabel;
+@property (nonatomic, strong) NSButton *usesLanguageCorrectionButton;
+
+@property (nonatomic, strong) NSTextField *showQuickLinkLabel;
+@property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
+@property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
 
 @property (nonatomic, strong) NSView *separatorView2;
 
@@ -46,9 +53,6 @@
 
 @property (nonatomic, strong) NSTextField *launchLabel;
 @property (nonatomic, strong) NSButton *launchAtStartupButton;
-
-@property (nonatomic, strong) NSTextField *usesLanguageCorrectionLabel;
-@property (nonatomic, strong) NSButton *usesLanguageCorrectionButton;
 
 @end
 
@@ -165,6 +169,19 @@
     [self.contentView addSubview:self.usesLanguageCorrectionButton];
     self.usesLanguageCorrectionButton.toolTip = @"Disabling this property returns the raw recognition results, which provides performance benefits but less accurate results.";
 
+    NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
+    showQuickLinkLabel.font = font;
+    [self.contentView addSubview:showQuickLinkLabel];
+    self.showQuickLinkLabel = showQuickLinkLabel;
+
+    NSString *showGoogleQuickLink = NSLocalizedString(@"show_google_quick_link", nil);
+    self.showGoogleQuickLinkButton = [NSButton checkboxWithTitle:showGoogleQuickLink target:self action:@selector(showGoogleQuickLinkButtonClicked:)];
+    [self.contentView addSubview:self.showGoogleQuickLinkButton];
+
+    NSString *showEudicQuickLink = NSLocalizedString(@"show_eudic_quick_link", nil);
+    self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
+    [self.contentView addSubview:self.showEudicQuickLinkButton];
+
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
     self.separatorView2 = separatorView2;
@@ -202,6 +219,8 @@
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
     self.usesLanguageCorrectionButton.mm_isOn = configuration.usesLanguageCorrection;
+    self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
+    self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
 }
 
 - (void)updateViewConstraints {
@@ -298,10 +317,9 @@
     }];
 
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.autoCopySelectedTextButton.mas_left);
+        make.left.equalTo(self.autoCopySelectedTextButton);
         make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
-
 
     [self.usesLanguageCorrectionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectTextLabel);
@@ -313,10 +331,24 @@
         make.centerY.equalTo(self.usesLanguageCorrectionLabel);
     }];
 
+    [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectTextLabel);
+        make.top.equalTo(self.usesLanguageCorrectionButton.mas_bottom).offset(self.verticalPadding);
+    }];
+
+    [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showQuickLinkLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.showQuickLinkLabel);
+    }];
+
+    [self.showEudicQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showGoogleQuickLinkButton);
+        make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
 
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.usesLanguageCorrectionButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
 
@@ -389,6 +421,14 @@
 
 - (void)usesLanguageCorrectionButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.usesLanguageCorrection = sender.mm_isOn;
+}
+
+- (void)showGoogleQuickLinkButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.showGoogleQuickLink = sender.mm_isOn;
+}
+
+- (void)showEudicQuickLinkButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.showEudicQuickLink = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController

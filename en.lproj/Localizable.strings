@@ -55,6 +55,9 @@
 "auto_copy_ocr_text" = "Auto Copy OCR Text";
 "ocr_detect" = "OCR:";
 "use_language_correction" = "Use Language Correction";
+"quick_link" = "Quick Link:";
+"show_google_quick_link" = "Show Google Quick Link";
+"show_eudic_quick_link" = "Show Eudic Quick Link(If Installed)";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Fixed Window";

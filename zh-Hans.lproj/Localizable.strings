@@ -60,6 +60,9 @@
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
 "ocr_detect" = "OCR 识别:";
 "use_language_correction" = "自动纠正识别语言";
+"quick_link" = "快捷功能:";
+"show_google_quick_link" = "显示 Google 快捷图标";
+"show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
 
 "mini_window" = "迷你窗口";
 "fixed_window" = "侧悬浮窗口";

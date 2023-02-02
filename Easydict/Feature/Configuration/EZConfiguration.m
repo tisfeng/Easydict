@@ -23,7 +23,8 @@ static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
 static NSString *const kUsesLanguageCorrectionKey = @"EZConfiguration_kUsesLanguageCorrectionKey";
-
+static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
+static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 
 @implementation EZConfiguration
 
@@ -59,6 +60,8 @@ static EZConfiguration *_instance;
     self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.usesLanguageCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -135,6 +138,20 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(usesLanguageCorrection) forKey:kUsesLanguageCorrectionKey];
 }
 
+- (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
+    _showGoogleQuickLink = showGoogleLink;
+
+    [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
+    [self postUpdateQuickLinkButtonNotification];
+}
+
+- (void)setShowEudicQuickLink:(BOOL)showEudicLink {
+    _showEudicQuickLink = showEudicLink;
+
+    [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
+    [self postUpdateQuickLinkButtonNotification];
+}
+
 #pragma mark -
 
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
@@ -174,6 +191,11 @@ static EZConfiguration *_instance;
     NSString *helper = kEasydictHelperBundleId;
 #endif
     return helper;
+}
+
+- (void)postUpdateQuickLinkButtonNotification {
+    NSNotification *notification = [NSNotification notificationWithName:EZQuickLinkButtonUpdateNotification object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 @end

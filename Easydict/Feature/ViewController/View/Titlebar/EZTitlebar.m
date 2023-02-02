@@ -12,6 +12,7 @@
 #import "NSImage+EZResize.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
+#import "EZConfiguration.h"
 
 @interface EZTitlebar ()
 
@@ -35,24 +36,11 @@
     //        make.edges.equalTo(self);
     //    }];
     
-    CGFloat kButtonWidth = 25;
-    CGFloat kImagenWidth = 22;
-    CGFloat kButtonPadding = 4;
-    
-    CGSize buttonSize = CGSizeMake(kButtonWidth, kButtonWidth);
-    CGSize imageSize = CGSizeMake(kImagenWidth, kImagenWidth);
-    
     EZLinkButton *pinButton = [[EZLinkButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
     pinButton.contentTintColor = [NSColor clearColor];
     pinButton.toolTip = @"Pin";
-    [pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat pinButtonWidth = 25;
-        make.width.height.mas_equalTo(pinButtonWidth);
-        make.left.inset(10);
-        make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
-    }];
     
     pinButton.clickBlock = nil;
     self.pin = NO;
@@ -76,59 +64,86 @@
             self.pin = oldPin;
         }
     }];
+        
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
+}
+
+- (void)updateConstraints {
+    CGFloat kButtonWidth_25 = 25;
+    CGFloat kImagenWidth_22 = 22;
+    CGFloat kButtonPadding_4 = 4;
     
+    CGSize buttonSize = CGSizeMake(kButtonWidth_25, kButtonWidth_25);
+    CGSize imageSize = CGSizeMake(kImagenWidth_22, kImagenWidth_22);
+    
+    [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        CGFloat pinButtonWidth = 25;
+        make.width.height.mas_equalTo(pinButtonWidth);
+        make.left.inset(10);
+        make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
+    }];
+    
+    [self.googleButton removeFromSuperview];
+    [self.eudicButton removeFromSuperview];
     
     NSView *lastView;
+    CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_25;
+    CGFloat quickLinkButtonRightOffset = 12;
     
-    EZLinkButton *googleButton = [[EZLinkButton alloc] init];
-    [self addSubview:googleButton];
-    self.googleButton = googleButton;
-    self.favoriteButton = googleButton;
-    
-    googleButton.link = @"https://www.google.com/search?q=%@";
-    googleButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
-    googleButton.toolTip = @"Google";
-    googleButton.contentTintColor = NSColor.clearColor;
-    
-    [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self).offset(EZTitlebarHeight_28 - kButtonWidth);
-        make.size.mas_equalTo(buttonSize);
-        if (lastView) {
-            make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
-        } else {
-            make.right.equalTo(self).offset(-12);
-        }
-    }];
-    lastView = googleButton;
-    
-    
-    EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
-    [self addSubview:eudicButton];
-    self.eudicButton = eudicButton;
-    
-    // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
-    BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
-    eudicButton.hidden = !installedEudic;
-    if (installedEudic) {
-        self.favoriteButton = eudicButton;
+    if (EZConfiguration.shared.showGoogleQuickLink) {
+        EZLinkButton *googleButton = [[EZLinkButton alloc] init];
+        [self addSubview:googleButton];
+        self.googleButton = googleButton;
+        self.favoriteButton = googleButton;
+        
+        googleButton.link = @"https://www.google.com/search?q=%@";
+        googleButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
+        googleButton.toolTip = @"Google";
+        googleButton.contentTintColor = NSColor.clearColor;
+        
+        [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
+            make.size.mas_equalTo(buttonSize);
+            if (lastView) {
+                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
+            } else {
+                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+            }
+        }];
+        lastView = googleButton;
     }
     
-    eudicButton.link = @"eudic://dict/%@";
-    eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-    eudicButton.toolTip = @"Eudic";
-    eudicButton.contentTintColor = NSColor.clearColor;
-    
-    [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lastView);
-        make.size.mas_equalTo(buttonSize);
-        if (lastView) {
-            make.right.equalTo(lastView.mas_left).offset(-kButtonPadding);
-        } else {
-            make.right.equalTo(self).offset(-kButtonPadding);
+    if (EZConfiguration.shared.showEudicQuickLink) {
+        EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
+        
+        // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
+        BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
+        eudicButton.hidden = !installedEudic;
+        if (installedEudic) {
+            [self addSubview:eudicButton];
+            self.eudicButton = eudicButton;
+            self.favoriteButton = eudicButton;
         }
-    }];
+        
+        eudicButton.link = @"eudic://dict/%@";
+        eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
+        eudicButton.toolTip = @"Eudic";
+        eudicButton.contentTintColor = NSColor.clearColor;
+        
+        [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
+            make.size.mas_equalTo(buttonSize);
+            if (lastView) {
+                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
+            } else {
+                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+            }
+        }];
+        
+        lastView = eudicButton;
+    }
     
-    lastView = eudicButton;
+    [super updateConstraints];
 }
 
 - (void)updatePinButtonImage {
