@@ -65,13 +65,13 @@
         if (!error) {
             [self playWord:text audioURL:url];
         } else {
-            MMLogInfo(@"获取音频 URL 失败 %@", error);
+            NSLog(@"获取音频 URL 失败 %@", error);
         }
     }];
 }
 
 - (void)playWord:(NSString *)word audioURL:(nullable NSString *)urlString {
-    MMLogInfo(@"播放音频 %@", urlString);
+    NSLog(@"play audio url: %@", urlString);
     
     [self.player pause];
     

@@ -73,7 +73,7 @@ static NSInteger const kAnimationDotViewCount = 5;
 }
 
 - (void)startLoadingAnimation {
-    NSLog(@"startLoadingAnimation");
+//    NSLog(@"startLoadingAnimation");
     
     /**
      (subviews.count - 1) * X = kAnimationDuration / 2

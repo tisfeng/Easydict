@@ -436,7 +436,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [self updateResultLoadingAnimation:result];
     
-    NSLog(@"query service: %@", service.serviceType);
+//    NSLog(@"query service: %@", service.serviceType);
     
     [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
