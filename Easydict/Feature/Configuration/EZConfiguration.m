@@ -27,6 +27,7 @@ static NSString *const kUsesLanguageCorrectionKey = @"EZConfiguration_kUsesLangu
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
+static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
 
 @implementation EZConfiguration
 
@@ -65,6 +66,7 @@ static EZConfiguration *_instance;
     self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
+    self.fixedWindowPosition = [[NSUserDefaults mm_read:kShowFixedWindowPositionKey defaultValue:@(0) checkClass:NSNumber.class] integerValue];
 }
 
 #pragma mark - getter
@@ -159,8 +161,14 @@ static EZConfiguration *_instance;
     _hideMenuBarIcon = hideMenuBarIcon;
 
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
-    
+
     [self hideMenuBarIcon:hideMenuBarIcon];
+}
+
+- (void)setFixedWindowPosition:(EZFixedWindowPosition)showFixedWindowPosition {
+    _fixedWindowPosition = showFixedWindowPosition;
+
+    [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
 }
 
 #pragma mark -

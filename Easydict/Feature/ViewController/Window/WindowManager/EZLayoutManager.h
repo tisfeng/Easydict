@@ -14,10 +14,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 static CGFloat EZInputViewMiniHeight = 50;
 
+/// Window type
 typedef NS_ENUM(NSUInteger, EZWindowType) {
     EZWindowTypeMain = 0,
     EZWindowTypeMini = 1,
     EZWindowTypeFixed = 2,
+};
+
+/// Fixed window position
+typedef NS_ENUM(NSUInteger, EZFixedWindowPosition) {
+    EZFixedWindowPositionRight = 0,
+    EZFixedWindowPositionMouse = 1,
+    EZFixedWindowPositionFormer = 2,
 };
 
 /// Avoid window manager and base window recycling retain.
@@ -42,6 +50,8 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
 - (NSString *)windowName:(EZWindowType)type;
+
+- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPostionDict;
 
 @end
 
