@@ -60,6 +60,10 @@
 "show_eudic_quick_link" = "Show Eudic Quick Icon (If Installed)";
 "menu_bar_icon" = "Menu Bar Icon:";
 "hide_menu_bar_icon" = "Hide Menu Bar Icon";
+"fixed_window_position" = "Fixed Window Position:";
+"fixed_window_position_right" = "Screen Right";
+"fixed_window_position_mouse" = "Mouse Position";
+"fixed_window_position_former" = "Former Position";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Fixed Window";

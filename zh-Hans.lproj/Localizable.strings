@@ -65,6 +65,10 @@
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
 "menu_bar_icon" = "菜单栏图标:";
 "hide_menu_bar_icon" = "隐藏菜单栏图标";
+"fixed_window_position" = "侧悬浮窗口位置:";
+"fixed_window_position_right" = "屏幕最右侧";
+"fixed_window_position_mouse" = "鼠标位置";
+"fixed_window_position_former" = "上次位置";
 
 "mini_window" = "迷你窗口";
 "fixed_window" = "侧悬浮窗口";
