@@ -70,10 +70,10 @@
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
     //    NSLog(@"log event: %@, %@", name, dict);
     
-//#if !DEBUG
+#if !DEBUG
         [MSACAnalytics trackEvent:name withProperties:dict];
         [FIRAnalytics logEventWithName:name parameters:dict];
-//#endif
+#endif
 }
 
 @end
