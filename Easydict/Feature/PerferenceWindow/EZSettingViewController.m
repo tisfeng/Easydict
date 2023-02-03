@@ -46,9 +46,6 @@
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
 @property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
 
-@property (nonatomic, strong) NSTextField *menuBarIconLabel;
-@property (nonatomic, strong) NSButton *hideMenuBarIconButton;
-
 @property (nonatomic, strong) NSView *separatorView2;
 
 @property (nonatomic, strong) NSTextField *hideMainWindowLabel;
@@ -56,6 +53,9 @@
 
 @property (nonatomic, strong) NSTextField *launchLabel;
 @property (nonatomic, strong) NSButton *launchAtStartupButton;
+
+@property (nonatomic, strong) NSTextField *menuBarIconLabel;
+@property (nonatomic, strong) NSButton *hideMenuBarIconButton;
 
 @end
 
@@ -193,15 +193,6 @@
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
     
-    NSTextField *menubarIconLabel = [NSTextField labelWithString:NSLocalizedString(@"menu_bar_icon", nil)];
-    menubarIconLabel.font = font;
-    [self.contentView addSubview:menubarIconLabel];
-    self.menuBarIconLabel = menubarIconLabel;
-    
-    NSString *hideMenuBarIcon = NSLocalizedString(@"hide_menu_bar_icon", nil);
-    self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
-    [self.contentView addSubview:self.hideMenuBarIconButton];
-    
     
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -230,6 +221,16 @@
     NSString *launchAtStartupTitle = NSLocalizedString(@"launch_at_startup", nil);
     self.launchAtStartupButton = [NSButton checkboxWithTitle:launchAtStartupTitle target:self action:@selector(launchAtStartupButtonClicked:)];
     [self.contentView addSubview:self.launchAtStartupButton];
+    
+    NSTextField *menubarIconLabel = [NSTextField labelWithString:NSLocalizedString(@"menu_bar_icon", nil)];
+    menubarIconLabel.font = font;
+    [self.contentView addSubview:menubarIconLabel];
+    self.menuBarIconLabel = menubarIconLabel;
+    
+    NSString *hideMenuBarIcon = NSLocalizedString(@"hide_menu_bar_icon", nil);
+    self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
+    [self.contentView addSubview:self.hideMenuBarIconButton];
+    
     
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
@@ -378,19 +379,10 @@
         make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
     
-    [self.menuBarIconLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    
-    [self.hideMenuBarIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.menuBarIconLabel);
-    }];
-    
+   
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
     
@@ -413,7 +405,19 @@
         make.left.equalTo(self.launchLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.launchLabel);
     }];
-    self.bottommostView = self.launchAtStartupButton;
+    
+    [self.menuBarIconLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.showQueryIconLabel);
+        make.top.equalTo(self.launchAtStartupButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
+    [self.hideMenuBarIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.menuBarIconLabel);
+    }];
+    
+    
+    self.bottommostView = self.hideMenuBarIconButton;
     
     [super updateViewConstraints];
 }
