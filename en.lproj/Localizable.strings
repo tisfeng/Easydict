@@ -42,7 +42,7 @@
 "check_update" = "Update:";
 "auto_check_update" = "Auto Check App Update";
 "show_icon" = "Show Icon:";
-"auto_show_icon" = "Auto Show Icon (Experimental)";
+"auto_show_icon" = "Auto Show Query Icon (Experimental)";
 "launch" = "Launch:";
 "launch_at_startup" = "Launch at Startup";
 "show_main_window" = "Main Window:";
@@ -56,8 +56,10 @@
 "ocr_detect" = "OCR:";
 "use_language_correction" = "Use Language Correction";
 "quick_link" = "Quick Link:";
-"show_google_quick_link" = "Show Google Quick Link";
-"show_eudic_quick_link" = "Show Eudic Quick Link(If Installed)";
+"show_google_quick_link" = "Show Google Search Quick Icon";
+"show_eudic_quick_link" = "Show Eudic Quick Icon (If Installed)";
+"menu_bar_icon" = "Menu Bar Icon:";
+"hide_menu_bar_icon" = "Hide Menu Bar Icon";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Fixed Window";

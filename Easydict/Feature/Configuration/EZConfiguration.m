@@ -10,6 +10,7 @@
 #import <ServiceManagement/ServiceManagement.h>
 #import <Sparkle/Sparkle.h>
 #import <ApplicationServices/ApplicationServices.h>
+#import "EZStatusItem.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
 
@@ -25,6 +26,7 @@ static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextK
 static NSString *const kUsesLanguageCorrectionKey = @"EZConfiguration_kUsesLanguageCorrectionKey";
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
+static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
 
 @implementation EZConfiguration
 
@@ -62,6 +64,7 @@ static EZConfiguration *_instance;
     self.usesLanguageCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -152,6 +155,14 @@ static EZConfiguration *_instance;
     [self postUpdateQuickLinkButtonNotification];
 }
 
+- (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
+    _hideMenuBarIcon = hideMenuBarIcon;
+
+    [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
+    
+    [self hideMenuBarIcon:hideMenuBarIcon];
+}
+
 #pragma mark -
 
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
@@ -196,6 +207,16 @@ static EZConfiguration *_instance;
 - (void)postUpdateQuickLinkButtonNotification {
     NSNotification *notification = [NSNotification notificationWithName:EZQuickLinkButtonUpdateNotification object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+// hide menu bar icon
+- (void)hideMenuBarIcon:(BOOL)hidden {
+    EZStatusItem *statusItem = [EZStatusItem shared];
+    if (self.hideMenuBarIcon) {
+        [statusItem remove];
+    } else {
+        [statusItem setup];
+    }
 }
 
 @end

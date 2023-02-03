@@ -46,6 +46,9 @@
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
 @property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
 
+@property (nonatomic, strong) NSTextField *menuBarIconLabel;
+@property (nonatomic, strong) NSButton *hideMenuBarIconButton;
+
 @property (nonatomic, strong) NSView *separatorView2;
 
 @property (nonatomic, strong) NSTextField *hideMainWindowLabel;
@@ -182,6 +185,16 @@
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
 
+    NSTextField *menubarIconLabel = [NSTextField labelWithString:NSLocalizedString(@"menu_bar_icon", nil)];
+    menubarIconLabel.font = font;
+    [self.contentView addSubview:menubarIconLabel];
+    self.menuBarIconLabel = menubarIconLabel;
+
+    NSString *hideMenuBarIcon = NSLocalizedString(@"hide_menu_bar_icon", nil);
+    self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
+    [self.contentView addSubview:self.hideMenuBarIconButton];
+
+
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
     self.separatorView2 = separatorView2;
@@ -221,6 +234,7 @@
     self.usesLanguageCorrectionButton.mm_isOn = configuration.usesLanguageCorrection;
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
+    self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
 }
 
 - (void)updateViewConstraints {
@@ -346,9 +360,19 @@
         make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
 
+    [self.menuBarIconLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectTextLabel);
+        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
+
+    [self.hideMenuBarIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.menuBarIconLabel);
+    }];
+
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
 
@@ -429,6 +453,10 @@
 
 - (void)showEudicQuickLinkButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.showEudicQuickLink = sender.mm_isOn;
+}
+
+- (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController

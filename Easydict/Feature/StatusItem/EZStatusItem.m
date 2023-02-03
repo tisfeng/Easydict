@@ -47,7 +47,9 @@ static EZStatusItem *_instance;
 }
 
 - (void)setup {
-    if (self.statusItem) return;
+    if (self.statusItem) {
+        return;
+    }
 
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [item.button setToolTip:@"Easydict"];

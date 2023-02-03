@@ -227,7 +227,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                     [self getTextContentOfElement:selector completion:completion];
                 });
             } else {
-                NSLog(@"finish, retry count: %ld", self.retryCount);
+                NSLog(@"fail, max retry count: %ld", self.retryCount);
                 if (completion) {
                     completion(nil, [EZTranslateError timeoutError]);
                 }
