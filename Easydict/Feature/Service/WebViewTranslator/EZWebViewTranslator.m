@@ -193,12 +193,12 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
     [self.webView loadRequest:request];
     self.queryURL = URL;
-    NSLog(@"query url: %@", URL);
+//    NSLog(@"query url: %@", URL);
 }
 
 - (void)getTextContentOfElement:(NSString *)selector
                      completion:(void (^)(NSArray<NSString *> *_Nullable, NSError *))completion {
-    NSLog(@"get result count: %ld", self.retryCount + 1);
+//    NSLog(@"get result count: %ld", self.retryCount + 1);
     
     if (self.retryCount > self.delayRetryCount) {
         if (self.delayQuerySelector.length) {
@@ -287,7 +287,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 // 页面加载完成后，获取翻译结果
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
+//    NSLog(@"didFinishNavigation: %@", webView.URL.absoluteString);
 
     if (self.completionHandler) {
         [self getTextContentOfElement:self.querySelector completion:self.completionHandler];
@@ -312,7 +312,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 /** 在收到响应后，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+//    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
 
     // 这里可以查看页面内部的网络请求，并做出相应的处理
     // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
@@ -327,13 +327,13 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
+//    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
 
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
-    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+//    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
 
     if ([navigationActionURL isEqualToString:@"about:blank"]) {
         decisionHandler(WKNavigationActionPolicyCancel);

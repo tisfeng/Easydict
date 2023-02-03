@@ -30,7 +30,7 @@
             NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             result = [output trim];
-            NSLog(@"Apple translate result: %@", result);
+//            NSLog(@"Apple translate result: %@", result);
         }
         
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];

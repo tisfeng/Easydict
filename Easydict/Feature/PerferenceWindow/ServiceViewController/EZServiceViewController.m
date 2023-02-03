@@ -264,8 +264,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)segmentedControlClicked:(NSSegmentedControl *)sender {
     NSInteger index = [sender selectedSegment];
-    NSLog(@"Selected segment: %ld", index);
-    
     EZWindowType windowType = [self.windowTypesDictionary[@(index)] integerValue];
     [self setupDataWithWindowType:windowType];
     [self.tableView reloadData];
