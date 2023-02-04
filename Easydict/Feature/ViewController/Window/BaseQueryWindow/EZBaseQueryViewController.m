@@ -308,7 +308,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
-        NSLog(@"ocr text: %@", self.queryText);
+        NSLog(@"ocr result: %@", self.queryText);
         
         [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
         
