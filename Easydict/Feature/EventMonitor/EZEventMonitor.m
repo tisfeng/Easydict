@@ -119,7 +119,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
         NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
         self.selectedText = selectedText;
-        NSLog(@"Key getText: %@", selectedText);
+        MMLogInfo(@"Key getText: %@", selectedText);
         
         [pasteboard clearContents];
         
@@ -188,12 +188,12 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             selectedText = (__bridge NSString *)(selectedTextValue);
             self.selectedText = selectedText;
             self.endPoint = NSEvent.mouseLocation;
-            NSLog(@"--> Auxiliary selected text: %@", selectedText);
+            MMLogInfo(@"--> Auxiliary selected text: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
-                NSLog(@"No Value: %d", getSelectedTextError);
+                MMLogInfo(@"No Value: %d", getSelectedTextError);
             } else {
-                NSLog(@"Can't get selected text: %d", getSelectedTextError);
+                MMLogInfo(@"Can't get selected text: %d", getSelectedTextError);
             }
         }
         error = getSelectedTextError;
