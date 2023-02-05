@@ -518,7 +518,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     
     if (!self.token || !self.gtk) {
         // 获取 token
-        MMLogInfo(@"百度翻译请求 token");
+        MMLogInfo(@"获取百度翻译请求 token");
         mm_weakify(self)
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             mm_strongify(self)

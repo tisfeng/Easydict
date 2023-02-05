@@ -86,8 +86,8 @@
 
         // If language is not preferred, try to use google detect.
         [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
-            NSLog(@"google detected: %@", language);
             if (!error) {
+                NSLog(@"google detected: %@", language);
                 [self handleDetectedLanguage:language error:error completion:completion];
                 return;
             }
