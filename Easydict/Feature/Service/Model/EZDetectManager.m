@@ -66,7 +66,7 @@
     NSString *queryText = self.queryModel.queryText;
     if (queryText.length == 0) {
         NSLog(@"detectText cannot be nil");
-        
+
         // !!!: There are some problems with the system OCR, for example, it may return nil when recognizing Japanese.
         NSError *error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
         completion(self.queryModel, error);
@@ -74,7 +74,11 @@
     }
 
     [self.detectTextService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
-        BOOL isPreferredLanguage = [[EZLanguageManager systemPreferredLanguages] containsObject:appleDetectdedLanguage];
+        NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager systemPreferredLanguages] mutableCopy];
+        // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
+        [preferredLanguages addObjectsFromArray:@[ EZLanguageEnglish, EZLanguageSimplifiedChinese, EZLanguageTraditionalChinese ]];
+
+        BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];
         if (isPreferredLanguage) {
             [self handleDetectedLanguage:appleDetectdedLanguage error:error completion:completion];
             return;
