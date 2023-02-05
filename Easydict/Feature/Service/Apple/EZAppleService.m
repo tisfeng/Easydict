@@ -441,7 +441,7 @@
     NSDictionary *customHints = @{
         NLLanguageEnglish : @(3.0),
         NLLanguageSimplifiedChinese : @(0.8),
-        NLLanguageJapanese : @(0.7),
+        NLLanguageJapanese : @(0.5),
         NLLanguageFrench : @(0.25), // const, ex, delimiter
         NLLanguageKorean : @(0.2),
         NLLanguageTraditionalChinese : @(0.2),
@@ -472,8 +472,8 @@
     /**
      Increase the proportional weighting of the user's preferred language.
      
-     1. Chinese, + 0.5
-     2. English, + 0.3
+     1. Chinese, + 0.3
+     2. English, + 0.2
      3. Japanese, + 0.1
      4. ........, + 0.1
      
@@ -481,14 +481,15 @@
     NSMutableDictionary<EZLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionary];
     for (NSInteger i = 0; i < preferredLanguages.count; i++) {
         EZLanguage language = preferredLanguages[i];
-        CGFloat maxWeight = 0.5;
-        CGFloat weight = maxWeight - i * 0.2;
+        CGFloat maxWeight = 0.3;
+        CGFloat step = 0.1;
+        CGFloat weight = maxWeight - step * i;
         if (weight < 0.1) {
             weight = 0.1;
         }
         if ([language isEqualToString:EZLanguageEnglish]) {
             if (![EZLanguageManager isEnglishFirstLanguage]) {
-                weight += 0.3;
+                weight += 0.2;
             } else {
                 weight += 0.1;
             }
@@ -510,6 +511,7 @@
 - (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities {
     NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
+    NSLog(@"user probabilities: %@", userPreferredLanguageProbabilities);
     
     for (EZLanguage language in userPreferredLanguageProbabilities.allKeys) {
         NLLanguage appleLanguage = [self appleLanguageCodeForLanguage:language];
