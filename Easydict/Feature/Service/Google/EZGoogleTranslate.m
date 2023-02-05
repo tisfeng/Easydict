@@ -333,18 +333,17 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }
     
     EZQueryResult *result = self.result;
-
+    
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) =
     ^(
       NSString *text, EZLanguage langFrom, EZLanguage langTo) {
-          [self
-           sendTranslateSingleText:text
-           from:langFrom
-           to:langTo
-           completion:^(id _Nullable responseObject,
-                        NSString *_Nullable signText,
-                        NSMutableDictionary *reqDict,
-                        NSError *_Nullable error) {
+          [self sendTranslateSingleText:text
+                                   from:langFrom
+                                     to:langTo
+                             completion:^(id _Nullable responseObject,
+                                          NSString *_Nullable signText,
+                                          NSMutableDictionary *reqDict,
+                                          NSError *_Nullable error) {
               if (error) {
                   completion(result, error);
                   return;
@@ -354,9 +353,23 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
               if (responseObject && [responseObject isKindOfClass:NSDictionary.class]) {
                   @try {
                       NSDictionary *responseDict = responseObject;
-                      
                       NSString *googleFromString = responseDict[@"src"];
+                      
                       EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
+                      
+                      // Sometimes, scr is different from extended_srclangs, such as "開門 ": src = "zh-CN", extended_srclangs = "zh-TW"
+                      NSArray *extended_srclangs = responseDict[@"ld_result"][@"extended_srclangs"];
+                      if (extended_srclangs.count) {
+                          NSString *language = extended_srclangs.firstObject;
+                          if ([language isKindOfClass:[NSString class]]) {
+                              EZLanguage ezlanguage = [self languageEnumFromCode:language];
+                              if (![ezlanguage isEqualToString:EZLanguageAuto]) {
+                                  googleFrom = ezlanguage;
+                                  googleFromString = language;
+                              }
+                          }
+                      }
+                      
                       EZLanguage googleTo = langTo;
                       
                       result.queryText = text;
@@ -396,19 +409,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
           }];
       };
     
-    if ([from isEqualToString:EZLanguageAuto]) {
-        // 需要先识别语言，用于指定目标语言
-        [self detectText:text
-              completion:^(EZLanguage detectedLanguage, NSError *_Nullable error) {
-            if (error) {
-                completion(result, error);
-                return;
-            }
-            translateBlock(text, detectedLanguage, to);
-        }];
-    } else {
-        translateBlock(text, from, to);
-    }
+    translateBlock(text, from, to);
 }
 
 - (void)translateTKKText:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
@@ -440,7 +441,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     result.from = googleFrom;
                     result.to = googleTo;
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
-                                        
+                    
                     // 英文查词 中文查词
                     NSArray *phoneticArray = responseArray[0][1];
                     EZTranslateWordResult *wordResult;
@@ -460,7 +461,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         
                         wordResult.phonetics = @[ phonetic ];
                     }
-
+                    
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
                         if (!wordResult) {
@@ -550,9 +551,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             }
             
             [self translateSingleText:text from:from to:to completion:completion];
-
-//            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-//            completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
+            
+            //            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+            //            completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"翻译失败", reqDict));
         }];
     };
     
@@ -567,8 +568,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
-//    NSString *preferredLanguage = [EZLanguageManager firstLanguage];
-//    NSString *preferredLangCode = [self languageCodeForLanguage:preferredLanguage];
+    //    NSString *preferredLanguage = [EZLanguageManager firstLanguage];
+    //    NSString *preferredLangCode = [self languageCodeForLanguage:preferredLanguage];
     
     NSDictionary *params = @{
         @"client" : @"webapp",
@@ -680,6 +681,36 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     NSString *googleFromString = responseArray[2];
                     // !!!: Note: it may be auto if it's unsupported language.
                     EZLanguage googleFromLanguage = [self languageEnumFromCode:googleFromString];
+                    
+                    /**
+                     Sometimes, scr is different from extended_srclangs, such as "開門 ": src = "zh-CN", extended_srclangs = "zh-TW"
+                     
+                     [
+                     [
+                     "zh-CN"
+                     ],
+                     null,
+                     [
+                     0.9609375
+                     ],
+                     [
+                     "zh-TW"
+                     ]
+                     ]
+                     */
+                    NSArray *languageArray = responseArray.lastObject;
+                    if ([languageArray isKindOfClass:[NSArray class]]) {
+                        NSArray *languages = languageArray.lastObject;
+                        if ([languages isKindOfClass:[NSArray class]]) {
+                            NSString *language = languages.firstObject;
+                            if ([language isKindOfClass:[NSString class]]) {
+                                EZLanguage ezlanguage = [self languageEnumFromCode:language];
+                                if (![ezlanguage isEqualToString:EZLanguageAuto]) {
+                                    googleFromLanguage = ezlanguage;
+                                }
+                            }
+                        }
+                    }
                     completion(googleFromLanguage, nil);
                     return;
                 }
