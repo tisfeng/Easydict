@@ -442,26 +442,30 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     result.to = googleTo;
                     result.fromSpeakURL = [self getAudioURLWithText:text language:googleFromString sign:signText];
                     
-                    // 英文查词 中文查词
-                    NSArray *phoneticArray = responseArray[0][1];
                     EZTranslateWordResult *wordResult;
                     
-                    if (phoneticArray.count > 3) {
-                        wordResult = [[EZTranslateWordResult alloc] init];
-                        
-                        NSString *phoneticText = phoneticArray[3];
-                        EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
-                        phonetic.name = NSLocalizedString(@"us_phonetic", nil);
-                        if ([EZLanguageManager isChineseLanguage:from]) {
-                            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+                    // 英文查词 中文查词
+                    NSArray *phoneticArray = responseArray[0];
+                    if (phoneticArray.count > 1) {
+                        NSArray *phonetics = phoneticArray[1];
+                        if (phonetics.count > 3) {
+                            NSString *phoneticText = phonetics[3];
+
+                            wordResult = [[EZTranslateWordResult alloc] init];
+                            
+                            EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
+                            phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                            if ([EZLanguageManager isChineseLanguage:from]) {
+                                phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+                            }
+                            
+                            phonetic.value = phoneticText;
+                            phonetic.speakURL = result.fromSpeakURL;
+                            
+                            wordResult.phonetics = @[ phonetic ];
                         }
-                        
-                        phonetic.value = phoneticText;
-                        phonetic.speakURL = result.fromSpeakURL;
-                        
-                        wordResult.phonetics = @[ phonetic ];
                     }
-                    
+                                        
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
                         if (!wordResult) {
