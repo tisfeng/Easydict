@@ -21,11 +21,11 @@ typedef NS_ENUM(NSUInteger, EZWindowType) {
     EZWindowTypeFixed = 2,
 };
 
-/// Fixed window position
-typedef NS_ENUM(NSUInteger, EZFixedWindowPosition) {
-    EZFixedWindowPositionRight = 0,
-    EZFixedWindowPositionMouse = 1,
-    EZFixedWindowPositionFormer = 2,
+/// Show window position
+typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
+    EZShowWindowPositionRight = 0,
+    EZShowWindowPositionMouse = 1,
+    EZShowWindowPositionFormer = 2,
 };
 
 /// Avoid window manager and base window recycling retain.

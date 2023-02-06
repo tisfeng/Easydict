@@ -253,7 +253,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
-//    NSLog(@"show floating window: %@, %@", window, @(point));
+    //    NSLog(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
@@ -267,10 +267,10 @@ static EZWindowManager *_instance;
     [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
-        
+    
     // TODO: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     [_mainWindow orderOut:nil];
-
+    
     window.level = EZFloatingWindowLevel;
     [window.queryViewController focusInputTextView];
     
@@ -335,6 +335,10 @@ static EZWindowManager *_instance;
 }
 
 - (CGPoint)getMiniWindowLocation {
+    return [self getShowingMouseLocation];
+}
+
+- (CGPoint)getShowingMouseLocation {
     NSPoint popButtonLocation = [self getPopButtonWindowLocation];
     if (CGPointEqualToPoint(popButtonLocation, CGPointZero)) {
         return CGPointZero;
@@ -349,11 +353,29 @@ static EZWindowManager *_instance;
 
 // Get fixed window location.
 - (CGPoint)getFixedWindowLocation {
-    CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
-    CGFloat x = mainScreenSize.width - self.fixedWindow.width;
-    CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
-    
-    return CGPointMake(x, y);
+    CGPoint position = CGPointZero;
+    EZShowWindowPosition windowPosition = EZConfiguration.shared.fixedWindowPosition;
+    switch (windowPosition) {
+        case EZShowWindowPositionRight: {
+            CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
+            CGFloat x = mainScreenSize.width - self.fixedWindow.width;
+            CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
+            position = CGPointMake(x, y);
+            break;
+        }
+        case EZShowWindowPositionMouse: {
+            position = [self getShowingMouseLocation];
+            break;
+        }
+        case EZShowWindowPositionFormer: {
+            // !!!: origin postion is buttom-left point, we need to convert it to top-left point.
+            CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeFixed];
+            CGPoint origin = formerFrame.origin;
+            position = CGPointMake(origin.x, formerFrame.size.height + origin.y);
+            break;
+        }
+    }
+    return position;
 }
 
 - (void)saveFrontmostApplication {
@@ -369,7 +391,7 @@ static EZWindowManager *_instance;
 - (void)showOrHideDockAppAndMainWindow {
     BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
     [self showMainWindow:showFlag];
-
+    
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
     [NSApp setActivationPolicy:activationPolicy];
 }
@@ -412,7 +434,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-
+    
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
         if (!image) {
             NSLog(@"not get screenshot");
@@ -420,7 +442,7 @@ static EZWindowManager *_instance;
         }
         
         NSLog(@"get screenshot: %@", image);
-
+        
         // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
         static NSString *_imagePath = nil;
         static dispatch_once_t onceToken;
@@ -434,7 +456,7 @@ static EZWindowManager *_instance;
         // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
         EZWindowType windowType = EZWindowTypeFixed;
         EZBaseQueryWindow *window = [self windowWithType:windowType];
-                    
+        
         // Reset window height first, avoid being affected by previous window height.
         [window.queryViewController resetTableView:^{
             [self showFloatingWindowType:windowType queryText:nil];
@@ -448,7 +470,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
-
+    
     self.queryType = EZQueryTypeInput;
     [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:nil];
 }
@@ -462,7 +484,7 @@ static EZWindowManager *_instance;
 
 /// Close floating window, and record last floating window type.
 - (void)closeFloatingWindow {
-//    NSLog(@"close floating window: %@", self.floatingWindow);
+    //    NSLog(@"close floating window: %@", self.floatingWindow);
     
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
