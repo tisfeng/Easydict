@@ -323,7 +323,7 @@
         request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
         
         // TODO: need to test it.
-        request.usesLanguageCorrection = EZConfiguration.shared.usesLanguageCorrection;
+        request.usesLanguageCorrection = YES;
         
         // Perform the text-recognition request.
         [requestHandler performRequests:@[ request ] error:nil];

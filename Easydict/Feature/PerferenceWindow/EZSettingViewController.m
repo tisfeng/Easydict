@@ -41,7 +41,7 @@
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
 @property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
 
-@property (nonatomic, strong) NSTextField *usesLanguageCorrectionLabel;
+@property (nonatomic, strong) NSTextField *languageDetectLabel;
 @property (nonatomic, strong) NSButton *usesLanguageCorrectionButton;
 
 @property (nonatomic, strong) NSTextField *showQuickLinkLabel;
@@ -186,15 +186,15 @@
     self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyOCRTextButton];
 
-    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"ocr_detect", nil)];
+    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect", nil)];
     usesLanguageCorrectionLabel.font = font;
     [self.contentView addSubview:usesLanguageCorrectionLabel];
-    self.usesLanguageCorrectionLabel = usesLanguageCorrectionLabel;
+    self.languageDetectLabel = usesLanguageCorrectionLabel;
 
-    NSString *usesLanguageCorrection = NSLocalizedString(@"use_language_correction", nil);
+    NSString *usesLanguageCorrection = NSLocalizedString(@"use_language_detect_correction", nil);
     self.usesLanguageCorrectionButton = [NSButton checkboxWithTitle:usesLanguageCorrection target:self action:@selector(usesLanguageCorrectionButtonClicked:)];
     [self.contentView addSubview:self.usesLanguageCorrectionButton];
-    self.usesLanguageCorrectionButton.toolTip = @"Disabling this property returns the raw recognition results, which provides performance benefits but less accurate results.";
+    self.usesLanguageCorrectionButton.toolTip = @"If this option is enabled, when the system language recognition text is a non-preferred language, the API recognition will be called.";
 
     NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
     showQuickLinkLabel.font = font;
@@ -256,7 +256,7 @@
     self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
-    self.usesLanguageCorrectionButton.mm_isOn = configuration.usesLanguageCorrection;
+    self.usesLanguageCorrectionButton.mm_isOn = configuration.languageDetectCorrection;
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
     self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
@@ -386,14 +386,14 @@
         make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
 
-    [self.usesLanguageCorrectionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
 
     [self.usesLanguageCorrectionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.usesLanguageCorrectionLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.usesLanguageCorrectionLabel);
+        make.left.equalTo(self.languageDetectLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.languageDetectLabel);
     }];
 
     [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -498,7 +498,7 @@
 }
 
 - (void)usesLanguageCorrectionButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.usesLanguageCorrection = sender.mm_isOn;
+    EZConfiguration.shared.languageDetectCorrection = sender.mm_isOn;
 }
 
 - (void)showGoogleQuickLinkButtonClicked:(NSButton *)sender {

@@ -10,6 +10,7 @@
 #import "EZBaiduTranslate.h"
 #import "EZAppleService.h"
 #import "EZGoogleTranslate.h"
+#import "EZConfiguration.h"
 
 @interface EZDetectManager ()
 
@@ -78,8 +79,8 @@
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[ EZLanguageEnglish, EZLanguageSimplifiedChinese, EZLanguageTraditionalChinese ]];
 
-        BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];
-        if (isPreferredLanguage) {
+        BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];        
+        if (isPreferredLanguage || !EZConfiguration.shared.languageDetectCorrection) {
             [self handleDetectedLanguage:appleDetectdedLanguage error:error completion:completion];
             return;
         }

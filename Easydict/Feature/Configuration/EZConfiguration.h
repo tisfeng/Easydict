@@ -24,7 +24,7 @@ static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButton
 @property (nonatomic, assign) BOOL autoPlayAudio;
 @property (nonatomic, assign) BOOL autoCopySelectedText;
 @property (nonatomic, assign) BOOL autoCopyOCRText;
-@property (nonatomic, assign) BOOL usesLanguageCorrection;
+@property (nonatomic, assign) BOOL languageDetectCorrection;
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
