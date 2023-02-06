@@ -58,8 +58,8 @@
 "auto_copy_text" = "自动复制:";
 "auto_copy_selected_text" = "自动复制划词选择文本";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
-"ocr_detect" = "OCR 识别:";
-"use_language_correction" = "自动纠正识别语言";
+"language_detect"= "语种识别:";
+"use_language_detect_correction" = "系统语种识别纠正";
 "quick_link" = "快捷功能:";
 "show_google_quick_link" = "显示 Google 快捷图标";
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";

@@ -64,7 +64,7 @@ static EZConfiguration *_instance;
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.usesLanguageCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.languageDetectCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
@@ -139,8 +139,8 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
 }
 
-- (void)setUsesLanguageCorrection:(BOOL)usesLanguageCorrection {
-    _usesLanguageCorrection = usesLanguageCorrection;
+- (void)setLanguageDetectCorrection:(BOOL)usesLanguageCorrection {
+    _languageDetectCorrection = usesLanguageCorrection;
     
     [NSUserDefaults mm_write:@(usesLanguageCorrection) forKey:kUsesLanguageCorrectionKey];
 }

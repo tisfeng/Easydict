@@ -53,8 +53,8 @@
 "auto_copy_text" = "Auto Copy Text:";
 "auto_copy_selected_text" = "Auto Copy Selected Text";
 "auto_copy_ocr_text" = "Auto Copy OCR Text";
-"ocr_detect" = "OCR:";
-"use_language_correction" = "Use Language Correction";
+"language_detect"= "Language Detect:";
+"use_language_detect_correction" = "System Language Detect Correction";
 "quick_link" = "Quick Link:";
 "show_google_quick_link" = "Show Google Search Quick Icon";
 "show_eudic_quick_link" = "Show Eudic Quick Icon (If Installed)";
