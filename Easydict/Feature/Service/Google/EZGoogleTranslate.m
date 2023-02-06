@@ -681,7 +681,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @try {
             if ([responseObject isKindOfClass:NSArray.class]) {
                 NSArray *responseArray = responseObject;
-                if (responseArray.count >= 3) {
+                if (responseArray.count > 2) {
                     NSString *googleFromString = responseArray[2];
                     // !!!: Note: it may be auto if it's unsupported language.
                     EZLanguage googleFromLanguage = [self languageEnumFromCode:googleFromString];
@@ -702,19 +702,22 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                      ]
                      ]
                      */
-                    NSArray *languageArray = responseArray.lastObject;
-                    if ([languageArray isKindOfClass:[NSArray class]]) {
-                        NSArray *languages = languageArray.lastObject;
-                        if ([languages isKindOfClass:[NSArray class]]) {
-                            NSString *language = languages.firstObject;
-                            if ([language isKindOfClass:[NSString class]]) {
-                                EZLanguage ezlanguage = [self languageEnumFromCode:language];
-                                if (![ezlanguage isEqualToString:EZLanguageAuto]) {
-                                    googleFromLanguage = ezlanguage;
+                    if (responseArray.count > 8) {
+                        NSArray *languageArray = responseArray[8];
+                        if ([languageArray isKindOfClass:[NSArray class]]) {
+                            NSArray *languages = languageArray.lastObject;
+                            if ([languages isKindOfClass:[NSArray class]]) {
+                                NSString *language = languages.firstObject;
+                                if ([language isKindOfClass:[NSString class]]) {
+                                    EZLanguage ezlanguage = [self languageEnumFromCode:language];
+                                    if (![ezlanguage isEqualToString:EZLanguageAuto]) {
+                                        googleFromLanguage = ezlanguage;
+                                    }
                                 }
                             }
                         }
                     }
+                    
                     completion(googleFromLanguage, nil);
                     return;
                 }
