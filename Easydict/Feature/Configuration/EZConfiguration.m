@@ -54,7 +54,7 @@ static EZConfiguration *_instance;
 - (void)setup {
     self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
     self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-
+    
     self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoPlayAudio = [[NSUserDefaults mm_read:kAutoPlayAudioKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
@@ -109,65 +109,65 @@ static EZConfiguration *_instance;
 
 - (void)setHideMainWindow:(BOOL)hideMainWindow {
     _hideMainWindow = hideMainWindow;
-
+    
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
 }
 
 - (void)setAutoSnipTranslate:(BOOL)autoSnipTranslate {
     _autoSnipTranslate = autoSnipTranslate;
-
+    
     [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoSnipTranslateKey];
 }
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
     _autoPlayAudio = autoPlayAudio;
-
+    
     [NSUserDefaults mm_write:@(autoPlayAudio) forKey:kAutoPlayAudioKey];
 }
 
 - (void)setAutoCopySelectedText:(BOOL)autoCopySelectedText {
     _autoCopySelectedText = autoCopySelectedText;
-
+    
     [NSUserDefaults mm_write:@(autoCopySelectedText) forKey:kAutoCopySelectedTextKey];
 }
 
 - (void)setAutoCopyOCRText:(BOOL)autoCopyOCRText {
     _autoCopyOCRText = autoCopyOCRText;
-
+    
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
 }
 
 - (void)setUsesLanguageCorrection:(BOOL)usesLanguageCorrection {
     _usesLanguageCorrection = usesLanguageCorrection;
-
+    
     [NSUserDefaults mm_write:@(usesLanguageCorrection) forKey:kUsesLanguageCorrectionKey];
 }
 
 - (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
     _showGoogleQuickLink = showGoogleLink;
-
+    
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
 }
 
 - (void)setShowEudicQuickLink:(BOOL)showEudicLink {
     _showEudicQuickLink = showEudicLink;
-
+    
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
 }
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
     _hideMenuBarIcon = hideMenuBarIcon;
-
+    
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
-
+    
     [self hideMenuBarIcon:hideMenuBarIcon];
 }
 
-- (void)setFixedWindowPosition:(EZFixedWindowPosition)showFixedWindowPosition {
+- (void)setFixedWindowPosition:(EZShowWindowPosition)showFixedWindowPosition {
     _fixedWindowPosition = showFixedWindowPosition;
-
+    
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
 }
 
@@ -176,24 +176,24 @@ static EZConfiguration *_instance;
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
     // 注册启动项
     // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
-
+    
     [self isLoginItemEnabled];
-
+    
     NSString *helperBundleId = [self helperBundleId];
     SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
 }
 
 - (BOOL)isLoginItemEnabled {
     BOOL enabled = NO;
-
+    
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CFArrayRef loginItems = SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
 #pragma clang diagnostic pop
-
+    
     for (id item in (__bridge NSArray *)loginItems) {
         NSString *helperBundleId = [self helperBundleId];
-
+        
         if ([[[item objectForKey:@"Label"] description] isEqualToString:helperBundleId]) {
             enabled = YES;
             break;

@@ -28,7 +28,7 @@ static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButton
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
-@property (nonatomic, assign) EZFixedWindowPosition fixedWindowPosition;
+@property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;

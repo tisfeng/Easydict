@@ -184,9 +184,9 @@ static EZLayoutManager *_instance;
 
 - (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPostionDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                 @(EZFixedWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
-                                 @(EZFixedWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
-                                 @(EZFixedWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil), nil];
+                                 @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
+                                 @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
+                                 @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil), nil];
     
     return dict;
 }
