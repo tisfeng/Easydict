@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 
 @property (nonatomic, strong) NSTextField *fixedWindowPositionLabel;
-@property (nonatomic, strong) NSComboBox *fixedWindowPositionComboBox;
+@property (nonatomic, strong) NSPopUpButton *fixedWindowPositionPopUpButton;
 
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
@@ -145,13 +145,13 @@
     [self.contentView addSubview:fixedWindowPositionLabel];
     self.fixedWindowPositionLabel = fixedWindowPositionLabel;
 
-    self.fixedWindowPositionComboBox = [[NSComboBox alloc] init];
-    self.fixedWindowPositionComboBox.editable = NO;
+    self.fixedWindowPositionPopUpButton = [[NSPopUpButton alloc] init];
     MMOrderedDictionary *fixedWindowPostionDict = [EZLayoutManager.shared fixedWindowPositionDict];
     NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
-    [self.fixedWindowPositionComboBox addItemsWithObjectValues:fixedWindowPositionItems];
-    [self.contentView addSubview:self.fixedWindowPositionComboBox];
-    self.fixedWindowPositionComboBox.delegate = self;
+    [self.fixedWindowPositionPopUpButton addItemsWithTitles:fixedWindowPositionItems];
+    [self.contentView addSubview:self.fixedWindowPositionPopUpButton];
+    self.fixedWindowPositionPopUpButton.target = self;
+    self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
 
 
     NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_audio", nil)];
@@ -261,8 +261,7 @@
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
     self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
 
-    NSString *fixedWindowPosition = [fixedWindowPostionDict objectForKey:@(configuration.fixedWindowPosition)];
-    self.fixedWindowPositionComboBox.stringValue = fixedWindowPosition;
+    [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
 }
 
 - (void)updateViewConstraints {
@@ -345,7 +344,7 @@
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
     }];
 
-    [self.fixedWindowPositionComboBox mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.fixedWindowPositionLabel);
         make.size.mas_equalTo(CGSizeMake(120, 25));
@@ -353,7 +352,7 @@
 
     [self.playAudioLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.fixedWindowPositionComboBox.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.fixedWindowPositionPopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
 
     [self.autoPlayAudioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -513,15 +512,13 @@
     EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
 }
 
-#pragma mark - NSComboBoxDelegate
+- (void)fixedWindowPositionPopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
 
-- (void)comboBoxSelectionDidChange:(NSNotification *)notification {
-    NSComboBox *comboBox = notification.object;
-    NSInteger selectedIndex = comboBox.indexOfSelectedItem;
-    
     MMOrderedDictionary *dict = [EZLayoutManager.shared fixedWindowPositionDict];
     EZConfiguration.shared.fixedWindowPosition = [[dict keyAtIndex:selectedIndex] integerValue];
 }
+
 
 #pragma mark - MASPreferencesViewController
 
