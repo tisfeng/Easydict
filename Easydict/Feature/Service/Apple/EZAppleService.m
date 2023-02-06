@@ -232,7 +232,11 @@
 
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    [self ocrImage:queryModel.ocrImage language:queryModel.userSourceLanguage retry:YES completion:completion];
+    EZLanguage ocrLanguage = queryModel.detectedLanguage;
+    if (![queryModel.userSourceLanguage isEqualToString:EZLanguageAuto]) {
+        ocrLanguage = queryModel.userSourceLanguage;
+    }
+    [self ocrImage:queryModel.ocrImage language:ocrLanguage retry:YES completion:completion];
 }
 
 - (void)ocrImage:(NSImage *)image

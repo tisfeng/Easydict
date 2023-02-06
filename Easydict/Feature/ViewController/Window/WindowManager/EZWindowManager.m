@@ -483,7 +483,7 @@ static EZWindowManager *_instance;
     }
     if ([[NSApplication sharedApplication] keyWindow] == self.floatingWindow) {
         // 执行重试
-        [self.floatingWindow.queryViewController retry];
+        [self.floatingWindow.queryViewController retryQuery];
     }
 }
 
