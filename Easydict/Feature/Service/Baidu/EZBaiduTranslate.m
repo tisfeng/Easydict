@@ -393,7 +393,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict);
-    NSLog(@"baidu API error: %@", error);
+    MMLogInfo(@"baidu API error: %@", error);
     
     [self webViewTranslate:completion];
     

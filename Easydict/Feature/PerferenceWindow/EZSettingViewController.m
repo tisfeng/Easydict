@@ -147,7 +147,7 @@
 
     self.fixedWindowPositionComboBox = [[NSComboBox alloc] init];
     self.fixedWindowPositionComboBox.editable = NO;
-    MMOrderedDictionary *fixedWindowPostionDict = [EZLayoutManager.shared fixedWindowPostionDict];
+    MMOrderedDictionary *fixedWindowPostionDict = [EZLayoutManager.shared fixedWindowPositionDict];
     NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
     [self.fixedWindowPositionComboBox addItemsWithObjectValues:fixedWindowPositionItems];
     [self.contentView addSubview:self.fixedWindowPositionComboBox];
@@ -519,7 +519,7 @@
     NSComboBox *comboBox = notification.object;
     NSInteger selectedIndex = comboBox.indexOfSelectedItem;
     
-    MMOrderedDictionary *dict = [EZLayoutManager.shared fixedWindowPostionDict];
+    MMOrderedDictionary *dict = [EZLayoutManager.shared fixedWindowPositionDict];
     EZConfiguration.shared.fixedWindowPosition = [[dict keyAtIndex:selectedIndex] integerValue];
 }
 

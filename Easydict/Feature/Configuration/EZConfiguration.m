@@ -28,10 +28,12 @@ static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
+static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 
 @implementation EZConfiguration
 
 static EZConfiguration *_instance;
+
 + (instancetype)shared {
     if (!_instance) {
         static dispatch_once_t onceToken;
@@ -169,6 +171,26 @@ static EZConfiguration *_instance;
     _fixedWindowPosition = showFixedWindowPosition;
     
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
+}
+
+
+#pragma mark - Window Frame
+
+- (CGRect)windowFrameWithType:(EZWindowType)windowType {
+    NSString *key = [self windowFrameKey:windowType];
+    NSString *frameString = [NSUserDefaults mm_read:key];
+    CGRect frame = NSRectFromString(frameString);
+    return frame;
+}
+- (void)setWindowFrame:(CGRect)frame windowType:(EZWindowType)windowType {
+    NSString *key = [self windowFrameKey:windowType];
+    NSString *frameString = NSStringFromRect(frame);
+    [NSUserDefaults mm_write:frameString forKey:key];
+}
+
+- (NSString *)windowFrameKey:(EZWindowType)windowType {
+    NSString *key = [NSString stringWithFormat:@"%@_%@", kWindowFrameKey, @(windowType)];
+    return key;
 }
 
 #pragma mark -
