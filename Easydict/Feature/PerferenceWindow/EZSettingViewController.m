@@ -348,7 +348,7 @@
     [self.fixedWindowPositionComboBox mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.fixedWindowPositionLabel);
-        make.size.mas_equalTo(CGSizeMake(100, 25));
+        make.size.mas_equalTo(CGSizeMake(120, 25));
     }];
 
     [self.playAudioLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
