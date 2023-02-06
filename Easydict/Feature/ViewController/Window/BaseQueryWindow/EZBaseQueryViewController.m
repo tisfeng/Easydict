@@ -168,7 +168,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         [self reloadTableViewData:^{
             if (self.queryText.length > 0) {
-                [self startQueryText];
+                [self startQueryInputText];
             }
         }];
     }
@@ -271,7 +271,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
-- (void)startQueryText:(NSString *)text {
+- (void)startQueryInputText:(NSString *)text {
     [self startQueryText:text queyType:EZQueryTypeInput];
 }
 
@@ -300,6 +300,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"startQueryImage");
     
     self.queryModel.ocrImage = image;
+    self.queryModel.queryType = EZQueryTypeOCR;
     
     [self.queryView startLoadingAnimation:YES];
     
@@ -320,7 +321,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
-            [self startQueryText:self.queryText queyType:EZQueryTypeOCR];
+            [self startQueryText];
         }
         
         if (EZConfiguration.shared.autoCopyOCRText) {
@@ -329,8 +330,8 @@ static NSString *const EZColumnId = @"EZColumnId";
     }];
 }
 
-- (void)retry {
-    NSLog(@"retry");
+- (void)retryQuery {
+    NSLog(@"retry query");
     [self startQueryWithType:self.queryModel.queryType];
 }
 
@@ -349,9 +350,13 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 #pragma mark - Query Methods
 
-/// Close all result view, then query.
 - (void)startQueryText {
-    [self startQueryText:self.queryModel.queryText];
+    [self startQueryText:self.queryText queyType:self.queryModel.queryType];
+}
+
+/// Close all result view, then query.
+- (void)startQueryInputText {
+    [self startQueryInputText:self.queryModel.queryText];
 }
 
 - (void)startQueryWithType:(EZQueryType)queryType {
@@ -463,7 +468,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
     //        NSLog(@"tableView for row: %ld", row);
     
-    // TODO: should reuse cell.
     if (row == 0) {
         self.queryView = [self createQueryView];
         self.queryView.windowType = self.windowType;
@@ -487,7 +491,7 @@ static NSString *const EZColumnId = @"EZColumnId";
             self.queryModel.userTargetLanguage = to;
             self.queryModel.detectedLanguage = EZLanguageAuto;
             
-            [self retry];
+            [self retryQuery];
         }];
         return selectLanguageCell;
     }
@@ -837,7 +841,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        [self startQueryText:text];
+        [self startQueryInputText:text];
     }];
     
     [queryView setPlayAudioBlock:^(NSString *text) {
@@ -870,7 +874,8 @@ static NSString *const EZColumnId = @"EZColumnId";
         EZLanguage detectedLanguage = self.queryModel.detectedLanguage;
         if (![detectedLanguage isEqualToString:language]) {
             self.queryModel.detectedLanguage = language;
-            [self startQueryText];
+            [self retryQuery];
+
             [self updateSelectLanguageCell];
             
             NSDictionary *dict = @{
@@ -951,7 +956,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [resultView setClickTextBlock:^(NSString *_Nonnull word) {
         mm_strongify(self);
-        [self startQueryText:word];
+        [self startQueryInputText:word];
     }];
     
     // !!!: Avoid capture result, the block paramter result is different from former result.
