@@ -67,7 +67,7 @@
 "hide_menu_bar_icon" = "隐藏菜单栏图标";
 "fixed_window_position" = "侧悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
-"fixed_window_position_mouse" = "鼠标位置";
+"fixed_window_position_word" = "划词位置";
 "fixed_window_position_former" = "上次位置";
 
 "mini_window" = "迷你窗口";

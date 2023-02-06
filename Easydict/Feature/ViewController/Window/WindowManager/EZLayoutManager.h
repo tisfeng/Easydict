@@ -51,7 +51,7 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
 - (NSString *)windowName:(EZWindowType)type;
 
-- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPostionDict;
+- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
 
 @end
 

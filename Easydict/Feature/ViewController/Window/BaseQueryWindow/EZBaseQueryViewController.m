@@ -116,10 +116,12 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         [self reloadTableViewDataWithLock:NO completion:^{
             // Update query view height manually, and update cell height.
-            self.queryModel.queryViewHeight = [self.queryView heightOfQueryView];
-            
-            NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
-            [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+            CGFloat queryViewHeight = [self.queryView heightOfQueryView];
+            if (queryViewHeight) {
+                self.queryModel.queryViewHeight = queryViewHeight;
+                NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
+                [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
+            }
             
             [self updateWindowViewHeight];
         }];

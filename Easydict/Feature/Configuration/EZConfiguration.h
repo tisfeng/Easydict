@@ -33,8 +33,10 @@ static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButton
 @property (nonatomic, assign) EZLanguage from;
 @property (nonatomic, assign) EZLanguage to;
 
-
 + (instancetype)shared;
+
+- (CGRect)windowFrameWithType:(EZWindowType)windowType;
+- (void)setWindowFrame:(CGRect)frame windowType:(EZWindowType)windowType;
 
 @end
 
