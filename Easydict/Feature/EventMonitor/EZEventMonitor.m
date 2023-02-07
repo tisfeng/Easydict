@@ -11,6 +11,7 @@
 #import "EZWindowManager.h"
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
+#import "EZLog.h"
 
 static CGFloat kDismissPopButtonDelayTime = 1.0;
 
@@ -117,13 +118,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
     
-    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
+        [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
     //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:NO];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString *selectedText = [self getPasteboardText];
         self.selectedText = selectedText;
-        MMLogInfo(@"Key getText: %@", selectedText);
+        MMLogInfo(@"--> Key getText: %@", selectedText);
         
         [lastText copyToPasteboard];
         
@@ -137,9 +138,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSString *text = [pasteboard stringForType:NSPasteboardTypeString];
     return text;
 }
-
-/// Return lastest NSPasteboard string text.
-
 
 /// Use NSEvent keyEventWithType to post keyboard event Cmd + C
 - (void)postKeyboardEventCmdC {
@@ -236,7 +234,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             selectedText = (__bridge NSString *)(selectedTextValue);
             self.selectedText = selectedText;
             self.endPoint = NSEvent.mouseLocation;
-            MMLogInfo(@"--> Auxiliary selected text: %@", selectedText);
+            MMLogInfo(@"--> Auxiliary getText: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
                 MMLogInfo(@"No Value: %d", getSelectedTextError);
@@ -508,6 +506,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         
         if (text.length > 0) {
             [self handleSelectedText:text];
+            [self logSelectedText:text type:@"auxiliary"];
             return;
         }
         
@@ -515,6 +514,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         if (error == kAXErrorNoValue) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 [self handleSelectedText:text];
+                [self logSelectedText:text type:@"shortcut"];
             }];
         }
     }];
@@ -530,6 +530,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }
 }
 
+#pragma mark -
 
 // Get the frontmost window
 - (void)getFrontmostWindowInfo:(void (^)(NSDictionary *_Nullable))completion {
@@ -611,6 +612,23 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
     
     return NO;
+}
+
+- (void)logSelectedText:(NSString *)text type:(NSString *)type {
+    NSRunningApplication *application = [self getFrontmostApp];
+    NSString *appName = application.localizedName;
+    NSString *bundleID = application.bundleIdentifier;
+    NSString *textLength = [EZLog textLengthRange:text];
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"text" : text,
+        @"type" : type,
+        @"textLength" : textLength,
+        @"appName" : appName,
+        @"bundleID" : bundleID,
+    }];
+    
+    [EZLog logEventWithName:@"getSelectedText" parameters:dict];
 }
 
 @end

@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)logQuery:(EZQueryModel *)model;
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict;
 
++ (NSString *)textLengthRange:(NSString *)text;
+
 @end
 
 NS_ASSUME_NONNULL_END
