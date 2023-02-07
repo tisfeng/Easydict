@@ -111,20 +111,68 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
     
+    NSString *lastText = [self getPasteboardText];
+    
     // Simulate keyboard event: Cmd + C
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
     
+    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
+    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:NO];
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-        NSString *selectedText = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
+        NSString *selectedText = [self getPasteboardText];
         self.selectedText = selectedText;
         MMLogInfo(@"Key getText: %@", selectedText);
         
-        [pasteboard clearContents];
+        [lastText copyToPasteboard];
         
         completion(selectedText);
     });
+}
+
+// Return last NSPasteboard string text.
+- (nullable NSString *)getPasteboardText {
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSString *text = [pasteboard stringForType:NSPasteboardTypeString];
+    return text;
+}
+
+/// Return lastest NSPasteboard string text.
+
+
+/// Use NSEvent keyEventWithType to post keyboard event Cmd + C
+- (void)postKeyboardEventCmdC {
+    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
+    [NSApp postEvent:event atStart:YES];
+    
+    NSEvent *eventUp = [NSEvent keyEventWithType:NSEventTypeKeyUp location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
+    [NSApp postEvent:eventUp atStart:YES];
+}
+
+
+- (void)postKeyboardEvent:(NSEventModifierFlags)modifierFlags keyCode:(CGKeyCode)keyCode keyDown:(BOOL)keyDown {
+    NSString *key = [self stringFromKeyCode:keyCode];
+    
+    [self getFrontmostWindowInfo:^(NSDictionary *dict) {
+        NSNumber *windowID = dict[@"kCGWindowNumber"];
+        NSEvent *event = [NSEvent keyEventWithType:keyDown ? NSEventTypeKeyDown : NSEventTypeKeyUp location:self.endPoint modifierFlags:modifierFlags timestamp:0 windowNumber:windowID.integerValue context:nil characters:key charactersIgnoringModifiers:key isARepeat:NO keyCode:keyCode];
+        [NSApp postEvent:event atStart:YES];
+    }];
+}
+
+/// return nsstring from keycode
+- (NSString *)stringFromKeyCode:(CGKeyCode)keyCode {
+    TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardInputSource();
+    CFDataRef uchr = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
+    const UCKeyboardLayout *keyboardLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(uchr);
+    UInt32 keysDown = 0;
+    UniCharCount maxStringLength = 255;
+    UniCharCount actualStringLength = 0;
+    UniChar unicodeString[maxStringLength];
+    UCKeyTranslate(keyboardLayout, keyCode, kUCKeyActionDown, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &keysDown, maxStringLength, &actualStringLength, unicodeString);
+    CFRelease(currentKeyboard);
+    return [NSString stringWithCharacters:unicodeString length:actualStringLength];
 }
 
 
@@ -484,13 +532,13 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 
 // Get the frontmost window
-- (void)getFrontmostWindow:(void (^)(NSString *_Nullable))completion {
+- (void)getFrontmostWindowInfo:(void (^)(NSDictionary *_Nullable))completion {
     NSArray *arr = (NSArray *)CFBridgingRelease(CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID));
     NSString *frontAppName = [self getFrontmostApp].localizedName;
     for (NSDictionary *dict in arr) {
         if ([dict[@"kCGWindowOwnerName"] isEqualToString:frontAppName]) {
             NSLog(@"dict: %@", dict);
-            completion(dict[@"kCGWindowName"]);
+            completion(dict);
             return;
         }
     }
