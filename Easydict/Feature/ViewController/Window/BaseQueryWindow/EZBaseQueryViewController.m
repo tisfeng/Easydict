@@ -762,15 +762,17 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion {
-    [self.detectManager detectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
-        // `self.queryModel.detectedLanguage` has already been updated inside the method.
-        
-        [self updateQueryViewModelAndDetectedLanguage:queryModel];
-        
-        if (completion) {
-            completion();
-        }
-    }];
+    if (self.queryText.length) {
+        [self.detectManager detectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+            // `self.queryModel.detectedLanguage` has already been updated inside the method.
+            
+            [self updateQueryViewModelAndDetectedLanguage:queryModel];
+            
+            if (completion) {
+                completion();
+            }
+        }];
+    }
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
