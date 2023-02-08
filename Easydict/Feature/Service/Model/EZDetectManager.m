@@ -24,7 +24,7 @@
 + (instancetype)managerWithModel:(EZQueryModel *)model {
     EZDetectManager *manager = [[EZDetectManager alloc] init];
     manager.queryModel = model;
-
+    
     return manager;
 }
 
@@ -56,7 +56,7 @@
             completion(self.queryModel, error);
             return;
         }
-
+        
         self.queryModel.queryText = ocrResult.mergedText;
         [self detectText:completion];
     }];
@@ -67,42 +67,59 @@
     NSString *queryText = self.queryModel.queryText;
     if (queryText.length == 0) {
         NSLog(@"detectText cannot be nil");
-
+        
         // !!!: There are some problems with the system OCR, for example, it may return nil when recognizing Japanese.
         NSError *error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
         completion(self.queryModel, error);
         return;
     }
-
+    
     [self.detectTextService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager systemPreferredLanguages] mutableCopy];
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[ EZLanguageEnglish, EZLanguageSimplifiedChinese, EZLanguageTraditionalChinese ]];
-
-        BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];        
-        if (isPreferredLanguage || !EZConfiguration.shared.languageDetectCorrection) {
+        
+        EZLanguageDetectOptimize languageDetectOptimize = EZConfiguration.shared.languageDetectOptimize;
+        
+        BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];
+        if (isPreferredLanguage || languageDetectOptimize == EZLanguageDetectOptimizeNone) {
             [self handleDetectedLanguage:appleDetectdedLanguage error:error completion:completion];
             return;
         }
-
-        // If language is not preferred, try to use google detect.
-        [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
-            if (!error) {
-                NSLog(@"google detected: %@", language);
-                [self handleDetectedLanguage:language error:error completion:completion];
-                return;
-            }
-
-            // If google detect failed, use baidu detect.
+        
+        void (^baiduDetectBlock)(NSString *) = ^(NSString *queryText) {
             [self.baiduService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
-                NSLog(@"baidu detected: %@", language);
                 EZLanguage detectedLanguage = appleDetectdedLanguage;
                 if (!error) {
                     detectedLanguage = language;
+                    NSLog(@"baidu detected: %@", language);
+                } else {
+                    MMLogInfo(@"baidu detect error: %@", error);
                 }
                 [self handleDetectedLanguage:detectedLanguage error:error completion:completion];
             }];
-        }];
+        };
+        
+        if (languageDetectOptimize == EZLanguageDetectOptimizeBaidu) {
+            baiduDetectBlock(queryText);
+            return;
+        }
+        
+        if (languageDetectOptimize == EZLanguageDetectOptimizeGoogle) {
+            [self.googleService detectText:queryText completion:^(EZLanguage _Nonnull language, NSError *_Nullable error) {
+                if (!error) {
+                    NSLog(@"google detected: %@", language);
+                    [self handleDetectedLanguage:language error:error completion:completion];
+                    return;
+                }
+                
+                MMLogInfo(@"google detect error: %@", error);
+                
+                // If google detect failed, use baidu detect.
+                baiduDetectBlock(queryText);
+            }];
+            return;
+        }
     }];
 }
 
@@ -119,21 +136,21 @@
         NSLog(@"image cannot be nil");
         return;
     }
-
+    
     [self.ocrService ocr:self.queryModel completion:completion];
 }
 
 /// Check if has proxy.
 - (BOOL)checkIfHasProxy {
     CFDictionaryRef proxies = SCDynamicStoreCopyProxies(NULL);
-
+    
     CFTypeRef httpProxy = CFDictionaryGetValue(proxies, kSCPropNetProxiesHTTPProxy);
     NSNumber *httpEnable = (__bridge NSNumber *)(CFDictionaryGetValue(proxies, kSCPropNetProxiesHTTPEnable));
-
+    
     if (httpProxy && httpEnable && [httpEnable integerValue]) {
         return YES;
     }
-
+    
     return NO;
 }
 
