@@ -45,7 +45,7 @@
 
 "check_update" = "更新:";
 "auto_check_update" = "自动检查应用程序更新";
-"show_icon" = "显示查询图标:";
+"show_query_icon" = "显示查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
@@ -58,8 +58,10 @@
 "auto_copy_text" = "自动复制:";
 "auto_copy_selected_text" = "自动复制划词选择文本";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
-"language_detect"= "语种识别:";
-"use_language_detect_correction" = "系统语种识别纠正";
+"language_detect_optimize"= "语种识别:";
+"language_detect_optimize_none" = "仅使用系统语种识别";
+"language_detect_optimize_baidu" = "使用百度语种识别进行优化";
+"language_detect_optimize_google" = "使用 Google 语种识别进行优化";
 "quick_link" = "快捷功能:";
 "show_google_quick_link" = "显示 Google 快捷图标";
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";

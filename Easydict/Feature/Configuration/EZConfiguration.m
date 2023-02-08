@@ -23,7 +23,7 @@ static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTransl
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
-static NSString *const kUsesLanguageCorrectionKey = @"EZConfiguration_kUsesLanguageCorrectionKey";
+static NSString *const kLanguageDetectOptimizeTypeKey = @"EZConfiguration_kLanguageDetectOptimizeTypeKey";
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
@@ -64,7 +64,7 @@ static EZConfiguration *_instance;
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.languageDetectCorrection = [[NSUserDefaults mm_read:kUsesLanguageCorrectionKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.languageDetectOptimize = [[NSUserDefaults mm_read:kLanguageDetectOptimizeTypeKey defaultValue:@(0) checkClass:NSNumber.class] integerValue];
     self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
@@ -139,13 +139,14 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
 }
 
-- (void)setLanguageDetectCorrection:(BOOL)usesLanguageCorrection {
-    _languageDetectCorrection = usesLanguageCorrection;
+- (void)setLanguageDetectOptimize:(EZLanguageDetectOptimize)languageDetectOptimizeType {
+    _languageDetectOptimize = languageDetectOptimizeType;
     
-    [NSUserDefaults mm_write:@(usesLanguageCorrection) forKey:kUsesLanguageCorrectionKey];
+    [NSUserDefaults mm_write:@(languageDetectOptimizeType) forKey:kLanguageDetectOptimizeTypeKey];
 }
 
-- (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
+- (void)
+setShowGoogleQuickLink:(BOOL)showGoogleLink {
     _showGoogleQuickLink = showGoogleLink;
     
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];

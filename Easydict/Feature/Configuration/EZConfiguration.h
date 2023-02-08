@@ -14,6 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
+typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
+    EZLanguageDetectOptimizeNone = 0,
+    EZLanguageDetectOptimizeBaidu = 1,
+    EZLanguageDetectOptimizeGoogle = 2,
+};
+
 @interface EZConfiguration : NSObject
 
 @property (nonatomic, assign) BOOL autoSelectText;
@@ -24,7 +30,7 @@ static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButton
 @property (nonatomic, assign) BOOL autoPlayAudio;
 @property (nonatomic, assign) BOOL autoCopySelectedText;
 @property (nonatomic, assign) BOOL autoCopyOCRText;
-@property (nonatomic, assign) BOOL languageDetectCorrection;
+@property (nonatomic, assign) EZLanguageDetectOptimize languageDetectOptimize;
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
