@@ -14,10 +14,11 @@
 #import "EZLog.h"
 
 static CGFloat kDismissPopButtonDelayTime = 1.0;
+static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
 
 static NSInteger kRecordEventCount = 3;
 
-static NSInteger kCommandEventCount = 4;
+static NSInteger kCommandKeyEventCount = 4;
 static CGFloat kDoublCommandInterval = 0.5;
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
@@ -38,7 +39,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // recored last 3 events
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *recordEvents;
 
-@property (nonatomic, strong) NSMutableArray<NSEvent *> *commandEvents;
+@property (nonatomic, strong) NSMutableArray<NSEvent *> *commandKeyEvents;
 
 @end
 
@@ -48,7 +49,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (instancetype)init {
     if (self = [super init]) {
         _recordEvents = [NSMutableArray array];
-        _commandEvents = [NSMutableArray array];
+        _commandKeyEvents = [NSMutableArray array];
         //        [self monitorForEvents];
         //        [self checkAppIsTrusted];
     }
@@ -118,10 +119,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
     
-        [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
+    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
     //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:NO];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString *selectedText = [self getPasteboardText];
         self.selectedText = selectedText;
         MMLogInfo(@"--> Key getText: %@", selectedText);
@@ -339,15 +340,16 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             self.startPoint = NSEvent.mouseLocation;
             [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
             
-            // check if it is a double click
+            // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
+            
+            // Check if it is a double or triple click.
             if (event.clickCount == 2) {
-                //                    NSLog(@"double click");
-                
-                // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self getSelectedText:NO];
-                });
-                
+                // Delay more time, in case it is a triple click, we don't want to get selected text twice.
+                [self delayGetSelectedText:0.2];
+            } else if (event.clickCount == 3) {
+                // Cancel former double click selected text.
+                [self cancelDelayGetSelectedText];
+                [self delayGetSelectedText:kDelayGetSelectedTextTime];
             } else {
                 [self dismissPopButton];
             }
@@ -377,12 +379,11 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
-                [self updateCommandEvents:event];
+                [self updateCommandKeyEvents:event];
                 if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
                     self.doubleCommandBlock();
                 }
             }
-            
             break;
         }
             
@@ -447,20 +448,20 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return YES;
 }
 
-- (void)updateCommandEvents:(NSEvent *)event {
-    if (self.commandEvents.count >= kCommandEventCount) {
-        [self.commandEvents removeObjectAtIndex:0];
+- (void)updateCommandKeyEvents:(NSEvent *)event {
+    if (self.commandKeyEvents.count >= kCommandKeyEventCount) {
+        [self.commandKeyEvents removeObjectAtIndex:0];
     }
-    [self.commandEvents addObject:event];
+    [self.commandKeyEvents addObject:event];
 }
 
 - (BOOL)checkIfDoubleCommandEvents {
-    if (self.commandEvents.count < kCommandEventCount) {
+    if (self.commandKeyEvents.count < kCommandKeyEventCount) {
         return NO;
     }
     
-    NSEvent *firstEvent = self.commandEvents.firstObject;
-    NSEvent *lastEvent = self.commandEvents.lastObject;
+    NSEvent *firstEvent = self.commandKeyEvents.firstObject;
+    NSEvent *lastEvent = self.commandKeyEvents.lastObject;
     
     NSTimeInterval interval = lastEvent.timestamp - firstEvent.timestamp;
     if (interval < kDoublCommandInterval) {
@@ -528,6 +529,18 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         self.selectedTextBlock(trimText);
         [self cancelDismissPop];
     }
+}
+
+#pragma mark -
+
+/// Delay get selected text.
+- (void)delayGetSelectedText:(NSTimeInterval)delayTime {
+    [self performSelector:@selector(getSelectedText:) withObject:@(NO) afterDelay:delayTime];
+}
+
+/// Cancel delay get selected text.
+- (void)cancelDelayGetSelectedText {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSelectedText:) object:@(NO)];
 }
 
 #pragma mark -
@@ -614,7 +627,11 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return NO;
 }
 
-- (void)logSelectedText:(NSString *)text type:(NSString *)type {
+- (void)logSelectedText:(nullable NSString *)text type:(NSString *)type {
+    if (!text.length) {
+        return;
+    }
+    
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *appName = application.localizedName;
     NSString *bundleID = application.bundleIdentifier;
