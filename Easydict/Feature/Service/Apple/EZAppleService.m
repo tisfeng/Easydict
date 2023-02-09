@@ -210,8 +210,8 @@
     
     [recognizer processString:text];
     
-    NSDictionary<NLLanguage, NSNumber *> *languageDict = [recognizer languageHypothesesWithMaximum:5];
-    NSLog(@"language dict: %@", languageDict);
+    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
+    NSLog(@"system probabilities:: %@", languageProbabilityDict);
     
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
     NSLog(@"dominant Language: %@", dominantLanguage);
@@ -219,7 +219,7 @@
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
     
-    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageDict];
+    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict];
     
     if ([self isAlphabet:text]) {
         mostConfidentLanguage = EZLanguageEnglish;
@@ -445,10 +445,10 @@
     NSDictionary *customHints = @{
         NLLanguageEnglish : @(3.0),
         NLLanguageSimplifiedChinese : @(0.8),
+        NLLanguageTraditionalChinese : @(0.6),
         NLLanguageJapanese : @(0.5),
         NLLanguageFrench : @(0.25), // const, ex, delimiter
         NLLanguageKorean : @(0.2),
-        NLLanguageTraditionalChinese : @(0.2),
         NLLanguageItalian : @(0.1),     // via
         NLLanguageSpanish : @(0.1),     // favor
         NLLanguageGerman : @(0.05),     // usa, sender
@@ -526,7 +526,7 @@
         }
     }
     
-    NSLog(@"language probabilities: %@", languageProbabilities);
+    NSLog(@"final language probabilities: %@", languageProbabilities);
     
     NSArray<NLLanguage> *sortedLanguages = [languageProbabilities keysSortedByValueUsingComparator:^NSComparisonResult(NSNumber *_Nonnull obj1, NSNumber *_Nonnull obj2) {
         return [obj2 compare:obj1];
