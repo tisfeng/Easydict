@@ -55,7 +55,7 @@
     EZLanguage oldDetectedLanguage = self.detectedLanguage;
     _detectedLanguage = detectedLanguage;
     
-    if ([detectedLanguage isEqualToString: EZLanguageAuto]) {
+    if (!self.showAutoLanguage && [detectedLanguage isEqualToString: EZLanguageAuto]) {
         [self setAnimatedHidden:YES];
         return;
     }

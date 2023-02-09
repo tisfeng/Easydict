@@ -88,4 +88,4 @@
 "error_unsupport_language" = "不支持的语言";
 "error_unknown" = "未知错误";
 "translate_failed" = "翻译失败，";
-"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n\n⚠️ 请手动选择检测语言再次尝试。";
+"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择检测语言再次尝试。";
