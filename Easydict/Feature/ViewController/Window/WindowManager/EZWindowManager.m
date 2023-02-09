@@ -73,6 +73,11 @@ static EZWindowManager *_instance;
     mm_weakify(self);
     [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
         mm_strongify(self);
+        
+        if ([self hasEasydictRunningInDebugMode]) {
+            return;
+        }
+        
         self.selectedText = selectedText;
         
         // !!!: Record current selected start and end point, eventMonitor's startPoint will change every valid event.
@@ -226,6 +231,10 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
+//    if ([self hasEasydictRunningInDebugMode]) {
+//        return;
+//    }
+    
     CGPoint location = CGPointZero;
     if (atLastPoint) {
         location = [[EZLayoutManager shared] windowFrameWithType:type].origin;
@@ -429,6 +438,10 @@ static EZWindowManager *_instance;
 }
 
 - (void)snipTranslate {
+//    if ([self hasEasydictRunningInDebugMode]) {
+//        return;
+//    }
+    
     [self saveFrontmostApplication];
     
     if (Snip.shared.isSnapshotting) {
@@ -514,6 +527,29 @@ static EZWindowManager *_instance;
         [self.lastFrontmostApplication activateWithOptions:NSApplicationActivateAllWindows];
     }
     self.lastFrontmostApplication = nil;
+}
+
+/// For easy debugging, when Easydict is running in debug mode, we don't show Easydict release App.
+- (BOOL)hasEasydictRunningInDebugMode {
+    BOOL isDebugRunning = [self isAppRunningWithBundleId:EZDebugBundleId];
+    NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    BOOL isReleasedEasydict = [bundleId isEqualToString:EZBundleId];
+    if (isDebugRunning && isReleasedEasydict) {
+        NSLog(@"Easydict is running in debug mode, so do not show release App.");
+        return YES;
+    }
+    return NO;
+}
+
+/// Check app is running with bundleID.
+- (BOOL)isAppRunningWithBundleId:(NSString *)bundleID {
+    NSArray *runningApps = [NSWorkspace sharedWorkspace].runningApplications;
+    for (NSRunningApplication *app in runningApps) {
+        if ([app.bundleIdentifier isEqualToString:bundleID]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end
