@@ -131,9 +131,10 @@ NSString *getPartName(NSString *part) {
     self.normalResults = nil;
     self.wordResult = nil;
     self.error = nil;
-    self.serviceType = EZServiceTypeBaidu;
+    self.serviceType = EZServiceTypeYoudao;
     self.service = nil;
     self.isShowing = NO;
+    self.isLoading = NO;
     self.viewHeight = 0;
     self.queryText = @"";
     self.from = EZLanguageAuto;

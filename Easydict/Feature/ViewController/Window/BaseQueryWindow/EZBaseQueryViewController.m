@@ -443,7 +443,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [self updateResultLoadingAnimation:result];
     
-//    NSLog(@"query service: %@", service.serviceType);
+    //    NSLog(@"query service: %@", service.serviceType);
     
     [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
@@ -560,9 +560,15 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)closeAllResultView:(void (^)(void))completionHandler {
-    NSArray *closingResults = [self allShowingResults];
-    [self closeAllShowingResults];
-    [self updateCellWithResults:closingResults reloadData:YES completionHandler:completionHandler];
+    // !!!: Need to update all result cells, even it's not showing, it may show error image.
+    NSMutableArray *allResults = [NSMutableArray array];
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
+        [result reset];
+        service.result = result;
+        [allResults addObject:result];
+    }
+    [self updateCellWithResults:allResults reloadData:YES completionHandler:completionHandler];
 }
 
 
@@ -879,7 +885,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         if (![detectedLanguage isEqualToString:language]) {
             self.queryModel.detectedLanguage = language;
             [self retryQuery];
-
+            
             [self updateSelectLanguageCell];
             
             NSDictionary *dict = @{
