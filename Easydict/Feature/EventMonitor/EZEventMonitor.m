@@ -136,7 +136,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Return last NSPasteboard string text.
 - (nullable NSString *)getPasteboardText {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSString *text = [pasteboard stringForType:NSPasteboardTypeString];
+    // !!!: Do not use [pasteboard stringForType:NSPasteboardTypeString], it will get the last text even current copy value is nil.
+    NSString *text = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
     return text;
 }
 
