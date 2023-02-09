@@ -183,12 +183,16 @@
         [self setAlertMessageHidden:NO];
         self.alertTextField.stringValue = message;
         [self.clearButton setAnimatedHidden:NO];
+        
+        self.detectButton.showAutoLanguage = YES;
+        [self updateDetectButton];
     }
 }
 
 - (void)setAlertMessageHidden:(BOOL)hidden {
     self.alertTextField.hidden = hidden;
     self.textView.editable = hidden;
+    self.detectButton.showAutoLanguage = NO;
 }
 
 #pragma mark - Rewrite
