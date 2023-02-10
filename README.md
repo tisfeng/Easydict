@@ -2,7 +2,19 @@
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
-<p align="center">🇨🇳 🇬🇧 🇯🇵 🇰🇷 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇷🇺 🇩🇪 🇸🇦 🇸🇪 🇳🇱 🇷🇴 🇹🇭 🇸🇰 🇭🇺 🇬🇷 🇩🇰 🇫🇮 🇵🇱 🇨🇿 🇹🇷 🇱🇹 🇱🇻 🇺🇦 🇧🇬 🇮🇩 🇲🇾 🇸🇮 🇪🇪 🇻🇳 🇮🇷 🇵🇰 🇹🇱 🇹🇦 🇮🇳 🇵🇭 🇫🇮 🇰🇭 🇱🇦 🇧🇳 🇲🇲 🇳🇴 🇷🇸 🇭🇷 🇲🇳 🇮🇱 </p>
+<p align="center"> 
+<a href="https://github.com/tisfeng/Easydict/blob/main/README.md">
+        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
+            alt="中文 README"></a>
+<a href="https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md">
+        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
+            alt="English README"></a>
+<a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/tisfeng/easydict"
+            alt="License"></a>
+<a href="https://github.com/tisfeng/Easydict/releases">
+        <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
+            alt="Downloads"></a>
 </p>
 
 ## Easydict 易词典[【English】](https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md)
@@ -143,7 +155,8 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
 - `Enter`: 输入文本后，按下 Enter 开始查询。
 - `Shift + Enter`: 输入换行。
-- `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。若电脑上安装了欧路词典 App，则会在 Safari 图标左边显示一个 Eudic 图标，此时 `Cmd + Enter` 动作为打开欧路词典 App 查询。
+- `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。
+- `Opt + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
 
 ## 相关项目
 
