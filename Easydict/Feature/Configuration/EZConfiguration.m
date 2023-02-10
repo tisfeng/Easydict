@@ -12,7 +12,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import "EZStatusItem.h"
 
-static NSString *const kEasydictHelperBundleId = @"com.izual.easydictHelper";
+static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
@@ -197,13 +197,29 @@ setShowGoogleQuickLink:(BOOL)showGoogleLink {
 #pragma mark -
 
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
-    // 注册启动项
-    // https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
-    
-    [self isLoginItemEnabled];
+    //    [self isLoginItemEnabled];
     
     NSString *helperBundleId = [self helperBundleId];
-    SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
+    
+    NSError *error;
+    if (@available(macOS 13.0, *)) {
+        // Ref: https://www.bilibili.com/read/cv19361413
+        SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
+        if (launchAtStartup) {
+            [appService registerAndReturnError:&error];
+        } else {
+            [appService unregisterAndReturnError:&error];
+        }
+        if (error) {
+            MMLogInfo(@"SMAppService error: %@", error);
+        }
+    } else {
+        // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
+        BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
+        if (!success) {
+            MMLogInfo(@"SMLoginItemSetEnabled error");
+        }
+    }
 }
 
 - (BOOL)isLoginItemEnabled {
@@ -214,9 +230,8 @@ setShowGoogleQuickLink:(BOOL)showGoogleLink {
     CFArrayRef loginItems = SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
 #pragma clang diagnostic pop
     
+    NSString *helperBundleId = [self helperBundleId];
     for (id item in (__bridge NSArray *)loginItems) {
-        NSString *helperBundleId = [self helperBundleId];
-        
         if ([[[item objectForKey:@"Label"] description] isEqualToString:helperBundleId]) {
             enabled = YES;
             break;
