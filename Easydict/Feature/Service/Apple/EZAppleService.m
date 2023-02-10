@@ -445,8 +445,8 @@
     NSDictionary *customHints = @{
         NLLanguageEnglish : @(3.0),
         NLLanguageSimplifiedChinese : @(0.8),
-        NLLanguageTraditionalChinese : @(0.6),
         NLLanguageJapanese : @(0.5),
+        NLLanguageTraditionalChinese : @(0.4),
         NLLanguageFrench : @(0.25), // const, ex, delimiter
         NLLanguageKorean : @(0.2),
         NLLanguageItalian : @(0.1),     // via
