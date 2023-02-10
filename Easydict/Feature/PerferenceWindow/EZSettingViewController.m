@@ -28,6 +28,9 @@
 @property (nonatomic, strong) NSTextField *showQueryIconLabel;
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 
+@property (nonatomic, strong) NSTextField *languageDetectLabel;
+@property (nonatomic, strong) NSPopUpButton *languageDetectOptimizePopUpButton;
+
 @property (nonatomic, strong) NSTextField *fixedWindowPositionLabel;
 @property (nonatomic, strong) NSPopUpButton *fixedWindowPositionPopUpButton;
 
@@ -41,8 +44,6 @@
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
 @property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
 
-@property (nonatomic, strong) NSTextField *languageDetectLabel;
-@property (nonatomic, strong) NSPopUpButton *languageDetectOptimizePopUpButton;
 
 @property (nonatomic, strong) NSTextField *showQuickLinkLabel;
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
@@ -71,6 +72,8 @@
     [self setupUI];
     
     self.leftMargin = 120;
+    self.rightMargin = 100;
+    
     [self updateViewSize];
 }
 
@@ -140,6 +143,25 @@
         self.rightmostView = self.showQueryIconButton;
     }
     
+    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect_optimize", nil)];
+    usesLanguageCorrectionLabel.font = font;
+    [self.contentView addSubview:usesLanguageCorrectionLabel];
+    self.languageDetectLabel = usesLanguageCorrectionLabel;
+    
+
+    self.languageDetectOptimizePopUpButton = [[NSPopUpButton alloc] init];
+    
+    NSArray *languageDetectOptimizeItems = @[
+        NSLocalizedString(@"language_detect_optimize_none", nil),
+        NSLocalizedString(@"language_detect_optimize_baidu", nil),
+        NSLocalizedString(@"language_detect_optimize_google", nil),
+    ];
+    [self.languageDetectOptimizePopUpButton addItemsWithTitles:languageDetectOptimizeItems];
+    [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
+    self.languageDetectOptimizePopUpButton.target = self;
+    self.languageDetectOptimizePopUpButton.action = @selector(languageDetectOptimizePopUpButtonClicked:);
+    
+    
     NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:NSLocalizedString(@"fixed_window_position", nil)];
     fixedWindowPositionLabel.font = font;
     [self.contentView addSubview:fixedWindowPositionLabel];
@@ -186,27 +208,6 @@
     self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyOCRTextButton];
     
-    NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect_optimize", nil)];
-    usesLanguageCorrectionLabel.font = font;
-    [self.contentView addSubview:usesLanguageCorrectionLabel];
-    self.languageDetectLabel = usesLanguageCorrectionLabel;
-    
-    
-    self.languageDetectOptimizePopUpButton = [[NSPopUpButton alloc] init];
-    
-    NSArray *languageDetectOptimizeItems = @[
-        NSLocalizedString(@"language_detect_optimize_none", nil),
-        NSLocalizedString(@"language_detect_optimize_baidu", nil),
-        NSLocalizedString(@"language_detect_optimize_google", nil),
-    ];
-    [self.languageDetectOptimizePopUpButton addItemsWithTitles:languageDetectOptimizeItems];
-    [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
-    self.languageDetectOptimizePopUpButton.target = self;
-    self.languageDetectOptimizePopUpButton.action = @selector(languageDetectOptimizePopUpButtonClicked:);
-    
-    if ([EZLanguageManager isEnglishFirstLanguage]) {
-        self.rightmostView = self.languageDetectOptimizePopUpButton;
-    }
     
     NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
     showQuickLinkLabel.font = font;
@@ -262,18 +263,18 @@
     
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
+    [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
+    [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
+
     self.autoPlayAudioButton.mm_isOn = configuration.autoPlayAudio;
     self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
     self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
-    [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
     self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
-    
-    [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
 }
 
 - (void)updateViewConstraints {
@@ -334,23 +335,24 @@
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
     
-    if ([EZLanguageManager isChineseFirstLanguage]) {
-        self.leftmostView = self.showQueryIconLabel;
-    }
-    
     [self.showQueryIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showQueryIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.showQueryIconLabel);
     }];
     
-    if ([EZLanguageManager isChineseFirstLanguage]) {
-        self.rightmostView = self.showQueryIconButton;
-    }
+    [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.showQueryIconLabel);
+        make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
+    }];
     
+    [self.languageDetectOptimizePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.languageDetectLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.languageDetectLabel);
+    }];
     
     [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.languageDetectOptimizePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     
     [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -393,19 +395,9 @@
         make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     
-    [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    
-    [self.languageDetectOptimizePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.languageDetectLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.languageDetectLabel);
-    }];
-    
     [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.languageDetectOptimizePopUpButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     
     [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -455,6 +447,16 @@
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
     
+    
+    if ([EZLanguageManager isChineseFirstLanguage]) {
+        self.leftmostView = self.fixedWindowPositionLabel;
+        self.rightmostView = self.showQueryIconButton;
+    }
+    
+    if ([EZLanguageManager isEnglishFirstLanguage]) {
+        self.leftmostView = self.fixedWindowPositionLabel;
+        self.rightmostView = self.languageDetectOptimizePopUpButton;
+    }
     
     self.bottommostView = self.hideMenuBarIconButton;
     

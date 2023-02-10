@@ -41,7 +41,7 @@
 "show_mini_window" = "Show Mini Window:";
 "check_update" = "Update:";
 "auto_check_update" = "Auto Check App Update";
-"show_query_icon" = "Show Query Icon:";
+"show_query_icon" = "Query Icon:";
 "auto_show_icon" = "Auto Show Query Icon (Experimental)";
 "launch" = "Launch:";
 "launch_at_startup" = "Launch at Startup";
@@ -62,13 +62,13 @@
 "show_eudic_quick_link" = "Show Eudic Quick Icon (If Installed)";
 "menu_bar_icon" = "Menu Bar Icon:";
 "hide_menu_bar_icon" = "Hide Menu Bar Icon";
-"fixed_window_position" = "Fixed Window Position:";
+"fixed_window_position" = "Floating Window Position:";
 "fixed_window_position_right" = "Screen Right";
 "fixed_window_position_word" = "Word Position";
 "fixed_window_position_former" = "Former Position";
 
 "mini_window" = "Mini Window";
-"fixed_window" = "Fixed Window";
+"fixed_window" = "Floating Window";
 "main_window" = "Main Window";
 
 "about" = "about";
@@ -82,4 +82,4 @@
 "error_unsupport_language" = "Unsupported language";
 "error_unknown" = "Unknown error";
 "translate_failed" = "Translate failed, ";
-"ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select the source language and try again.";
+"ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select the detected language and try again.";
