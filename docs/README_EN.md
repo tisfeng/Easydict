@@ -2,7 +2,19 @@
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
-<p align="center">🇨🇳 🇬🇧 🇯🇵 🇰🇷 🇫🇷 🇪🇸 🇵🇹 🇮🇹 🇷🇺 🇩🇪 🇸🇦 🇸🇪 🇳🇱 🇷🇴 🇹🇭 🇸🇰 🇭🇺 🇬🇷 🇩🇰 🇫🇮 🇵🇱 🇨🇿 🇹🇷 🇱🇹 🇱🇻 🇺🇦 🇧🇬 🇮🇩 🇲🇾 🇸🇮 🇪🇪 🇻🇳 🇮🇷 🇵🇰 🇹🇱 🇹🇦 🇮🇳 🇵🇭 🇫🇮 🇰🇭 🇱🇦 🇧🇳 🇲🇲 🇳🇴 🇷🇸 🇭🇷 🇲🇳 🇮🇱 </p>
+<p align="center"> 
+<a href="https://github.com/tisfeng/Easydict/blob/main/README.md">
+        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
+            alt="中文 README"></a>
+<a href="https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md">
+        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
+            alt="English README"></a>
+<a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/tisfeng/easydict"
+            alt="License"></a>
+<a href="https://github.com/tisfeng/Easydict/releases">
+        <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
+            alt="Downloads"></a>
 </p>
 
 ## Easydict 易词典
@@ -54,7 +66,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
-#### Note ⚠️
+#### Notice ⚠️
 
 1. `Select Translate` requires the `Auxiliary Accessibility`. It is necessary to use **Shortcut select translate** to trigger the application auxiliary accessibility permission, and then use auto select translate normally.
 
@@ -64,7 +76,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 **Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
 
-> Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
+> Notice ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
 Supported languages:
 
@@ -119,7 +131,7 @@ Supported languages:
 | Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Hebrew                |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 
-> Note: ⚠️ means the translation of source language to Traditional Chinese is not supported, such as DeepL. If you enter Traditional Chinese for translation, it will be treated as Simplified Chinese.
+> Notice: ⚠️ means the translation of source language to Traditional Chinese is not supported, such as DeepL. If you enter Traditional Chinese for translation, it will be treated as Simplified Chinese.
 
 ### Preferences
 
@@ -143,7 +155,8 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 - `Enter`: After entering text, press Enter to start the query.
 - `Shift + Enter`: Enter a line feed.
-- `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the browser search icon in the upper right corner. If you have the Eudicons App installed on your computer, an Eudicons icon will be displayed to the left of the Safari icon, and the `Cmd + Enter` action will open the Eudicons App for searching.
+- `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the Google search icon in the upper right corner. 
+- `Opt + Enter`: If you have the Eudic App installed on your computer, an Eudic icon will be displayed to the left of the Safari icon, and the shortcut will open the Eudic App for searching.
 
 ## Related Projects
 
