@@ -20,7 +20,8 @@ static CGFloat const kMargin = 0;
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.maxViewSize = CGSizeMake(800, 700);
+        CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
+        self.maxViewSize = CGSizeMake(visibleFrameSize.width * 0.8, visibleFrameSize.height * 0.8);
 
         self.verticalPadding = 15;
         self.horizontalPadding = 8;

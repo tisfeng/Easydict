@@ -45,7 +45,7 @@
 
 "check_update" = "更新:";
 "auto_check_update" = "自动检查应用程序更新";
-"show_query_icon" = "显示查询图标:";
+"show_query_icon" = "查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
@@ -67,13 +67,13 @@
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
 "menu_bar_icon" = "菜单栏图标:";
 "hide_menu_bar_icon" = "隐藏菜单栏图标";
-"fixed_window_position" = "侧悬浮窗口位置:";
+"fixed_window_position" = "悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
 "fixed_window_position_word" = "划词位置";
 "fixed_window_position_former" = "上次位置";
 
 "mini_window" = "迷你窗口";
-"fixed_window" = "侧悬浮窗口";
+"fixed_window" = "悬浮窗口";
 "main_window" = "主窗口";
 
 "about" = "关于";
@@ -88,4 +88,4 @@
 "error_unsupport_language" = "不支持的语言";
 "error_unknown" = "未知错误";
 "translate_failed" = "翻译失败，";
-"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择检测语言再次尝试。";
+"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。";
