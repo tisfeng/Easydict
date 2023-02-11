@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray<EZServiceType> *)allServiceTypes;
 
-+ (NSArray<EZQueryService *> *)allServices;
-
 + (EZQueryService *)serviceWithType:(EZServiceType)type;
 
 + (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<EZServiceType> *)types;

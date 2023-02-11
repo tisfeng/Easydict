@@ -37,16 +37,6 @@
     return [Cls new];
 }
 
-+ (NSArray<EZQueryService *> *)allServices {
-    NSArray *allServiceTypes = [self allServiceTypes];
-    NSMutableArray *services = [NSMutableArray array];
-    for (EZServiceType type in allServiceTypes) {
-        EZQueryService *service = [EZServiceTypes serviceWithType:type];
-        [services addObject:service];
-    }
-    return services;
-}
-
 + (NSArray<EZQueryService *> *)servicesFromTypes:(NSArray<EZServiceType> *)types {
     NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in types) {
