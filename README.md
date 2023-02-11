@@ -75,6 +75,7 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
 sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 ```
 
+---
 
 ### 使用
 

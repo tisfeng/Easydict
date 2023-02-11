@@ -69,6 +69,8 @@ Just type the following command in the terminal and enter the password.
 sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 ```
 
+---
+
 ### Usage
 
 Once Easydict is launched, in addition to the main window (hidden by default), there will be a menu icon, and clicking on the menu option will trigger the corresponding actions, as follows:
