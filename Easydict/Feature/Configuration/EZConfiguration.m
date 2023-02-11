@@ -205,19 +205,23 @@ setShowGoogleQuickLink:(BOOL)showGoogleLink {
     if (@available(macOS 13.0, *)) {
         // Ref: https://www.bilibili.com/read/cv19361413
         SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
+        BOOL success;
         if (launchAtStartup) {
-            [appService registerAndReturnError:&error];
+            success = [appService registerAndReturnError:&error];
         } else {
-            [appService unregisterAndReturnError:&error];
+            success = [appService unregisterAndReturnError:&error];
         }
         if (error) {
             MMLogInfo(@"SMAppService error: %@", error);
+        }
+        if (!success) {
+            MMLogInfo(@"SMAppService fail");
         }
     } else {
         // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
         BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
         if (!success) {
-            MMLogInfo(@"SMLoginItemSetEnabled error");
+            MMLogInfo(@"SMLoginItemSetEnabled fail");
         }
     }
 }
@@ -243,11 +247,11 @@ setShowGoogleQuickLink:(BOOL)showGoogleLink {
 
 - (NSString *)helperBundleId {
 #if DEBUG
-    NSString *helper = [NSString stringWithFormat:@"%@-debug", kEasydictHelperBundleId];
+    NSString *helperId = [NSString stringWithFormat:@"%@-debug", kEasydictHelperBundleId];
 #else
-    NSString *helper = kEasydictHelperBundleId;
+    NSString *helperId = kEasydictHelperBundleId;
 #endif
-    return helper;
+    return helperId;
 }
 
 - (void)postUpdateQuickLinkButtonNotification {
