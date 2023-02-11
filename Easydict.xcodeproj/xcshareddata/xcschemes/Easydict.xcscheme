@@ -79,7 +79,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "Open Bob"
+      customArchiveName = "Easydict"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
