@@ -51,6 +51,24 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
+#### Signature Problem ⚠️
+
+Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
+
+- If you encounter the following [unopenable problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+
+> Cannot open "Easydict.dmg" because it comes from an unidentified developer. macOS cannot verify if this App contains malware.
+
+- If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
+
+> "Easydict" is corrupted and cannot be opened. You should move it to the wastepaper basket.
+
+Just type the following command in the terminal and enter the password.
+
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
+```
+
 ### Usage
 
 Once Easydict is launched, in addition to the main window (hidden by default), there will be a menu icon, and clicking on the menu option will trigger the corresponding actions, as follows:
