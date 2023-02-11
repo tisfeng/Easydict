@@ -51,6 +51,31 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
+#### 签名问题⚠️
+
+Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
+
+
+
+- 如果遇到下面[无法打开问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+
+> 无法打开“Easydict.dmg”，因为它来自身份不明的开发者。macOS 无法验证此 App 是否包含恶意软件。
+
+
+
+- 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
+
+> “Easydict” 已损坏，无法打开。你应该将它移到废纸篓。
+
+
+
+在终端里输入以下命令，并输入密码即可。
+
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
+```
+
+
 ### 使用
 
 Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
