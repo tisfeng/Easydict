@@ -57,11 +57,11 @@ Easydict is open source software and is inherently secure, but due to Apple's st
 
 - If you encounter the following [unopenable problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
-> Cannot open "Easydict.dmg" because it comes from an unidentified developer. macOS cannot verify if this App contains malware.
+> Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
 
 - If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
 
-> "Easydict" is corrupted and cannot be opened. You should move it to the wastepaper basket.
+> "Easydict" is corrupted and cannot be opened.
 
 Just type the following command in the terminal and enter the password.
 
