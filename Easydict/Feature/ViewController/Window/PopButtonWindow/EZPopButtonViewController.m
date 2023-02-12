@@ -19,6 +19,7 @@ static CGFloat kPopButtonWidth = 23;
 - (void)loadView {
     self.view = [[NSView alloc] initWithFrame:CGRectMake(0, 0, kPopButtonWidth, kPopButtonWidth)];
     self.view.wantsLayer = YES;
+    self.view.layer.cornerRadius = 5;
     self.view.layer.masksToBounds = YES;
     self.view.layer.backgroundColor = NSColor.clearColor.CGColor;
 }
