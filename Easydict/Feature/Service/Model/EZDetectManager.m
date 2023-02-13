@@ -8,7 +8,6 @@
 
 #import "EZDetectManager.h"
 #import "EZBaiduTranslate.h"
-#import "EZAppleService.h"
 #import "EZGoogleTranslate.h"
 #import "EZConfiguration.h"
 
@@ -30,10 +29,22 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.detectTextService = [[EZAppleService alloc] init];
-        self.ocrService = self.detectTextService;
     }
     return self;
+}
+
+- (EZAppleService *)appleService {
+    if (!_appleService) {
+        _appleService = [[EZAppleService alloc] init];
+    }
+    return _appleService;
+}
+
+- (EZQueryService *)ocrService {
+    if (!_ocrService) {
+        _ocrService = self.appleService;
+    }
+    return _ocrService;
 }
 
 - (EZGoogleTranslate *)googleService {
@@ -50,21 +61,17 @@
     return _baiduService;
 }
 
+#pragma mark -
+
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
-    [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (error) {
-            completion(self.queryModel, error);
-            return;
-        }
-        
+    [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
         self.queryModel.queryText = ocrResult.mergedText;
-        [self detectText:completion];
+        completion(self.queryModel, error);
     }];
 }
 
 /// Detect text language. Apple System detect > Google detect > Baidu detect.
-- (void)detectText:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
-    NSString *queryText = self.queryModel.queryText;
+- (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     if (queryText.length == 0) {
         NSLog(@"detectText cannot be nil");
         
@@ -74,7 +81,7 @@
         return;
     }
     
-    [self.detectTextService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
+    [self.appleService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager systemPreferredLanguages] mutableCopy];
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[ EZLanguageEnglish, EZLanguageSimplifiedChinese ]];
@@ -138,6 +145,34 @@
     }
     
     [self.ocrService ocr:self.queryModel completion:completion];
+}
+
+/// If not designated ocr language, after ocr, we use detected language to ocr again.
+- (void)deepOCR:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
+    NSImage *image = self.queryModel.ocrImage;
+    if (!image) {
+        NSLog(@"image cannot be nil");
+        return;
+    }
+    
+    //    [self.ocrService ocr:self.queryModel completion:completion];
+    
+    BOOL retryOCR = [self.queryModel.detectedLanguage isEqualToString:EZLanguageAuto] && [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto];
+    
+    [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+        if (!error && retryOCR) {
+            NSString *ocrText = ocrResult.mergedText;
+            [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+                if (!error) {
+                    [self.ocrService ocr:queryModel completion:completion];
+                } else {
+                    completion(ocrResult, nil);
+                }
+            }];
+        } else {
+            completion(ocrResult, error);
+        }
+    }];
 }
 
 /// Check if has proxy.
