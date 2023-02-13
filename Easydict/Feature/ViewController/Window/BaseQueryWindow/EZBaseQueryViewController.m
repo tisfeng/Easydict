@@ -759,7 +759,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)delayDetectQueryText {
     if (self.queryView.enableAutoDetect) {
         [self cancelDelayDetectQueryText];
-        [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:1.0];
+        [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:EZDelayDetectTextLanguageInterval];
     }
 }
 

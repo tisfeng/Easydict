@@ -25,6 +25,9 @@
 @property (nonatomic, assign) CGFloat textViewMiniHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
+@property (nonatomic, copy) NSString *lastRecordText;
+@property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
+
 @end
 
 @implementation EZQueryView
@@ -56,6 +59,7 @@
     scrollView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     
     EZTextView *textView = [[EZTextView alloc] initWithFrame:scrollView.bounds];
+    textView.allowsUndo = YES;
     self.textView = textView;
     self.scrollView.documentView = textView;
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
@@ -320,6 +324,25 @@
     return NO;
 }
 
+- (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString {
+    //    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(textView.markedRange), replacementString);
+    //    NSLog(@"hasMarkedText: %d, markedRange: %@", typing, NSStringFromRange(textView.markedRange));
+    
+    BOOL isInputtingChinese = [textView hasMarkedText] && textView.markedRange.length == 0;
+    if (![textView hasMarkedText] || isInputtingChinese) {
+        self.lastRecordText = [self copiedText];
+        //        NSLog(@"try record: %@", self.lastRecordText);
+        [self recordText];
+    }
+    
+    return YES;
+}
+
+- (void)textStorage:(NSTextStorage *)textStorage willProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
+    //        NSLog(@"willProcessEditing: %@", [self copiedText]);
+}
+
+/// !!!: set self.textView.string will invoke this method.
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
     //    NSLog(@"didProcessEditing: %@", [self copiedText]);
     
@@ -338,9 +361,7 @@
     
     self.typing = NO;
     self.enableAutoDetect = YES;
-    
     [self updateButtonsDisplayState:text];
-    
     
     CGFloat textViewHeight = [self heightOfTextView];
     
@@ -412,5 +433,25 @@
     CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
     [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
 }
+
+#pragma mark - Undo
+
+- (void)recordText {
+    if ([self isTimePassed:EZDelayDetectTextLanguageInterval]) {
+        //        NSLog(@"recordText: %@", [self copiedText]);
+        //        NSLog(@"lastRecordText: %@", self.lastRecordText);
+        
+        // !!!: Shouldn't use [self.textView.string copy], since it may be character when inputting Chinese.
+        [self.undoManager registerUndoWithTarget:self.textView selector:@selector(setString:) object:self.lastRecordText];
+        self.lastRecordTimestamp = [NSDate date].timeIntervalSince1970;
+    }
+}
+
+/// Check if time has passed > 2 seconds compared to parameter time
+- (BOOL)isTimePassed:(NSTimeInterval)timeInterval {
+    NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
+    return currentTime - self.lastRecordTimestamp > timeInterval;
+}
+
 
 @end
