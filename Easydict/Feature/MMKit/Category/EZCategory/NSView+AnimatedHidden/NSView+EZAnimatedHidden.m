@@ -22,7 +22,7 @@ static CGFloat const kHiddenAnimationDuration = 0.3;
         context.duration = kHiddenAnimationDuration;
         self.animator.alphaValue = alphaValue;
     } completionHandler:^{
-       
+        self.hidden = hidden;
     }];
 }
 
