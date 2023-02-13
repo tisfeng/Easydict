@@ -14,6 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 static CGFloat EZExceptInputViewHeight = 30;
+static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 
 @interface EZQueryView : NSView
 
