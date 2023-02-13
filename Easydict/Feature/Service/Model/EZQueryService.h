@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion;
 
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable EZOCRResult, NSError *_Nullable error))completion;
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion;
 
 
 /// 图片翻译，识图+翻译

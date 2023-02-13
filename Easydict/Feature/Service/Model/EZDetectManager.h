@@ -8,21 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryModel.h"
-#import "EZQueryService.h"
+#import "EZAppleService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZDetectManager : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
-@property (nonatomic, strong) EZQueryService *detectTextService;
+@property (nonatomic, strong) EZAppleService *appleService;
 @property (nonatomic, strong) EZQueryService *ocrService;
 
 + (instancetype)managerWithModel:(EZQueryModel *)model;
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
 
-- (void)detectText:(void (^)(EZQueryModel * _Nonnull queryModel, NSError * _Nullable error))completion;
+- (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion;
+
 - (void)ocr:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion ;
 
 @end
