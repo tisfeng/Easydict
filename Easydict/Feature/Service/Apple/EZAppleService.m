@@ -444,9 +444,9 @@
     // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
         NLLanguageEnglish : @(3.0),
-        NLLanguageSimplifiedChinese : @(0.8),
-        NLLanguageJapanese : @(0.5),
+        NLLanguageSimplifiedChinese : @(2.0),
         NLLanguageTraditionalChinese : @(0.4),
+        NLLanguageJapanese : @(0.25),
         NLLanguageFrench : @(0.25), // const, ex, delimiter
         NLLanguageKorean : @(0.2),
         NLLanguageItalian : @(0.1),     // via
