@@ -284,22 +284,35 @@
             
             NSLog(@"ocr text: %@", recognizedStrings);
             
-            if (retryWithAutoDetectedLanguage && [ocrLanguage isEqualToString:EZLanguageAuto]) {
-                [self detectText:resultText completion:^(EZLanguage lang, NSError *_Nullable error) {
-                    if (![lang isEqualToString:recognitionLanguages.firstObject]) {
-                        [self ocrImage:image language:lang retry:NO completion:completion];
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion(result, nil);
-                        });
-                    }
-                }];
+            /**
+             !!!: There are some problems with the system OCR.
+             For example, it may return nil when ocr Japanese text.
+             
+             アイス・スノーセーリング世界選手権大会
+             
+             */
+            
+            BOOL retryOCR = retryWithAutoDetectedLanguage && [ocrLanguage isEqualToString:EZLanguageAuto];
+            
+            if (!retryOCR) {
+                if (!error && resultText.length == 0) {
+                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(result, error);
+                });
                 return;
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(result, nil);
-            });
+            [self detectText:resultText completion:^(EZLanguage lang, NSError *_Nullable error) {
+                if (![lang isEqualToString:recognitionLanguages.firstObject]) {
+                    [self ocrImage:image language:lang retry:NO completion:completion];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(result, nil);
+                    });
+                }
+            }];
         }];
         
         if (@available(macOS 12.0, *)) {
