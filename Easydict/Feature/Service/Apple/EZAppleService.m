@@ -210,7 +210,7 @@
     
     [recognizer processString:text];
     
-    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
+    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:10];
     NSLog(@"system probabilities:: %@", languageProbabilityDict);
     
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
@@ -224,6 +224,12 @@
     if ([self isAlphabet:text]) {
         mostConfidentLanguage = EZLanguageEnglish;
         NSLog(@"%@ isAlphabet, correct to English", text);
+    }
+    
+    // "使用 OCR" --> 英文 --> 中文
+    if ([self isChinese:text]) {
+        mostConfidentLanguage = EZLanguageSimplifiedChinese;
+        NSLog(@"%@ isChinese, correct to Chinese", text);
     }
     
     completion(mostConfidentLanguage, nil);
@@ -553,6 +559,8 @@
     return ezLanguage;
 }
 
+#pragma mark - Language Check
+
 /// Check if it is a single letter of the alphabet.
 - (BOOL)isAlphabet:(NSString *)string {
     if (string.length != 1) {
@@ -560,6 +568,40 @@
     }
     
     NSString *regex = @"[a-zA-Z]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:string];
+}
+
+/// Check if text is Chinese, if its Chinese characters length >= 1/3 of the total length, then it is Chinese.
+- (BOOL)isChinese:(NSString *)text {
+    NSInteger chineseCharactersLength = [self chineseCharactersLength:text];
+    CGFloat chineseCharactersRatio = 1 / 3.0;
+    CGFloat ratio = chineseCharactersLength / (CGFloat)text.length;
+    if (chineseCharactersLength > 0) {
+        NSLog(@"chinese characters length: %ld, ratio: %.2f", chineseCharactersLength, ratio);
+    }
+    return ratio >= chineseCharactersRatio;
+}
+
+/// Count Chinese characters length in string. 使用 OCR
+- (NSInteger)chineseCharactersLength:(NSString *)string {
+    NSInteger length = 0;
+    for (NSInteger i = 0; i < string.length; i++) {
+        NSString *subString = [string substringWithRange:NSMakeRange(i, 1)];
+        if ([self isChineseCharacter:subString]) {
+            length++;
+        }
+    }
+    return length;
+}
+
+/// Check if it is a Chinese character.
+- (BOOL)isChineseCharacter:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[\u4e00-\u9fa5]";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
     return [predicate evaluateWithObject:string];
 }

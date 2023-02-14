@@ -151,9 +151,7 @@
         NSLog(@"image cannot be nil");
         return;
     }
-    
-    //    [self.ocrService ocr:self.queryModel completion:completion];
-    
+        
     BOOL retryOCR = [self.queryModel.detectedLanguage isEqualToString:EZLanguageAuto] && [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto];
     
     [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
