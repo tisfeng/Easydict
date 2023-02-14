@@ -70,14 +70,11 @@
     }];
 }
 
-/// Detect text language. Apple System detect > Google detect > Baidu detect.
+/// Detect text language. Apple System detect, Google detect, Baidu detect.
 - (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     if (queryText.length == 0) {
         NSLog(@"detectText cannot be nil");
-        
-        // !!!: There are some problems with the system OCR, for example, it may return nil when recognizing Japanese.
-        NSError *error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
-        completion(self.queryModel, error);
+        completion(self.queryModel, nil);
         return;
     }
     
@@ -162,7 +159,7 @@
     [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
         if (!error && retryOCR) {
             NSString *ocrText = ocrResult.mergedText;
-            [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+            [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable ocrError) {
                 if (!error) {
                     [self.ocrService ocr:queryModel completion:completion];
                 } else {
