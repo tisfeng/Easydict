@@ -265,9 +265,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self updateQueryCell];
     }
     
-    if ([self allShowingResults].count > 0) {
-        [self.queryView setClearButtonAnimatedHidden:NO];
-    }
+    self.queryView.clearButtonHidden = (_queryText.length == 0) && ([self allShowingResults].count == 0);
 }
 
 #pragma mark - Public Methods

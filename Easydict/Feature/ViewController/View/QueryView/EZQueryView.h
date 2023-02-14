@@ -26,6 +26,7 @@ static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 
 @property (nonatomic, assign) BOOL typing;
 @property (nonatomic, assign) BOOL enableAutoDetect;
+@property (nonatomic, assign) BOOL clearButtonHidden;
 
 @property (nonatomic, copy) void (^enterActionBlock)(NSString *text);
 
@@ -39,8 +40,6 @@ static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 
 
 - (CGFloat)heightOfQueryView;
-
-- (void)setClearButtonAnimatedHidden:(BOOL)show;
 
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
 
