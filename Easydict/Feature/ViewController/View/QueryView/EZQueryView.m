@@ -162,7 +162,9 @@
     return [self heightOfTextView] + EZExceptInputViewHeight;
 }
 
-- (void)setClearButtonAnimatedHidden:(BOOL)hidden {
+- (void)setClearButtonHidden:(BOOL)hidden {
+    _clearButtonHidden = hidden;
+    
     [self.clearButton setAnimatedHidden:hidden];
 }
 
@@ -407,7 +409,10 @@
     if (!self.alertTextField.hidden) {
         isEmpty = NO;
     }
-    [self setClearButtonAnimatedHidden:isEmpty];
+        
+    if (self.clearButtonHidden) {
+        [self.clearButton setAnimatedHidden:isEmpty];
+    }
     
     [self updateDetectButton];
 }
