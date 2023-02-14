@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 获取文本的语言
 /// @param text 文本
 /// @param completion 回调
-- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage lang, NSError *_Nullable error))completion;
+- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage detectedLanguage, NSError *_Nullable error))completion;
 
 /// 获取文本的音频的URL地址
 /// @param text 文本
