@@ -55,23 +55,23 @@
             [languages addObject:ezLanguage];
         }
     }
-
+    
     // This method seems to be the same.
-//        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//        NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
-
+    //        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    //        NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
+    
     //    NSLog(@"languages: %@", languages);
-
+    
     return languages;
 }
 
 + (NSArray<EZLanguage> *)preferredTwoLanguages {
     NSMutableArray *twoLanguages = [NSMutableArray array];
     NSMutableArray<EZLanguage> *preferredlanguages = [[self systemPreferredLanguages] mutableCopy];
-
+    
     EZLanguage firstLanguage = [self firstLanguageFromLanguages:preferredlanguages];
     [twoLanguages addObject:firstLanguage];
-
+    
     // Remove first language
     [preferredlanguages removeObject:firstLanguage];
     
@@ -84,7 +84,7 @@
         }
     }
     [twoLanguages addObject:secondLanguage];
-
+    
     return twoLanguages;
 }
 
@@ -154,7 +154,7 @@
 + (BOOL)containsChinesePreferredLanguage {
     NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
     for (EZLanguage language in languages) {
-        if ([language isEqualToString:EZLanguageEnglish]) {
+        if ([self isChineseLanguage:language]) {
             return YES;
         }
     }
