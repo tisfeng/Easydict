@@ -672,6 +672,11 @@
         }
     }
     
+    return EZLanguageAuto;
+}
+
+/// ⚠️ This method is not accurate, it is only used to detect Chinese language type.
+- (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
     //  月によく似た風景
     
     NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
