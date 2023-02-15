@@ -199,6 +199,7 @@
     self.alertTextField.hidden = hidden;
     self.textView.editable = hidden;
     self.detectButton.showAutoLanguage = NO;
+    [self updateDetectButton];
 }
 
 #pragma mark - Rewrite
