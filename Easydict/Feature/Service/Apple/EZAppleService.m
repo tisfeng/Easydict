@@ -195,28 +195,51 @@
     }];
 }
 
-/// System detect text language, and try to correct language.
+/// System detect text language,
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
     EZLanguage mostConfidentLanguage = [self detectTextLanguage:text printLog:YES];
     completion(mostConfidentLanguage, nil);
 }
 
-/// Apple System language recognize.
-- (EZLanguage)detectTextLanguage:(NSString *)text {
-    return [self detectTextLanguage:text printLog:NO];
+/// Apple System language recognize, and try to correct language.
+- (EZLanguage)detectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
+    EZLanguage mostConfidentLanguage = [self appleDetectTextLanguage:text printLog:logFlag];
+    
+    if ([self isAlphabet:text]) {
+        mostConfidentLanguage = EZLanguageEnglish;
+    }
+    
+    BOOL tryDetectChinese = ![EZLanguageManager isChineseLanguage:mostConfidentLanguage] && [EZLanguageManager isChineseFirstLanguage];
+    
+    // Try to detect Chinese language.
+    if (tryDetectChinese) {
+        // test: 開門 open, "使用 OCR" --> 英文 --> 中文
+        EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text];
+        if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
+            mostConfidentLanguage = chineseLanguage;
+        }
+    }
+    
+    return mostConfidentLanguage;
 }
 
-/// Apple System language recognize.
-- (EZLanguage)detectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
-    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
-    
+- (EZLanguage)appleDetectTextLanguage:(NSString *)text {
+    EZLanguage mostConfidentLanguage = [self appleDetectTextLanguage:text printLog:NO];
+    return mostConfidentLanguage;
+}
+
+/// Apple original language detect.
+- (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
+    text = [text substringToIndex:MIN(100, text.length)];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
+    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
     
     // macos(10.14)
     NLLanguageRecognizer *recognizer = [[NLLanguageRecognizer alloc] init];
     
     // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
-    recognizer.languageConstraints = [self constraintLanguages];
+    recognizer.languageConstraints = [self designatedLanguages];
     recognizer.languageHints = [self customLanguageHints];
     [recognizer processString:text];
     
@@ -227,13 +250,12 @@
     if (logFlag) {
         NSLog(@"system probabilities:: %@", languageProbabilityDict);
         NSLog(@"dominant Language: %@", dominantLanguage);
-        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
+        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
     }
     
-    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict];
+    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict printLog:logFlag];
     return mostConfidentLanguage;
 }
-
 
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
@@ -449,7 +471,7 @@
 #pragma mark - Others
 
 // uniqueLanguages is supportLanguagesDictionary remove some languages
-- (NSArray<NLLanguage> *)constraintLanguages {
+- (NSArray<NLLanguage> *)designatedLanguages {
     NSArray<NLLanguage> *supportLanguages = [[self appleLanguagesDictionary] allValues];
     NSArray<NLLanguage> *removeLanguages = @[
         //        NLLanguageDutch, // heel
@@ -532,10 +554,9 @@
 
 /// Get most confident language.
 /// languageDict value add userPreferredLanguageProbabilities, then sorted by value, return max dict value.
-- (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities {
+- (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities printLog:(BOOL)logFlag {
     NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
-    NSLog(@"user probabilities: %@", userPreferredLanguageProbabilities);
     
     for (EZLanguage language in userPreferredLanguageProbabilities.allKeys) {
         NLLanguage appleLanguage = [self appleLanguageCodeForLanguage:language];
@@ -546,8 +567,6 @@
         }
     }
     
-    NSLog(@"final language probabilities: %@", languageProbabilities);
-    
     NSArray<NLLanguage> *sortedLanguages = [languageProbabilities keysSortedByValueUsingComparator:^NSComparisonResult(NSNumber *_Nonnull obj1, NSNumber *_Nonnull obj2) {
         return [obj2 compare:obj1];
     }];
@@ -555,9 +574,146 @@
     NLLanguage mostConfidentLanguage = sortedLanguages.firstObject;
     EZLanguage ezLanguage = [self appleLanguageEnumFromCode:mostConfidentLanguage];
     
-    NSLog(@"---> Apple detect: %@", ezLanguage);
+    if (logFlag) {
+        NSLog(@"user probabilities: %@", userPreferredLanguageProbabilities);
+        NSLog(@"final language probabilities: %@", languageProbabilities);
+        NSLog(@"---> Apple detect: %@", ezLanguage);
+    }
     
     return ezLanguage;
+}
+
+
+#pragma mark - Detect Language Manually
+
+/// Check if it is a single letter of the alphabet.
+- (BOOL)isAlphabet:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[a-zA-Z]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:string];
+}
+
+/// Count English characters length in string.
+- (NSInteger)englishCharactersLength:(NSString *)string {
+    string = [self removePunctuationAndWhitespaceCharacters:string];
+    __block NSInteger length = 0;
+    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
+        if ([self isAlphabet:substring]) {
+            length++;
+        }
+    }];
+    return length;
+}
+
+
+/// Get Chinese language type of text, traditional or simplified. If it is not Chinese, return EZLanguageAuto.
+/// If traditional Chinese characters length + simplified Chinese characters length + English characters length !== text length, return EZLanguageAuto.
+/// If traditional Chinese characters length >= 1/4 of Chinese characters length, then it is traditional Chinese. else it is simplified Chinese.
+- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text {
+    text = [self removePunctuationAndWhitespaceCharacters:text];
+    
+    NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
+    NSInteger simplifiedChineseLength = [self chineseCharactersLength:text type:EZLanguageSimplifiedChinese];
+    NSInteger englishLength = [self englishCharactersLength:text];
+    NSInteger chineseLength = traditionalChineseLength + simplifiedChineseLength;
+    NSInteger totalLength = chineseLength + englishLength;
+    
+    if (totalLength != text.length) {
+        return EZLanguageAuto;
+    }
+    
+    if (traditionalChineseLength >= chineseLength / 4.0) {
+        return EZLanguageTraditionalChinese;
+    } else {
+        return EZLanguageSimplifiedChinese;
+    }
+}
+
+/// Count Chinese characters length in string with specific language.
+- (NSInteger)chineseCharactersLength:(NSString *)string type:(EZLanguage)language {
+    string = [self removePunctuationAndWhitespaceCharacters:string];
+    __block NSInteger length = 0;
+    for (NSInteger i = 0; i < string.length; i++) {
+        NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
+        if (language == EZLanguageTraditionalChinese) {
+            if ([self isTraditionalChineseChar:charString]) {
+                length++;
+            }
+        } else if (language == EZLanguageSimplifiedChinese) {
+            if ([self isSimplifiedChineseChar:charString]) {
+                length++;
+            }
+        }
+    }
+    return length;
+}
+
+/// Check if char is Simplified Chinese. test: 使用 OCR
+- (BOOL)isSimplifiedChineseChar:(NSString *)charString {
+    EZLanguage language = [self appleDetectTextLanguage:charString];
+    if (language == EZLanguageSimplifiedChinese) {
+        return YES;
+    }
+    return NO;
+}
+
+/// Check if char is Traditional Chinese. test: 開門 open
+- (BOOL)isTraditionalChineseChar:(NSString *)charString {
+    EZLanguage language = [self appleDetectTextLanguage:charString];
+    if (language == EZLanguageTraditionalChinese) {
+        return YES;
+    }
+    return NO;
+}
+
+/// !!!: This method is not accurate. 権 --> zh
+- (BOOL)isChineseCharacter2:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    // 権 should be Japanese, but this method will detect it as Chinese.
+    NSString *regex = @"[\u4e00-\u9fa5]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:string];
+}
+
+/// Convert Simplified Chinese to Traditional Chinese.
+- (NSString *)toTraditionalChineseText:(NSString *)string {
+    NSString *traditionalChinese = [string stringByApplyingTransform:@"Hans-Hant" reverse:NO];
+    return traditionalChinese;
+}
+
+/// Convert Traditional Chinese to Simplified Chinese.
+- (NSString *)toSimplifiedChineseText:(NSString *)string {
+    NSString *simplifiedChinese = [string stringByApplyingTransform:@"Hant-Hans" reverse:NO];
+    return simplifiedChinese;
+}
+
+
+/// Remove all whitespace and newline characters, including whitespace in the middle of the string.
+- (NSString *)removeWhitespaceAndNewlineCharacters:(NSString *)string {
+    NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    text = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    return text;
+}
+
+/// Remove all punctuation characters, including English and Chinese.
+- (NSString *)removePunctuationCharacters:(NSString *)string {
+    NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+    return text;
+}
+
+/// Remove all punctuation and whitespace characters.
+- (NSString *)removePunctuationAndWhitespaceCharacters:(NSString *)string {
+    NSString *text = [self removePunctuationCharacters:string];
+    text = [self removeWhitespaceAndNewlineCharacters:text];
+    return text;
 }
 
 @end

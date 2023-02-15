@@ -17,8 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
 
-- (EZLanguage)detectTextLanguage:(NSString *)text;
-
 @end
 
 NS_ASSUME_NONNULL_END
