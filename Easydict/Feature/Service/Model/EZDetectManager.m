@@ -80,25 +80,28 @@
     
     [self.appleService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager systemPreferredLanguages] mutableCopy];
+        if ([self isAlphabet:queryText]) {
+            appleDetectdedLanguage = EZLanguageEnglish;
+            NSLog(@"%@ isAlphabet, correct to English", queryText);
+        }
+        
+        // Try to detect Chinese language.
+        if (![EZLanguageManager isChineseLanguage:appleDetectdedLanguage]) {
+            // test: 開門 open, "使用 OCR" --> 英文 --> 中文
+            EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:queryText];
+            if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
+                appleDetectdedLanguage = chineseLanguage;
+            }
+        }
+        
+        EZLanguageDetectOptimize languageDetectOptimize = EZConfiguration.shared.languageDetectOptimize;
+        
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[
             EZLanguageEnglish,
             EZLanguageSimplifiedChinese,
             EZLanguageTraditionalChinese,
         ]];
-        
-        if ([self isAlphabet:queryText]) {
-            appleDetectdedLanguage = EZLanguageEnglish;
-            NSLog(@"%@ isAlphabet, correct to English", queryText);
-        }
-        
-        // test: 開門 open, "使用 OCR" --> 英文 --> 中文
-        EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:queryText];
-        if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
-            appleDetectdedLanguage = chineseLanguage;
-        }
-        
-        EZLanguageDetectOptimize languageDetectOptimize = EZConfiguration.shared.languageDetectOptimize;
         
         BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];
         if (isPreferredLanguage || languageDetectOptimize == EZLanguageDetectOptimizeNone) {
