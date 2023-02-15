@@ -868,6 +868,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         // Clear query text, detect language and clear button right now;
         self.queryText = @"";
+        self.queryModel.ocrImage = nil;
         
         [self updateQueryCellWithCompletionHandler:^{
             // !!!: To show closing animation, we cannot reset result directly.
