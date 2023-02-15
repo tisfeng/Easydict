@@ -197,12 +197,17 @@
 
 /// System detect text language, and try to correct language.
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
-    EZLanguage mostConfidentLanguage = [self detectTextLanguage:text];
+    EZLanguage mostConfidentLanguage = [self detectTextLanguage:text printLog:YES];
     completion(mostConfidentLanguage, nil);
 }
 
 /// Apple System language recognize.
 - (EZLanguage)detectTextLanguage:(NSString *)text {
+    return [self detectTextLanguage:text printLog:NO];
+}
+
+/// Apple System language recognize.
+- (EZLanguage)detectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
     // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
@@ -213,17 +218,17 @@
     // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
     recognizer.languageConstraints = [self constraintLanguages];
     recognizer.languageHints = [self customLanguageHints];
-    
     [recognizer processString:text];
     
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:10];
-    NSLog(@"system probabilities:: %@", languageProbabilityDict);
-    
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
-    NSLog(@"dominant Language: %@", dominantLanguage);
-    
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
+    
+    if (logFlag) {
+        NSLog(@"system probabilities:: %@", languageProbabilityDict);
+        NSLog(@"dominant Language: %@", dominantLanguage);
+        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000);
+    }
     
     EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict];
     return mostConfidentLanguage;
@@ -243,6 +248,8 @@
         language:(EZLanguage)ocrLanguage
            retry:(BOOL)retryWithAutoDetectedLanguage
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    NSLog(@"ocr language: %@", ocrLanguage);
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert NSImage to CGImage
         CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
