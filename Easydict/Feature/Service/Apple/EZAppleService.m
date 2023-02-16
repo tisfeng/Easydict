@@ -171,12 +171,26 @@
         return;
     }
     
+    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
+    NSString *result;
+    if ([from isEqualToString:EZLanguageSimplifiedChinese] && [to isEqualToString:EZLanguageTraditionalChinese]) {
+        result = [text toTraditionalChineseText];
+    } else if ([from isEqualToString:EZLanguageTraditionalChinese] && [to isEqualToString:EZLanguageSimplifiedChinese]) {
+        result = [text toSimplifiedChineseText];
+    }
+    
+    if (result) {
+        self.result.normalResults = @[ result ];
+        completion(self.result, nil);
+        return;
+    }
+    
     NSDictionary *paramters = @{
         @"text" : text,
         @"from" : appleFromLangCode,
         @"to" : appleToLangCode,
     };
-    NSLog(@"Apple translate paramters: %@", paramters);
+    //    NSLog(@"Apple translate paramters: %@", paramters);
     
     [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
         if (!error) {
@@ -638,13 +652,13 @@
     // test: 狗，勿 --> zh-Hant --> zh-Hans
     
     // Check if simplified Chinese.
-    NSString *simplifiedChinese = [self toSimplifiedChineseText:text];
+    NSString *simplifiedChinese = [text toSimplifiedChineseText];
     if ([simplifiedChinese isEqualToString:text]) {
         return EZLanguageSimplifiedChinese;
     }
     
     // Check if traditional Chinese. 開門
-    NSString *traditionalChinese = [self toTraditionalChineseText:text];
+    NSString *traditionalChinese = [text toTraditionalChineseText];
     if ([traditionalChinese isEqualToString:text]) {
         return EZLanguageTraditionalChinese;
     }
@@ -723,7 +737,7 @@
         return YES;
     }
     if (language == EZLanguageTraditionalChinese) {
-        NSString *simplifiedChinese = [self toSimplifiedChineseText:charString];
+        NSString *simplifiedChinese = [charString toSimplifiedChineseText];
         if ([simplifiedChinese isEqualToString:charString]) {
             return YES;
         }
@@ -736,7 +750,7 @@
     EZLanguage language = [self appleDetectTextLanguage:charString];
     if (language == EZLanguageTraditionalChinese) {
         // Convert to simplified Chinese, check if simplified Chinese is same as traditional Chinese.
-        NSString *simplifiedChinese = [self toSimplifiedChineseText:charString];
+        NSString *simplifiedChinese = [charString toSimplifiedChineseText];
         if ([simplifiedChinese isEqualToString:charString]) {
             return NO;
         }
@@ -755,18 +769,6 @@
     NSString *regex = @"[\u4e00-\u9fa5]";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
     return [predicate evaluateWithObject:string];
-}
-
-/// Convert Simplified Chinese to Traditional Chinese.
-- (NSString *)toTraditionalChineseText:(NSString *)string {
-    NSString *traditionalChinese = [string stringByApplyingTransform:@"Hans-Hant" reverse:NO];
-    return traditionalChinese;
-}
-
-/// Convert Traditional Chinese to Simplified Chinese.
-- (NSString *)toSimplifiedChineseText:(NSString *)string {
-    NSString *simplifiedChinese = [string stringByApplyingTransform:@"Hant-Hans" reverse:NO];
-    return simplifiedChinese;
 }
 
 /// Remove all punctuation whitespace and number characters.

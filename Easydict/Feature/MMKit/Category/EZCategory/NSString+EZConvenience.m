@@ -55,4 +55,18 @@
     return result;
 }
 
+#pragma mark -
+
+/// Convert Simplified Chinese to Traditional Chinese.
+- (NSString *)toTraditionalChineseText {
+    NSString *traditionalChinese = [self stringByApplyingTransform:@"Hans-Hant" reverse:NO];
+    return traditionalChinese;
+}
+
+/// Convert Traditional Chinese to Simplified Chinese.
+- (NSString *)toSimplifiedChineseText {
+    NSString *simplifiedChinese = [self stringByApplyingTransform:@"Hant-Hans" reverse:NO];
+    return simplifiedChinese;
+}
+
 @end
