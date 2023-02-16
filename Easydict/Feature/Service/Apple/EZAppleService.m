@@ -164,24 +164,17 @@
         return;
     }
     
+    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
+    NSArray *languages = @[from, to];
+    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
+        [super translate:text from:from to:to completion:completion];
+        return;
+    }
+    
     NSString *appleFromLangCode = [self languageCodeForLanguage:from];
     NSString *appleToLangCode = [self languageCodeForLanguage:to];
     if (!appleFromLangCode || !appleToLangCode) {
         completion(self.result, EZQueryUnsupportedLanguageError(self));
-        return;
-    }
-    
-    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
-    NSString *result;
-    if ([from isEqualToString:EZLanguageSimplifiedChinese] && [to isEqualToString:EZLanguageTraditionalChinese]) {
-        result = [text toTraditionalChineseText];
-    } else if ([from isEqualToString:EZLanguageTraditionalChinese] && [to isEqualToString:EZLanguageSimplifiedChinese]) {
-        result = [text toSimplifiedChineseText];
-    }
-    
-    if (result) {
-        self.result.normalResults = @[ result ];
-        completion(self.result, nil);
         return;
     }
     

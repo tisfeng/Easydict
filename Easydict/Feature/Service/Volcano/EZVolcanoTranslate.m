@@ -128,6 +128,12 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    NSArray *languages = @[from, to];
+    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
+        [super translate:text from:from to:to completion:completion];
+        return;
+    }
+    
     [self webViewTranslate:completion];
 }
 
