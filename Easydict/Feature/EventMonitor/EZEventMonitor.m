@@ -13,7 +13,7 @@
 #import "EZPreferencesWindowController.h"
 #import "EZLog.h"
 
-static CGFloat kDismissPopButtonDelayTime = 1.0;
+static CGFloat kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
 
 static NSInteger kRecordEventCount = 3;
@@ -371,8 +371,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             [self delayDismissPopButton];
         }
         case NSEventTypeMouseMoved: {
-            // TODO: Hide the button after exceeding a certain range ?
-            //            [self delayDismissPopButton:2.0];
+            // Hide the button after exceeding a certain range of selected text frame.
+            if (![self isMouseInExpandedSelectedTextFrame]) {
+                [self dismissPopButton];
+            }
             break;
         }
         case NSEventTypeFlagsChanged: {
@@ -647,6 +649,31 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }];
     
     [EZLog logEventWithName:@"getSelectedText" parameters:dict];
+}
+
+/// Check if current mouse position is in expanded selected text frame.
+- (BOOL)isMouseInExpandedSelectedTextFrame {
+    CGRect selectedTextFrame = self.selectedTextFrame;
+    // means get frame failed, but get selected text may success
+    if (CGSizeEqualToSize(selectedTextFrame.size, CGSizeZero)) {
+        EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
+        if (popButtonWindow.isVisible) {
+            selectedTextFrame = popButtonWindow.frame;
+        }
+    }
+    
+    CGFloat expandValue = 50;
+    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
+                                                  selectedTextFrame.origin.y - expandValue,
+                                                  selectedTextFrame.size.width + expandValue * 2,
+                                                  selectedTextFrame.size.height + expandValue * 2);
+    
+    CGPoint mouseLocation = NSEvent.mouseLocation;
+    if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 @end
