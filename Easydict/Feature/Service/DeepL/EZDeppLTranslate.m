@@ -71,6 +71,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                                         EZLanguageSimplifiedChinese, @"zh",
                                         EZLanguageEnglish, @"en",
                                         EZLanguageJapanese, @"ja",
+                                        EZLanguageKorean, @"ko",
                                         EZLanguageFrench, @"fr",
                                         EZLanguageSpanish, @"es",
                                         EZLanguagePortuguese, @"pt",
@@ -95,6 +96,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                                         EZLanguageIndonesian, @"id",
                                         EZLanguageSlovenian, @"sl",
                                         EZLanguageEstonian, @"et",
+                                        EZLanguageNorwegian, @"nb",
                                         nil];
     return orderedDict;
 }
