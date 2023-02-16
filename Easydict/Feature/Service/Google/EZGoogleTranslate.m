@@ -248,10 +248,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 // https://translate.google.com/?sl=auto&tl=zh-CN&text=good&op=translate
-- (NSString *)wordLink {
-    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];
 }

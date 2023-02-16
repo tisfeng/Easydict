@@ -403,7 +403,9 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *monitorURL = @"https://fanyi.baidu.com/v2transapi";
-    [self.webViewTranslator monitorBaseURLString:monitorURL loadURL:self.wordLink completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+    [self.webViewTranslator monitorBaseURLString:monitorURL
+                                         loadURL:[self wordLink:self.queryModel]
+                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
         if (!error) {
             [self parseResponseObject:responseObject completion:completion];
         } else {
@@ -428,10 +430,10 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 // https://fanyi.baidu.com/#en/zh/good
-- (NSString *)wordLink {
-    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kBaiduTranslateURL, from, to, text];
 }
