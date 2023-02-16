@@ -161,12 +161,19 @@
     return NO;
 }
 
++ (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages {
+    for (EZLanguage language in languages) {
+        if (![EZLanguageManager isChineseLanguage:language]) {
+            return NO;
+        }
+    }
+    return YES;
+}
 
 #pragma mark -
 
 + (NSArray<EZLanguage> *)allLanguages {
     return [[EZLanguageModel allLanguagesDict] sortedKeys];
-    ;
 }
 
 // Get language flag emoji according to language, such as "🇨🇳"

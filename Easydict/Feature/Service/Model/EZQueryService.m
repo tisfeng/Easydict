@@ -10,8 +10,8 @@
 #import "EZLocalStorage.h"
 #import "EZAudioPlayer.h"
 
-#define MethodNotImplemented()    \
-@throw [NSException exceptionWithName:NSInternalInconsistencyException    \
+#define MethodNotImplemented()                                                                                                           \
+@throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
 reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
 userInfo:nil]
 
@@ -21,7 +21,7 @@ userInfo:nil]
 @property (nonatomic, strong) MMOrderedDictionary *langDict;
 @property (nonatomic, strong) NSArray<EZLanguage> *languages;
 @property (nonatomic, strong) NSDictionary<NSString *, EZLanguage> *langEnumFromStringDict;
-@property (nonatomic, strong) NSDictionary< EZLanguage, NSNumber *> *langIndexDict;
+@property (nonatomic, strong) NSDictionary<EZLanguage, NSNumber *> *langIndexDict;
 
 @property (nonatomic, strong) EZAudioPlayer *aduioPlayer;
 
@@ -102,7 +102,7 @@ userInfo:nil]
 }
 
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion {
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     MethodNotImplemented();
 }
 
@@ -123,7 +123,7 @@ userInfo:nil]
     return nil;
 }
 
-/// 单词直达链接 
+/// 单词直达链接
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     return nil;
 }
@@ -134,6 +134,22 @@ userInfo:nil]
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    // If translated language is Chinese, use Chinese text convert directly.
+    NSArray *languages = @[ from, to ];
+    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
+        NSString *result;
+        if ([to isEqualToString:EZLanguageSimplifiedChinese]) {
+            result = [text toSimplifiedChineseText];
+        }
+        if ([to isEqualToString:EZLanguageTraditionalChinese]) {
+            result = [text toTraditionalChineseText];
+        }
+        if (result) {
+            self.result.normalResults = @[ result ];
+            completion(self.result, nil);
+            return;
+        }
+    }
     MethodNotImplemented();
 }
 

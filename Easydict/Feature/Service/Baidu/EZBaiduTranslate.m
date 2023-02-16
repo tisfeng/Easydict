@@ -500,6 +500,12 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
     
+    NSArray *languages = @[from, to];
+    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
+        [super translate:text from:from to:to completion:completion];
+        return;
+    }
+    
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
             [self sendTranslateRequest:text from:from to:to completion:completion];

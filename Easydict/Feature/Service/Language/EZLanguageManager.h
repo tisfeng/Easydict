@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)containsEnglishPreferredLanguage;
 + (BOOL)containsChinesePreferredLanguage;
 
+/// Check if language array only contains simplified Chinese or traditional Chinese two languages.
++ (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
 
 #pragma mark -
 
