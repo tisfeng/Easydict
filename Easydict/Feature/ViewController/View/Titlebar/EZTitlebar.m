@@ -8,7 +8,7 @@
 
 #import "EZTitlebar.h"
 #import "EZTitleBarMoveView.h"
-#import "NSView+EZWindowType.h"
+#import "NSObject+EZWindowType.h"
 #import "NSImage+EZResize.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"

@@ -51,7 +51,7 @@
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
-		039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSView+EZWindowType.m */; };
+		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039E5020296E5D9900072344 /* EZScrollViewController.m */; };
@@ -247,8 +247,8 @@
 		03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitleBarMoveView.m; sourceTree = "<group>"; };
 		03991168292AA2EF00E1B06D /* EZLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLayoutManager.h; sourceTree = "<group>"; };
 		03991169292AA2EF00E1B06D /* EZLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLayoutManager.m; sourceTree = "<group>"; };
-		039CC90B292F664E0037B91E /* NSView+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZWindowType.h"; sourceTree = "<group>"; };
-		039CC90C292F664E0037B91E /* NSView+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZWindowType.m"; sourceTree = "<group>"; };
+		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
+		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
@@ -1198,8 +1198,8 @@
 				03008B2429408BCB0062B821 /* NSObject+DarkMode */,
 				03B022BB29231FA6001C7E63 /* NSTextView+Height */,
 				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
-				039CC90B292F664E0037B91E /* NSView+EZWindowType.h */,
-				039CC90C292F664E0037B91E /* NSView+EZWindowType.m */,
+				039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */,
+				039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */,
 				039CC90E292F86F40037B91E /* NSImage+EZResize.h */,
 				039CC90F292F86F40037B91E /* NSImage+EZResize.m */,
 				03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */,
@@ -1519,7 +1519,7 @@
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,
-				039CC90D292F664E0037B91E /* NSView+EZWindowType.m in Sources */,
+				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,

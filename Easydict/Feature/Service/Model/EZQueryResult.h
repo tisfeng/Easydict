@@ -136,7 +136,6 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 @property (nonatomic, copy, nullable) NSString *promptTitle;
 @property (nonatomic, copy, nullable) NSString *promptURL;
 
-
 - (void)reset;
 
 @end
