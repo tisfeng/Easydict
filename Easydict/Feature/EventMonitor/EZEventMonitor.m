@@ -610,7 +610,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }
     
     // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
-    CGFloat expandValue = 15;
+    CGFloat expandValue = 30;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
                                                   selectedTextFrame.origin.y - expandValue,
                                                   selectedTextFrame.size.width + expandValue * 2,
