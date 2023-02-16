@@ -128,7 +128,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSArray *languages = @[from, to];
+    NSArray *languages = @[ from, to ];
     if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
         [super translate:text from:from to:to completion:completion];
         return;
@@ -141,7 +141,19 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     // https://translate.volcengine.com/?category=&home_language=zh&source_language=en&target_language=zh&text=good
     // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=en&target_language=zh&text=good
     
-    [self.webViewTranslator queryTranslateURL:[self wordLink:self.queryModel] completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+    // TODO: need to optimize.
+    
+    NSString *wordLink = [self wordLink:self.queryModel];
+    
+    // Since volcano web translation max query length is 800, so we have to truncate the text.
+    if (self.queryModel.queryText.length > 800) {
+        NSString *queryText = [self.queryModel.queryText substringToIndex:800];
+        EZQueryModel *queryModel = [self.queryModel copy];
+        queryModel.queryText = queryText;
+        wordLink = [self wordLink:queryModel];
+    }
+    
+    [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         self.result.normalResults = texts;
         completion(self.result, error);
     }];
@@ -151,18 +163,18 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     // https://translate.volcengine.com/web/dict/detail/v1/?msToken=&X-Bogus=DFSzswVmQDGy-4zDSZ1KKKIkirE-&_signature=_02B4Z6wo00001WxCnygAAIDADDchOBSP91VsQpuAADjVa6
     
     // ???: Why does this method cause a persistent memory leak? But DeepL does not?
-//        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-//        NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1/?msToken";
-//        monitorURL = @"https://translate.volcengine.com/web/dict/detail/v1";
-//
-//        [self.webViewTranslator monitorBaseURLString:monitorURL
-//                                             loadURL:self.wordLink
-//                                   completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-//            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-//            NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-//
-//            //        NSLog(@"deepL responseObject: %@", responseObject);
-//        }];
+    //        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    //        NSString *monitorURL = @"https://translate.volcengine.com/web/translate/v1/?msToken";
+    //        monitorURL = @"https://translate.volcengine.com/web/dict/detail/v1";
+    //
+    //        [self.webViewTranslator monitorBaseURLString:monitorURL
+    //                                             loadURL:self.wordLink
+    //                                   completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+    //            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    //            NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+    //
+    //            //        NSLog(@"deepL responseObject: %@", responseObject);
+    //        }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
