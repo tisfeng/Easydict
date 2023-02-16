@@ -98,7 +98,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 - (void)monitorBaseURLString:(NSString *)monitorURL
                      loadURL:(NSString *)URL
            completionHandler:(void (^)(NSURLResponse *_Nonnull, id _Nullable, NSError *_Nullable))completionHandler {
-    [self.webView stopLoading];
+    [self resetWebView];
 
     if (!URL.length || !monitorURL.length) {
         NSLog(@"loadURL or monitorURL cannot be emtpy");
@@ -107,7 +107,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:completionHandler];
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        [self reset];
+        [self resetWebView];
         completionHandler(response, responseObject, error);
     }];
     
@@ -117,7 +117,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZNetWorkTimeoutInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([self.urlSchemeHandler containsMonitorBaseURLString:monitorURL]) {
             [self.urlSchemeHandler removeMonitorBaseURLString:monitorURL];
-            [self reset];
+            [self resetWebView];
 
             NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:[NSURL URLWithString:monitorURL] statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:@{@"Content-Type" : @"application/json"}];
             completionHandler(response, nil, [EZTranslateError timeoutError]);
@@ -128,7 +128,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 /// Query webView translate url result.
 - (void)queryTranslateURL:(NSString *)URL
         completionHandler:(nullable void (^)(NSArray<NSString *> *_Nullable, NSError *))completionHandler {
-    [self.webView stopLoading];
+    [self resetWebView];
     
     if (self.querySelector.length == 0) {
         NSLog(@"querySelector is empty, url: %@", URL);
@@ -153,12 +153,12 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                 NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
             }
 
-            [self reset];
+            [self resetWebView];
         };
     }
 }
 
-- (void)reset {
+- (void)resetWebView {
     // !!!: When finished, set completion to nil.
     self.completionHandler = nil;
     self.queryURL = nil;
