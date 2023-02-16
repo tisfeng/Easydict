@@ -22,7 +22,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (instancetype)init {
     if (self = [super init]) {
-//        [self.webViewTranslator preloadURL:kDeepLTranslateURL]; // Preload webView.
+        //        [self.webViewTranslator preloadURL:kDeepLTranslateURL]; // Preload webView.
     }
     return self;
 }
@@ -52,10 +52,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 // https://www.deepl.com/translator#en/zh/good
-- (NSString *)wordLink {
-    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     if (!from || !to) {
         return nil;
@@ -104,26 +104,53 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    if (!self.wordLink) {
+    NSString *wordLink = [self wordLink:self.queryModel];
+    
+    // Since DeepL doesn't support zh-TW, we need to convert zh-TW to zh-CN.
+    if ([self.queryModel.queryFromLanguage isEqualToString:EZLanguageTraditionalChinese] &&
+        ![EZLanguageManager isChineseLanguage:self.queryModel.queryTargetLanguage]) {
+        EZQueryModel *queryModel = [self.queryModel copy];
+        queryModel.userSourceLanguage = EZLanguageSimplifiedChinese;
+        wordLink = [self wordLink:queryModel];
+    }
+    
+    if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese] &&
+        ![EZLanguageManager isChineseLanguage:self.queryModel.queryFromLanguage]) {
+        EZQueryModel *queryModel = [self.queryModel copy];
+        queryModel.userTargetLanguage = EZLanguageSimplifiedChinese;
+        wordLink = [self wordLink:queryModel];
+    }
+    
+    if (!wordLink) {
         completion(self.result, EZQueryUnsupportedLanguageError(self));
         return;
     }
     
-    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+    [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+        if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
+            // Convert result to traditional Chinese.
+            NSMutableArray *newTexts = [NSMutableArray array];
+            for (NSString *text in texts) {
+                NSString *newText = [text toTraditionalChineseText];
+                [newTexts addObject:newText];
+            }
+            texts = newTexts;
+        }
+        
         self.result.normalResults = texts;
         completion(self.result, error);
     }];
     
-//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-//    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-//    [self.webViewTranslator monitorBaseURLString:monitorURL
-//                                         loadURL:self.wordLink
-//                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-//        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-//        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
-//        
-//        //        NSLog(@"deepL responseObject: %@", responseObject);
-//    }];
+    //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    //    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
+    //    [self.webViewTranslator monitorBaseURLString:monitorURL
+    //                                         loadURL:self.wordLink
+    //                               completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+    //        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    //        NSLog(@"API deepL cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+    //
+    //        //        NSLog(@"deepL responseObject: %@", responseObject);
+    //    }];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {

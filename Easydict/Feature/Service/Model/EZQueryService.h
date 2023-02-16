@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)link;
 
 /// 单词直达链接
-- (nullable NSString *)wordLink;
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel;
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;

@@ -26,6 +26,18 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return self;
 }
 
+- (instancetype)copyWithZone:(NSZone *)zone {
+    EZQueryModel *model = [[EZQueryModel allocWithZone:zone] init];
+    model.queryType = self.queryType;
+    model.queryText = self.queryText;
+    model.userSourceLanguage = self.userSourceLanguage;
+    model.userTargetLanguage = self.userTargetLanguage;
+    model.detectedLanguage = self.detectedLanguage;
+    model.ocrImage = self.ocrImage;
+    model.queryViewHeight = self.queryViewHeight;
+    return model;
+}
+
 - (EZLanguage)queryFromLanguage {
     EZLanguage fromLanguage = self.userSourceLanguage;
     if ([fromLanguage isEqualToString:EZLanguageAuto]) {

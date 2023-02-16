@@ -64,10 +64,10 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=detect&target_language=zh&text=good
-- (NSString *)wordLink {
-    NSString *from = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
-    NSString *text = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
+    NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@?category=&home_language=zh&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, text];
 }
@@ -135,7 +135,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     // https://translate.volcengine.com/?category=&home_language=zh&source_language=en&target_language=zh&text=good
     // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=en&target_language=zh&text=good
     
-    [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+    [self.webViewTranslator queryTranslateURL:[self wordLink:self.queryModel] completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         self.result.normalResults = texts;
         completion(self.result, error);
     }];
