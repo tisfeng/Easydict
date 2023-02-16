@@ -6,11 +6,11 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "NSView+EZWindowType.h"
+#import "NSObject+EZWindowType.h"
 
 static NSString *EZWindowTypeKey = @"EZWindowTypeKey";
 
-@implementation NSView (EZWindowType)
+@implementation NSObject (EZWindowType)
 
 - (void)setWindowType:(EZWindowType)windowType {
     objc_setAssociatedObject(self, (__bridge const void *)(EZWindowTypeKey), @(windowType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);

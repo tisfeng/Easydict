@@ -778,7 +778,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
     
-    NSWindow *window = [self topQueryWindow];
+    NSWindow *window = [self windowOfType:self.result.service.windowType];
     CGFloat selfWidth = window ? window.width - EZHorizontalCellSpacing_12 * 2 : self.width;
     CGFloat width = selfWidth - exceptedWidth;
     //        NSLog(@"text: %@, width: %@", label.text, @(width));
@@ -793,13 +793,11 @@ static const CGFloat kVerticalPadding_8 = 8;
     return CGSizeMake(width, height);
 }
 
-// Get the top query window from the windows stack
-- (NSWindow *)topQueryWindow {
-    // Can't use [NSApplication sharedApplication].keyWindow, because it may be the Preferences window.
-    NSArray *windows = [NSApplication sharedApplication].windows;
-    for (NSInteger i = windows.count - 1; i >= 0; i--) {
-        NSWindow *window = windows[i];
-        if ([window isKindOfClass:[EZBaseQueryWindow class]]) {
+// Get window from the windows stack with window type.
+- (EZBaseQueryWindow *)windowOfType:(EZWindowType)windowType {
+    NSArray *windows = [[NSApplication sharedApplication] windows];
+    for (EZBaseQueryWindow *window in windows) {
+        if ([window isKindOfClass:[EZBaseQueryWindow class]] && window.windowType == windowType) {
             return window;
         }
     }

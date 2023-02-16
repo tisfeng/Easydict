@@ -8,7 +8,7 @@
 
 #import "EZTextView.h"
 #import "EZQueryModel.h"
-#import "NSView+EZWindowType.h"
+#import "NSObject+EZWindowType.h"
 #import "EZLoadingAnimationView.h"
 
 NS_ASSUME_NONNULL_BEGIN
