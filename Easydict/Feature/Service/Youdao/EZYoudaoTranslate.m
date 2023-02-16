@@ -123,21 +123,20 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return @"http://fanyi.youdao.com";
 }
 
-// https://www.youdao.com/result?word=good&lang=en
-// youdao support 4 languages: en, ja, ko, fr, and to Chinese
+// Youdao word link, support 4 languages: en, ja, ko, fr, and to Chinese. https://www.youdao.com/result?word=good&lang=en
 // means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
-- (NSString *)wordLink {
-    NSString *encodedWord = [self.queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    NSString *encodedWord = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *foreignLangauge = [self youdaoDictForeignLangauge:queryModel];
     if (!foreignLangauge) {
         return nil;
     }
     return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoDictURL, encodedWord, foreignLangauge];
 }
 
-- (nullable NSString *)youdaoDictForeignLangauge {
-    EZLanguage fromLanguage = self.queryModel.queryFromLanguage;
-    EZLanguage toLanguage = self.queryModel.queryTargetLanguage;
+- (nullable NSString *)youdaoDictForeignLangauge:(EZQueryModel *)queryModel {
+    EZLanguage fromLanguage = queryModel.queryFromLanguage;
+    EZLanguage toLanguage = queryModel.queryTargetLanguage;
 
     NSArray *youdaoSupportedLanguags = @[ EZLanguageEnglish, EZLanguageJapanese, EZLanguageFrench, EZLanguageKorean ];
     NSMutableArray *youdaoSupportedLanguageCodes = [NSMutableArray array];
@@ -148,9 +147,9 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
     NSString *foreignLangauge = nil; // en,fr,
     if ([EZLanguageManager isChineseLanguage:fromLanguage]) {
-        foreignLangauge = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
+        foreignLangauge = [self languageCodeForLanguage:toLanguage];
     } else if ([EZLanguageManager isChineseLanguage:toLanguage]) {
-        foreignLangauge = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
+        foreignLangauge = [self languageCodeForLanguage:fromLanguage];
     }
 
     if ([youdaoSupportedLanguageCodes containsObject:foreignLangauge]) {
@@ -229,7 +228,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
 
-    NSString *foreignLangauge = [self youdaoDictForeignLangauge];
+    NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
 
     // If Youdao Dictionary does not support the language, try querying translate API.
     if (!foreignLangauge) {
@@ -297,8 +296,9 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         mm_strongify(self);
         if (self.result.error && !self.result.hasTranslatedResult) {
-            if (self.wordLink) {
-                [self.webViewTranslator queryTranslateURL:self.wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+            NSString *wordLink = [self wordLink:self.queryModel];
+            if (wordLink) {
+                [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
                     self.result.normalResults = texts;
                     completion(self.result, error);
                 }];
