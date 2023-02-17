@@ -709,6 +709,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                             if ([languages isKindOfClass:[NSArray class]]) {
                                 NSString *language = languages.firstObject;
                                 if ([language isKindOfClass:[NSString class]]) {
+                                    NSLog(@"Google detect language: %@", language);
                                     EZLanguage ezlanguage = [self languageEnumFromCode:language];
                                     if (![ezlanguage isEqualToString:EZLanguageAuto]) {
                                         googleFromLanguage = ezlanguage;

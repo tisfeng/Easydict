@@ -568,6 +568,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *jsonResult = responseObject;
             NSString *from = [jsonResult objectForKey:@"lan"];
+            NSLog(@"Baidu detect language: %@", from);
+
             if ([from isKindOfClass:NSString.class] && from.length) {
                 completion([self languageEnumFromCode:from], nil);
             } else {

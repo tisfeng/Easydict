@@ -280,9 +280,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         return;
     }
     
-    if (queryType == EZQueryTypeOCR) {
-        self.queryText = @"";
-    } else {
+    if (queryType != EZQueryTypeOCR) {
         self.queryModel.ocrImage = nil;
     }
     
