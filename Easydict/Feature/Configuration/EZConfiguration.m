@@ -63,7 +63,7 @@ static EZConfiguration *_instance;
     self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.languageDetectOptimize = [[NSUserDefaults mm_read:kLanguageDetectOptimizeTypeKey defaultValue:@(1) checkClass:NSNumber.class] integerValue];
     self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];

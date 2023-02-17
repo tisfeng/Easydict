@@ -150,7 +150,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
             } else {
                 completionHandler(texts, nil);
                 CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-                NSLog(@"webView cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+                NSLog(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
             }
 
             [self resetWebView];
