@@ -314,7 +314,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }];
     
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         
@@ -325,11 +325,11 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 #pragma mark - Handle Event
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-    //                NSLog(@"type: %lu", (unsigned long)event.type);
+    //                    NSLog(@"type: %ld", event.type);
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
-            //                NSLog(@"mouse up");
+            //                            NSLog(@"mouse up");
             if ([self checkIfLeftMouseDragged]) {
                 //                    NSLog(@"Dragged selected");
                 [self getSelectedText:YES];
@@ -350,7 +350,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             } else if (event.clickCount == 3) {
                 // Cancel former double click selected text.
                 [self cancelDelayGetSelectedText];
-                [self delayGetSelectedText:kDelayGetSelectedTextTime];
+                [self delayGetSelectedText];
+            } else if (event.modifierFlags & NSEventModifierFlagShift) {
+                // Shift + Left mouse button pressed.
+                [self delayGetSelectedText];
             } else {
                 [self dismissPopButton];
             }
@@ -378,7 +381,20 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             break;
         }
         case NSEventTypeFlagsChanged: {
-            [self dismissPopButton];
+            NSLog(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+            
+            if (event.modifierFlags & NSEventModifierFlagShift) {
+                // Shift key is released.
+                NSLog(@"Shift key is typed.");
+            }
+            
+            // Shift key is released.
+            if ((event.keyCode == kVK_Shift || kVK_RightShift) && event.modifierFlags == 256) {
+                NSLog(@"Shift key is released.");
+            } else {
+                [self dismissPopButton];
+            }
+            
             //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
@@ -391,6 +407,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         }
             
         default:
+            //            NSLog(@"default type: %ld", event.type);
             [self dismissPopButton];
             break;
     }
@@ -537,6 +554,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 #pragma mark -
 
 /// Delay get selected text.
+- (void)delayGetSelectedText {
+    [self performSelector:@selector(getSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
+}
+
 - (void)delayGetSelectedText:(NSTimeInterval)delayTime {
     [self performSelector:@selector(getSelectedText:) withObject:@(NO) afterDelay:delayTime];
 }
