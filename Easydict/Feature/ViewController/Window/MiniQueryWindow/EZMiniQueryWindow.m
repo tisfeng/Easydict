@@ -12,7 +12,9 @@
 
 - (instancetype)init {
     if (self = [super initWithWindowType:EZWindowTypeMini]) {
-        self.styleMask = NSWindowStyleMaskTitled; // mini window cannot resize.
+        [self standardWindowButton:NSWindowCloseButton].hidden = YES;
+        [self standardWindowButton:NSWindowMiniaturizeButton].hidden = YES;
+        [self standardWindowButton:NSWindowZoomButton].hidden = YES;
     }
     return self;
 }
