@@ -44,7 +44,7 @@ static EZLayoutManager *_instance;
 
 - (void)commonInitialize {
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
-    self.maximumWindowSize = CGSizeMake(visibleFrameSize.width / 2, visibleFrameSize.height);
+    self.maximumWindowSize = CGSizeMake(visibleFrameSize.width, visibleFrameSize.height);
     self.minimumWindowSize = CGSizeMake(300, 100);
 
     EZConfiguration *configuration = [EZConfiguration shared];
@@ -75,7 +75,7 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return self.minimumWindowSize;
         case EZWindowTypeMini:
-            return CGSizeMake(self.miniWindowFrame.size.width, self.minimumWindowSize.height);
+            return self.minimumWindowSize;
         default:
             return self.minimumWindowSize;
     }
@@ -88,7 +88,7 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return self.maximumWindowSize;
         case EZWindowTypeMini: {
-            return CGSizeMake(self.miniWindowFrame.size.width, self.maximumWindowSize.height);
+            return self.maximumWindowSize;
         }
         default:
             return self.maximumWindowSize;
