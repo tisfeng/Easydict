@@ -30,7 +30,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @interface EZEventMonitor ()
 
 @property (nonatomic, strong) NSString *selectedText;
-@property (nonatomic, assign) NSInteger changeCount;
 
 @property (nonatomic, assign) EZEventMonitorType type;
 @property (nonatomic, strong) id localMonitor;
@@ -48,14 +47,15 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (instancetype)init {
     if (self = [super init]) {
-        _recordEvents = [NSMutableArray array];
-        _commandKeyEvents = [NSMutableArray array];
-        //        [self monitorForEvents];
-        //        [self checkAppIsTrusted];
+        [self setup];
     }
     return self;
 }
 
+- (void)setup {
+    _recordEvents = [NSMutableArray array];
+    _commandKeyEvents = [NSMutableArray array];
+}
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
@@ -113,6 +113,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
     
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSInteger changeCount = [pasteboard changeCount];
+    
     NSString *lastText = [self getPasteboardText];
     
     // Simulate keyboard event: Cmd + C
@@ -123,6 +126,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:NO];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSInteger newChangeCount = [pasteboard changeCount];
+        // If changeCount is equal to newChangeCount, it means that the copy value is nil.
+        if (changeCount == newChangeCount) {
+            completion(nil);
+            return;
+        }
+        
         NSString *selectedText = [self getPasteboardText];
         self.selectedText = selectedText;
         MMLogInfo(@"--> Key getText: %@", selectedText);
@@ -141,7 +151,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     return text;
 }
 
-/// Use NSEvent keyEventWithType to post keyboard event Cmd + C
+/// Use NSEvent keyEventWithType to post keyboard event Cmd + C. Why doesn't it work?
 - (void)postKeyboardEventCmdC {
     NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
     [NSApp postEvent:event atStart:YES];
@@ -381,17 +391,15 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             break;
         }
         case NSEventTypeFlagsChanged: {
-            NSLog(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
+            //            NSLog(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
             
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
-                NSLog(@"Shift key is typed.");
+                //                NSLog(@"Shift key is typed.");
             }
             
-            // Shift key is released.
-            if ((event.keyCode == kVK_Shift || kVK_RightShift) && event.modifierFlags == 256) {
-                NSLog(@"Shift key is released.");
-            } else {
+            // If not Shift key is released.
+            if (!((event.keyCode == kVK_Shift || kVK_RightShift) && event.modifierFlags == 256)) {
                 [self dismissPopButton];
             }
             
