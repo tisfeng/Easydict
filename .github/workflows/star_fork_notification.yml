@@ -23,7 +23,7 @@ jobs:
 
       - name: Get repository information
         run: |
-          result=$(curl -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
+          result=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
           forks=$(echo $result | jq '.forks_count')
           repo_name=$(echo $result | jq '.name')
