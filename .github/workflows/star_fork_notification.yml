@@ -34,9 +34,15 @@ jobs:
           echo "repo_forks=$forks" >> $GITHUB_ENV
           echo "repo_name=$repo_name" >> $GITHUB_ENV
 
+      - name: Get repo download count
+        run: |
+          download_count=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[0].assets[0].download_count')
+          echo "Number of downloads: $download_count"
+          echo "download_count=$download_count" >> $GITHUB_ENV
+
       - name: Convert body to HTML
         run: |
-          html_body="<h1>${{ env.repo_name }}</h1> <br><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{ env.event_name }}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Stars: <b>${{ env.repo_stars }}</b>  <br><br>Forks: <b>${{ env.repo_forks }}</b>   <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
+          html_body="<h1>${{ env.repo_name }}</h1> <br><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{ env.event_name }}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Stars: <b>${{ env.repo_stars }}</b>  <br><br>Forks: <b>${{ env.repo_forks }}</b>  <br><br>Downloads: <b>${{ env.download_count }}</b>   <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
 
           echo "html_body=$html_body" >> $GITHUB_ENV
           echo "html body: ${{ env.html_body }}"

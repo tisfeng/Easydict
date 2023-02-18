@@ -40,6 +40,7 @@
 
     NSString *repo = @"tisfeng/Easydict";
     [self fetchLastestRepoInfo:repo];
+//    [self fetchGithubRepoInfo:repo];
 }
 
 - (void)setupUI {
