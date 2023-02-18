@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZQueryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSInteger delayRetryCount; // 10
 
+@property (nonatomic, strong) EZQueryModel *queryModel;
 
 /// Preload url.
 - (void)preloadURL:(NSString *)URL;
