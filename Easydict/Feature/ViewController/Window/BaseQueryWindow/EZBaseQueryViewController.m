@@ -393,7 +393,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
     
     for (EZQueryService *service in self.services) {
-        [self queryWithModel:queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"query error: %@", error);
             }
@@ -421,7 +421,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 // TODO: service already has the model property.
 - (void)queryWithModel:(EZQueryModel *)queryModel
-                serive:(EZQueryService *)service
+                service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
         NSLog(@"service disabled: %@", service.serviceType);
@@ -976,7 +976,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
-            [self queryWithModel:self.queryModel serive:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+            [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 result.error = error;
                 result.isShowing = YES;
                 if (!result.hasTranslatedResult && result.error) {
