@@ -103,10 +103,10 @@ Supported languages:
 | Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
 | :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Chinese (Traditional) |   ✅   |  ⚠️   |      ❌      |   ✅   |  ✅   |   ✅    |
+| Chinese (Traditional) |   ✅   |  ⚠️   |      ✅      |   ✅   |  ✅   |   ✅    |
 | English               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Japanese              |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Korean                |   ✅   |  ❌   |      ✅      |   ✅   |  ✅   |   ✅    |
+| Korean                |   ✅   |  ✅  |      ✅      |   ✅   |  ✅   |   ✅    |
 | French                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Spanish               |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Portuguese            |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
@@ -145,7 +145,7 @@ Supported languages:
 | Lao                   |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Bengali               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Burmese               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Norwegian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
+| Norwegian             |   ❌   |  ✅  |      ❌      |   ✅   |  ✅   |   ✅    |
 | Serbian               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Croatian              |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
