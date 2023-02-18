@@ -32,6 +32,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         NSString *selector = @"#target-dummydiv";
         _webViewTranslator = [[EZWebViewTranslator alloc] init];
         _webViewTranslator.querySelector = selector;
+        _webViewTranslator.queryModel = self.queryModel;
     }
     return _webViewTranslator;
 }

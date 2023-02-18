@@ -267,14 +267,14 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 }
 
 - (nullable NSArray<NSString *> *)getValidTranslatedTexts:(NSArray<NSString *> *)texts {
-    NSString *text = [texts componentsJoinedByString:@"\n"];
-    NSString *translatedText = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *translatedText = [[texts componentsJoinedByString:@"\n"] trim];
     if (translatedText.length == 0) {
         return nil;
     }
 
     // Volcano translate sometimes returns ... first, this is invalid.
-    if ([translatedText isEqualToString:@"..."]) {
+    NSString *invalidResult = @"...";
+    if ([translatedText isEqualToString:invalidResult] && ![self.queryModel.queryText.trim isEqualToString:invalidResult]) {
         return nil;
     }
 

@@ -44,6 +44,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
         _webViewTranslator.delayJsCode = [NSString stringWithFormat:@"Array.from(document.querySelectorAll('%@')).slice(-1).map(el=>el.textContent)", delayQuerySelector];
         
         _webViewTranslator.delayRetryCount = 15;
+        _webViewTranslator.queryModel = self.queryModel;
     }
     return _webViewTranslator;
 }

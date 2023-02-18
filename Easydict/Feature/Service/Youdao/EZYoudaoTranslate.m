@@ -43,6 +43,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         NSString *selector = @"p.trans-content";
         _webViewTranslator = [[EZWebViewTranslator alloc] init];
         _webViewTranslator.querySelector = selector;
+        _webViewTranslator.queryModel = self.queryModel;
     }
     return _webViewTranslator;
 }
