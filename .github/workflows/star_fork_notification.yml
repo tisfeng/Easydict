@@ -36,7 +36,7 @@ jobs:
 
       - name: Get repo download count
         run: |
-          download_count=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[0].assets[0].download_count')
+          download_count=$(curl -s "https://api.github.com/repos/tisfeng/Easydict/releases" | jq '.[].assets[].download_count' | awk '{sum += $1} END {print sum}')
           echo "Number of downloads: $download_count"
           echo "download_count=$download_count" >> $GITHUB_ENV
 
