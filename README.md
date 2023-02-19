@@ -167,7 +167,8 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 #### 设置
 
-![iShot_2023-01-20_11.46.57-1674186468](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.46.57-1674186468.png)
+![iShot_2023-02-19_11.33.51](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-02-19_11.33.51-1676783205.png)
+
 
 #### 服务
 
