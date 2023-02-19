@@ -64,7 +64,7 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
   <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="40%" />
 </div>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="80%" />
+  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
 </div>
 
 
