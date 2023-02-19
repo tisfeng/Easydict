@@ -41,7 +41,7 @@
 "show_mini_window" = "Show Mini Window:";
 "check_update" = "Update:";
 "auto_check_update" = "Auto Check App Update";
-"show_query_icon" = "Query Icon:";
+"show_query_icon" = "Show Query Icon:";
 "auto_show_icon" = "Auto Show Query Icon (Experimental)";
 "launch" = "Launch:";
 "launch_at_startup" = "Launch at Startup";

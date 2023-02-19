@@ -45,12 +45,12 @@
 
 "check_update" = "更新:";
 "auto_check_update" = "自动检查应用程序更新";
-"show_query_icon" = "查询图标:";
+"show_query_icon" = "显示查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
 "show_main_window" = "主窗口:";
-"hide_main_window" = "启动后自动隐藏主窗口";
+"hide_main_window" = "启动后隐藏主窗口";
 "auto_snip_translate" = "截图 OCR 后自动翻译";
 "play_audio" = "播放单词发音:";
 "auto_play_audio" = "查询英语单词后自动播放发音";
@@ -67,13 +67,13 @@
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
 "menu_bar_icon" = "菜单栏图标:";
 "hide_menu_bar_icon" = "隐藏菜单栏图标";
-"fixed_window_position" = "悬浮窗口位置:";
+"fixed_window_position" = "侧悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
 "fixed_window_position_word" = "划词位置";
 "fixed_window_position_former" = "上次位置";
 
 "mini_window" = "迷你窗口";
-"fixed_window" = "悬浮窗口";
+"fixed_window" = "侧悬浮窗口";
 "main_window" = "主窗口";
 
 "about" = "关于";

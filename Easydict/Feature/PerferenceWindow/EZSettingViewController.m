@@ -72,7 +72,7 @@
     [self setupUI];
     
     self.leftMargin = 120;
-    self.rightMargin = 100;
+    self.rightMargin = 90;
     
     [self updateViewSize];
 }
