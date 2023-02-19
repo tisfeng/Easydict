@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "translate-icon-2.png",
+      "filename" : "release_18.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "release_36.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "release_54.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

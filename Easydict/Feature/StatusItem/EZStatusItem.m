@@ -50,20 +50,20 @@ static EZStatusItem *_instance;
     if (self.statusItem) {
         return;
     }
-
+    
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [item.button setToolTip:@"Easydict"];
 #if DEBUG
-    NSImage *image = [NSImage imageNamed:@"menu-icon-2"];
+    NSImage *image = [NSImage imageNamed:@"status_icon_debug"];
 #else
-    NSImage *image = [NSImage imageNamed:@"menu-icon"];
+    NSImage *image = [NSImage imageNamed:@"status_icon"];
 #endif
     image.template = YES;
     [item.button setImage:image];
     [item.button setImageScaling:NSImageScaleProportionallyUpOrDown];
     [item setMenu:self.menu];
     self.statusItem = item;
-
+    
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.bobItem.title = [NSString stringWithFormat:@"Easydict  %@", version];
 }
@@ -169,7 +169,7 @@ static EZStatusItem *_instance;
             item.keyEquivalentModifierMask = 0;
         }
     };
-
+    
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
     configItemShortcut(self.snipItem, EZSnipShortcutKey);
     configItemShortcut(self.inputItem, EZInputShortcutKey);
