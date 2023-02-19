@@ -55,9 +55,16 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
 
-- If you encounter the following [unopenable problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+- If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
 > Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="40%" />
+</div>
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="80%" />
+</div>
 
 - If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
 
@@ -77,7 +84,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 <div style="display: flex; justify-content: space-between;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
-</div>
+</div> <br>
 
 | Ways                      | Description                                                                                                                         | Preview                                                                                                                                        |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
