@@ -10,8 +10,8 @@
         sparkle:version="14"
         sparkle:shortVersionString="1.2.3"
         type="application/octet-stream"
-        sparkle:edSignature="3btFQeFaDg2l6+xVrDmEER1uxIRemX/0tvofptCZ3EuMxtt6Kd0EbU/O41U+2eGUwetvdxVL100UqeHy09a+AQ=="
-        length="8300812" />
+        sparkle:edSignature="O1lcXIwMNoVCzzvGkXM49zxopYMwqvSuRBvsV3dQvjYYYVgQ2SSEULeDaPGZmbekxXs8zLelmhFTSV/0UGXqCw=="
+        length="8299177" />
       <description><![CDATA[
         <h2 id="-v1-2-3-2023-02-19">[v1.2.3] - 2023-02-19</h2>
         <h3 id="-">🐞 修复</h3>
