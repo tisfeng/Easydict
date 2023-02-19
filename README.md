@@ -56,17 +56,21 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
 
 
+- 如果遇到下面 [无法打开 Easydict 问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
-- 如果遇到下面[无法打开问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+> 无法打开“Easydict.dmg”，因为它来自身份不明的开发者。
 
-> 无法打开“Easydict.dmg”，因为 Apple 无法检查其是否包含恶意软件。
-
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="40%" />
+</div>
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="80%" />
+</div>
 
 
 - 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
 
 > “Easydict” 已损坏，无法打开。
-
 
 
 在终端里输入以下命令，并输入密码即可。
@@ -83,7 +87,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 <div style="display: flex; justify-content: space-between;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
-</div>
+</div> <br>
 
 | 方式           | 描述                                                                              | 预览                                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
