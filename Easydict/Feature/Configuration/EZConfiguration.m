@@ -145,8 +145,7 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(languageDetectOptimizeType) forKey:kLanguageDetectOptimizeTypeKey];
 }
 
-- (void)
-setShowGoogleQuickLink:(BOOL)showGoogleLink {
+- (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
     _showGoogleQuickLink = showGoogleLink;
     
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
