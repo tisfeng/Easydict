@@ -42,7 +42,8 @@
          */
         
         self.enabledTextCheckingTypes =
-        NSTextCheckingTypeSpelling
+        NSTextCheckingTypeOrthography
+        //        | NSTextCheckingTypeSpelling
         | NSTextCheckingTypeGrammar
         | NSTextCheckingTypeDate
         | NSTextCheckingTypeAddress
@@ -51,7 +52,7 @@
         //        | NSTextCheckingTypeDash // replace "..." with "…"
         | NSTextCheckingTypeReplacement
         | NSTextCheckingTypeCorrection
-        | NSTextCheckingTypeRegularExpression
+        //        | NSTextCheckingTypeRegularExpression
         | NSTextCheckingTypePhoneNumber
         | NSTextCheckingTypeTransitInformation;
         
