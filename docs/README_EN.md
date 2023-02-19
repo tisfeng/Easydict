@@ -110,7 +110,7 @@ Supported languages:
 | Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
 | :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Chinese (Traditional) |   ✅   |  ⚠️   |      ✅      |   ✅   |  ✅   |   ✅    |
+| Chinese (Traditional) |   ✅   |  ✅  |      ✅      |   ✅   |  ✅   |   ✅    |
 | English               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Japanese              |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Korean                |   ✅   |  ✅  |      ✅      |   ✅   |  ✅   |   ✅    |
@@ -157,8 +157,6 @@ Supported languages:
 | Croatian              |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Hebrew                |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-
-> Notice: ⚠️ means the translation of source language to Traditional Chinese is not supported, such as DeepL. If you enter Traditional Chinese for translation, it will be treated as Simplified Chinese.
 
 ### Preferences
 
