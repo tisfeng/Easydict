@@ -291,7 +291,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             NSLog(@"click audioButton");
             mm_strongify(self);
             if (self.playAudioBlock) {
-                self.playAudioBlock(self, result.queryText);
+                self.playAudioBlock(result.queryText, obj.speakURL);
             }
         }];
         audioButton.mas_key = @"audioButton_phonetics";
@@ -544,8 +544,8 @@ static const CGFloat kVerticalPadding_8 = 8;
             [wordButton setClickBlock:^(EZButton *_Nonnull button) {
                 mm_strongify(self);
                 if (self.clickTextBlock) {
-                    self.clickTextBlock(self, word);
-                    self.copyTextBlock(self, word);
+                    self.clickTextBlock(word);
+                    self.copyTextBlock(word);
                 }
             }];
             wordButton.mas_key = @"wordButton_words";
@@ -634,8 +634,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         [wordButton setClickBlock:^(EZButton *_Nonnull button) {
             mm_strongify(self);
             if (self.clickTextBlock) {
-                self.clickTextBlock(self, obj.word);
-                self.copyTextBlock(self, obj.word);
+                self.clickTextBlock(obj.word);
+                self.copyTextBlock(obj.word);
             }
         }];
         wordButton.mas_key = @"wordButton_simpleWords";
@@ -693,7 +693,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSLog(@"audioActionBlock");
         mm_strongify(self);
         if (self.playAudioBlock) {
-            self.playAudioBlock(self, self.copiedText);
+            self.playAudioBlock(self.copiedText, nil);
         }
     }];
     audioButton.mas_key = @"audioButton";
@@ -710,7 +710,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSLog(@"copyActionBlock");
         mm_strongify(self);
         if (self.copyTextBlock) {
-            self.copyTextBlock(self, self.copiedText);
+            self.copyTextBlock(self.copiedText);
         }
     }];
     textCopyButton.mas_key = @"copyButton";

@@ -17,11 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
 
-/// Play text audio with designated service.
-- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)language serive:(EZQueryService *)service;
-
-/// Directly play audio url.
-- (void)playWord:(NSString *)word audioURL:(nullable NSString *)urlString;
+/// Play text URL audio.
+- (void)playTextAudio:(NSString *)text
+             audioURL:(nullable NSString *)audioURL
+         fromLanguage:(EZLanguage)language
+               serive:(nullable EZQueryService *)service;
 
 @end
 

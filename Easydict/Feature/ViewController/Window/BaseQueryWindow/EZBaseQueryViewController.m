@@ -853,8 +853,8 @@ static NSString *const EZColumnId = @"EZColumnId";
     
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        
-        [self.audioPlayer playWord:text audioURL:nil];
+        EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+        [self.audioPlayer playTextAudio:text audioURL:nil fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -950,10 +950,10 @@ static NSString *const EZColumnId = @"EZColumnId";
     EZQueryService *service = [self serviceWithType:result.serviceType];
     
     mm_weakify(self)
-    // TODO: need to optimize, add audio URL.
-    [resultView setPlayAudioBlock:^(NSString *_Nonnull text) {
+    [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
         mm_strongify(self);
         [self.audioPlayer playTextAudio:text
+                               audioURL:audioURL
                            fromLanguage:service.queryModel.queryTargetLanguage
                                  serive:service];
     }];
@@ -1140,11 +1140,12 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (BOOL)playYoudaoWordAudio:(NSString *)text {
-    EZQueryResult *result = [self serviceWithType:EZServiceTypeYoudao].result;
-    if (result.wordResult) {
-        NSString *audioURL = result.fromSpeakURL;
-        if (audioURL.length && [[result.queryText trim] isEqualToString:[text trim]]) {
-            [self.audioPlayer playWord:text audioURL:audioURL];
+    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+    EZQueryResult *youdaoResult = youdaoService.result;
+    if (youdaoResult.wordResult) {
+        NSString *audioURL = youdaoResult.fromSpeakURL;
+        if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
+            [self.audioPlayer playTextAudio:text audioURL:audioURL fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
             return YES;
         }
     }
