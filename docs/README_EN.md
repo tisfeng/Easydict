@@ -59,9 +59,12 @@ Easydict is open source software and is inherently secure, but due to Apple's st
 
 > Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="40%" />
+<div >
+    <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
+    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png"  width="30%">
+    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png"  width="30%">
 </div>
+
 <div style="display: flex; justify-content: space-between;">
   <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
 </div>
