@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) CGFloat viewHeight;
 
-@property (nonatomic, copy) void (^playAudioBlock)(EZWordResultView *view, NSString *word);
-@property (nonatomic, copy) void (^copyTextBlock)(EZWordResultView *view, NSString *word);
-@property (nonatomic, copy) void (^clickTextBlock)(EZWordResultView *view, NSString *word);
+@property (nonatomic, copy) void (^playAudioBlock)(NSString *word,  NSString * _Nullable audioURL);
+@property (nonatomic, copy) void (^copyTextBlock)(NSString *word);
+@property (nonatomic, copy) void (^clickTextBlock)(NSString *word);
 
 - (void)refreshWithResult:(EZQueryResult *)result;
 

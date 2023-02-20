@@ -44,9 +44,9 @@
     } drak:^(CALayer *layer) {
         layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
-    
+
     mm_weakify(self);
-    
+
     self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
         mm_strongify(self);
         [self addSubview:view];
@@ -58,14 +58,14 @@
         }];
     }];
     self.topBarView.mas_key = @"topBarView";
-    
+
     self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
     }];
     self.typeImageView.mas_key = @"typeImageView";
-    
+
     self.typeLabel = [NSTextField mm_make:^(NSTextField *label) {
         mm_strongify(self);
         [self addSubview:label];
@@ -80,7 +80,7 @@
         }];
     }];
     self.typeLabel.mas_key = @"typeLabel";
-    
+
     self.warningImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
@@ -89,101 +89,80 @@
         [imageView setImage:image];
     }];
     self.warningImageView.mas_key = @"warningImageView";
-    
+
     EZLoadingAnimationView *loadingView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingView];
     self.loadingView = loadingView;
-    
+
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
-    
-    [wordResultView setPlayAudioBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
-        mm_strongify(self);
-        if (self.playAudioBlock) {
-            self.playAudioBlock(word);
-        }
-    }];
-    
-    [wordResultView setCopyTextBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
-        mm_strongify(self);
-        if (self.copyTextBlock) {
-            self.copyTextBlock(word);
-        }
-    }];
-    
-    [wordResultView setClickTextBlock:^(EZWordResultView *_Nonnull view, NSString *_Nonnull word) {
-        mm_strongify(self);
-        if (self.clickTextBlock) {
-            self.clickTextBlock(word);
-        }
-    }];
-    
+
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
     [self addSubview:arrowButton];
     NSImage *image = [NSImage imageNamed:@"arrow-down"];
     arrowButton.image = image;
     self.arrowButton.mas_key = @"arrowButton";
-    
+
     [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
-        
+
         if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
             NSLog(@"query text is empty");
             return;
         }
-        
+
         BOOL oldIsShowing = self.result.isShowing;
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
-        
+
         [self updateArrowButton];
-        
+
         if (self.clickArrowBlock) {
             self.clickArrowBlock(self.result);
         }
-        
+
         // TODO: add arrow roate animation.
-        
+
         //        [self rotateArrowButton];
     }];
-    
-    
+
+
     CGSize iconSize = CGSizeMake(16, 16);
-    
+
     [self updateArrowButton];
-    
+
     [self.topBarView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.equalTo(self);
         make.height.mas_equalTo(EZResultViewMiniHeight);
     }];
-    
+
     [self.typeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topBarView).offset(9);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
-    
+
     [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeImageView.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
-    
+
     [self.warningImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
-    
+
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.typeLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
-    
-    
+
+
     [self.arrowButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.topBarView.mas_right).offset(-5);
         make.centerY.equalTo(self.topBarView);
@@ -191,36 +170,37 @@
     }];
 }
 
+#pragma mark - Setter
 
 - (void)setResult:(EZQueryResult *)result {
     _result = result;
-    
+
     EZServiceType serviceType = result.serviceType;
     NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
     self.typeImageView.image = [NSImage imageNamed:imageName];
-    
+
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
-    
-    
+
+
     [self.wordResultView refreshWithResult:result];
-    
+
     BOOL hideWarningImage = YES;
     if (!result.hasTranslatedResult && result.error) {
         hideWarningImage = NO;
     }
     self.warningImageView.hidden = hideWarningImage;
-    
+
     [self updateArrowButton];
-    
-    
+
+
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.topBarView.mas_bottom);
         make.left.right.equalTo(self);
-        
+
         make.height.mas_equalTo(wordResultViewHeight);
     }];
-    
+
     CGFloat viewHeight = EZResultViewMiniHeight;
     if (result.hasShowingResult && result.isShowing) {
         viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
@@ -228,23 +208,25 @@
     }
     self.result.viewHeight = viewHeight;
     //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
-    
-    
+
+
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
 }
 
+- (void)setPlayAudioBlock:(void (^)(NSString *_Nonnull, NSString *_Nonnull))playAudioBlock {
+    _playAudioBlock = playAudioBlock;
+    self.wordResultView.playAudioBlock = playAudioBlock;
+}
 
-- (void)updateArrowButton {
-    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
-    if (self.result.isShowing) {
-        arrowImage = [NSImage imageNamed:@"arrow-down"];
-    }
-    [self.arrowButton excuteLight:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:NSColor.imageTintLightColor];
-    } drak:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
-    }];
+- (void)setCopyTextBlock:(void (^)(NSString *_Nonnull))copyTextBlock {
+    _copyTextBlock = copyTextBlock;
+    self.wordResultView.copyTextBlock = copyTextBlock;
+}
+
+- (void)setClickTextBlock:(void (^)(NSString *_Nonnull))clickTextBlock {
+    _clickTextBlock = clickTextBlock;
+    self.wordResultView.clickTextBlock = clickTextBlock;
 }
 
 
@@ -263,6 +245,20 @@
 
 #pragma mark -
 
+- (void)updateArrowButton {
+    NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
+    if (self.result.isShowing) {
+        arrowImage = [NSImage imageNamed:@"arrow-down"];
+    }
+    [self.arrowButton excuteLight:^(NSButton *button) {
+        button.image = [arrowImage imageWithTintColor:NSColor.imageTintLightColor];
+    } drak:^(NSButton *button) {
+        button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
+    }];
+}
+
+#pragma mark - Animation
+
 - (void)rotateArrowButton {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     animation.fromValue = @(0);
@@ -270,11 +266,11 @@
     animation.cumulative = YES;
     animation.repeatCount = 1;
     animation.duration = 1;
-    
+
     CGRect oldRect = self.arrowButton.layer.frame;
     self.arrowButton.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
     self.arrowButton.layer.frame = oldRect;
-    
+
     [self.arrowButton.layer addAnimation:animation forKey:@"animation"];
 }
 
@@ -315,14 +311,14 @@
     scaleAnimation.values = @[ @1.0, @1.8, @1.0 ];
     scaleAnimation.repeatCount = MAXFLOAT;
     scaleAnimation.duration = 0.6;
-    
+
     CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.fromValue = @(0);
     rotationAnimation.toValue = [NSNumber numberWithFloat:90 * (M_PI / 180.0f)];
     rotationAnimation.cumulative = YES;
     rotationAnimation.repeatCount = MAXFLOAT;
     rotationAnimation.duration = 1;
-    
+
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations = @[ scaleAnimation, rotationAnimation ];
     group.duration = 1;

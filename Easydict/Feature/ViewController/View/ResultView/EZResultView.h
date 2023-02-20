@@ -19,8 +19,9 @@ static const CGFloat EZResultViewMiniHeight = 30;
 @property (nonatomic, strong) EZQueryResult *result;
 
 @property (nonatomic, copy) void (^clickArrowBlock)(EZQueryResult *result);
-@property (nonatomic, copy) void (^playAudioBlock)(NSString *text);
-@property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
+
+@property (nonatomic, copy) void (^playAudioBlock)(NSString *word, NSString *audioURL);
+@property (nonatomic, copy) void (^copyTextBlock)(NSString *word);
 @property (nonatomic, copy) void (^clickTextBlock)(NSString *word);
 
 - (void)updateLoadingAnimation;
