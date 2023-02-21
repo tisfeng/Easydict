@@ -186,9 +186,11 @@ Easydict has 3 types of windows and you can set different services for each of t
 - `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the Google search icon in the upper right corner. 
 - `Opt + Enter`: If you have the Eudic App installed on your computer, an Eudic icon will be displayed to the left of the Safari icon, and the shortcut will open the Eudic App for searching.
 
-## Related Projects
+## Similar Projects
 
-- [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) is a Raycast extension of Easydict。
+- [immersive-translate](https://github.com/immersive-translate/immersive-translate): A nice Immersive Dual Web Page Translation Extension.
+- [ext-saladict](https://github.com/crimx/ext-saladict): A browser extension for looking up words and translating.
+- [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): My other open source project, a Raycast extension version of Easydict.
 
 ![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
 
@@ -204,9 +206,7 @@ Open source makes the world better.
 
 ## Thanks
 
-This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was developed based on [Bob](https://github.com/cheonvo/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob, thanks to the original author [ripperhe](https://github.com/ripperhe).
-
-> [`Bob`](https://bobtranslate.com/) is a translation and OCR software for macOS platform.
+This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was developed based on [Bob](https://github.com/cheonvo/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
 
 ## Notice
 
