@@ -600,7 +600,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
         return;
     }
-
+    
     [self youdaoAIDemoTranslate:text from:from to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (result) {
             if (result.fromSpeakURL.length) {
@@ -609,13 +609,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             }
         }
         
-//        NSDictionary *params = @{
-//            EZTranslateErrorRequestParamKey : @{
-//                @"text" : text ?: @"",
-//                @"from" : from,
-//            },
-//        };
-//        completion(nil, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, @"有道翻译不支持获取该语言音频", params));
+        //        NSDictionary *params = @{
+        //            EZTranslateErrorRequestParamKey : @{
+        //                @"text" : text ?: @"",
+        //                @"from" : from,
+        //            },
+        //        };
+        //        completion(nil, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, @"有道翻译不支持获取该语言音频", params));
         
         [super textToAudio:text fromLanguage:from completion:completion];
     }];
@@ -659,9 +659,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                     result.raw = responseObject;
                     if (result.ocrTextArray.count) {
                         // 有道翻译自动分段，会将分布在几行的句子合并，故用换行分割
-                        result.mergedText = [NSString mm_stringByCombineComponents:[result.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        NSArray<NSString *> *textArray = [result.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                             return obj.text;
-                        }] separatedString:@"\n"];
+                        }];
+                        
+                        result.texts = textArray;
+                        result.mergedText = [textArray componentsJoinedByString:@"\n"];
+                        
                         completion(result, nil);
                         return;
                     }
