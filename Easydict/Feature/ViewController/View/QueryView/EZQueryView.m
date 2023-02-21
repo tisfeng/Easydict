@@ -202,6 +202,10 @@
     [self updateDetectButton];
 }
 
+- (void)showAutoDetectLanguage:(BOOL)showFlag {
+    self.detectButton.showAutoLanguage = self.queryModel.queryText.length;
+}
+
 #pragma mark - Rewrite
 
 - (void)viewDidMoveToWindow {
