@@ -779,6 +779,9 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
+    BOOL showAutoDetect = queryModel.queryText.length;
+    [self.queryView showAutoDetectLanguage:showAutoDetect];
+    
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
     [self updateSelectLanguageCell];
