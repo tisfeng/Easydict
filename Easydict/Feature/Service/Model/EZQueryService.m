@@ -101,9 +101,8 @@ userInfo:nil]
     return [[self.langIndexDict objectForKey:lang] integerValue];
 }
 
-
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    MethodNotImplemented();
+    [self ocr:queryModel.ocrImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
 }
 
 

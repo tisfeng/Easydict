@@ -10,11 +10,13 @@
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
 #import "EZConfiguration.h"
+#import "EZYoudaoTranslate.h"
 
 @interface EZDetectManager ()
 
 @property (nonatomic, strong) EZGoogleTranslate *googleService;
 @property (nonatomic, strong) EZBaiduTranslate *baiduService;
+@property (nonatomic, strong) EZYoudaoTranslate *youdaoService;
 
 @end
 
@@ -59,6 +61,13 @@
         _baiduService = [[EZBaiduTranslate alloc] init];
     }
     return _baiduService;
+}
+
+- (EZYoudaoTranslate *)youdaoService {
+    if (!_youdaoService) {
+        _youdaoService = [[EZYoudaoTranslate alloc] init];
+    }
+    return _youdaoService;
 }
 
 #pragma mark -
@@ -169,7 +178,15 @@
                 }
             }];
         } else {
-            completion(ocrResult, error);
+            // TODO: try to deep OCR ?
+            // TODO: try to use an other online OCR service? like detect text.
+            [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOcrResult, NSError *_Nullable youdaoOcrError) {
+                if (!youdaoOcrError) {
+                    completion(youdaoOcrResult, nil);
+                } else {
+                    completion(ocrResult, error);
+                }
+            }];
         }
     }];
 }
