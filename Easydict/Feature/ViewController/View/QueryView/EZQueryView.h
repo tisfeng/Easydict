@@ -47,6 +47,8 @@ static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 
 - (void)showAlertMessage:(NSString *)message;
 
+- (void)showAutoDetectLanguage:(BOOL)showFlag;
+
 @end
 
 NS_ASSUME_NONNULL_END
