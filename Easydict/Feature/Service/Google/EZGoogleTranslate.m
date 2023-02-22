@@ -251,7 +251,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *maxText = [self maxTextLength:queryModel.queryText fromLanguage:queryModel.queryFromLanguage];
+    NSString *text = [maxText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];
 }
@@ -412,11 +413,26 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     translateBlock(text, from, to);
 }
 
+/// Get max text length for Google Translate.
+- (NSString *)maxTextLength:(NSString *)text fromLanguage:(EZLanguage)from {
+    // Chinese max text length 1800
+    // English max text length 5000
+    
+    if ([EZLanguageManager isChineseLanguage:from] && text.length > 1800) {
+        text = [text substringToIndex:1800];
+    } else if (text.length > 5000) {
+        text = [text substringToIndex:5000];
+    }
+    return text;
+}
+
 - (void)translateTKKText:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
+    
+    text = [self maxTextLength:text fromLanguage:from];
     
     EZQueryResult *result = self.result;
     
@@ -450,7 +466,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         NSArray *phonetics = phoneticArray[1];
                         if (phonetics.count > 3) {
                             NSString *phoneticText = phonetics[3];
-
+                            
                             wordResult = [[EZTranslateWordResult alloc] init];
                             
                             EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
@@ -465,7 +481,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                             wordResult.phonetics = @[ phonetic ];
                         }
                     }
-                                        
+                    
                     NSArray<NSArray *> *dictResult = responseArray[1];
                     if (dictResult && [dictResult isKindOfClass:NSArray.class]) {
                         if (!wordResult) {
