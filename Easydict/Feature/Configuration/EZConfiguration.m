@@ -8,8 +8,8 @@
 
 #import "EZConfiguration.h"
 #import <ServiceManagement/ServiceManagement.h>
-#import <Sparkle/Sparkle.h>
 #import <ApplicationServices/ApplicationServices.h>
+#import <Sparkle/Sparkle.h>
 #import "EZStatusItem.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
