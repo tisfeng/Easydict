@@ -29,6 +29,7 @@ static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
+static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 
 @implementation EZConfiguration
 
@@ -69,6 +70,7 @@ static EZConfiguration *_instance;
     self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
     self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
     self.fixedWindowPosition = [[NSUserDefaults mm_read:kShowFixedWindowPositionKey defaultValue:@(0) checkClass:NSNumber.class] integerValue];
+    self.automaticallyChecksForUpdates = [[NSUserDefaults mm_read:kAutomaticallyChecksForUpdatesKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
 }
 
 #pragma mark - getter
@@ -87,25 +89,31 @@ static EZConfiguration *_instance;
 
 - (void)setAutoSelectText:(BOOL)autoSelectText {
     _autoSelectText = autoSelectText;
+    
     [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
+    
     [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
 }
 
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
+    [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
+    
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
 }
 
 - (void)setFrom:(EZLanguage)from {
     _from = from;
+    
     [NSUserDefaults mm_write:from forKey:kFromKey];
 }
 
 - (void)setTo:(EZLanguage)to {
     _to = to;
+    
     [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
