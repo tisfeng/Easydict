@@ -11,6 +11,21 @@
 
 @implementation NSUserDefaults (MM)
 
+/// Read string from user defaults, if not exist, return defaultValue and write it to user defaults.
++ (NSString *)mm_readString:(NSString *)key defaultValue:(NSString *)defaultValue {
+    return [NSUserDefaults mm_read:key defaultValue:defaultValue checkClass:NSString.class];
+}
+
+/// Read integer from user defaults, if not exist, return defaultValue and write it to user defaults.
++ (NSInteger)mm_readInteger:(NSString *)key defaultValue:(NSInteger)defaultValue {
+    return [[NSUserDefaults mm_read:key defaultValue:@(defaultValue) checkClass:NSNumber.class] integerValue];
+}
+
+/// Read bool from user defaults, if not exist, return defaultValue and write it to user defaults.
++ (BOOL)mm_readBool:(NSString *)key defaultValue:(BOOL)defaultValue {
+    return [[NSUserDefaults mm_read:key defaultValue:@(defaultValue) checkClass:NSNumber.class] boolValue];
+}
+
 + (id)mm_read:(NSString *)key {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
 }
