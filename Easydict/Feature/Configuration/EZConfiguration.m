@@ -55,22 +55,22 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.from = [NSUserDefaults mm_read:kFromKey defaultValue:EZLanguageAuto checkClass:NSString.class];
-    self.to = [NSUserDefaults mm_read:kToKey defaultValue:EZLanguageAuto checkClass:NSString.class];
+    self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
+    self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
     
-    self.autoSelectText = [[NSUserDefaults mm_read:kAutoSelectTextKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.autoPlayAudio = [[NSUserDefaults mm_read:kAutoPlayAudioKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.hideMainWindow = [[NSUserDefaults mm_read:kHideMainWindowKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.autoSnipTranslate = [[NSUserDefaults mm_read:kAutoSnipTranslateKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.autoCopySelectedText = [[NSUserDefaults mm_read:kAutoCopySelectedTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.autoCopyOCRText = [[NSUserDefaults mm_read:kAutoCopyOCRTextKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.languageDetectOptimize = [[NSUserDefaults mm_read:kLanguageDetectOptimizeTypeKey defaultValue:@(1) checkClass:NSNumber.class] integerValue];
-    self.showGoogleQuickLink = [[NSUserDefaults mm_read:kShowGoogleLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.showEudicQuickLink = [[NSUserDefaults mm_read:kShowEudicLinkKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
-    self.hideMenuBarIcon = [[NSUserDefaults mm_read:kHideMenuBarIconKey defaultValue:@(NO) checkClass:NSNumber.class] boolValue];
-    self.fixedWindowPosition = [[NSUserDefaults mm_read:kShowFixedWindowPositionKey defaultValue:@(0) checkClass:NSNumber.class] integerValue];
-    self.automaticallyChecksForUpdates = [[NSUserDefaults mm_read:kAutomaticallyChecksForUpdatesKey defaultValue:@(YES) checkClass:NSNumber.class] boolValue];
+    self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
+    self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:NO];
+    self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
+    self.hideMainWindow = [NSUserDefaults mm_readBool:kHideMainWindowKey defaultValue:YES];
+    self.autoSnipTranslate = [NSUserDefaults mm_readBool:kAutoSnipTranslateKey defaultValue:YES];
+    self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
+    self.autoCopyOCRText = [NSUserDefaults mm_readBool:kAutoCopyOCRTextKey defaultValue:NO];
+    self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:1];
+    self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
+    self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
+    self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
+    self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:0];
+    self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
 }
 
 #pragma mark - getter
