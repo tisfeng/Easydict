@@ -506,6 +506,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
     
+    text = [text trimToMaxLength:5000];
+    
     void (^request)(void) = ^(void) {
         void (^translateBlock)(EZLanguage) = ^(EZLanguage from) {
             [self sendTranslateRequest:text from:from to:to completion:completion];
@@ -552,10 +554,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     }
     
     // 字符串太长会导致获取语言的接口报错
-    NSString *queryString = text;
-    if (queryString.length >= 73) {
-        queryString = [queryString substringToIndex:73];
-    }
+    NSString *queryString = [text trimToMaxLength:73];
     
     NSString *url = [kBaiduTranslateURL stringByAppendingString:@"/langdetect"];
     NSDictionary *params = @{@"query" : queryString};

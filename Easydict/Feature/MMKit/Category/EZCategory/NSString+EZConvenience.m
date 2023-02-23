@@ -16,6 +16,14 @@
     return trimText;
 }
 
+- (NSString *)trimToMaxLength:(NSUInteger)maxLength {
+    NSString *trimText = [self trim];
+    if (trimText.length > maxLength) {
+        trimText = [self substringToIndex:maxLength];
+    }
+    return trimText;
+}
+
 - (NSString *)encode {
     NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return encodedText;

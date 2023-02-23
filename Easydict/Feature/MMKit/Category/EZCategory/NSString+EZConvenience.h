@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)trim;
 
+- (NSString *)trimToMaxLength:(NSUInteger)maxLength;
+
 - (NSString *)encode;
 
 - (void)copyToPasteboard;

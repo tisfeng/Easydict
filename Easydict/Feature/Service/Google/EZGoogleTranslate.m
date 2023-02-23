@@ -417,12 +417,12 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (NSString *)maxTextLength:(NSString *)text fromLanguage:(EZLanguage)from {
     // Chinese max text length 1800
     // English max text length 5000
-    
     if ([EZLanguageManager isChineseLanguage:from] && text.length > 1800) {
         text = [text substringToIndex:1800];
-    } else if (text.length > 5000) {
-        text = [text substringToIndex:5000];
+    } else {
+        text = [text trimToMaxLength:5000];
     }
+    
     return text;
 }
 
@@ -630,10 +630,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }
     
     // 截取一部分识别语言就行
-    NSString *queryString = text;
-    if (queryString.length >= 73) {
-        queryString = [queryString substringToIndex:73];
-    }
+    NSString *queryString = [text trimToMaxLength:73];
     
     [self sendTranslateSingleText:queryString
                              from:EZLanguageAuto
@@ -682,10 +679,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }
     
     // 截取一部分识别语言就行
-    NSString *queryString = text;
-    if (queryString.length >= 73) {
-        queryString = [queryString substringToIndex:73];
-    }
+    NSString *queryString = [text trimToMaxLength:73];
     
     [self sendTranslateTKKText:queryString from:EZLanguageAuto to:EZLanguageAuto completion:^(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error) {
         if (error) {
