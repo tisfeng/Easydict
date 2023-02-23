@@ -51,6 +51,8 @@
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
 		03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */; };
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
+		0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */; };
+		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
@@ -247,6 +249,10 @@
 		03991165292A8A4400E1B06D /* EZTitleBarMoveView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTitleBarMoveView.m; sourceTree = "<group>"; };
 		03991168292AA2EF00E1B06D /* EZLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLayoutManager.h; sourceTree = "<group>"; };
 		03991169292AA2EF00E1B06D /* EZLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLayoutManager.m; sourceTree = "<group>"; };
+		0399C6A329A747E600B4AFCC /* EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeepLTranslateResponse.h; sourceTree = "<group>"; };
+		0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslateResponse.m; sourceTree = "<group>"; };
+		0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZDeepLTranslateResponse.h"; sourceTree = "<group>"; };
+		0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZDeepLTranslateResponse.m"; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
@@ -455,6 +461,10 @@
 			children = (
 				03008B292940D3230062B821 /* EZDeppLTranslate.h */,
 				03008B2A2940D3230062B821 /* EZDeppLTranslate.m */,
+				0399C6A329A747E600B4AFCC /* EZDeepLTranslateResponse.h */,
+				0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */,
+				0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */,
+				0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */,
 			);
 			path = DeepL;
 			sourceTree = "<group>";
@@ -1498,6 +1508,7 @@
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
+				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
@@ -1523,6 +1534,7 @@
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
+				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
 				03E02A222924E77100A10260 /* EZStatusItem.m in Sources */,
