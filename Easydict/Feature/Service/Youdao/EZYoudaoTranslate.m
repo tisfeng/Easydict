@@ -257,31 +257,33 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     dispatch_group_t group = dispatch_group_create();
     mm_weakify(self);
     
-    // 1.Query Youdao dict.
-    dispatch_group_enter(group);
-    [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        mm_strongify(self);
-        NSString *message = nil;
-        if (responseObject) {
-            @try {
-                EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
-                [self.result setupWithYoudaoDictModel:model];
-                dispatch_group_leave(group);
-                return;
-            } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
-                message = @"有道翻译接口数据解析异常";
+    if (text.length < 30) {
+        // 1.Query Youdao dict.
+        dispatch_group_enter(group);
+        [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+            mm_strongify(self);
+            NSString *message = nil;
+            if (responseObject) {
+                @try {
+                    EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
+                    [self.result setupWithYoudaoDictModel:model];
+                    dispatch_group_leave(group);
+                    return;
+                } @catch (NSException *exception) {
+                    MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
+                    message = @"有道翻译接口数据解析异常";
+                }
             }
-        }
-        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
-        dispatch_group_leave(group);
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        mm_strongify(self);
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
-        dispatch_group_leave(group);
-    }];
+            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+            self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
+            dispatch_group_leave(group);
+        } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+            mm_strongify(self);
+            [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+            self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
+            dispatch_group_leave(group);
+        }];
+    }
     
     // 2.Query Youdao translate.
     dispatch_group_enter(group);
@@ -327,6 +329,8 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     }
     
     // TODO: Handle cookie expiration cases.
+    
+    text = [text trimToMaxLength:5000];
     
     // Ref: https://mp.weixin.qq.com/s/AWL3et91N8T24cKs1v660g
     NSInteger timestamp = [[NSDate date] timeIntervalSince1970] * 1000;
@@ -572,10 +576,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     }
     
     // 字符串太长浪费时间，截取了前面一部分。为什么是73？百度取的73，这里抄了一下...
-    NSString *queryString = text;
-    if (queryString.length >= 73) {
-        queryString = [queryString substringToIndex:73];
-    }
+    NSString *queryString = [text trimToMaxLength:73];
     
     [self translate:queryString from:EZLanguageAuto to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
         if (result) {

@@ -241,7 +241,7 @@
 
 /// Apple original language detect.
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
-    text = [text substringToIndex:MIN(100, text.length)];
+    text = [text trimToMaxLength:100];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
