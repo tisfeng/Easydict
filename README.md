@@ -3,12 +3,12 @@
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
-<a href="https://github.com/tisfeng/Easydict/blob/main/README.md">
-        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
-            alt="中文 README"></a>
 <a href="https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md">
         <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
             alt="English README"></a>
+<a href="https://github.com/tisfeng/Easydict/blob/main/README.md">
+        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
+            alt="中文 README"></a>
 <a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/tisfeng/easydict"
             alt="License"></a>
