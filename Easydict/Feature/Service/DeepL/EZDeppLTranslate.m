@@ -58,48 +58,48 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
     NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-
+    
     if (!from || !to) {
         return nil;
     }
-
+    
     return [NSString stringWithFormat:@"%@#%@/%@/%@", kDeepLTranslateURL, from, to, text];
 }
 
 // Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                        EZLanguageAuto, @"auto",
-                                                                        EZLanguageSimplifiedChinese, @"zh",
-                                                                        EZLanguageEnglish, @"en",
-                                                                        EZLanguageJapanese, @"ja",
-                                                                        EZLanguageKorean, @"ko",
-                                                                        EZLanguageFrench, @"fr",
-                                                                        EZLanguageSpanish, @"es",
-                                                                        EZLanguagePortuguese, @"pt",
-                                                                        EZLanguageItalian, @"it",
-                                                                        EZLanguageGerman, @"de",
-                                                                        EZLanguageRussian, @"ru",
-                                                                        EZLanguageSwedish, @"sv",
-                                                                        EZLanguageRomanian, @"ro",
-                                                                        EZLanguageSlovak, @"sk",
-                                                                        EZLanguageDutch, @"nl",
-                                                                        EZLanguageHungarian, @"hu",
-                                                                        EZLanguageGreek, @"el",
-                                                                        EZLanguageDanish, @"da",
-                                                                        EZLanguageFinnish, @"fi",
-                                                                        EZLanguagePolish, @"pl",
-                                                                        EZLanguageCzech, @"cs",
-                                                                        EZLanguageTurkish, @"tr",
-                                                                        EZLanguageLithuanian, @"lt",
-                                                                        EZLanguageLatvian, @"lv",
-                                                                        EZLanguageUkrainian, @"uk",
-                                                                        EZLanguageBulgarian, @"bg",
-                                                                        EZLanguageIndonesian, @"id",
-                                                                        EZLanguageSlovenian, @"sl",
-                                                                        EZLanguageEstonian, @"et",
-                                                                        EZLanguageNorwegian, @"nb",
-                                                                        nil];
+                                        EZLanguageAuto, @"auto",
+                                        EZLanguageSimplifiedChinese, @"zh",
+                                        EZLanguageEnglish, @"en",
+                                        EZLanguageJapanese, @"ja",
+                                        EZLanguageKorean, @"ko",
+                                        EZLanguageFrench, @"fr",
+                                        EZLanguageSpanish, @"es",
+                                        EZLanguagePortuguese, @"pt",
+                                        EZLanguageItalian, @"it",
+                                        EZLanguageGerman, @"de",
+                                        EZLanguageRussian, @"ru",
+                                        EZLanguageSwedish, @"sv",
+                                        EZLanguageRomanian, @"ro",
+                                        EZLanguageSlovak, @"sk",
+                                        EZLanguageDutch, @"nl",
+                                        EZLanguageHungarian, @"hu",
+                                        EZLanguageGreek, @"el",
+                                        EZLanguageDanish, @"da",
+                                        EZLanguageFinnish, @"fi",
+                                        EZLanguagePolish, @"pl",
+                                        EZLanguageCzech, @"cs",
+                                        EZLanguageTurkish, @"tr",
+                                        EZLanguageLithuanian, @"lt",
+                                        EZLanguageLatvian, @"lv",
+                                        EZLanguageUkrainian, @"uk",
+                                        EZLanguageBulgarian, @"bg",
+                                        EZLanguageIndonesian, @"id",
+                                        EZLanguageSlovenian, @"sl",
+                                        EZLanguageEstonian, @"et",
+                                        EZLanguageNorwegian, @"nb",
+                                        nil];
     return orderedDict;
 }
 
@@ -109,14 +109,14 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         [super translate:text from:from to:to completion:completion];
         return;
     }
-
+    
     [self deepLWebTranslate:text from:from to:to completion:completion];
     //    [self webViewTranslate:completion];
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
-
+    
     // Since DeepL doesn't support zh-TW, we need to convert zh-TW to zh-CN.
     if ([self.queryModel.queryFromLanguage isEqualToString:EZLanguageTraditionalChinese] &&
         ![EZLanguageManager isChineseLanguage:self.queryModel.queryTargetLanguage]) {
@@ -124,19 +124,19 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         queryModel.userSourceLanguage = EZLanguageSimplifiedChinese;
         wordLink = [self wordLink:queryModel];
     }
-
+    
     if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese] &&
         ![EZLanguageManager isChineseLanguage:self.queryModel.queryFromLanguage]) {
         EZQueryModel *queryModel = [self.queryModel copy];
         queryModel.userTargetLanguage = EZLanguageSimplifiedChinese;
         wordLink = [self wordLink:queryModel];
     }
-
+    
     if (!wordLink) {
         completion(self.result, EZQueryUnsupportedLanguageError(self));
         return;
     }
-
+    
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             // Convert result to traditional Chinese.
@@ -147,11 +147,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             }
             texts = newTexts;
         }
-
+        
         self.result.normalResults = texts;
         completion(self.result, error);
     }];
-
+    
     //    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     //    NSString *monitorURL = @"https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
     //    [self.webViewTranslator monitorBaseURLString:monitorURL
@@ -169,7 +169,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 - (void)deepLWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
-
+    
     NSString *url = @"https://www2.deepl.com/jsonrpc";
     NSInteger ID = [self getRandomNumber];
     NSInteger iCount = [self getICount:text];
@@ -186,7 +186,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         @"id" : @(ID),
         @"params" : params
     };
-//    NSLog(@"postData: %@", postData);
+    //    NSLog(@"postData: %@", postData);
     
     NSString *postStr = [postData mj_JSONString];
     if ((ID + 5) % 29 == 0 || (ID + 3) % 13 == 0) {
@@ -199,8 +199,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     request.HTTPMethod = @"POST";
     request.HTTPBody = postDataData;
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-
+    
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] init];
+    // set timeout
+    manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
     [[manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
         if (error) {
             completion(self.result, error);

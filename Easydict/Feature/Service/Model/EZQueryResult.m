@@ -15,18 +15,19 @@ NSString *const EZServiceTypeYoudao = @"Youdao";
 NSString *const EZServiceTypeApple = @"Apple";
 NSString *const EZServiceTypeDeepL = @"DeepL";
 NSString *const EZServiceTypeVolcano = @"Volcano";
+NSString *const EZServiceTypeOpenAI = @"OpenAI";
 
 
 /// Convert part
 /**
  adjective -> adj.
-    adverb -> adv.
-    verb -> v.
-    noun -> n.
-    pronoun -> pron.
-    preposition -> prep.
-    conjunction -> conj.
-    interjection -> interj.
+ adverb -> adv.
+ verb -> v.
+ noun -> n.
+ pronoun -> pron.
+ preposition -> prep.
+ conjunction -> conj.
+ interjection -> interj.
  */
 NSString *getPartName(NSString *part) {
     NSDictionary *dict = @{
