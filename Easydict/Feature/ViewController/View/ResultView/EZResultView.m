@@ -176,8 +176,7 @@
     _result = result;
 
     EZServiceType serviceType = result.serviceType;
-    NSString *imageName = [NSString stringWithFormat:@"%@ Translate", serviceType];
-    self.typeImageView.image = [NSImage imageNamed:imageName];
+    self.typeImageView.image = [NSImage imageNamed:serviceType];
 
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
 

@@ -53,6 +53,7 @@
 		0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991169292AA2EF00E1B06D /* EZLayoutManager.m */; };
 		0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */; };
 		0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */; };
+		0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */; };
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
@@ -253,6 +254,8 @@
 		0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslateResponse.m; sourceTree = "<group>"; };
 		0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZDeepLTranslateResponse.h"; sourceTree = "<group>"; };
 		0399C6A729A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZDeepLTranslateResponse.m"; sourceTree = "<group>"; };
+		0399C6AA29A860AA00B4AFCC /* EZOpenAIService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenAIService.h; sourceTree = "<group>"; };
+		0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenAIService.m; sourceTree = "<group>"; };
 		039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZWindowType.h"; sourceTree = "<group>"; };
 		039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZWindowType.m"; sourceTree = "<group>"; };
 		039CC90E292F86F40037B91E /* NSImage+EZResize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZResize.h"; sourceTree = "<group>"; };
@@ -670,6 +673,15 @@
 			path = Titlebar;
 			sourceTree = "<group>";
 		};
+		0399C6A929A8608000B4AFCC /* OpenAI */ = {
+			isa = PBXGroup;
+			children = (
+				0399C6AA29A860AA00B4AFCC /* EZOpenAIService.h */,
+				0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */,
+			);
+			path = OpenAI;
+			sourceTree = "<group>";
+		};
 		039CC911292FB2F80037B91E /* PopUpButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -726,6 +738,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				0399C6A929A8608000B4AFCC /* OpenAI */,
 				03F14A382956011400CB7379 /* Volcano */,
 				03BD281B29481BE100F5891A /* AudioPlayer */,
 				03008B282940D2FD0062B821 /* DeepL */,
@@ -1501,6 +1514,7 @@
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
+				0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,

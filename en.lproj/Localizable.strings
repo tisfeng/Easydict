@@ -14,6 +14,7 @@
 "deepL_translate" = "DeepL Translate";
 "system_translate" = "System Translate";
 "volcano_translate" = "Volcano Translate";
+"openai_translate" = "OpenAI Translate";
 
 "explain" = "explain:";
 "tag" = "tags:";
