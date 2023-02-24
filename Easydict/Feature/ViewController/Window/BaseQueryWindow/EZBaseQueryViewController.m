@@ -390,6 +390,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
+    if ([self checkIfWriteKeyValue:self.queryText]) {
+        return;
+    }
+    
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
     
     for (EZQueryService *service in self.services) {
@@ -421,7 +425,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 // TODO: service already has the model property.
 - (void)queryWithModel:(EZQueryModel *)queryModel
-                service:(EZQueryService *)service
+               service:(EZQueryService *)service
             completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
         NSLog(@"service disabled: %@", service.serviceType);
@@ -609,29 +613,30 @@ static NSString *const EZColumnId = @"EZColumnId";
                 completionHandler:(void (^)(void))completionHandler {
     //    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
     
-    if (reloadData) {
-        // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
-        
-        // ???: need to check.
-        
-        [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-    }
-    
-    CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
-    
-    
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
-        context.duration = duration;
-        // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
-        //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
-        [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
-        [self updateWindowViewHeight];
-    } completionHandler:^{
-        //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
-        if (completionHandler) {
-            completionHandler();
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (reloadData) {
+            // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
+            
+            // ???: need to check.
+            
+            [self.tableView reloadDataForRowIndexes:rowIndexes columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         }
-    }];
+        
+        CGFloat duration = animateFlag ? EZUpdateTableViewRowHeightAnimationDuration : 0;
+        
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *_Nonnull context) {
+            context.duration = duration;
+            // !!!: Must first notify the update tableView cell height, and then calculate the tableView height.
+            //        NSLog(@"noteHeightOfRowsWithIndexesChanged: %@", rowIndexes);
+            [self.tableView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+            [self updateWindowViewHeight];
+        } completionHandler:^{
+            //        NSLog(@"completionHandler, updateTableViewRowIndexes: %@", rowIndexes);
+            if (completionHandler) {
+                completionHandler();
+            }
+        }];
+    });
 }
 
 - (void)updateQueryCell {
@@ -1153,6 +1158,62 @@ static NSString *const EZColumnId = @"EZColumnId";
         }
     }
     return NO;
+}
+
+#pragma mark - Write dict to NSUserDefaults
+
+// TODO: move to anthor file.
+
+/// Check text, if text is "Easydict://writeKeyValue?key=xxx&value=xxx"
+/// Easydict://writeKeyValue?EZOpenAIKey=sk-5DJ2bQxdT
+/// Easydict://writeKeyValue?EZDebugKey=1
+- (BOOL)checkIfWriteKeyValue:(NSString *)text {
+    NSString *prefix = @"Easydict://writeKeyValue?";
+    if ([text hasPrefix:prefix]) {
+        NSString *keyValueText = [text substringFromIndex:prefix.length];
+        [self writeKeyValue:keyValueText];
+        return YES;
+    }
+    return NO;
+}
+
+
+- (void)writeKeyValue:(NSString *)text {
+    NSDictionary *keyValue = [self getKeyValues:text];
+    // iterate all keys
+    for (NSString *key in keyValue) {
+        NSString *value = keyValue[key];
+        if ([self.allowedWriteKeys containsObject:key]) {
+            [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+            self.queryText = @"write success!";
+        } else {
+            self.queryText = @"invalid key!";
+        }
+    }
+}
+
+/// Return key values dict from text.
+/// TODO: allow multiple key-value pairs: key1=value1&key2=value2&key3=value3
+- (NSDictionary *)getKeyValues:(NSString *)text {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSArray *keyValueArray = [text componentsSeparatedByString:@"&"];
+    for (NSString *keyValue in keyValueArray) {
+        NSArray *array = [keyValue componentsSeparatedByString:@"="];
+        if (array.count == 2) {
+            NSString *key = array[0];
+            NSString *value = array[1];
+            dict[key] = value;
+        }
+    }
+    return dict;
+}
+
+/// Return allowed write keys to NSUserDefaults.
+- (NSArray *)allowedWriteKeys {
+    return @[
+        EZOpenAIKey,
+        EZDebugKey,
+    ];
 }
 
 @end

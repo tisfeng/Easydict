@@ -13,6 +13,7 @@
 "deepL_translate" = "DeepL 翻译";
 "system_translate" = "系统翻译";
 "volcano_translate" = "火山翻译";
+"openai_translate" = "OpenAI 翻译";
 
 "explain" = "释义:";
 "tag" = "标签:";

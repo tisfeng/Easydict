@@ -22,6 +22,7 @@
 
 + (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *orderDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                      //  EZServiceTypeOpenAI, [EZOpenAIService class],
                                       EZServiceTypeApple, [EZAppleService class],
                                       EZServiceTypeYoudao, [EZYoudaoTranslate class],
                                       EZServiceTypeDeepL, [EZDeppLTranslate class],
@@ -29,6 +30,12 @@
                                       EZServiceTypeBaidu, [EZBaiduTranslate class],
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
+    
+    NSString *debug = [[NSUserDefaults standardUserDefaults] stringForKey:EZDebugKey];
+    if ([debug isEqualToString:@"1"]) {
+        [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
+    }
+    
     return orderDict;
 }
 
