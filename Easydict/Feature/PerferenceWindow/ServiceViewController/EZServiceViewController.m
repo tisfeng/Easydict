@@ -61,7 +61,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         @(1) : @(EZWindowTypeFixed),
         @(2) : @(EZWindowTypeMain),
     };
-    
+
     [self setupDataWithWindowType:EZWindowTypeMini];
 
     // Just to be able to get tableView height automatically.
@@ -158,7 +158,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
     return _tableView;
 }
-
 
 #pragma mark - NSTableViewDataSource
 
@@ -272,7 +271,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 #pragma mark -
 
 - (void)postUpdateServiceNotification {
-    NSDictionary *userInfo = @{ EZWindowTypeKey : @(self.windowType)};
+    NSDictionary *userInfo = @{EZWindowTypeKey : @(self.windowType)};
     NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:userInfo];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }

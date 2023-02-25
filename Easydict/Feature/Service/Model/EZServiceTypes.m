@@ -31,8 +31,8 @@
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
     
-    NSString *debug = [[NSUserDefaults standardUserDefaults] stringForKey:EZDebugKey];
-    if ([debug isEqualToString:@"1"]) {
+    NSString *newFeature = [[NSUserDefaults standardUserDefaults] stringForKey:EZNewFeatureKey];
+    if ([newFeature isEqualToString:@"1"]) {
         [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
     }
     
