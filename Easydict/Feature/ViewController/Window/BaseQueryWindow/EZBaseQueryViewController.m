@@ -21,6 +21,7 @@
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
+#import "EZLinkParser.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -45,6 +46,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
+@property (nonatomic, strong) EZLinkParser *linkParser;
 
 
 @property (nonatomic, strong) FBKVOController *kvo;
@@ -155,25 +157,27 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)dealloc {
     NSLog(@"dealloc: %@", self);
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
 }
-
 
 #pragma mark - NSNotificationCenter
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
     EZWindowType type = [notification.userInfo[EZWindowTypeKey] integerValue];
     if (type == self.windowType) {
-        [self setupServices];
-        [self resetAllResults];
-        
-        [self reloadTableViewData:^{
-            if (self.queryText.length > 0) {
-                [self startQueryInputText];
-            }
-        }];
+        [self updateServices];
     }
+}
+
+- (void)updateServices {
+    [self setupServices];
+    [self resetAllResults];
+    
+    [self reloadTableViewData:^{
+        if (self.queryText.length > 0) {
+            [self startQueryInputText];
+        }
+    }];
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
@@ -250,6 +254,13 @@ static NSString *const EZColumnId = @"EZColumnId";
     return _tableView;
 }
 
+- (EZLinkParser *)linkParser {
+    if (!_linkParser) {
+        _linkParser = [[EZLinkParser alloc] init];
+    }
+    return _linkParser;
+}
+
 - (void)setQueryText:(NSString *)queryText {
     // !!!: Rewrite property copy setter. Avoid text being affected.
     _queryText = [queryText copy];
@@ -277,6 +288,19 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)startQueryText:(NSString *)text queyType:(EZQueryType)queryType {
     if (!text) {
+        return;
+    }
+    
+    __block BOOL handledSuccess;
+    BOOL handled = [self.linkParser openURLWithText:self.queryText completion:^(BOOL success) {
+        handledSuccess = success;
+    }];
+    
+    if (handled) {
+        self.queryText = handledSuccess ? @"success" : @"failed";
+        if (handledSuccess) {
+            [self updateServices];
+        }
         return;
     }
     
@@ -390,10 +414,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
-    if ([self checkIfWriteKeyValue:self.queryText]) {
-        return;
-    }
-    
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
     
     for (EZQueryService *service in self.services) {
@@ -1158,62 +1178,6 @@ static NSString *const EZColumnId = @"EZColumnId";
         }
     }
     return NO;
-}
-
-#pragma mark - Write dict to NSUserDefaults
-
-// TODO: move to anthor file.
-
-/// Check text, if text is "Easydict://writeKeyValue?key=xxx&value=xxx"
-/// Easydict://writeKeyValue?EZOpenAIKey=sk-5DJ2bQxdT
-/// Easydict://writeKeyValue?EZDebugKey=1
-- (BOOL)checkIfWriteKeyValue:(NSString *)text {
-    NSString *prefix = @"Easydict://writeKeyValue?";
-    if ([text hasPrefix:prefix]) {
-        NSString *keyValueText = [text substringFromIndex:prefix.length];
-        [self writeKeyValue:keyValueText];
-        return YES;
-    }
-    return NO;
-}
-
-
-- (void)writeKeyValue:(NSString *)text {
-    NSDictionary *keyValue = [self getKeyValues:text];
-    // iterate all keys
-    for (NSString *key in keyValue) {
-        NSString *value = keyValue[key];
-        if ([self.allowedWriteKeys containsObject:key]) {
-            [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
-            self.queryText = @"write success!";
-        } else {
-            self.queryText = @"invalid key!";
-        }
-    }
-}
-
-/// Return key values dict from text.
-/// TODO: allow multiple key-value pairs: key1=value1&key2=value2&key3=value3
-- (NSDictionary *)getKeyValues:(NSString *)text {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    NSArray *keyValueArray = [text componentsSeparatedByString:@"&"];
-    for (NSString *keyValue in keyValueArray) {
-        NSArray *array = [keyValue componentsSeparatedByString:@"="];
-        if (array.count == 2) {
-            NSString *key = array[0];
-            NSString *value = array[1];
-            dict[key] = value;
-        }
-    }
-    return dict;
-}
-
-/// Return allowed write keys to NSUserDefaults.
-- (NSArray *)allowedWriteKeys {
-    return @[
-        EZOpenAIKey,
-        EZDebugKey,
-    ];
 }
 
 @end
