@@ -9,7 +9,7 @@
 #ifndef EZConst_h
 #define EZConst_h
 
-static NSString *const EZDebugKey = @"EZDebugKey";
+static NSString *const EZNewFeatureKey = @"EZNewFeatureKey";
 
 static CGFloat const EZHorizontalCellSpacing_12 = 12;
 static CGFloat const EZVerticalCellSpacing_8 = 8;
