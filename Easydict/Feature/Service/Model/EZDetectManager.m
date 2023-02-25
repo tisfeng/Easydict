@@ -164,29 +164,39 @@
         NSLog(@"image cannot be nil");
         return;
     }
-    
-    BOOL retryOCR = [self.queryModel.detectedLanguage isEqualToString:EZLanguageAuto] && [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto];
-    
-    [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (!error && retryOCR) {
-            NSString *ocrText = ocrResult.mergedText;
-            [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable ocrError) {
-                if (!error) {
-                    [self.ocrService ocr:queryModel completion:completion];
-                } else {
-                    completion(ocrResult, nil);
-                }
+
+    [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable ocrError) {
+        if (ocrError) {
+            [self handleOCRResult:ocrResult error:ocrError completion:completion];
+            return;
+        }
+        
+        NSString *ocrText = ocrResult.mergedText;
+        [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable detectError) {
+            BOOL retryOCR = ![self.queryModel.queryFromLanguage isEqualToString:queryModel.detectedLanguage];
+            if (!retryOCR) {
+                completion(ocrResult, nil);
+                return;
+            }
+            
+            [self.ocrService ocr:queryModel completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+                [self handleOCRResult:ocrResult error:error completion:completion];
             }];
+        }];
+    }];
+}
+
+- (void)handleOCRResult:(EZOCRResult *_Nullable)ocrResult error:(NSError *_Nullable)error completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
+    if (!error) {
+        completion(ocrResult, nil);
+        return;
+    }
+
+    [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
+        if (!youdaoOCRError) {
+            completion(youdaoOCRResult, nil);
         } else {
-            // TODO: try to deep OCR ?
-            // TODO: try to use an other online OCR service? like detect text.
-            [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOcrResult, NSError *_Nullable youdaoOcrError) {
-                if (!youdaoOcrError) {
-                    completion(youdaoOcrResult, nil);
-                } else {
-                    completion(ocrResult, error);
-                }
-            }];
+            completion(ocrResult, error);
         }
     }];
 }
