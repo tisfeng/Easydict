@@ -66,6 +66,11 @@
     textView.delegate = self;
     textView.textStorage.delegate = self;
     
+    mm_weakify(self);
+    [textView setPasteTextBlock:^(NSString * _Nonnull text) {
+        [self highlightAllLinks];
+    }];
+    
     EZLoadingAnimationView *loadingAnimationView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingAnimationView];
     self.loadingAnimationView = loadingAnimationView;
@@ -95,7 +100,6 @@
     audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"Play";
     
-    mm_weakify(self);
     [audioButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"audioActionBlock");
         mm_strongify(self);
@@ -332,8 +336,11 @@
 }
 
 - (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString {
-    //    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(textView.markedRange), replacementString);
-    //    NSLog(@"hasMarkedText: %d, markedRange: %@", typing, NSStringFromRange(textView.markedRange));
+    NSLog(@"text: %@", textView.string);
+    
+    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
+    
+    NSLog(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
     
     BOOL isInputtingChinese = [textView hasMarkedText] && textView.markedRange.length == 0;
     if (![textView hasMarkedText] || isInputtingChinese) {
@@ -414,7 +421,7 @@
     if (!self.alertTextField.hidden) {
         isEmpty = NO;
     }
-        
+    
     if (self.clearButtonHidden) {
         [self.clearButton setAnimatedHidden:isEmpty];
     }
@@ -442,6 +449,23 @@
     NSScrollView *scrollView = self.scrollView;
     CGFloat height = scrollView.documentView.frame.size.height - scrollView.contentSize.height;
     [scrollView.contentView scrollToPoint:NSMakePoint(0, height)];
+}
+
+/// Highlight all links in textstorage
+- (void)highlightAllLinks {
+    NSTextStorage *textStorage = self.textView.textStorage;
+    [textStorage beginEditing];
+    [textStorage removeAttribute:NSLinkAttributeName range:NSMakeRange(0, textStorage.length)];
+    [textStorage endEditing];
+    
+    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+    [detector enumerateMatchesInString:textStorage.string
+                               options:0
+                                 range:NSMakeRange(0, textStorage.length)
+                            usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        [textStorage addAttributes:@{NSLinkAttributeName : result.URL}
+                             range:result.range];
+    }];
 }
 
 #pragma mark - Undo

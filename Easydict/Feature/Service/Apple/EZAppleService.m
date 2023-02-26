@@ -313,7 +313,6 @@
                 VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
                 [recognizedStrings addObject:recognizedText.string];
             }
-            //            NSString *resultText = [recognizedStrings componentsJoinedByString:@" "]; // \n
             NSString *resultText = [self joinStringArray:recognizedStrings];
             
             result.texts = recognizedStrings;
@@ -632,11 +631,10 @@
     return joinedString;
 }
 
-
 #pragma mark - Detect Language Manually
 
 /// Check if it is a single letter of the alphabet.
--(BOOL)isAlphabet : (NSString *)string {
+- (BOOL)isAlphabet:(NSString *)string {
     if (string.length != 1) {
         return NO;
     }
@@ -647,7 +645,7 @@
 }
 
 /// Count English characters length in string.
--(NSInteger)englishCharactersLength : (NSString *)string {
+- (NSInteger)englishCharactersLength:(NSString *)string {
     string = [self removeAllSymbolAndWhitespaceCharacters:string];
     __block NSInteger length = 0;
     [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
@@ -660,7 +658,7 @@
 
 /// Check Chinese language type of text, traditional or simplified.
 /// - !!!: Make sure the text is Chinese.
--(EZLanguage)chineseLanguageTypeOfText : (NSString *)text {
+- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text {
     // test: 狗，勿 --> zh-Hant --> zh-Hans
     
     // Check if simplified Chinese.
@@ -682,7 +680,7 @@
 /// If traditional Chinese characters length + simplified Chinese characters length + English characters length !== text length, return EZLanguageAuto.
 /// If traditional Chinese characters length >= 1/4 of Chinese characters length, then it is traditional Chinese. else it is simplified Chinese.
 /// test: 開門 open, 使用 OCR 123$, 月によく似た風景, アイス・スノーセーリング世界選手権大会
--(EZLanguage)chineseLanguageTypeOfText : (NSString *)text fromLanguage : (EZLanguage)language {
+- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text fromLanguage:(EZLanguage)language {
     text = [self removeAllSymbolAndWhitespaceCharacters:text];
     
     if (text.length == 0) {
@@ -702,7 +700,7 @@
 }
 
 /// ⚠️ This method is not accurate, it is only used to detect Chinese language type.
--(EZLanguage)chineseLanguageTypeOfText2 : (NSString *)text {
+- (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
     //  月によく似た風景
     
     NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
@@ -723,7 +721,7 @@
 }
 
 /// Count Chinese characters length in string with specific language.
--(NSInteger)chineseCharactersLength : (NSString *)string type : (EZLanguage)language {
+- (NSInteger)chineseCharactersLength:(NSString *)string type:(EZLanguage)language {
     string = [self removeAllSymbolAndWhitespaceCharacters:string];
     __block NSInteger length = 0;
     for (NSInteger i = 0; i < string.length; i++) {
@@ -742,7 +740,7 @@
 }
 
 /// Check if char is Simplified Chinese. test: 使用 OCR 123$
--(BOOL)isSimplifiedChineseChar : (NSString *)charString {
+- (BOOL)isSimplifiedChineseChar:(NSString *)charString {
     // ???: Why 勿, 狗 is traditional Chinese?
     EZLanguage language = [self appleDetectTextLanguage:charString];
     if (language == EZLanguageSimplifiedChinese) {
@@ -758,7 +756,7 @@
 }
 
 /// Check if char is Traditional Chinese. test: 開門 open
--(BOOL)isTraditionalChineseChar : (NSString *)charString {
+- (BOOL)isTraditionalChineseChar:(NSString *)charString {
     EZLanguage language = [self appleDetectTextLanguage:charString];
     if (language == EZLanguageTraditionalChinese) {
         // Convert to simplified Chinese, check if simplified Chinese is same as traditional Chinese.
@@ -772,7 +770,7 @@
 }
 
 /// !!!: This method is not accurate. 権 --> zh
--(BOOL)isChineseCharacter2 : (NSString *)string {
+- (BOOL)isChineseCharacter2:(NSString *)string {
     if (string.length != 1) {
         return NO;
     }
@@ -784,7 +782,7 @@
 }
 
 /// Remove all punctuation whitespace and number characters.
--(NSString *)removeAllSymbolAndWhitespaceCharacters : (NSString *)string {
+- (NSString *)removeAllSymbolAndWhitespaceCharacters:(NSString *)string {
     NSString *text = [self removeWhitespaceAndNewlineCharacters:string];
     text = [self removeSymbolCharacterSet:text];
     text = [self removeNumbers:text];
@@ -793,7 +791,7 @@
 }
 
 /// Remove all whitespace and newline characters, including whitespace in the middle of the string.
--(NSString *)removeWhitespaceAndNewlineCharacters : (NSString *)string {
+- (NSString *)removeWhitespaceAndNewlineCharacters:(NSString *)string {
     NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     text = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
     text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -801,13 +799,13 @@
 }
 
 /// Remove all punctuation characters, including English and Chinese.
--(NSString *)removePunctuationCharacters : (NSString *)string {
+- (NSString *)removePunctuationCharacters:(NSString *)string {
     NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
     NSString *result = [[string componentsSeparatedByCharactersInSet:punctuationCharacterSet] componentsJoinedByString:@""];
     return result;
 }
 
--(NSString *)removePunctuationCharacters2 : (NSString *)string {
+- (NSString *)removePunctuationCharacters2:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"~`!@#$%^&*()-_+={}[]|\\;:'\",<.>/?·~！@#￥%……&*（）——+={}【】、|；：‘“，。、《》？"];
     NSCharacterSet *punctuationCharSet = [NSCharacterSet punctuationCharacterSet];
     NSMutableCharacterSet *finalCharSet = [punctuationCharSet mutableCopy];
@@ -817,70 +815,70 @@
 }
 
 /// Remove all numbers.
--(NSString *)removeNumbers : (NSString *)string {
+- (NSString *)removeNumbers:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all symbolCharacterSet. such as $, including punctuationCharacterSet.
--(NSString *)removeSymbolCharacterSet : (NSString *)string {
+- (NSString *)removeSymbolCharacterSet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet symbolCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all controlCharacterSet.
--(NSString *)removeControlCharacterSet : (NSString *)string {
+- (NSString *)removeControlCharacterSet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet controlCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all illegalCharacterSet.
--(NSString *)removeIllegalCharacterSet : (NSString *)string {
+- (NSString *)removeIllegalCharacterSet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet illegalCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all nonBaseCharacterSet.
--(NSString *)removeNonBaseCharacterSet : (NSString *)string {
+- (NSString *)removeNonBaseCharacterSet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet nonBaseCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all alphabet.
--(NSString *)removeAlphabet : (NSString *)string {
+- (NSString *)removeAlphabet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all alphabet, use regex.
--(NSString *)removeAlphabet2 : (NSString *)string {
+- (NSString *)removeAlphabet2:(NSString *)string {
     NSString *regex = @"[a-zA-Z]";
     NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
     return text;
 }
 
 /// Remove all letters. Why "我123abc" will return "123"? Chinese characters are also letters ??
--(NSString *)removeLetters : (NSString *)string {
+- (NSString *)removeLetters:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet letterCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Remove all alphabet and numbers.
--(NSString *)removeAlphabetAndNumbers : (NSString *)string {
+- (NSString *)removeAlphabetAndNumbers:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet alphanumericCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
     return text;
 }
 
 /// Print NSCharacterSet object.
--(void)printCharacterSet : (NSCharacterSet *)charSet {
+- (void)printCharacterSet:(NSCharacterSet *)charSet {
     NSMutableArray *array = [NSMutableArray array];
     for (int plane = 0; plane <= 16; plane++) {
         if ([charSet hasMemberInPlane:plane]) {

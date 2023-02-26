@@ -49,6 +49,9 @@ static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 
 - (void)showAutoDetectLanguage:(BOOL)showFlag;
 
+/// Highlight all links in textstorage
+- (void)highlightAllLinks;
+
 @end
 
 NS_ASSUME_NONNULL_END

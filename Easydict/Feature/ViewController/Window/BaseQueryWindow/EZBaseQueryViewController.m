@@ -279,6 +279,11 @@ static NSString *const EZColumnId = @"EZColumnId";
     self.queryView.clearButtonHidden = (_queryText.length == 0) && ([self allShowingResults].count == 0);
 }
 
+- (void)setInputQueryText:(NSString *)queryText {
+    self.queryView.typing = NO;
+    self.queryText = queryText;
+}
+
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -330,6 +335,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
+        self.queryView.typing = NO;
         self.queryText = queryModel.queryText;
         NSLog(@"ocr result: %@", self.queryText);
         
@@ -341,13 +347,22 @@ static NSString *const EZColumnId = @"EZColumnId";
             return;
         }
         
+        if (EZConfiguration.shared.autoCopyOCRText) {
+            [self.queryText copyToPasteboard];
+        }
+        
+        [self.queryView highlightAllLinks];
+        
+        if ([self.queryText isURL]) {
+            // Append a whitespace to beautify the link.
+            self.queryText = [self.queryText stringByAppendingString:@" "];
+            
+            return;
+        }
+        
         BOOL autoSnipTranslate = EZConfiguration.shared.autoSnipTranslate;
         if (autoSnipTranslate) {
             [self startQueryText];
-        }
-        
-        if (EZConfiguration.shared.autoCopyOCRText) {
-            [self.queryText copyToPasteboard];
         }
     }];
 }
