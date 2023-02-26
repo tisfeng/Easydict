@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isURL;
 
 // Use NSDataDetector to check if the string is a link. eg. eudic://dict/good
-- (BOOL)isLink;
+- (BOOL)containsLink;
 
 - (NSString *)md5;
 

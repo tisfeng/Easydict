@@ -24,7 +24,6 @@ static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingAnimationView;
 @property (nonatomic, strong) NSTextField *alertTextField;
 
-@property (nonatomic, assign) BOOL typing;
 @property (nonatomic, assign) BOOL enableAutoDetect;
 @property (nonatomic, assign) BOOL clearButtonHidden;
 
