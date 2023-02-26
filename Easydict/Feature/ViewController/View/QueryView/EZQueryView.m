@@ -28,6 +28,8 @@
 @property (nonatomic, copy) NSString *lastRecordText;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
+@property (nonatomic, assign) BOOL isTypingChinese;
+
 @end
 
 @implementation EZQueryView
@@ -259,7 +261,7 @@
     
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     // !!!: do not update textView while user is typing (like Chinese input)
-    if (queryText && ![queryText isEqualToString:self.copiedText] && !self.typing) {
+    if (queryText && ![queryText isEqualToString:self.copiedText] && !self.isTypingChinese) {
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
         self.textView.string = queryText; // ???: need to check
         
@@ -336,18 +338,17 @@
 }
 
 - (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString {
-    NSLog(@"text: %@", textView.string);
+    //    NSLog(@"text: %@", textView.string);
+    //    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
+    //    NSLog(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
     
-    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
-    
-    NSLog(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
-    
-    BOOL isInputtingChinese = [textView hasMarkedText] && textView.markedRange.length == 0;
-    if (![textView hasMarkedText] || isInputtingChinese) {
+    BOOL isInputting = [textView hasMarkedText] && textView.markedRange.length == 0;
+    if (![textView hasMarkedText] || isInputting) {
         self.lastRecordText = [self copiedText];
-        //        NSLog(@"try record: %@", self.lastRecordText);
-        [self recordText];
+        [self tryRecordUndoText];
     }
+    
+    self.isTypingChinese = textView.hasMarkedText;
     
     return YES;
 }
@@ -361,9 +362,6 @@
     //    NSLog(@"didProcessEditing: %@", [self copiedText]);
     
     // Handle the special case of inputting text, such as when inputting Chinese, the candidate word is being selected, at this time the textView cannot be updated, otherwise the candidate word will be cleared.
-    
-    // TODO: need to optimize. This is not an accurate way to determine whether the user is a candidate for input and may cause typing to be true all the time.
-    self.typing = YES;
 }
 
 
@@ -372,8 +370,7 @@
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
-    
-    self.typing = NO;
+        
     self.enableAutoDetect = YES;
     [self updateButtonsDisplayState:text];
     
@@ -470,7 +467,7 @@
 
 #pragma mark - Undo
 
-- (void)recordText {
+- (void)tryRecordUndoText {
     if ([self isTimePassed:EZDelayDetectTextLanguageInterval]) {
         //        NSLog(@"recordText: %@", [self copiedText]);
         //        NSLog(@"lastRecordText: %@", self.lastRecordText);
