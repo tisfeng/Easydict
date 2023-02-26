@@ -191,8 +191,13 @@
 /// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.
 + (NSString *)showingLanguageName:(EZLanguage)language {
     NSString *languageName = language;
+    
     if ([self isChineseFirstLanguage]) {
         languageName = [self languageChineseName:language];
+    } else {
+        if ([language isEqualToString:EZLanguageAuto]) {
+            languageName = @"Auto"; // auto --> Auto
+        }
     }
     return languageName;
 }
