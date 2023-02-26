@@ -279,11 +279,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     self.queryView.clearButtonHidden = (_queryText.length == 0) && ([self allShowingResults].count == 0);
 }
 
-- (void)setInputQueryText:(NSString *)queryText {
-    self.queryView.typing = NO;
-    self.queryText = queryText;
-}
-
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
@@ -314,7 +309,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
     
     self.queryModel.queryType = queryType;
-    self.queryView.typing = NO;
     
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
@@ -335,7 +329,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
-        self.queryView.typing = NO;
         self.queryText = queryModel.queryText;
         NSLog(@"ocr result: %@", self.queryText);
         

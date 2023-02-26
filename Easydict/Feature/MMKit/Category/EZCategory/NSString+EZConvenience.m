@@ -44,8 +44,8 @@
     }
 }
 
-// Use NSDataDetector to check if the string is a link. eg. eudic://dict/good
-- (BOOL)isLink {
+// Use NSDataDetector to check if the string contains a link. eg. eudic://dict/good
+- (BOOL)containsLink {
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
     NSArray *matches = [detector matchesInString:self options:0 range:NSMakeRange(0, self.length)];
     if (matches.count == 0) {
