@@ -20,7 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyToPasteboard;
 
-- (BOOL)isHttpURL;
+/// Check if the string is a valid URL. eg. https://www.google.com
+- (BOOL)isURL;
+
+// Use NSDataDetector to check if the string is a link. eg. eudic://dict/good
+- (BOOL)isLink;
 
 - (NSString *)md5;
 

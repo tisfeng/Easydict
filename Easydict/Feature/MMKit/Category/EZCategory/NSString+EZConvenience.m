@@ -33,8 +33,19 @@
     [NSPasteboard mm_generalPasteboardSetString:self];
 }
 
-// use NSDataDetector to check if the string is a valid http url
-- (BOOL)isHttpURL {
+/// Check if the string is a valid URL. eg. https://www.google.com
+- (BOOL)isURL {
+    NSURL *url = [NSURL URLWithString:self];
+    if (url && url.scheme && url.host) {
+        // 有 scheme 和 host 表示是一个合法的 URL
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+// Use NSDataDetector to check if the string is a link. eg. eudic://dict/good
+- (BOOL)isLink {
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
     NSArray *matches = [detector matchesInString:self options:0 range:NSMakeRange(0, self.length)];
     if (matches.count == 0) {
@@ -46,6 +57,7 @@
     }
     return NO;
 }
+
 
 - (NSString *)md5 {
     const char *cStr = [self UTF8String];
