@@ -49,7 +49,15 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 ### 安装
 
+#### 手动下载安装
+
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
+
+#### Homebrew 安装
+
+```bash
+brew install easydict
+```
 
 #### 签名问题 ⚠️
 
@@ -190,6 +198,14 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 - `Shift + Enter`: 输入换行。
 - `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。
 - `Opt + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
+- `Cmd + ,`: 快速打开设置页。
+
+> 提示：只要唤醒了查询窗口，就可以通过快捷键 `Cmd + ,` 打开设置页。若不小心隐藏了菜单栏图标，可通过这种方式重新开启 (≧▽≦)
+
+<div style="display:flex;align-items:flex-start;">
+  <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
+  <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
+</div>
 
 ## 类似项目
 
