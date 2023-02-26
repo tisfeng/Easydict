@@ -49,7 +49,15 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ### Installation
 
+#### Manual
+
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
+
+#### Homebrew
+
+```bash
+brew install easydict
+```
 
 #### Signature Problem ⚠️
 
@@ -113,10 +121,10 @@ Supported languages:
 | Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
 | :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Chinese (Traditional) |   ✅   |  ✅  |      ✅      |   ✅   |  ✅   |   ✅    |
+| Chinese (Traditional) |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | English               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Japanese              |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Korean                |   ✅   |  ✅  |      ✅      |   ✅   |  ✅   |   ✅    |
+| Korean                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | French                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Spanish               |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
 | Portuguese            |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
@@ -155,7 +163,7 @@ Supported languages:
 | Lao                   |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Bengali               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Burmese               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Norwegian             |   ❌   |  ✅  |      ❌      |   ✅   |  ✅   |   ✅    |
+| Norwegian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Serbian               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Croatian              |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
@@ -174,8 +182,8 @@ The settings page provides some preference setting modifications, such as automa
 Easydict has 3 types of windows and you can set different services for each of them.
 
 - Mini window: displayed when the mouse automatically picks up words.
-- Side hover window: displayed when shortcut keys are used to fetch words and screenshot translation.
-- Main window: closed by default, you can turn it on in the settings and show it when the program starts. (The main window function will be enhanced later)
+- Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
+- Main window: hidden by default, you can turn it on in the settings and show it when the program starts. (The main window function will be enhanced later)
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
 
@@ -183,8 +191,16 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 - `Enter`: After entering text, press Enter to start the query.
 - `Shift + Enter`: Enter a line feed.
-- `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the Google search icon in the upper right corner. 
+- `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the Google search icon in the upper right corner.
 - `Opt + Enter`: If you have the Eudic App installed on your computer, an Eudic icon will be displayed to the left of the Safari icon, and the shortcut will open the Eudic App for searching.
+- `Cmd + ,`: Open settings page quickly.
+
+> Prompt: As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you accidentally hide the menu bar icon, you can reopen it in this way (≧▽≦)
+
+<div style="display:flex;align-items:flex-start;">
+  <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
+  <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
+</div>
 
 ## Similar Projects
 
