@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTextView : NSTextView
 
+/// property for paste text block
+@property (nonatomic, copy) void (^pasteTextBlock)(NSString *text);
+
 @end
 
 NS_ASSUME_NONNULL_END

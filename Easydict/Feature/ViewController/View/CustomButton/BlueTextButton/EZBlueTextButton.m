@@ -34,7 +34,7 @@
 - (void)setOpenURL:(NSString *)openURL {
     _openURL = openURL;
     
-    if ([openURL isHttpURL]) {
+    if ([openURL isURL]) {
         mm_weakify(self);
         [self setClickBlock:^(EZButton * _Nonnull button) {
             mm_strongify(self);
