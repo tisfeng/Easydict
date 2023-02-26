@@ -610,7 +610,7 @@
     return ezLanguage;
 }
 
-/// Join string array, if string last char end with [。？!.?！],  join with "\n", else join with " ".
+/// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
 - (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
     NSMutableString *joinedString = [NSMutableString string];
     NSArray *endPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
@@ -622,14 +622,43 @@
             NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
             if ([endPunctuationMarks containsObject:lastChar]) {
                 [joinedString appendString:@"\n"];
-            } else {
+            } else if ([self isPunctuationMark:lastChar]) {
+                // if last char is a punctuation mark, then append a space.
                 [joinedString appendString:@" "];
+            } else {
+                // Chinese text don't need space if it is not a punctuation mark.
+                EZLanguage language = [self appleDetectTextLanguage:string];
+                if (![EZLanguageManager isChineseLanguage:language]) {
+                    [joinedString appendString:@" "];
+                }
             }
             [joinedString appendString:string];
         }
     }
     return joinedString;
 }
+
+/// Use punctuationCharacterSet to check if it is a punctuation mark.
+- (BOOL)isPunctuationMark:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
+    return [punctuationCharacterSet characterIsMember:[string characterAtIndex:0]];
+}
+
+/// Use regex to check if it is a punctuation mark.
+- (BOOL)isPunctuationMark2:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[\\p{Punct}]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:string];
+}
+
 
 #pragma mark - Detect Language Manually
 
