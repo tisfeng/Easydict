@@ -100,9 +100,10 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
     
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
-    // This prompt is genarated by ChatGPT.
-    NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@: %@", text, targetLangCode, souceLangCode];
-    
+    // This prompt is genarated by ChatGPT, but it's not working well.
+    //    NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
+    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@: %@ =>", souceLangCode, targetLangCode, text];
+        
     // Read openai key from NSUserDefaults
     NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
     
