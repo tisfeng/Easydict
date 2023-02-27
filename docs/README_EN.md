@@ -195,12 +195,23 @@ Easydict has 3 types of windows and you can set different services for each of t
 - `Opt + Enter`: If you have the Eudic App installed on your computer, an Eudic icon will be displayed to the left of the Safari icon, and the shortcut will open the Eudic App for searching.
 - `Cmd + ,`: Open settings page quickly.
 
-> Prompt: As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you accidentally hide the menu bar icon, you can reopen it in this way (≧▽≦)
+## Tips
+
+As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you accidentally hide the menu bar icon, you can reopen it in this way (≧▽≦)
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
   <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
 </div>
+
+If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xx" button to specify the recognition language.
+
+<div style="display:flex;align-items:flex-start;">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="50%">
+</div>
+
+
 
 ## Similar Projects
 

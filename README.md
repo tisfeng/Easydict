@@ -200,12 +200,22 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 - `Opt + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
 - `Cmd + ,`: 快速打开设置页。
 
-> 提示：只要唤醒了查询窗口，就可以通过快捷键 `Cmd + ,` 打开设置页。若不小心隐藏了菜单栏图标，可通过这种方式重新开启 (≧▽≦)
+## Tips
+
+只要唤醒了查询窗口，就可以通过快捷键 `Cmd + ,` 打开设置页。若不小心隐藏了菜单栏图标，可通过这种方式重新开启 (≧▽≦)
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
   <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
 </div>
+
+若发现 OCR 识别结果不对，可通过点击 ”识别为 xx“ 按钮指定识别语言来修正 OCR 结果。
+
+<div style="display:flex;align-items:flex-start;">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="50%">
+</div>
+
 
 ## 类似项目
 
