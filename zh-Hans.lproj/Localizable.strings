@@ -16,6 +16,7 @@
 "openai_translate" = "OpenAI 翻译";
 
 "explain" = "释义:";
+"etymology" = "词源:";
 "tag" = "标签:";
 "please_look" = "请看👉";
 "us_phonetic" = "美";

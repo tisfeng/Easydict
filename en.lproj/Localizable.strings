@@ -17,6 +17,7 @@
 "openai_translate" = "OpenAI Translate";
 
 "explain" = "explain:";
+"etymology" = "etymology:";
 "tag" = "tags:";
 "please_look" = "Please look 👉";
 "us_phonetic" = "us";
