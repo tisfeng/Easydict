@@ -40,52 +40,15 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
     return kOpenAIURL;
 }
 
-// Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
+// Supported languages, key is EZLanguage, value is the same as the key.
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
-    // key and value are the same
-    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, EZLanguageAuto, EZLanguageSimplifiedChinese, EZLanguageSimplifiedChinese, EZLanguageTraditionalChinese, EZLanguageTraditionalChinese, EZLanguageEnglish, EZLanguageEnglish, EZLanguageJapanese, EZLanguageJapanese, EZLanguageKorean, EZLanguageKorean, EZLanguageFrench, EZLanguageFrench, EZLanguageSpanish, EZLanguageSpanish, EZLanguagePortuguese, @"pt",
-                                        EZLanguageItalian, @"it",
-                                        EZLanguageGerman, @"de",
-                                        EZLanguageRussian, @"ru",
-                                        EZLanguageArabic, @"ar",
-                                        EZLanguageSwedish, @"sv",
-                                        EZLanguageRomanian, @"ro",
-                                        EZLanguageThai, @"th",
-                                        EZLanguageSlovak, @"sk",
-                                        EZLanguageDutch, @"nl",
-                                        EZLanguageHungarian, @"hu",
-                                        EZLanguageGreek, @"el",
-                                        EZLanguageDanish, @"da",
-                                        EZLanguageFinnish, @"fi",
-                                        EZLanguagePolish, @"pl",
-                                        EZLanguageCzech, @"cs",
-                                        EZLanguageTurkish, @"tr",
-                                        EZLanguageLithuanian, @"lt",
-                                        EZLanguageLatvian, @"lv",
-                                        EZLanguageUkrainian, @"uk",
-                                        EZLanguageBulgarian, @"bg",
-                                        EZLanguageIndonesian, @"id",
-                                        EZLanguageMalay, @"ms",
-                                        EZLanguageSlovenian, @"sl",
-                                        EZLanguageEstonian, @"et",
-                                        EZLanguageVietnamese, @"vi",
-                                        EZLanguagePersian, @"fa",
-                                        EZLanguageHindi, @"hi",
-                                        EZLanguageTelugu, @"te",
-                                        EZLanguageTamil, @"ta",
-                                        EZLanguageUrdu, @"ur",
-                                        EZLanguageFilipino, @"tl",
-                                        EZLanguageKhmer, @"km",
-                                        EZLanguageLao, @"lo",
-                                        EZLanguageBengali, @"bn",
-                                        EZLanguageBurmese, @"my",
-                                        EZLanguageNorwegian, @"no",
-                                        EZLanguageSerbian, @"sr",
-                                        EZLanguageCroatian, @"hr",
-                                        EZLanguageMongolian, @"mn",
-                                        EZLanguageHebrew, @"iw",
-                                        nil];
+    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
+    
+    NSArray<EZLanguage> *allLanguages = [EZLanguageManager allLanguages];
+    for (EZLanguage language in allLanguages) {
+        [orderedDict setObject:language forKey:language];
+    }
+    
     return orderedDict;
 }
 
@@ -102,8 +65,53 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
     NSString *targetLangCode = [self languageCodeForLanguage:to];
     // This prompt is genarated by ChatGPT, but it's not working well.
     //    NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
-    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@: %@ =>", souceLangCode, targetLangCode, text];
+    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@:\n%@ =>", souceLangCode, targetLangCode, text];
+    
+    BOOL isWord = [self isWord:text];
+    if (isWord) {
+        // Look up word definition and etymology, but it takes too long(>10s) to generate a result.
+        // This is an English word: 'battery', please look up its definition and etymology and output it strictly in the following format: '\n------\nDefinition: xxx \n------\nEtymology: xxx'. Use Chinese to answer in detail, with a word count between 100 and 300.
+        prompt = [NSString stringWithFormat:@"This is an %@ word: '%@', please look up its definition and etymology and output it strictly in the following format: '\n------\nDefinition: xxx \n------\nEtymology: xxx'. Use %@ to answer in detail, with a word count between 100 and 300.", souceLangCode, text, targetLangCode];
+    }
+    
+    [self queryOpenAI:prompt from:from to:to completion:^(NSString *_Nullable result, NSError *_Nullable error) {
+        if (error) {
+            completion(self.result, error);
+            return;
+        }
         
+        /**
+         "\n\n------\nDefinition: 电池，是一种用于储存能量的装置。它通常由多个单元连接而成，可以将化学能转换成电能并供应到相应的设备中。 \n------\nEtymology: battery 这个词最早出现在17c. 年代，来自法语batterie（“队列、行军”）和意大利语battere （“打击、敲打”）。它最初是一个军事术语，形容士兵们站在一行的样子。后来引伸出新的意思——尤其泛指使用武器对敌人进行集体攻击——然后又被引申为物理上的意义上去形容一系列相连的部件或者装置。"
+         */
+        
+        NSString *definitionDelimiter = @"\n------\nDefinition: ";
+        NSString *etymologyDelimiter = @"\n------\nEtymology: ";
+        if ([result containsString:definitionDelimiter] && [result containsString:etymologyDelimiter]) {
+            EZTranslateWordResult *wordResult = [[EZTranslateWordResult alloc] init];
+            
+            NSArray *components = [result componentsSeparatedByString:etymologyDelimiter];
+            if (components.count > 1) {
+                wordResult.etymology = [components[1] trim];
+                self.result.wordResult = wordResult;
+            }
+            
+            components = [components[0] componentsSeparatedByString:definitionDelimiter];
+            
+            if (components.count > 1) {
+                NSString *definition = [components[1] trim];
+                self.result.normalResults = @[ definition ];
+            }
+            
+            completion(self.result, nil);
+            return;
+        }
+        
+        self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
+        completion(self.result, nil);
+    }];
+}
+
+- (void)queryOpenAI:(NSString *)prompt from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
     NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
     
@@ -130,14 +138,14 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
         if (error) {
-            completion(self.result, error);
+            completion(nil, error);
             return;
         }
         
         NSError *jsonError;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
         if (jsonError) {
-            completion(self.result, jsonError);
+            completion(nil, jsonError);
             return;
         }
         
@@ -159,21 +167,32 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
                 error = [EZTranslateError errorWithString:json[@"error"][@"message"]];
             }
             
-            completion(self.result, error);
+            completion(nil, error);
             return;
         }
         
         NSString *result = choices[0][@"text"];
-        NSArray *paragraphs = [[result trim] componentsSeparatedByString:@"\n"];
-        self.result.normalResults = paragraphs;
-        completion(self.result, nil);
+        completion(result, nil);
     }];
     [task resume];
 }
 
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"deepL not support ocr");
+    NSLog(@"OpenAI not support ocr");
+}
+
+#pragma mark -
+
+/// Check if text is a word.
+- (BOOL)isWord:(NSString *)text {
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+    
+    NSString *pattern = @"^[a-zA-Z]+$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
+    return [predicate evaluateWithObject:text];
 }
 
 @end

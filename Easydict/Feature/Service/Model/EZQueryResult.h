@@ -87,6 +87,9 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 /// 标签：四级，六级，考研
 @property (nonatomic, copy, nullable) NSArray<NSString *> *tags;
 
+/// 词源
+@property (nonatomic, copy, nullable) NSString *etymology;
+
 @end
 
 

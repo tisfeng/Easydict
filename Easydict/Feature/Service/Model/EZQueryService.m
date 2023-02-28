@@ -55,6 +55,7 @@ userInfo:nil]
     _result.service = self;
     _result.serviceType = self.serviceType;
     _result.queryModel = self.queryModel;
+    _result.queryText = self.queryModel.queryText;
 }
 
 - (MMOrderedDictionary *)langDict {
