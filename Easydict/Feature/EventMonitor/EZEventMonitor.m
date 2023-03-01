@@ -702,7 +702,44 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         return YES;
     }
     
+    // Since selectedTextFrame may be zere, so we need to check start point and end point
+    CGRect startEndPointFrame = [self frameFromStartPoint:self.startPoint endPoint:self.endPoint];
+    if (CGRectContainsPoint(startEndPointFrame, mouseLocation)) {
+        return YES;
+    }
+    
     return NO;
+}
+
+/// Get frame from two points.
+- (CGRect)frameFromStartPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
+    CGFloat expandValue = 50;
+    
+    CGFloat x = MIN(startPoint.x, endPoint.x);
+    // if endPoint.x == startPoint.x, x = endPoint.x - expandValue
+    if (x == endPoint.x) {
+        x = endPoint.x - expandValue;
+    }
+    
+    CGFloat y = MIN(startPoint.y, endPoint.y);
+    // if endPoint.y == startPoint.y, y = endPoint.y - expandValue
+    if (y == endPoint.y) {
+        y = endPoint.y - expandValue;
+    }
+    
+    CGFloat width = fabs(startPoint.x - endPoint.x);
+    // if endPoint.x == startPoint.x, width = expandValue * 2
+    if (width == 0) {
+        width = expandValue * 2;
+    }
+    CGFloat height = fabs(startPoint.y - endPoint.y);
+    // if endPoint.y == startPoint.y, height = expandValue * 2
+    if (height == 0) {
+        height = expandValue * 2;
+    }
+    
+    CGRect frame = CGRectMake(x, y, width, height);
+    return frame;
 }
 
 @end
