@@ -94,7 +94,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
     
     // This prompt is genarated by ChatGPT, but it's not working well.
     //    NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
-    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@:\n%@ =>", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"translate text from %@ to %@:\"%@\" =>", sourceLanguage, targetLanguage, text];
     //   prompt = [NSString stringWithFormat:@"Translate the following %@ text to %@: '{%@}'", sourceLanguage, targetLanguage, text];
     NSDictionary *dict = @{
         @"role" : @"user",
