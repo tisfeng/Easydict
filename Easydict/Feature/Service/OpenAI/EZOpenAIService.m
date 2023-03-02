@@ -12,6 +12,9 @@
 
 static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
 
+static NSString *kDefinitionDelimiter = @"------Definition------";
+static NSString *kEtymologyDelimiter = @"------Etymology------";
+
 @interface EZOpenAIService ()
 
 
@@ -115,16 +118,19 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
         completion(@"", nil);
     }
     
-    // // Look up word definition and etymology,
-    
-    // This is an English word: 'battery', look up its brief definition and detailed etymology, output strictly in the following format: '\n------\nDefinition: xxx\n------\nEtymology: xxx', answer in Chinese with a word count between between 100 and 300.
-    NSString *prompt = [NSString stringWithFormat:@"This is an %@ word: '%@', look up its brief definition and detailed etymology, output strictly in the following format: '\n------\nDefinition: xxx\n------\nEtymology: xxx\n', answer in %@ with a word count between between 100 and 300.", sourceLanguage, word, targetLanguage];
+    /**
+     Look up word definition and etymology.
+     
+     Look up a brief definition and detailed etymology of the English word 'view' and output it strictly in the following format.'------Definition: xxx ------Etymology: xxx', answer in simplified Chinese language, with a word count between 100 and 300.
+     */
+    NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ word '%@' and output it strictly in the following format.'%@xxx %@xxx', answer in %@ language, with a word count between 100 and 300.", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
     
     NSDictionary *dict = @{
         @"role" : @"user",
         @"content" : prompt,
     };
     
+    // Quickly, generally less than 3s.
     [self startChat:@[ dict ] completion:completion];
     
     // ⚠️ It takes too long(>10s) to generate a result for text-davinci-003.
@@ -301,22 +307,22 @@ static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
 /// Parse Definition and Etymology from text.
 - (void)parseDefinitionAndEtymologyFromText:(NSString *)text definition:(NSString **)definition etymology:(NSString **)etymology {
     /**
-     "\n\n------\nDefinition: 电池，是一种用于储存能量的装置。它通常由多个单元连接而成，可以将化学能转换成电能并供应到相应的设备中。 \n------\nEtymology: battery 这个词最早出现在17c. 年代，来自法语batterie（“队列、行军”）和意大利语battere （“打击、敲打”）。它最初是一个军事术语，形容士兵们站在一行的样子。后来引伸出新的意思——尤其泛指使用武器对敌人进行集体攻击——然后又被引申为物理上的意义上去形容一系列相连的部件或者装置。"
+     "------Definition: 电池；炮兵连 ------Etymology: “battery”源于法语“batterie”，意为“一组物品或器具”。在14世纪，该词用于描述军队的火炮阵地。18世纪初，“battery”开始指代装有多个电池单元的设备。这些单元被称为“电池”，因其类似于火炮弹药箱而得名。至今，“battery”仍然是指能够提供持续电力的设备，如手提电话、笔记本电脑等。同时，“battery”的另一个含义是指由数门大炮组成的军事单位——即“炮兵连”。"
      */
     
-    NSString *definitionDelimiter = @"\n------\nDefinition: ";
-    NSString *etymologyDelimiter = @"\n------\nEtymology: ";
-    if ([text containsString:definitionDelimiter] && [text containsString:etymologyDelimiter]) {
-        NSArray *components = [text componentsSeparatedByString:etymologyDelimiter];
+    if ([text containsString:kDefinitionDelimiter] && [text containsString:kEtymologyDelimiter]) {
+        NSArray *components = [text componentsSeparatedByString:kEtymologyDelimiter];
         if (components.count > 1) {
             *etymology = [components[1] trim];
         }
         
-        components = [components[0] componentsSeparatedByString:definitionDelimiter];
+        components = [components[0] componentsSeparatedByString:kDefinitionDelimiter];
         
         if (components.count > 1) {
             *definition = [components[1] trim];
         }
+    } else {
+        *definition = text;
     }
 }
 
