@@ -57,11 +57,13 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     __block CGFloat height = 0;
     __block NSView *lastView = nil;
-    NSFont *textFont = [NSFont systemFontOfSize:14];
+    NSFont *textFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
     NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#7A7A7A"];
     
     NSString *errorMsg = result.error.localizedDescription;
+    
+    __block CGFloat ezLabelTopOffset = 0;
     
     mm_weakify(self);
     
@@ -76,20 +78,22 @@ static const CGFloat kVerticalPadding_8 = 8;
             } drak:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextDarkColor];
             }];
-            textField.font = [NSFont boldSystemFontOfSize:24];
+            textField.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
             textField.selectable = YES;
             textField.editable = NO;
             textField.bordered = NO;
             textField.backgroundColor = NSColor.clearColor;
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 [textField sizeToFit];
-                height += (kVerticalPadding_8 + textField.height);
-                //                NSLog(@"height = %1.f", height);
+                
+                CGFloat topOffset = 10;
+                height += (topOffset + textField.height);
+                // NSLog(@"height = %1.f", height);
                 
                 if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
+                    make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                 } else {
-                    make.top.offset(kVerticalPadding_8);
+                    make.top.offset(topOffset);
                 }
                 make.left.mas_equalTo(kHorizontalMargin_8 + 1);
                 make.height.mas_equalTo(textField.height);
@@ -151,8 +155,19 @@ static const CGFloat kVerticalPadding_8 = 8;
                 make.right.equalTo(self).offset(-kHorizontalMargin_8);
                 exceptedWidth += kHorizontalMargin_8;
                 
+                CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
+                make.size.mas_equalTo(labelSize).priorityHigh();
+                
+                // This means the label text has more than 2 lines, so we need to adjust the top offset.
+                if (labelSize.height > typeTextField.height * 2) {
+                    ezLabelTopOffset = -1;
+                }
+                
+                height += (kVerticalMargin_12 + labelSize.height);
+                // NSLog(@"height = %1.f", height);
+                
                 if (typeTextField) {
-                    make.top.equalTo(typeTextField);
+                    make.top.equalTo(typeTextField).offset(ezLabelTopOffset);
                     make.left.equalTo(typeTextField.mas_right);
                 } else {
                     if (lastView) {
@@ -165,12 +180,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                     exceptedWidth += leftPadding;
                     make.left.equalTo(self).offset(leftPadding);
                 }
-                
-                CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
-                make.size.mas_equalTo(labelSize).priorityHigh();
-                
-                height += (kVerticalMargin_12 + labelSize.height);
-                //            NSLog(@"height = %1.f", height);
             }];
             resultLabel.mas_key = @"resultLabel_normalResults";
             lastView = resultLabel;
