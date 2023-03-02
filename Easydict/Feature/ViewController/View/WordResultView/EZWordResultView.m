@@ -65,7 +65,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     mm_weakify(self);
     
-    BOOL showBigWord = result.wordResult && result.queryText && result.queryText.length < EZEnglishWordMaxLength;
+    BOOL showBigWord = result.wordResult && result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
     if (showBigWord) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
