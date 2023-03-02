@@ -10,10 +10,8 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
-static NSString *kOpenAIURL = @"https://api.openai.com/v1/completions";
-
-static NSString *kDefinitionDelimiter = @"------Definition------";
-static NSString *kEtymologyDelimiter = @"------Etymology------";
+static NSString *kDefinitionDelimiter = @"{------Definition------}";
+static NSString *kEtymologyDelimiter = @"{------Etymology------}";
 
 @interface EZOpenAIService ()
 
@@ -37,10 +35,6 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
 
 - (NSString *)name {
     return NSLocalizedString(@"openai_translate", nil);
-}
-
-- (NSString *)link {
-    return kOpenAIURL;
 }
 
 // Supported languages, key is EZLanguage, value is the same as the key.
@@ -109,7 +103,7 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
     
     [self startChat:@[ dict ] completion:completion];
     
-    //    [self startCompletion:prompt completion:completion];
+    //        [self startCompletion:prompt completion:completion];
 }
 
 - (void)queryDict:(NSString *)word from:(NSString *)sourceLanguage to:(NSString *)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
@@ -134,7 +128,7 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
     [self startChat:@[ dict ] completion:completion];
     
     // ⚠️ It takes too long(>10s) to generate a result for text-davinci-003.
-    //    [self startCompletion:prompt completion:completion];
+    //        [self startCompletion:prompt completion:completion];
 }
 
 /// Chat using gpt-3.5, response so quickly, generally less than 3s.
@@ -154,8 +148,8 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
         @"temperature" : @(0),
         @"max_tokens" : @(1000),
         @"top_p" : @(1.0),
-        @"frequency_penalty" : @(1),
-        @"presence_penalty" : @(1),
+        //        @"frequency_penalty" : @(1),
+        //        @"presence_penalty" : @(1),
     };
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.openai.com/v1/chat/completions"]];
@@ -239,8 +233,8 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
         @"temperature" : @(0),
         @"max_tokens" : @(1000),
         @"top_p" : @(1.0),
-        @"frequency_penalty" : @(1),
-        @"presence_penalty" : @(1),
+        //        @"frequency_penalty" : @(1),
+        //        @"presence_penalty" : @(1),
     };
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.openai.com/v1/completions"]];
@@ -322,7 +316,7 @@ static NSString *kEtymologyDelimiter = @"------Etymology------";
             *definition = [components[1] trim];
         }
     } else {
-        *definition = text;
+        *definition = [text trim];
     }
 }
 
