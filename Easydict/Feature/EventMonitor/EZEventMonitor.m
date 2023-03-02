@@ -21,6 +21,8 @@ static NSInteger kRecordEventCount = 3;
 static NSInteger kCommandKeyEventCount = 4;
 static CGFloat kDoublCommandInterval = 0.5;
 
+static CGFloat kExpandedFrameValue = 50;
+
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     EZEventMonitorTypeLocal,
     EZEventMonitorTypeGlobal,
@@ -691,11 +693,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         }
     }
     
-    CGFloat expandValue = 50;
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
-                                                  selectedTextFrame.origin.y - expandValue,
-                                                  selectedTextFrame.size.width + expandValue * 2,
-                                                  selectedTextFrame.size.height + expandValue * 2);
+    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedFrameValue,
+                                                  selectedTextFrame.origin.y - kExpandedFrameValue,
+                                                  selectedTextFrame.size.width + kExpandedFrameValue * 2,
+                                                  selectedTextFrame.size.height + kExpandedFrameValue * 2);
     
     CGPoint mouseLocation = NSEvent.mouseLocation;
     if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
@@ -713,29 +714,27 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 /// Get frame from two points.
 - (CGRect)frameFromStartPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
-    CGFloat expandValue = 50;
-    
     CGFloat x = MIN(startPoint.x, endPoint.x);
     // if endPoint.x == startPoint.x, x = endPoint.x - expandValue
     if (x == endPoint.x) {
-        x = endPoint.x - expandValue;
+        x = endPoint.x - kExpandedFrameValue;
     }
     
     CGFloat y = MIN(startPoint.y, endPoint.y);
     // if endPoint.y == startPoint.y, y = endPoint.y - expandValue
     if (y == endPoint.y) {
-        y = endPoint.y - expandValue;
+        y = endPoint.y - kExpandedFrameValue;
     }
     
     CGFloat width = fabs(startPoint.x - endPoint.x);
     // if endPoint.x == startPoint.x, width = expandValue * 2
     if (width == 0) {
-        width = expandValue * 2;
+        width = kExpandedFrameValue * 2;
     }
     CGFloat height = fabs(startPoint.y - endPoint.y);
     // if endPoint.y == startPoint.y, height = expandValue * 2
     if (height == 0) {
-        height = expandValue * 2;
+        height = kExpandedFrameValue * 2;
     }
     
     CGRect frame = CGRectMake(x, y, width, height);
