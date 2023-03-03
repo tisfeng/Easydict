@@ -22,6 +22,9 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 @interface EZConfiguration : NSObject
 
+@property (nonatomic, assign) EZLanguage from;
+@property (nonatomic, assign) EZLanguage to;
+
 @property (nonatomic, assign) BOOL autoSelectText;
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
@@ -35,9 +38,8 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
+@property (nonatomic, assign) BOOL adjustPopButtomOrigin;
 
-@property (nonatomic, assign) EZLanguage from;
-@property (nonatomic, assign) EZLanguage to;
 
 + (instancetype)shared;
 

@@ -30,6 +30,7 @@ static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconK
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
+static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
 
 @implementation EZConfiguration
 
@@ -57,7 +58,7 @@ static EZConfiguration *_instance;
 - (void)setup {
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
-    
+
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:NO];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
@@ -71,6 +72,7 @@ static EZConfiguration *_instance;
     self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:0];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
+    self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
 }
 
 #pragma mark - getter
@@ -89,98 +91,103 @@ static EZConfiguration *_instance;
 
 - (void)setAutoSelectText:(BOOL)autoSelectText {
     _autoSelectText = autoSelectText;
-    
+
     [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
-    
+
     [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
 }
 
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
     [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
-    
+
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
 }
 
 - (void)setFrom:(EZLanguage)from {
     _from = from;
-    
+
     [NSUserDefaults mm_write:from forKey:kFromKey];
 }
 
 - (void)setTo:(EZLanguage)to {
     _to = to;
-    
+
     [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
 - (void)setHideMainWindow:(BOOL)hideMainWindow {
     _hideMainWindow = hideMainWindow;
-    
+
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
 }
 
 - (void)setAutoSnipTranslate:(BOOL)autoSnipTranslate {
     _autoSnipTranslate = autoSnipTranslate;
-    
+
     [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoSnipTranslateKey];
 }
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
     _autoPlayAudio = autoPlayAudio;
-    
+
     [NSUserDefaults mm_write:@(autoPlayAudio) forKey:kAutoPlayAudioKey];
 }
 
 - (void)setAutoCopySelectedText:(BOOL)autoCopySelectedText {
     _autoCopySelectedText = autoCopySelectedText;
-    
+
     [NSUserDefaults mm_write:@(autoCopySelectedText) forKey:kAutoCopySelectedTextKey];
 }
 
 - (void)setAutoCopyOCRText:(BOOL)autoCopyOCRText {
     _autoCopyOCRText = autoCopyOCRText;
-    
+
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
 }
 
 - (void)setLanguageDetectOptimize:(EZLanguageDetectOptimize)languageDetectOptimizeType {
     _languageDetectOptimize = languageDetectOptimizeType;
-    
+
     [NSUserDefaults mm_write:@(languageDetectOptimizeType) forKey:kLanguageDetectOptimizeTypeKey];
 }
 
 - (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
     _showGoogleQuickLink = showGoogleLink;
-    
+
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
 }
 
 - (void)setShowEudicQuickLink:(BOOL)showEudicLink {
     _showEudicQuickLink = showEudicLink;
-    
+
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
 }
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
     _hideMenuBarIcon = hideMenuBarIcon;
-    
+
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
-    
+
     [self hideMenuBarIcon:hideMenuBarIcon];
 }
 
 - (void)setFixedWindowPosition:(EZShowWindowPosition)showFixedWindowPosition {
     _fixedWindowPosition = showFixedWindowPosition;
-    
+
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
 }
 
+- (void)setAdjustPopButtomOrigin:(BOOL)adjustPopButtomOrigin {
+    _adjustPopButtomOrigin = adjustPopButtomOrigin;
+
+    [NSUserDefaults mm_write:@(adjustPopButtomOrigin) forKey:kAdjustPopButtomOriginKey];
+}
 
 #pragma mark - Window Frame
 
@@ -205,9 +212,9 @@ static EZConfiguration *_instance;
 
 - (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
     //    [self isLoginItemEnabled];
-    
+
     NSString *helperBundleId = [self helperBundleId];
-    
+
     NSError *error;
     if (@available(macOS 13.0, *)) {
         // Ref: https://www.bilibili.com/read/cv19361413
@@ -235,12 +242,12 @@ static EZConfiguration *_instance;
 
 - (BOOL)isLoginItemEnabled {
     BOOL enabled = NO;
-    
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CFArrayRef loginItems = SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
 #pragma clang diagnostic pop
-    
+
     NSString *helperBundleId = [self helperBundleId];
     for (id item in (__bridge NSArray *)loginItems) {
         if ([[[item objectForKey:@"Label"] description] isEqualToString:helperBundleId]) {
