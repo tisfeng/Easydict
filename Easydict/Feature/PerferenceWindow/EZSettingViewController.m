@@ -28,6 +28,9 @@
 @property (nonatomic, strong) NSTextField *showQueryIconLabel;
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 
+@property (nonatomic, strong) NSTextField *adjustQueryIconPostionLabel;
+@property (nonatomic, strong) NSButton *adjustQueryIconPostionButton;
+
 @property (nonatomic, strong) NSTextField *languageDetectLabel;
 @property (nonatomic, strong) NSPopUpButton *languageDetectOptimizePopUpButton;
 
@@ -139,16 +142,22 @@
     self.showQueryIconButton = [NSButton checkboxWithTitle:showQueryIconTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.showQueryIconButton];
     
-    if ([EZLanguageManager isEnglishFirstLanguage]) {
-        self.rightmostView = self.showQueryIconButton;
-    }
+    NSTextField *adjustQueryIconPostionLabel = [NSTextField labelWithString:NSLocalizedString(@"adjust_pop_button_origin", nil)];
+    adjustQueryIconPostionLabel.font = font;
+    [self.contentView addSubview:adjustQueryIconPostionLabel];
+    self.adjustQueryIconPostionLabel = adjustQueryIconPostionLabel;
+    
+    NSString *adjustQueryIconPostionTitle = NSLocalizedString(@"avoid_conflict_with_PopClip_display", nil);
+    self.adjustQueryIconPostionButton = [NSButton checkboxWithTitle:adjustQueryIconPostionTitle target:self action:@selector(adjustQueryIconPostionButtonClicked:)];
+    [self.contentView addSubview:self.adjustQueryIconPostionButton];
+    
     
     NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect_optimize", nil)];
     usesLanguageCorrectionLabel.font = font;
     [self.contentView addSubview:usesLanguageCorrectionLabel];
     self.languageDetectLabel = usesLanguageCorrectionLabel;
     
-
+    
     self.languageDetectOptimizePopUpButton = [[NSPopUpButton alloc] init];
     
     NSArray *languageDetectOptimizeItems = @[
@@ -222,7 +231,6 @@
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
     
-    
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
     self.separatorView2 = separatorView2;
@@ -263,9 +271,9 @@
     
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
+    self.adjustQueryIconPostionButton.mm_isOn = configuration.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
     [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
-
     self.autoPlayAudioButton.mm_isOn = configuration.autoPlayAudio;
     self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
@@ -340,9 +348,19 @@
         make.centerY.equalTo(self.showQueryIconLabel);
     }];
     
-    [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.adjustQueryIconPostionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
+    [self.adjustQueryIconPostionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.adjustQueryIconPostionLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.adjustQueryIconPostionLabel);
+    }];
+    
+    [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.showQueryIconLabel);
+        make.top.equalTo(self.adjustQueryIconPostionButton.mas_bottom).offset(self.verticalPadding);
     }];
     
     [self.languageDetectOptimizePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -449,12 +467,12 @@
     
     
     if ([EZLanguageManager isChineseFirstLanguage]) {
-        self.leftmostView = self.fixedWindowPositionLabel;
+        self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.showQueryIconButton;
     }
     
     if ([EZLanguageManager isEnglishFirstLanguage]) {
-        self.leftmostView = self.fixedWindowPositionLabel;
+        self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.languageDetectOptimizePopUpButton;
     }
     
@@ -519,13 +537,17 @@
 }
 
 - (void)fixedWindowPositionPopUpButtonClicked:(NSPopUpButton *)button {
-    NSInteger selectedIndex = button.indexOfSelectedItem;    
+    NSInteger selectedIndex = button.indexOfSelectedItem;
     EZConfiguration.shared.fixedWindowPosition = selectedIndex;
 }
 
 - (void)languageDetectOptimizePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
     EZConfiguration.shared.languageDetectOptimize = selectedIndex;
+}
+
+- (void)adjustQueryIconPostionButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.adjustPopButtomOrigin = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController

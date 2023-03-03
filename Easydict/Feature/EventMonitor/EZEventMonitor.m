@@ -345,6 +345,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             if ([self checkIfLeftMouseDragged]) {
                 //                    NSLog(@"Dragged selected");
                 [self getSelectedText:YES];
+//                [self delayGetSelectedText:0.5];
             }
             break;
         }
@@ -375,7 +376,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             //                NSLog(@"NSEventTypeLeftMouseDragged");
             break;
         }
-            
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
             //            NSLog(@"key down");
