@@ -97,7 +97,7 @@
         self.favoriteButton = googleButton;
         
         googleButton.link = @"https://www.google.com/search?q=%@";
-        googleButton.image = [[NSImage imageNamed:@"Chrome"] resizeToSize:imageSize];
+        googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
         googleButton.toolTip = @"Google";
         googleButton.contentTintColor = NSColor.clearColor;
         
