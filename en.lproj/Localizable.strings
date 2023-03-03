@@ -68,6 +68,8 @@
 "fixed_window_position_right" = "Screen Right";
 "fixed_window_position_word" = "Word Position";
 "fixed_window_position_former" = "Former Position";
+"adjust_pop_button_origin" = "Adjust Query Icon Position";
+"avoid_conflict_with_PopClip_display" = "Avoid Conflict With PopClip";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Floating Window";

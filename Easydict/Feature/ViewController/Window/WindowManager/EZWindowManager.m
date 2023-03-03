@@ -22,6 +22,7 @@
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
 @property (nonatomic, copy) NSString *selectedText;
 
+/// Right-bottom offset: (15, -15)
 @property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
@@ -74,9 +75,9 @@ static EZWindowManager *_instance;
     [self.eventMonitor setSelectedTextBlock:^(NSString *_Nonnull selectedText) {
         mm_strongify(self);
         
-//        if ([self hasEasydictRunningInDebugMode]) {
-//            return;
-//        }
+        //        if ([self hasEasydictRunningInDebugMode]) {
+        //            return;
+        //        }
         
         self.selectedText = selectedText;
         
@@ -90,7 +91,8 @@ static EZWindowManager *_instance;
         [self.popButtonWindow setFrameOrigin:safePoint];
         
         [self.popButtonWindow orderFrontRegardless];
-        self.popButtonWindow.level = EZFloatingWindowLevel;
+        // Set a high level to make sure it's always on top of other windows, such as PopClip.
+        self.popButtonWindow.level = kCGScreenSaverWindowLevel;
         
         if (!EZConfiguration.shared.hideMainWindow) {
             [self->_mainWindow orderBack:nil];
@@ -231,9 +233,9 @@ static EZWindowManager *_instance;
 }
 
 - (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
-//    if ([self hasEasydictRunningInDebugMode]) {
-//        return;
-//    }
+    //    if ([self hasEasydictRunningInDebugMode]) {
+    //        return;
+    //    }
     
     CGPoint location = CGPointZero;
     if (atLastPoint) {
@@ -319,7 +321,7 @@ static EZWindowManager *_instance;
     return [NSEvent mouseLocation];
 }
 
-// Top left position
+/// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [self mouseLocation];
     if (CGPointEqualToPoint(location, CGPointZero)) {
@@ -329,13 +331,67 @@ static EZWindowManager *_instance;
     NSPoint startLocation = self.startPoint;
     NSPoint endLocation = self.endPoint;
     
-    CGFloat deltaY = endLocation.y - startLocation.y;
-    CGFloat x = location.x + self.offsetPoint.x;
-    CGFloat y = location.y + self.offsetPoint.y;
+    // Direction from left to right.
+    BOOL isDirectionRight = endLocation.x >= startLocation.x;
+    // Direction from top to bottom.
+    BOOL isDirectionDown = YES;
     
-    // Direction up
-    if (deltaY > 10) {
-        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 10;
+    CGFloat minLineHeight = 20;
+    
+    CGFloat deltaY = endLocation.y - startLocation.y;
+    // Direction up.
+    if (deltaY > minLineHeight / 2) {
+        isDirectionDown = NO;
+        isDirectionRight = NO;
+    }
+    
+    CGFloat x = location.x;
+    CGFloat y = location.y;
+    
+    // self.offsetPoint is (15, -15)
+    
+    if (isDirectionDown) {
+        x += self.offsetPoint.x;
+        y += self.offsetPoint.y;
+    } else {
+        x += self.offsetPoint.x;
+        // Direction up, show pop button window above the selected text.
+        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
+    }
+    
+    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
+    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
+    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
+    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
+    
+    if (EZConfiguration.shared.adjustPopButtomOrigin) {
+        // Since the pop button may cover selected text, we need to move it to the left.
+        CGFloat margin = 10;
+        CGFloat horizontalOffset = 30;
+        CGFloat maxLeftOffset = horizontalOffset + margin; // 40
+        CGFloat selectedTextWidth = selectedTextFrame.size.width;
+        if (selectedTextWidth > 0) {
+            if (selectedTextWidth > maxLeftOffset) {
+                horizontalOffset = maxLeftOffset;
+            } else {
+                horizontalOffset = selectedTextWidth / 2;
+                horizontalOffset += margin; // Leave some space.
+            }
+        }
+        
+        // If selected text is multi-line, we don't need too much left offset.
+        if (fabs(deltaY) > minLineHeight / 2) {
+            horizontalOffset = 20;
+        }
+        
+        x = location.x;
+        if (isDirectionRight) {
+            x += horizontalOffset;
+        } else {
+            x -= horizontalOffset;
+        }
+        
+        y = location.y - self.offsetPoint.y;
     }
     
     NSPoint popLocation = CGPointMake(x, y);
@@ -388,7 +444,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)saveFrontmostApplication {
-    NSString *identifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    NSString *identifier = [[NSBundle mainBundle] bundleIdentifier];
     NSRunningApplication *frontmostApplication = [[NSWorkspace sharedWorkspace] frontmostApplication];
     if ([frontmostApplication.bundleIdentifier isEqualToString:identifier]) {
         return;
@@ -438,9 +494,9 @@ static EZWindowManager *_instance;
 }
 
 - (void)snipTranslate {
-//    if ([self hasEasydictRunningInDebugMode]) {
-//        return;
-//    }
+    //    if ([self hasEasydictRunningInDebugMode]) {
+    //        return;
+    //    }
     
     [self saveFrontmostApplication];
     
