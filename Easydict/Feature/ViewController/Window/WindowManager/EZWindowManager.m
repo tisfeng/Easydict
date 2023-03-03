@@ -360,41 +360,26 @@ static EZWindowManager *_instance;
     }
     
     CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
-    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
-    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
-    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
+//    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
+//    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
+//    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
     
     if (EZConfiguration.shared.adjustPopButtomOrigin) {
         // Since the pop button may cover selected text, we need to move it to the left.
-        CGFloat margin = 10;
-        CGFloat horizontalOffset = 30;
-        CGFloat maxLeftOffset = horizontalOffset + margin; // 40
-        CGFloat selectedTextWidth = selectedTextFrame.size.width;
-        if (selectedTextWidth > 0) {
-            if (selectedTextWidth > maxLeftOffset) {
-                horizontalOffset = maxLeftOffset;
-            } else {
-                horizontalOffset = selectedTextWidth / 2;
-                horizontalOffset += margin; // Leave some space.
-            }
-        }
-        
-        // If selected text is multi-line, we don't need too much left offset.
-        if (fabs(deltaY) > minLineHeight / 2) {
-            horizontalOffset = 20;
-        }
+        CGFloat horizontalOffset = 20;
         
         x = location.x;
         if (isDirectionRight) {
             x += horizontalOffset;
         } else {
-            x -= horizontalOffset;
+            x -= (horizontalOffset + self.popButtonWindow.width);
         }
         
         y = location.y - self.offsetPoint.y;
     }
     
     NSPoint popLocation = CGPointMake(x, y);
+//    NSLog(@"popLocation: %@", NSStringFromPoint(popLocation));
     
     return popLocation;
 }
@@ -410,6 +395,12 @@ static EZWindowManager *_instance;
     }
     
     CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
+    
+    // if pop button is left to selected text, we need to move showing mouse location to a bit right, to show query window properly.
+    if (NSEvent.mouseLocation.x > popButtonLocation.x) {
+        x = NSEvent.mouseLocation.x + 5;
+    }
+    
     CGFloat y = popButtonLocation.y + 5;
     CGPoint showingPosition = CGPointMake(x, y);
     
