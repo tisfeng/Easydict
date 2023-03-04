@@ -359,7 +359,7 @@ static EZWindowManager *_instance;
         y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
     }
     
-    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
+//    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
 //    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
 //    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
 //    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
