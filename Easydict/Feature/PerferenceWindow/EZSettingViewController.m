@@ -90,19 +90,19 @@
     self.selectionShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.selectionShortcutView];
     
-    NSTextField *inputLabel = [NSTextField labelWithString:NSLocalizedString(@"input_translate", nil)];
-    inputLabel.font = font;
-    [self.contentView addSubview:inputLabel];
-    self.inputLabel = inputLabel;
-    self.inputShortcutView = [[MASShortcutView alloc] init];
-    [self.contentView addSubview:self.inputShortcutView];
-    
     NSTextField *snipLabel = [NSTextField labelWithString:NSLocalizedString(@"snip_translate", nil)];
     snipLabel.font = font;
     [self.contentView addSubview:snipLabel];
     self.snipLabel = snipLabel;
     self.snipShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.snipShortcutView];
+    
+    NSTextField *inputLabel = [NSTextField labelWithString:NSLocalizedString(@"input_translate", nil)];
+    inputLabel.font = font;
+    [self.contentView addSubview:inputLabel];
+    self.inputLabel = inputLabel;
+    self.inputShortcutView = [[MASShortcutView alloc] init];
+    [self.contentView addSubview:self.inputShortcutView];
     
     NSTextField *showMiniLabel = [NSTextField labelWithString:NSLocalizedString(@"show_mini_window", nil)];
     showMiniLabel.font = font;
@@ -116,8 +116,8 @@
     }
     
     [self.selectionShortcutView setAssociatedUserDefaultsKey:EZSelectionShortcutKey];
-    [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
     [self.snipShortcutView setAssociatedUserDefaultsKey:EZSnipShortcutKey];
+    [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
     
     NSColor *separatorLightColor = [NSColor mm_colorWithHexString:@"#D9DADA"];
@@ -292,27 +292,15 @@
         make.left.equalTo(self.contentView).offset(self.leftMargin).priorityLow();
         make.top.equalTo(self.contentView).offset(self.topMargin).priorityLow();
     }];
-    self.topmostView = self.selectLabel;
-    
     [self.selectionShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.selectLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.selectLabel);
         make.height.mas_equalTo(25);
     }];
     
-    [self.inputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.selectionShortcutView.mas_bottom).offset(self.verticalPadding);
-    }];
-    [self.inputShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.inputLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.inputLabel);
-        make.height.equalTo(self.selectionShortcutView);
-    }];
-    
     [self.snipLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.inputShortcutView.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.selectionShortcutView.mas_bottom).offset(self.verticalPadding);
     }];
     [self.snipShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.snipLabel.mas_right).offset(self.horizontalPadding);
@@ -320,12 +308,20 @@
         make.height.equalTo(self.selectionShortcutView);
     }];
     
-    [self.showMiniLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.inputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.snipShortcutView.mas_bottom).offset(self.verticalPadding);
     }];
+    [self.inputShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.inputLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.inputLabel);
+        make.height.equalTo(self.selectionShortcutView);
+    }];
     
-    
+    [self.showMiniLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectLabel);
+        make.top.equalTo(self.inputShortcutView.mas_bottom).offset(self.verticalPadding);
+    }];
     [self.showMiniShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showMiniLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.showMiniLabel);
@@ -342,7 +338,6 @@
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
-    
     [self.showQueryIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showQueryIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.showQueryIconLabel);
@@ -352,7 +347,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.adjustQueryIconPostionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.adjustQueryIconPostionLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.adjustQueryIconPostionLabel);
@@ -362,7 +356,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.adjustQueryIconPostionButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.languageDetectOptimizePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.languageDetectLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.languageDetectLabel);
@@ -372,7 +365,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.languageDetectOptimizePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.fixedWindowPositionLabel);
@@ -382,7 +374,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.fixedWindowPositionPopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.autoPlayAudioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.playAudioLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.playAudioLabel);
@@ -392,7 +383,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.snipTranslateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.snipTranslateLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.snipTranslateLabel);
@@ -402,12 +392,10 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.autoCopySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoCopyTextLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.autoCopyTextLabel);
     }];
-    
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoCopySelectedTextButton);
         make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
@@ -417,17 +405,14 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showQuickLinkLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.showQuickLinkLabel);
     }];
-    
     [self.showEudicQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showGoogleQuickLinkButton);
         make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
@@ -439,7 +424,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.separatorView2.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
-    
     [self.hideMainWindowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.hideMainWindowLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.hideMainWindowLabel);
@@ -449,7 +433,6 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.hideMainWindowButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.launchAtStartupButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.launchLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.launchLabel);
@@ -459,12 +442,13 @@
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.launchAtStartupButton.mas_bottom).offset(self.verticalPadding);
     }];
-    
     [self.hideMenuBarIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
     
+    self.topmostView = self.selectLabel;
+    self.bottommostView = self.hideMenuBarIconButton;
     
     if ([EZLanguageManager isChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
@@ -475,8 +459,6 @@
         self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.languageDetectOptimizePopUpButton;
     }
-    
-    self.bottommostView = self.hideMenuBarIconButton;
     
     [super updateViewConstraints];
 }
