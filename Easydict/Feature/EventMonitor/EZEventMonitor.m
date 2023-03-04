@@ -23,6 +23,8 @@ static CGFloat kDoublCommandInterval = 0.5;
 
 static CGFloat kExpandedFrameValue = 50;
 
+static NSString *kHasUsedAutoSelectTextKey = @"kHasUsedAutoSelectTextKey";
+
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     EZEventMonitorTypeLocal,
     EZEventMonitorTypeGlobal,
@@ -101,6 +103,26 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 }
 
+// Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
+- (void)startMonitor {
+    //    [self checkAppIsTrusted];
+    
+    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
+        if (event.keyCode == kVK_Escape) { // escape
+            NSLog(@"escape");
+        }
+        return event;
+    }];
+    
+    mm_weakify(self);
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
+    [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
+        mm_strongify(self);
+        
+        [self handleMonitorEvent:event];
+    }];
+}
+
 - (void)stop {
     if (self.localMonitor) {
         [NSEvent removeMonitor:self.localMonitor];
@@ -109,6 +131,65 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.globalMonitor) {
         [NSEvent removeMonitor:self.globalMonitor];
         self.globalMonitor = nil;
+    }
+}
+
+#pragma mark - Get selected text.
+
+- (void)getSelectedText:(void (^)(NSString *_Nullable, BOOL accessibilityFlag))completion {
+    [self getSelectedText:NO completion:completion];
+}
+
+/// Use auxiliary to get selected text first, if failed, use shortcut.
+- (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable, BOOL))completion {
+    [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+        if (checkTextFrame && ![self isValidSelectedFrame]) {
+            completion(nil, YES);
+            return;
+        }
+        
+        if (error == kAXErrorSuccess) {
+            completion(text, YES);
+            return;
+        }
+        
+        // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
+        if (error == kAXErrorNoValue) {
+            [self getSelectedTextByKey:^(NSString *_Nullable text) {
+                completion(text, NO);
+            }];
+        } else {
+            NSUserDefaults *userDefaults =[NSUserDefaults standardUserDefaults];
+            BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
+            if (!hasUsedAutoSelectText && error == kAXErrorAPIDisabled) {
+                [self isAccessibilityTrusted];
+                [userDefaults setBool:YES forKey:kHasUsedAutoSelectTextKey];
+            }
+            completion(nil, NO);
+        }
+    }];
+}
+
+- (void)autoGetSelectedText:(BOOL)checkTextFrame {
+    BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
+    if (!enableAutoSelectText) {
+        NSLog(@"user did not enableAutoSelectText");
+        return;
+    }
+    
+    [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text, BOOL accessibilityFlag) {
+        [self handleSelectedText:text];
+        [self logSelectedText:text accessibility:accessibilityFlag];
+    }];
+}
+
+- (void)handleSelectedText:(NSString *)text {
+    [self cancelDismissPop];
+    
+    NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    if (trimText.length > 0 && self.selectedTextBlock) {
+        self.selectedTextBlock(trimText);
+        [self cancelDismissPop];
     }
 }
 
@@ -151,72 +232,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     // !!!: Do not use [pasteboard stringForType:NSPasteboardTypeString], it will get the last text even current copy value is nil.
     NSString *text = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
     return text;
-}
-
-/// Use NSEvent keyEventWithType to post keyboard event Cmd + C. Why doesn't it work?
-- (void)postKeyboardEventCmdC {
-    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
-    [NSApp postEvent:event atStart:YES];
-    
-    NSEvent *eventUp = [NSEvent keyEventWithType:NSEventTypeKeyUp location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
-    [NSApp postEvent:eventUp atStart:YES];
-}
-
-
-- (void)postKeyboardEvent:(NSEventModifierFlags)modifierFlags keyCode:(CGKeyCode)keyCode keyDown:(BOOL)keyDown {
-    NSString *key = [self stringFromKeyCode:keyCode];
-    
-    [self getFrontmostWindowInfo:^(NSDictionary *dict) {
-        NSNumber *windowID = dict[@"kCGWindowNumber"];
-        NSEvent *event = [NSEvent keyEventWithType:keyDown ? NSEventTypeKeyDown : NSEventTypeKeyUp location:self.endPoint modifierFlags:modifierFlags timestamp:0 windowNumber:windowID.integerValue context:nil characters:key charactersIgnoringModifiers:key isARepeat:NO keyCode:keyCode];
-        [NSApp postEvent:event atStart:YES];
-    }];
-}
-
-/// return nsstring from keycode
-- (NSString *)stringFromKeyCode:(CGKeyCode)keyCode {
-    TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardInputSource();
-    CFDataRef uchr = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
-    const UCKeyboardLayout *keyboardLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(uchr);
-    UInt32 keysDown = 0;
-    UniCharCount maxStringLength = 255;
-    UniCharCount actualStringLength = 0;
-    UniChar unicodeString[maxStringLength];
-    UCKeyTranslate(keyboardLayout, keyCode, kUCKeyActionDown, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &keysDown, maxStringLength, &actualStringLength, unicodeString);
-    CFRelease(currentKeyboard);
-    return [NSString stringWithCharacters:unicodeString length:actualStringLength];
-}
-
-
-/// Simulate key event.
-void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
-    // Ref: http://www.enkichen.com/2018/09/12/osx-mouse-keyboard-event/
-    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
-    CGEventRef push = CGEventCreateKeyboardEvent(source, virtualKey, keyDown);
-    CGEventSetFlags(push, flags);
-    CGEventPost(kCGHIDEventTap, push);
-    CFRelease(push);
-    CFRelease(source);
-}
-
-/// Simulate mouse click.  PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
-void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount) {
-    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
-    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
-    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
-    CGEventSetType(theEvent, type);
-    CGEventPost(kCGHIDEventTap, theEvent);
-    CFRelease(theEvent);
-    CFRelease(source);
-}
-
-
-/// Check App is trusted, if no, it will prompt user to add it to trusted list.
-- (BOOL)checkAppIsTrusted {
-    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
-    NSLog(@"isTrusted: %d", isTrusted);
-    
-    return isTrusted == YES;
 }
 
 /**
@@ -313,25 +328,12 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return selectionFrame;
 }
 
-
-// Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
-- (void)startMonitor {
-    //    [self checkAppIsTrusted];
+/// Check App is trusted, if no, it will prompt user to add it to trusted list.
+- (BOOL)isAccessibilityTrusted {
+    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
+    NSLog(@"isTrusted: %d", isTrusted);
     
-    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
-        if (event.keyCode == kVK_Escape) { // escape
-            NSLog(@"escape");
-        }
-        return event;
-    }];
-    
-    mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
-    [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
-        mm_strongify(self);
-        
-        [self handleMonitorEvent:event];
-    }];
+    return isTrusted == YES;
 }
 
 #pragma mark - Handle Event
@@ -341,11 +343,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
-            //                            NSLog(@"mouse up");
+            //  NSLog(@"mouse up");
             if ([self checkIfLeftMouseDragged]) {
-                //                    NSLog(@"Dragged selected");
-                [self getSelectedText:YES];
-//                [self delayGetSelectedText:0.5];
+                //   NSLog(@"Dragged selected");
+                [self autoGetSelectedText:YES];
             }
             break;
         }
@@ -520,61 +521,77 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }
 }
 
-/// Use auxiliary to get selected text first, if failed, use cmd key to get.
-- (void)getSelectedText:(BOOL)checkTextFrame {
-    BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
-    if (!enableAutoSelectText) {
-        NSLog(@"user did not enableAutoSelectText");
-        return;
-    }
-    
-    [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
-        if (![self isValidSelectedFrame]) {
-            if (checkTextFrame) {
-                return;
-            }
-        }
-        
-        if (text.length > 0) {
-            [self handleSelectedText:text];
-            [self logSelectedText:text type:@"auxiliary"];
-            return;
-        }
-        
-        // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
-        if (error == kAXErrorNoValue) {
-            [self getSelectedTextByKey:^(NSString *_Nullable text) {
-                [self handleSelectedText:text];
-                [self logSelectedText:text type:@"shortcut"];
-            }];
-        }
-    }];
-}
-
-- (void)handleSelectedText:(NSString *)text {
-    [self cancelDismissPop];
-    
-    NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-    if (trimText.length > 0 && self.selectedTextBlock) {
-        self.selectedTextBlock(trimText);
-        [self cancelDismissPop];
-    }
-}
-
 #pragma mark -
 
 /// Delay get selected text.
 - (void)delayGetSelectedText {
-    [self performSelector:@selector(getSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
+    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
 }
 
 - (void)delayGetSelectedText:(NSTimeInterval)delayTime {
-    [self performSelector:@selector(getSelectedText:) withObject:@(NO) afterDelay:delayTime];
+    [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:delayTime];
 }
 
 /// Cancel delay get selected text.
 - (void)cancelDelayGetSelectedText {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSelectedText:) object:@(NO)];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoGetSelectedText:) object:@(NO)];
+}
+
+#pragma mark - Simulate keyboard event
+
+/// Simulate key event.
+void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
+    // Ref: http://www.enkichen.com/2018/09/12/osx-mouse-keyboard-event/
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef push = CGEventCreateKeyboardEvent(source, virtualKey, keyDown);
+    CGEventSetFlags(push, flags);
+    CGEventPost(kCGHIDEventTap, push);
+    CFRelease(push);
+    CFRelease(source);
+}
+
+/// Simulate mouse click.  PostMouseEvent(kCGMouseButtonLeft, kCGEventLeftMouseDown, focusPoint, 1);
+void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point, int64_t clickCount) {
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
+    CGEventRef theEvent = CGEventCreateMouseEvent(source, type, point, button);
+    CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickCount);
+    CGEventSetType(theEvent, type);
+    CGEventPost(kCGHIDEventTap, theEvent);
+    CFRelease(theEvent);
+    CFRelease(source);
+}
+
+/// Use NSEvent keyEventWithType to post keyboard event Cmd + C. Why doesn't it work?
+- (void)postKeyboardEventCmdC {
+    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
+    [NSApp postEvent:event atStart:YES];
+    
+    NSEvent *eventUp = [NSEvent keyEventWithType:NSEventTypeKeyUp location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
+    [NSApp postEvent:eventUp atStart:YES];
+}
+
+- (void)postKeyboardEvent:(NSEventModifierFlags)modifierFlags keyCode:(CGKeyCode)keyCode keyDown:(BOOL)keyDown {
+    NSString *key = [self stringFromKeyCode:keyCode];
+    
+    [self getFrontmostWindowInfo:^(NSDictionary *dict) {
+        NSNumber *windowID = dict[@"kCGWindowNumber"];
+        NSEvent *event = [NSEvent keyEventWithType:keyDown ? NSEventTypeKeyDown : NSEventTypeKeyUp location:self.endPoint modifierFlags:modifierFlags timestamp:0 windowNumber:windowID.integerValue context:nil characters:key charactersIgnoringModifiers:key isARepeat:NO keyCode:keyCode];
+        [NSApp postEvent:event atStart:YES];
+    }];
+}
+
+/// Get nsstring from keycode
+- (NSString *)stringFromKeyCode:(CGKeyCode)keyCode {
+    TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardInputSource();
+    CFDataRef uchr = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
+    const UCKeyboardLayout *keyboardLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(uchr);
+    UInt32 keysDown = 0;
+    UniCharCount maxStringLength = 255;
+    UniCharCount actualStringLength = 0;
+    UniChar unicodeString[maxStringLength];
+    UCKeyTranslate(keyboardLayout, keyCode, kUCKeyActionDown, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &keysDown, maxStringLength, &actualStringLength, unicodeString);
+    CFRelease(currentKeyboard);
+    return [NSString stringWithCharacters:unicodeString length:actualStringLength];
 }
 
 #pragma mark -
@@ -661,7 +678,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return NO;
 }
 
-- (void)logSelectedText:(nullable NSString *)text type:(NSString *)type {
+- (void)logSelectedText:(nullable NSString *)text accessibility:(BOOL)accessibilityFlag {
     if (!text.length) {
         return;
     }
@@ -670,6 +687,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSString *appName = application.localizedName;
     NSString *bundleID = application.bundleIdentifier;
     NSString *textLength = [EZLog textLengthRange:text];
+    NSString *type = accessibilityFlag ? @"auxiliary" : @"shortcut";
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
         @"text" : text,
