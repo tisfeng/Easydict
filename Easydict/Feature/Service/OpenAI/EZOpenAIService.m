@@ -94,7 +94,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
     
     // This prompt is genarated by ChatGPT, but it's not working well.
     //    NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
-    NSString *prompt = [NSString stringWithFormat:@"translate text from %@ to %@:\"%@\" =>", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@: \"%@\" =>", sourceLanguage, targetLanguage, text];
     //   prompt = [NSString stringWithFormat:@"Translate the following %@ text to %@: '{%@}'", sourceLanguage, targetLanguage, text];
     NSDictionary *dict = @{
         @"role" : @"user",
@@ -195,7 +195,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
             /**
              may be return error json
              {
-             "åerror" : {
+             "error" : {
              "code" : "invalid_api_key",
              "message" : "Incorrect API key provided: sk-5DJ2bQxdT. You can find your API key at https:\/\/platform.openai.com\/account\/api-keys.",
              "param" : null,
@@ -212,6 +212,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
         }
         
         NSString *result = choices[0][@"message"][@"content"];
+        [self tryToRemoveQuotes:&result];
         completion(result, nil);
     }];
     [task resume];
@@ -347,6 +348,45 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
     NSString *pattern = @"^[a-zA-Z]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
+}
+
+/// Remove quotes. "\""
+- (void)tryToRemoveQuotes:(NSString **)text {
+    NSDictionary *quoteDict = @{
+        @"\"" : @"\"",
+        @"“" : @"”",
+        @"‘" : @"’",
+    };
+    
+    BOOL needToRemove = YES;
+    // iterate all quotes.
+    NSArray *quotes = [quoteDict allKeys];
+    for (NSString *quote in quotes) {
+        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:quoteDict[quote]]) {
+            needToRemove = NO;
+            break;
+        }
+    }
+    
+    if (needToRemove) {
+        for (NSString *quote in quotes) {
+            *text = [self removeStartAndEnd:*text with:quote end:quoteDict[quote]];
+        }
+    }
+}
+
+/// Check if text is start and end with the designated string.
+- (BOOL)isStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
+    return [text hasPrefix:start] && [text hasSuffix:end];
+}
+
+/// Remove start and end string.
+- (NSString *)removeStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
+    if ([self isStartAndEnd:text with:start end:end]) {
+        return [text substringWithRange:NSMakeRange(start.length, text.length - start.length - end.length)];
+    }
+    
+    return text;
 }
 
 @end
