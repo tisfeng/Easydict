@@ -25,9 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
-- (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion;
-- (void)getSelectedTextByKey:(void (^)(NSString *_Nullable text))completion;
-
+/// Use auxiliary to get selected text first, if failed, use shortcut.
+- (void)getSelectedText:(void (^)(NSString *_Nullable text, BOOL accessibilityFlag))completion;
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
@@ -39,8 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startMonitor;
 
-- (BOOL)checkAppIsTrusted;
-
+- (BOOL)isAccessibilityTrusted;
 
 @end
 

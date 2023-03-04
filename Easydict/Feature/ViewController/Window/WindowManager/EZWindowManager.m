@@ -359,10 +359,10 @@ static EZWindowManager *_instance;
         y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
     }
     
-//    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
-//    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
-//    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
-//    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
+    //    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
+    //    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
+    //    NSLog(@"start point: %@", NSStringFromPoint(startLocation));
+    //    NSLog(@"end   point: %@", NSStringFromPoint(endLocation));
     
     if (EZConfiguration.shared.adjustPopButtomOrigin) {
         // Since the pop button may cover selected text, we need to move it to the left.
@@ -379,7 +379,7 @@ static EZWindowManager *_instance;
     }
     
     NSPoint popLocation = CGPointMake(x, y);
-//    NSLog(@"popLocation: %@", NSStringFromPoint(popLocation));
+    //    NSLog(@"popLocation: %@", NSStringFromPoint(popLocation));
     
     return popLocation;
 }
@@ -467,7 +467,7 @@ static EZWindowManager *_instance;
 #pragma mark - Menu Actions
 
 - (void)selectTextTranslate {
-    if (![self.eventMonitor checkAppIsTrusted]) {
+    if (![self.eventMonitor isAccessibilityTrusted]) {
         NSLog(@"App is not trusted");
         return;
     }
@@ -477,9 +477,9 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [self.eventMonitor getSelectedTextByKey:^(NSString *_Nullable text) {
+    [self.eventMonitor getSelectedText:^(NSString * _Nullable text, BOOL accessibilityFlag) {
         self.selectedText = text;
-        self.queryType = EZQueryTypeShortcut;
+        self.queryType = accessibilityFlag ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
     }];
 }
