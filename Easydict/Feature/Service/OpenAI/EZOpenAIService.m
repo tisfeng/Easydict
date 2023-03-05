@@ -211,7 +211,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}:";
             return;
         }
         
-        NSString *result = choices[0][@"message"][@"content"];
+        NSString *result = [choices[0][@"message"][@"content"] trim];
         [self tryToRemoveQuotes:&result];
         completion(result, nil);
     }];
@@ -280,7 +280,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}:";
             return;
         }
         
-        NSString *result = choices[0][@"text"];
+        NSString *result = [choices[0][@"text"] trim];
         completion(result, nil);
     }];
     [task resume];
