@@ -10,8 +10,8 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
-static NSString *kDefinitionDelimiter = @"{------Definition------}";
-static NSString *kEtymologyDelimiter = @"{------Etymology------}";
+static NSString *kDefinitionDelimiter = @"{------Definition------}:";
+static NSString *kEtymologyDelimiter = @"{------Etymology------}:";
 
 @interface EZOpenAIService ()
 
@@ -115,9 +115,9 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
     /**
      Look up word definition and etymology.
      
-     Look up a brief definition and detailed etymology of the English word 'view' and output it strictly in the following format.'------Definition: xxx ------Etymology: xxx', answer in simplified Chinese language, with a word count between 100 and 300.
+     Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymology------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
      */
-    NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ word '%@' and output it strictly in the following format.'%@xxx %@xxx', answer in %@ language, with a word count between 100 and 300.", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
+    NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300.", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
     
     NSDictionary *dict = @{
         @"role" : @"user",
@@ -302,7 +302,7 @@ static NSString *kEtymologyDelimiter = @"{------Etymology------}";
 /// Parse Definition and Etymology from text.
 - (void)parseDefinitionAndEtymologyFromText:(NSString *)text definition:(NSString **)definition etymology:(NSString **)etymology {
     /**
-     "------Definition: 电池；炮兵连 ------Etymology: “battery”源于法语“batterie”，意为“一组物品或器具”。在14世纪，该词用于描述军队的火炮阵地。18世纪初，“battery”开始指代装有多个电池单元的设备。这些单元被称为“电池”，因其类似于火炮弹药箱而得名。至今，“battery”仍然是指能够提供持续电力的设备，如手提电话、笔记本电脑等。同时，“battery”的另一个含义是指由数门大炮组成的军事单位——即“炮兵连”。"
+     {------Definition------}: 电池，是一种能够将化学能转化为电能的装置，通常由正极、负极和电解质组成。 {------Etymology------}: "battery"一词最初是指一组大炮，源自法语"batterie"，意为"一组武器"。后来，这个词被用来指代一组电池，因为它们的排列方式类似于一组大炮。这个词在18世纪被引入英语，并在19世纪开始用于描述电池。
      */
     
     if ([text containsString:kDefinitionDelimiter] && [text containsString:kEtymologyDelimiter]) {
