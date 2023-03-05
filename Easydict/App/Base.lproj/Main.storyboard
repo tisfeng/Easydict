@@ -689,10 +689,10 @@
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="jsC-rB-zr4"/>
-                        <menuItem title="划词翻译" id="lUI-Zn-Bwr">
+                        <menuItem title="输入翻译" id="AWf-Ci-7QE">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="translateAction:" target="qM9-fT-Fym" id="d5U-cW-GgJ"/>
+                                <action selector="inputTranslate:" target="qM9-fT-Fym" id="o4F-Fg-ALf"/>
                             </connections>
                         </menuItem>
                         <menuItem title="截图翻译" id="2TG-8C-8RM">
@@ -701,10 +701,10 @@
                                 <action selector="snipAction:" target="qM9-fT-Fym" id="Vkh-bk-b8F"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="输入翻译" id="AWf-Ci-7QE">
+                        <menuItem title="划词翻译" id="lUI-Zn-Bwr">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="inputTranslate:" target="qM9-fT-Fym" id="o4F-Fg-ALf"/>
+                                <action selector="translateAction:" target="qM9-fT-Fym" id="d5U-cW-GgJ"/>
                             </connections>
                         </menuItem>
                         <menuItem title="显示迷你窗口" id="PmP-cO-1HF">
