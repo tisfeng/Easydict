@@ -57,9 +57,9 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     __block CGFloat height = 0;
     __block NSView *lastView = nil;
-    NSFont *textFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
-    NSFont *typeTextFont = textFont;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#7A7A7A"];
+    NSFont *typeTextFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
+    NSFont *textFont = typeTextFont;
     
     NSString *errorMsg = result.error.localizedDescription;
     
@@ -501,11 +501,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = [NSString stringWithFormat:@"%@:", obj.name];
-            [textField excuteLight:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextLightColor];
-            } drak:^(id _Nonnull x) {
-                [x setTextColor:NSColor.resultTextDarkColor];
-            }];
+            textField.textColor = typeTextColor;
             textField.font = textFont;
             textField.selectable = YES;
             textField.editable = NO;
@@ -610,7 +606,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             buttonSize.width = maxButtonWidth;
         }
         CGFloat buttonHeight = [wordButton.title mm_heightWithFont:[NSFont systemFontOfSize:14] constrainedToWidth:maxButtonWidth];
-        
         
         buttonSize.height = buttonHeight + wordButton.expandValue;
         
