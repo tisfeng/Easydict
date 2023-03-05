@@ -34,7 +34,7 @@ static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
 static NSTimeInterval const EZNetWorkTimeoutInterval = 30.0;
 
-static NSTimeInterval const EZFloatingWindowLevel = kCGUtilityWindowLevel;
+static NSTimeInterval const EZFloatingWindowLevel = kCGFloatingWindowLevel;
 
 static NSInteger const EZEnglishWordMaxLength = 15;
 
