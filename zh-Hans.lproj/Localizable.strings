@@ -71,7 +71,7 @@
 "hide_menu_bar_icon" = "隐藏菜单栏图标";
 "fixed_window_position" = "侧悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
-"fixed_window_position_word" = "划词位置";
+"fixed_window_position_mouse" = "鼠标位置";
 "fixed_window_position_former" = "上次位置";
 "adjust_pop_button_origin" = "调整查询图标位置:";
 "avoid_conflict_with_PopClip_display" = "避免和 PopClip 显示冲突";

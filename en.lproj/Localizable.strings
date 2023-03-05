@@ -66,7 +66,7 @@
 "hide_menu_bar_icon" = "Hide Menu Bar Icon";
 "fixed_window_position" = "Floating Window Position:";
 "fixed_window_position_right" = "Screen Right";
-"fixed_window_position_word" = "Word Position";
+"fixed_window_position_mouse" = "Mouse Position";
 "fixed_window_position_former" = "Former Position";
 "adjust_pop_button_origin" = "Adjust Query Icon Position";
 "avoid_conflict_with_PopClip_display" = "Avoid Conflict With PopClip";
