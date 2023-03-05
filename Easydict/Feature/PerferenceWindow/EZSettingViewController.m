@@ -516,6 +516,14 @@
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
+    
+    if (sender.mm_isOn) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:@"确定"];
+        [alert setMessageText:@"如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项即可。"];
+        [alert setAlertStyle:NSAlertStyleWarning];
+        [alert runModal];
+    }
 }
 
 - (void)fixedWindowPositionPopUpButtonClicked:(NSPopUpButton *)button {
