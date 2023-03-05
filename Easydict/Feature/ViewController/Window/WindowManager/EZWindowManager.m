@@ -205,6 +205,7 @@ static EZWindowManager *_instance;
     return window;
 }
 
+/// Return top-left point.
 - (CGPoint)floatingWindowLocationWithType:(EZWindowType)type {
     CGPoint location;
     switch (type) {
@@ -225,38 +226,43 @@ static EZWindowManager *_instance;
 }
 
 /// Show floating window in fixed(new) position.
-- (void)showFloatingWindowType:(EZWindowType)type queryText:(NSString *)text {
+- (void)showFloatingWindowType:(EZWindowType)type queryText:(nullable NSString *)text {
     CGPoint location = [self floatingWindowLocationWithType:type];
     EZBaseQueryWindow *window = [self windowWithType:type];
     [self showFloatingWindow:window atPoint:location];
     [window.queryViewController startQueryText:text queyType:self.queryType];
 }
 
-- (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(NSString *)text {
+- (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(nullable NSString *)text {
     //    if ([self hasEasydictRunningInDebugMode]) {
     //        return;
     //    }
     
-    CGPoint location = CGPointZero;
+    EZBaseQueryWindow *window = [self windowWithType:type];
+    
+    __block CGPoint location = CGPointZero;
     if (atLastPoint) {
+        // TODO: change this potion to top-left ?
         location = [[EZLayoutManager shared] windowFrameWithType:type].origin;
     } else {
         location = [self floatingWindowLocationWithType:type];
     }
     
-    EZBaseQueryWindow *window = [self windowWithType:type];
-    
-    // Reset window height first, avoid being affected by previous window height.
-    [window.queryViewController resetTableView:^{
-        // !!!: location is bottom-left point, we need to convert it to top-left point,
-        CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
-        
-        // If at last point, we don't need to convert it.
-        if (atLastPoint) {
-            correctedPosition = location;
+    // If text is nil, means we don't need to query anything, just show the window.
+    if (!text) {
+        if (!atLastPoint) {
+            // !!!: location is top-left point, so we need to change it to bottom-left point.
+            location = CGPointMake(location.x, location.y - window.height);
         }
-        
-        [self showFloatingWindow:window atPoint:correctedPosition];
+        [self showFloatingWindow:window atPoint:location];
+        return;
+    }
+    
+    // Reset tableView and window height first, avoid being affected by previous window height.
+    [window.queryViewController resetTableView:^{
+        // !!!: window height has changed, so we need to update location again.
+        location = CGPointMake(location.x, location.y - window.height);
+        [self showFloatingWindow:window atPoint:location];
         [window.queryViewController startQueryText:text queyType:self.queryType];
         
         if (EZConfiguration.shared.autoCopySelectedText) {
@@ -409,7 +415,8 @@ static EZWindowManager *_instance;
     return showingPosition;
 }
 
-// Get fixed window location.
+/// Get fixed window location.
+/// !!!: This return value is top-left point.
 - (CGPoint)getFixedWindowLocation {
     CGPoint position = CGPointZero;
     EZShowWindowPosition windowPosition = EZConfiguration.shared.fixedWindowPosition;
