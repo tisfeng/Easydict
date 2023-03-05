@@ -83,12 +83,12 @@
 - (void)setupUI {
     NSFont *font = [NSFont systemFontOfSize:13];
     
-    NSTextField *selectLabel = [NSTextField labelWithString:NSLocalizedString(@"select_translate", nil)];
-    selectLabel.font = font;
-    [self.contentView addSubview:selectLabel];
-    self.selectLabel = selectLabel;
-    self.selectionShortcutView = [[MASShortcutView alloc] init];
-    [self.contentView addSubview:self.selectionShortcutView];
+    NSTextField *inputLabel = [NSTextField labelWithString:NSLocalizedString(@"input_translate", nil)];
+    inputLabel.font = font;
+    [self.contentView addSubview:inputLabel];
+    self.inputLabel = inputLabel;
+    self.inputShortcutView = [[MASShortcutView alloc] init];
+    [self.contentView addSubview:self.inputShortcutView];
     
     NSTextField *snipLabel = [NSTextField labelWithString:NSLocalizedString(@"snip_translate", nil)];
     snipLabel.font = font;
@@ -97,12 +97,12 @@
     self.snipShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.snipShortcutView];
     
-    NSTextField *inputLabel = [NSTextField labelWithString:NSLocalizedString(@"input_translate", nil)];
-    inputLabel.font = font;
-    [self.contentView addSubview:inputLabel];
-    self.inputLabel = inputLabel;
-    self.inputShortcutView = [[MASShortcutView alloc] init];
-    [self.contentView addSubview:self.inputShortcutView];
+    NSTextField *selectLabel = [NSTextField labelWithString:NSLocalizedString(@"select_translate", nil)];
+    selectLabel.font = font;
+    [self.contentView addSubview:selectLabel];
+    self.selectLabel = selectLabel;
+    self.selectionShortcutView = [[MASShortcutView alloc] init];
+    [self.contentView addSubview:self.selectionShortcutView];
     
     NSTextField *showMiniLabel = [NSTextField labelWithString:NSLocalizedString(@"show_mini_window", nil)];
     showMiniLabel.font = font;
@@ -115,9 +115,9 @@
         self.leftmostView = self.showMiniLabel;
     }
     
-    [self.selectionShortcutView setAssociatedUserDefaultsKey:EZSelectionShortcutKey];
-    [self.snipShortcutView setAssociatedUserDefaultsKey:EZSnipShortcutKey];
     [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
+    [self.snipShortcutView setAssociatedUserDefaultsKey:EZSnipShortcutKey];
+    [self.selectionShortcutView setAssociatedUserDefaultsKey:EZSelectionShortcutKey];
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
     
     NSColor *separatorLightColor = [NSColor mm_colorWithHexString:@"#D9DADA"];
@@ -288,29 +288,9 @@
 - (void)updateViewConstraints {
     CGFloat separatorMargin = 40;
     
-    [self.selectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(self.leftMargin).priorityLow();
-        make.top.equalTo(self.contentView).offset(self.topMargin).priorityLow();
-    }];
-    [self.selectionShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.selectLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.selectLabel);
-        make.height.mas_equalTo(25);
-    }];
-    
-    [self.snipLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.selectionShortcutView.mas_bottom).offset(self.verticalPadding);
-    }];
-    [self.snipShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.snipLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.snipLabel);
-        make.height.equalTo(self.selectionShortcutView);
-    }];
-    
     [self.inputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.snipShortcutView.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.contentView).offset(self.topMargin).priorityLow();
     }];
     [self.inputShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.inputLabel.mas_right).offset(self.horizontalPadding);
@@ -318,9 +298,29 @@
         make.height.equalTo(self.selectionShortcutView);
     }];
     
-    [self.showMiniLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.snipLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.inputShortcutView.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.snipShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.snipLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.snipLabel);
+        make.height.equalTo(self.selectionShortcutView);
+    }];
+    
+    [self.selectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.contentView).offset(self.leftMargin).priorityLow();
+        make.top.equalTo(self.snipShortcutView.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.selectionShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.selectLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.selectLabel);
+        make.height.mas_equalTo(25);
+    }];
+    
+    [self.showMiniLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectLabel);
+        make.top.equalTo(self.selectionShortcutView.mas_bottom).offset(self.verticalPadding);
     }];
     [self.showMiniShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showMiniLabel.mas_right).offset(self.horizontalPadding);
@@ -447,7 +447,7 @@
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
     
-    self.topmostView = self.selectLabel;
+    self.topmostView = self.inputLabel;
     self.bottommostView = self.hideMenuBarIconButton;
     
     if ([EZLanguageManager isChineseFirstLanguage]) {
