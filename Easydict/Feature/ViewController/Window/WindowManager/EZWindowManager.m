@@ -183,7 +183,7 @@ static EZWindowManager *_instance;
 - (void)popButtonWindowClicked {
     [self->_popButtonWindow close];
     self.queryType = EZQueryTypeAutoSelect;
-    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:self.selectedText];
+    [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
 }
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
@@ -225,35 +225,19 @@ static EZWindowManager *_instance;
     return location;
 }
 
-/// Show floating window in fixed(new) position.
+/// Show floating window.
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(nullable NSString *)text {
-    CGPoint location = [self floatingWindowLocationWithType:type];
-    EZBaseQueryWindow *window = [self windowWithType:type];
-    [self showFloatingWindow:window atPoint:location];
-    [window.queryViewController startQueryText:text queyType:self.queryType];
-}
-
-- (void)showFloatingWindowType:(EZWindowType)type atLastPoint:(BOOL)atLastPoint queryText:(nullable NSString *)text {
     //    if ([self hasEasydictRunningInDebugMode]) {
     //        return;
     //    }
     
     EZBaseQueryWindow *window = [self windowWithType:type];
-    
-    __block CGPoint location = CGPointZero;
-    if (atLastPoint) {
-        // TODO: change this potion to top-left ?
-        location = [[EZLayoutManager shared] windowFrameWithType:type].origin;
-    } else {
-        location = [self floatingWindowLocationWithType:type];
-    }
+    __block CGPoint location = location = [self floatingWindowLocationWithType:type];
     
     // If text is nil, means we don't need to query anything, just show the window.
     if (!text) {
-        if (!atLastPoint) {
-            // !!!: location is top-left point, so we need to change it to bottom-left point.
-            location = CGPointMake(location.x, location.y - window.height);
-        }
+        // !!!: location is top-left point, so we need to change it to bottom-left point.
+        location = CGPointMake(location.x, location.y - window.height);
         [self showFloatingWindow:window atPoint:location];
         return;
     }
@@ -489,7 +473,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text, BOOL accessibilityFlag) {
         self.selectedText = text ?: @"";
         self.queryType = accessibilityFlag ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
-        [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
+        [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];
 }
 
@@ -541,13 +525,13 @@ static EZWindowManager *_instance;
     }
     
     self.queryType = EZQueryTypeInput;
-    [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:nil];
+    [self showFloatingWindowType:EZWindowTypeFixed queryText:nil];
 }
 
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
     self.queryType = EZQueryTypeInput;
-    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:nil];
+    [self showFloatingWindowType:EZWindowTypeMini queryText:nil];
 }
 
 
@@ -572,6 +556,7 @@ static EZWindowManager *_instance;
     if (Snip.shared.isSnapshotting) {
         return;
     }
+    
     if ([[NSApplication sharedApplication] keyWindow] == self.floatingWindow) {
         // 执行重试
         [self.floatingWindow.queryViewController retryQuery];
