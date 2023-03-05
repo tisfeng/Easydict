@@ -79,7 +79,7 @@ static EZWindowManager *_instance;
         //            return;
         //        }
         
-        self.selectedText = selectedText;
+        self.selectedText = selectedText ?: @"";
         
         // !!!: Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
@@ -246,21 +246,17 @@ static EZWindowManager *_instance;
     
     EZBaseQueryWindow *window = [self windowWithType:type];
     
-    if (text.length == 0) {
-        [self showFloatingWindow:window atPoint:location];
-    } else {
-        // Reset window height first, avoid being affected by previous window height.
-        [window.queryViewController resetTableView:^{
-            // !!!: location is bottom-left point, we need to convert it to top-left point,
-            CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
-            [self showFloatingWindow:window atPoint:correctedPosition];
-            [window.queryViewController startQueryText:text queyType:self.queryType];
-            
-            if (EZConfiguration.shared.autoCopySelectedText) {
-                [text copyToPasteboard];
-            }
-        }];
-    }
+    // Reset window height first, avoid being affected by previous window height.
+    [window.queryViewController resetTableView:^{
+        // !!!: location is bottom-left point, we need to convert it to top-left point,
+        CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
+        [self showFloatingWindow:window atPoint:correctedPosition];
+        [window.queryViewController startQueryText:text queyType:self.queryType];
+        
+        if (EZConfiguration.shared.autoCopySelectedText) {
+            [text copyToPasteboard];
+        }
+    }];
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
@@ -478,7 +474,7 @@ static EZWindowManager *_instance;
     }
     
     [self.eventMonitor getSelectedText:^(NSString * _Nullable text, BOOL accessibilityFlag) {
-        self.selectedText = text;
+        self.selectedText = text ?: @"";
         self.queryType = accessibilityFlag ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
     }];
