@@ -250,6 +250,12 @@ static EZWindowManager *_instance;
     [window.queryViewController resetTableView:^{
         // !!!: location is bottom-left point, we need to convert it to top-left point,
         CGPoint correctedPosition = CGPointMake(location.x, location.y - window.height);
+        
+        // If at last point, we don't need to convert it.
+        if (atLastPoint) {
+            correctedPosition = location;
+        }
+        
         [self showFloatingWindow:window atPoint:correctedPosition];
         [window.queryViewController startQueryText:text queyType:self.queryType];
         
@@ -473,7 +479,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [self.eventMonitor getSelectedText:^(NSString * _Nullable text, BOOL accessibilityFlag) {
+    [self.eventMonitor getSelectedText:^(NSString *_Nullable text, BOOL accessibilityFlag) {
         self.selectedText = text ?: @"";
         self.queryType = accessibilityFlag ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed atLastPoint:NO queryText:text];
@@ -534,7 +540,7 @@ static EZWindowManager *_instance;
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
     self.queryType = EZQueryTypeInput;
-    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:YES queryText:nil];
+    [self showFloatingWindowType:EZWindowTypeMini atLastPoint:NO queryText:nil];
 }
 
 

@@ -46,21 +46,21 @@ static EZLayoutManager *_instance;
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
     self.maximumWindowSize = CGSizeMake(visibleFrameSize.width, visibleFrameSize.height);
     self.minimumWindowSize = CGSizeMake(300, 100);
-
+    
     EZConfiguration *configuration = [EZConfiguration shared];
-
+    
     self.miniWindowFrame = [configuration windowFrameWithType:EZWindowTypeMini];
     if (CGRectEqualToRect(self.miniWindowFrame, CGRectZero)) {
         self.miniWindowFrame = [self defaultWindowFrameWithType:EZWindowTypeMini];
         [configuration setWindowFrame:self.miniWindowFrame windowType:EZWindowTypeMini];
     }
-
+    
     self.fixedWindowFrame = [configuration windowFrameWithType:EZWindowTypeFixed];
     if (CGRectEqualToRect(self.fixedWindowFrame, CGRectZero)) {
         self.fixedWindowFrame = [self defaultWindowFrameWithType:EZWindowTypeFixed];
         [configuration setWindowFrame:self.fixedWindowFrame windowType:EZWindowTypeFixed];
     }
-
+    
     self.mainWindowFrame = [configuration windowFrameWithType:EZWindowTypeMain];
     if (CGRectEqualToRect(self.mainWindowFrame, CGRectZero)) {
         self.mainWindowFrame = [self defaultWindowFrameWithType:EZWindowTypeMain];
@@ -157,7 +157,7 @@ static EZLayoutManager *_instance;
     CGFloat miniWindowWidth = 400 * rateableWidth; // My MacBook screen ratio
     CGFloat fixedWindowWidth = 360 * rateableWidth;
     CGRect frame = CGRectZero;
-
+    
     switch (type) {
         case EZWindowTypeMain: {
             frame = CGRectMake(centerPoint.x,
@@ -203,7 +203,7 @@ static EZLayoutManager *_instance;
         default:
             break;
     }
-
+    
     [EZConfiguration.shared setWindowFrame:window.frame windowType:windowType];
 }
 
@@ -222,10 +222,10 @@ static EZLayoutManager *_instance;
 
 - (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                 @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
-                                                                 @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_word", nil),
-                                                                 @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil), nil];
-
+                                 @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
+                                 @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
+                                 @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil), nil];
+    
     return dict;
 }
 
