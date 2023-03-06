@@ -517,6 +517,7 @@
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
     
+    // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)
     if (sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:@"确定"];
