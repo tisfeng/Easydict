@@ -662,6 +662,55 @@
 
 #pragma mark - Detect Language Manually
 
+/// Get Chinese language type of text, traditional or simplified. If it is not Chinese, return EZLanguageAuto.
+/// If it is Chinese, try to remove all English characters, then check if it is traditional or simplified.
+/// - !!!: Make sure the count of Chinese characters is > 50% of the entire text.
+/// test: 開門 open, 使用 OCR 123$, 月によく似た風景, アイス・スノーセーリング世界選手権大会
+- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text fromLanguage:(EZLanguage)language {
+    text = [self removeAllSymbolAndWhitespaceCharacters:text];
+    
+    if (text.length == 0) {
+        return EZLanguageAuto;
+    }
+    
+    if ([language isEqualToString:EZLanguageEnglish]) {
+        NSString *noAlphabetText = [self removeAlphabet:text];
+        
+        BOOL isChinese = [self isChineseText:noAlphabetText];
+        if (isChinese) {
+            NSInteger chineseLength = [self chineseCharactersLength:noAlphabetText];
+            // Since 1 Chinese character is approximately 1 English word, approximately 4 English characters.
+            if (chineseLength * 4 > text.length * 0.5) {
+                EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:noAlphabetText];
+                return chineseLanguage;
+            }
+        }
+    }
+    
+    return EZLanguageAuto;
+}
+
+/// Check if text is Chinese.
+- (BOOL)isChineseText:(NSString *)text {
+    EZLanguage language = [self appleDetectTextLanguage:text];
+    if ([EZLanguageManager isChineseLanguage:language]) {
+        return YES;
+    }
+    return NO;
+}
+
+/// Count Chinese characters length in string.
+- (NSInteger)chineseCharactersLength:(NSString *)string {
+    string = [self removeAllSymbolAndWhitespaceCharacters:string];
+    __block NSInteger length = 0;
+    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
+        if ([self isChineseText:substring]) {
+            length++;
+        }
+    }];
+    return length;
+}
+
 /// Check if it is a single letter of the alphabet.
 - (BOOL)isAlphabet:(NSString *)string {
     if (string.length != 1) {
@@ -673,60 +722,27 @@
     return [predicate evaluateWithObject:string];
 }
 
-/// Count English characters length in string.
-- (NSInteger)englishCharactersLength:(NSString *)string {
-    string = [self removeAllSymbolAndWhitespaceCharacters:string];
-    __block NSInteger length = 0;
-    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
-        if ([self isAlphabet:substring]) {
-            length++;
-        }
-    }];
-    return length;
-}
-
 /// Check Chinese language type of text, traditional or simplified.
 /// - !!!: Make sure the text is Chinese.
-- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text {
+- (EZLanguage)chineseLanguageTypeOfText:(NSString *)chineseText {
     // test: 狗，勿 --> zh-Hant --> zh-Hans
     
     // Check if simplified Chinese.
-    NSString *simplifiedChinese = [text toSimplifiedChineseText];
-    if ([simplifiedChinese isEqualToString:text]) {
+    NSString *simplifiedChinese = [chineseText toSimplifiedChineseText];
+    if ([simplifiedChinese isEqualToString:chineseText]) {
         return EZLanguageSimplifiedChinese;
     }
     
     // Check if traditional Chinese. 開門
-    NSString *traditionalChinese = [text toTraditionalChineseText];
-    if ([traditionalChinese isEqualToString:text]) {
+    NSString *traditionalChinese = [chineseText toTraditionalChineseText];
+    if ([traditionalChinese isEqualToString:chineseText]) {
         return EZLanguageTraditionalChinese;
     }
     
     return EZLanguageSimplifiedChinese;
 }
 
-/// Get Chinese language type of text, traditional or simplified. If it is not Chinese, return EZLanguageAuto.
-/// If traditional Chinese characters length + simplified Chinese characters length + English characters length !== text length, return EZLanguageAuto.
-/// If traditional Chinese characters length >= 1/4 of Chinese characters length, then it is traditional Chinese. else it is simplified Chinese.
-/// test: 開門 open, 使用 OCR 123$, 月によく似た風景, アイス・スノーセーリング世界選手権大会
-- (EZLanguage)chineseLanguageTypeOfText:(NSString *)text fromLanguage:(EZLanguage)language {
-    text = [self removeAllSymbolAndWhitespaceCharacters:text];
-    
-    if (text.length == 0) {
-        return EZLanguageAuto;
-    }
-    
-    if ([language isEqualToString:EZLanguageEnglish]) {
-        NSString *newText = [self removeAlphabet:text];
-        EZLanguage detectedLanguage = [self appleDetectTextLanguage:newText];
-        if ([EZLanguageManager isChineseLanguage:detectedLanguage]) {
-            EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:newText];
-            return chineseLanguage;
-        }
-    }
-    
-    return EZLanguageAuto;
-}
+#pragma mark -
 
 /// ⚠️ This method is not accurate, it is only used to detect Chinese language type.
 - (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
@@ -747,6 +763,18 @@
     } else {
         return EZLanguageSimplifiedChinese;
     }
+}
+
+/// Count English characters length in string.
+- (NSInteger)englishCharactersLength:(NSString *)string {
+    string = [self removeAllSymbolAndWhitespaceCharacters:string];
+    __block NSInteger length = 0;
+    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
+        if ([self isAlphabet:substring]) {
+            length++;
+        }
+    }];
+    return length;
 }
 
 /// Count Chinese characters length in string with specific language.
@@ -799,7 +827,7 @@
 }
 
 /// !!!: This method is not accurate. 権 --> zh
-- (BOOL)isChineseCharacter2:(NSString *)string {
+- (BOOL)isChineseCharacter:(NSString *)string {
     if (string.length != 1) {
         return NO;
     }
@@ -810,9 +838,12 @@
     return [predicate evaluateWithObject:string];
 }
 
-/// Remove all punctuation whitespace and number characters.
+#pragma mark - Remove desingated characters.
+
+/// Remove all whitespace, punctuation, symbol and number characters.
 - (NSString *)removeAllSymbolAndWhitespaceCharacters:(NSString *)string {
     NSString *text = [self removeWhitespaceAndNewlineCharacters:string];
+    text = [self removePunctuationCharacters:text];
     text = [self removeSymbolCharacterSet:text];
     text = [self removeNumbers:text];
     text = [self removeNonBaseCharacterSet:text];
@@ -850,7 +881,7 @@
     return text;
 }
 
-/// Remove all symbolCharacterSet. such as $, including punctuationCharacterSet.
+/// Remove all symbolCharacterSet. such as $, not including punctuationCharacterSet.
 - (NSString *)removeSymbolCharacterSet:(NSString *)string {
     NSCharacterSet *charSet = [NSCharacterSet symbolCharacterSet];
     NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
