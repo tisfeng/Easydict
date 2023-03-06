@@ -34,7 +34,8 @@ static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
 static NSTimeInterval const EZNetWorkTimeoutInterval = 30.0;
 
-static NSTimeInterval const EZFloatingWindowLevel = kCGFloatingWindowLevel;
+// !!!: This floating window level shouldn't be higher than kCGModalPanelWindowLevel, otherwise it will cover system modal alert window.
+static NSTimeInterval const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
 
 static NSInteger const EZEnglishWordMaxLength = 15;
 
