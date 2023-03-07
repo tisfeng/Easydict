@@ -124,21 +124,6 @@
     return orderedDict;
 }
 
-// zh-Hans --> Chinese-Simplified
-- (EZLanguage)appleLanguageEnumFromCode:(NSString *)langString {
-    EZLanguage language = [self.appleLangEnumFromStringDict objectForKey:langString];
-    if (!language) {
-        language = EZLanguageAuto;
-    }
-    return language;
-}
-
-// Chinese-Simplified --> zh-Hans
-- (NSString *)appleLanguageCodeForLanguage:(EZLanguage)lang {
-    return [self.appleLanguagesDictionary objectForKey:lang];
-}
-
-
 /// Apple ocr language: "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
 - (MMOrderedDictionary *)ocrLanguageDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
@@ -314,6 +299,7 @@
                 [recognizedStrings addObject:recognizedText.string];
             }
             NSString *resultText = [self joinStringArray:recognizedStrings];
+            resultText = [self replaceSimilarDotSymbolOfString:resultText];
             
             result.texts = recognizedStrings;
             result.mergedText = resultText;
@@ -478,6 +464,20 @@
 
 #pragma mark - Public Methods
 
+// zh-Hans --> Chinese-Simplified
+- (EZLanguage)appleLanguageEnumFromCode:(NSString *)langString {
+    EZLanguage language = [self.appleLangEnumFromStringDict objectForKey:langString];
+    if (!language) {
+        language = EZLanguageAuto;
+    }
+    return language;
+}
+
+// Chinese-Simplified --> zh-Hans
+- (NSString *)appleLanguageCodeForLanguage:(EZLanguage)lang {
+    return [self.appleLanguagesDictionary objectForKey:lang];
+}
+
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
     void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
         // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
@@ -495,7 +495,7 @@
     }
 }
 
-#pragma mark - Others
+#pragma mark -
 
 // uniqueLanguages is supportLanguagesDictionary remove some languages
 - (NSArray<NLLanguage> *)designatedLanguages {
@@ -609,56 +609,6 @@
     
     return ezLanguage;
 }
-
-/// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-- (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
-    NSMutableString *joinedString = [NSMutableString string];
-    NSArray *endPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
-    for (NSInteger i = 0; i < stringArray.count; i++) {
-        NSString *string = stringArray[i];
-        if (i == 0) {
-            [joinedString appendString:string];
-        } else {
-            NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
-            if ([endPunctuationMarks containsObject:lastChar]) {
-                [joinedString appendString:@"\n"];
-            } else if ([self isPunctuationMark:lastChar]) {
-                // if last char is a punctuation mark, then append a space.
-                [joinedString appendString:@" "];
-            } else {
-                // Chinese text don't need space if it is not a punctuation mark.
-                EZLanguage language = [self appleDetectTextLanguage:string];
-                if (![EZLanguageManager isChineseLanguage:language]) {
-                    [joinedString appendString:@" "];
-                }
-            }
-            [joinedString appendString:string];
-        }
-    }
-    return joinedString;
-}
-
-/// Use punctuationCharacterSet to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark:(NSString *)string {
-    if (string.length != 1) {
-        return NO;
-    }
-    
-    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
-    return [punctuationCharacterSet characterIsMember:[string characterAtIndex:0]];
-}
-
-/// Use regex to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark2:(NSString *)string {
-    if (string.length != 1) {
-        return NO;
-    }
-    
-    NSString *regex = @"[\\p{Punct}]";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    return [predicate evaluateWithObject:string];
-}
-
 
 #pragma mark - Detect Language Manually
 
@@ -953,6 +903,86 @@
         }
     }
     NSLog(@"charSet: %@", array);
+}
+
+#pragma mark - Handle OCR text.
+
+/// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
+- (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
+    NSMutableString *joinedString = [NSMutableString string];
+    NSArray *endPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
+    for (NSInteger i = 0; i < stringArray.count; i++) {
+        NSString *string = stringArray[i];
+        if (i == 0) {
+            [joinedString appendString:string];
+        } else {
+            NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
+            if ([endPunctuationMarks containsObject:lastChar]) {
+                [joinedString appendString:@"\n"];
+            } else if ([self isPunctuationMark:lastChar]) {
+                // if last char is a punctuation mark, then append a space.
+                [joinedString appendString:@" "];
+            } else {
+                // Chinese text don't need space if it is not a punctuation mark.
+                EZLanguage language = [self appleDetectTextLanguage:string];
+                if (![EZLanguageManager isChineseLanguage:language]) {
+                    [joinedString appendString:@" "];
+                }
+            }
+            [joinedString appendString:string];
+        }
+    }
+    return joinedString;
+}
+
+/// Use punctuationCharacterSet to check if it is a punctuation mark.
+- (BOOL)isPunctuationMark:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
+    return [punctuationCharacterSet characterIsMember:[string characterAtIndex:0]];
+}
+
+/// Use regex to check if it is a punctuation mark.
+- (BOOL)isPunctuationMark2:(NSString *)string {
+    if (string.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[\\p{Punct}]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:string];
+}
+
+/// Use NSCharacterSet to replace simlar dot sybmol with char "·", do not iterate.
+- (NSString *)replaceSimilarDotSymbolOfString:(NSString *)string {
+    // 《蝶恋花 • 阅尽天涯离别苦》
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"•‧∙"];
+    //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
+    
+    NSArray *strings = [string componentsSeparatedByCharactersInSet:charSet];
+    // Remove extra white space.
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSString *string in strings) {
+        NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (text.length > 0) {
+            [array addObject:text];
+        }
+    }
+    
+    // Add white space for better reading.
+    NSString *text = [array componentsJoinedByString:@" · "];
+    
+    return text;
+}
+
+/// Use regex to replace simlar dot sybmol with char "·", do not iterate.
+- (NSString *)replaceSimilarDotSymbolOfString2:(NSString *)string {
+    NSString *regex = @"[•‧∙]"; // [•‧∙・]
+    NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"·" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
+    return text;
 }
 
 @end
