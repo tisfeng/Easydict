@@ -911,28 +911,52 @@
 - (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
     NSMutableString *joinedString = [NSMutableString string];
     NSArray *endPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
+    CGFloat maxLengthOfLine = [self maxLengthOfStringArray:stringArray];
+    
+    /**
+     Hello world"
+     然后请你也谈谈你对习主席连任的看法？
+     最后输出以下内容的反义词："go up
+     */
+    // delta is a general word width, alphabet count is abount 5, means if a line is short, then append \n.
+    CGFloat delta = 40; // [self widthOfString:@" array"]; // 34.3
+    
     for (NSInteger i = 0; i < stringArray.count; i++) {
         NSString *string = stringArray[i];
-        if (i == 0) {
-            [joinedString appendString:string];
+        [joinedString appendString:string];
+        
+        // Append \n for short line if string frame width is less than max width - delta.
+        CGFloat stringWidth = [self widthOfString:string];
+        BOOL isShortLine = stringWidth < maxLengthOfLine - delta;
+        NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
+        BOOL endWithPunctuationMark = [endPunctuationMarks containsObject:lastChar];
+        if (isShortLine || endWithPunctuationMark) {
+            [joinedString appendString:@"\n"];
+        } else if ([self isPunctuationMark:lastChar]) {
+            // if last char is a punctuation mark, then append a space.
+            [joinedString appendString:@" "];
         } else {
-            NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
-            if ([endPunctuationMarks containsObject:lastChar]) {
-                [joinedString appendString:@"\n"];
-            } else if ([self isPunctuationMark:lastChar]) {
-                // if last char is a punctuation mark, then append a space.
+            // Like Chinese text don't need space if it is not a punctuation mark.
+            EZLanguage language = [self appleDetectTextLanguage:string];
+            if ([self isLanguageWordsNeedSpace:language]) {
                 [joinedString appendString:@" "];
-            } else {
-                // Chinese text don't need space if it is not a punctuation mark.
-                EZLanguage language = [self appleDetectTextLanguage:string];
-                if (![EZLanguageManager isChineseLanguage:language]) {
-                    [joinedString appendString:@" "];
-                }
             }
-            [joinedString appendString:string];
         }
     }
-    return joinedString;
+    
+    // Remove last \n.
+    return [joinedString trim];
+}
+
+/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
+    NSArray *languages = @[
+        EZLanguageSimplifiedChinese,
+        EZLanguageTraditionalChinese,
+        EZLanguageJapanese,
+        EZLanguageKorean,
+    ];
+    return ![languages containsObject:language];
 }
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
@@ -954,6 +978,24 @@
     NSString *regex = @"[\\p{Punct}]";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
     return [predicate evaluateWithObject:string];
+}
+
+/// Itearte string array, get the max frame width of string.
+- (CGFloat)maxLengthOfStringArray:(NSArray<NSString *> *)stringArray {
+    CGFloat maxLength = 0;
+    for (NSString *string in stringArray) {
+        CGFloat width = [self widthOfString:string];
+        if (width > maxLength) {
+            maxLength = width;
+        }
+    }
+    return maxLength;
+}
+
+/// Get string frame width.
+- (CGFloat)widthOfString:(NSString *)string {
+    CGSize size = [string sizeWithAttributes:@{NSFontAttributeName : [NSFont systemFontOfSize:NSFont.systemFontSize]}];
+    return size.width;
 }
 
 /// Use NSCharacterSet to replace simlar dot sybmol with char "·", do not iterate.
