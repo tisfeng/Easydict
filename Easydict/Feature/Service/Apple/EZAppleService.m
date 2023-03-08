@@ -944,8 +944,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         NSString *string = stringArray[i];
         [joinedString appendString:string];
         
+        EZLanguage language = [self appleDetectTextLanguage:string];
+        
         // Append \n for short line if string frame width is less than max width - delta.
-        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine];
+        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
         BOOL endWithPunctuationMark = [self isEndPunctuationMark:lastChar];
@@ -959,7 +961,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             [joinedString appendString:@" "];
         } else {
             // Like Chinese text, don't need space between words if it is not a punctuation mark.
-            EZLanguage language = [self appleDetectTextLanguage:string];
             if ([self isLanguageWordsNeedSpace:language]) {
                 [joinedString appendString:@" "];
             }
@@ -1012,14 +1013,13 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    
     CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / stringArray.count;
     
     // If average number of punctuation marks per line is greater than 2, then it is not poetry.
     if (numberOfPunctuationMarksPerLine > 2) {
         return NO;
     }
-    if (stringArray.count >= 6 && (numberOfPunctuationMarksPerLine < 1/4) && (_punctuationMarkRate < 0.04)) {
+    if (stringArray.count >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
         return YES;
     }
     
@@ -1030,19 +1030,18 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
            ofStringArray:stringArray
          maxLengthOfLine:_maxLengthOfLine];
     
-    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.9;
-    if (tooManyShortLine) {
-        return YES;
-    }
-    
     BOOL tooManyLongLine = longLineCount >= stringArray.count * 0.8;
     if (tooManyLongLine) {
         return NO;
     }
     
+    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.9;
+    if (tooManyShortLine) {
+        return YES;
+    }
+    
     return NO;
 }
-
 
 /// Iterate string array, get the short line count and long line count.
 - (void)shortLineCount:(NSInteger *)shortLineCount
@@ -1052,8 +1051,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSInteger _shortLineCount = 0;
     NSInteger _longLineCount = 0;
     for (NSString *string in stringArray) {
-        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine];
-        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine];
+        EZLanguage language = [self appleDetectTextLanguage:string];
+        
+        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
+        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         if (isShortLine) {
             _shortLineCount += 1;
         }
@@ -1066,27 +1067,32 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 /// Check if string is a short line, if string frame width is less than max width - delta * 2.
-- (BOOL)isShortLineOfString:(NSString *)string maxLengthOfLine:(CGFloat)maxLengthOfLine {
+- (BOOL)isShortLineOfString:(NSString *)string
+            maxLengthOfLine:(CGFloat)maxLengthOfLine
+                   language:(EZLanguage)language
+{
     CGFloat width = [self widthOfString:string];
-    CGFloat delta = kEnglishWordWidth;
-    EZLanguage language = [self appleDetectTextLanguage:string];
+    CGFloat delta = kEnglishWordWidth * 2;
     if ([EZLanguageManager isChineseLanguage:language]) {
-        delta = kChineseWordWidth;
+        delta = kChineseWordWidth * 3;
     }
-    BOOL isShortLine = width < maxLengthOfLine - delta * 2;
+    // Since some articles has indent, generally 3 Chinese words enough for indent.
+    BOOL isShortLine = width < maxLengthOfLine - delta;
     
     return isShortLine;
 }
 
 /// Check if string is a long line, if string frame width is greater than max width - delta.
-- (BOOL)isLongLineOfString:(NSString *)string maxLengthOfLine:(CGFloat)maxLengthOfLine {
+- (BOOL)isLongLineOfString:(NSString *)string
+           maxLengthOfLine:(CGFloat)maxLengthOfLine
+                  language:(EZLanguage)language
+{
     CGFloat width = [self widthOfString:string];
     CGFloat delta = kEnglishWordWidth;
-    EZLanguage language = [self appleDetectTextLanguage:string];
     if ([EZLanguageManager isChineseLanguage:language]) {
         delta = kChineseWordWidth;
     }
-    BOOL isLongLine = width > maxLengthOfLine - delta;
+    BOOL isLongLine = width >= maxLengthOfLine - delta;
     
     return isLongLine;
 }
