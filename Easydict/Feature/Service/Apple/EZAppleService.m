@@ -13,6 +13,8 @@
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
 
+static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
+
 @interface EZAppleService ()
 
 @property (nonatomic, strong) EZExeCommand *exeCommand;
@@ -907,17 +909,28 @@
 
 #pragma mark - Handle OCR text.
 
+/**
+ Hello world"
+ 然后请你也谈谈你对习主席连任的看法？
+ 最后输出以下内容的反义词："go up
+ 
+ 我宁愿所有痛苦都留在心里
+ 也不愿忘记你的眼睛
+ 给我再去相信的勇气
+ Oh 越过谎言去拥抱你
+ */
+
 /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
 - (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
     NSMutableString *joinedString = [NSMutableString string];
-    NSArray *endPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
-    CGFloat maxLengthOfLine = [self maxLengthOfStringArray:stringArray];
+    CGFloat maxLengthOfLine = 0;
+    NSInteger punctuationMarkCount = 0;
+    CGFloat punctuationMarkRate = 0;
+    [self iterateStringArray:stringArray
+             maxLengthOfLine:&maxLengthOfLine
+        punctuationMarkCount:&punctuationMarkCount
+         punctuationMarkRate:&punctuationMarkRate];
     
-    /**
-     Hello world"
-     然后请你也谈谈你对习主席连任的看法？
-     最后输出以下内容的反义词："go up
-     */
     // delta is a general word width, alphabet count is abount 5, means if a line is short, then append \n.
     CGFloat delta = 40; // [self widthOfString:@" array"]; // 34.3
     
@@ -929,15 +942,27 @@
         CGFloat stringWidth = [self widthOfString:string];
         BOOL isShortLine = stringWidth < maxLengthOfLine - delta;
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
-        BOOL endWithPunctuationMark = [endPunctuationMarks containsObject:lastChar];
-        if (isShortLine || endWithPunctuationMark) {
+        BOOL endWithPunctuationMark = [self isEndPunctuationMark:lastChar];
+        
+        BOOL needAppendNewLine = isShortLine || endWithPunctuationMark;
+        
+        EZLanguage language = [self appleDetectTextLanguage:string];
+        
+        // Chinese poem and lyrics, should append \n.
+        if ([EZLanguageManager isChineseLanguage:language]) {
+            if (punctuationMarkRate < 0.02 ||
+                (stringArray.count >= 4 && ((CGFloat)stringArray.count / punctuationMarkCount) > 3)) {
+                needAppendNewLine = YES;
+            }
+        }
+        
+        if (needAppendNewLine) {
             [joinedString appendString:@"\n\n"];
         } else if ([self isPunctuationMark:lastChar]) {
             // if last char is a punctuation mark, then append a space.
             [joinedString appendString:@" "];
         } else {
-            // Like Chinese text don't need space if it is not a punctuation mark.
-            EZLanguage language = [self appleDetectTextLanguage:string];
+            // Like Chinese text, don't need space if it is not a punctuation mark.
             if ([self isLanguageWordsNeedSpace:language]) {
                 [joinedString appendString:@" "];
             }
@@ -960,24 +985,43 @@
 }
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark:(NSString *)string {
-    if (string.length != 1) {
+- (BOOL)isPunctuationMark:(NSString *)charString {
+    if (charString.length != 1) {
         return NO;
     }
     
     NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
-    return [punctuationCharacterSet characterIsMember:[string characterAtIndex:0]];
+    return [punctuationCharacterSet characterIsMember:[charString characterAtIndex:0]];
 }
 
 /// Use regex to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark2:(NSString *)string {
-    if (string.length != 1) {
+- (BOOL)isPunctuationMark2:(NSString *)charString {
+    if (charString.length != 1) {
         return NO;
     }
     
     NSString *regex = @"[\\p{Punct}]";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    return [predicate evaluateWithObject:string];
+    return [predicate evaluateWithObject:charString];
+}
+
+/// Check if char is a end punctuation mark.
+- (BOOL)isEndPunctuationMark:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    return [kEndPunctuationMarks containsObject:charString];
+}
+
+/// Check if char is a punctuation mark but not a end punctuation mark.
+- (BOOL)isNonEndPunctuationMark:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    NSArray *punctuationMarks = @[ @"，", @"、", @"；", @",", @";" ];
+    return [punctuationMarks containsObject:charString];
 }
 
 /// Itearte string array, get the max frame width of string.
@@ -991,6 +1035,36 @@
     }
     return maxLength;
 }
+
+/// Iterate string array, get the max frame width of string, the punctuation count and the punctuation mark percent.
+- (void)iterateStringArray:(NSArray<NSString *> *)stringArray
+           maxLengthOfLine:(CGFloat *)maxLengthOfLine
+      punctuationMarkCount:(NSInteger *)punctuationMarkCount
+       punctuationMarkRate:(CGFloat *)punctuationMarkRate {
+    *maxLengthOfLine = 0;
+    *punctuationMarkCount = 0;
+    
+    NSInteger totalCharCount = 0;
+    for (NSString *string in stringArray) {
+        CGFloat width = [self widthOfString:string];
+        if (width > *maxLengthOfLine) {
+            *maxLengthOfLine = width;
+        }
+        
+        // iterate string to check if has punctuation mark.
+        for (NSInteger i = 0; i < string.length; i++) {
+            totalCharCount += 1;
+            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
+            if ([self isPunctuationMark:charString]) {
+                *punctuationMarkCount += 1;
+            }
+        }
+    }
+    
+    *punctuationMarkRate = *punctuationMarkCount / (CGFloat)totalCharCount;
+}
+
+///
 
 /// Get string frame width.
 - (CGFloat)widthOfString:(NSString *)string {
