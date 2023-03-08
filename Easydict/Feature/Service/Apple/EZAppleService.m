@@ -13,6 +13,10 @@
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
 
+/// general word width, alphabet count is abount 5, means if a line is short, then append \n.
+static CGFloat kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30
+static CGFloat kChineseWordWidth = 15; // [self widthOfString:@"爱"]; // 13
+
 static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
 
 @interface EZAppleService ()
@@ -926,43 +930,36 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     CGFloat maxLengthOfLine = 0;
     NSInteger punctuationMarkCount = 0;
     CGFloat punctuationMarkRate = 0;
-    [self iterateStringArray:stringArray
-             maxLengthOfLine:&maxLengthOfLine
-        punctuationMarkCount:&punctuationMarkCount
-         punctuationMarkRate:&punctuationMarkRate];
+    BOOL isPoetry = [self isPoetryOfStringArray:stringArray
+                                maxLengthOfLine:&maxLengthOfLine
+                           punctuationMarkCount:&punctuationMarkCount
+                            punctuationMarkRate:&punctuationMarkRate];
     
-    // delta is a general word width, alphabet count is abount 5, means if a line is short, then append \n.
-    CGFloat delta = 40; // [self widthOfString:@" array"]; // 34.3
+    NSString *newLineString = @"\n\n";
+    if (isPoetry) {
+        return [stringArray componentsJoinedByString:newLineString];
+    }
     
     for (NSInteger i = 0; i < stringArray.count; i++) {
         NSString *string = stringArray[i];
         [joinedString appendString:string];
         
         // Append \n for short line if string frame width is less than max width - delta.
-        CGFloat stringWidth = [self widthOfString:string];
-        BOOL isShortLine = stringWidth < maxLengthOfLine - delta;
+        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine];
+        
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
         BOOL endWithPunctuationMark = [self isEndPunctuationMark:lastChar];
         
         BOOL needAppendNewLine = isShortLine || endWithPunctuationMark;
         
-        EZLanguage language = [self appleDetectTextLanguage:string];
-        
-        // Chinese poem and lyrics, should append \n.
-        if ([EZLanguageManager isChineseLanguage:language]) {
-            if (punctuationMarkRate < 0.02 ||
-                (stringArray.count >= 4 && ((CGFloat)stringArray.count / punctuationMarkCount) > 3)) {
-                needAppendNewLine = YES;
-            }
-        }
-        
         if (needAppendNewLine) {
-            [joinedString appendString:@"\n\n"];
+            [joinedString appendString:newLineString];
         } else if ([self isPunctuationMark:lastChar]) {
             // if last char is a punctuation mark, then append a space.
             [joinedString appendString:@" "];
         } else {
-            // Like Chinese text, don't need space if it is not a punctuation mark.
+            // Like Chinese text, don't need space between words if it is not a punctuation mark.
+            EZLanguage language = [self appleDetectTextLanguage:string];
             if ([self isLanguageWordsNeedSpace:language]) {
                 [joinedString appendString:@" "];
             }
@@ -971,6 +968,127 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     // Remove last \n.
     return [joinedString trim];
+}
+
+
+/// Iterate string array, get the max frame width of string, the punctuation count and the punctuation mark percent.
+- (BOOL)isPoetryOfStringArray:(NSArray<NSString *> *)stringArray
+              maxLengthOfLine:(CGFloat *)maxLengthOfLine
+         punctuationMarkCount:(NSInteger *)punctuationMarkCount
+          punctuationMarkRate:(CGFloat *)punctuationMarkRate {
+    CGFloat _maxLengthOfLine = 0;
+    NSInteger _punctuationMarkCount = 0;
+    CGFloat _punctuationMarkRate = 0;
+    
+    NSInteger totalCharCount = 0;
+    for (NSString *string in stringArray) {
+        CGFloat width = [self widthOfString:string];
+        if (width > _maxLengthOfLine) {
+            _maxLengthOfLine = width;
+        }
+        
+        // iterate string to check if has punctuation mark.
+        for (NSInteger i = 0; i < string.length; i++) {
+            totalCharCount += 1;
+            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
+            if ([self isPunctuationMark:charString]) {
+                _punctuationMarkCount += 1;
+            }
+        }
+    }
+    
+    *maxLengthOfLine = _maxLengthOfLine;
+    *punctuationMarkCount = _punctuationMarkCount;
+    
+    _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
+    *punctuationMarkRate = _punctuationMarkRate;
+    
+    
+    if (stringArray.count < 3) {
+        return NO;
+    }
+    
+    if (_punctuationMarkRate < 0.01) {
+        return YES;
+    }
+    
+    
+    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / stringArray.count;
+    
+    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
+    if (numberOfPunctuationMarksPerLine > 2) {
+        return NO;
+    }
+    if (stringArray.count >= 6 && (numberOfPunctuationMarksPerLine < 1/4) && (_punctuationMarkRate < 0.04)) {
+        return YES;
+    }
+    
+    NSInteger shortLineCount = 0;
+    NSInteger longLineCount = 0;
+    [self shortLineCount:&shortLineCount
+           longLineCount:&longLineCount
+           ofStringArray:stringArray
+         maxLengthOfLine:_maxLengthOfLine];
+    
+    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.9;
+    if (tooManyShortLine) {
+        return YES;
+    }
+    
+    BOOL tooManyLongLine = longLineCount >= stringArray.count * 0.8;
+    if (tooManyLongLine) {
+        return NO;
+    }
+    
+    return NO;
+}
+
+
+/// Iterate string array, get the short line count and long line count.
+- (void)shortLineCount:(NSInteger *)shortLineCount
+         longLineCount:(NSInteger *)longLineCount
+         ofStringArray:(NSArray<NSString *> *)stringArray
+       maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    NSInteger _shortLineCount = 0;
+    NSInteger _longLineCount = 0;
+    for (NSString *string in stringArray) {
+        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine];
+        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine];
+        if (isShortLine) {
+            _shortLineCount += 1;
+        }
+        if (isLongLine) {
+            _longLineCount += 1;
+        }
+    }
+    *shortLineCount = _shortLineCount;
+    *longLineCount = _longLineCount;
+}
+
+/// Check if string is a short line, if string frame width is less than max width - delta * 2.
+- (BOOL)isShortLineOfString:(NSString *)string maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    CGFloat width = [self widthOfString:string];
+    CGFloat delta = kEnglishWordWidth;
+    EZLanguage language = [self appleDetectTextLanguage:string];
+    if ([EZLanguageManager isChineseLanguage:language]) {
+        delta = kChineseWordWidth;
+    }
+    BOOL isShortLine = width < maxLengthOfLine - delta * 2;
+    
+    return isShortLine;
+}
+
+/// Check if string is a long line, if string frame width is greater than max width - delta.
+- (BOOL)isLongLineOfString:(NSString *)string maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    CGFloat width = [self widthOfString:string];
+    CGFloat delta = kEnglishWordWidth;
+    EZLanguage language = [self appleDetectTextLanguage:string];
+    if ([EZLanguageManager isChineseLanguage:language]) {
+        delta = kChineseWordWidth;
+    }
+    BOOL isLongLine = width > maxLengthOfLine - delta;
+    
+    return isLongLine;
 }
 
 /// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
@@ -1035,36 +1153,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     }
     return maxLength;
 }
-
-/// Iterate string array, get the max frame width of string, the punctuation count and the punctuation mark percent.
-- (void)iterateStringArray:(NSArray<NSString *> *)stringArray
-           maxLengthOfLine:(CGFloat *)maxLengthOfLine
-      punctuationMarkCount:(NSInteger *)punctuationMarkCount
-       punctuationMarkRate:(CGFloat *)punctuationMarkRate {
-    *maxLengthOfLine = 0;
-    *punctuationMarkCount = 0;
-    
-    NSInteger totalCharCount = 0;
-    for (NSString *string in stringArray) {
-        CGFloat width = [self widthOfString:string];
-        if (width > *maxLengthOfLine) {
-            *maxLengthOfLine = width;
-        }
-        
-        // iterate string to check if has punctuation mark.
-        for (NSInteger i = 0; i < string.length; i++) {
-            totalCharCount += 1;
-            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            if ([self isPunctuationMark:charString]) {
-                *punctuationMarkCount += 1;
-            }
-        }
-    }
-    
-    *punctuationMarkRate = *punctuationMarkCount / (CGFloat)totalCharCount;
-}
-
-///
 
 /// Get string frame width.
 - (CGFloat)widthOfString:(NSString *)string {
