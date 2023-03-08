@@ -29,6 +29,15 @@ static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
 
+/// Execute block on main thread safely.
+static void dispatch_block_on_main_safely(dispatch_block_t block) {
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), block);
+    }
+}
+
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) EZTitlebar *titleBar;
@@ -641,7 +650,8 @@ static NSString *const EZColumnId = @"EZColumnId";
                 completionHandler:(void (^)(void))completionHandler {
     //    NSLog(@"updateTableViewRowIndexes: %@", rowIndexes);
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    // !!!: Since the caller may be in non-main thread, we need to dispatch to main thread, but canont always use dispatch_async, it will cause the animation not smooth.
+    dispatch_block_on_main_safely(^{
         if (reloadData) {
             // !!!: Note: For NSView-based table views, this method drops the view-cells in the table row, but not the NSTableRowView instances.
             
