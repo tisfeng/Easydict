@@ -22,7 +22,7 @@
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
 
-@property (nonatomic, assign) CGFloat textViewMiniHeight;
+@property (nonatomic, assign) CGFloat textViewMinHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
 
 @property (nonatomic, copy) NSString *lastRecordText;
@@ -69,7 +69,7 @@
     textView.textStorage.delegate = self;
     
     mm_weakify(self);
-    [textView setPasteTextBlock:^(NSString * _Nonnull text) {
+    [textView setPasteTextBlock:^(NSString *_Nonnull text) {
         [self highlightAllLinks];
     }];
     
@@ -215,7 +215,8 @@
 #pragma mark - Rewrite
 
 - (void)viewDidMoveToWindow {
-    [self scrollToTextViewBottom];
+    // Since we have reused queryView, we don't need to scroll to bottom when updating view.
+    //    [self scrollToTextViewBottom];
     
     [super viewDidMoveToWindow];
 }
@@ -240,7 +241,9 @@
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         make.bottom.equalTo(self.audioButton.mas_top).offset(0);
-        make.height.mas_greaterThanOrEqualTo(self.textViewMiniHeight).priorityLow();
+        
+        CGFloat textViewHeight = [self heightOfTextView];
+        make.height.mas_greaterThanOrEqualTo(textViewHeight);
     }];
     
     [self.clearButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -370,21 +373,17 @@
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
-        
+    
     self.enableAutoDetect = YES;
     [self updateButtonsDisplayState:text];
-    
-    CGFloat textViewHeight = [self heightOfTextView];
-    
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(textViewHeight);
-    }];
     
     // cannot layout this, otherwise will crash
     //    [self layoutSubtreeIfNeeded];
     //    NSLog(@"self.frame: %@", @(self.frame));
     
+    
     if (self.updateQueryTextBlock) {
+        CGFloat textViewHeight = [self heightOfTextView];
         self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
     }
 }
@@ -396,7 +395,7 @@
     CGFloat height = [self.textView getHeightWithWidth:self.width];
     //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
     
-    height = MAX(height, self.textViewMiniHeight);
+    height = MAX(height, self.textViewMinHeight);
     height = MIN(height, self.textViewMaxHeight);
     
     height = ceil(height);
@@ -409,7 +408,7 @@
     EZWindowType windowType = self.windowType;
     
     self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
-    self.textViewMiniHeight = [EZLayoutManager.shared inputViewMiniHeight:windowType];
+    self.textViewMinHeight = [EZLayoutManager.shared inputViewMinHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
@@ -483,6 +482,5 @@
     NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
     return currentTime - self.lastRecordTimestamp > timeInterval;
 }
-
 
 @end

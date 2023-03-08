@@ -931,7 +931,7 @@
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
         BOOL endWithPunctuationMark = [endPunctuationMarks containsObject:lastChar];
         if (isShortLine || endWithPunctuationMark) {
-            [joinedString appendString:@"\n"];
+            [joinedString appendString:@"\n\n"];
         } else if ([self isPunctuationMark:lastChar]) {
             // if last char is a punctuation mark, then append a space.
             [joinedString appendString:@" "];
