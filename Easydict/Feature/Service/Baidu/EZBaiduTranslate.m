@@ -103,7 +103,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 #pragma mark -
 
-- (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *token, NSString *gtk, NSError *error))completion {
+- (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *_Nullable token, NSString *_Nullable gtk, NSError *error))completion {
     NSString *url = kBaiduTranslateURL;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
     
@@ -443,6 +443,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",
+                                        EZLanguageClassicalChinese, @"wyw",
                                         EZLanguageTraditionalChinese, @"cht",
                                         EZLanguageEnglish, @"en",
                                         EZLanguageJapanese, @"jp",
@@ -500,9 +501,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
     
-    NSArray *languages = @[from, to];
-    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
-        [super translate:text from:from to:to completion:completion];
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     
@@ -533,6 +532,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             mm_strongify(self)
             MMLogInfo(@"百度翻译回调 token: %@, gtk: %@", token, gtk);
+            
+            if (!error && (!token || !gtk)) {
+                error = [EZTranslateError errorWithString:@"Get token failed."];
+            }
+            
             if (error) {
                 completion(self.result, error);
                 return;
