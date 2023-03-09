@@ -134,6 +134,16 @@ userInfo:nil]
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    
+    BOOL isPrehandle = [self prehandleQueryTextLanguage:text from:from to:to completion:completion];
+    if (isPrehandle) {
+        return;
+    }
+    
+    MethodNotImplemented();
+}
+
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     // If translated language is Chinese, use Chinese text convert directly.
     NSArray *languages = @[ from, to ];
     if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
@@ -147,10 +157,18 @@ userInfo:nil]
         if (result) {
             self.result.normalResults = @[ result ];
             completion(self.result, nil);
-            return;
+            return YES;
         }
     }
-    MethodNotImplemented();
+    
+    NSString *fromLanguage = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
+    NSString *toLanguage = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
+    if (!fromLanguage || !toLanguage) {
+        completion(self.result, EZQueryUnsupportedLanguageError(self));
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {

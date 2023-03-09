@@ -104,9 +104,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSArray *languages = @[ from, to ];
-    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
-        [super translate:text from:from to:to completion:completion];
+    
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     
@@ -116,27 +115,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
-    
-    // Since DeepL doesn't support zh-TW, we need to convert zh-TW to zh-CN.
-    if ([self.queryModel.queryFromLanguage isEqualToString:EZLanguageTraditionalChinese] &&
-        ![EZLanguageManager isChineseLanguage:self.queryModel.queryTargetLanguage]) {
-        EZQueryModel *queryModel = [self.queryModel copy];
-        queryModel.userSourceLanguage = EZLanguageSimplifiedChinese;
-        wordLink = [self wordLink:queryModel];
-    }
-    
-    if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese] &&
-        ![EZLanguageManager isChineseLanguage:self.queryModel.queryFromLanguage]) {
-        EZQueryModel *queryModel = [self.queryModel copy];
-        queryModel.userTargetLanguage = EZLanguageSimplifiedChinese;
-        wordLink = [self wordLink:queryModel];
-    }
-    
-    if (!wordLink) {
-        completion(self.result, EZQueryUnsupportedLanguageError(self));
-        return;
-    }
-    
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             // Convert result to traditional Chinese.

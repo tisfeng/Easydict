@@ -155,6 +155,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return;
     }
     
+    
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
+        return;
+    }
+    
     // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
     NSArray *languages = @[ from, to ];
     if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
