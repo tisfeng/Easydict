@@ -926,10 +926,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 - (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
     NSMutableString *joinedString = [NSMutableString string];
     CGFloat maxLengthOfLine = 0;
+    CGFloat minLengthOfLine = 0;
     NSInteger punctuationMarkCount = 0;
     CGFloat punctuationMarkRate = 0;
     BOOL isPoetry = [self isPoetryOfStringArray:stringArray
                                 maxLengthOfLine:&maxLengthOfLine
+                                minLengthOfLine:&minLengthOfLine
                            punctuationMarkCount:&punctuationMarkCount
                             punctuationMarkRate:&punctuationMarkRate];
     
@@ -970,12 +972,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 
-/// Iterate string array, get the max frame width of string, the punctuation count and the punctuation mark percent.
+/// Iterate string array, get the max and min frame width of string, the punctuation count and the punctuation mark percent.
 - (BOOL)isPoetryOfStringArray:(NSArray<NSString *> *)stringArray
               maxLengthOfLine:(CGFloat *)maxLengthOfLine
+              minLengthOfLine:(CGFloat *)minLengthOfLine
          punctuationMarkCount:(NSInteger *)punctuationMarkCount
           punctuationMarkRate:(CGFloat *)punctuationMarkRate {
     CGFloat _maxLengthOfLine = 0;
+    CGFloat _minLengthOfLine = CGFLOAT_MAX;
     NSInteger _punctuationMarkCount = 0;
     CGFloat _punctuationMarkRate = 0;
     
@@ -984,6 +988,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         CGFloat width = [self widthOfString:string];
         if (width > _maxLengthOfLine) {
             _maxLengthOfLine = width;
+        }
+        if (width < _minLengthOfLine) {
+            _minLengthOfLine = width;
         }
         
         // iterate string to check if has punctuation mark.
@@ -997,26 +1004,33 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     }
     
     *maxLengthOfLine = _maxLengthOfLine;
+    *minLengthOfLine = _minLengthOfLine;
     *punctuationMarkCount = _punctuationMarkCount;
     
     _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
     *punctuationMarkRate = _punctuationMarkRate;
     
+    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / stringArray.count;
     
-    if (stringArray.count < 3) {
-        return NO;
-    }
-    
-    if (_punctuationMarkRate < 0.01) {
+    /**
+     曾经沧海难为水，
+     除却巫山不是云。
+     取次花丛懒回顾，
+     半缘修道半缘君。
+     */
+    if (_maxLengthOfLine == _minLengthOfLine && numberOfPunctuationMarksPerLine <= 1) {
         return YES;
     }
-    
-    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / stringArray.count;
     
     // If average number of punctuation marks per line is greater than 2, then it is not poetry.
     if (numberOfPunctuationMarksPerLine > 2) {
         return NO;
     }
+    
+    if (stringArray.count >= 4 && _punctuationMarkRate < 0.01) {
+        return YES;
+    }
+    
     if (stringArray.count >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
         return YES;
     }
@@ -1033,7 +1047,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return NO;
     }
     
-    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.9;
+    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.8;
     if (tooManyShortLine) {
         return YES;
     }
@@ -1067,15 +1081,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 /// Check if string is a short line, if string frame width is less than max width - delta * 2.
 - (BOOL)isShortLineOfString:(NSString *)string
             maxLengthOfLine:(CGFloat)maxLengthOfLine
-                   language:(EZLanguage)language
-{
+                   language:(EZLanguage)language {
     CGFloat width = [self widthOfString:string];
-    CGFloat delta = kEnglishWordWidth * 2;
+    CGFloat delta = kEnglishWordWidth;
     if ([EZLanguageManager isChineseLanguage:language]) {
-        delta = kChineseWordWidth * 3;
+        delta = kChineseWordWidth;
     }
-    // Since some articles has indent, generally 3 Chinese words enough for indent.
-    BOOL isShortLine = width < maxLengthOfLine - delta;
+    // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
+    BOOL isShortLine = width <= maxLengthOfLine - delta * 2;
     
     return isShortLine;
 }
@@ -1083,8 +1096,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 /// Check if string is a long line, if string frame width is greater than max width - delta.
 - (BOOL)isLongLineOfString:(NSString *)string
            maxLengthOfLine:(CGFloat)maxLengthOfLine
-                  language:(EZLanguage)language
-{
+                  language:(EZLanguage)language {
     CGFloat width = [self widthOfString:string];
     CGFloat delta = kEnglishWordWidth;
     if ([EZLanguageManager isChineseLanguage:language]) {
