@@ -278,13 +278,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     if (self.queryText.length == 0) {
         self.queryModel.detectedLanguage = EZLanguageAuto;
-        self.queryModel.queryViewHeight = [self miniQueryViewHeight];
-        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-    } else {
-        self.queryView.queryModel = self.queryModel;
-        [self updateQueryCell];
     }
     
+    [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
     self.queryView.clearButtonHidden = (_queryText.length == 0) && ([self allShowingResults].count == 0);
 }
 
