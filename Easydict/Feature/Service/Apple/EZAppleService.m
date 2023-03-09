@@ -155,15 +155,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return;
     }
     
-    
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
-    NSArray *languages = @[ from, to ];
-    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
-        [super translate:text from:from to:to completion:completion];
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     
@@ -183,7 +176,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
         if (!error) {
-            self.result.normalResults = @[ result ];
+            self.result.normalResults = @[ result.trim ];
         } else {
             self.result.promptTitle = @"如何在 Easydict 中使用 🍎 macOS 系统翻译？";
             // https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md

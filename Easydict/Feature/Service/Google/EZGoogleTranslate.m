@@ -385,12 +385,10 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                       
                       // 普通释义
                       NSArray *sentences = responseDict[@"sentences"];
-                      if (sentences &&
-                          [sentences isKindOfClass:NSArray.class]) {
+                      if (sentences && [sentences isKindOfClass:NSArray.class]) {
                           NSString *trans = sentences[0][@"trans"];
-                          if (trans &&
-                              [trans isKindOfClass:NSString.class]) {
-                              result.normalResults = @[ trans ];
+                          if (trans && [trans isKindOfClass:NSString.class]) {
+                              result.normalResults = @[ trans.trim ];
                               NSString *signTo = [[self.signFunction
                                                    callWithArguments:@[ trans ]] toString];
                               result.toSpeakURL = [self
@@ -550,7 +548,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         NSArray *normalResults = [normalArray mm_map:^id _Nullable(NSArray *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                             if ([obj isKindOfClass:[NSArray class]]) {
                                 if (obj.count && [obj.firstObject isKindOfClass:[NSString class]]) {
-                                    return obj.firstObject;
+                                    return [obj.firstObject trim];
                                 }
                             }
                             return nil;
