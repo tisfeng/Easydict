@@ -78,6 +78,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
                                         EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh",
                                         EZLanguageTraditionalChinese, @"zh-Hant",
+                                        EZLanguageClassicalChinese, @"lzh",
                                         EZLanguageEnglish, @"en",
                                         EZLanguageJapanese, @"ja",
                                         EZLanguageKorean, @"ko",
@@ -129,9 +130,8 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSArray *languages = @[ from, to ];
-    if ([EZLanguageManager onlyContainsChineseLanguages:languages]) {
-        [super translate:text from:from to:to completion:completion];
+    
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     
