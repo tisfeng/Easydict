@@ -289,54 +289,43 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
             NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
             
-            EZOCRResult *result = [[EZOCRResult alloc] init];
-            result.from = ocrLanguage;
+            EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+            ocrResult.from = ocrLanguage;
             
             if (error) {
-                completion(result, error);
+                completion(ocrResult, error);
                 return;
             }
-            
-            NSMutableArray *recognizedStrings = [NSMutableArray array];
-            for (VNRecognizedTextObservation *observation in request.results) {
-                VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
-                [recognizedStrings addObject:recognizedText.string];
-            }
-            NSString *resultText = [self joinStringArray:recognizedStrings];
-            resultText = [self replaceSimilarDotSymbolOfString:resultText];
-            
-            result.texts = recognizedStrings;
-            result.mergedText = resultText;
-            result.raw = recognizedStrings;
-            
-            NSLog(@"ocr text: %@", recognizedStrings);
-            
-            /**
-             !!!: There are some problems with the system OCR.
-             For example, it may return nil when ocr Japanese text.
-             
-             アイス・スノーセーリング世界選手権大会
-             
-             */
             
             BOOL retryOCR = retryWithAutoDetectedLanguage && [ocrLanguage isEqualToString:EZLanguageAuto];
             
             if (!retryOCR) {
-                if (!error && resultText.length == 0) {
+                [self setupOCRResult:ocrResult request:request autoJoined:YES];
+                if (!error && ocrResult.mergedText.length == 0) {
+                    /**
+                     !!!: There are some problems with the system OCR.
+                     For example, it may return nil when ocr Japanese text:
+                     
+                     アイス・スノーセーリング世界選手権大会
+                     
+                     */
                     error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(result, error);
+                    completion(ocrResult, error);
                 });
                 return;
             }
             
-            [self detectText:resultText completion:^(EZLanguage lang, NSError *_Nullable error) {
-                if (![lang isEqualToString:recognitionLanguages.firstObject]) {
-                    [self ocrImage:image language:lang retry:NO completion:completion];
+            [self setupOCRResult:ocrResult request:request autoJoined:NO];
+            
+            [self detectText:ocrResult.mergedText completion:^(EZLanguage language, NSError *_Nullable error) {
+                ocrResult.from = language;
+                if (![language isEqualToString:recognitionLanguages.firstObject]) {
+                    [self ocrImage:image language:language retry:NO completion:completion];
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(result, nil);
+                        completion(ocrResult, nil);
                     });
                 }
             }];
@@ -368,6 +357,29 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         // Perform the text-recognition request.
         [requestHandler performRequests:@[ request ] error:nil];
     });
+}
+
+- (void)setupOCRResult:(EZOCRResult *)ocrResult
+               request:(VNRequest *_Nonnull)request
+            autoJoined:(BOOL)autoJoined
+{
+    NSMutableArray *recognizedStrings = [NSMutableArray array];
+    for (VNRecognizedTextObservation *observation in request.results) {
+        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        [recognizedStrings addObject:recognizedText.string];
+    }
+    
+    NSString *resultText = [recognizedStrings componentsJoinedByString:@"\n"];
+    if (autoJoined) {
+        [self joinOCRResults:ocrResult];
+        resultText = [self replaceSimilarDotSymbolOfString:resultText];
+    }
+    
+    ocrResult.texts = recognizedStrings;
+    ocrResult.mergedText = resultText;
+    ocrResult.raw = recognizedStrings;
+    
+    NSLog(@"ocr text: %@", recognizedStrings);
 }
 
 // Update OCR recognitionLanguages with preferred languages.
@@ -921,19 +933,21 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
  给我再去相信的勇气
  Oh 越过谎言去拥抱你
  */
-
-/// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-- (NSString *)joinStringArray:(NSArray<NSString *> *)stringArray {
+- (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
+    NSArray<NSString *> *stringArray = ocrResult.texts;
+    EZLanguage language = ocrResult.from;
+    
     NSMutableString *joinedString = [NSMutableString string];
     CGFloat maxLengthOfLine = 0;
     CGFloat minLengthOfLine = 0;
     NSInteger punctuationMarkCount = 0;
     CGFloat punctuationMarkRate = 0;
-    BOOL isPoetry = [self isPoetryOfStringArray:stringArray
-                                maxLengthOfLine:&maxLengthOfLine
-                                minLengthOfLine:&minLengthOfLine
-                           punctuationMarkCount:&punctuationMarkCount
-                            punctuationMarkRate:&punctuationMarkRate];
+    
+    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
+                               maxLengthOfLine:&maxLengthOfLine
+                               minLengthOfLine:&minLengthOfLine
+                          punctuationMarkCount:&punctuationMarkCount
+                           punctuationMarkRate:&punctuationMarkRate];
     
     NSString *newLineString = @"\n\n";
     if (isPoetry) {
@@ -944,11 +958,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         NSString *string = stringArray[i];
         [joinedString appendString:string];
         
-        EZLanguage language = [self appleDetectTextLanguage:string];
-        
         // Append \n for short line if string frame width is less than max width - delta.
         BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         
+        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
         BOOL endWithPunctuationMark = [self isEndPunctuationMark:lastChar];
         
@@ -971,13 +984,16 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return [joinedString trim];
 }
 
-
-/// Iterate string array, get the max and min frame width of string, the punctuation count and the punctuation mark percent.
-- (BOOL)isPoetryOfStringArray:(NSArray<NSString *> *)stringArray
-              maxLengthOfLine:(CGFloat *)maxLengthOfLine
-              minLengthOfLine:(CGFloat *)minLengthOfLine
-         punctuationMarkCount:(NSInteger *)punctuationMarkCount
-          punctuationMarkRate:(CGFloat *)punctuationMarkRate {
+/// Check if string array is poetry, and get the max and min frame width of string, the punctuation count and the punctuation mark percent.
+- (BOOL)isPoetryOfOCRResults:(EZOCRResult *)ocrResult
+             maxLengthOfLine:(CGFloat *)maxLengthOfLine
+             minLengthOfLine:(CGFloat *)minLengthOfLine
+        punctuationMarkCount:(NSInteger *)punctuationMarkCount
+         punctuationMarkRate:(CGFloat *)punctuationMarkRate {
+    
+    NSArray<NSString *> *stringArray = ocrResult.texts;
+    EZLanguage language = ocrResult.from;
+    
     CGFloat _maxLengthOfLine = 0;
     CGFloat _minLengthOfLine = CGFLOAT_MAX;
     NSInteger _punctuationMarkCount = 0;
@@ -1027,11 +1043,15 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return NO;
     }
     
-    if (stringArray.count >= 4 && _punctuationMarkRate < 0.01) {
+    if (_punctuationMarkCount == 0 && [EZLanguageManager isChineseLanguage:language]) {
         return YES;
     }
     
-    if (stringArray.count >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
+    if (stringArray.count >= 4 && _punctuationMarkRate < 0.02) {
+        return YES;
+    }
+    
+    if (stringArray.count >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
         return YES;
     }
     
@@ -1040,7 +1060,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     [self shortLineCount:&shortLineCount
            longLineCount:&longLineCount
            ofStringArray:stringArray
-         maxLengthOfLine:_maxLengthOfLine];
+         maxLengthOfLine:_maxLengthOfLine
+                language:language];
     
     BOOL tooManyLongLine = longLineCount >= stringArray.count * 0.8;
     if (tooManyLongLine) {
@@ -1059,12 +1080,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 - (void)shortLineCount:(NSInteger *)shortLineCount
          longLineCount:(NSInteger *)longLineCount
          ofStringArray:(NSArray<NSString *> *)stringArray
-       maxLengthOfLine:(CGFloat)maxLengthOfLine {
+       maxLengthOfLine:(CGFloat)maxLengthOfLine
+              language:(EZLanguage)language {
     NSInteger _shortLineCount = 0;
     NSInteger _longLineCount = 0;
     for (NSString *string in stringArray) {
-        EZLanguage language = [self appleDetectTextLanguage:string];
-        
         BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         if (isShortLine) {

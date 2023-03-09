@@ -75,6 +75,10 @@
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
     [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
         self.queryModel.queryText = ocrResult.mergedText;
+        EZLanguage sourceLanguage = ocrResult.from;
+        if (![sourceLanguage isEqualToString:EZLanguageAuto]) {
+            self.queryModel.detectedLanguage = sourceLanguage;
+        }
         completion(self.queryModel, error);
     }];
 }
@@ -164,22 +168,34 @@
         NSLog(@"image cannot be nil");
         return;
     }
-
+    
+    /**
+     System OCR result may be inaccurate when use auto detect language, such as:
+     
+     今日は国際ホッキョクグマの日
+     
+     But if we use Japanese to ocr again, the result will be more accurate.
+     */
+    
+    // TODO: If ocr text is too long, maybe we could ocr only part of the image.
+    // TODO: If ocr large PDF file, we should alert user to select detected language.
     [self ocr:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable ocrError) {
         if (ocrError) {
             [self handleOCRResult:ocrResult error:ocrError completion:completion];
             return;
         }
         
+        EZLanguage ocrLanguage = self.queryModel.queryFromLanguage;
+        
         NSString *ocrText = ocrResult.mergedText;
         [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable detectError) {
-            BOOL retryOCR = ![self.queryModel.queryFromLanguage isEqualToString:queryModel.detectedLanguage];
+            BOOL retryOCR = ![ocrLanguage isEqualToString:queryModel.detectedLanguage];
             if (!retryOCR) {
                 completion(ocrResult, nil);
                 return;
             }
             
-            [self.ocrService ocr:queryModel completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+            [self.ocrService ocr:queryModel completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
                 [self handleOCRResult:ocrResult error:error completion:completion];
             }];
         }];
@@ -191,7 +207,7 @@
         completion(ocrResult, nil);
         return;
     }
-
+    
     [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
         if (!youdaoOCRError) {
             completion(youdaoOCRResult, nil);
