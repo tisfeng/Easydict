@@ -335,7 +335,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                         
                         // ???: use word_means as normalResults?
                         if (simple_means.word_means.count) {
-                            result.normalResults = @[simple_means.word_means.firstObject];
+                            result.normalResults = @[ simple_means.word_means.firstObject.trim];
                         }
                         
                         // 至少要有词义或单词组才认为有单词翻译结果
@@ -348,7 +348,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                     // 解析普通释义
                     NSMutableArray *normalResults = [NSMutableArray array];
                     [response.trans_result.data enumerateObjectsUsingBlock:^(EZBaiduTranslateResponseData *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                        [normalResults addObject:obj.dst];
+                        [normalResults addObject:obj.dst.trim];
                     }];
                     
                     if (normalResults.count) {
