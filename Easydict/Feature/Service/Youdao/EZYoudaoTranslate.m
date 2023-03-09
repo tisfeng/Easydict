@@ -382,7 +382,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                     for (NSDictionary *resultDict in results) {
                         NSString *text = resultDict[@"tgt"];
                         if (text.length) {
-                            [texts addObject:text];
+                            [texts addObject:text.trim];
                         }
                     }
                 }

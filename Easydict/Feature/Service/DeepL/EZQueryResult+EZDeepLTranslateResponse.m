@@ -14,7 +14,7 @@
     self.raw = deepLTranslateResponse;
     NSString *firstResult = deepLTranslateResponse.result.texts.firstObject.text;
     if (firstResult) {
-        self.normalResults = @[ firstResult ];
+        self.normalResults = @[ firstResult.trim ];
     }
 
     return self;
