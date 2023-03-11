@@ -300,7 +300,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             BOOL retryOCR = retryWithAutoDetectedLanguage && [ocrLanguage isEqualToString:EZLanguageAuto];
             
             if (!retryOCR) {
-                [self setupOCRResult:ocrResult request:request autoJoined:YES];
+                [self setupOCRResult:ocrResult request:request intelligentJoined:YES];
                 if (!error && ocrResult.mergedText.length == 0) {
                     /**
                      !!!: There are some problems with the system OCR.
@@ -317,7 +317,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 return;
             }
             
-            [self setupOCRResult:ocrResult request:request autoJoined:NO];
+            [self setupOCRResult:ocrResult request:request intelligentJoined:NO];
             
             [self detectText:ocrResult.mergedText completion:^(EZLanguage language, NSError *_Nullable error) {
                 ocrResult.from = language;
@@ -361,22 +361,23 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 - (void)setupOCRResult:(EZOCRResult *)ocrResult
                request:(VNRequest *_Nonnull)request
-            autoJoined:(BOOL)autoJoined
-{
+     intelligentJoined:(BOOL)intelligentJoined {
+    // TODO: need to optimize, check the frame of the text and determine if line breaks are necessary.
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     for (VNRecognizedTextObservation *observation in request.results) {
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         [recognizedStrings addObject:recognizedText.string];
     }
     
-    NSString *resultText = [recognizedStrings componentsJoinedByString:@"\n"];
-    if (autoJoined) {
-        [self joinOCRResults:ocrResult];
-        resultText = [self replaceSimilarDotSymbolOfString:resultText];
+    ocrResult.texts = recognizedStrings;
+    
+    NSString *mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
+    if (intelligentJoined) {
+        mergedText = [self joinOCRResults:ocrResult];
+        mergedText = [self replaceSimilarDotSymbolOfString:mergedText];
     }
     
-    ocrResult.texts = recognizedStrings;
-    ocrResult.mergedText = resultText;
+    ocrResult.mergedText = mergedText;
     ocrResult.raw = recognizedStrings;
     
     NSLog(@"ocr text: %@", recognizedStrings);
@@ -990,7 +991,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
              minLengthOfLine:(CGFloat *)minLengthOfLine
         punctuationMarkCount:(NSInteger *)punctuationMarkCount
          punctuationMarkRate:(CGFloat *)punctuationMarkRate {
-    
     NSArray<NSString *> *stringArray = ocrResult.texts;
     EZLanguage language = ocrResult.from;
     
