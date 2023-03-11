@@ -276,12 +276,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     self.queryModel.queryText = _queryText;
     
-    if (self.queryText.length == 0) {
-        self.queryModel.detectedLanguage = EZLanguageAuto;
-    }
-    
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-    self.queryView.clearButtonHidden = (_queryText.length == 0) && ([self allShowingResults].count == 0);
 }
 
 #pragma mark - Public Methods
@@ -818,8 +813,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    BOOL showAutoDetect = queryModel.queryText.length;
-    [self.queryView showAutoDetectLanguage:showAutoDetect];
+    if (queryModel.queryText.length == 0) {
+        queryModel.detectedLanguage = EZLanguageAuto;
+        
+        [self.queryView showAutoDetectLanguage:NO];
+    }
+    
+    self.queryView.clearButtonHidden = (queryModel.queryText.length == 0) && ([self allShowingResults].count == 0);
     
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
