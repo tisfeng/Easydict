@@ -341,17 +341,21 @@
 }
 
 - (BOOL)textView:(NSTextView *)textView shouldChangeTextInRange:(NSRange)affectedCharRange replacementString:(NSString *)replacementString {
-    //    NSLog(@"text: %@", textView.string);
-    //    NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
-    //    NSLog(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
-    
-    BOOL isInputting = [textView hasMarkedText] && textView.markedRange.length == 0;
-    if (![textView hasMarkedText] || isInputting) {
+    BOOL hasMarkedText = [textView hasMarkedText];
+    BOOL isInputting = hasMarkedText && textView.markedRange.length == 0;
+    if (!hasMarkedText || isInputting) {
         self.lastRecordText = [self copiedText];
         [self tryRecordUndoText];
     }
     
-    self.isTypingChinese = textView.hasMarkedText;
+    // !!!: Be careful, when user finish inputting Chinese, hasMarkedText still returns YES, so we need to set isTypingChinese to NO in `textDidChange:` method.
+    self.isTypingChinese = hasMarkedText;
+    //    if (self.isTypingChinese) {
+    //        NSLog(@"---> isTypingChinese");
+    //        NSLog(@"text: %@", textView.string);
+    //        NSLog(@"shouldChangeTextInRange: %@, %@", NSStringFromRange(affectedCharRange), replacementString);
+    //        NSLog(@"hasMarkedText: %d, markedRange: %@", [textView hasMarkedText], NSStringFromRange(textView.markedRange));
+    //    }
     
     return YES;
 }
@@ -373,6 +377,9 @@
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
+    
+    // Set `self.isTypingChinese` to NO when textView string is changed.
+    self.isTypingChinese = NO;
     
     self.enableAutoDetect = YES;
     [self updateButtonsDisplayState:text];
