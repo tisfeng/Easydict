@@ -32,7 +32,7 @@
     self.title = @"";
     
     [self excuteLight:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#EAEAEA"];
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
     } drak:^(EZButton *detectButton) {
