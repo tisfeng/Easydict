@@ -1,6 +1,6 @@
 ---
 name: Others
-about: 其他
+about: Others
 title: Others
 labels:
 ---
