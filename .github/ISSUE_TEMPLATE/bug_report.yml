@@ -3,13 +3,13 @@ description: 反馈问题
 title: "🐞 反馈问题：（您好，请按照模板填写，谢谢）"
 labels: ["bug"]
 assignees:
-  -
+  - tisfeng
 
 body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: 请确认以下内容后提交问题
+      label: 请先确认以下事项
       options:
         - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
@@ -22,7 +22,7 @@ body:
     id: description
     attributes:
       label: 问题描述
-      description: 请尽量清晰、详细地描述问题。如果涉及 UI，请提供截图。如果问题比较复杂，最好能提供录屏，方便开发者排查。
+      description: 请尽量清晰、详细地描述问。题如果涉及 UI，请提供截图。如果问题比较复杂，最好能提供录屏，方便开发者排查。
       placeholder: 问题描述
     validations:
       required: true
@@ -32,7 +32,7 @@ body:
     attributes:
       label: 重现步骤
       description: 请描述如何重现该问题。
-      placeholder: 若问题一眼可见，直接填“无”
+      placeholder: 若问题很容易复现，可直接填“无”
     validations:
       required: true
 
@@ -55,13 +55,6 @@ body:
   - type: input
     id: device
     attributes:
-      label: 设备信息（可选）
-      description: 如果遇到很奇怪的问题，可以提供设备信息，方便开发者排查
-      placeholder: Apple M1 Pro
-
-  - type: input
-    id: os
-    attributes:
-      label: 操作系统版本（可选）
-      description: 如果遇到很奇怪的问题，可以提供操作系统版本，方便开发者排查
-      placeholder: 13.2 (22D49)
+      label: 设备信息 && 操作系统版本（可选）
+      description: 如果遇到很奇怪的问题，可以提供设备信息和操作系统版本，方便开发者排查
+      placeholder: Apple M1 Pro, macOS 11.2.3
