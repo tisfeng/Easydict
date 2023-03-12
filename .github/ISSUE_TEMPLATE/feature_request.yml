@@ -9,7 +9,7 @@ body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: 请确认以下内容后提交问题
+      label: 请先确认以下事项
       options:
         - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
@@ -38,5 +38,5 @@ body:
     id: resolution
     attributes:
       label: 实现方案（可选）
-      description: 对于该功能，您有什么实现方案，或者建议？
+      description: 对于该功能，您有什么预想的实现方案，或者建议？
       placeholder:
