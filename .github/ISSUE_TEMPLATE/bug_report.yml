@@ -32,7 +32,7 @@ body:
     attributes:
       label: 重现步骤
       description: 请描述如何重现该问题。
-      placeholder: 
+      placeholder: 若问题一眼可见，直接填“无”
     validations:
       required: true
 
@@ -56,12 +56,12 @@ body:
     id: device
     attributes:
       label: 设备信息（可选）
-      description: 如果认为是 bug，请提供设备信息
+      description: 如果遇到很奇怪的问题，可以提供设备信息，方便开发者排查
       placeholder: Apple M1 Pro
 
   - type: input
     id: os
     attributes:
       label: 操作系统版本（可选）
-      description: 如果认为是 bug，请提供操作系统版本
+      description: 如果遇到很奇怪的问题，可以提供操作系统版本，方便开发者排查
       placeholder: 13.2 (22D49)
