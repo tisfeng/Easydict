@@ -1,0 +1,42 @@
+name: Feature request
+description: 功能建议
+title: "🚀 功能建议：（您好，请按照模板填写，谢谢）"
+labels: ["enhancement"]
+assignees:
+  - tisfeng
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 请确认以下内容后提交问题
+      options:
+        - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
+          required: true
+        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题，但未能找到解决方法
+          required: true
+        - label: Easydict 已升级到最新版本
+          required: true
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: 功能描述
+      description: 请描述你希望的功能，有必要的话可以提供截图，以供开发者参考。
+      placeholder:
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature_usecase
+    attributes:
+      label: 使用场景（可选）
+      description: 请描述你希望的功能的使用场景，有无可供参考的类似 App 功能等。
+      placeholder:
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: 实现方案（可选）
+      description: 对于该功能，您有什么实现方案，或者建议？
+      placeholder:
