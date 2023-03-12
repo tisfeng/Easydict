@@ -28,8 +28,6 @@
 @property (nonatomic, copy) NSString *lastRecordText;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
-@property (nonatomic, assign) BOOL isTypingChinese;
-
 @end
 
 @implementation EZQueryView

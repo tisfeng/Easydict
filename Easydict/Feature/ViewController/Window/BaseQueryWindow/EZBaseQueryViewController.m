@@ -291,6 +291,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
+    self.queryView.isTypingChinese = NO;
+
     __block BOOL handledSuccess;
     BOOL handled = [self.linkParser openURLWithText:self.queryText completion:^(BOOL success) {
         handledSuccess = success;
@@ -323,6 +325,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.ocrImage = image;
     self.queryModel.queryType = EZQueryTypeOCR;
     
+    self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
     
     mm_weakify(self);
