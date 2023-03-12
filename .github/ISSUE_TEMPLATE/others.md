@@ -1,6 +1,6 @@
 ---
 name: Others
-about: 其他问题
+about: 其他
 title:
 labels:
 ---
