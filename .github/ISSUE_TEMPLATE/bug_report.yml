@@ -1,0 +1,67 @@
+name: Bug report
+description: 反馈问题
+title: "🐞 反馈问题：（您好，请按照模板填写，谢谢）"
+labels: ["bug"]
+assignees:
+  -
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 请确认以下内容后提交问题
+      options:
+        - label: 已仔细阅读了 README
+          required: true
+        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题，但未能找到解决方法
+          required: true
+        - label: Easydict 已升级到最新版本
+          required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请尽量清晰、详细地描述问题。如果涉及 UI，请提供截图。如果问题比较复杂，最好能提供录屏，方便开发者排查。
+      placeholder: 问题描述
+    validations:
+      required: true
+
+  - type: input
+    id: reproduce
+    attributes:
+      label: 重现步骤
+      description: 请描述如何重现该问题。
+      placeholder: 重现步骤
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+      description: 请描述您期望的结果。
+      placeholder: 期望结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: 解决方案
+      description: 对于该问题，您有什么解决方案，或者建议？
+      placeholder: 解决方案
+
+  - type: input
+    id: device
+    attributes:
+      label: 设备信息（可选）
+      description: 如果认为是 bug，请提供设备信息
+      placeholder: Apple M1 Pro
+
+  - type: input
+    id: os
+    attributes:
+      label: 操作系统版本（可选）
+      description: 如果认为是 bug，请提供操作系统版本
+      placeholder: 13.2 (22D49)
