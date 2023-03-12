@@ -155,17 +155,6 @@ static const CGFloat kVerticalPadding_8 = 8;
                 make.right.equalTo(self).offset(-kHorizontalMargin_8);
                 exceptedWidth += kHorizontalMargin_8;
                 
-                CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
-                make.size.mas_equalTo(labelSize).priorityHigh();
-                
-                // This means the label text has more than 2 lines, so we need to adjust the top offset.
-                if (labelSize.height > typeTextField.height * 2) {
-                    ezLabelTopOffset = -1;
-                }
-                
-                height += (kVerticalMargin_12 + labelSize.height);
-                // NSLog(@"height = %1.f", height);
-                
                 if (typeTextField) {
                     make.top.equalTo(typeTextField).offset(ezLabelTopOffset);
                     make.left.equalTo(typeTextField.mas_right);
@@ -180,6 +169,17 @@ static const CGFloat kVerticalPadding_8 = 8;
                     exceptedWidth += leftPadding;
                     make.left.equalTo(self).offset(leftPadding);
                 }
+                
+                CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
+                make.size.mas_equalTo(labelSize).priorityHigh();
+                
+                // This means the label text has more than 2 lines, so we need to adjust the top offset.
+                if (labelSize.height > typeTextField.height * 2) {
+                    ezLabelTopOffset = -1;
+                }
+                
+                height += (kVerticalMargin_12 + labelSize.height);
+                // NSLog(@"height = %1.f", height);
             }];
             resultLabel.mas_key = @"resultLabel_normalResults";
             lastView = resultLabel;
@@ -664,8 +664,9 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.left.equalTo(wordButton.mas_right).offset(leftOffset);
             exceptedWidth += leftOffset;
             
-            make.right.lessThanOrEqualTo(self).offset(-5);
-            exceptedWidth += 5;
+            CGFloat rightOffset = 5;
+            make.right.lessThanOrEqualTo(self).offset(-rightOffset);
+            exceptedWidth += rightOffset;
             
             CGSize labelSize = [self labelSize:meanLabel exceptedWidth:exceptedWidth];
             
