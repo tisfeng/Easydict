@@ -1,7 +1,7 @@
 ---
 name: Others
 about: 其他
-title:
+title: Others
 labels:
 ---
 
