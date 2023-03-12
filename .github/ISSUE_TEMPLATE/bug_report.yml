@@ -11,14 +11,14 @@ body:
     attributes:
       label: 请确认以下内容后提交问题
       options:
-        - label: 已仔细阅读了 README
+        - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
         - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题，但未能找到解决方法
           required: true
         - label: Easydict 已升级到最新版本
           required: true
 
-  - type: input
+  - type: textarea
     id: description
     attributes:
       label: 问题描述
@@ -27,12 +27,12 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: reproduce
     attributes:
       label: 重现步骤
       description: 请描述如何重现该问题。
-      placeholder: 重现步骤
+      placeholder: 
     validations:
       required: true
 
@@ -41,16 +41,16 @@ body:
     attributes:
       label: 期望结果
       description: 请描述您期望的结果。
-      placeholder: 期望结果
+      placeholder:
     validations:
       required: true
 
   - type: textarea
     id: resolution
     attributes:
-      label: 解决方案
+      label: 解决方案（可选）
       description: 对于该问题，您有什么解决方案，或者建议？
-      placeholder: 解决方案
+      placeholder:
 
   - type: input
     id: device
