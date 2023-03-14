@@ -10,8 +10,8 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
-static NSString *kDefinitionDelimiter = @"{------Definition------}:";
-static NSString *kEtymologyDelimiter = @"{------Etymology------}:";
+static NSString *kDefinitionDelimiter = @"{---Definition---}:";
+static NSString *kEtymologyDelimiter = @"{---Etymology---}:";
 
 static NSString *kTranslationStartDelimiter = @"\"{------";
 static NSString *kTranslationEndDelimiter = @"------}\"";
