@@ -201,41 +201,50 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
     if (stream) {
         __block NSMutableString *mutableString = [NSMutableString string];
         __block BOOL isFirst = YES;
+        __block BOOL isFinished = NO;
         __block NSString *appendSuffixQuote = nil;
 
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
             // convert data to JSON
 
             NSError *error;
-            NSString *content = [self parseContentFromStreamData:data error:&error];
+            NSString *content = [self parseContentFromStreamData:data error:&error isFinished:&isFinished];
             if (error) {
                 completion(nil, error);
                 return;
             }
             
-            NSLog(@"content: %@", content);
+            NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
-            if (isFirst && ![self isQueryTextHasPrefixQuote]) {
+            if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
                 appendContent = [self tryToRemovePrefixQuote:content];
-                isFirst = NO;
-            }
-
-            // Delay append right quote, in case the suffix quote is in the extra last char.
-            if (!isFirst && appendContent.length) {
-                // Append last delayed suffix quote.
-                if (appendSuffixQuote) {
-                    appendContent = [content stringByAppendingString:appendSuffixQuote];
-                    appendSuffixQuote = nil;
-                }
-                
-                appendSuffixQuote = [self hasSuffixQuote:content];
-                // If content has suffix quote, mark it, and delay to append.
-                if (appendSuffixQuote) {
-                    appendContent = [self tryToRemoveSuffixQuote:content];
-                }
             }
             
+            if (!isFinished) {
+                if (!isFirst) {
+                    // Append last delayed suffix quote.
+                    if (appendSuffixQuote) {
+                        appendContent = [content stringByAppendingString:appendSuffixQuote];
+                        appendSuffixQuote = nil;
+                    }
+                    
+                    appendSuffixQuote = [self hasSuffixQuote:content];
+                    // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
+                    if (appendSuffixQuote) {
+                        appendContent = [self tryToRemoveSuffixQuote:content];
+                    }
+                }
+            } else {
+                // [DONE], end of string.
+                if (![self hasSuffixQuoteOfQueryText]) {
+                    appendContent = [self tryToRemoveSuffixQuote:content];
+                } else if (appendSuffixQuote) {
+                    appendContent = [content stringByAppendingString:appendSuffixQuote];
+                }
+            }
+
+            isFirst = NO;
             if (appendContent) {
                 [mutableString appendString:appendContent];
             }
@@ -265,7 +274,9 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
 /// Parse content from nsdata
 - (NSString *)parseContentFromStreamData:(NSData *)data
-                                            error:(NSError **)error {
+                                   error:(NSError **)error
+                              isFinished:(BOOL *)isFinished
+{
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
 
@@ -275,7 +286,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
      data: [DONE]
      */
-
+    
     // Convert data to string
     NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     // split string to array
@@ -287,9 +298,12 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
     // iterate array
     for (NSString *jsonString in jsonArray) {
+        *isFinished = NO;
+
         NSString *dataString = [jsonString trim];
         NSString *endString = @"[DONE]";
         if ([dataString isEqualToString:endString]) {
+            *isFinished = YES;
             break;
         }
 
@@ -579,20 +593,18 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 }
 
 /// Check if self.queryModel.queryText has prefix quote.
-- (BOOL)isQueryTextHasPrefixQuote {
+- (BOOL)hasPrefixQuoteOfQueryText {
     if ([self hasPrefixQuote:self.queryModel.queryText]) {
         return YES;
     }
-
     return NO;
 }
 
 /// Check if self.queryModel.queryText has suffix quote.
-- (BOOL)isQueryTextHasSuffixQuote {
+- (BOOL)hasSuffixQuoteOfQueryText {
     if ([self hasSuffixQuote:self.queryModel.queryText]) {
         return YES;
     }
-
     return NO;
 }
 
