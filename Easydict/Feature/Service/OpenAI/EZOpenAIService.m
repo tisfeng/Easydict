@@ -186,30 +186,50 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
     };
 
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/event-stream", nil];
+    // Since content types is text/event-stream, we don't need AFJSONResponseSerializer.
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+
+    NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:manager.responseSerializer.acceptableContentTypes];
+    [acceptableContentTypes addObject:@"text/event-stream"];
+    manager.responseSerializer.acceptableContentTypes = acceptableContentTypes;
+    
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = EZNetWorkTimeoutInterval;
-//    [manager.requestSerializer setValue:@"text/event-stream" forHTTPHeaderField:@"Accept"];
     [header enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [manager.requestSerializer setValue:obj forHTTPHeaderField:key];
     }];
 
     if (stream) {
-        NSMutableString *mutableString = [NSMutableString string];
+        __block NSMutableString *mutableString = [NSMutableString string];
+        __block BOOL isFirst = YES;
 
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
             // convert data to JSON
 
             NSError *error;
-            NSString *content = [self parseContentFromStreamData:data error:&error] ?: @"";
+            NSString *content = [self parseContentFromStreamData:data error:&error];
             if (error) {
                 completion(nil, error);
                 return;
             }
             
             NSLog(@"content: %@", content);
-            [mutableString appendString:content];
+            
+            if (isFirst && ![self isQueryTextQuote]) {
+                content = [self tryToRemoveLeftQuotes:content];
+                isFirst = NO;
+            }
+            
+            
+            // End string
+            if (!content) {
+                if (![self isQueryTextQuote]) {
+                    mutableString = [[self tryToRemoveRightQuotes:mutableString] mutableCopy];
+                }
+            } else {
+                [mutableString appendString:content];
+            }
+            
             completion(mutableString, nil);
         }];
     }
@@ -225,9 +245,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
             }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        if (!stream) {
-            completion(nil, error);
-        }
+        completion(nil, error);
     }];
 }
 
@@ -239,7 +257,9 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"\n\n"},"index":0,"finish_reason":null}]}
 
-     data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"{"},"index":0,"finish_reason":null}]}
+     data: {"id":"chatcmpl-6vH0XCFkVoEtnuYzrc70ZMZsD92pt","object":"chat.completion.chunk","created":1679108093,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{},"index":0,"finish_reason":"stop"}]}
+
+     data: [DONE]
      */
 
     // Convert data to string
@@ -278,6 +298,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
                     if (delta[@"content"]) {
                         NSString *content = delta[@"content"];
                         [mutableString appendString:content];
+                        NSLog(@"mutableString: %@", mutableString);
                     }
                 }
             }
@@ -541,15 +562,9 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
         @"‘" : @"’",
     };
 
-    BOOL needToRemove = YES;
-    // iterate all quotes.
     NSArray *quotes = [quoteDict allKeys];
-    for (NSString *quote in quotes) {
-        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:quoteDict[quote]]) {
-            needToRemove = NO;
-            break;
-        }
-    }
+
+    BOOL needToRemove = ![self isQueryTextQuote];
 
     if (needToRemove) {
         for (NSString *quote in quotes) {
@@ -557,6 +572,50 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
         }
     }
 }
+
+/// Check if self.queryModel.queryText has quote.
+- (BOOL)isQueryTextQuote {
+    NSDictionary *quoteDict = @{
+        @"\"" : @"\"",
+        @"“" : @"”",
+        @"‘" : @"’",
+    };
+
+    // iterate all quotes.
+    NSArray *quotes = [quoteDict allKeys];
+    for (NSString *quote in quotes) {
+        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:quoteDict[quote]]) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+/// Remove left quotes
+- (NSString *)tryToRemoveLeftQuotes:(NSString *)text {
+    NSArray *leftQuotes = @[ @"\"", @"“", @"‘" ];
+    for (NSString *quote in leftQuotes) {
+        if ([text hasPrefix:quote]) {
+            return [text substringFromIndex:1];
+        }
+    }
+
+    return text;
+}
+
+/// Remove right quotes
+- (NSString *)tryToRemoveRightQuotes:(NSString *)text {
+    NSArray *rightQuotes = @[ @"\"", @"”", @"’" ];
+    for (NSString *quote in rightQuotes) {
+        if ([text hasSuffix:quote]) {
+            return [text substringToIndex:text.length - 1];
+        }
+    }
+
+    return text;
+}
+
 
 /// Check if text is start and end with the designated string.
 - (BOOL)isStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
