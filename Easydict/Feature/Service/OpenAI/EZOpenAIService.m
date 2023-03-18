@@ -10,13 +10,19 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
-static NSString *kDefinitionDelimiter = @"{---Definition---}:";
-static NSString *kEtymologyDelimiter = @"{---Etymology---}:";
+static NSString *const kDefinitionDelimiter = @"{---Definition---}:";
+static NSString *const kEtymologyDelimiter = @"{---Etymology---}:";
 
-static NSString *kTranslationStartDelimiter = @"\"{------";
-static NSString *kTranslationEndDelimiter = @"------}\"";
+static NSString *const kTranslationStartDelimiter = @"\"{------";
+static NSString *const kTranslationEndDelimiter = @"------}\"";
 
-static NSString *kEZLanguageWenYanWen = @"文言文";
+static NSString *const kEZLanguageWenYanWen = @"文言文";
+
+static NSDictionary *const kQuotesDict = @{
+    @"\"" : @"\"",
+    @"“" : @"”",
+    @"‘" : @"’",
+};
 
 @interface EZOpenAIService ()
 
@@ -123,7 +129,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
     NSArray *messages = @[
         @{
             @"role" : @"system",
-            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, only return the translated results.",
+            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, only return the translated text.",
         },
         @{
             @"role" : @"user",
@@ -198,6 +204,8 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
         [manager.requestSerializer setValue:obj forHTTPHeaderField:key];
     }];
 
+    BOOL isHandleQuote = YES;
+
     if (stream) {
         __block NSMutableString *mutableString = [NSMutableString string];
         __block BOOL isFirst = YES;
@@ -217,34 +225,38 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
             NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
-            if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
-                appendContent = [self tryToRemovePrefixQuote:content];
+            
+            if (isHandleQuote) {
+                if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
+                    appendContent = [self tryToRemovePrefixQuote:content];
+                }
+                
+                if (!isFinished) {
+                    if (!isFirst) {
+                        // Append last delayed suffix quote.
+                        if (appendSuffixQuote) {
+                            appendContent = [content stringByAppendingString:appendSuffixQuote];
+                            appendSuffixQuote = nil;
+                        }
+                        
+                        appendSuffixQuote = [self hasSuffixQuote:content];
+                        // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
+                        if (appendSuffixQuote) {
+                            appendContent = [self tryToRemoveSuffixQuote:content];
+                        }
+                    }
+                } else {
+                    // [DONE], end of string.
+                    if (![self hasSuffixQuoteOfQueryText]) {
+                        appendContent = [self tryToRemoveSuffixQuote:content];
+                    } else if (appendSuffixQuote) {
+                        appendContent = [content stringByAppendingString:appendSuffixQuote];
+                    }
+                }
+
+                isFirst = NO;
             }
             
-            if (!isFinished) {
-                if (!isFirst) {
-                    // Append last delayed suffix quote.
-                    if (appendSuffixQuote) {
-                        appendContent = [content stringByAppendingString:appendSuffixQuote];
-                        appendSuffixQuote = nil;
-                    }
-                    
-                    appendSuffixQuote = [self hasSuffixQuote:content];
-                    // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
-                    if (appendSuffixQuote) {
-                        appendContent = [self tryToRemoveSuffixQuote:content];
-                    }
-                }
-            } else {
-                // [DONE], end of string.
-                if (![self hasSuffixQuoteOfQueryText]) {
-                    appendContent = [self tryToRemoveSuffixQuote:content];
-                } else if (appendSuffixQuote) {
-                    appendContent = [content stringByAppendingString:appendSuffixQuote];
-                }
-            }
-
-            isFirst = NO;
             if (appendContent) {
                 [mutableString appendString:appendContent];
             }
@@ -264,8 +276,20 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
                 completion(result, nil);
             }
         } else {
-//            NSString *content = [self parseContentFromStreamData:responseObject error:nil];
-//            NSLog(@"success content: %@", content);
+            // 动人 --> "Touching" or "Moving".
+            NSString *queryText = self.queryModel.queryText;
+            
+            // Count quote may cost much time, so only count when query text is short.
+            if (isHandleQuote && queryText.length < 10) {
+                NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
+                NSLog(@"success content: %@", content);
+                
+                NSInteger queryTextQuoteCount = [self countQuoteNumberInText:queryText];
+                NSInteger translatedTextQuoteCount = [self countQuoteNumberInText:self.result.translatedText];
+                if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
+                    completion(content, nil);
+                }
+            }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         completion(nil, error);
@@ -275,7 +299,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 /// Parse content from nsdata
 - (NSString *)parseContentFromStreamData:(NSData *)data
                                    error:(NSError **)error
-                              isFinished:(BOOL *)isFinished
+                              isFinished:(nullable BOOL *)isFinished
 {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
@@ -298,12 +322,16 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
     // iterate array
     for (NSString *jsonString in jsonArray) {
-        *isFinished = NO;
+        if (isFinished) {
+            *isFinished = NO;
+        }
 
         NSString *dataString = [jsonString trim];
         NSString *endString = @"[DONE]";
         if ([dataString isEqualToString:endString]) {
-            *isFinished = YES;
+            if (isFinished) {
+                *isFinished = YES;
+            }
             break;
         }
 
@@ -575,16 +603,10 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
 /// Check if self.queryModel.queryText has quote.
 - (BOOL)isQueryTextHasQuote {
-    NSDictionary *quoteDict = @{
-        @"\"" : @"\"",
-        @"“" : @"”",
-        @"‘" : @"’",
-    };
-
     // iterate all quotes.
-    NSArray *quotes = [quoteDict allKeys];
+    NSArray *quotes = [kQuotesDict allKeys];
     for (NSString *quote in quotes) {
-        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:quoteDict[quote]]) {
+        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:kQuotesDict[quote]]) {
             return YES;
         }
     }
@@ -628,7 +650,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
 /// Check if text hasPrefix quote.
 - (nullable NSString *)hasPrefixQuote:(NSString *)text {
-    NSArray *leftQuotes = @[ @"\"", @"“", @"‘" ];
+    NSArray *leftQuotes = kQuotesDict.allKeys; // @[ @"\"", @"“", @"‘" ];
     for (NSString *quote in leftQuotes) {
         if ([text hasPrefix:quote]) {
             return quote;
@@ -639,7 +661,7 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
 /// Check if text hasSuffix quote.
 - (nullable NSString *)hasSuffixQuote:(NSString *)text {
-    NSArray *rightQuotes = @[ @"\"", @"”", @"’" ];
+    NSArray *rightQuotes = kQuotesDict.allValues; // @[ @"\"", @"”", @"’" ];
     for (NSString *quote in rightQuotes) {
         if ([text hasSuffix:quote]) {
             return quote;
@@ -647,6 +669,24 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
     }
     return nil;
 }
+
+/// Count quote number in text. 动人 --> "Touching" or "Moving".
+- (NSUInteger)countQuoteNumberInText:(NSString *)text {
+    NSUInteger count = 0;
+    NSArray *leftQuotes = kQuotesDict.allKeys;
+    NSArray *rightQuotes = kQuotesDict.allValues;
+    NSArray *quotes = [leftQuotes arrayByAddingObjectsFromArray:rightQuotes];
+
+    for (NSUInteger i = 0; i < text.length; i++) {
+        NSString *character = [text substringWithRange:NSMakeRange(i, 1)];
+        if ([quotes containsObject:character]) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 
 /// Check if text is start and end with the designated string.
 - (BOOL)isStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
@@ -667,19 +707,13 @@ static NSString *kEZLanguageWenYanWen = @"文言文";
 
 /// Remove quotes. "\""
 - (void)tryToRemoveQuotes:(NSString **)text {
-    NSDictionary *quoteDict = @{
-        @"\"" : @"\"",
-        @"“" : @"”",
-        @"‘" : @"’",
-    };
-
-    NSArray *quotes = [quoteDict allKeys];
+    NSArray *quotes = [kQuotesDict allKeys];
 
     BOOL needToRemove = ![self isQueryTextHasQuote];
 
     if (needToRemove) {
         for (NSString *quote in quotes) {
-            *text = [self removeStartAndEnd:*text with:quote end:quoteDict[quote]];
+            *text = [self removeStartAndEnd:*text with:quote end:kQuotesDict[quote]];
         }
     }
 }
