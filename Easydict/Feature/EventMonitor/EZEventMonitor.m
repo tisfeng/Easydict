@@ -148,16 +148,20 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
         
-        if (error == kAXErrorSuccess) {
-            completion(text, YES);
-            return;
+        BOOL useShortcut = [self checkIfNeedUseShortcut:text];
+        
+        if (!useShortcut) {
+            if (error == kAXErrorSuccess) {
+                completion(text, YES);
+                return;
+            }
         }
         
         NSLog(@"AXError: %d", error);
 
         // If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
         // Typora will return kAXErrorAPIDisabled when get selected text.
-        if (error == kAXErrorNoValue || error == kAXErrorAPIDisabled) {
+        if (useShortcut || error == kAXErrorNoValue || error == kAXErrorAPIDisabled) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 completion(text, NO);
             }];
@@ -338,6 +342,25 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     return isTrusted == YES;
 }
+
+/// Check if need to use shortcut to get selected text.
+- (BOOL)checkIfNeedUseShortcut:(NSString *)text {
+    BOOL needUseShortcut = NO;
+    
+    NSArray *needUseAuxiliaryApps = @[
+        @"com.microsoft.edgemac", // Edge
+    ];
+    
+    NSRunningApplication *application = [self getFrontmostApp];
+    NSString *bundleID = application.bundleIdentifier;
+    
+    if (text.length == 0 && [needUseAuxiliaryApps containsObject:bundleID]) {
+        needUseShortcut = YES;
+    }
+    
+    return needUseShortcut;
+}
+
 
 #pragma mark - Handle Event
 
@@ -682,7 +705,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 - (void)logSelectedText:(nullable NSString *)text accessibility:(BOOL)accessibilityFlag {
-    if (!text.length) {
+    if (!text) {
         return;
     }
     
