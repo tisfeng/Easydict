@@ -238,7 +238,7 @@ static NSDictionary *const kQuotesDict = @{
                     if (!isFirst) {
                         // Append last delayed suffix quote.
                         if (appendSuffixQuote) {
-                            appendContent = [content stringByAppendingString:appendSuffixQuote];
+                            [mutableString appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
                         
@@ -775,27 +775,23 @@ static NSDictionary *const kQuotesDict = @{
     if ([self isStartAndEnd:text with:start end:end]) {
         return [text substringWithRange:NSMakeRange(start.length, text.length - start.length - end.length)];
     }
-
     return text;
 }
 
 /// Remove quotes. "\""
-- (void)tryToRemoveQuotes:(NSString **)text {
+- (NSString *)tryToRemoveQuotes:(NSString *)text {
     NSArray *quotes = [kQuotesDict allKeys];
-
-    BOOL needToRemove = ![self isQueryTextHasQuote];
-
-    if (needToRemove) {
-        for (NSString *quote in quotes) {
-            *text = [self removeStartAndEnd:*text with:quote end:kQuotesDict[quote]];
-        }
+    for (NSString *quote in quotes) {
+        text = [self removeStartAndEnd:text with:quote end:kQuotesDict[quote]];
     }
+    return text;
 }
 
 #pragma mark -
 
 /// Check if text is a word.
 - (BOOL)isWord:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
