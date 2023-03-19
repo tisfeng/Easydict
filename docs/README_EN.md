@@ -100,13 +100,13 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Ways                      | Description                                                                                                                         | Preview                                                                                                                                        |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                 | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| Auto select translate     | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                         | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| Mouse select translate     | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                         | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
 #### Notice ⚠️
 
-1. `Select Translate` requires the `Auxiliary Accessibility`. It is necessary to use **Shortcut select translate** to trigger the application auxiliary accessibility permission, and then use auto select translate normally.
+1. `Select Translate` requires the `Auxiliary Accessibility`.The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
 
 2. For screenshot Translate, you need to enable `Screen Recording` permission. The application will only automatically pop up a permission application dialog box when you use **Screenshot Translation** for the first time. If the authorization fails, you need to turn it on in the system settings manually.
 
@@ -217,6 +217,7 @@ If you find that the OCR result is incorrect, you can correct the OCR result by 
 
 - [immersive-translate](https://github.com/immersive-translate/immersive-translate): A nice Immersive Dual Web Page Translation Extension.
 - [ext-saladict](https://github.com/crimx/ext-saladict): A browser extension for looking up words and translating.
+- [openai-translator](https://github.com/yetone/openai-translator): Browser extension and cross-platform desktop application for translation based on ChatGPT API.
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): My other open source project, a Raycast extension version of Easydict.
 
 ![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
@@ -231,9 +232,10 @@ Now I use Easydict a lot every day, I like it very much, and I hope more people 
 
 Open source makes the world better.
 
-## Thanks
+## Acknowledgements
 
-This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was made based on [Bob](https://github.com/cheonvo/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
+- This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was made based on [Bob](https://github.com/cheonvo/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
+- Select text feature is referenced from [PopClip](https://pilotmoon.com/popclip/).
 
 ## Notice
 
