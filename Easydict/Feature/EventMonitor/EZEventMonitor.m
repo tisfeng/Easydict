@@ -153,8 +153,11 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
         
-        // if auxiliary get failed but actually has selected text, error may be kAXErrorNoValue
-        if (error == kAXErrorNoValue) {
+        NSLog(@"AXError: %d", error);
+
+        // If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
+        // Typora will return kAXErrorAPIDisabled when get selected text.
+        if (error == kAXErrorNoValue || error == kAXErrorAPIDisabled) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 completion(text, NO);
             }];
