@@ -80,7 +80,7 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
 
-            [self handleDefinitionAndEtymologyText:result completion:completion];
+            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
         }];
         return;
     }
@@ -153,8 +153,10 @@ static NSDictionary *const kQuotesDict = @{
 
      Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymology------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
      */
-    NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300.", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
+    NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
 
+    prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx \n %@ xxx\", answer in %@ language, the definition is 100 words or less, and the etymology is between 100 and 200 words, do not show word count.", sourceLanguage, word, @"Definition:", @"Etymology:", targetLanguage];
+    
     NSDictionary *dict = @{
         @"role" : @"user",
         @"content" : prompt,
@@ -206,6 +208,7 @@ static NSDictionary *const kQuotesDict = @{
 
     BOOL isHandleQuote = YES;
 
+    // TODO: need to optimize.
     if (stream) {
         __block NSMutableString *mutableString = [NSMutableString string];
         __block BOOL isFirst = YES;
@@ -222,7 +225,7 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
             
-            NSLog(@"content: %@, isFinished: %d", content, isFinished);
+//            NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
@@ -262,7 +265,7 @@ static NSDictionary *const kQuotesDict = @{
             }
             
             completion(mutableString, nil);
-            NSLog(@"mutableString: %@", mutableString);
+//            NSLog(@"mutableString: %@", mutableString);
         }];
     }
 
@@ -279,11 +282,11 @@ static NSDictionary *const kQuotesDict = @{
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.queryText;
             
+            NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
+            NSLog(@"success content: %@", content);
+            
             // Count quote may cost much time, so only count when query text is short.
             if (isHandleQuote && queryText.length < 10) {
-                NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
-                NSLog(@"success content: %@", content);
-                
                 NSInteger queryTextQuoteCount = [self countQuoteNumberInText:queryText];
                 NSInteger translatedTextQuoteCount = [self countQuoteNumberInText:self.result.translatedText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
@@ -316,7 +319,7 @@ static NSDictionary *const kQuotesDict = @{
     // split string to array
     NSString *dataKey = @"data:";
     NSArray *jsonArray = [jsonString componentsSeparatedByString:dataKey];
-    NSLog(@"jsonArray: %@", jsonArray);
+//    NSLog(@"jsonArray: %@", jsonArray);
     
     NSMutableString *mutableString = [NSMutableString string];
 
@@ -570,6 +573,77 @@ static NSDictionary *const kQuotesDict = @{
         *definition = [text trim];
     }
 }
+
+/**
+ Definition: bug"是"一个名词，指的是一种小型昆虫或其他无脊椎动物。在计算机科学中，“bug也”可以用来描述程序中的错误或故障。
+
+ Etymology: "Battery"这个词最初源自法语“batterie”，意思是“大炮群”或“火炮阵地”。在16世纪末期，英国人开始使用这个词来描述军队中的火炮阵地。到了18世纪后期，科学家们开始使用“battery”来指代一系列相互连接的物体（例如：电池）。直到19世纪末期，“battery”才正式成为指代可充电蓄电池的专业术语。该词还有另外一个含义，在音乐领域中表示打击乐器集合（例如鼓组）或管弦乐器集合（例如铜管乐团）。
+ */
+- (void)handleDefinitionAndEtymologyText2:(NSString *)text completion:(void (^)(EZQueryResult *, NSError *_Nullable error))completion  {
+    NSString *definition = text;
+    NSString *etymology = @" "; // length > 0
+    
+    NSString *englishColon = @":";
+    NSString *chineseColon = @"：";
+    NSRange searchColonRange = NSMakeRange(0, MIN(text.length, 15));
+    NSRange englishColonRange = [text rangeOfString:englishColon options:0 range:searchColonRange];
+    NSRange chineseColonRange = [text rangeOfString:chineseColon options:0 range:searchColonRange];
+    
+    NSString *colon;
+    if (chineseColonRange.location == NSNotFound) {
+        colon = englishColon;
+    } else if (englishColonRange.location == NSNotFound) {
+        colon = chineseColon;
+    } else {
+        if (englishColonRange.location < chineseColonRange.location) {
+            colon = englishColon;
+        } else {
+            colon = chineseColon;
+        }
+    }
+    
+    
+    NSArray *array = [text componentsSeparatedByString:colon];
+    if (array.count > 1) {
+        definition = [array[1] trim];
+    }
+    
+    NSString *lineBreak = @"\n";
+    if ([text containsString:lineBreak]) {
+        array = [text componentsSeparatedByString:lineBreak];
+        
+        if (array.count > 1) {
+            NSString *definitionText = array[0];
+            definition = [self substringAfterCharacter:colon text:definitionText].trim;
+            
+            NSString *etymologyText = [[array subarrayWithRange:NSMakeRange(1, array.count-1)]  componentsJoinedByString:lineBreak];
+            etymology = [self substringAfterCharacter:colon text:etymologyText].trim;
+        }
+    }
+    
+    [self handleDefinition:definition etymology:etymology completion:completion];
+}
+
+- (NSString *)separatedByFirstString:(NSString *)string text:(NSString *)text  {
+    NSString *result = text;
+    NSRange range = [text rangeOfString:string];
+    if (range.location != NSNotFound) {
+        result = [text substringFromIndex:range.location + range.length];
+    }
+
+    return result;
+}
+
+/// Get substring after designatedCharacter. If no designatedCharacter, return @"".
+- (NSString *)substringAfterCharacter:(NSString *)designatedCharacter text:(NSString *)text  {
+    NSRange range = [text rangeOfString:designatedCharacter];
+    if (range.location != NSNotFound) {
+        return [text substringFromIndex:range.location + range.length];
+    }
+
+    return @"";
+}
+
 
 /// Handle Definition And Etymology
 - (void)handleDefinition:(NSString *)definition etymology:(NSString *)etymology completion:(void (^)(EZQueryResult *, NSError *_Nullable error))completion {
