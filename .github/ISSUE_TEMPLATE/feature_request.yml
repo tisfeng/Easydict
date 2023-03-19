@@ -3,7 +3,7 @@ description: 功能建议
 title: "🚀 功能建议：（您好，请按照模板填写，谢谢）"
 labels: ["enhancement"]
 assignees:
-  - tisfeng
+  -
 
 body:
   - type: checkboxes

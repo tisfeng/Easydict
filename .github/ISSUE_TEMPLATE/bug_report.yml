@@ -3,7 +3,7 @@ description: 反馈问题
 title: "🐞 反馈问题：（您好，请按照模板填写，谢谢）"
 labels: ["bug"]
 assignees:
-  - tisfeng
+  -
 
 body:
   - type: checkboxes
