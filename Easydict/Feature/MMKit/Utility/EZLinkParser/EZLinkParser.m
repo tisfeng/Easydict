@@ -35,7 +35,7 @@ static NSString *kEasydictSchema = @"easydict://";
 
 /// Check text, if text is "easydict://writeKeyValue?key=xxx&value=xxx"
 /// easydict://writeKeyValue?EZOpenAIKey=sk-5DJ2bQxdT
-/// easydict://writeKeyValue?EZNewFeatureKey=1
+/// easydict://writeKeyValue?EZBetaFeatureKey=1
 - (BOOL)tryWriteKeyValue:(NSString *)text {
     NSString *prefix = @"writeKeyValue?";
     if ([text hasPrefix:prefix]) {
@@ -84,7 +84,7 @@ static NSString *kEasydictSchema = @"easydict://";
 - (NSArray *)allowedWriteKeys {
     return @[
         EZOpenAIKey,
-        EZNewFeatureKey,
+        EZBetaFeatureKey,
     ];
 }
 
