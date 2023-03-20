@@ -31,8 +31,8 @@
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
     
-    NSString *newFeature = [[NSUserDefaults standardUserDefaults] stringForKey:EZNewFeatureKey];
-    if ([newFeature isEqualToString:@"1"]) {
+    NSString *betaFeatureKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey];
+    if ([betaFeatureKey isEqualToString:@"1"]) {
         [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
     }
     
