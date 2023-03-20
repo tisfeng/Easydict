@@ -72,7 +72,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
 
-    BOOL isWord = [self isWord:text];
+    BOOL isWord = [self isWord:text language:from];
     if (isWord) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
@@ -80,7 +80,10 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
 
-            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
+            self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
+            completion(self.result, error);
+            
+//            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
         }];
         return;
     }
@@ -142,8 +145,8 @@ static NSDictionary *const kQuotesDict = @{
     //    [self startCompletion:prompt completion:completion];
 }
 
-- (void)queryDict:(NSString *)word from:(NSString *)sourceLanguage to:(NSString *)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    BOOL isWord = [self isWord:word];
+- (void)queryDict:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    BOOL isWord = [self isWord:word language:sourceLanguage];
     if (!isWord) {
         completion(@"", nil);
     }
@@ -151,11 +154,17 @@ static NSDictionary *const kQuotesDict = @{
     /**
      Look up word definition and etymology.
 
-     Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymology------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
+     Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymoloågy------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
      */
     NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
 
     prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx \n %@ xxx\", answer in %@ language, the definition is 100 words or less, and the etymology is between 100 and 200 words, do not show word count.", sourceLanguage, word, @"Definition:", @"Etymology:", targetLanguage];
+    
+    // "Look up the pronunciation of Chinese text '倾国倾城', and explain it in clear and understandable way. Look up its detailed etymology. Look up its near synonyms and antonyms, and finally show the English translation. Output it strictly in the following format: \"Pronunciation: xxx \n Explanation: xxx \n Etymology: xxx \n Synonyms: xxx \n Antonyms: xxx \n English Translation: xxx \", answer in Chinese language."
+    
+    NSString *lineBreak = @"\n\n";
+    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    prompt = [NSString stringWithFormat:@"Look up the pronunciation of %@ text \"%@\". Look up its explanation in clear and understandable way. Look up its detailed etymology. Look up its near synonyms and antonyms. Finally show the English translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ Etymology: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the etymology is between 150 and 300 words, do not show word count.", sourceLanguage, word, lineBreak, lineBreak, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
     
     NSDictionary *dict = @{
         @"role" : @"user",
@@ -185,7 +194,7 @@ static NSDictionary *const kQuotesDict = @{
         @"model" : @"gpt-3.5-turbo",
         @"messages" : messages,
         @"temperature" : @(0),
-        @"max_tokens" : @(2000),
+        @"max_tokens" : @(3000),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
@@ -790,13 +799,43 @@ static NSDictionary *const kQuotesDict = @{
 #pragma mark -
 
 /// Check if text is a word.
-- (BOOL)isWord:(NSString *)text {
+- (BOOL)isWord:(NSString *)text language:(EZLanguage)langugae {
+    text = [self tryToRemoveQuotes:text];
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+    
+    if ([EZLanguageManager isChineseLanguage:langugae]) {
+        return [self isChineseWord:text];
+    }
+
+    if ([langugae isEqualToString:EZLanguageEnglish]) {
+        return [self isEnglishWord:text];
+    }
+    
+    return NO;
+}
+
+/// Check if text is a English word.
+- (BOOL)isEnglishWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
 
     NSString *pattern = @"^[a-zA-Z]+$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
+    return [predicate evaluateWithObject:text];
+}
+
+/// Check if text is a Chinese word.
+- (BOOL)isChineseWord:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+
+    NSString *pattern = @"^[\u4e00-\u9fa5]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
 }
