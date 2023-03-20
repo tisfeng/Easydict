@@ -14,6 +14,7 @@
 #import "EZCoordinateTool.h"
 #import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
+#import "EZLog.h"
 
 @interface EZWindowManager ()
 
@@ -241,6 +242,9 @@ static EZWindowManager *_instance;
         [self showFloatingWindow:window atPoint:location];
         return;
     }
+    
+    // Log selected text when querying.
+    [self logSelectedText:text accessibility:self.eventMonitor.isSelectedTextByAuxiliary];
     
     // Reset tableView and window height first, avoid being affected by previous window height.
     [window.queryViewController resetTableView:^{
@@ -470,9 +474,9 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [self.eventMonitor getSelectedText:^(NSString *_Nullable text, BOOL accessibilityFlag) {
+    [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         self.selectedText = text ?: @"";
-        self.queryType = accessibilityFlag ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
+        self.queryType = self.eventMonitor.isSelectedTextByAuxiliary ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];
 }
@@ -591,6 +595,28 @@ static EZWindowManager *_instance;
         }
     }
     return NO;
+}
+
+- (void)logSelectedText:(nullable NSString *)text accessibility:(BOOL)accessibilityFlag {
+    if (!text) {
+        return;
+    }
+    
+    NSRunningApplication *application = NSWorkspace.sharedWorkspace.frontmostApplication;
+    NSString *appName = application.localizedName;
+    NSString *bundleID = application.bundleIdentifier;
+    NSString *textLength = [EZLog textLengthRange:text];
+    NSString *type = accessibilityFlag ? @"auxiliary" : @"shortcut";
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"text" : text,
+        @"type" : type,
+        @"textLength" : textLength,
+        @"appName" : appName,
+        @"bundleID" : bundleID,
+    }];
+    
+    [EZLog logEventWithName:@"getSelectedText" parameters:dict];
 }
 
 @end

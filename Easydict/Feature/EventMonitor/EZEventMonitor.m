@@ -136,44 +136,50 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 #pragma mark - Get selected text.
 
-- (void)getSelectedText:(void (^)(NSString *_Nullable, BOOL accessibilityFlag))completion {
+- (void)getSelectedText:(void (^)(NSString *_Nullable))completion {
     [self getSelectedText:NO completion:completion];
 }
 
 /// Use auxiliary to get selected text first, if failed, use shortcut.
-- (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable, BOOL))completion {
+- (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+        
+        // Check if selected text frame is valid, maybe dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
-            completion(nil, YES);
+            self.isSelectedTextByAuxiliary = YES;
+            completion(nil);
             return;
         }
         
-        BOOL useShortcut = [self checkIfNeedUseShortcut:text];
+        BOOL useShortcut = [self checkIfNeedUseShortcut:text error:error];
+        if (useShortcut) {
+            [self getSelectedTextByKey:^(NSString *_Nullable text) {
+                self.isSelectedTextByAuxiliary = NO;
+                completion(text);
+            }];
+            return;
+        }
         
-        if (!useShortcut) {
-            if (error == kAXErrorSuccess) {
-                completion(text, YES);
-                return;
-            }
+        
+        if (error == kAXErrorSuccess) {
+            self.isSelectedTextByAuxiliary = YES;
+            completion(text);
+            return;
         }
         
         NSLog(@"AXError: %d", error);
-
-        // If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
-        // Typora will return kAXErrorAPIDisabled when get selected text.
-        if (useShortcut || error == kAXErrorNoValue || error == kAXErrorAPIDisabled) {
-            [self getSelectedTextByKey:^(NSString *_Nullable text) {
-                completion(text, NO);
-            }];
-        } else {
-            NSUserDefaults *userDefaults =[NSUserDefaults standardUserDefaults];
-            BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
-            if (!hasUsedAutoSelectText && error == kAXErrorAPIDisabled) {
-                [self isAccessibilityTrusted];
-                [userDefaults setBool:YES forKey:kHasUsedAutoSelectTextKey];
-            }
-            completion(nil, NO);
+        
+        // When user first use auto select text, show reqest Accessibility permission alert.
+        
+        NSUserDefaults *userDefaults =[NSUserDefaults standardUserDefaults];
+        BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
+        if (!hasUsedAutoSelectText && error == kAXErrorAPIDisabled) {
+            [self isAccessibilityTrusted];
+            [userDefaults setBool:YES forKey:kHasUsedAutoSelectTextKey];
         }
+        
+        self.isSelectedTextByAuxiliary = NO;
+        completion(nil);
     }];
 }
 
@@ -184,9 +190,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         return;
     }
     
-    [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text, BOOL accessibilityFlag) {
+    [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
         [self handleSelectedText:text];
-        [self logSelectedText:text accessibility:accessibilityFlag];
     }];
 }
 
@@ -344,21 +349,42 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 /// Check if need to use shortcut to get selected text.
-- (BOOL)checkIfNeedUseShortcut:(NSString *)text {
-    BOOL needUseShortcut = NO;
+- (BOOL)checkIfNeedUseShortcut:(NSString *)text error:(AXError)error {
+    BOOL tryToUseShortcut = NO;
     
-    NSArray *needUseAuxiliaryApps = @[
+    NSArray *auxiliaryFailedApps = @[
         @"com.microsoft.edgemac", // Edge
+        @"com.microsoft.VSCode", // VSCode
+//        @"abnerworks.Typora", // Typora
     ];
-    
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
+    /**
+     If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
+     ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
+     
+     kAXErrorNoValue: Safari, Mail, Telegram, Reeder
+     kAXErrorAPIDisabled: Typora
+     */
+    BOOL unsupportAuxiliaryError = (error == kAXErrorNoValue);
     
-    if (text.length == 0 && [needUseAuxiliaryApps containsObject:bundleID]) {
-        needUseShortcut = YES;
+    if (unsupportAuxiliaryError && text.length == 0) {
+        tryToUseShortcut = YES;
+        NSLog(@"unsupport Auxiliary App --> %@", bundleID);
     }
     
-    return needUseShortcut;
+    /**
+     Some App return kAXErrorSuccess but text is empty, so we need to check bundleID.
+     
+     Edge: Get selected text may be a Unicode char "\U0000fffc", empty text but length is 1 😢
+     VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+     */
+    if (error == kAXErrorSuccess && [auxiliaryFailedApps containsObject:bundleID]) {
+        tryToUseShortcut = YES;
+        NSLog(@"kAXErrorSuccess, but text is empty App --> %@", bundleID);
+    }
+    
+    return tryToUseShortcut;
 }
 
 
@@ -702,28 +728,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
     
     return NO;
-}
-
-- (void)logSelectedText:(nullable NSString *)text accessibility:(BOOL)accessibilityFlag {
-    if (!text) {
-        return;
-    }
-    
-    NSRunningApplication *application = [self getFrontmostApp];
-    NSString *appName = application.localizedName;
-    NSString *bundleID = application.bundleIdentifier;
-    NSString *textLength = [EZLog textLengthRange:text];
-    NSString *type = accessibilityFlag ? @"auxiliary" : @"shortcut";
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
-        @"text" : text,
-        @"type" : type,
-        @"textLength" : textLength,
-        @"appName" : appName,
-        @"bundleID" : bundleID,
-    }];
-    
-    [EZLog logEventWithName:@"getSelectedText" parameters:dict];
 }
 
 /// Check if current mouse position is in expanded selected text frame.
