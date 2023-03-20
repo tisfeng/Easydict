@@ -174,16 +174,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)handleServiceUpdate:(NSNotification *)notification {
     EZWindowType type = [notification.userInfo[EZWindowTypeKey] integerValue];
     if (type == self.windowType) {
-        [self updateServices];
+        [self updateServicesAndQuery:YES];
     }
 }
 
-- (void)updateServices {
+- (void)updateServicesAndQuery:(BOOL)startQuery {
     [self setupServices];
     [self resetAllResults];
     
     [self reloadTableViewData:^{
-        if (self.queryText.length > 0) {
+        if (startQuery && self.queryText.length > 0) {
             [self startQueryInputText];
         }
     }];
@@ -301,8 +301,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (handled) {
         self.queryText = handledSuccess ? @"success" : @"failed";
         if (handledSuccess) {
-            [self updateServices];
+            [self updateServicesAndQuery:NO];
         }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.queryText = @"";
+        });
+        
         return;
     }
     
