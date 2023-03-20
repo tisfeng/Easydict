@@ -994,12 +994,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryResult *result = resultView.result;
     EZQueryService *service = [self serviceWithType:result.serviceType];
     
+    EZLanguage fromLanguage = EZLanguageAuto; // Use system detect text language.
+    // If translated text, from language is query target language.
+    if (!result.wordResult) {
+        fromLanguage = result.queryModel.queryTargetLanguage;
+    }
+    
     mm_weakify(self)
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
         mm_strongify(self);
         [self.audioPlayer playTextAudio:text
                                audioURL:audioURL
-                           fromLanguage:service.queryModel.queryTargetLanguage
+                           fromLanguage:fromLanguage
                                  serive:service];
     }];
     
