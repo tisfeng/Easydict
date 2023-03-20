@@ -21,12 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGRect selectedTextFrame;
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
+@property (nonatomic, assign) BOOL isSelectedTextByAuxiliary;
 
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);
 
 /// Use auxiliary to get selected text first, if failed, use shortcut.
-- (void)getSelectedText:(void (^)(NSString *_Nullable text, BOOL accessibilityFlag))completion;
+- (void)getSelectedText:(void (^)(NSString *_Nullable text))completion;
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
 - (void)addGlobalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;
