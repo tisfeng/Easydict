@@ -188,6 +188,12 @@
     return lang.chineseName;
 }
 
+/// Get language local name, Chinese -> 中文, English -> English.
++ (NSString *)languageLocalName:(EZLanguage)language {
+    EZLanguageModel *lang = [[EZLanguageModel allLanguagesDict] objectForKey:language];
+    return lang.localName;
+}
+
 /// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.
 + (NSString *)showingLanguageName:(EZLanguage)language {
     NSString *languageName = language;
