@@ -154,18 +154,49 @@ static NSDictionary *const kQuotesDict = @{
     /**
      Look up word definition and etymology.
 
-     Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymoloågy------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
+     Look up a brief definition and detailed etymology of the English text: "battery", output it strictly in the following format: "{------Definition------}: xxx {------Etymology------}: xxx", answer in Chinese-Simplified language, with a word count between 100 and 300.
      */
     NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
 
     prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx \n %@ xxx\", answer in %@ language, the definition is 100 words or less, and the etymology is between 100 and 200 words, do not show word count.", sourceLanguage, word, @"Definition:", @"Etymology:", targetLanguage];
     
-    // "Look up the pronunciation of Chinese text '倾国倾城', and explain it in clear and understandable way. Look up its detailed etymology. Look up its near synonyms and antonyms, and finally show the English translation. Output it strictly in the following format: \"Pronunciation: xxx \n Explanation: xxx \n Etymology: xxx \n Synonyms: xxx \n Antonyms: xxx \n English Translation: xxx \", answer in Chinese language."
     
     NSString *lineBreak = @"\n\n";
+    NSString *etymology = [sourceLanguage isEqualToString:EZLanguageEnglish] ? @"Etymology" : @"Origin";
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
-    prompt = [NSString stringWithFormat:@"Look up the pronunciation of %@ text \"%@\". Look up its explanation in clear and understandable way. Look up its detailed etymology. Look up its near synonyms and antonyms. Finally show the English translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ Etymology: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the etymology is between 150 and 300 words, do not show word count.", sourceLanguage, word, lineBreak, lineBreak, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
+    prompt = [NSString stringWithFormat:@"Please communicate with me in %@. For %@ text: \"%@\", look up its pronunciation. Look up its explanation in clear and understandable way. Look up its detailed %@. Look up its near synonyms and antonyms. Finally show the %@ translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ %@: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the explanation is 100 words or less, the etymology is between 150 and 300 words, note that the word count is not displayed.", answerLanguage, sourceLanguage, word, etymology, targetLanguage, lineBreak, lineBreak, etymology, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
+        
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@.", answerLanguage];
+    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ text: \"%@\",", sourceLanguage, word];
+    NSString *pronunciationPrompt = @"look up its pronunciation.";
+    NSString *explanationPrompt = @"Look up its explanation in clear and understandable way.";
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@.", etymology];
+    NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms.";
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation.", targetLanguage];
     
+    NSString *outputFollowingFormatPrompt = @"Output it strictly in the following format: ";
+    
+    NSString *pronunciationFormat = @"\"Pronunciation: / xxx /";
+    NSString *explanationFormat = @"Explanation: xxx";
+    NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx", etymology];
+    NSString *synonymsFormat = @"Synonyms: xxx";
+    NSString *antonymsFormat = @"Antonyms: xxx";
+    NSString *translationFormat = [NSString stringWithFormat:@"%@ Translation: xxx\".", targetLanguage];
+    
+    NSString *outputFormatPrompt = [@[
+        pronunciationFormat,
+        explanationFormat,
+        etymologyFormat,
+        synonymsFormat,
+        antonymsFormat,
+        translationFormat
+    ] componentsJoinedByString:lineBreak];
+    
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@ language.", answerLanguage];
+    NSString *wordCountPromt = @"The explanation should be around 80 words and the etymology should be around 200 words. Note that word count does not need to be displayed.";
+    
+    prompt = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@", communicateLanguagePrompt, sourceLanguageWordPrompt, pronunciationPrompt, explanationPrompt, etymologyPrompt, synonymsAntonymsPrompt, targetLanguageTranslationPrompt, outputFollowingFormatPrompt, outputFormatPrompt, answerLanguagePrompt, wordCountPromt];
+        
     NSDictionary *dict = @{
         @"role" : @"user",
         @"content" : prompt,
@@ -175,7 +206,7 @@ static NSDictionary *const kQuotesDict = @{
     [self startStreamChat:@[ dict ] completion:completion];
 
     // ⚠️ It takes too long(>10s) to generate a result for text-davinci-003.
-    //        [self startCompletion:prompt comåpletion:completion];
+    //        [self startCompletion:prompt completion:completion];
 }
 
 - (void)startStreamChat:(NSArray<NSDictionary *> *)messages completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
@@ -816,14 +847,14 @@ static NSDictionary *const kQuotesDict = @{
     return NO;
 }
 
-/// Check if text is a English word.
+/// Check if text is a English word, can include numbers. Like B612
 - (BOOL)isEnglishWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
 
-    NSString *pattern = @"^[a-zA-Z]+$";
+    NSString *pattern = @"^[a-zA-Z0-9]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
 }
