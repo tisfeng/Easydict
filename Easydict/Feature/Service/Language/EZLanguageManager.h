@@ -55,6 +55,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get language Chinese name, Chinese -> 中文, English -> 英语.
 + (NSString *)languageChineseName:(EZLanguage)language;
 
+/// Get language local name, Chinese -> 中文, English -> English.
++ (NSString *)languageLocalName:(EZLanguage)language;
+
 /// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
 + (NSString *)languageFlagEmoji:(EZLanguage)language;
 
