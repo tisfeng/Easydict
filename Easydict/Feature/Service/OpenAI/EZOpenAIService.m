@@ -72,8 +72,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
 
-    BOOL isWord = [self isWord:text language:from];
-    if (isWord) {
+    if ([self isWord:text language:from]) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 completion(self.result, error);
@@ -146,9 +145,9 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (void)queryDict:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    BOOL isWord = [self isWord:word language:sourceLanguage];
-    if (!isWord) {
-        completion(@"", nil);
+    if (![self isWord:word language:sourceLanguage]) {
+        completion(@"query text should be a word", nil);
+        return;
     }
 
     /**
@@ -164,39 +163,113 @@ static NSDictionary *const kQuotesDict = @{
     NSString *lineBreak = @"\n\n";
     NSString *etymology = [sourceLanguage isEqualToString:EZLanguageEnglish] ? @"Etymology" : @"Origin";
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
-    prompt = [NSString stringWithFormat:@"Please communicate with me in %@. For %@ text: \"%@\", look up its pronunciation. Look up its explanation in clear and understandable way. Look up its detailed %@. Look up its near synonyms and antonyms. Finally show the %@ translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ %@: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the explanation is 100 words or less, the etymology is between 150 and 300 words, note that the word count is not displayed.", answerLanguage, sourceLanguage, word, etymology, targetLanguage, lineBreak, lineBreak, etymology, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
+    NSString *translationLanguageTitle = targetLanguage;
+    
+    BOOL isEnglishWord = [sourceLanguage isEqualToString:EZLanguageEnglish];
+    BOOL isChineseWord = NO;
+    if ([EZLanguageManager isChineseLanguage:sourceLanguage] && word.length <=4) {
+        isChineseWord = YES; // 倾国倾城
+    }
+    BOOL isWord = isEnglishWord || isChineseWord;
+    
+    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
+        translationLanguageTitle = @"中文";
+    }
+    
+    prompt = [NSString stringWithFormat:@"Please communicate with me in %@. For %@ text: \"%@\", look up its pronunciation. Look up its brief explanation in clear and understandable way. Look up its detailed %@. Look up its near synonyms and antonyms. Finally show the %@ translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ %@: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the explanation is 100 words or less, the etymology is between 150 and 300 words, note that the word count is not displayed.", answerLanguage, sourceLanguage, word, etymology, targetLanguage, lineBreak, lineBreak, etymology, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
         
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@.", answerLanguage];
-    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ text: \"%@\",", sourceLanguage, word];
-    NSString *pronunciationPrompt = @"look up its pronunciation.";
-    NSString *explanationPrompt = @"Look up its explanation in clear and understandable way.";
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@.", etymology];
-    NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms.";
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation.", targetLanguage];
+    prompt = @"";
     
-    NSString *outputFollowingFormatPrompt = @"Output it strictly in the following format: ";
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@. ", answerLanguage];
+    prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
+
+    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ text: \"%@\", ", sourceLanguage, word];
+    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
+
+    NSString *pronunciationPrompt = @"look up its pronunciation. ";
+    prompt = [prompt stringByAppendingString:pronunciationPrompt];
+
+    if (isEnglishWord) {
+        NSString *partOfSpeechAndMeaningPrompt = @"Look up its part of speech and meanings, If there are multiple parts of speech and meanings, please list them all and display them on a new line. ";
+        prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
+
+        NSString *tensePrompt = @"Look up its all tenses and forms, If there are multiple tenses, please list them all and display them on a new line.  ";
+        prompt = [prompt stringByAppendingString:tensePrompt];
+    }
+
+    NSString *explanationPrompt = @"Look up its brief explanation in clear and understandable way. ";
+    prompt = [prompt stringByAppendingString:explanationPrompt];
+
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@. ", etymology];
+    prompt = [prompt stringByAppendingString:etymologyPrompt];
+
+//    NSString *cognatePrompt = @"Look up its cognates if has. ";
+//    prompt = [prompt stringByAppendingString:cognatePrompt];
     
-    NSString *pronunciationFormat = @"\"Pronunciation: / xxx /";
-    NSString *explanationFormat = @"Explanation: xxx";
-    NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx", etymology];
-    NSString *synonymsFormat = @"Synonyms: xxx";
-    NSString *antonymsFormat = @"Antonyms: xxx";
-    NSString *translationFormat = [NSString stringWithFormat:@"%@ Translation: xxx\".", targetLanguage];
+    if (isWord) {
+        NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms if has. ";
+        prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
+    }
+
+//    NSString *associativeWordPrompt = @"Look up its associative words if has. ";
+//    prompt = [prompt stringByAppendingString:associativeWordPrompt];
+
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation. ", targetLanguage];
+    prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
+
     
-    NSString *outputFormatPrompt = [@[
-        pronunciationFormat,
-        explanationFormat,
-        etymologyFormat,
-        synonymsFormat,
-        antonymsFormat,
-        translationFormat
-    ] componentsJoinedByString:lineBreak];
+    //=====Output format=====//
+    NSString *outputFollowingFormatPrompt = @"Output it strictly in the following format: \n\n";
+    prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
+
+    NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
+    prompt = [prompt stringByAppendingString:pronunciationFormat];
     
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@ language.", answerLanguage];
-    NSString *wordCountPromt = @"The explanation should be around 80 words and the etymology should be around 200 words. Note that word count does not need to be displayed.";
-    
-    prompt = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@", communicateLanguagePrompt, sourceLanguageWordPrompt, pronunciationPrompt, explanationPrompt, etymologyPrompt, synonymsAntonymsPrompt, targetLanguageTranslationPrompt, outputFollowingFormatPrompt, outputFormatPrompt, answerLanguagePrompt, wordCountPromt];
+    if (isEnglishWord) {
+        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"Abbreviation of part of speech alphabet. meaning: xxx "];
+        prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningFormat];
         
+        NSString *tenseFormat = [NSString stringWithFormat:@"\nTenses/Forms: xxx "];
+        prompt = [prompt stringByAppendingString:tenseFormat];
+    }
+    
+
+    NSString *explanationFormat = [NSString stringWithFormat:@"\n\nExplanation: xxx \n\n"];
+    prompt = [prompt stringByAppendingString:explanationFormat];
+    
+    
+    NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx \n\n", etymology];
+    prompt = [prompt stringByAppendingString:etymologyFormat];
+    
+//    if (isEnglishWord) {
+//        NSString *cognateFormat = [NSString stringWithFormat:@"Cognates: xxx \n"];
+//        prompt = [prompt stringByAppendingString:cognateFormat];
+//    }
+    
+    if (isWord) { // 倾国倾城
+        NSString *synonymsFormat = [NSString stringWithFormat:@"Synonyms: xxx \n"];
+        prompt = [prompt stringByAppendingString:synonymsFormat];
+        
+        NSString *antonymsFormat = [NSString stringWithFormat:@"Antonyms: xxx \n"];
+        prompt = [prompt stringByAppendingString:antonymsFormat];
+    }
+
+//    if (isEnglishWord) {
+//        NSString *associativeWordFormat = [NSString stringWithFormat:@"Associative words: xxx "];
+//        prompt = [prompt stringByAppendingString:associativeWordFormat];
+//    }
+    
+    NSString *translationFormat = [NSString stringWithFormat:@"\n\n%@ Translation: xxx\"", translationLanguageTitle];
+    prompt = [prompt stringByAppendingString:translationFormat];
+    
+
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nAnswer in %@ language. ", answerLanguage];
+    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
+
+    NSString *wordCountPromt = @"The explanation should be around 50 words and the etymology should be between 150 and 400 words. Note that word count does not need to be displayed.";
+    prompt = [prompt stringByAppendingString:wordCountPromt];
+
+
     NSDictionary *dict = @{
         @"role" : @"user",
         @"content" : prompt,
@@ -829,7 +902,7 @@ static NSDictionary *const kQuotesDict = @{
 
 #pragma mark -
 
-/// Check if text is a word.
+/// Simply Check if text is a word.
 - (BOOL)isWord:(NSString *)text language:(EZLanguage)langugae {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
@@ -862,7 +935,7 @@ static NSDictionary *const kQuotesDict = @{
 /// Check if text is a Chinese word.
 - (BOOL)isChineseWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
-    if (text.length > EZEnglishWordMaxLength) {
+    if (text.length > 7) { // 曾经沧海难为水
         return NO;
     }
 
