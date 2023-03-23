@@ -220,7 +220,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
     
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
     

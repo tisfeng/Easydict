@@ -42,8 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(EZLanguage)lang;
 
-/// 是否提前处理查询，如不支持的语言，或中文简体转繁体。
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion;
+
+/// 是否提前处理查询，如不支持的语言
+/// - Parameters:
+/// - isAutoConvert: 是否使用本地中文简繁体转换，如 API 服务支持繁简体，则最好交给 API。
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isAutoConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion;
 
 @end
 
