@@ -35,7 +35,16 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     model.detectedLanguage = self.detectedLanguage;
     model.ocrImage = self.ocrImage;
     model.queryViewHeight = self.queryViewHeight;
+    model.audioURL = self.audioURL;
     return model;
+}
+
+- (void)setQueryText:(NSString *)queryText {
+    if (![queryText isEqualToString:_queryText]) {
+        self.audioURL = nil;
+    }
+    
+    _queryText = queryText;
 }
 
 - (EZLanguage)queryFromLanguage {
