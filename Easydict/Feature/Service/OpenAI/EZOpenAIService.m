@@ -181,60 +181,70 @@ static NSDictionary *const kQuotesDict = @{
 
     prompt = @"";
 
+    NSString *actorPrompt = @"I want you to act as a useful dictionary and etymologist. \n";
+    prompt = [prompt stringByAppendingString:actorPrompt];
+
     NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@. ", answerLanguage];
     prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
 
     NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
 
-    NSString *pronunciationPrompt = @"look up its pronunciation. ";
+    NSString *pronunciationPrompt = @"look up its pronunciation. \n";
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
 
-    if (isEnglishWord) {
-        NSString *partOfSpeechAndMeaningPrompt = @"Look up its part of speech and meanings, If there are multiple parts of speech and meanings, please list them all and display them on a new line. ";
+    if (isEnglishWord) { // fine
+//        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all English abbreviation of parts of speech and meanings, display pos one per line."; // adj. 美好的  n. 罚款，罚金
+
+        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all part of speech and meanings, each line only shows one English abbreviation of part of speech and meaning in this format: \"xxx. xxx\""; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
 
-        NSString *tensePrompt = @"Look up its all tenses and forms, If there are multiple tenses, list all tenses and value, display them on a new line.  ";
+//        NSString *tensePrompt = @"\n\nLook up its all tenses and forms, display tense one per line"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+
+        NSString *tensePrompt = @"\n\nLook up its all tenses and forms, each line only shows one tense or form in this format: \"xxx: xxx\""; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     }
 
-    NSString *explanationPrompt = @"Look up its brief explanation in clear and understandable way. ";
+    NSString *explanationPrompt = @"\n\nLook up its brief explanation in clear and understandable way. \n";
     prompt = [prompt stringByAppendingString:explanationPrompt];
 
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@. ", etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@. \n", etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
 
     //    NSString *cognatePrompt = @"Look up its cognates if has. ";
     //    prompt = [prompt stringByAppendingString:cognatePrompt];
 
     if (isWord) {
-        NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms if has. ";
+        NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms. \n";
         prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
     }
 
     //    NSString *associativeWordPrompt = @"Look up its associative words if has. ";
     //    prompt = [prompt stringByAppendingString:associativeWordPrompt];
 
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation. ", targetLanguage];
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation. \n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
 
 
     //=====Output format=====//
-    NSString *outputFollowingFormatPrompt = @"Output it strictly in the following format: \n\n";
+    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format: \n\n";
     prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
 
     NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
     prompt = [prompt stringByAppendingString:pronunciationFormat];
 
     if (isEnglishWord) {
-        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"[Abbreviation of part of speech alphabet.] meaning: xxx "];
+//        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"\nPOS: \nxxx "];
+        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"xxx \n"];
+
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningFormat];
 
-        NSString *tenseFormat = [NSString stringWithFormat:@"\n\nTenses/Forms: xxx "];
+//        NSString *tenseFormat = [NSString stringWithFormat:@"\nTense: \nxxx "];
+        NSString *tenseFormat = [NSString stringWithFormat:@"xxx \n"];
         prompt = [prompt stringByAppendingString:tenseFormat];
     }
 
-    NSString *explanationFormat = [NSString stringWithFormat:@"\n\nExplanation: xxx \n\n"];
+    NSString *explanationFormat = [NSString stringWithFormat:@"\nExplanation: xxx \n\n"];
     prompt = [prompt stringByAppendingString:explanationFormat];
 
     NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx \n\n", etymology];
@@ -258,14 +268,14 @@ static NSDictionary *const kQuotesDict = @{
     //        prompt = [prompt stringByAppendingString:associativeWordFormat];
     //    }
 
-    NSString *translationFormat = [NSString stringWithFormat:@"\n\n%@ Translation: xxx\"", translationLanguageTitle];
+    NSString *translationFormat = [NSString stringWithFormat:@"\n%@ Translation: xxx\"", translationLanguageTitle];
     prompt = [prompt stringByAppendingString:translationFormat];
 
 
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nAnswer in %@ language. ", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
 
-    NSString *wordCountPromt = @"The explanation should be around 50 words and the etymology should be between 150 and 400 words. Note that word count does not need to be displayed.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
 
 
