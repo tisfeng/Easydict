@@ -28,10 +28,12 @@
             phonetic.name = NSLocalizedString(@"us_phonetic", nil);
             phonetic.value = word.usphone; // ɡʊd
             // usspeech: "good&type=2"
-            phonetic.speakURL = [NSString stringWithFormat:@"%@%@", aduioURL, word.usspeech];
+            NSString *usspeech = [NSString stringWithFormat:@"%@%@", aduioURL, word.usspeech];
+            phonetic.speakURL = usspeech;
             [phoneticArray addObject:phonetic];
             
             self.fromSpeakURL = phonetic.speakURL;
+            self.queryModel.audioURL = usspeech;
         }
         if (word.ukphone) {
             EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];

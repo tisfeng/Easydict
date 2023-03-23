@@ -904,7 +904,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
         EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-        [self.audioPlayer playTextAudio:text audioURL:nil fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
+        [self.audioPlayer playTextAudio:text audioURL:self.queryModel.audioURL fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
     }];
     
     [queryView setCopyTextBlock:^(NSString *text) {

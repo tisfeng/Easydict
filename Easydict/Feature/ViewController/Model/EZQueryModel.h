@@ -31,6 +31,7 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 @property (nonatomic, assign, readonly) EZLanguage queryTargetLanguage;
 
 @property (nonatomic, strong, nullable) NSImage *ocrImage;
+@property (nonatomic, copy, nullable) NSString *audioURL;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
 
