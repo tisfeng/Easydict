@@ -9,6 +9,7 @@
 #import "EZOpenAIService.h"
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
+#import <NaturalLanguage/NaturalLanguage.h>
 
 static NSString *const kDefinitionDelimiter = @"{---Definition---}:";
 static NSString *const kEtymologyDelimiter = @"{---Etymology---}:";
@@ -81,8 +82,8 @@ static NSDictionary *const kQuotesDict = @{
 
             self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
             completion(self.result, error);
-            
-//            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
+
+            //            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
         }];
         return;
     }
@@ -158,28 +159,28 @@ static NSDictionary *const kQuotesDict = @{
     NSString *prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx %@ xxx\", answer in %@ language, with a word count between 100 and 300", sourceLanguage, word, kDefinitionDelimiter, kEtymologyDelimiter, targetLanguage];
 
     prompt = [NSString stringWithFormat:@"Look up a brief definition and detailed etymology of the %@ text: \"%@\", output it strictly in the following format: \"%@ xxx \n %@ xxx\", answer in %@ language, the definition is 100 words or less, and the etymology is between 100 and 200 words, do not show word count.", sourceLanguage, word, @"Definition:", @"Etymology:", targetLanguage];
-    
-    
+
+
     NSString *lineBreak = @"\n\n";
     NSString *etymology = [sourceLanguage isEqualToString:EZLanguageEnglish] ? @"Etymology" : @"Origin";
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
     NSString *translationLanguageTitle = targetLanguage;
-    
+
     BOOL isEnglishWord = [sourceLanguage isEqualToString:EZLanguageEnglish];
     BOOL isChineseWord = NO;
-    if ([EZLanguageManager isChineseLanguage:sourceLanguage] && word.length <=4) {
+    if ([EZLanguageManager isChineseLanguage:sourceLanguage] && word.length <= 4) {
         isChineseWord = YES; // 倾国倾城
     }
     BOOL isWord = isEnglishWord || isChineseWord;
-    
+
     if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
         translationLanguageTitle = @"中文";
     }
-    
+
     prompt = [NSString stringWithFormat:@"Please communicate with me in %@. For %@ text: \"%@\", look up its pronunciation. Look up its brief explanation in clear and understandable way. Look up its detailed %@. Look up its near synonyms and antonyms. Finally show the %@ translation. Output it strictly in the following format: \"Pronunciation: xxx %@ Explanation: xxx %@ %@: xxx %@ Synonyms: xxx %@ Antonyms: xxx %@ %@ Translation: xxx \", answer in %@ language, the explanation is 100 words or less, the etymology is between 150 and 300 words, note that the word count is not displayed.", answerLanguage, sourceLanguage, word, etymology, targetLanguage, lineBreak, lineBreak, etymology, lineBreak, lineBreak, lineBreak, targetLanguage, answerLanguage];
-        
+
     prompt = @"";
-    
+
     NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@. ", answerLanguage];
     prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
 
@@ -193,7 +194,7 @@ static NSDictionary *const kQuotesDict = @{
         NSString *partOfSpeechAndMeaningPrompt = @"Look up its part of speech and meanings, If there are multiple parts of speech and meanings, please list them all and display them on a new line. ";
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
 
-        NSString *tensePrompt = @"Look up its all tenses and forms, If there are multiple tenses, please list them all and display them on a new line.  ";
+        NSString *tensePrompt = @"Look up its all tenses and forms, If there are multiple tenses, list all tenses and value, display them on a new line.  ";
         prompt = [prompt stringByAppendingString:tensePrompt];
     }
 
@@ -203,65 +204,63 @@ static NSDictionary *const kQuotesDict = @{
     NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@. ", etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
 
-//    NSString *cognatePrompt = @"Look up its cognates if has. ";
-//    prompt = [prompt stringByAppendingString:cognatePrompt];
-    
+    //    NSString *cognatePrompt = @"Look up its cognates if has. ";
+    //    prompt = [prompt stringByAppendingString:cognatePrompt];
+
     if (isWord) {
         NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms if has. ";
         prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
     }
 
-//    NSString *associativeWordPrompt = @"Look up its associative words if has. ";
-//    prompt = [prompt stringByAppendingString:associativeWordPrompt];
+    //    NSString *associativeWordPrompt = @"Look up its associative words if has. ";
+    //    prompt = [prompt stringByAppendingString:associativeWordPrompt];
 
     NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation. ", targetLanguage];
     prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
 
-    
+
     //=====Output format=====//
     NSString *outputFollowingFormatPrompt = @"Output it strictly in the following format: \n\n";
     prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
 
     NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
     prompt = [prompt stringByAppendingString:pronunciationFormat];
-    
+
     if (isEnglishWord) {
-        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"Abbreviation of part of speech alphabet. meaning: xxx "];
+        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"[Abbreviation of part of speech alphabet.] meaning: xxx "];
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningFormat];
-        
-        NSString *tenseFormat = [NSString stringWithFormat:@"\nTenses/Forms: xxx "];
+
+        NSString *tenseFormat = [NSString stringWithFormat:@"\n\nTenses/Forms: xxx "];
         prompt = [prompt stringByAppendingString:tenseFormat];
     }
-    
 
     NSString *explanationFormat = [NSString stringWithFormat:@"\n\nExplanation: xxx \n\n"];
     prompt = [prompt stringByAppendingString:explanationFormat];
-    
-    
+
     NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx \n\n", etymology];
     prompt = [prompt stringByAppendingString:etymologyFormat];
-    
-//    if (isEnglishWord) {
-//        NSString *cognateFormat = [NSString stringWithFormat:@"Cognates: xxx \n"];
-//        prompt = [prompt stringByAppendingString:cognateFormat];
-//    }
-    
+
+    //    if (isEnglishWord) {
+    //        NSString *cognateFormat = [NSString stringWithFormat:@"Cognates: xxx \n"];
+    //        prompt = [prompt stringByAppendingString:cognateFormat];
+    //    }
+
     if (isWord) { // 倾国倾城
         NSString *synonymsFormat = [NSString stringWithFormat:@"Synonyms: xxx \n"];
         prompt = [prompt stringByAppendingString:synonymsFormat];
-        
+
         NSString *antonymsFormat = [NSString stringWithFormat:@"Antonyms: xxx \n"];
         prompt = [prompt stringByAppendingString:antonymsFormat];
     }
 
-//    if (isEnglishWord) {
-//        NSString *associativeWordFormat = [NSString stringWithFormat:@"Associative words: xxx "];
-//        prompt = [prompt stringByAppendingString:associativeWordFormat];
-//    }
-    
+    //    if (isEnglishWord) {
+    //        NSString *associativeWordFormat = [NSString stringWithFormat:@"Associative words: xxx "];
+    //        prompt = [prompt stringByAppendingString:associativeWordFormat];
+    //    }
+
     NSString *translationFormat = [NSString stringWithFormat:@"\n\n%@ Translation: xxx\"", translationLanguageTitle];
     prompt = [prompt stringByAppendingString:translationFormat];
-    
+
 
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nAnswer in %@ language. ", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
@@ -312,7 +311,7 @@ static NSDictionary *const kQuotesDict = @{
     NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:manager.responseSerializer.acceptableContentTypes];
     [acceptableContentTypes addObject:@"text/event-stream"];
     manager.responseSerializer.acceptableContentTypes = acceptableContentTypes;
-    
+
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = EZNetWorkTimeoutInterval;
     [header enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -337,16 +336,16 @@ static NSDictionary *const kQuotesDict = @{
                 completion(nil, error);
                 return;
             }
-            
-//            NSLog(@"content: %@, isFinished: %d", content, isFinished);
-            
+
+            //            NSLog(@"content: %@, isFinished: %d", content, isFinished);
+
             NSString *appendContent = content;
-            
+
             if (isHandleQuote) {
                 if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
                     appendContent = [self tryToRemovePrefixQuote:content];
                 }
-                
+
                 if (!isFinished) {
                     if (!isFirst) {
                         // Append last delayed suffix quote.
@@ -354,7 +353,7 @@ static NSDictionary *const kQuotesDict = @{
                             [mutableString appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
-                        
+
                         appendSuffixQuote = [self hasSuffixQuote:content];
                         // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
                         if (appendSuffixQuote) {
@@ -372,13 +371,13 @@ static NSDictionary *const kQuotesDict = @{
 
                 isFirst = NO;
             }
-            
+
             if (appendContent) {
                 [mutableString appendString:appendContent];
             }
-            
+
             completion(mutableString, nil);
-//            NSLog(@"mutableString: %@", mutableString);
+            //            NSLog(@"mutableString: %@", mutableString);
         }];
     }
 
@@ -394,10 +393,10 @@ static NSDictionary *const kQuotesDict = @{
         } else {
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.queryText;
-            
+
             NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
             NSLog(@"success content: %@", content);
-            
+
             // Count quote may cost much time, so only count when query text is short.
             if (isHandleQuote && queryText.length < 10) {
                 NSInteger queryTextQuoteCount = [self countQuoteNumberInText:queryText];
@@ -415,8 +414,7 @@ static NSDictionary *const kQuotesDict = @{
 /// Parse content from nsdata
 - (NSString *)parseContentFromStreamData:(NSData *)data
                                    error:(NSError **)error
-                              isFinished:(nullable BOOL *)isFinished
-{
+                              isFinished:(nullable BOOL *)isFinished {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
 
@@ -426,14 +424,14 @@ static NSDictionary *const kQuotesDict = @{
 
      data: [DONE]
      */
-    
+
     // Convert data to string
     NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     // split string to array
     NSString *dataKey = @"data:";
     NSArray *jsonArray = [jsonString componentsSeparatedByString:dataKey];
-//    NSLog(@"jsonArray: %@", jsonArray);
-    
+    //    NSLog(@"jsonArray: %@", jsonArray);
+
     NSMutableString *mutableString = [NSMutableString string];
 
     // iterate array
@@ -692,16 +690,16 @@ static NSDictionary *const kQuotesDict = @{
 
  Etymology: "Battery"这个词最初源自法语“batterie”，意思是“大炮群”或“火炮阵地”。在16世纪末期，英国人开始使用这个词来描述军队中的火炮阵地。到了18世纪后期，科学家们开始使用“battery”来指代一系列相互连接的物体（例如：电池）。直到19世纪末期，“battery”才正式成为指代可充电蓄电池的专业术语。该词还有另外一个含义，在音乐领域中表示打击乐器集合（例如鼓组）或管弦乐器集合（例如铜管乐团）。
  */
-- (void)handleDefinitionAndEtymologyText2:(NSString *)text completion:(void (^)(EZQueryResult *, NSError *_Nullable error))completion  {
+- (void)handleDefinitionAndEtymologyText2:(NSString *)text completion:(void (^)(EZQueryResult *, NSError *_Nullable error))completion {
     NSString *definition = text;
     NSString *etymology = @" "; // length > 0
-    
+
     NSString *englishColon = @":";
     NSString *chineseColon = @"：";
     NSRange searchColonRange = NSMakeRange(0, MIN(text.length, 15));
     NSRange englishColonRange = [text rangeOfString:englishColon options:0 range:searchColonRange];
     NSRange chineseColonRange = [text rangeOfString:chineseColon options:0 range:searchColonRange];
-    
+
     NSString *colon;
     if (chineseColonRange.location == NSNotFound) {
         colon = englishColon;
@@ -714,30 +712,30 @@ static NSDictionary *const kQuotesDict = @{
             colon = chineseColon;
         }
     }
-    
-    
+
+
     NSArray *array = [text componentsSeparatedByString:colon];
     if (array.count > 1) {
         definition = [array[1] trim];
     }
-    
+
     NSString *lineBreak = @"\n";
     if ([text containsString:lineBreak]) {
         array = [text componentsSeparatedByString:lineBreak];
-        
+
         if (array.count > 1) {
             NSString *definitionText = array[0];
             definition = [self substringAfterCharacter:colon text:definitionText].trim;
-            
-            NSString *etymologyText = [[array subarrayWithRange:NSMakeRange(1, array.count-1)]  componentsJoinedByString:lineBreak];
+
+            NSString *etymologyText = [[array subarrayWithRange:NSMakeRange(1, array.count - 1)] componentsJoinedByString:lineBreak];
             etymology = [self substringAfterCharacter:colon text:etymologyText].trim;
         }
     }
-    
+
     [self handleDefinition:definition etymology:etymology completion:completion];
 }
 
-- (NSString *)separatedByFirstString:(NSString *)string text:(NSString *)text  {
+- (NSString *)separatedByFirstString:(NSString *)string text:(NSString *)text {
     NSString *result = text;
     NSRange range = [text rangeOfString:string];
     if (range.location != NSNotFound) {
@@ -748,7 +746,7 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 /// Get substring after designatedCharacter. If no designatedCharacter, return @"".
-- (NSString *)substringAfterCharacter:(NSString *)designatedCharacter text:(NSString *)text  {
+- (NSString *)substringAfterCharacter:(NSString *)designatedCharacter text:(NSString *)text {
     NSRange range = [text rangeOfString:designatedCharacter];
     if (range.location != NSNotFound) {
         return [text substringFromIndex:range.location + range.length];
@@ -908,7 +906,7 @@ static NSDictionary *const kQuotesDict = @{
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
-    
+
     if ([EZLanguageManager isChineseLanguage:langugae]) {
         return [self isChineseWord:text];
     }
@@ -916,7 +914,11 @@ static NSDictionary *const kQuotesDict = @{
     if ([langugae isEqualToString:EZLanguageEnglish]) {
         return [self isEnglishWord:text];
     }
-    
+
+    if ([self isWord:text]) {
+        return YES;
+    }
+
     return NO;
 }
 
@@ -931,6 +933,56 @@ static NSDictionary *const kQuotesDict = @{
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
 }
+
+/// Use NLTokenizer to check if text is a word.
+- (BOOL)isWord:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
+    tokenizer.string = text;
+    [tokenizer setString:text];
+    __block BOOL result = NO;
+
+    [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
+        NSLog(@"tokenizer: %@", [text substringWithRange:tokenRange]);
+
+        if (tokenRange.length == text.length) {
+            result = YES;
+        }
+        *stop = YES;
+    }];
+    return result;
+}
+
+/// Use NLTagger to check if text is a word.
+- (BOOL)isWord2:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+    // NLTagSchemeLanguage
+    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ NLTagSchemeTokenType ]];
+    [tagger setString:text];
+    __block BOOL result = NO;
+    [tagger enumerateTagsInRange:NSMakeRange(0, text.length) unit:NLTokenUnitWord scheme:NLTagSchemeLexicalClass options:0 usingBlock:^(NLTag tag, NSRange tokenRange, BOOL *stop) {
+        if (tokenRange.length == text.length && [tag isEqualToString:NLTagWord]) {
+            result = YES;
+        }
+        *stop = YES;
+    }];
+    return result;
+}
+
+/// Use NSSpellChecker to check word spell.
+- (BOOL)isSpelledCorrectly:(NSString *)word {
+    NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
+    NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
+    return misspelledRange.location == NSNotFound;
+}
+
 
 /// Check if text is a Chinese word.
 - (BOOL)isChineseWord:(NSString *)text {
