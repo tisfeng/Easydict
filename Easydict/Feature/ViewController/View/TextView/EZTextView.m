@@ -64,7 +64,7 @@
             [textView setTextColor:NSColor.queryTextDarkColor];
         }];
         self.alignment = NSTextAlignmentLeft;
-        self.textContainerInset = CGSizeMake(2, 4);
+        self.textContainerInset = CGSizeMake(0, 0);
         self.automaticLinkDetectionEnabled = YES;
     }
     return self;
