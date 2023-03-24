@@ -811,6 +811,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self.detectManager detectText:self.queryText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
             // `self.queryModel.detectedLanguage` has already been updated inside the method.
             
+            // Show detected language button, even auto detect.
+            [self.queryView showAutoDetectLanguage:YES];
             [self updateQueryViewModelAndDetectedLanguage:queryModel];
             
             if (completion) {
