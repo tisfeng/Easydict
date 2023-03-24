@@ -226,7 +226,7 @@ static NSDictionary *const kQuotesDict = @{
     }
 
     if (isWord) {
-        NSString *synonymsAntonymsPrompt = @"Look up its near synonyms and antonyms. \n";
+        NSString *synonymsAntonymsPrompt = [NSString stringWithFormat:@"Look up its %@ near synonyms and antonyms. \n", sourceLanguage];
         prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
     }
 
@@ -235,7 +235,7 @@ static NSDictionary *const kQuotesDict = @{
 
 
     //=====Output format=====//
-    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format: \n\n";
+    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, note that the text between angle brackets <> does not need to be displayed: \n\n";
     prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
 
     NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
@@ -261,17 +261,17 @@ static NSDictionary *const kQuotesDict = @{
     }
 
     if (isWord) { // 倾国倾城
-        NSString *synonymsFormat = [NSString stringWithFormat:@"Synonyms: xxx \n"];
+        NSString *synonymsFormat = [NSString stringWithFormat:@"<%@> Synonyms: xxx \n", sourceLanguage];
         prompt = [prompt stringByAppendingString:synonymsFormat];
 
-        NSString *antonymsFormat = [NSString stringWithFormat:@"Antonyms: xxx \n"];
+        NSString *antonymsFormat = [NSString stringWithFormat:@"<%@> Antonyms: xxx \n", sourceLanguage];
         prompt = [prompt stringByAppendingString:antonymsFormat];
     }
 
-    NSString *translationFormat = [NSString stringWithFormat:@"\n%@ Translation: xxx\"", translationLanguageTitle];
+    NSString *translationFormat = [NSString stringWithFormat:@"\n<%@> Translation: xxx\"", translationLanguageTitle];
     prompt = [prompt stringByAppendingString:translationFormat];
 
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nAnswer in %@ language. ", answerLanguage];
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nRemember to answer in %@. ", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
 
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
