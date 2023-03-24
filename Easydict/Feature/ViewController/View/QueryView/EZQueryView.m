@@ -223,13 +223,13 @@
     [self updateCustomLayout];
     
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-5);
-        make.left.offset(8);
+        make.bottom.offset(-EZAudioButtonBottomOffset_5);
+        make.left.offset(EZAudioButtonLeftOffset_7);
         make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right).offset(1);
+        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightOffset_2);
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     

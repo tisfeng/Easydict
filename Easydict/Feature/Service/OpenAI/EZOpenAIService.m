@@ -85,7 +85,11 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
 
-            self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
+            NSArray *results = [[result trim] componentsSeparatedByString:@"\n"];
+            self.result.normalResults = results;
+            self.result.showBigWord = YES;
+            self.result.translateResultsTopInset = 10;
+            
             completion(self.result, error);
 
             //            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
@@ -111,7 +115,7 @@ static NSDictionary *const kQuotesDict = @{
     //   NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
 
     // !!!: This prompt must be added '\n\n' and '=>', otherwise the result will be incorrect, such as 定风波 · 南海归赠王定国侍人寓娘
-    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@:\n\n\"%@\" =>", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"translate text from %@ language to %@ language:\n\n\"%@\" =>", sourceLanguage, targetLanguage, text];
 
     /**
      Fix SQL injection. Ref: https://twitter.com/zty0826/status/1632468826137972736

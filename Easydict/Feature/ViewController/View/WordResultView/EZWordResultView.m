@@ -68,7 +68,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     mm_weakify(self);
     
     BOOL showBigWord = result.wordResult && result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
-    if (showBigWord) {
+    if (showBigWord || result.showBigWord) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
@@ -106,6 +106,10 @@ static const CGFloat kVerticalPadding_8 = 8;
     if (result.normalResults.count || errorMsg.length > 0) {
         NSTextField *typeTextField;
         __block CGFloat exceptedWidth = 0;
+        CGFloat explainTextFieldTopOffset = kVerticalMargin_12;
+        if (lastView) {
+            explainTextFieldTopOffset += 2;
+        }
         
         if (result.wordResult && result.normalResults.count) {
             typeTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
@@ -121,9 +125,9 @@ static const CGFloat kVerticalPadding_8 = 8;
                 
                 [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                     if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                        make.top.equalTo(lastView.mas_bottom).offset(explainTextFieldTopOffset);
                     } else {
-                        make.top.offset(kVerticalMargin_12);
+                        make.top.offset(explainTextFieldTopOffset);
                     }
                     make.left.mas_equalTo(kHorizontalMargin_8);
                     exceptedWidth += kHorizontalMargin_8;
@@ -152,17 +156,17 @@ static const CGFloat kVerticalPadding_8 = 8;
             resultLabel.delegate = self;
             
             [resultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.right.equalTo(self).offset(-kHorizontalMargin_8);
-                exceptedWidth += kHorizontalMargin_8;
+                CGFloat rightOffset = kHorizontalMargin_8;
+                make.right.equalTo(self).offset(-rightOffset);
+                exceptedWidth += rightOffset;
                 
-                if (typeTextField) {
-                    make.top.equalTo(typeTextField).offset(ezLabelTopOffset);
-                    make.left.equalTo(typeTextField.mas_right);
-                } else {
+                CGFloat topOffset = explainTextFieldTopOffset + result.translateResultsTopInset;
+                
+                if (!typeTextField) {
                     if (lastView) {
-                        make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                        make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                     } else {
-                        make.top.equalTo(self).offset(kVerticalMargin_12);
+                        make.top.equalTo(self).offset(topOffset);
                     }
                     
                     CGFloat leftPadding = 5;
@@ -173,12 +177,17 @@ static const CGFloat kVerticalPadding_8 = 8;
                 CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
                 make.size.mas_equalTo(labelSize).priorityHigh();
                 
-                // This means the label text has more than 2 lines, so we need to adjust the top offset.
+                // ???: This means the label text has more than 2 lines, so we need to adjust the top offset.
                 if (labelSize.height > typeTextField.height * 2) {
-                    ezLabelTopOffset = -1;
+//                    ezLabelTopOffset = -1;
                 }
                 
-                height += (kVerticalMargin_12 + labelSize.height);
+                if (typeTextField) {
+                    make.top.equalTo(lastView.mas_bottom).offset(topOffset + ezLabelTopOffset);
+                    make.left.equalTo(typeTextField.mas_right);
+                }
+
+                height += (topOffset + labelSize.height);
                 // NSLog(@"height = %1.f", height);
             }];
             resultLabel.mas_key = @"resultLabel_normalResults";
@@ -785,22 +794,22 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"copyButton";
     
-    CGFloat kMargin_8 = 8;
-    CGFloat kRightMargin = 3;
+    CGFloat leftOffset = EZAudioButtonLeftOffset_7;
+    CGFloat kRightMargin = EZAudioButtonRightOffset_2;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.top.equalTo(lastView.mas_bottom).offset(kMargin_8);
+            make.top.equalTo(lastView.mas_bottom).offset(leftOffset);
         } else {
-            make.top.equalTo(self).offset(kMargin_8);
+            make.top.equalTo(self).offset(leftOffset);
         }
         
-        make.left.offset(kMargin_8);
+        make.left.offset(leftOffset);
         make.width.height.mas_equalTo(EZAudioButtonWidth_25);
     }];
     lastView = audioButton;
     
-    height += (kMargin_8 + EZAudioButtonWidth_25 + 5);
+    height += (leftOffset + EZAudioButtonWidth_25 + EZAudioButtonBottomOffset_5);
     
     _viewHeight = height;
     
