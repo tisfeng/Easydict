@@ -57,7 +57,7 @@
         }
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];
-    } drak:^(NSTextView *textView) {
+    } dark:^(NSTextView *textView) {
         [textView.textStorage deleteCharactersInRange:NSMakeRange(0, textView.textStorage.length)];
         
         [attributedString addAttributes:@{

@@ -72,13 +72,13 @@ static CGFloat const kMargin = 0;
 
     [contentView.layer excuteLight:^(CALayer *layer) {
         layer.backgroundColor = lightBgColor.CGColor;
-    } drak:^(CALayer *layer) {
+    } dark:^(CALayer *layer) {
         layer.backgroundColor = darkBgColor.CGColor;
     }];
 
     [scrollView.contentView excuteLight:^(NSClipView *contentView) {
         contentView.backgroundColor = lightBgColor;
-    } drak:^(NSClipView *contentView) {
+    } dark:^(NSClipView *contentView) {
         contentView.backgroundColor = darkBgColor;
     }];
 }

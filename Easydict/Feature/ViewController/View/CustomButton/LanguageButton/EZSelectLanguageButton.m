@@ -48,7 +48,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         NSImage *image = [NSImage imageNamed:@"arrow_down_filling"];
         [imageView excuteLight:^(NSImageView *imageView) {
             imageView.image = [image imageWithTintColor:NSColor.imageTintLightColor];
-        } drak:^(NSImageView *imageView) {
+        } dark:^(NSImageView *imageView) {
             imageView.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
         }];
     }];
@@ -64,7 +64,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         textField.lineBreakMode = NSLineBreakByTruncatingTail;
         [textField excuteLight:^(NSTextField *label) {
             label.textColor = NSColor.resultTextLightColor;
-        } drak:^(NSTextField *label) {
+        } dark:^(NSTextField *label) {
             label.textColor = NSColor.resultTextDarkColor;
         }];
     }];

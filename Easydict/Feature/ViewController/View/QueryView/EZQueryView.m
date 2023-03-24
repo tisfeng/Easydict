@@ -46,7 +46,7 @@
     self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer excuteLight:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgLightColor.CGColor];
-    } drak:^(id _Nonnull x) {
+    } dark:^(id _Nonnull x) {
         [x setBackgroundColor:NSColor.queryViewBgDarkColor.CGColor];
     }];
     

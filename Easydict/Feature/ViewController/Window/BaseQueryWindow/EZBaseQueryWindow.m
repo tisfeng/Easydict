@@ -33,7 +33,7 @@
         // !!!: must set backgroundColor
         [self excuteLight:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSWindow *window) {
+        } dark:^(NSWindow *window) {
             window.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         

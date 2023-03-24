@@ -24,7 +24,7 @@
         button.contentTintColor = [NSColor imageTintLightColor];
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E6E6E6"];
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#DADADA"]; 
-    } drak:^(EZButton *button) {
+    } dark:^(EZButton *button) {
         button.contentTintColor = [NSColor imageTintDarkColor];
         button.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#353535"];
         button.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#454545"];

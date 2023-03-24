@@ -82,7 +82,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.view.layer.masksToBounds = YES;
     [self.view excuteLight:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgLightColor.CGColor;
-    } drak:^(NSView *_Nonnull x) {
+    } dark:^(NSView *_Nonnull x) {
         x.layer.backgroundColor = NSColor.mainViewBgDarkColor.CGColor;
     }];
 }
@@ -207,7 +207,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         scrollView.layer.cornerRadius = EZCornerRadius_8;
         [scrollView excuteLight:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSScrollView *scrollView) {
+        } dark:^(NSScrollView *scrollView) {
             scrollView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
@@ -237,7 +237,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         [tableView excuteLight:^(NSTableView *tableView) {
             tableView.backgroundColor = NSColor.mainViewBgLightColor;
-        } drak:^(NSTableView *tableView) {
+        } dark:^(NSTableView *tableView) {
             tableView.backgroundColor = NSColor.mainViewBgDarkColor;
         }];
         
