@@ -249,6 +249,9 @@
     if (self.result.isShowing) {
         arrowImage = [NSImage imageNamed:@"arrow-down"];
     }
+    
+    self.arrowButton.toolTip = self.result.isShowing ? @"hide" : @"show";
+    
     [self.arrowButton excuteLight:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:NSColor.imageTintLightColor];
     } dark:^(NSButton *button) {
