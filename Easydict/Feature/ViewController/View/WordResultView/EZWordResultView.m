@@ -805,11 +805,11 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
         
         make.left.offset(leftOffset);
-        make.width.height.mas_equalTo(EZAudioButtonWidth_25);
+        make.width.height.mas_equalTo(EZAudioButtonWidth_26);
     }];
     lastView = audioButton;
     
-    height += (leftOffset + EZAudioButtonWidth_25 + EZAudioButtonBottomOffset_5);
+    height += (leftOffset + EZAudioButtonWidth_26 + EZAudioButtonBottomOffset_5);
     
     _viewHeight = height;
     
@@ -825,7 +825,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self addSubview:linkButton];
     
     NSImage *linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
-    linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
+    linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
     linkButton.link = [result.service wordLink:result.queryModel];

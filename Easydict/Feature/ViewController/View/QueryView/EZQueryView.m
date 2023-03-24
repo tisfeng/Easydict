@@ -146,7 +146,7 @@
     
     NSImage *clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
-    clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_15, EZAudioButtonImageWidth_15)];
+    clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
     clearButton.toolTip = @"Clear";
     
@@ -225,7 +225,7 @@
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-EZAudioButtonBottomOffset_5);
         make.left.offset(EZAudioButtonLeftOffset_7);
-        make.width.height.mas_equalTo(EZAudioButtonWidth_25);
+        make.width.height.mas_equalTo(EZAudioButtonWidth_26);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
