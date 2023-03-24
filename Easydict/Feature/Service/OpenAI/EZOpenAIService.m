@@ -59,7 +59,11 @@ static NSDictionary *const kQuotesDict = @{
         if ([language isEqualToString:EZLanguageClassicalChinese]) {
             value = kEZLanguageWenYanWen;
         }
-        [orderedDict setObject:value forKey:language];
+        
+        // OpenAI does not support Burmese 🥲
+        if (![language isEqualToString:EZLanguageBurmese]) {
+            [orderedDict setObject:value forKey:language];
+        }
     }
 
     return orderedDict;
