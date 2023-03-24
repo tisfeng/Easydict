@@ -13,8 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static CGFloat EZExceptInputViewHeight = 30;
-static NSTimeInterval EZDelayDetectTextLanguageInterval = 1.0;
+static CGFloat const EZExceptInputViewHeight = EZAudioButtonWidth_26 + EZAudioButtonBottomOffset_5; //31;
+static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 
 @interface EZQueryView : NSView
 
