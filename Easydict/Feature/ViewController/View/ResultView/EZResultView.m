@@ -41,7 +41,7 @@
     self.layer.cornerRadius = EZCornerRadius_8;
     [self.layer excuteLight:^(CALayer *layer) {
         layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
-    } drak:^(CALayer *layer) {
+    } dark:^(CALayer *layer) {
         layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
     }];
 
@@ -53,7 +53,7 @@
         view.wantsLayer = YES;
         [view.layer excuteLight:^(CALayer *layer) {
             layer.backgroundColor = NSColor.topBarBgLightColor.CGColor;
-        } drak:^(CALayer *layer) {
+        } dark:^(CALayer *layer) {
             layer.backgroundColor = NSColor.topBarBgDarkColor.CGColor;
         }];
     }];
@@ -75,7 +75,7 @@
         label.alignment = NSTextAlignmentCenter;
         [label excuteLight:^(NSTextField *label) {
             label.textColor = NSColor.resultTextLightColor;
-        } drak:^(NSTextField *label) {
+        } dark:^(NSTextField *label) {
             label.textColor = NSColor.resultTextDarkColor;
         }];
     }];
@@ -251,7 +251,7 @@
     }
     [self.arrowButton excuteLight:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:NSColor.imageTintLightColor];
-    } drak:^(NSButton *button) {
+    } dark:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
     }];
 }

@@ -42,7 +42,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         self.layer.cornerRadius = EZCornerRadius_8;
         [self.layer excuteLight:^(CALayer *layer) {
             layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
-        } drak:^(CALayer *layer) {
+        } dark:^(CALayer *layer) {
             layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
         }];
     }
@@ -75,7 +75,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             textField.stringValue = result.queryText;
             [textField excuteLight:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextLightColor];
-            } drak:^(id _Nonnull x) {
+            } dark:^(id _Nonnull x) {
                 [x setTextColor:NSColor.resultTextDarkColor];
             }];
             textField.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
@@ -278,7 +278,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 textField.stringValue = [NSString stringWithFormat:@"/ %@ /", obj.value];
                 [textField excuteLight:^(id _Nonnull x) {
                     [x setTextColor:NSColor.resultTextLightColor];
-                } drak:^(id _Nonnull x) {
+                } dark:^(id _Nonnull x) {
                     [x setTextColor:NSColor.resultTextDarkColor];
                 }];
                 textField.font = textFont;
@@ -361,7 +361,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             [tagButton excuteLight:^(NSButton *tagButton) {
                 NSColor *tagColor = [NSColor mm_colorWithHexString:@"#878785"];
                 [self updateTagButton:tagButton tagColor:tagColor];
-            } drak:^(NSButton *tagButton) {
+            } dark:^(NSButton *tagButton) {
                 NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
                 [self updateTagButton:tagButton tagColor:tagColor];
             }];
@@ -385,7 +385,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 tagContentView.wantsLayer = YES;
                 [tagContentView.layer excuteLight:^(CALayer *layer) {
                     layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
-                } drak:^(CALayer *layer) {
+                } dark:^(CALayer *layer) {
                     layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
                 }];
                 
@@ -661,7 +661,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         [self addSubview:meanLabel];
         [meanLabel excuteLight:^(id _Nonnull x) {
             [x setTextColor:NSColor.resultTextLightColor];
-        } drak:^(id _Nonnull x) {
+        } dark:^(id _Nonnull x) {
             [x setTextColor:NSColor.resultTextDarkColor];
         }];
         
@@ -832,7 +832,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [linkButton excuteLight:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];
-    } drak:^(NSButton *linkButton) {
+    } dark:^(NSButton *linkButton) {
         linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintDarkColor]];
     }];
     linkButton.mas_key = @"linkButton";

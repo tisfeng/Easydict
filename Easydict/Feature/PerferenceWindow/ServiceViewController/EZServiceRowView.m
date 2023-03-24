@@ -18,7 +18,7 @@
             [[NSColor mm_colorWithHexString:@"#DDDDDD"] setFill];
             NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
             [selectionPath fill];
-        } drak:^(NSTextField *nameLabel) {
+        } dark:^(NSTextField *nameLabel) {
             [[NSColor mm_colorWithHexString:@"#464646"] setFill];
             NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
             [selectionPath fill];
@@ -30,7 +30,7 @@
     [self excuteLight:^(id _Nonnull x) {
         [[NSColor whiteColor] setFill];
         NSRectFill(dirtyRect);
-    } drak:^(id _Nonnull x) {
+    } dark:^(id _Nonnull x) {
         [[NSColor resultViewBgDarkColor] setFill];
         NSRectFill(dirtyRect);
     }];

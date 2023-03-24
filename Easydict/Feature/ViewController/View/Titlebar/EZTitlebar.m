@@ -165,7 +165,7 @@
         mm_strongify(self)
         NSImage *image = self.pin ? selectedImage : normalLightImage;
         button.image = image;
-    } drak:^(EZHoverButton *button) {
+    } dark:^(EZHoverButton *button) {
         mm_strongify(self)
         NSImage *image = self.pin ? selectedImage : normalDarkImage;
         button.image = image;

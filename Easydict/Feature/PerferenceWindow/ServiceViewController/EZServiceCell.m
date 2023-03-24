@@ -32,7 +32,7 @@
         self.nameLabel.textColor = [NSColor blackColor];
         [self.nameLabel excuteLight:^(NSTextField *nameLabel) {
             nameLabel.textColor = [NSColor blackColor];
-        } drak:^(NSTextField *nameLabel) {
+        } dark:^(NSTextField *nameLabel) {
             nameLabel.textColor = [NSColor whiteColor];
         }];
         
@@ -51,7 +51,7 @@
         // Since using the system's dark mode image, the image is still a dark image even after switching to light mode, so we need to switch it manually.
         [self.toggleButton excuteLight:^(NSButton *button) {
             button.image = [[NSImage imageNamed:@"toggle_off_blue_light"] resizeToSize:imageSize];
-        } drak:^(NSButton *button) {
+        } dark:^(NSButton *button) {
             button.image = [[NSImage imageNamed:@"toggle_off_blue_dark"] resizeToSize:imageSize];
         }];
         
