@@ -129,7 +129,7 @@
     separatorView.wantsLayer = YES;
     [separatorView excuteLight:^(NSView *view) {
         view.layer.backgroundColor = separatorLightColor.CGColor;
-    } drak:^(NSView *view) {
+    } dark:^(NSView *view) {
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
     
@@ -237,7 +237,7 @@
     separatorView2.wantsLayer = YES;
     [separatorView2 excuteLight:^(NSView *view) {
         view.layer.backgroundColor = separatorLightColor.CGColor;
-    } drak:^(NSView *view) {
+    } dark:^(NSView *view) {
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
     

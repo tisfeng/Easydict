@@ -59,7 +59,7 @@
         [self excuteLight:^(EZTextView *textView) {
             textView.backgroundColor = NSColor.queryViewBgLightColor;
             [textView setTextColor:NSColor.queryTextLightColor];
-        } drak:^(EZTextView *textView) {
+        } dark:^(EZTextView *textView) {
             textView.backgroundColor = NSColor.queryViewBgDarkColor;
             [textView setTextColor:NSColor.queryTextDarkColor];
         }];

@@ -13,7 +13,7 @@
 
 @implementation NSObject (DarkMode)
 
-- (void)excuteLight:(void (^)(id x))light drak:(void (^)(id x))dark {
+- (void)excuteLight:(void (^)(id x))light dark:(void (^)(id x))dark {
     @weakify(self);
     [[[RACObserve(DarkModeManager.manager, systemDarkMode) distinctUntilChanged] deliverOnMainThread] subscribeNext:^(id _Nullable x) {
         @strongify(self);

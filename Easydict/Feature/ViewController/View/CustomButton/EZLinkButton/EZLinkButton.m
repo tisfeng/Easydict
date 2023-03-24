@@ -45,7 +45,7 @@ static NSString *const EZQueryKey = @"{Query}";
         button.contentTintColor = [NSColor imageTintLightColor];
         button.backgroundHoverColor = lightHoverColor;
         button.backgroundHighlightColor = lightHighlightColor;
-    } drak:^(EZButton *button) {
+    } dark:^(EZButton *button) {
         button.contentTintColor = [NSColor imageTintDarkColor];
         button.backgroundHoverColor = darkHoverColor;
         button.backgroundHighlightColor = darkHighlightColor;

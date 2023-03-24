@@ -132,7 +132,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 
         [tableView excuteLight:^(NSTableView *view) {
             view.backgroundColor = NSColor.whiteColor;
-        } drak:^(NSTableView *view) {
+        } dark:^(NSTableView *view) {
             view.backgroundColor = NSColor.resultViewBgDarkColor;
         }];
 

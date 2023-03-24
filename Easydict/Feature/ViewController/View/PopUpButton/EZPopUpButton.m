@@ -64,7 +64,7 @@ DefineMethodMMMake_m(EZPopUpButton);
             }];
             [textField excuteLight:^(NSTextField *label) {
                 label.textColor = NSColor.resultTextLightColor;
-            } drak:^(NSTextField *label) {
+            } dark:^(NSTextField *label) {
                 label.textColor = NSColor.resultTextDarkColor;
             }];
         }];
@@ -80,7 +80,7 @@ DefineMethodMMMake_m(EZPopUpButton);
             }];
             [imageView excuteLight:^(NSImageView *imageView) {
                 imageView.image = [image imageWithTintColor:NSColor.imageTintLightColor];
-            } drak:^(NSTextField *label) {
+            } dark:^(NSTextField *label) {
                 imageView.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
             }];
         }];
