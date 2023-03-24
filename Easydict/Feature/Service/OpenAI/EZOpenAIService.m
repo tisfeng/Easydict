@@ -239,7 +239,7 @@ static NSDictionary *const kQuotesDict = @{
 
 
     //=====Output format=====//
-    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, note that the text between angle brackets <> does not need to be displayed: \n\n";
+    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, note that the text between angle brackets <> should not be displayed: \n\n";
     prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
 
     NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
@@ -278,7 +278,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nRemember to answer in %@. ", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
 
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not display additional descriptions and annotations.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
 
     NSDictionary *dict = @{
