@@ -127,7 +127,8 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 @property (nonatomic, assign, readonly) BOOL hasShowingResult;
 /// If (self.wordResult && self.translatedText.length), YES
 @property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
-
+@property (nonatomic, assign) BOOL showBigWord;
+@property (nonatomic, assign) CGFloat translateResultsTopInset;
 
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;

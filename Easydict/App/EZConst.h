@@ -21,6 +21,11 @@ static CGFloat const EZTitlebarHeight_28 = 28;
 static CGFloat const EZAudioButtonWidth_25 = 25;
 static CGFloat const EZAudioButtonImageWidth_15 = 15;
 
+static CGFloat const EZAudioButtonLeftOffset_7 = 7;
+static CGFloat const EZAudioButtonBottomOffset_5 = 5;
+static CGFloat const EZAudioButtonRightOffset_2 = 2;
+
+
 static NSString *const EZBundleId = @"com.izual.Easydict";
 static NSString *const EZDebugBundleId = @"com.izual.Easydict-debug";
 
@@ -37,6 +42,6 @@ static NSTimeInterval const EZNetWorkTimeoutInterval = 15.0;
 // !!!: This floating window level shouldn't be higher than kCGModalPanelWindowLevel, otherwise it will cover system modal alert window.
 static NSTimeInterval const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
 
-static NSInteger const EZEnglishWordMaxLength = 15;
+static NSInteger const EZEnglishWordMaxLength = 20;
 
 #endif /* EZConst_h */
