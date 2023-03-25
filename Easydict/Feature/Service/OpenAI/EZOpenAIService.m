@@ -211,7 +211,7 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
 
     if (isEnglishWord) { // fine
-        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all part of speech and meanings, each line only shows one English abbreviation of part of speech and meaning in this format: \"xxx. xxx\""; // adj. 美好的  n. 罚款，罚金
+        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all part of speech and meanings, each line only shows one pos and meaning in this format: \"<English abbreviation of pos>xxx. <meaning>xxx\""; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
 
         NSString *tensePrompt = @"\n\nLook up its all tenses and forms, each line only shows one tense or form in this format: \"xxx: xxx\""; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
@@ -230,16 +230,16 @@ static NSDictionary *const kQuotesDict = @{
     }
 
     if (isWord) {
-        NSString *synonymsAntonymsPrompt = [NSString stringWithFormat:@"Look up its %@ near synonyms and antonyms. \n", sourceLanguage];
+        NSString *synonymsAntonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near synonyms and antonyms. do not show language type. \n", sourceLanguage];
         prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
     }
 
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its brief %@ translation. \n\n", targetLanguage];
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its most primary <%@> translation, do not show language type, only show the translated text in this format \"Translation: xxx \" \n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
 
 
     //=====Output format=====//
-    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, note that the text between angle brackets <> should not be displayed: \n\n";
+    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, except angle brackets (note that the text between angle brackets <> should not be outputed, it's just for aiding understanding): \n\n";
     prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
 
     NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
@@ -265,14 +265,19 @@ static NSDictionary *const kQuotesDict = @{
     }
 
     if (isWord) { // 倾国倾城
-        NSString *synonymsFormat = [NSString stringWithFormat:@"<%@> Synonyms: xxx \n", sourceLanguage];
+//        NSString *synonymsFormat = [NSString stringWithFormat:@"<%@> Synonyms: xxx \n", sourceLanguage];
+        NSString *synonymsFormat = [NSString stringWithFormat:@"xxx \n"];
         prompt = [prompt stringByAppendingString:synonymsFormat];
 
-        NSString *antonymsFormat = [NSString stringWithFormat:@"<%@> Antonyms: xxx \n", sourceLanguage];
+//        NSString *antonymsFormat = [NSString stringWithFormat:@"<%@> Antonyms: xxx \n", sourceLanguage];
+        NSString *antonymsFormat = [NSString stringWithFormat:@"xxx \n"];
         prompt = [prompt stringByAppendingString:antonymsFormat];
     }
 
-    NSString *translationFormat = [NSString stringWithFormat:@"\n<%@> Translation: xxx\"", translationLanguageTitle];
+//    NSString *translationFormat = [NSString stringWithFormat:@"\n<%@> Translation: xxx\"", translationLanguageTitle];
+//    NSString *translationFormat = [NSString stringWithFormat:@"\n xxx \""];
+    NSString *translationFormat = [NSString stringWithFormat:@"xxx \""];
+
     prompt = [prompt stringByAppendingString:translationFormat];
 
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nRemember to answer in %@. ", answerLanguage];
