@@ -198,101 +198,106 @@ static NSDictionary *const kQuotesDict = @{
     // V4.
     prompt = @"";
 
-    NSString *actorPrompt = @"I want you to act as a useful dictionary and etymologist. \n";
-    prompt = [prompt stringByAppendingString:actorPrompt];
+    NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
+//    prompt = [prompt stringByAppendingString:actorPrompt];
 
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@. ", answerLanguage];
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"I speak %@, please communicate with me in %@. \n", answerLanguage, answerLanguage];
     prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
 
-    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ text: \"%@\", ", sourceLanguage, word];
-    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
 
-    NSString *pronunciationPrompt = @"look up its pronunciation. \n";
+    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words: \"%@\", ", sourceLanguage, word];
+//    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
+
+    // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
+    NSString *pronunciation = @"Pronunciation";
+    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+        pronunciation = @"发音";
+    }
+    
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that \"/\" needs to be preceded and followed by a space. \n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
 
     if (isEnglishWord) { // fine
-        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all part of speech and meanings, each line only shows one pos and meaning in this format: \"<English abbreviation of pos>xxx. <meaning>xxx\""; // adj. 美好的  n. 罚款，罚金
+        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all English parts of speech and meanings, each line displays one result, display strictly in this format: \"<Part of Speech Abbreviation.>xxx. <meaning>xxx\", Never display the title \"Part of Speech and Meaning\" . "; // adj. 美好的  n. 罚款，罚金
+
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
 
-        NSString *tensePrompt = @"\n\nLook up its all tenses and forms, each line only shows one tense or form in this format: \"xxx: xxx\""; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form strictly in this format: \"<tense or form>xxx: <word>xxx\" "; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     }
 
-    NSString *explanationPrompt = @"\n\nLook up its brief explanation in clear and understandable way. \n";
+    NSString *explanationPrompt = @"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"Explanation: xxx \"";
     prompt = [prompt stringByAppendingString:explanationPrompt];
 
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@. \n", etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"\nLook up its detailed %@, display strictly in this format on one line: \"%@: xxx \" ", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
 
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = @"Look up disassembly and association methods to remember it. \n";
+        NSString *rememberWordPrompt = @"\nLook up disassembly and association methods to remember it, display strictly in this format on one line: \"How to remember: xxx \" ";
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
     }
 
     if (isWord) {
-        NSString *synonymsAntonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near synonyms and antonyms. do not show language type. \n", sourceLanguage];
-        prompt = [prompt stringByAppendingString:synonymsAntonymsPrompt];
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near synonyms, strict format: \"Aynonyms: xxx \" ", sourceLanguage];
+        prompt = [prompt stringByAppendingString:synonymsPrompt];
+
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near antonyms, strict format: \"Antonyms: xxx \" ", sourceLanguage];
+        prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
 
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"Look up its most primary <%@> translation, do not show language type, only show the translated text in this format \"Translation: xxx \" \n\n", targetLanguage];
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"\n<Look up its most primary %@ translation>, only display the translated text strictly in this format: \"Translation: xxx \" \n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
-
-
-    //=====Output format=====//
-    NSString *outputFollowingFormatPrompt = @"Output it strickly in the following format, except angle brackets (note that the text between angle brackets <> should not be outputed, it's just for aiding understanding): \n\n";
-    prompt = [prompt stringByAppendingString:outputFollowingFormatPrompt];
-
-    NSString *pronunciationFormat = [NSString stringWithFormat:@"\"Pronunciation: / xxx / \n\n"];
-    prompt = [prompt stringByAppendingString:pronunciationFormat];
-
-    if (isEnglishWord) {
-        NSString *partOfSpeechAndMeaningFormat = [NSString stringWithFormat:@"xxx \n"];
-        prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningFormat];
-        
-        NSString *tenseFormat = [NSString stringWithFormat:@"xxx \n"];
-        prompt = [prompt stringByAppendingString:tenseFormat];
-    }
-
-    NSString *explanationFormat = [NSString stringWithFormat:@"\nExplanation: xxx \n\n"];
-    prompt = [prompt stringByAppendingString:explanationFormat];
-
-    NSString *etymologyFormat = [NSString stringWithFormat:@"%@: xxx \n\n", etymology];
-    prompt = [prompt stringByAppendingString:etymologyFormat];
-
-    if (isEnglishWord) {
-        NSString *howRememberFormat = [NSString stringWithFormat:@"How to remember: xxx \n\n"];
-        prompt = [prompt stringByAppendingString:howRememberFormat];
-    }
-
-    if (isWord) { // 倾国倾城
-//        NSString *synonymsFormat = [NSString stringWithFormat:@"<%@> Synonyms: xxx \n", sourceLanguage];
-        NSString *synonymsFormat = [NSString stringWithFormat:@"xxx \n"];
-        prompt = [prompt stringByAppendingString:synonymsFormat];
-
-//        NSString *antonymsFormat = [NSString stringWithFormat:@"<%@> Antonyms: xxx \n", sourceLanguage];
-        NSString *antonymsFormat = [NSString stringWithFormat:@"xxx \n"];
-        prompt = [prompt stringByAppendingString:antonymsFormat];
-    }
-
-//    NSString *translationFormat = [NSString stringWithFormat:@"\n<%@> Translation: xxx\"", translationLanguageTitle];
-//    NSString *translationFormat = [NSString stringWithFormat:@"\n xxx \""];
-    NSString *translationFormat = [NSString stringWithFormat:@"xxx \""];
-
-    prompt = [prompt stringByAppendingString:translationFormat];
-
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"\n\nRemember to answer in %@. ", answerLanguage];
+    
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
 
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not display additional descriptions and annotations.";
+    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
+    prompt = [prompt stringByAppendingString:formatPompt];
+    
+    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <> should not be outputed, it's just prompt. \n"];
+    prompt = [prompt stringByAppendingString:bracketsPrompt];
+    
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
 
-    NSDictionary *dict = @{
-        @"role" : @"user",
-        @"content" : prompt,
-    };
+    /**
+     I want you to act as a useful dictionary, linguist and etymologist.
+     
+     I speak Simplified-Chinese, please communicate with me in Simplified-Chinese.
+
+     Look up its pronunciation, display in this format: "发音: / xxx /" , note that "/" needs to be preceded and followed by a space.
+
+     Look up its all English parts of speech and meanings, each line displays one result, display strictly in this format: "<Part of Speech Abbreviation.>xxx. <meaning>xxx", Never display the title "Part of Speech and Meaning" . Look up its all tenses and forms, each line only display one tense or form strictly in this format: "<tense or form>xxx: <word>xxx"
+     Look up its brief explanation in clear and understandable way, display strictly in this format on one line: "Explanation: xxx "
+     Look up its detailed Etymology, display strictly in this format on one line: "Etymology: xxx "
+     Look up disassembly and association methods to remember it, display strictly in this format on one line: "How to remember: xxx "
+     Look up its <English> near synonyms, strict format: "Aynonyms: xxx "
+     Look up its <English> near antonyms, strict format: "Antonyms: xxx "
+     <Look up its most primary Simplified-Chinese translation>, only display the translated text strictly in this format: "Translation: xxx "
+
+     Remember to answer in Simplified-Chinese language.
+     Note that the description title text before the colon : in format output, should be translated into Simplified-Chinese language.
+     Note that the text between angle brackets <> should not be outputed, it's just prompt.
+     Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.
+     */
+    
+    NSArray *messages = @[
+        @{
+            @"role" : @"system",
+            @"content" : actorPrompt,
+        },
+        @{
+            @"role" : @"user",
+            @"content" : sourceLanguageWordPrompt,
+        },
+        @{
+            @"role" : @"user",
+            @"content" : prompt
+        },
+    ];
 
     // Quickly, generally less than 3s.
-    [self startStreamChat:@[ dict ] completion:completion];
+    [self startStreamChat:messages completion:completion];
 
     // ⚠️ It takes too long(>10s) to generate a result for text-davinci-003.
     //        [self startCompletion:prompt completion:completion];
@@ -306,6 +311,7 @@ static NSDictionary *const kQuotesDict = @{
         @"Content-Type" : @"application/json",
         @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
     };
+    NSLog(@"messages: %@", messages);
 
     BOOL stream = YES;
 
