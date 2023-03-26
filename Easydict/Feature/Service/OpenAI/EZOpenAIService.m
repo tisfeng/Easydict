@@ -205,7 +205,7 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
 
 
-    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words: \"%@\", ", sourceLanguage, word];
+    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words or text: \"%@\", ", sourceLanguage, word];
 //    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
 
     // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
@@ -214,15 +214,16 @@ static NSDictionary *const kQuotesDict = @{
         pronunciation = @"发音";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that \"/\" needs to be preceded and followed by a space. \n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that \"/\" needs to be preceded and followed by a white space. \n\n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
 
     if (isEnglishWord) { // fine
-        NSString *partOfSpeechAndMeaningPrompt = @"\nLook up its all English parts of speech and meanings, each line displays one result, display strictly in this format: \"<Part of Speech Abbreviation.>xxx. <meaning>xxx\", Never display the title \"Part of Speech and Meaning\" . "; // adj. 美好的  n. 罚款，罚金
-
+//        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, each line only display one pos and meaning in this format: \"<abbreviation of pos>xxx. <meaning>xxx \" ";
+        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, each line only shows one abbreviation of pos and meaning: \" xxx \""; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
 
-        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form strictly in this format: \"<tense or form>xxx: <word>xxx\" "; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+//        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \"<tense or form>xxx: <word>xxx\" ";
+        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" "; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     }
 
@@ -241,11 +242,13 @@ static NSDictionary *const kQuotesDict = @{
         NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near synonyms, strict format: \"Aynonyms: xxx \" ", sourceLanguage];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
 
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near antonyms, strict format: \"Antonyms: xxx \" ", sourceLanguage];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, strict format: \"Antonyms: xxx \" ", sourceLanguage];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
 
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"\n<Look up its most primary %@ translation>, only display the translated text strictly in this format: \"Translation: xxx \" \n\n", targetLanguage];
+    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"Translation: xxx \" \n\n", targetLanguage];
+//    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \" xxx \" \n\n", targetLanguage];
+
     prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
@@ -254,7 +257,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:formatPompt];
     
-    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <> should not be outputed, it's just prompt. \n"];
+    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it's just prompt. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.";
@@ -945,7 +948,7 @@ static NSDictionary *const kQuotesDict = @{
     return NO;
 }
 
-/// Check if text is a English word, can include numbers. Like B612
+/// Check if text is a English word, can include numbers. Like B612, 9527
 - (BOOL)isEnglishWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
