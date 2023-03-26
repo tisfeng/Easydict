@@ -82,7 +82,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
 
-    if ([self isWord:text language:from]) {
+    if ([self shouldQueryDictionary:text language:from]) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 completion(self.result, error);
@@ -159,11 +159,6 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (void)queryDict:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    if (![self isWord:word language:sourceLanguage]) {
-        completion(@"query text should be a word", nil);
-        return;
-    }
-
     /**
      V1.
      Look up word definition and etymology.
@@ -181,11 +176,16 @@ static NSDictionary *const kQuotesDict = @{
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
     NSString *translationLanguageTitle = targetLanguage;
 
-    BOOL isEnglishWord = [sourceLanguage isEqualToString:EZLanguageEnglish];
-    BOOL isChineseWord = NO;
-    if ([EZLanguageManager isChineseLanguage:sourceLanguage] && word.length <= 4) {
-        isChineseWord = YES; // 倾国倾城
+    BOOL isEnglishWord = NO;
+    if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
+        isEnglishWord = [self isEnglishWord:word];
     }
+    
+    BOOL isChineseWord = NO;
+    if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
+        isChineseWord = [self isChineseWord:word]; // 倾国倾城
+    }
+    
     BOOL isWord = isEnglishWord || isChineseWord;
 
     if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
@@ -924,40 +924,57 @@ static NSDictionary *const kQuotesDict = @{
     return text;
 }
 
-#pragma mark -
+#pragma mark - Check if text is a word, or phrase
 
-/// Simply Check if text is a word.
-- (BOOL)isWord:(NSString *)text language:(EZLanguage)langugae {
-    text = [self tryToRemoveQuotes:text];
+/// If text is a Chinese or English word or phrase, need query dict.
+/// Only `Word` have synonyms and antonyms, only `English Word` have parts of speech, tenses and How to remember.
+- (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae {
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
-
+    
     if ([EZLanguageManager isChineseLanguage:langugae]) {
-        return [self isChineseWord:text];
+        return [self isChineseWord:text] || [self isChinesePhrase:text];
     }
 
     if ([langugae isEqualToString:EZLanguageEnglish]) {
-        return [self isEnglishWord:text];
+        return [self isEnglishWord:text] || [self isEnglishPhrase:text];
     }
 
-    if ([self isWord:text]) {
+    NSInteger wordCount = [self wordCount:text];
+    if (wordCount <= 2) {
         return YES;
     }
 
     return NO;
 }
 
-/// Check if text is a English word, can include numbers. Like B612, 9527
+
+/// Check if text is a English word. Note: B612 is not a word.
 - (BOOL)isEnglishWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
 
-    NSString *pattern = @"^[a-zA-Z0-9]+$";
+    NSString *pattern = @"^[a-zA-Z]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
+}
+
+/// Check if text is a English phrase, like B612, 9527, Since they are detected as English, should query dict, but don't have pos.
+- (BOOL)isEnglishPhrase:(NSString *)text {
+    if (text.length > EZEnglishWordMaxLength) {
+        return NO;
+    }
+    
+    NSInteger wordCount = [self wordCount:text];
+
+    if (wordCount <= 3) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 /// Use NLTokenizer to check if text is a word.
@@ -967,20 +984,22 @@ static NSDictionary *const kQuotesDict = @{
         return NO;
     }
 
+    NSInteger wordCount = [self wordCount:text];
+    if (wordCount == 1) {
+        return YES;
+    }
+    return NO;
+}
+
+/// Count word count of text.
+- (NSInteger)wordCount:(NSString *)text {
     NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
     tokenizer.string = text;
-    [tokenizer setString:text];
-    __block BOOL result = NO;
-
+    __block NSInteger count = 0;
     [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
-        NSLog(@"tokenizer: %@", [text substringWithRange:tokenRange]);
-
-        if (tokenRange.length == text.length) {
-            result = YES;
-        }
-        *stop = YES;
+        count++;
     }];
-    return result;
+    return count;
 }
 
 /// Use NLTagger to check if text is a word.
@@ -1002,25 +1021,41 @@ static NSDictionary *const kQuotesDict = @{
     return result;
 }
 
-/// Use NSSpellChecker to check word spell.
-- (BOOL)isSpelledCorrectly:(NSString *)word {
-    NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
-    NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
-    return misspelledRange.location == NSNotFound;
+/// Check if text is a Chinese word, length <= 4, 倾国倾城
+- (BOOL)isChineseWord:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
+    if (text.length > 4) {
+        return NO;
+    }
+
+    return [self isChineseText:text];
 }
 
-
-/// Check if text is a Chinese word.
-- (BOOL)isChineseWord:(NSString *)text {
+/// Check if text is a Chinese phrase, length <= 7, 曾经沧海难为水
+- (BOOL)isChinesePhrase:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > 7) { // 曾经沧海难为水
         return NO;
     }
 
+    return [self isChineseText:text];
+}
+
+- (BOOL)isChineseText:(NSString *)text {
     NSString *pattern = @"^[\u4e00-\u9fa5]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
     return [predicate evaluateWithObject:text];
 }
+
+- (BOOL)isChineseText2:(NSString *)text {
+    NSString *pattern = @"^[\u4e00-\u9fa5]+$";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
+    NSUInteger numberOfMatches = [regex numberOfMatchesInString:text options:0 range:NSMakeRange(0, [text length])];
+    return numberOfMatches > 0;
+}
+
+
+#pragma mark -
 
 /// Get Chinese language type when the source language is classical Chinese.
 - (NSString *)getChineseLanguageType:(NSString *)language accordingToLanguage:(NSString *)accordingToLanguage {
@@ -1033,6 +1068,13 @@ static NSDictionary *const kQuotesDict = @{
         }
     }
     return language;
+}
+
+/// Use NSSpellChecker to check word spell.
+- (BOOL)isSpelledCorrectly:(NSString *)word {
+    NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
+    NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
+    return misspelledRange.location == NSNotFound;
 }
 
 @end
