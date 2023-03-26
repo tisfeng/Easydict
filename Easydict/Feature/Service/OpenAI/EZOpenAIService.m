@@ -166,8 +166,13 @@ static NSDictionary *const kQuotesDict = @{
     NSString *prompt = @"";
     
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
-    NSString *translationLanguageTitle = targetLanguage;
-    NSString *etymology = [sourceLanguage isEqualToString:EZLanguageEnglish] ? @"Etymology" : @"Origin";
+    
+    NSString *pronunciation = @"Pronunciation";
+    NSString *explanation = @"Explanation";
+    NSString *etymology = @"Etymology";
+    NSString *howToRemember = @"How to remember";
+    NSString *translationTitle = [NSString stringWithFormat:@"%@ Translation", targetLanguage];
+    
     
     BOOL isEnglishWord = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
@@ -181,22 +186,23 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isWord = isEnglishWord || isChineseWord;
     
-    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
-        translationLanguageTitle = @"中文";
-    }
-    
+    // Pre-prompt.
     NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"I speak %@, please communicate with me in %@. \n", answerLanguage, answerLanguage];
-    NSString *queryWordPrompt = [NSString stringWithFormat:@"For %@ words or text: \"%@\", ", sourceLanguage, word];
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"I speak %@, please communicate with me in %@ language. \n", answerLanguage, answerLanguage];
+    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
     
-    NSString *pronunciation = @"Pronunciation";
-    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
-        communicateLanguagePrompt = @"请用中文回答我。";
+        explanation = @"解释";
+        etymology = @"词源";
+        howToRemember = @"记忆方法";
+        translationTitle = @"中文翻译";
+        
+//        communicateLanguagePrompt = @"请用中文回答我。";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that \"/\" needs to be preceded and followed by a white space. \n\n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that / needs to be preceded and followed by a white space. \n\n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
@@ -209,14 +215,14 @@ static NSDictionary *const kQuotesDict = @{
         prompt = [prompt stringByAppendingString:tensePrompt];
     }
     
-    NSString *explanationPrompt = @"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"Explanation: xxx \" .";
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"%@: xxx \" .", explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     NSString *etymologyPrompt = [NSString stringWithFormat:@"\nLook up its detailed %@, display strictly in this format on one line: \"%@: xxx \" .", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = @"\nLook up disassembly and association methods to remember it, display strictly in this format on one line: \"How to remember: xxx \" .";
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"\nLook up disassembly and association methods to remember it, display strictly in this format on one line: \"%@: xxx \" .", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
     }
     
@@ -228,9 +234,9 @@ static NSDictionary *const kQuotesDict = @{
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
-    NSString *targetLanguageTranslationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"Translation: xxx \" . \n\n", targetLanguage];
+    NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"%@: xxx \" . \n\n", targetLanguage, translationTitle];
     
-    prompt = [prompt stringByAppendingString:targetLanguageTranslationPrompt];
+    prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
@@ -273,8 +279,12 @@ static NSDictionary *const kQuotesDict = @{
             @"role" : @"user",
             @"content" : communicateLanguagePrompt,
         },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" : @"", // give examples of desired behavior.
+//        },
         @{
-            @"role" : @"system",
+            @"role" : @"user",
             @"content" : queryWordPrompt,
         },
         @{
@@ -286,11 +296,10 @@ static NSDictionary *const kQuotesDict = @{
     return messages;
 }
 
-/// Generate the prompt for the given word.
+/// Generate the prompt for the given word. ⚠️ This method can get the specified json data, but it is not suitable for stream.
 - (NSArray<NSDictionary *> *)jsonDictPromptMessages:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     NSString *prompt = @"";
     
-    //    NSString *etymology = [sourceLanguage isEqualToString:EZLanguageEnglish] ? @"Etymology" : @"Origin";
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
     NSString *translationLanguageTitle = targetLanguage;
     
