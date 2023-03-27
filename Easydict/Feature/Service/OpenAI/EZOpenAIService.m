@@ -168,11 +168,13 @@ static NSDictionary *const kQuotesDict = @{
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
     
     NSString *pronunciation = @"Pronunciation";
+    NSString *translationTitle = @"Translation";
     NSString *explanation = @"Explanation";
     NSString *etymology = @"Etymology";
     NSString *howToRemember = @"How to remember";
-    NSString *translationTitle = [NSString stringWithFormat:@"%@ Translation", targetLanguage];
-    
+    NSString *cognate = @"Cognate";
+    NSString *synonym = @"Synonym";
+    NSString *antonym = @"Antonym";
     
     BOOL isEnglishWord = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
@@ -196,10 +198,13 @@ static NSDictionary *const kQuotesDict = @{
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
+        translationTitle = @"翻译"; // This is needed.
         explanation = @"解释";
         etymology = @"词源学";
-        howToRemember = @"如何记";
-        translationTitle = @"翻译"; // This is needed.
+        howToRemember = @"记忆方法";
+        cognate = @"同根词";
+        synonym = @"同义词";
+        antonym = @"反义词";
         
 //        communicateLanguagePrompt = @"请用中文回答我。";
     }
@@ -217,26 +222,31 @@ static NSDictionary *const kQuotesDict = @{
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
-        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"%@: xxx \" . \n\n", targetLanguage, translationTitle];
+        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"<%@>%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"%@: xxx \" .", explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"%@: xxx \" \n\n.", explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"\nLook up its detailed %@, display strictly in this format on one line: \"%@: xxx \" .", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, display strictly in this format on one line: \"%@: xxx \" . \n\n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = [NSString stringWithFormat:@"\nLook up disassembly and association methods to remember it, display strictly in this format on one line: \"%@: xxx \" .", howToRemember];
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, display strictly in this format on one line: \"%@: xxx \" . \n\n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
     }
     
     if (isWord) {
-        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near synonyms, strict format: \"Aynonyms: xxx \" . \n", sourceLanguage];
+        if (isEnglishWord) {
+            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its all <%@> cognates, strict format: \"%@: xxx \" . ", sourceLanguage, cognate];
+            prompt = [prompt stringByAppendingString:cognatesPrompt];
+        }
+
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near synonyms, strict format: \"%@: xxx \" . ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, strict format: \"Antonyms: xxx \" . \n", sourceLanguage];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, strict format: \"%@: xxx \" . \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
