@@ -193,13 +193,13 @@ static NSDictionary *const kQuotesDict = @{
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
 
-    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
+    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
-//        explanation = @"解释";
-//        etymology = @"词源";
-//        howToRemember = @"记忆方法";
-        translationTitle = @"中文翻译"; // This is needed.
+        explanation = @"解释";
+        etymology = @"词源学";
+        howToRemember = @"如何记";
+        translationTitle = @"翻译"; // This is needed.
         
 //        communicateLanguagePrompt = @"请用中文回答我。";
     }
@@ -216,6 +216,9 @@ static NSDictionary *const kQuotesDict = @{
         //  <tense or form>xxx: <word>xxx
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
+    } else {
+        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"%@: xxx \" . \n\n", targetLanguage, translationTitle];
+        prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
     NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"%@: xxx \" .", explanation];
@@ -236,9 +239,6 @@ static NSDictionary *const kQuotesDict = @{
         NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, strict format: \"Antonyms: xxx \" . \n", sourceLanguage];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
-    
-    NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"%@: xxx \" . \n\n", targetLanguage, translationTitle];
-    prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
