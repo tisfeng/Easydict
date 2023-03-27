@@ -118,7 +118,7 @@ static NSDictionary *const kQuotesDict = @{
     //   NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
     
     // !!!: This prompt must be added '\n\n' and '=>', otherwise the result will be incorrect, such as 定风波 · 南海归赠王定国侍人寓娘
-    NSString *prompt = [NSString stringWithFormat:@"translate text from %@ language to %@ language:\n\n\"%@\" =>", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"translate the following %@ text to %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
     
     /**
      Fix SQL injection. Ref: https://twitter.com/zty0826/status/1632468826137972736
@@ -438,6 +438,8 @@ static NSDictionary *const kQuotesDict = @{
     return messages;
 }
 
+/// Stream chat.
+/// TODO: need to optimize. In this case, we don't need to refresh the cell every time, just update the translated text.
 - (void)startStreamChat:(NSArray<NSDictionary *> *)messages completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
     NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
@@ -476,7 +478,7 @@ static NSDictionary *const kQuotesDict = @{
         [manager.requestSerializer setValue:obj forHTTPHeaderField:key];
     }];
     
-    BOOL isHandleQuote = YES;
+    BOOL shouldHandleQuote = YES;
     
     // TODO: need to optimize.
     if (stream) {
@@ -495,11 +497,12 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
             
-            //            NSLog(@"content: %@, isFinished: %d", content, isFinished);
+              NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
-            if (isHandleQuote) {
+            // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
+            if (shouldHandleQuote) {
                 if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
                     appendContent = [self tryToRemovePrefixQuote:content];
                 }
@@ -527,7 +530,10 @@ static NSDictionary *const kQuotesDict = @{
                     }
                 }
                 
-                isFirst = NO;
+                // Skip first emtpy content.
+                if (content.length) {
+                    isFirst = NO;
+                }
             }
             
             if (appendContent) {
@@ -556,7 +562,7 @@ static NSDictionary *const kQuotesDict = @{
             NSLog(@"success content: %@", content);
             
             // Count quote may cost much time, so only count when query text is short.
-            if (isHandleQuote && queryText.length < 10) {
+            if (shouldHandleQuote && queryText.length < 100) {
                 NSInteger queryTextQuoteCount = [self countQuoteNumberInText:queryText];
                 NSInteger translatedTextQuoteCount = [self countQuoteNumberInText:self.result.translatedText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
