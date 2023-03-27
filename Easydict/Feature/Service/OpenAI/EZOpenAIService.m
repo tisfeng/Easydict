@@ -497,7 +497,7 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
             
-              NSLog(@"content: %@, isFinished: %d", content, isFinished);
+//              NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
