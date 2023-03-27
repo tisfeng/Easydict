@@ -188,26 +188,29 @@ static NSDictionary *const kQuotesDict = @{
     
     // Pre-prompt.
     NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"I speak %@, please communicate with me in %@ language. \n", answerLanguage, answerLanguage];
+//    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@ language. \n", answerLanguage];
+
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
-    
+    prompt = [prompt stringByAppendingString:queryWordPrompt];
+
     if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
-        explanation = @"解释";
-        etymology = @"词源";
-        howToRemember = @"记忆方法";
-        translationTitle = @"中文翻译";
+//        explanation = @"解释";
+//        etymology = @"词源";
+//        howToRemember = @"记忆方法";
+        translationTitle = @"中文翻译"; // This is needed.
         
 //        communicateLanguagePrompt = @"请用中文回答我。";
     }
+    //    prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
     
     NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that / needs to be preceded and followed by a white space. \n\n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
         // <abbreviation of pos>xxx. <meaning>xxx
-        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
+        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
         //  <tense or form>xxx: <word>xxx
@@ -235,7 +238,6 @@ static NSDictionary *const kQuotesDict = @{
     }
     
     NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used <%@> translation, only display the translated text: \"%@: xxx \" . \n\n", targetLanguage, translationTitle];
-    
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
@@ -244,7 +246,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:formatPompt];
     
-    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it's just prompt. \n"];
+    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.";
@@ -276,16 +278,12 @@ static NSDictionary *const kQuotesDict = @{
             @"content" : actorPrompt,
         },
         @{
-            @"role" : @"user",
-            @"content" : communicateLanguagePrompt,
+            @"role" : @"user", // This guide example is necessary, otherwise there will be misunderstanding when querying 'prompt'.
+            @"content" : @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \nLook up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" ",
         },
-//        @{
-//            @"role" : @"assistant",
-//            @"content" : @"", // give examples of desired behavior.
-//        },
         @{
-            @"role" : @"user",
-            @"content" : queryWordPrompt,
+            @"role" : @"assistant", // give examples of desired behavior.
+            @"content" : @"n. 提示，提示符\nadj. 迅速的，敏捷的\nv. 激励，促进\n\n过去式: prompted\n现在分词: prompting\n第三人称单数: prompts",
         },
         @{
             @"role" : @"user",
@@ -322,9 +320,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
     
     // Specify chat language, this trick is from ChatGPT 😤
-    //    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Using %@, \n", answerLanguage];
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"请用中文回答我, \n"];
-    
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Using %@, \n", answerLanguage];
     prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
     
     //    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words or text: \"%@\", \n\n", sourceLanguage, word];
