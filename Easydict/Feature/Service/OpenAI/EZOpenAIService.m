@@ -239,14 +239,15 @@ static NSDictionary *const kQuotesDict = @{
     
     if (isWord) {
         if (isEnglishWord) {
-            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its all <%@> cognates, strict format: \"%@: xxx \" . ", sourceLanguage, cognate];
+            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, strict format: \"%@: xxx \" . ", sourceLanguage, cognate];
+//            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
             prompt = [prompt stringByAppendingString:cognatesPrompt];
         }
 
-        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its <%@> near synonyms, strict format: \"%@: xxx \" . ", sourceLanguage, synonym];
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, strict format: \"%@: xxx \" . ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, strict format: \"%@: xxx \" . \n", sourceLanguage, antonym];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its main <%@> near antonyms, no more than 3, strict format: \"%@: xxx \" . \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
@@ -261,6 +262,8 @@ static NSDictionary *const kQuotesDict = @{
     
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
+    
+    NSLog(@"dict prompt: %@", prompt);
     
     /**
      Look up its pronunciation, display in this format: "发音: / xxx /" , note that "/" needs to be preceded and followed by a white space.
@@ -289,11 +292,20 @@ static NSDictionary *const kQuotesDict = @{
         },
         @{
             @"role" : @"user", // This guide example is necessary, otherwise there will be misunderstanding when querying 'prompt'.
-            @"content" : @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \nLook up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" ",
+            @"content" : @"Here is a English word or text: \"prompt\", \nLook up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \nLook up its all tenses and forms, each line only display one tense or form in this format: \" xxx \". ",
         },
         @{
             @"role" : @"assistant", // give examples of desired behavior.
-            @"content" : @"n. 提示，提示符\nadj. 迅速的，敏捷的\nv. 激励，促进\n\n过去式: prompted\n现在分词: prompting\n第三人称单数: prompts",
+            @"content" : @"n. 提示，提示符\n adj. 迅速的，敏捷的\n v. 激励，促进 \n\n 过去式: prompted\n 现在分词: prompting\n 第三人称单数: prompts",
+        },
+        // Look up its most commonly used <English> cognates, no more than 6, strict format: "同根词: xxx " .
+        @{
+            @"role" : @"user",
+            @"content" : @"Here is a English word or text: \"prompt\", Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" .",
+        },
+        @{
+            @"role" : @"assistant", // give examples of desired behavior.
+            @"content" : @"同根词:\n adv. promptly: 迅速地\n n. prompting: 激励；提示；刺激\n v. prompting 促进；激起；鼓舞（prompt的ing形式）",
         },
         @{
             @"role" : @"user",
@@ -458,7 +470,7 @@ static NSDictionary *const kQuotesDict = @{
         @"Content-Type" : @"application/json",
         @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
     };
-    NSLog(@"messages: %@", messages);
+//    NSLog(@"messages: %@", messages);
     
     BOOL stream = YES;
     
