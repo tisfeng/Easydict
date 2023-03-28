@@ -118,7 +118,7 @@ static NSDictionary *const kQuotesDict = @{
     //   NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
     
     // !!!: This prompt must be added '\n\n' and '=>', otherwise the result will be incorrect, such as 定风波 · 南海归赠王定国侍人寓娘
-    NSString *prompt = [NSString stringWithFormat:@"translate the following %@ text to %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];;
     
     /**
      Fix SQL injection. Ref: https://twitter.com/zty0826/status/1632468826137972736
@@ -144,7 +144,7 @@ static NSDictionary *const kQuotesDict = @{
     NSArray *messages = @[
         @{
             @"role" : @"system",
-            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, only return the translated text.",
+            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.",
         },
         @{
             @"role" : @"user",
@@ -153,6 +153,12 @@ static NSDictionary *const kQuotesDict = @{
     ];
     
     [self startStreamChat:messages completion:completion];
+}
+
+/// Translation prompt.
+- (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
+    NSString *prompt = [NSString stringWithFormat:@"translate the following %@ text to %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
+    return prompt;
 }
 
 - (void)queryDict:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
@@ -198,17 +204,14 @@ static NSDictionary *const kQuotesDict = @{
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
-        translationTitle = @"翻译"; // This is needed.
+        translationTitle = @"翻译";
         explanation = @"解释";
         etymology = @"词源学";
         howToRemember = @"记忆方法";
         cognate = @"同根词";
         synonym = @"同义词";
         antonym = @"反义词";
-        
-//        communicateLanguagePrompt = @"请用中文回答我。";
     }
-    //    prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
     
     NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that / needs to be preceded and followed by a white space. \n\n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
@@ -222,7 +225,9 @@ static NSDictionary *const kQuotesDict = @{
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
-        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"<%@>%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
+//        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"%@%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
+        NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
+        translationPrompt = [translationPrompt stringByAppendingFormat:@", display in this format: \"%@: xxx \" ", translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
@@ -260,8 +265,12 @@ static NSDictionary *const kQuotesDict = @{
     NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.";
+    // Some etymology words cannot be reached 300,
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
+    
+    NSString *noAnnotationPromt = @"Do not show additional descriptions or annotations. \n";
+    prompt = [prompt stringByAppendingString:noAnnotationPromt];
     
     NSLog(@"dict prompt: %@", prompt);
     
@@ -316,149 +325,6 @@ static NSDictionary *const kQuotesDict = @{
     return messages;
 }
 
-/// Generate the prompt for the given word. ⚠️ This method can get the specified json data, but it is not suitable for stream.
-- (NSArray<NSDictionary *> *)jsonDictPromptMessages:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *prompt = @"";
-    
-    NSString *answerLanguage = [EZLanguageManager firstLanguage];
-    NSString *translationLanguageTitle = targetLanguage;
-    
-    BOOL isEnglishWord = NO;
-    if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
-        isEnglishWord = [self isEnglishWord:word];
-    }
-    
-    BOOL isChineseWord = NO;
-    if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
-        isChineseWord = [self isChineseWord:word]; // 倾国倾城
-    }
-    
-    BOOL isWord = isEnglishWord || isChineseWord;
-    
-    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
-        translationLanguageTitle = @"中文";
-    }
-    
-    NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
-    
-    // Specify chat language, this trick is from ChatGPT 😤
-    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Using %@, \n", answerLanguage];
-    prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
-    
-    //    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words or text: \"%@\", \n\n", sourceLanguage, word];
-    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For: \"%@\", \n", word];
-    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
-    
-    
-    NSString *string = @"Look up its pronunciation,\n"
-    @"Look up its definitions, including all English abbreviations of parts of speech and meanings,\n"
-    @"Look up its all tenses and forms,\n"
-    @"Look up its brief explanation in clear and understandable way,\n"
-    @"Look up its detailed Etymology,\n"
-    @"Look up disassembly and association methods to remember it,\n";
-    
-    prompt = [prompt stringByAppendingString:string];
-    
-    if (isWord) {
-        // 近义词
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, \n", sourceLanguage];
-        prompt = [prompt stringByAppendingString:antonymsPrompt];
-        // 反义词
-        NSString *synonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near synonyms, \n", sourceLanguage];
-        prompt = [prompt stringByAppendingString:synonymsPrompt];
-    }
-    
-    NSString *translationPrompt = [NSString stringWithFormat:@"Look up one of its most commonly used <%@> translation. \n\n", targetLanguage];
-    prompt = [prompt stringByAppendingString:translationPrompt];
-    
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Note that the \"xxx\" content should be returned in %@ language. \n", answerLanguage];
-    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
-    
-    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it's just prompt. \n"];
-    prompt = [prompt stringByAppendingString:bracketsPrompt];
-    
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations. \n";
-    prompt = [prompt stringByAppendingString:wordCountPromt];
-    
-    NSDictionary *outputDict = @{
-        @"word" : @"xxx",
-        @"pronunciation" : @"xxx",
-        @"definitions" : @"{\"xxx\": \"xxx\"}",
-        @"tensesAndForms" : @"{\"xxx\": \"xxx\"}",
-        @"explanation" : @"xxx",
-        @"etymology" : @"xxx",
-        @"howToRemember" : @"xxx",
-        @"antonyms" : @"xxx",
-        @"synonyms" : @"xxx",
-        @"derivatives" : @"xxx",
-        @"translation" : @"xxx",
-    };
-    
-    // convert to string
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:outputDict options:NSJSONWritingPrettyPrinted error:&error];
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    NSString *outputJSONPrompt = @"Return the following JSON format, do not return any other content besides the JSON data: \n\n";
-    outputJSONPrompt = [outputJSONPrompt stringByAppendingString:jsonString];
-    
-    prompt = [prompt stringByAppendingString:outputJSONPrompt];
-    
-    /**
-     For English words or text: prompt
-     
-     Look up its pronunciation,
-     Look up its definitions, including all English abbreviations of parts of speech and meanings,
-     Look up its all tenses and forms,
-     Look up its brief explanation in clear and understandable way,
-     Look up its detailed Etymology,
-     Look up disassembly and association methods to remember it,
-     Look up its <English> near synonyms,
-     Look up its <English> near antonyms,
-     Look up its all the etymological derivatives,
-     Look up its most primary <Simplified-Chinese> translation,
-     
-     Answer in Simplified-Chinese language,
-     Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.
-     
-     Return the following JSON format, do not return any other content besides the JSON data.
-     
-     {
-     "word": "xxx",
-     "pronunciation": "xxx",
-     "definitions": {
-     "xxx": "xxx"
-     },
-     "tensesAndForms": {
-     "xxx": "xxx"
-     },
-     "explanation": "xxx",
-     "etymology": "xxx",
-     "howToRemember": "xxx",
-     "synonyms": "xxx",
-     "antonyms": "xxx",
-     "derivatives": "xxx",
-     "translation": "xxx",
-     }
-     */
-    
-    NSArray *messages = @[
-        @{
-            @"role" : @"system",
-            @"content" : actorPrompt,
-        },
-        @{
-            @"role" : @"user",
-            @"content" : communicateLanguagePrompt,
-        },
-        @{
-            @"role" : @"user",
-            @"content" : prompt
-        },
-    ];
-    
-    return messages;
-}
 
 /// Stream chat.
 /// TODO: need to optimize. In this case, we don't need to refresh the cell every time, just update the translated text.
@@ -1235,6 +1101,156 @@ static NSDictionary *const kQuotesDict = @{
     NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
     NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
     return misspelledRange.location == NSNotFound;
+}
+
+
+#pragma mark -
+
+/// Generate the prompt for the given word. ⚠️ This method can get the specified json data, but it is not suitable for stream.
+- (NSArray<NSDictionary *> *)jsonDictPromptMessages:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
+    NSString *prompt = @"";
+    
+    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    NSString *translationLanguageTitle = targetLanguage;
+    
+    BOOL isEnglishWord = NO;
+    if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
+        isEnglishWord = [self isEnglishWord:word];
+    }
+    
+    BOOL isChineseWord = NO;
+    if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
+        isChineseWord = [self isChineseWord:word]; // 倾国倾城
+    }
+    
+    BOOL isWord = isEnglishWord || isChineseWord;
+    
+    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
+        translationLanguageTitle = @"中文";
+    }
+    
+    NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
+    
+    // Specify chat language, this trick is from ChatGPT 😤
+    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Using %@, \n", answerLanguage];
+    prompt = [prompt stringByAppendingString:communicateLanguagePrompt];
+    
+    //    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For %@ words or text: \"%@\", \n\n", sourceLanguage, word];
+    NSString *sourceLanguageWordPrompt = [NSString stringWithFormat:@"For: \"%@\", \n", word];
+    prompt = [prompt stringByAppendingString:sourceLanguageWordPrompt];
+    
+    
+    NSString *string = @"Look up its pronunciation,\n"
+    @"Look up its definitions, including all English abbreviations of parts of speech and meanings,\n"
+    @"Look up its all tenses and forms,\n"
+    @"Look up its brief explanation in clear and understandable way,\n"
+    @"Look up its detailed Etymology,\n"
+    @"Look up disassembly and association methods to remember it,\n";
+    
+    prompt = [prompt stringByAppendingString:string];
+    
+    if (isWord) {
+        // 近义词
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near antonyms, \n", sourceLanguage];
+        prompt = [prompt stringByAppendingString:antonymsPrompt];
+        // 反义词
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"Look up its <%@> near synonyms, \n", sourceLanguage];
+        prompt = [prompt stringByAppendingString:synonymsPrompt];
+    }
+    
+    NSString *translationPrompt = [NSString stringWithFormat:@"Look up one of its most commonly used <%@> translation. \n\n", targetLanguage];
+    prompt = [prompt stringByAppendingString:translationPrompt];
+    
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Note that the \"xxx\" content should be returned in %@ language. \n", answerLanguage];
+    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
+    
+    NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it's just prompt. \n"];
+    prompt = [prompt stringByAppendingString:bracketsPrompt];
+    
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. \n";
+    prompt = [prompt stringByAppendingString:wordCountPromt];
+    
+    NSString *noAnnotationPromt = @"Do not show additional descriptions or annotations. \n";
+    prompt = [prompt stringByAppendingString:noAnnotationPromt];
+    
+    NSDictionary *outputDict = @{
+        @"word" : @"xxx",
+        @"pronunciation" : @"xxx",
+        @"definitions" : @"{\"xxx\": \"xxx\"}",
+        @"tensesAndForms" : @"{\"xxx\": \"xxx\"}",
+        @"explanation" : @"xxx",
+        @"etymology" : @"xxx",
+        @"howToRemember" : @"xxx",
+        @"antonyms" : @"xxx",
+        @"synonyms" : @"xxx",
+        @"derivatives" : @"xxx",
+        @"translation" : @"xxx",
+    };
+    
+    // convert to string
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:outputDict options:NSJSONWritingPrettyPrinted error:&error];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSString *outputJSONPrompt = @"Return the following JSON format, do not return any other content besides the JSON data: \n\n";
+    outputJSONPrompt = [outputJSONPrompt stringByAppendingString:jsonString];
+    
+    prompt = [prompt stringByAppendingString:outputJSONPrompt];
+    
+    /**
+     For English words or text: prompt
+     
+     Look up its pronunciation,
+     Look up its definitions, including all English abbreviations of parts of speech and meanings,
+     Look up its all tenses and forms,
+     Look up its brief explanation in clear and understandable way,
+     Look up its detailed Etymology,
+     Look up disassembly and association methods to remember it,
+     Look up its <English> near synonyms,
+     Look up its <English> near antonyms,
+     Look up its all the etymological derivatives,
+     Look up its most primary <Simplified-Chinese> translation,
+     
+     Answer in Simplified-Chinese language,
+     Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.
+     
+     Return the following JSON format, do not return any other content besides the JSON data.
+     
+     {
+     "word": "xxx",
+     "pronunciation": "xxx",
+     "definitions": {
+     "xxx": "xxx"
+     },
+     "tensesAndForms": {
+     "xxx": "xxx"
+     },
+     "explanation": "xxx",
+     "etymology": "xxx",
+     "howToRemember": "xxx",
+     "synonyms": "xxx",
+     "antonyms": "xxx",
+     "derivatives": "xxx",
+     "translation": "xxx",
+     }
+     */
+    
+    NSArray *messages = @[
+        @{
+            @"role" : @"system",
+            @"content" : actorPrompt,
+        },
+        @{
+            @"role" : @"user",
+            @"content" : communicateLanguagePrompt,
+        },
+        @{
+            @"role" : @"user",
+            @"content" : prompt
+        },
+    ];
+    
+    return messages;
 }
 
 @end
