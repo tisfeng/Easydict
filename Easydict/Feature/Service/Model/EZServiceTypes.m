@@ -39,7 +39,7 @@
     return orderDict;
 }
 
-+ (EZQueryService *)serviceWithType:(EZServiceType)type {
++ (nullable EZQueryService *)serviceWithType:(EZServiceType)type {
     Class Cls = [[self allServiceDict] objectForKey:type];
     return [Cls new];
 }
@@ -48,7 +48,10 @@
     NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in types) {
         EZQueryService *service = [EZServiceTypes serviceWithType:type];
-        [services addObject:service];
+        // May be OpenAI has been disabled.
+        if (service) {
+            [services addObject:service];
+        }
     }
     return services;
 }
