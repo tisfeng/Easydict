@@ -14,6 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)runTranslateShortcut:(NSDictionary *)parameters
            completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
+
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
+
+- (void)runAppleScript2:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

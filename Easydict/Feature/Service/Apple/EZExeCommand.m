@@ -11,7 +11,7 @@
 
 @implementation EZExeCommand
 
-/// Run AppleScript
+/// Use NSTask to run AppleScript.
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSTask *task = [[NSTask alloc] init];
@@ -27,7 +27,9 @@
         // This method can only catch errors inside the NSTask object, and the error of executing the task needs to be used with standardError.
         NSError *error;
         if ([task launchAndReturnError:&error]) {
-            NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
+            NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFileAndReturnError:&error];
+            // ???: This method value may be incorrect, read bool "true" from pipe.
+//            data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
             NSString *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             result = [output trim];
 //            NSLog(@"Apple translate result: %@", result);
@@ -35,6 +37,10 @@
         
         NSData *errorData = [[errorPipe fileHandleForReading] readDataToEndOfFile];
         NSString *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+        
+        if (error) {
+            errorString = [error localizedDescription];
+        }
         
         //  *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -[NSConcreteTask terminationStatus]: task still running'
         if (errorString.length) {
@@ -52,6 +58,28 @@
         });
     });
 }
+
+/// Use NSAppleScript to run AppleScript.
+- (void)runAppleScript2:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
+        NSDictionary *errorInfo = nil;
+        NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
+        NSString *resultString = [result stringValue];
+        resultString = [resultString trim];
+        NSError *error;
+        if (errorInfo) {
+            NSDictionary *userInfo = errorInfo[NSAppleScriptErrorBriefMessage];
+            NSString *errorString = [userInfo objectForKey:NSAppleScriptErrorMessage];
+            error = [EZTranslateError errorWithString:errorString];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(resultString, error);
+        });
+    });
+}
+
 
 - (NSString *)shortcutsAppleScript:(NSString *)shortcutName parameters:(NSDictionary *)parameters {
     NSString *queryString = AFQueryStringFromParameters(parameters);

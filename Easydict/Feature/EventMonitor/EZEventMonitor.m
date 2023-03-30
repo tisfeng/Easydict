@@ -12,6 +12,7 @@
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
 #import "EZLog.h"
+#import "EZExeCommand.h"
 
 static CGFloat kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
@@ -143,6 +144,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Use auxiliary to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+        NSString *bundleID = [self getFrontmostApp].bundleIdentifier;
+        [self checkApplicationSupportCopyAction:bundleID completion:^(BOOL supportCopyAction){
+            
+        }];
         
         // Check if selected text frame is valid, maybe dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
@@ -171,7 +176,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         
         // When user first use auto select text, show reqest Accessibility permission alert.
         
-        NSUserDefaults *userDefaults =[NSUserDefaults standardUserDefaults];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
         if (!hasUsedAutoSelectText && error == kAXErrorAPIDisabled) {
             [self isAccessibilityTrusted];
@@ -354,8 +359,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     NSArray *auxiliaryFailedApps = @[
         @"com.microsoft.edgemac", // Edge
-        @"com.microsoft.VSCode", // VSCode
-//        @"abnerworks.Typora", // Typora
+        @"com.microsoft.VSCode",  // VSCode
+        //        @"abnerworks.Typora", // Typora
     ];
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
@@ -787,6 +792,137 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     
     CGRect frame = CGRectMake(x, y, width, height);
     return frame;
+}
+
+
+#pragma mark -
+
+
+/// Use AppleScript to check if front app support copy action in menu bar.
+- (void)checkApplicationSupportCopyAction:(NSString *)appBundleID completion:(void (^)(BOOL supportCopyAction))completion {
+    NSBundle *appBundle = [NSBundle bundleWithIdentifier:appBundleID];
+    NSString *appLanguage = [[appBundle preferredLocalizations] objectAtIndex:0];
+    if ([appLanguage isEqualToString:@"en"]) {
+        appLanguage = EZLanguageEnglish;
+    }
+    
+    NSString *copy;
+    NSString *edit;
+    
+    if (!appLanguage) {
+        appLanguage = [EZLanguageManager firstLanguage];
+    }
+    
+    if ([appLanguage isEqualToString:EZLanguageEnglish]) {
+        copy = @"Copy";
+        edit = @"Edit";
+    }
+    NSLog(@"--> App language: %@", appLanguage);
+    
+    /**
+     tell application "System Events"
+     tell process "Xcode"
+     try
+     set editMenu to menu bar item "Edit" of menu bar 1
+     on error
+     return false
+     end try
+     if exists editMenu then
+     try
+     set copyMenuItem to menu item "Copy" of menu 1 of editMenu
+     on error
+     return false
+     end try
+     if enabled of copyMenuItem then
+     return true
+     else
+     return false
+     end if
+     else
+     return false
+     end if
+     end tell
+     end tell
+     
+     */
+    
+    /**
+     Since the Copy and Edit button title are different in different languages or apps, such as "复制" in Chrome, but "拷贝" in Safari, or "Copy" in English.
+     
+     So we use the position of the menu item to determine whether the app supports the Copy action.
+     
+     TODO: Sometimes this method isn't accurate, even some apps copy menu enabled, but cannot click.
+     
+     */
+    //    NSInteger editIndex = 4; // Few Apps eidt index is 3, such as Eudic, QQ Music 🙄
+    NSInteger copyIndex = 5; // Note: separator is also a menu item, so the index of Copy is 5.
+    
+    //    NSRunningApplication *app = [[NSRunningApplication runningApplicationsWithBundleIdentifier:appBundleID] firstObject];
+    //    NSString *appName = app.localizedName;
+    
+    NSString *script = [NSString stringWithFormat:
+                        @"set appBundleID to \"%@\"\n"
+                        "tell application \"System Events\"\n"
+                        "try\n"
+                        "    set foundProcess to process 1 whose bundle identifier is appBundleID\n"
+                        "on error\n"
+                        "    return false\n"
+                        "end try\n"
+                        "if foundProcess is not missing value then\n"
+                        "    tell foundProcess\n"
+                        "        set editMenu to missing value\n"
+                        "        repeat with menuItem in menu bar 1's menu bar items\n"
+                        "            if name of menuItem contains \"编辑\" or name of menuItem contains \"Edit\" then\n"
+                        "                set editMenu to menuItem\n"
+                        "                exit repeat\n"
+                        "            end if\n"
+                        "        end repeat\n"
+                        "        if editMenu is missing value then\n"
+                        "            return false\n"
+                        "        end if\n"
+                        "        try\n"
+                        "            set copyMenuItem to menu item %@ of menu 1 of editMenu\n"
+                        "            set menuItemName to name of copyMenuItem\n"
+                        "            set menuItemEnabled to enabled of copyMenuItem\n"
+                        "            # display dialog menuItemName\n"
+                        "            if menuItemName is in {\"复制\", \"拷贝\", \"Copy\"} then\n"
+                        "                return menuItemEnabled\n"
+                        "            else\n"
+                        "                return false\n"
+                        "            end if\n"
+                        "        on error\n"
+                        "            return false\n"
+                        "        end try\n"
+                        "    end tell\n"
+                        "else\n"
+                        "    return false\n"
+                        "end if\n"
+                        "end tell",
+                        appBundleID, @(copyIndex)];
+    
+    //    NSLog(@"checkFrontAppSupportCopyAction:\n%@", script);
+    
+    NSDate *startTime = [NSDate date];
+    
+    EZExeCommand *exeCommand = [[EZExeCommand alloc] init];
+    
+    // NSTask cost 0.18s
+    [exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
+        NSLog(@"NSTask cost: %f seconds", elapsedTime);
+        NSLog(@"--> supportCopy: %@", @([result boolValue]));
+    }];
+    
+    // NSAppleScript cost 0.06 ~ 0.12s
+    [exeCommand runAppleScript2:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        BOOL supportCopy = [result boolValue];
+        
+        NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
+        NSLog(@"NSAppleScript cost: %f seconds", elapsedTime);
+        NSLog(@"result: %@", result);
+        
+        completion(supportCopy);
+    }];
 }
 
 @end
