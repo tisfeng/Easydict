@@ -13,6 +13,7 @@
 #import "EZPreferencesWindowController.h"
 #import "EZLog.h"
 #import "EZExeCommand.h"
+#import "EZAudioUtils.h"
 
 static CGFloat kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
@@ -144,11 +145,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Use auxiliary to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
-        NSString *bundleID = [self getFrontmostApp].bundleIdentifier;
-        [self checkApplicationSupportCopyAction:bundleID completion:^(BOOL supportCopyAction){
-            
-        }];
-        
         // Check if selected text frame is valid, maybe dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
             self.isSelectedTextByAuxiliary = YES;
@@ -156,15 +152,30 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
         
+        BOOL supportEmptyCopy = [self isSupportEmptyCopy];
+        
+        float currentVolume = [EZAudioUtils getSystemVolume];
+        NSLog(@"currentVolume: %f", currentVolume);
+        
         BOOL useShortcut = [self checkIfNeedUseShortcut:text error:error];
         if (useShortcut) {
+            if (!supportEmptyCopy) {
+                [EZAudioUtils setSystemVolume:0];
+            }
+            
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 self.isSelectedTextByAuxiliary = NO;
+                
+                NSLog(@"key get text: %@", text);
+                
+                if (!supportEmptyCopy) {
+                    [EZAudioUtils setSystemVolume:currentVolume];
+                }
+
                 completion(text);
             }];
             return;
         }
-        
         
         if (error == kAXErrorSuccess) {
             self.isSelectedTextByAuxiliary = YES;
@@ -390,6 +401,36 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
     
     return tryToUseShortcut;
+}
+
+/// Check if current app support emtpy copy action.
+- (BOOL)isSupportEmptyCopy {
+    NSRunningApplication *application = [self getFrontmostApp];
+    NSString *bundleID = application.bundleIdentifier;
+    NSLog(@"bundleID: %@", bundleID);
+    
+    NSArray *unsupportEmptyCopyApps = @[
+        @"com.apple.Safari",   // Safari
+        @"com.apple.mail",     // Mail
+        @"com.apple.TextEdit", // TextEdit
+        @"com.apple.Terminal", // Terminal
+        @"com.apple.finder",   // Finder
+        @"com.apple.dt.Xcode", // Xcode
+        
+        @"com.eusoft.freeeudic", // Eudic
+        @"com.eusoft.eudic",
+        @"com.reederapp.5.macOS",   // Reeder
+        @"com.apple.ScriptEditor2", // 脚本编辑器
+        @"abnerworks.Typora",       // Typora
+        @"com.jinghaoshe.shi",      // 晓诗
+        @"xyz.chatboxapp.app",      // chatbox
+    ];
+    
+    if ([unsupportEmptyCopyApps containsObject:bundleID]) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 
@@ -797,7 +838,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 #pragma mark -
 
-
 /// Use AppleScript to check if front app support copy action in menu bar.
 - (void)checkApplicationSupportCopyAction:(NSString *)appBundleID completion:(void (^)(BOOL supportCopyAction))completion {
     NSBundle *appBundle = [NSBundle bundleWithIdentifier:appBundleID];
@@ -843,7 +883,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
      end if
      end tell
      end tell
-     
      */
     
     /**
