@@ -58,6 +58,7 @@
 		039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */; };
 		039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC90F292F86F40037B91E /* NSImage+EZResize.m */; };
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
+		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
 		039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039E5020296E5D9900072344 /* EZScrollViewController.m */; };
 		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
 		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
@@ -265,6 +266,8 @@
 		039CC90F292F86F40037B91E /* NSImage+EZResize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZResize.m"; sourceTree = "<group>"; };
 		039CC912292FB3180037B91E /* EZPopUpButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopUpButton.h; sourceTree = "<group>"; };
 		039CC913292FB3180037B91E /* EZPopUpButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopUpButton.m; sourceTree = "<group>"; };
+		039D119729D5E26300C93F46 /* EZAudioUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioUtils.h; sourceTree = "<group>"; };
+		039D119829D5E26300C93F46 /* EZAudioUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioUtils.m; sourceTree = "<group>"; };
 		039E501F296E5D9900072344 /* EZScrollViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScrollViewController.h; sourceTree = "<group>"; };
 		039E5020296E5D9900072344 /* EZScrollViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScrollViewController.m; sourceTree = "<group>"; };
 		039F54FC294B6E29004AB940 /* EZSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSettingViewController.h; sourceTree = "<group>"; };
@@ -703,6 +706,15 @@
 			path = PopUpButton;
 			sourceTree = "<group>";
 		};
+		039D119629D5E21E00C93F46 /* AudioUtils */ = {
+			isa = PBXGroup;
+			children = (
+				039D119729D5E26300C93F46 /* EZAudioUtils.h */,
+				039D119829D5E26300C93F46 /* EZAudioUtils.m */,
+			);
+			path = AudioUtils;
+			sourceTree = "<group>";
+		};
 		03B0221829231FA6001C7E63 /* Easydict */ = {
 			isa = PBXGroup;
 			children = (
@@ -1077,6 +1089,7 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				039D119629D5E21E00C93F46 /* AudioUtils */,
 				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
 				03D8B26B292DBD0300D5A811 /* EZTool */,
 				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
@@ -1566,6 +1579,7 @@
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
 				03E02A222924E77100A10260 /* EZStatusItem.m in Sources */,
+				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
 				03B0232829231FA6001C7E63 /* NSTextView+Height.m in Sources */,
