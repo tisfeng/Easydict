@@ -63,6 +63,9 @@
 @property (nonatomic, strong) NSTextField *menuBarIconLabel;
 @property (nonatomic, strong) NSButton *hideMenuBarIconButton;
 
+@property (nonatomic, strong) NSTextField *disableEmptyCopyBeepLabel;
+@property (nonatomic, strong) NSButton *disableEmptyCopyBeepButton;
+
 @end
 
 
@@ -231,6 +234,16 @@
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
     
+    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:NSLocalizedString(@"disable_empty_copy_beep", nil)];
+    disableEmptyCopyBeepLabel.font = font;
+    [self.contentView addSubview:disableEmptyCopyBeepLabel];
+    self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
+    
+    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_info", nil);
+    self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
+    [self.contentView addSubview:self.disableEmptyCopyBeepButton];
+    
+    
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
     self.separatorView2 = separatorView2;
@@ -283,6 +296,7 @@
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
     self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
+    self.disableEmptyCopyBeepButton.mm_isOn = configuration.disableEmptyCopyBeep;
 }
 
 - (void)updateViewConstraints {
@@ -414,9 +428,19 @@
         make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
     
+    [self.disableEmptyCopyBeepLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.showQueryIconLabel);
+        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.disableEmptyCopyBeepButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.disableEmptyCopyBeepLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.disableEmptyCopyBeepLabel);
+    }];
+    
+    
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.disableEmptyCopyBeepButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
     
@@ -540,6 +564,11 @@
 - (void)adjustQueryIconPostionButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.adjustPopButtomOrigin = sender.mm_isOn;
 }
+
+- (void)disableEmptyCopyBeepButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.disableEmptyCopyBeep = sender.mm_isOn;
+}
+
 
 #pragma mark - MASPreferencesViewController
 
