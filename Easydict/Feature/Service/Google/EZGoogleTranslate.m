@@ -332,13 +332,12 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                        from:(EZLanguage)from
                          to:(EZLanguage)to
                  completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    EZQueryResult *result = self.result;
+
     if (!text.length) {
-        completion(nil,
-                   EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        completion(result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
-    
-    EZQueryResult *result = self.result;
     
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) =
     ^(
