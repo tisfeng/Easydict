@@ -118,7 +118,7 @@ static NSDictionary *const kQuotesDict = @{
     //   NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
     
     // !!!: This prompt must be added '\n\n' and '=>', otherwise the result will be incorrect, such as 定风波 · 南海归赠王定国侍人寓娘
-    NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];;
+    NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];
     
     /**
      Fix SQL injection. Ref: https://twitter.com/zty0826/status/1632468826137972736
@@ -196,11 +196,11 @@ static NSDictionary *const kQuotesDict = @{
     
     // Pre-prompt.
     NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
-//    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@ language. \n", answerLanguage];
-
+    //    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@ language. \n", answerLanguage];
+    
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
-
+    
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
@@ -225,7 +225,7 @@ static NSDictionary *const kQuotesDict = @{
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
-//        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"%@%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
+        //        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"%@%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
         translationPrompt = [translationPrompt stringByAppendingFormat:@", display %@ translated text in this format: \"%@: xxx \" ", targetLanguage, translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
@@ -245,10 +245,10 @@ static NSDictionary *const kQuotesDict = @{
     if (isWord) {
         if (isEnglishWord) {
             NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, strict format: \"%@: xxx \" . ", sourceLanguage, cognate];
-//            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
+            //  NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
             prompt = [prompt stringByAppendingString:cognatesPrompt];
         }
-
+        
         NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, strict format: \"%@: xxx \" . ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
@@ -274,53 +274,44 @@ static NSDictionary *const kQuotesDict = @{
     
     NSLog(@"dict prompt: %@", prompt);
     
-    /**
-     Look up its pronunciation, display in this format: "发音: / xxx /" , note that "/" needs to be preceded and followed by a white space.
-     
-     Look up its all parts of speech and meanings, each line only shows one abbreviation of pos and meaning: " xxx " .
-     Look up its all tenses and forms, each line only display one tense or form in this format: " xxx " .
-     
-     Look up its brief explanation in clear and understandable way, display strictly in this format on one line: "Explanation: xxx " .
-     Look up its detailed Etymology, display strictly in this format on one line: "Etymology: xxx " .
-     Look up disassembly and association methods to remember it, display strictly in this format on one line: "How to remember: xxx " .
-     Look up its <English> near synonyms, strict format: "Aynonyms: xxx " .
-     Look up its <English> near antonyms, strict format: "Antonyms: xxx " .
-     
-     Look up one of its most commonly used <Simplified-Chinese> translation, only display the translated text: "Translation: xxx " .
-     
-     Remember to answer in Simplified-Chinese language.
-     Note that the description title text before the colon : in format output, should be translated into Simplified-Chinese language.
-     Note that the text between angle brackets <xxx> should not be outputed, it's just prompt.
-     Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not show additional descriptions and annotations.
-     */
-    
     NSArray *messages = @[
         @{
             @"role" : @"system",
             @"content" : actorPrompt,
         },
+        // few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
         @{
-            @"role" : @"user", // This guide example is necessary, otherwise there will be misunderstanding when querying 'prompt'.
-            @"content" : @"Here is a English word or text: \"prompt\", \nLook up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \nLook up its all tenses and forms, each line only display one tense or form in this format: \" xxx \". ",
+            @"role" : @"user", // raven
+            @"content" : @"Here is a English word or text: \"raven\",\n"
+            "Look up its pronunciation, display in this format: \"发音: / xxx /\",\n"
+            "Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning:\n \" xxx \" , \n"
+            "Look up its all tenses and forms, each line only display one tense or form in this format:\n \" xxx \" , \n"
+            "Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" , \n",
         },
         @{
             @"role" : @"assistant", // give examples of desired behavior.
-            @"content" : @"n. 提示，提示符\n adj. 迅速的，敏捷的\n v. 激励，促进 \n\n 过去式: prompted\n 现在分词: prompting\n 第三人称单数: prompts",
-        },
-        // Look up its most commonly used <English> cognates, no more than 6, strict format: "同根词: xxx " .
-        @{
-            @"role" : @"user",
-            @"content" : @"Here is a English word or text: \"prompt\", Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" .",
-        },
-        @{
-            @"role" : @"assistant", // give examples of desired behavior.
-            @"content" : @"同根词:\n adv. promptly: 迅速地\n n. prompting: 激励；提示；刺激\n v. prompting 促进；激起；鼓舞（prompt的ing形式）",
+            @"content" : @"发音: / ˈreɪvən / \n\n"
+            "n. 掠夺，劫掠；大乌鸦 \n"
+            "adj. 乌黑的 \n"
+            "vt. 掠夺；狼吞虎咽 \n"
+            "vi. 掠夺；狼吞虎咽 \n\n"
+            "复数: ravens \n"
+            "第三人称单数: ravens \n"
+            "现在分词: ravening \n"
+            "过去式: ravened \n"
+            "过去分词: ravened \n\n"
+            "同根词: \n"
+            "adj. ravenous 贪婪的；渴望的；狼吞虎咽的 \n"
+            "n. ravage 蹂躏，破坏 \n"
+            "vi. ravage 毁坏；掠夺 \n"
+            "vt. ravage 毁坏；破坏；掠夺\n",
         },
         @{
             @"role" : @"user",
             @"content" : prompt
         },
     ];
+    
     
     return messages;
 }
@@ -336,7 +327,7 @@ static NSDictionary *const kQuotesDict = @{
         @"Content-Type" : @"application/json",
         @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
     };
-//    NSLog(@"messages: %@", messages);
+    //    NSLog(@"messages: %@", messages);
     
     BOOL stream = YES;
     
@@ -385,7 +376,7 @@ static NSDictionary *const kQuotesDict = @{
                 return;
             }
             
-//              NSLog(@"content: %@, isFinished: %d", content, isFinished);
+            // NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
@@ -551,7 +542,7 @@ static NSDictionary *const kQuotesDict = @{
         @"model" : @"gpt-3.5-turbo",
         @"messages" : messages,
         @"temperature" : @(0),
-        @"max_tokens" : @(2000),
+        @"max_tokens" : @(3000),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
