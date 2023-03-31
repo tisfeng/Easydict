@@ -145,33 +145,17 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Use auxiliary to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
-        // Check if selected text frame is valid, maybe dragging, then ignore it.
+        // If selected text frame is valid, maybe just dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
             self.isSelectedTextByAuxiliary = YES;
             completion(nil);
             return;
         }
         
-        BOOL supportEmptyCopy = [self isSupportEmptyCopy];
-        
-        float currentVolume = [EZAudioUtils getSystemVolume];
-        NSLog(@"currentVolume: %f", currentVolume);
-        
         BOOL useShortcut = [self checkIfNeedUseShortcut:text error:error];
         if (useShortcut) {
-            if (!supportEmptyCopy) {
-                [EZAudioUtils setSystemVolume:0];
-            }
-            
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 self.isSelectedTextByAuxiliary = NO;
-                
-                NSLog(@"key get text: %@", text);
-                
-                if (!supportEmptyCopy) {
-                    [EZAudioUtils setSystemVolume:currentVolume];
-                }
-
                 completion(text);
             }];
             return;
@@ -221,6 +205,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 }
 
+/// Get selected text by shortcut: Cmd + C
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
     
@@ -229,12 +214,24 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     NSString *lastText = [self getPasteboardText];
     
+    float currentVolume = 0.0;
+    BOOL shouldTurnOffSoundTemporarily = ![self isSupportEmptyCopy] && EZConfiguration.shared.disableEmptyCopyBeep;
+    
+    // If app doesn't support empty copy, set volume to 0 to avoid system sound.
+    if (shouldTurnOffSoundTemporarily) {
+        currentVolume = [EZAudioUtils getSystemVolume];
+        [EZAudioUtils setSystemVolume:0];
+    }
+    
     // Simulate keyboard event: Cmd + C
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
     
-    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:YES];
-    //    [self postKeyboardEvent:NSEventModifierFlagCommand keyCode:kVK_ANSI_C keyDown:NO];
+    if (shouldTurnOffSoundTemporarily) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.09 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [EZAudioUtils setSystemVolume:currentVolume];
+        });
+    }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSInteger newChangeCount = [pasteboard changeCount];
@@ -407,7 +404,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (BOOL)isSupportEmptyCopy {
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
-    NSLog(@"bundleID: %@", bundleID);
     
     NSArray *unsupportEmptyCopyApps = @[
         @"com.apple.Safari",   // Safari
@@ -427,6 +423,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     ];
     
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
+        NSLog(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
         return NO;
     }
     
