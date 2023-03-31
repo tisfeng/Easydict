@@ -287,7 +287,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startQueryText:(NSString *)text queyType:(EZQueryType)queryType {
-    if (!text) {
+    if (text.trim.length == 0) {
         return;
     }
     
@@ -807,19 +807,25 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion {
-    if (self.queryText.length) {
-        [self.detectManager detectText:self.queryText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
-            // `self.queryModel.detectedLanguage` has already been updated inside the method.
-            
-            // Show detected language button, even auto detect.
-            [self.queryView showAutoDetectLanguage:YES];
-            [self updateQueryViewModelAndDetectedLanguage:queryModel];
-            
-            if (completion) {
-                completion();
-            }
-        }];
+    NSString *queryText = [self.queryText trim];
+    if (queryText.length == 0) {
+        if (completion) {
+            completion();
+        }
+        return;
     }
+    
+    [self.detectManager detectText:queryText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+        // `self.queryModel.detectedLanguage` has already been updated inside the method.
+        
+        // Show detected language button, even auto detect.
+        [self.queryView showAutoDetectLanguage:YES];
+        [self updateQueryViewModelAndDetectedLanguage:queryModel];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
