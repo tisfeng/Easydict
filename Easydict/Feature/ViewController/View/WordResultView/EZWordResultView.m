@@ -183,7 +183,11 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
                 
                 if (typeTextField) {
-                    make.top.equalTo(lastView.mas_bottom).offset(topOffset + ezLabelTopOffset);
+                    if (lastView) {
+                        make.top.equalTo(lastView.mas_bottom).offset(topOffset + ezLabelTopOffset);
+                    } else {
+                        make.top.equalTo(self).offset(topOffset);
+                    }
                     make.left.equalTo(typeTextField.mas_right);
                 }
 
