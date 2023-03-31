@@ -31,6 +31,7 @@ static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixe
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
+static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
 
 @implementation EZConfiguration
 
@@ -73,6 +74,7 @@ static EZConfiguration *_instance;
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:0];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
+    self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:NO];
 }
 
 #pragma mark - getter
@@ -187,6 +189,12 @@ static EZConfiguration *_instance;
     _adjustPopButtomOrigin = adjustPopButtomOrigin;
 
     [NSUserDefaults mm_write:@(adjustPopButtomOrigin) forKey:kAdjustPopButtomOriginKey];
+}
+
+- (void)setDisableEmptyCopyBeep:(BOOL)disableEmptyCopyBeep {
+    _disableEmptyCopyBeep = disableEmptyCopyBeep;
+
+    [NSUserDefaults mm_write:@(disableEmptyCopyBeep) forKey:kDisableEmptyCopyBeepKey];
 }
 
 #pragma mark - Window Frame

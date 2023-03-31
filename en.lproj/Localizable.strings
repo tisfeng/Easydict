@@ -70,6 +70,8 @@
 "fixed_window_position_former" = "Former Position";
 "adjust_pop_button_origin" = "Adjust Query Icon Position";
 "avoid_conflict_with_PopClip_display" = "Avoid Conflict With PopClip";
+"disable_empty_copy_beep" = "Disable Empty_ Copy Beep:";
+"disable_empty_copy_beep_info" = "Effective When Selected Text Is Empty";
 
 "mini_window" = "Mini Window";
 "fixed_window" = "Floating Window";
