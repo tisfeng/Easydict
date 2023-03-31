@@ -227,7 +227,7 @@ static NSDictionary *const kQuotesDict = @{
     } else {
 //        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"%@%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
-        translationPrompt = [translationPrompt stringByAppendingFormat:@", display in this format: \"%@: xxx \" ", translationTitle];
+        translationPrompt = [translationPrompt stringByAppendingFormat:@", display %@ translated text in this format: \"%@: xxx \" ", targetLanguage, translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
@@ -269,7 +269,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
     
-    NSString *noAnnotationPromt = @"Do not show additional descriptions or annotations. \n";
+    NSString *noAnnotationPromt = @"Do not show additional notes. If the explanation or etymology of certain words or phrases is not sufficient in length, it doesn't matter, there is no need for special prompts. \n";
     prompt = [prompt stringByAppendingString:noAnnotationPromt];
     
     NSLog(@"dict prompt: %@", prompt);
