@@ -952,7 +952,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSString *newLineString = @"\n\n";
     if (isPoetry) {
-        return [stringArray componentsJoinedByString:newLineString];
+        return [stringArray componentsJoinedByString:@"\n"];
     }
     
     for (NSInteger i = 0; i < stringArray.count; i++) {
@@ -1026,7 +1026,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
     *punctuationMarkRate = _punctuationMarkRate;
     
-    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / stringArray.count;
+    NSInteger lineCount = stringArray.count;
+    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / lineCount;
     
     /**
      曾经沧海难为水，
@@ -1034,8 +1035,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
      取次花丛懒回顾，
      半缘修道半缘君。
      */
-    if (_maxLengthOfLine == _minLengthOfLine && numberOfPunctuationMarksPerLine <= 1) {
-        return YES;
+    if (_maxLengthOfLine == _minLengthOfLine) {
+        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
+            return YES;
+        }
     }
     
     // If average number of punctuation marks per line is greater than 2, then it is not poetry.
@@ -1047,11 +1050,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    if (stringArray.count >= 4 && _punctuationMarkRate < 0.02) {
+    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
         return YES;
     }
     
-    if (stringArray.count >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
+    if (lineCount >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
         return YES;
     }
     
@@ -1063,12 +1066,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
          maxLengthOfLine:_maxLengthOfLine
                 language:language];
     
-    BOOL tooManyLongLine = longLineCount >= stringArray.count * 0.8;
+    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
     if (tooManyLongLine) {
         return NO;
     }
     
-    BOOL tooManyShortLine = shortLineCount >= stringArray.count * 0.8;
+    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
     if (tooManyShortLine) {
         return YES;
     }
