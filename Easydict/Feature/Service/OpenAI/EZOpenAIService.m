@@ -1057,10 +1057,10 @@ static NSDictionary *const kQuotesDict = @{
     return [self isChineseText:text];
 }
 
-/// Check if text is a Chinese phrase, length <= 7, 曾经沧海难为水
+/// Check if text is a Chinese phrase, length <= 5, 今宵别梦寒
 - (BOOL)isChinesePhrase:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
-    if (text.length > 7) { // 曾经沧海难为水
+    if (text.length > 5) {
         return NO;
     }
     
