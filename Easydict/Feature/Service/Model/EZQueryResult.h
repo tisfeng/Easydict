@@ -122,6 +122,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 @property (nonatomic, copy) NSString *translatedText;
 
 @property (nonatomic, strong, nullable) NSError *error;
+@property (nonatomic, copy, nullable) NSString *errorMessage;
 
 /// If (self.hasTranslatedResult || self.error), then hasShowingResult = YES, that means will show result view.
 @property (nonatomic, assign, readonly) BOOL hasShowingResult;
