@@ -51,6 +51,9 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 /// Highlight all links in textstorage
 - (void)highlightAllLinks;
 
+/// Remove all links in textstorage.
+- (void)removeAllLinks;
+
 @end
 
 NS_ASSUME_NONNULL_END
