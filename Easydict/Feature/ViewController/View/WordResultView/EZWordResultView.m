@@ -61,14 +61,15 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSFont *typeTextFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
-    NSString *errorMsg = result.error.localizedDescription;
+    NSString *errorMsg = result.errorMessage ?: result.error.localizedDescription;
     
     __block CGFloat ezLabelTopOffset = 0;
     
     mm_weakify(self);
     
-    BOOL showBigWord = result.wordResult && result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
-    if (showBigWord || result.showBigWord) {
+    BOOL isWordLength = result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
+    BOOL showBigWord = result.wordResult || result.showBigWord;
+    if (isWordLength && showBigWord) {
         NSTextField *wordTextField = nil;
         wordTextField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];

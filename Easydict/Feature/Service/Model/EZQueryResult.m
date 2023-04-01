@@ -147,6 +147,7 @@ NSString *getPartName(NSString *part) {
     self.promptURL = nil;
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
+    self.errorMessage = nil;
 }
 
 @end
