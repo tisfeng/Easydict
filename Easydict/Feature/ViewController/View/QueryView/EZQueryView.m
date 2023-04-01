@@ -14,6 +14,7 @@
 #include <Carbon/Carbon.h>
 #import "NSView+EZAnimatedHidden.h"
 #import "EZDetectLanguageButton.h"
+#import "EZLinkParser.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -28,6 +29,8 @@
 
 @property (nonatomic, copy) NSString *lastRecordText;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
+
+@property (nonatomic, strong) EZLinkParser *linkParser;
 
 @end
 
@@ -316,6 +319,12 @@
     return [self.textView.string copy];
 }
 
+- (EZLinkParser *)linkParser {
+    if (!_linkParser) {
+        _linkParser = [[EZLinkParser alloc] init];
+    }
+    return _linkParser;
+}
 
 #pragma mark - NSTextViewDelegate
 
@@ -495,10 +504,13 @@
 
 /// Highlight all links in textstorage
 - (void)highlightAllLinks {
+    BOOL isEasydictSchema = [self.linkParser isEasydictSchema:self.textView.string];
+    if (isEasydictSchema) {
+        return;
+    }
+    
     NSTextStorage *textStorage = self.textView.textStorage;
-    [textStorage beginEditing];
-    [textStorage removeAttribute:NSLinkAttributeName range:NSMakeRange(0, textStorage.length)];
-    [textStorage endEditing];
+    [self removeAllLinks];
     
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
     [detector enumerateMatchesInString:textStorage.string
@@ -509,6 +521,15 @@
                              range:result.range];
     }];
 }
+
+/// Remove all links in textstorage.
+- (void)removeAllLinks {
+    NSTextStorage *textStorage = self.textView.textStorage;
+    [textStorage beginEditing];
+    [textStorage removeAttribute:NSLinkAttributeName range:NSMakeRange(0, textStorage.length)];
+    [textStorage endEditing];
+}
+
 
 #pragma mark - Undo
 
