@@ -344,7 +344,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         if (error) {
             NSString *errorMsg = [error localizedDescription];
-            [self.queryView showAlertMessage:errorMsg];
+            self.queryView.alertText = errorMsg;
             return;
         }
         
@@ -442,7 +442,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             if (!result.hasTranslatedResult && result.error) {
                 result.isShowing = NO;
             }
-            //            NSLog(@"update service: %@, %@", service.serviceType, result);
+            //  NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES];
             
             if ([service.serviceType isEqualToString:EZServiceTypeYoudao]) {
@@ -879,6 +879,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         queryView = [[EZQueryView alloc] initWithFrame:[self tableViewContentBounds]];
         queryView.identifier = EZQueryViewId;
     }
+    
+    // placeholder, just for new user.
+    NSString *placeholderText = NSLocalizedString(@"placeholder", nil);
+    if (EZLocalStorage.shared.queryCount > 100) {
+        placeholderText = @"";
+    }
+    queryView.placeholderText = placeholderText;
     
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {

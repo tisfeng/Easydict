@@ -15,6 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// property for paste text block
 @property (nonatomic, copy) void (^pasteTextBlock)(NSString *text);
 
+@property (nonatomic, copy) NSString *placeholderText;
+
+@property (nonatomic, copy) NSAttributedString *placeholderAttributedString;
+
 @end
 
 NS_ASSUME_NONNULL_END
