@@ -22,7 +22,8 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, strong) EZTextView *textView;
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingAnimationView;
-@property (nonatomic, strong) NSTextField *alertTextField;
+@property (nonatomic, copy) NSString *placeholderText;
+@property (nonatomic, copy) NSString *alertText;
 
 @property (nonatomic, assign) BOOL enableAutoDetect;
 @property (nonatomic, assign) BOOL clearButtonHidden;
@@ -44,8 +45,6 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
 
 - (void)startLoadingAnimation:(BOOL)isLoading;
-
-- (void)showAlertMessage:(NSString *)message;
 
 - (void)showAutoDetectLanguage:(BOOL)showFlag;
 
