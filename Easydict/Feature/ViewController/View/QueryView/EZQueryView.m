@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSButton *textCopyButton;
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
+@property (nonatomic, strong) NSTextField *placeholderTextField;
 
 @property (nonatomic, assign) CGFloat textViewMinHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
@@ -81,16 +82,15 @@
         make.height.mas_equalTo(30);
     }];
     
-    NSTextField *alertTextField = [[NSTextField alloc] init];
-    alertTextField.hidden = YES;
-    alertTextField.bordered = NO;
-    alertTextField.editable = NO;
-    alertTextField.backgroundColor = NSColor.clearColor;
-    alertTextField.font = [NSFont systemFontOfSize:14];
-    alertTextField.textColor = [NSColor redColor];
-    [self addSubview:alertTextField];
-    self.alertTextField = alertTextField;
-    [alertTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+    NSTextField *placeholderTextField = [[NSTextField alloc] init];
+    placeholderTextField.hidden = YES;
+    placeholderTextField.bordered = NO;
+    placeholderTextField.editable = NO;
+    placeholderTextField.backgroundColor = NSColor.clearColor;
+    placeholderTextField.font = self.textView.font;
+    [self addSubview:placeholderTextField];
+    self.placeholderTextField = placeholderTextField;
+    [placeholderTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.right.inset(10);
     }];
     
@@ -191,7 +191,8 @@
 - (void)showAlertMessage:(NSString *)message {
     if (message.length) {
         [self setAlertMessageHidden:NO];
-        self.alertTextField.stringValue = message;
+        self.placeholderTextField.textColor = NSColor.redColor;
+        self.placeholderTextField.stringValue = message;
         [self.clearButton setAnimatedHidden:NO];
         
         self.detectButton.showAutoLanguage = YES;
@@ -200,7 +201,11 @@
 }
 
 - (void)setAlertMessageHidden:(BOOL)hidden {
-    self.alertTextField.hidden = hidden;
+    if (hidden) {
+        self.alertText = @"";
+        
+    }
+    self.placeholderTextField.hidden = hidden;
     self.textView.editable = hidden;
     self.detectButton.showAutoLanguage = NO;
     [self updateDetectButton];
@@ -279,6 +284,29 @@
     [super setWindowType:windowType];
     
     [self updateCustomLayout];
+}
+
+- (void)setPlaceholderText:(NSString *)placeholderText {
+    _placeholderText = placeholderText;
+
+    self.placeholderTextField.textColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
+    self.placeholderTextField.stringValue = placeholderText;
+    self.placeholderTextField.hidden = NO;
+}
+
+- (void)setAlertText:(NSString *)alertText {
+    _alertText = alertText;
+    
+    self.placeholderTextField.stringValue = alertText;
+    self.placeholderTextField.textColor = NSColor.redColor;
+
+    if (alertText.length) {
+        [self setAlertMessageHidden:NO];
+        [self.clearButton setAnimatedHidden:NO];
+        
+        self.detectButton.showAutoLanguage = YES;
+        [self updateDetectButton];
+    }
 }
 
 
@@ -418,16 +446,29 @@
 }
 
 - (void)updateButtonsDisplayState:(NSString *)text {
-    BOOL isEmpty = text.length == 0;
-    if (!self.alertTextField.hidden) {
-        isEmpty = NO;
-    }
+    [self updatePlaceholderTextField];
     
-    if (self.clearButtonHidden) {
-        [self.clearButton setAnimatedHidden:isEmpty];
+    if (self.clearButtonHidden && self.alertText.length) {
+        [self.clearButton setAnimatedHidden:NO];
     }
     
     [self updateDetectButton];
+}
+
+- (void)updatePlaceholderTextField {
+    BOOL hidden = YES;
+    if (self.alertText.length) {
+        hidden = NO;
+    }
+    
+    if (self.textView.string.length == 0) {
+        if (self.placeholderText.length) {
+            hidden = NO;
+            [self setPlaceholderText:self.placeholderText];
+        }
+    }
+    
+    self.placeholderTextField.hidden = hidden;
 }
 
 - (void)updateDetectButton {
