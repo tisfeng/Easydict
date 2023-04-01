@@ -84,6 +84,8 @@ static NSDictionary *const kQuotesDict = @{
     if ([self shouldQueryDictionary:text language:from]) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
+                self.result.showBigWord = NO;
+                self.result.translateResultsTopInset = 0;
                 completion(self.result, error);
                 return;
             }
@@ -94,8 +96,6 @@ static NSDictionary *const kQuotesDict = @{
             self.result.translateResultsTopInset = 10;
             
             completion(self.result, error);
-            
-            //            [self handleDefinitionAndEtymologyText2:[result trim] completion:completion];
         }];
         return;
     }
@@ -450,6 +450,27 @@ static NSDictionary *const kQuotesDict = @{
             }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        if (errorData) {
+            /**
+             {
+               "error" : {
+                 "code" : "invalid_api_key",
+                 "message" : "Incorrect API key provided: sk-5DJ2b***************************************7ckC. You can find your API key at https:\/\/platform.openai.com\/account\/api-keys.",
+                 "param" : null,
+                 "type" : "invalid_request_error"
+               }
+             }
+             */
+            NSError *jsonError;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
+            if (!jsonError) {
+                NSString *errorMessage = json[@"error"][@"message"];
+                if (errorMessage.length) {
+                    self.result.errorMessage = errorMessage;
+                }
+            }
+        } 
         completion(nil, error);
     }];
 }
