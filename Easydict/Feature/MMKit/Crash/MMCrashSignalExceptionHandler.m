@@ -218,7 +218,7 @@ static void previousSignalHandler(int signal, siginfo_t *info, void *context) {
 
 #pragma mark Clear
 
-static void MMClearSignalRigister() {
+static void MMClearSignalRigister(void) {
     signal(SIGSEGV, SIG_DFL);
     signal(SIGFPE, SIG_DFL);
     signal(SIGBUS, SIG_DFL);
