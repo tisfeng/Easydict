@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ToastWindowController">
+            <connections>
+                <outlet property="containerTopConstraint" destination="qer-u7-Ra3" id="gNW-BE-Qiq"/>
+                <outlet property="containerView" destination="q6T-zE-7Wk" id="mBS-mL-zn6"/>
+                <outlet property="containerViewHeightConstraint" destination="OU5-C9-w5p" id="g7E-7r-BMN"/>
+                <outlet property="containerViewLeadingConstraint" destination="OHf-K5-bPE" id="K96-ZG-41o"/>
+                <outlet property="containerViewWidthConstraint" destination="eJR-1r-35c" id="ulz-su-hth"/>
+                <outlet property="iconImageCell" destination="fxz-vm-wAA" id="ZiZ-2a-6ed"/>
+                <outlet property="iconImageLeadingConstraint" destination="gI0-aZ-EbK" id="OsV-ER-YM5"/>
+                <outlet property="iconImageView" destination="nbp-0I-keC" id="tde-A2-VUE"/>
+                <outlet property="messageLabel" destination="NWy-Hj-H3G" id="l9C-ec-thn"/>
+                <outlet property="messageLabelLeadingConstraint" destination="Fz6-RQ-omV" id="fsY-Ma-MwL"/>
+                <outlet property="messageTextField" destination="Gju-bg-vrf" id="GH4-Ld-7Nq"/>
+                <outlet property="messageTextFieldLeadingConstraint" destination="Fz6-RQ-omV" id="OjH-We-LxX"/>
+                <outlet property="messageTextFieldTrailingConstraint" destination="KPc-yg-YPj" id="Wek-4c-P9y"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="CoolToastWindow" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" hasShadow="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="480" height="270"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="2537"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="q6T-zE-7Wk" customClass="CTView">
+                        <rect key="frame" x="0.0" y="220" width="300" height="50"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Gju-bg-vrf">
+                                <rect key="frame" x="3" y="17" width="294" height="17"/>
+                                <textFieldCell key="cell" alignment="center" title="Label" id="NWy-Hj-H3G">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nbp-0I-keC">
+                                <rect key="frame" x="10" y="10" width="58" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="58" id="8hf-MZ-Lr5"/>
+                                </constraints>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="fxz-vm-wAA"/>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Gju-bg-vrf" firstAttribute="leading" secondItem="q6T-zE-7Wk" secondAttribute="leading" constant="5" id="Fz6-RQ-omV"/>
+                            <constraint firstAttribute="trailing" secondItem="Gju-bg-vrf" secondAttribute="trailing" constant="5" id="KPc-yg-YPj"/>
+                            <constraint firstItem="Gju-bg-vrf" firstAttribute="centerY" secondItem="q6T-zE-7Wk" secondAttribute="centerY" id="LCe-5q-Aab"/>
+                            <constraint firstItem="nbp-0I-keC" firstAttribute="top" secondItem="q6T-zE-7Wk" secondAttribute="top" constant="10" id="Ny5-6q-diG"/>
+                            <constraint firstAttribute="height" constant="50" id="OU5-C9-w5p"/>
+                            <constraint firstAttribute="bottom" secondItem="nbp-0I-keC" secondAttribute="bottom" constant="10" id="eAR-b5-VGY"/>
+                            <constraint firstAttribute="width" constant="300" id="eJR-1r-35c"/>
+                            <constraint firstItem="nbp-0I-keC" firstAttribute="leading" secondItem="q6T-zE-7Wk" secondAttribute="leading" constant="10" id="gI0-aZ-EbK"/>
+                            <constraint firstItem="nbp-0I-keC" firstAttribute="centerY" secondItem="q6T-zE-7Wk" secondAttribute="centerY" id="rrm-WE-6NE"/>
+                        </constraints>
+                    </customView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="q6T-zE-7Wk" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" id="OHf-K5-bPE"/>
+                    <constraint firstItem="q6T-zE-7Wk" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" id="qer-u7-Ra3"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+        </window>
+    </objects>
+</document>

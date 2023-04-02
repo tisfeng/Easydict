@@ -1,0 +1,6 @@
+framework module CoolToast {
+  umbrella header "CoolToast.h"
+
+  export *
+  module * { export * }
+}
