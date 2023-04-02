@@ -221,8 +221,7 @@
 #pragma mark - Rewrite
 
 - (void)viewDidMoveToWindow {
-    // Since we have reused queryView, we don't need to scroll to bottom when updating view.
-    //    [self scrollToTextViewBottom];
+    [self scrollToTextViewBottom];
     
     [super viewDidMoveToWindow];
 }
@@ -492,6 +491,7 @@
     }];
 }
 
+/// Focus on textView, and scroll to text view bottom.
 - (void)scrollToTextViewBottom {
     // recover input cursor
     [self.window makeFirstResponder:self.textView];
