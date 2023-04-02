@@ -70,7 +70,7 @@
 "fixed_window_position_former" = "Former Position";
 "adjust_pop_button_origin" = "Adjust Query Icon Position";
 "avoid_conflict_with_PopClip_display" = "Avoid Conflict With PopClip";
-"disable_empty_copy_beep" = "Disable Empty_ Copy Beep:";
+"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
 "disable_empty_copy_beep_info" = "Effective When Selected Text Is Empty";
 
 "mini_window" = "Mini Window";
@@ -90,4 +90,4 @@
 "translate_failed" = "Translate failed, ";
 "ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select the detected language and try again.";
 
-"placeholder" = "Input text, `Enter` to query, `Shift + Enter` to newline";
+"placeholder" = "`Enter` to query, `Shift + Enter` to newline";
