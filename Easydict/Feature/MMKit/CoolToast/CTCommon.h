@@ -15,7 +15,7 @@
  
  @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
  */
-NSBundle *CTBundle(void);
+//NSBundle *CTBundle(void);
 
 
 /*!

@@ -52,8 +52,6 @@
 		03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8829D95044005B5A52 /* ToastWindowController.xib */; };
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
-		03882FA129D9797C005B5A52 /* CoolToast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03882F9F29D9787A005B5A52 /* CoolToast.framework */; };
-		03882FA229D9797C005B5A52 /* CoolToast.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 03882F9F29D9787A005B5A52 /* CoolToast.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
@@ -159,17 +157,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		03882FA329D9797C005B5A52 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				03882FA229D9797C005B5A52 /* CoolToast.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C98CAE74239F45DA005F7DCA /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,8 +259,6 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		03882F9329D97462005B5A52 /* CoolToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoolToast.framework; path = "../../../../Downloads/CoolToast-master/Carthage/Build/Mac/CoolToast.framework"; sourceTree = "<group>"; };
-		03882F9F29D9787A005B5A52 /* CoolToast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CoolToast.framework; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -482,7 +467,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
-				03882FA129D9797C005B5A52 /* CoolToast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,7 +679,6 @@
 		03882F8129D95044005B5A52 /* CoolToast */ = {
 			isa = PBXGroup;
 			children = (
-				03882F9F29D9787A005B5A52 /* CoolToast.framework */,
 				03882F8B29D95044005B5A52 /* CoolToast.h */,
 				03882F8529D95044005B5A52 /* CTCommon.h */,
 				03882F8929D95044005B5A52 /* CTCommon.m */,
@@ -1349,7 +1332,6 @@
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				03882F9329D97462005B5A52 /* CoolToast.framework */,
 				6372B33DFF803C7096A82250 /* Pods_Easydict.framework */,
 			);
 			name = Frameworks;
@@ -1415,7 +1397,6 @@
 				C99EEB162385796700FEE666 /* Resources */,
 				124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */,
 				C98CAE74239F45DA005F7DCA /* CopyFiles */,
-				03882FA329D9797C005B5A52 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
