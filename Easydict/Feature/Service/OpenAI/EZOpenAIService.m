@@ -195,8 +195,7 @@ static NSDictionary *const kQuotesDict = @{
     BOOL isWord = isEnglishWord || isChineseWord;
     
     // Pre-prompt.
-    NSString *actorPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
-    //    NSString *communicateLanguagePrompt = [NSString stringWithFormat:@"Please communicate with me in %@ language. \n", answerLanguage];
+    NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
     
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
@@ -221,11 +220,13 @@ static NSDictionary *const kQuotesDict = @{
         NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
+        NSString *examPrompt = [NSString stringWithFormat:@"Look up most common English level exams that include it, no more than 6, display in this format: \" xxx \" . \n\n"];
+        prompt = [prompt stringByAppendingString:examPrompt];
+
         //  <tense or form>xxx: <word>xxx
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
-        //        NSString *translationPrompt = [NSString stringWithFormat:@"\nLook up one of its most commonly used %@ translation, only display the translated text: \"%@%@: xxx \" . \n\n", targetLanguage, targetLanguage, translationTitle];
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
         translationPrompt = [translationPrompt stringByAppendingFormat:@", display %@ translated text in this format: \"%@: xxx \" ", targetLanguage, translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
@@ -277,14 +278,15 @@ static NSDictionary *const kQuotesDict = @{
     NSArray *messages = @[
         @{
             @"role" : @"system",
-            @"content" : actorPrompt,
+            @"content" : systemPrompt,
         },
         // few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
         @{
             @"role" : @"user", // raven
-            @"content" : @"Here is a English word or text: \"raven\",\n"
+            @"content" : @"Here is a English word or text: \"raven\", \n"
             "Look up its pronunciation, display in this format: \"发音: / xxx /\",\n"
             "Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning:\n \" xxx \" , \n"
+            "Look up most common English level exams that include it, no more than 6, display in this format: \" xxx \" , \n"
             "Look up its all tenses and forms, each line only display one tense or form in this format:\n \" xxx \" , \n"
             "Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" , \n",
         },
@@ -295,6 +297,7 @@ static NSDictionary *const kQuotesDict = @{
             "adj. 乌黑的 \n"
             "vt. 掠夺；狼吞虎咽 \n"
             "vi. 掠夺；狼吞虎咽 \n\n"
+            "四级, 托福, 雅思, GRE, SAT \n\n"
             "复数: ravens \n"
             "第三人称单数: ravens \n"
             "现在分词: ravening \n"
@@ -307,11 +310,22 @@ static NSDictionary *const kQuotesDict = @{
             "vt. ravage 毁坏；破坏；掠夺\n",
         },
         @{
+            @"role" : @"user", // class
+            @"content" : @"Here is a English word or text: \"class\",\n"
+            "Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" , \n",
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"同根词: \n"
+            "adj. classified 分类的；类别的；机密的 \n"
+            "n. classification 分类；类别，等级 \n"
+            "vt. classify 分类；分等\n",
+        },
+        @{
             @"role" : @"user",
             @"content" : prompt
         },
     ];
-    
     
     return messages;
 }
