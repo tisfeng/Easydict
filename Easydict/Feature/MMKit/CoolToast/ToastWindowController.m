@@ -33,21 +33,21 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
 - (instancetype)initWithWindowNibName:(NSNibName)windowNibName {
     self = [super initWithWindowNibName:windowNibName];
     if (self) {
-        _leftOffset = 50;
-        _topOffset = 50;
-        _rightOffset = 50;
-        _bottomOffset = 50;
+        _leftOffset = 20;
+        _topOffset = 20;
+        _rightOffset = 20;
+        _bottomOffset = 20;
         
         _maxWidth = 826;
-        _minWidth = 320;
-        _minHeight = 80;
+        _minWidth = 50;
+        _minHeight = 60;
         _toastPostion = CTPositionTop | CTPositionRight;
         _backgroundColor = [NSColor clearColor];
-        _imageMarginLeft = 15;
+        _imageMarginLeft = 10;
         
-        _conerRadius = 6;
+        _conerRadius = 10;
         _autoDismiss = YES;
-        _autoDismissTimeInSecond = 5;
+        _autoDismissTimeInSecond = 2;
         _animater = CTAnimaterFade;
         _animaterTimeSecond = 0.5;
         _textFont = [NSFont systemFontOfSize:15];
@@ -124,12 +124,19 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
     [self.containerView addGestureRecognizer:tap];
     
     self.containerView.layer.cornerRadius = self.conerRadius;
-    if (self.textColor == nil)
-        self.messageLabel.textColor = [NSColor colorNamed:@"messageTextColor" bundle:CTBundle()];
+    if (self.textColor == nil){
+        self.messageLabel.textColor = NSColor.whiteColor;
+    }
     else
         self.messageLabel.textColor = self.textColor;
-    if (self.toastBackgroundColor == nil)
-        self.containerView.layer.backgroundColor = [NSColor colorNamed:@"conainerBackgroundColor" bundle:CTBundle()].CGColor;
+    if (self.toastBackgroundColor == nil) {
+        CGFloat r = 49.0 / 255.0;
+        CGFloat g = 49.0 / 255.0;
+        CGFloat b = 49.0 / 255.0;
+        CGFloat a = 1.0;
+        NSColor *color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:a];
+        self.containerView.layer.backgroundColor = color.CGColor;
+    }
     else {
         self.containerView.layer.backgroundColor = self.toastBackgroundColor.CGColor;
     }
