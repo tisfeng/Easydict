@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -434,7 +434,7 @@
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C99EEB182385796700FEE666 /* Easydict.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Easydict.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99EEB182385796700FEE666 /* Easydict-Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1325,7 +1325,7 @@
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C99EEB182385796700FEE666 /* Easydict.app */,
+				C99EEB182385796700FEE666 /* Easydict-Debug.app */,
 				C90BE309239F38EB00ADE88B /* EasydictHelper.app */,
 			);
 			name = Products;
@@ -1368,7 +1368,7 @@
 			);
 			name = Easydict;
 			productName = Bob;
-			productReference = C99EEB182385796700FEE666 /* Easydict.app */;
+			productReference = C99EEB182385796700FEE666 /* Easydict-Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1377,8 +1377,9 @@
 		C99EEB102385796700FEE666 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = EZ;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = izual;
 				TargetAttributes = {
 					C90BE308239F38EB00ADE88B = {
@@ -1858,7 +1859,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Easydict-Debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
