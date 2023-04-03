@@ -114,7 +114,18 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
+    
+    mm_weakify(self);
+    [self.queryModel setStopBlock:^{
+        mm_strongify(self);
+        [self.webViewTranslator resetWebView];
+    }];
+    
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+        if (self.queryModel.stop) {
+            return;
+        }
+        
         if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             // Convert result to traditional Chinese.
             NSMutableArray *newTexts = [NSMutableArray array];
@@ -178,9 +189,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] init];
-    // set timeout
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
-    [[manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+    NSURLSessionTask *task = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
+        if (self.queryModel.stop || error.code == NSURLErrorCancelled) {
+            return;
+        }
+        
         if (error) {
             NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
             if (errorData) {
@@ -210,7 +224,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         EZDeepLTranslateResponse *deepLTranslateResponse = [EZDeepLTranslateResponse mj_objectWithKeyValues:responseObject];
         [self.result setupWithDeepLTranslateResponse:deepLTranslateResponse];
         completion(self.result, nil);
-    }] resume];
+    }];
+    [task resume];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
+    }];
 }
 
 - (NSInteger)getICount:(NSString *)translateText {

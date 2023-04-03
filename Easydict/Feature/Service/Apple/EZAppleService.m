@@ -175,6 +175,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     //    NSLog(@"Apple translate paramters: %@", paramters);
     
     [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
+        if (self.queryModel.stop) {
+            return;
+        }
+        
         if (!error) {
             self.result.normalResults = @[ result.trim ];
         } else {

@@ -12,6 +12,7 @@
 @implementation EZExeCommand
 
 /// Use NSTask to run AppleScript.
+/// TODO: allow to terminate script.
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSTask *task = [[NSTask alloc] init];

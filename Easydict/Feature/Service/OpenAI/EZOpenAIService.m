@@ -381,6 +381,10 @@ static NSDictionary *const kQuotesDict = @{
         __block NSString *appendSuffixQuote = nil;
         
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
+            if (self.queryModel.stop) {
+                return;
+            }
+            
             // convert data to JSON
             
             NSError *error;
@@ -433,14 +437,16 @@ static NSDictionary *const kQuotesDict = @{
                 [mutableString appendString:appendContent];
             }
             
-            if (!self.queryModel.stop) {
-                completion(mutableString, nil);
-            }
+            completion(mutableString, nil);
             //  NSLog(@"mutableString: %@", mutableString);
         }];
     }
     
     NSURLSessionTask *task = [manager POST:@"https://api.openai.com/v1/chat/completions" parameters:body progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        if (self.queryModel.stop) {
+            return;
+        }
+        
         if (!stream) {
             NSError *jsonError;
             NSString *result = [self parseContentFromJSONata:responseObject error:&jsonError] ?: @"";
