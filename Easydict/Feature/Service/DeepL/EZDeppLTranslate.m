@@ -119,7 +119,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     [self.queryModel setStopBlock:^{
         mm_strongify(self);
         [self.webViewTranslator resetWebView];
-    }];
+    } serviceType:self.serviceType];
     
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         if (self.queryModel.stop) {
@@ -229,7 +229,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 - (NSInteger)getICount:(NSString *)translateText {

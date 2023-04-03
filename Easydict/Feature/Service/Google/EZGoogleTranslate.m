@@ -238,7 +238,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 #pragma mark - 重写父类方法
@@ -634,7 +634,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 - (void)detectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {

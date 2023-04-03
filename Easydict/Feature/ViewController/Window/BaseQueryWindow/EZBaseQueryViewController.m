@@ -329,10 +329,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Setup queryModel when start new query.
 - (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType  {
+    // Before starting new query, we should stop the previous query.
+    self.queryModel.stop = YES;
+    self.queryModel.stop = NO;
+
     self.queryModel.queryText = text;
     self.queryModel.queryType = queryType;
     self.queryModel.audioURL = nil;
-    self.queryModel.stop = NO;
     if (self.queryModel.queryType != EZQueryTypeOCR) {
         self.queryModel.ocrImage = nil;
     }
@@ -494,8 +497,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [self updateResultLoadingAnimation:result];
     
-    [self startNewQuery:self.queryText queyType:self.queryModel.queryType];
-
     //    NSLog(@"query service: %@", service.serviceType);
 
     [service translate:queryModel.queryText
@@ -1064,6 +1065,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
+            [self startNewQuery:self.queryText queyType:self.queryModel.queryType];
+
             [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 result.error = error;
                 result.isShowing = YES;
