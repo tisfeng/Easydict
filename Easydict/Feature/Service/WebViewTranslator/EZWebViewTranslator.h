@@ -36,6 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)queryTranslateURL:(NSString *)URL
         completionHandler:(nullable void (^)(NSArray<NSString *> *_Nullable translatedText, NSError *error))completionHandler;
 
+- (void)resetWebView;
+
 @end
 
 NS_ASSUME_NONNULL_END

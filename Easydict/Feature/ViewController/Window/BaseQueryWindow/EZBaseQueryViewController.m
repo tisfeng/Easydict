@@ -493,6 +493,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     result.isLoading = YES;
 
     [self updateResultLoadingAnimation:result];
+    
+    [self startNewQuery:self.queryText queyType:self.queryModel.queryType];
 
     //    NSLog(@"query service: %@", service.serviceType);
 
