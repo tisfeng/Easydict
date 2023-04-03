@@ -61,7 +61,10 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSFont *typeTextFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
-    NSString *errorMsg = result.errorMessage ?: result.error.localizedDescription;
+    NSString *errorDescription = result.error.localizedDescription;
+    if (result.errorMessage.length) {
+        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", result.errorMessage];
+    }
     
     __block CGFloat ezLabelTopOffset = 0;
     
@@ -104,7 +107,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         lastView = wordTextField;
     }
     
-    if (result.normalResults.count || errorMsg.length > 0) {
+    if (result.normalResults.count || errorDescription.length > 0) {
         NSTextField *typeTextField;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = kVerticalMargin_12;
@@ -144,8 +147,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSString *text = nil;
         if (result.translatedText.length > 0) {
             text = result.translatedText;
-        } else if (!result.wordResult && errorMsg.length) {
-            text = errorMsg;
+        } else if (!result.wordResult && errorDescription.length) {
+            text = errorDescription;
         } else if (!result.hasTranslatedResult) {
             text = @"No Result.";
         }
