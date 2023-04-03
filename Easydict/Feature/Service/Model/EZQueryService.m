@@ -49,6 +49,7 @@ userInfo:nil]
     [[EZLocalStorage shared] setEnabledQuery:enabledQuery serviceType:self.serviceType windowType:self.windowType];
 }
 
+// TODO: need to optimize, each service should have its own model, can stop requests individually.
 - (void)setResult:(EZQueryResult *)translateResult {
     _result = translateResult;
     

@@ -264,7 +264,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     if (text.length < 30) {
         // 1.Query Youdao dict.
         dispatch_group_enter(group);
-        [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
             mm_strongify(self);
             NSString *message = nil;
             if (responseObject) {
@@ -282,10 +282,18 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
             dispatch_group_leave(group);
         } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+            if (error.code == NSURLErrorCancelled) {
+                return;
+            }
+
             mm_strongify(self);
             [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
             self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
             dispatch_group_leave(group);
+        }];
+        
+        [self.queryModel setStopBlock:^{
+            [task cancel];
         }];
     }
     
@@ -306,8 +314,17 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             NSString *wordLink = [self wordLink:self.queryModel];
             if (wordLink) {
                 [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
+                    if (self.queryModel.stop) {
+                        return;
+                    }
                     self.result.normalResults = texts;
                     completion(self.result, error);
+                }];
+                
+                mm_weakify(self);
+                [self.queryModel setStopBlock:^{
+                    mm_strongify(self);
+                    [self.webViewTranslator resetWebView];
                 }];
             } else {
                 completion(self.result, EZQueryUnsupportedLanguageError(self));
@@ -371,7 +388,11 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
     }
     
-    [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSURLSessionTask *task = [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        if (self.queryModel.stop) {
+            return;
+        }
+        
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSString *errorCode = dict[@"errorCode"];
@@ -393,7 +414,14 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         }
         completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, @"翻译失败", responseObject));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
         completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, nil, error));
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
     }];
 }
 
