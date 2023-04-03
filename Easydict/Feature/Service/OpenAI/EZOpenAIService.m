@@ -222,7 +222,7 @@ static NSDictionary *const kQuotesDict = @{
         
         NSString *examPrompt = [NSString stringWithFormat:@"Look up most common English level exams that include it, no more than 6, display in this format: \" xxx \" . \n\n"];
         prompt = [prompt stringByAppendingString:examPrompt];
-
+        
         //  <tense or form>xxx: <word>xxx
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
@@ -474,12 +474,12 @@ static NSDictionary *const kQuotesDict = @{
         if (errorData) {
             /**
              {
-               "error" : {
-                 "code" : "invalid_api_key",
-                 "message" : "Incorrect API key provided: sk-5DJ2b***************************************7ckC. You can find your API key at https:\/\/platform.openai.com\/account\/api-keys.",
-                 "param" : null,
-                 "type" : "invalid_request_error"
-               }
+             "error" : {
+             "code" : "invalid_api_key",
+             "message" : "Incorrect API key provided: sk-5DJ2b***************************************7ckC. You can find your API key at https:\/\/platform.openai.com\/account\/api-keys.",
+             "param" : null,
+             "type" : "invalid_request_error"
+             }
              }
              */
             NSError *jsonError;
@@ -490,7 +490,7 @@ static NSDictionary *const kQuotesDict = @{
                     self.result.errorMessage = errorMessage;
                 }
             }
-        } 
+        }
         completion(nil, error);
     }];
     
