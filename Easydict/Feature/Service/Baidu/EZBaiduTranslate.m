@@ -172,7 +172,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 // TODO: need to optimize the results of Baidu query words.
@@ -433,7 +433,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     [self.queryModel setStopBlock:^{
         mm_strongify(self);
         [self.webViewTranslator resetWebView];
-    }];
+    } serviceType:self.serviceType];
 }
 
 

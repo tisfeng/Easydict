@@ -167,7 +167,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     [self.queryModel setStopBlock:^{
         mm_strongify(self);
         [self.webViewTranslator resetWebView];
-    }];
+    } serviceType:self.serviceType];
     
     // https://translate.volcengine.com/web/translate/v1/?msToken=&X-Bogus=DFSzKwGLQDGhFUIXSkg53N7TlqSz&_signature=_02B4Z6wo00001JPEP6AAAIDDBxJkrN0CktiT1DsAAEdZbuaHXanY5YK83lzLs2IvC-TGG2SrwAfASYu0RlxzNxrvOYDTyy2LHOGiN98QnTNZfEC6O0BSwWWTr5KNbw3TykBrdkDs6PsVqDcOc9
     
