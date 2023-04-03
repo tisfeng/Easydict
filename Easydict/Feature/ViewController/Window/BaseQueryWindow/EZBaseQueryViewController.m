@@ -317,18 +317,25 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         return;
     }
-
-    if (queryType != EZQueryTypeOCR) {
-        self.queryModel.ocrImage = nil;
-    }
-
-    self.queryModel.queryType = queryType;
+    
+    [self startNewQuery:text queyType:queryType];
 
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
         self.queryText = text;
         [self queryCurrentModel];
     }];
+}
+
+/// Setup queryModel when start new query.
+- (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType  {
+    self.queryModel.queryText = text;
+    self.queryModel.queryType = queryType;
+    self.queryModel.audioURL = nil;
+    self.queryModel.stop = NO;
+    if (self.queryModel.queryType != EZQueryTypeOCR) {
+        self.queryModel.ocrImage = nil;
+    }
 }
 
 - (void)startQueryWithImage:(NSImage *)image {
@@ -939,6 +946,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // Clear query text, detect language and clear button right now;
         self.queryText = @"";
         self.queryModel.ocrImage = nil;
+        self.queryModel.stop = YES;
 
         [self updateQueryCellWithCompletionHandler:^{
             // !!!: To show closing animation, we cannot reset result directly.

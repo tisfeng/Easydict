@@ -35,6 +35,9 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
 
+@property (nonatomic, assign) BOOL stop;
+@property (nonatomic, copy) void (^_Nullable stopBlock)(void);
+
 @end
 
 NS_ASSUME_NONNULL_END
