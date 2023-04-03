@@ -64,4 +64,12 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return targetLanguage;
 }
 
+- (void)setStop:(BOOL)stop {
+    _stop = stop;
+    
+    if (stop && _stopBlock) {
+        _stopBlock();
+    }
+}
+
 @end

@@ -385,7 +385,7 @@ static NSDictionary *const kQuotesDict = @{
             
             NSError *error;
             NSString *content = [self parseContentFromStreamData:data error:&error isFinished:&isFinished];
-            if (error) {
+            if (error && error.code != NSURLErrorCancelled) {
                 completion(nil, error);
                 return;
             }
@@ -433,12 +433,14 @@ static NSDictionary *const kQuotesDict = @{
                 [mutableString appendString:appendContent];
             }
             
-            completion(mutableString, nil);
-            //            NSLog(@"mutableString: %@", mutableString);
+            if (!self.queryModel.stop) {
+                completion(mutableString, nil);
+            }
+            //  NSLog(@"mutableString: %@", mutableString);
         }];
     }
     
-    [manager POST:@"https://api.openai.com/v1/chat/completions" parameters:body progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSURLSessionTask *task = [manager POST:@"https://api.openai.com/v1/chat/completions" parameters:body progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if (!stream) {
             NSError *jsonError;
             NSString *result = [self parseContentFromJSONata:responseObject error:&jsonError] ?: @"";
@@ -464,6 +466,10 @@ static NSDictionary *const kQuotesDict = @{
             }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        
         NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
         if (errorData) {
             /**
@@ -486,6 +492,10 @@ static NSDictionary *const kQuotesDict = @{
             }
         } 
         completion(nil, error);
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
     }];
 }
 
