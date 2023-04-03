@@ -502,7 +502,7 @@ static NSDictionary *const kQuotesDict = @{
     
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 /// Parse content from nsdata

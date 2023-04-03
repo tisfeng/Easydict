@@ -294,7 +294,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         
         [self.queryModel setStopBlock:^{
             [task cancel];
-        }];
+        } serviceType:self.serviceType];
     }
     
     // 2.Query Youdao translate.
@@ -325,7 +325,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                 [self.queryModel setStopBlock:^{
                     mm_strongify(self);
                     [self.webViewTranslator resetWebView];
-                }];
+                } serviceType:self.serviceType];
             } else {
                 completion(self.result, EZQueryUnsupportedLanguageError(self));
             }
@@ -422,7 +422,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     
     [self.queryModel setStopBlock:^{
         [task cancel];
-    }];
+    } serviceType:self.serviceType];
 }
 
 - (NSString *)signWithSalt:(NSString *)salt word:(NSString *)word {

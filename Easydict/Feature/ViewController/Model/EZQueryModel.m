@@ -22,6 +22,7 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
         self.userTargetLanguage = EZConfiguration.shared.to;
         self.detectedLanguage = EZLanguageAuto;
         self.queryType = EZQueryTypeInput;
+        self.stopBlockDictionary = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -67,9 +68,20 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
 - (void)setStop:(BOOL)stop {
     _stop = stop;
     
-    if (stop && _stopBlock) {
-        _stopBlock();
+    if (stop) {
+        for (NSString *key in self.stopBlockDictionary.allKeys) {
+            void (^stopBlock)(void) = self.stopBlockDictionary[key];
+            if (stopBlock) {
+                stopBlock();
+            }
+        }
+    } else {
+        [self.stopBlockDictionary removeAllObjects];
     }
+}
+
+- (void)setStopBlock:(void (^)(void))stopBlock serviceType:(NSString *)type {
+    self.stopBlockDictionary[type] = stopBlock;
 }
 
 @end
