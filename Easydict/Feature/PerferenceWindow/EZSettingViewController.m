@@ -241,6 +241,7 @@
     
     NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_info", nil);
     self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
+    self.disableEmptyCopyBeepButton.toolTip = @"Some apps may have beeps when using it. Enabling it can disable the beeps.";
     [self.contentView addSubview:self.disableEmptyCopyBeepButton];
     
     
