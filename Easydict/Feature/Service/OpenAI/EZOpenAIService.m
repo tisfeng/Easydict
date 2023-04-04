@@ -195,7 +195,7 @@ static NSDictionary *const kQuotesDict = @{
     BOOL isWord = isEnglishWord || isChineseWord;
     
     // Pre-prompt.
-    NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words.\n";
+    NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words or text.\n";
     
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
@@ -217,12 +217,13 @@ static NSDictionary *const kQuotesDict = @{
     
     if (isEnglishWord) {
         // <abbreviation of pos>xxx. <meaning>xxx
-        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
+        NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
+
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
         // TODO: Since level exams are not accurate, so disable it.
-//        NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include it, no more than 6, format: \" xxx \" . \n\n"];
-//        prompt = [prompt stringByAppendingString:examPrompt];
+//                NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include \"%@\", no more than 6, format: \" xxx \" . \n\n", word];
+        //        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
@@ -236,6 +237,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, format: \"%@: xxx \" \n", explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
+    // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
     NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, format: \"%@: xxx \" . \n\n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
@@ -258,35 +260,47 @@ static NSDictionary *const kQuotesDict = @{
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@ . \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
     
-//    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
-//    prompt = [prompt stringByAppendingString:formatPompt];
+    //    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
+    //    prompt = [prompt stringByAppendingString:formatPompt];
     
     NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     // Some etymology words cannot be reached 300,
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed, no additional information.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
-    
-//    NSString *noAnnotationPromt = @"Do not show additional notes. If the explanation or etymology of certain words or phrases is not sufficient in length, it doesn't matter, there is no need for additional information. \n";
-//    prompt = [prompt stringByAppendingString:noAnnotationPromt];
     
     NSLog(@"dict prompt: %@", prompt);
     
-    NSArray *messages = @[
+    
+    NSArray *chineseFewShot = @[
         @{
-            @"role" : @"system",
-            @"content" : systemPrompt,
+            @"role" : @"user", // album
+            @"content" : @"Here is a English word or text: \"album\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
         },
-        // few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
         @{
-            @"role" : @"user", // raven
-            @"content" : @"Here is a English word: \"raven\" \n"
-            "Look up its pronunciation, pos and meanings, the most commonly used English level exams that include \"raven\", tenses and forms, cognates"
+            @"role" : @"assistant",
+            @"content" : @"发音: / ˈælbəm / \n\n"
+            "n. 相册；唱片集；集邮簿 \n\n"
+            "复数：albums \n\n"
+            "解释：xxx \n\n"
+            "词源学：xxx \n\n"
+            "记忆方法：xxx \n\n"
+            "同根词: \n"
+            "n. almanac 年历，历书 \n"
+            "n. anthology 选集，文选 \n\n"
+            "近义词：record, collection, compilation \n"
+            "反义词：dispersal, disarray, disorder",
         },
+        @{
+           @"role" : @"user", // raven
+           @"content" : @"Here is a English word: \"raven\" \n"
+           "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+       },
         @{
             @"role" : @"assistant",
             @"content" : @"发音: / ˈreɪvən / \n\n"
@@ -299,9 +313,9 @@ static NSDictionary *const kQuotesDict = @{
             "现在分词: ravening \n"
             "过去式: ravened \n"
             "过去分词: ravened \n\n"
-            "解释：{explanation} \n\n"
-            "词源学：{etymology} \n\n"
-            "记忆方法：{how to remember} \n\n"
+            "解释：xxx \n\n"
+            "词源学：xxx \n\n"
+            "记忆方法：xxx \n\n"
             "同根词: \n"
             "adj. ravenous 贪婪的；渴望的；狼吞虎咽的 \n"
             "n. ravage 蹂躏，破坏 \n"
@@ -311,29 +325,65 @@ static NSDictionary *const kQuotesDict = @{
             "反义词：protect, guard, defend"
         },
         @{
-            @"role" : @"user", // album
-            @"content" : @"Here is a English word: \"album\" \n"
-            "Look up its pronunciation, pos and meanings, most common English level exams that include it, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms"
+            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
+            @"content" : @"Here is a English word: \"acg\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"发音: / ˈælbəm / \n\n"
-            "n. 相册；唱片集；集邮簿 \n\n"
-            "复数：albums \n\n"
-            "解释：{explanation} \n\n"
-            "词源学：{etymology} \n\n"
-            "记忆方法：{how to remember} \n\n"
-            "同根词: \n"
-            "n. almanac 年历，历书 \n"
-            "n. anthology 选集，文选 \n\n"
-            "近义词：record, collection, compilation \n"
-            "反义词：dispersal, disarray, disorder",
-        },
-        @{
-            @"role" : @"user",
-            @"content" : prompt
+            @"content" : @"发音: xxx \n\n"
+            "n. 动画、漫画、游戏的总称（Animation, Comic, Game） \n\n"
+            "解释：xxx \n\n"
+            "词源学：xxx \n\n"
+            "记忆方法：xxx \n\n"
+            "同根词: xxx \n\n"
+            "近义词：xxx \n"
+            "反义词：xxx",
         },
     ];
+    
+    NSArray *englishFewShot = @[
+        @{
+            @"role" : @"user", // album
+            @"content" : @"Here is a English word: \"album\" \n"
+            "Look up its pronunciation, pos and meanings, most common English level exams that include it, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English language."
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"Pronunciation: / ˈælbəm / \n\n"
+            "n. An album is a collection of songs that is available on a CD, record, or cassette \n"
+            "n. An album is a book in which you keep things such as photographs or stamps that you have collected. \n\n"
+            "Plural: albums \n\n"
+            "Explanation: {explanation} \n\n"
+            "Etymology: {etymology} \n\n"
+            "How to remember: {how to remember} \n\n"
+            "Cognates: \n"
+            "n. almanac \n"
+            "n. anthology \n\n"
+            "Synonyms: record, collection, compilation \n"
+            "Antonyms: dispersal, disarray, disorder",
+        },
+    ];
+    
+    NSArray *systemMessages = @[
+        @{
+            @"role" : @"system",
+            @"content" : systemPrompt,
+        },
+    ];
+    NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
+    
+    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+        [messages addObjectsFromArray:chineseFewShot];
+    } else {
+        [messages addObjectsFromArray:englishFewShot];
+    }
+    
+    NSDictionary *userMessage = @{
+        @"role" : @"user",
+        @"content" : prompt,
+    };
+    [messages addObject:userMessage];
     
     return messages;
 }
@@ -1046,7 +1096,7 @@ static NSDictionary *const kQuotesDict = @{
     
     NSInteger wordCount = [self wordCount:text];
     
-    if (wordCount <= 3) {
+    if (wordCount <= 2) {
         return YES;
     }
     
