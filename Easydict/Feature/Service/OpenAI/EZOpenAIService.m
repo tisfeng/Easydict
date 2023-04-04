@@ -208,11 +208,11 @@ static NSDictionary *const kQuotesDict = @{
         etymology = @"词源学";
         howToRemember = @"记忆方法";
         cognate = @"同根词";
-        synonym = @"同义词";
+        synonym = @"近义词";
         antonym = @"反义词";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, display in this format: \"%@: / xxx /\" , note that / needs to be preceded and followed by a white space. \n\n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, format: \"%@: / xxx /\" \n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
@@ -220,7 +220,7 @@ static NSDictionary *const kQuotesDict = @{
         NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
-        NSString *examPrompt = [NSString stringWithFormat:@"Look up most common English level exams that include it, no more than 6, display in this format: \" xxx \" . \n\n"];
+        NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include it, no more than 6, format: \" xxx \" . \n\n"];
         prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
@@ -232,46 +232,46 @@ static NSDictionary *const kQuotesDict = @{
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, display strictly in this format on one line: \"%@: xxx \" \n\n.", explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, format: \"%@: xxx \" \n", explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, display strictly in this format on one line: \"%@: xxx \" . \n\n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, format: \"%@: xxx \" . \n\n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, display strictly in this format on one line: \"%@: xxx \" . \n\n", howToRemember];
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
     }
     
     if (isWord) {
         if (isEnglishWord) {
-            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, strict format: \"%@: xxx \" . ", sourceLanguage, cognate];
+            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, format: \"%@: xxx \" ", sourceLanguage, cognate];
             //  NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
             prompt = [prompt stringByAppendingString:cognatesPrompt];
         }
         
-        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, strict format: \"%@: xxx \" . ", sourceLanguage, synonym];
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, format: \"%@: xxx \" ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"Look up its main <%@> near antonyms, no more than 3, strict format: \"%@: xxx \" . \n", sourceLanguage, antonym];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, format: \"%@: xxx \" \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Remember to answer in %@ language. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
     
-    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
-    prompt = [prompt stringByAppendingString:formatPompt];
+//    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
+//    prompt = [prompt stringByAppendingString:formatPompt];
     
     NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     // Some etymology words cannot be reached 300,
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed, no additional information.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
     
-    NSString *noAnnotationPromt = @"Do not show additional notes. If the explanation or etymology of certain words or phrases is not sufficient in length, it doesn't matter, there is no need for special prompts. \n";
-    prompt = [prompt stringByAppendingString:noAnnotationPromt];
+//    NSString *noAnnotationPromt = @"Do not show additional notes. If the explanation or etymology of certain words or phrases is not sufficient in length, it doesn't matter, there is no need for additional information. \n";
+//    prompt = [prompt stringByAppendingString:noAnnotationPromt];
     
     NSLog(@"dict prompt: %@", prompt);
     
@@ -283,43 +283,52 @@ static NSDictionary *const kQuotesDict = @{
         // few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
         @{
             @"role" : @"user", // raven
-            @"content" : @"Here is a English word or text: \"raven\", \n"
-            "Look up its pronunciation, display in this format: \"发音: / xxx /\",\n"
-            "Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning:\n \" xxx \" , \n"
-            "Look up most common English level exams that include it, no more than 6, display in this format: \" xxx \" , \n"
-            "Look up its all tenses and forms, each line only display one tense or form in this format:\n \" xxx \" , \n"
-            "Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" , \n",
+            @"content" : @"Here is a English word: \"raven\" \n"
+            "Look up its pronunciation, pos and meanings, the most commonly used English level exams that include \"raven\", tenses and forms, cognates"
         },
         @{
-            @"role" : @"assistant", // give examples of desired behavior.
+            @"role" : @"assistant",
             @"content" : @"发音: / ˈreɪvən / \n\n"
             "n. 掠夺，劫掠；大乌鸦 \n"
             "adj. 乌黑的 \n"
             "vt. 掠夺；狼吞虎咽 \n"
             "vi. 掠夺；狼吞虎咽 \n\n"
-            "四级, 托福, 雅思, GRE, SAT \n\n"
+            "托福 \n\n"
             "复数: ravens \n"
             "第三人称单数: ravens \n"
             "现在分词: ravening \n"
             "过去式: ravened \n"
             "过去分词: ravened \n\n"
+            "解释：{explanation} \n\n"
+            "词源学：{etymology} \n\n"
+            "记忆方法：{how to remember} \n\n"
             "同根词: \n"
             "adj. ravenous 贪婪的；渴望的；狼吞虎咽的 \n"
             "n. ravage 蹂躏，破坏 \n"
             "vi. ravage 毁坏；掠夺 \n"
-            "vt. ravage 毁坏；破坏；掠夺\n",
+            "vt. ravage 毁坏；破坏；掠夺 \n\n"
+            "近义词: seize, blackbird \n"
+            "反义词：protect, guard, defend"
         },
         @{
-            @"role" : @"user", // class
-            @"content" : @"Here is a English word or text: \"class\",\n"
-            "Look up it most commonly used <English> cognates, no more than 6, strict format: \"同根词: xxx\" , \n",
+            @"role" : @"user", // album
+            @"content" : @"Here is a English word: \"album\" \n"
+            "Look up its pronunciation, pos and meanings, most common English level exams that include it, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms"
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"同根词: \n"
-            "adj. classified 分类的；类别的；机密的 \n"
-            "n. classification 分类；类别，等级 \n"
-            "vt. classify 分类；分等\n",
+            @"content" : @"发音: / ˈælbəm / \n\n"
+            "n. 相册；唱片集；集邮簿 \n\n"
+            "四级, 六级, SAT \n\n"
+            "复数：albums \n\n"
+            "解释：{explanation} \n\n"
+            "词源学：{etymology} \n\n"
+            "记忆方法：{how to remember} \n\n"
+            "同根词: \n"
+            "n. almanac 年历，历书 \n"
+            "n. anthology 选集，文选 \n\n"
+            "近义词：record, collection, compilation \n"
+            "反义词：dispersal, disarray, disorder",
         },
         @{
             @"role" : @"user",
@@ -593,7 +602,7 @@ static NSDictionary *const kQuotesDict = @{
         @"model" : @"gpt-3.5-turbo",
         @"messages" : messages,
         @"temperature" : @(0),
-        @"max_tokens" : @(3000),
+//        @"max_tokens" : @(3000),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
