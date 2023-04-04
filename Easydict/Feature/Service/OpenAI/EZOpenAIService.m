@@ -197,7 +197,7 @@ static NSDictionary *const kQuotesDict = @{
     // Pre-prompt.
     NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words or text.\n";
     
-    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word or text: \"%@\", ", sourceLanguage, word];
+    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word, abbreviation or text: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
@@ -270,7 +270,7 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     // Some etymology words cannot be reached 300,
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. Do not display additional information or notes.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. If there is no result for a certain item, don't show it. Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
     
     NSLog(@"dict prompt: %@", prompt);
@@ -344,24 +344,40 @@ static NSDictionary *const kQuotesDict = @{
     
     NSArray *englishFewShot = @[
         @{
-            @"role" : @"user", // album
-            @"content" : @"Here is a English word: \"album\" \n"
-            "Look up its pronunciation, pos and meanings, most common English level exams that include it, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English language."
+            @"role" : @"user", // raven
+            @"content" : @"Here is a English word: \"raven\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"Pronunciation: / ˈælbəm / \n\n"
-            "n. An album is a collection of songs that is available on a CD, record, or cassette \n"
-            "n. An album is a book in which you keep things such as photographs or stamps that you have collected. \n\n"
-            "Plural: albums \n\n"
-            "Explanation: {explanation} \n\n"
-            "Etymology: {etymology} \n\n"
-            "How to remember: {how to remember} \n\n"
-            "Cognates: \n"
-            "n. almanac \n"
-            "n. anthology \n\n"
-            "Synonyms: record, collection, compilation \n"
-            "Antonyms: dispersal, disarray, disorder",
+            @"content" : @"Pronunciation: / ˈreɪvən / \n\n"
+            "n. A large, black bird with a deep croak \n"
+            "v. To seize or devour greedily \n\n"
+            "Plural: ravens \n"
+            "Present participle: ravening \n"
+            "Past tense: ravened  \n\n"
+            "Explanation: xxx \n\n"
+            "Etymology: xxx \n\n"
+            "How to remember: xxx \n\n"
+            "Cognates: xxx \n\n"
+            "Synonyms: xxx \n"
+            "Antonyms: xxx",
+        },
+        @{
+            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
+            @"content" : @"Here is a English word abbreviation: \"acg\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"Pronunciation: xxx \n\n"
+            "n. acg: Animation, Comic, Game \n\n"
+            "Explanation: xxx \n\n"
+            "Etymology: xxx \n\n"
+            "How to remember: xxx \n\n"
+            "Cognates: xxx \n\n"
+            "Synonyms: xxx \n"
+            "Antonyms: xxx",
         },
     ];
     
