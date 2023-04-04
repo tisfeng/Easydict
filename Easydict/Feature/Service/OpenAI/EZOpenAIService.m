@@ -220,8 +220,9 @@ static NSDictionary *const kQuotesDict = @{
         NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, pos does not need to be translated into other languages, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
-        NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include it, no more than 6, format: \" xxx \" . \n\n"];
-        prompt = [prompt stringByAppendingString:examPrompt];
+        // TODO: Since level exams are not accurate, so disable it.
+//        NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include it, no more than 6, format: \" xxx \" . \n\n"];
+//        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
         NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
@@ -293,7 +294,6 @@ static NSDictionary *const kQuotesDict = @{
             "adj. 乌黑的 \n"
             "vt. 掠夺；狼吞虎咽 \n"
             "vi. 掠夺；狼吞虎咽 \n\n"
-            "托福 \n\n"
             "复数: ravens \n"
             "第三人称单数: ravens \n"
             "现在分词: ravening \n"
@@ -319,7 +319,6 @@ static NSDictionary *const kQuotesDict = @{
             @"role" : @"assistant",
             @"content" : @"发音: / ˈælbəm / \n\n"
             "n. 相册；唱片集；集邮簿 \n\n"
-            "四级, 六级, SAT \n\n"
             "复数：albums \n\n"
             "解释：{explanation} \n\n"
             "词源学：{etymology} \n\n"
