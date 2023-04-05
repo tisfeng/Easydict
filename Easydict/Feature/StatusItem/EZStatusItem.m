@@ -105,7 +105,7 @@ static EZStatusItem *_instance;
     [EZPreferencesWindowController.shared show];
 }
 
-- (IBAction)documentationAction:(NSMenuItem *)sender {
+- (IBAction)feedbackAction:(NSMenuItem *)sender {
     NSLog(@"反馈问题");
     NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZRepoGithubURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
