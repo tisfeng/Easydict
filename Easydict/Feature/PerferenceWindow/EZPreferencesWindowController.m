@@ -44,7 +44,6 @@ static EZPreferencesWindowController *_instance;
         [NSApp activateIgnoringOtherApps:YES];
     }
     [self.window center];
-    self.window.level = EZFloatingWindowLevel;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
