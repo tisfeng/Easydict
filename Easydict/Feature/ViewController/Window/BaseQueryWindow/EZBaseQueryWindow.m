@@ -10,7 +10,6 @@
 #import "EZTitlebar.h"
 #import "EZWindowManager.h"
 #import "NSImage+EZResize.h"
-#import "EZPreferencesWindowController.h"
 
 @interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
 
@@ -130,13 +129,10 @@
     //    NSLog(@"window Did ResignKey: %@", self);
     
     EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
-    if ([[EZPreferencesWindowController shared] isShowing]) {
-        return;
-    }
 
     // Do not close main window
-    if (!floatingWindow.pin && floatingWindow.windowType != EZWindowTypeMain) {
-        [[EZWindowManager shared] closeFloatingWindow];
+    if (!floatingWindow.pin) {
+        [EZWindowManager.shared closeFloatingWindowExceptMain];
     }
 }
 
