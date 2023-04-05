@@ -8,8 +8,8 @@
 /* Class = "NSMenuItem"; title = "Bob"; ObjectID = "0sa-UX-oa3"; */
 "0sa-UX-oa3.title" = "Bob";
 
-/* Class = "NSMenuItem"; title = "Translate Retry"; ObjectID = "1PR-FX-lvy"; */
-"1PR-FX-lvy.title" = "Translate Retry";
+/* Class = "NSMenuItem"; title = "Retry"; ObjectID = "1PR-FX-lvy"; */
+"1PR-FX-lvy.title" = "Retry";
 
 /* Class = "NSMenuItem"; title = "Ligatures"; ObjectID = "1eD-Dp-YEe"; */
 "1eD-Dp-YEe.title" = "Ligatures";
@@ -167,8 +167,8 @@
 /* Class = "NSMenuItem"; title = "Smart Quotes"; ObjectID = "MfP-Gx-Wn8"; */
 "MfP-Gx-Wn8.title" = "Smart Quotes";
 
-/* Class = "NSMenuItem"; title = "Close Window"; ObjectID = "Mvw-R3-uLG"; */
-"Mvw-R3-uLG.title" = "Close Window";
+/* Class = "NSMenuItem"; title = "Close"; ObjectID = "Mvw-R3-uLG"; */
+"Mvw-R3-uLG.title" = "Close";
 
 /* Class = "NSMenuItem"; title = "Center"; ObjectID = "N8G-VW-gCf"; */
 "N8G-VW-gCf.title" = "Center";
