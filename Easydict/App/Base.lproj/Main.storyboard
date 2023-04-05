@@ -668,7 +668,7 @@
                                     <items>
                                         <menuItem title="Easydict Help" keyEquivalent="?" id="yMd-CK-UoO">
                                             <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="3BY-fe-lsB"/>
+                                                <action selector="feedbackAction:" target="qM9-fT-Fym" id="u7x-qp-Y5f"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -743,7 +743,7 @@
                                     <menuItem title="反馈问题" id="yWr-rH-hQa">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
-                                            <action selector="documentationAction:" target="qM9-fT-Fym" id="OoC-My-foN"/>
+                                            <action selector="feedbackAction:" target="qM9-fT-Fym" id="OoC-My-foN"/>
                                         </connections>
                                     </menuItem>
                                     <menuItem title="导出日志" id="XpX-Ud-znp">
