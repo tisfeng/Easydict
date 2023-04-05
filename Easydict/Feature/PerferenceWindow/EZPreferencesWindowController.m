@@ -39,6 +39,7 @@ static EZPreferencesWindowController *_instance;
 
 - (void)show {
     _isShowing = YES;
+    
     [self.window makeKeyAndOrderFront:nil];
     if (!self.window.isKeyWindow) {
         [NSApp activateIgnoringOtherApps:YES];

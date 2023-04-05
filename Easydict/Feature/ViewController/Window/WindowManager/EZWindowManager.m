@@ -547,12 +547,23 @@ static EZWindowManager *_instance;
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
     
-    // recover last app.
-    [self activeLastFrontmostApplication];
+    if (![EZPreferencesWindowController.shared isShowing]) {
+        // recover last app.
+        [self activeLastFrontmostApplication];
+    }
+
     [_mainWindow orderBack:nil];
     
     self.lastFloatingWindowType = self.floatingWindowType;
     self.floatingWindowType = EZWindowTypeMain;
+}
+
+/// Close floating window, except main window.
+- (void)closeFloatingWindowExceptMain {
+    // Do not close main window
+    if (!self.floatingWindow.pin && self.floatingWindow.windowType != EZWindowTypeMain) {
+        [[EZWindowManager shared] closeFloatingWindow];
+    }
 }
 
 #pragma mark - Others
