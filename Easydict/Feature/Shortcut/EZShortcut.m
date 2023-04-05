@@ -36,6 +36,14 @@
     
     EZWindowManager *windowManager = [EZWindowManager shared];
     
+    /**
+     'NSKeyedUnarchiveFromData' should not be used to for un-archiving and will be removed in a future release
+     
+     But it's not easy to fix this warning, see: https://github.com/cocoabits/MASShortcut/issues/158
+     
+     [[MASShortcutBinder sharedBinder] setBindingOptions:@{NSValueTransformerNameBindingOption: NSSecureUnarchiveFromDataTransformerName}];
+     */
+
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
         [windowManager selectTextTranslate];
     }];
