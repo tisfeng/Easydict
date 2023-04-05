@@ -134,13 +134,20 @@ static EZStatusItem *_instance;
 
 #pragma mark -
 
+- (IBAction)clearInputAction:(NSMenuItem *)sender {
+    NSLog(@"Clear input");
+    
+    EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
+    queryViewController.queryText = @"";
+}
+
 - (IBAction)translateRetryAction:(NSMenuItem *)sender {
-    NSLog(@"翻译重试");
+    NSLog(@"Retry");
     [EZWindowManager.shared rerty];
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
-    NSLog(@"关闭 Window");
+    NSLog(@"Close window");
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
