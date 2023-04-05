@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -54,17 +54,6 @@
                                         <menuItem title="Quit Easydict" keyEquivalent="q" id="BRC-If-Fmo">
                                             <connections>
                                                 <action selector="quitAction:" target="qM9-fT-Fym" id="eRH-Ea-yXh"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="06i-m8-sie"/>
-                                        <menuItem title="Translate Retry" keyEquivalent="r" id="1PR-FX-lvy">
-                                            <connections>
-                                                <action selector="translateRetryAction:" target="qM9-fT-Fym" id="ny5-3O-eeN"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Close Window" keyEquivalent="w" id="Mvw-R3-uLG">
-                                            <connections>
-                                                <action selector="closeWindowAction:" target="qM9-fT-Fym" id="Syb-pF-TqU"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -348,6 +337,28 @@
                                                     </menuItem>
                                                 </items>
                                             </menu>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Shortcut" id="YF0-bI-c58">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Shortcut" id="eIi-Yp-9Iw">
+                                    <items>
+                                        <menuItem title="Clear" keyEquivalent="k" id="rr4-Iy-d6B" userLabel="Clear">
+                                            <connections>
+                                                <action selector="clearInputAction:" target="qM9-fT-Fym" id="sfK-KC-THW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Retry" keyEquivalent="r" id="pBe-oc-b5O">
+                                            <connections>
+                                                <action selector="translateRetryAction:" target="qM9-fT-Fym" id="s51-7o-oTB"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Close" keyEquivalent="w" id="dFr-S6-9m0" userLabel="Close">
+                                            <connections>
+                                                <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
