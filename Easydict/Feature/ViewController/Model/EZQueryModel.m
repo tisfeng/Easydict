@@ -70,10 +70,7 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     
     if (stop) {
         for (NSString *key in self.stopBlockDictionary.allKeys) {
-            void (^stopBlock)(void) = self.stopBlockDictionary[key];
-            if (stopBlock) {
-                stopBlock();
-            }
+            [self stopServiceRequest:key];
         }
     } else {
         [self.stopBlockDictionary removeAllObjects];
@@ -82,6 +79,13 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
 
 - (void)setStopBlock:(void (^)(void))stopBlock serviceType:(NSString *)type {
     self.stopBlockDictionary[type] = stopBlock;
+}
+
+- (void)stopServiceRequest:(NSString *)serviceType {
+    void (^stopBlock)(void) = self.stopBlockDictionary[serviceType];
+    if (stopBlock) {
+        stopBlock();
+    }
 }
 
 @end

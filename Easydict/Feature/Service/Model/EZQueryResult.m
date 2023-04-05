@@ -148,6 +148,7 @@ NSString *getPartName(NSString *part) {
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
     self.errorMessage = nil;
+    self.isFinished = NO;
 }
 
 @end
