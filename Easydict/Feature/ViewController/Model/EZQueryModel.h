@@ -35,10 +35,11 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
 
-@property (nonatomic, assign) BOOL stop;
+@property (nonatomic, assign) BOOL stop; // stop all services request.
 @property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType: block>
 
 - (void)setStopBlock:(void (^ _Nullable)(void))stopBlock serviceType:(NSString *)type; // EZServiceType
+- (void)stopServiceRequest:(NSString *)serviceType; // EZServiceType
 
 @end
 
