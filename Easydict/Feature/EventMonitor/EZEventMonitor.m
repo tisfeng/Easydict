@@ -521,13 +521,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self updateRecoredEvents:event];
 }
 
-- (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {
-    NSWindow *preferencesWindow = [EZPreferencesWindowController shared].window;
-    BOOL outsidePreferencesWindow = ![self checkIfMouseLocationInWindow:preferencesWindow];
-    if (outsidePreferencesWindow) {
-        [preferencesWindow close];
-    }
-    
+- (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {    
     EZWindowManager *windowManager = EZWindowManager.shared;
     if (windowManager.floatingWindowType == EZWindowTypeMini) {
         BOOL outsideMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
