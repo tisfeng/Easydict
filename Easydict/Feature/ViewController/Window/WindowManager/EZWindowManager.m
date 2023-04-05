@@ -165,12 +165,13 @@ static EZWindowManager *_instance;
             [self popButtonWindowClicked];
         }];
         
-        if (EZConfiguration.shared.hideMainWindow) {
-            [_popButtonWindow.popButton setClickBlock:^(EZButton *button) {
-                mm_strongify(self);
-                [self popButtonWindowClicked];
-            }];
-        }
+        // FIXME: Click pop button will also show preferences window.
+//        if (EZConfiguration.shared.hideMainWindow) {
+//            [_popButtonWindow.popButton setClickBlock:^(EZButton *button) {
+//                mm_strongify(self);
+//                [self popButtonWindowClicked];
+//            }];
+//        }
     }
     return _popButtonWindow;
 }
