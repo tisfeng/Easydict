@@ -104,6 +104,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 @property (nonatomic, assign) CGFloat viewHeight;
 
 @property (assign) BOOL isLoading;
+@property (assign) BOOL isFinished; // For OpenAI
 
 
 /// 此次查询的文本

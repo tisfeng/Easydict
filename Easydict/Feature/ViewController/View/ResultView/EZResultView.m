@@ -12,6 +12,7 @@
 #import "EZWordResultView.h"
 #import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
+#import "NSImage+EZResize.h"
 
 @interface EZResultView ()
 
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) NSImageView *warningImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 @property (nonatomic, strong) NSButton *arrowButton;
+@property (nonatomic, strong) NSButton *stopButton;
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
@@ -128,6 +130,23 @@
 
         //        [self rotateArrowButton];
     }];
+    
+    
+    EZHoverButton *stopButton = [[EZHoverButton alloc] init];
+    self.stopButton = stopButton;
+    [self addSubview:stopButton];
+    NSImage *stopImage = [NSImage imageWithSystemSymbolName:@"stop.circle" accessibilityDescription:nil];
+    stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
+    stopImage = [stopImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
+    stopButton.image = stopImage;
+    self.stopButton.mas_key = @"stopButton";
+    self.stopButton.toolTip = @"Stop";
+
+    [stopButton setClickBlock:^(EZButton *_Nonnull button) {
+        mm_strongify(self);
+        [self.result.queryModel stopServiceRequest:self.result.serviceType];
+        button.hidden = YES;
+    }];
 
 
     CGSize iconSize = CGSizeMake(16, 16);
@@ -168,6 +187,12 @@
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
+    
+    [self.stopButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.arrowButton.mas_left).offset(-5);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(CGSizeMake(22, 22));
+    }];
 }
 
 #pragma mark - Setter
@@ -190,6 +215,11 @@
     self.warningImageView.hidden = hideWarningImage;
 
     [self updateArrowButton];
+    
+    // Currently, only support stop OpenAI service.
+    BOOL isFinished = result.hasTranslatedResult && !result.isFinished;
+    BOOL isOpenAIFinished = isFinished && [serviceType isEqualToString:EZServiceTypeOpenAI];
+    self.stopButton.hidden = !isOpenAIFinished;
 
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;

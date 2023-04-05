@@ -463,6 +463,8 @@ static NSDictionary *const kQuotesDict = @{
             
             NSError *error;
             NSString *content = [self parseContentFromStreamData:data error:&error isFinished:&isFinished];
+            self.result.isFinished = isFinished;
+            
             if (error && error.code != NSURLErrorCancelled) {
                 completion(nil, error);
                 return;
