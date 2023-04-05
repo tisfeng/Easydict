@@ -182,12 +182,13 @@ static NSString * PreferencesKeyForViewBounds (NSString *identifier)
     if (controllerIndex != NSNotFound)
     {
         id <MASPreferencesViewController> controller = [_viewControllers objectAtIndex:controllerIndex];
-        if ([controller respondsToSelector:@selector(toolbarItemImage)])
+        if ([controller respondsToSelector:@selector(toolbarItemImage)]) {
             toolbarItem.image = controller.toolbarItemImage;
-        toolbarItem.label = controller.toolbarItemLabel;
-        toolbarItem.target = self;
-        toolbarItem.action = @selector(toolbarItemDidClick:);
-        toolbarItem.maxSize = CGSizeMake(22, 22);
+            toolbarItem.label = controller.toolbarItemLabel;
+            toolbarItem.target = self;
+            toolbarItem.action = @selector(toolbarItemDidClick:);
+            toolbarItem.maxSize = CGSizeMake(22, 22);
+        }
     }
     return toolbarItem;
 }
