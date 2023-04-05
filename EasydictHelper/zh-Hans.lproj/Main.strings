@@ -2,8 +2,8 @@
 /* Class = "NSMenuItem"; title = "Customize Toolbar…"; ObjectID = "1UK-8n-QPP"; */
 "1UK-8n-QPP.title" = "Customize Toolbar…";
 
-/* Class = "NSMenuItem"; title = "BobHelper"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "BobHelper";
+/* Class = "NSMenuItem"; title = "EasydictHelper"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "EasydictHelper";
 
 /* Class = "NSMenu"; title = "Find"; ObjectID = "1b7-l0-nxx"; */
 "1b7-l0-nxx.title" = "Find";
@@ -83,8 +83,8 @@
 /* Class = "NSMenu"; title = "Help"; ObjectID = "F2S-fz-NVQ"; */
 "F2S-fz-NVQ.title" = "Help";
 
-/* Class = "NSMenuItem"; title = "BobHelper Help"; ObjectID = "FKE-Sm-Kum"; */
-"FKE-Sm-Kum.title" = "BobHelper Help";
+/* Class = "NSMenuItem"; title = "EasydictHelper Help"; ObjectID = "FKE-Sm-Kum"; */
+"FKE-Sm-Kum.title" = "EasydictHelper Help";
 
 /* Class = "NSMenuItem"; title = "Text"; ObjectID = "Fal-I4-PZk"; */
 "Fal-I4-PZk.title" = "Text";
@@ -353,8 +353,8 @@
 /* Class = "NSMenu"; title = "Kern"; ObjectID = "tlD-Oa-oAM"; */
 "tlD-Oa-oAM.title" = "Kern";
 
-/* Class = "NSMenu"; title = "BobHelper"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "BobHelper";
+/* Class = "NSMenu"; title = "EasydictHelper"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "EasydictHelper";
 
 /* Class = "NSMenuItem"; title = "Cut"; ObjectID = "uRl-iY-unG"; */
 "uRl-iY-unG.title" = "Cut";
