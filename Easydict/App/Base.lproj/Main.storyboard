@@ -86,39 +86,6 @@
                                                 </items>
                                             </menu>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="Mxn-RZ-h6e"/>
-                                        <menuItem title="Close" keyEquivalent="w" id="oih-X9-i52">
-                                            <connections>
-                                                <action selector="performClose:" target="Ady-hI-5gd" id="tPt-RL-mrx"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Save…" keyEquivalent="s" id="BKM-kK-dpX">
-                                            <connections>
-                                                <action selector="saveDocument:" target="Ady-hI-5gd" id="SMU-sG-S8x"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Save As…" keyEquivalent="S" id="QmY-CD-ljF">
-                                            <connections>
-                                                <action selector="saveDocumentAs:" target="Ady-hI-5gd" id="FIc-gY-3sS"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Revert to Saved" keyEquivalent="r" id="Vle-hf-Qhd">
-                                            <connections>
-                                                <action selector="revertDocumentToSaved:" target="Ady-hI-5gd" id="vUj-fv-8rL"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="MIJ-mg-ptG"/>
-                                        <menuItem title="Page Setup…" keyEquivalent="P" id="dur-6k-3ag">
-                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="runPageLayout:" target="Ady-hI-5gd" id="hhv-sq-Prx"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Print…" keyEquivalent="p" id="oTP-pS-zRF">
-                                            <connections>
-                                                <action selector="print:" target="Ady-hI-5gd" id="RvX-ck-Q40"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -348,6 +315,11 @@
                                         <menuItem title="Clear" keyEquivalent="k" id="rr4-Iy-d6B" userLabel="Clear">
                                             <connections>
                                                 <action selector="clearInputAction:" target="qM9-fT-Fym" id="sfK-KC-THW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Pin" keyEquivalent="p" id="g1Y-HC-Hcm" userLabel="Pin">
+                                            <connections>
+                                                <action selector="pinAction:" target="qM9-fT-Fym" id="HXh-3D-1iH"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Retry" keyEquivalent="r" id="pBe-oc-b5O">

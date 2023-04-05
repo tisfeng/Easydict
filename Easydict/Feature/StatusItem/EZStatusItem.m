@@ -141,6 +141,13 @@ static EZStatusItem *_instance;
     queryViewController.queryText = @"";
 }
 
+- (IBAction)pinAction:(NSMenuItem *)sender {
+    NSLog(@"pin");
+    
+    EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
+    queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
+}
+
 - (IBAction)translateRetryAction:(NSMenuItem *)sender {
     NSLog(@"Retry");
     [EZWindowManager.shared rerty];
