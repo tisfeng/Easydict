@@ -1,8 +1,8 @@
 /* mz_os.c -- System functions
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
    Copyright (C) 1998-2010 Gilles Vollant
      https://www.winimage.com/zLibDll/minizip.html
@@ -58,7 +58,7 @@ int32_t mz_path_append_slash(char *path, int32_t max_path, char slash)
 }
 
 int32_t mz_path_remove_slash(char *path)
-{   
+{
     int32_t path_len = (int32_t)strlen(path);
     while (path_len > 0)
     {
@@ -148,6 +148,7 @@ int32_t mz_path_resolve(const char *path, char *output, int32_t max_output)
     const char *check = output;
     char *target = output;
 
+
     if (max_output <= 0)
         return MZ_PARAM_ERROR;
 
@@ -157,7 +158,7 @@ int32_t mz_path_resolve(const char *path, char *output, int32_t max_output)
         if ((*check == '\\') || (*check == '/'))
             check += 1;
 
-        if ((source == path) || (check != source))
+        if ((source == path) || (target == output) || (check != source))
         {
             /* Skip double paths */
             if ((*check == '\\') || (*check == '/'))
@@ -169,8 +170,8 @@ int32_t mz_path_resolve(const char *path, char *output, int32_t max_output)
             {
                 check += 1;
 
-                /* Remove current directory . if at end of string */
-                if ((*check == 0) && (source != path))
+                /* Remove . if at end of string and not at the beginning */
+                if ((*check == 0) && (source != path && target != output))
                 {
                     /* Copy last slash */
                     *target = *source;
@@ -179,20 +180,17 @@ int32_t mz_path_resolve(const char *path, char *output, int32_t max_output)
                     source += (check - source);
                     continue;
                 }
-
-                /* Remove current directory . if not at end of string */
-                if ((*check == 0) || (*check == '\\' || *check == '/'))
+                /* Remove . if not at end of string */
+                else if ((*check == '\\') || (*check == '/'))
                 {
-                    /* Only proceed if .\ is not entire string */
-                    if (check[1] != 0 || (path != source))
-                    {
-                        source += (check - source);
-                        continue;
-                    }
+                    source += (check - source);
+                    /* Skip slash if at beginning of string */
+                    if (target == output && *source != 0)
+                        source += 1;
+                    continue;
                 }
-
                 /* Go to parent directory .. */
-                if ((*check != 0) || (*check == '.'))
+                else if (*check == '.')
                 {
                     check += 1;
                     if ((*check == 0) || (*check == '\\' || *check == '/'))

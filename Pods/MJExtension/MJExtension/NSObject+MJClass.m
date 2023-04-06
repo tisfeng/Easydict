@@ -140,15 +140,15 @@ static const char MJIgnoredCodingPropertyNamesKey = '\0';
     
     // 清空数据
     MJExtensionSemaphoreCreate
-    MJExtensionSemaphoreWait
+    MJ_LOCK(mje_signalSemaphore);
     [[self mj_classDictForKey:key] removeAllObjects];
-    MJExtensionSemaphoreSignal
+    MJ_UNLOCK(mje_signalSemaphore);
 }
 
 + (NSMutableArray *)mj_totalObjectsWithSelector:(SEL)selector key:(const char *)key
 {
     MJExtensionSemaphoreCreate
-    MJExtensionSemaphoreWait
+    MJ_LOCK(mje_signalSemaphore);
     NSMutableArray *array = [self mj_classDictForKey:key][NSStringFromClass(self)];
     if (array == nil) {
         // 创建、存储
@@ -169,7 +169,7 @@ static const char MJIgnoredCodingPropertyNamesKey = '\0';
             [array addObjectsFromArray:subArray];
         }];
     }
-    MJExtensionSemaphoreSignal
+    MJ_UNLOCK(mje_signalSemaphore);
     return array;
 }
 @end

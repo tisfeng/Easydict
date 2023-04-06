@@ -1,8 +1,8 @@
 /* mz_strm_zlib.h -- Stream for zlib inflate/deflate
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
       https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.

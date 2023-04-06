@@ -134,11 +134,16 @@ final class HeartbeatStorage: HeartbeatStorageProtocol {
 
   /// Loads and decodes the stored heartbeats bundle from a given storage object.
   /// - Parameter storage: The storage container to read from.
-  /// - Returns: The decoded `HeartbeatsBundle` that is loaded from storage.
-  private func load(from storage: Storage) throws -> HeartbeatsBundle {
+  /// - Returns: The decoded `HeartbeatsBundle` loaded from storage; `nil` if storage is empty.
+  /// - Throws: An error if storage could not be read or the data could not be decoded.
+  private func load(from storage: Storage) throws -> HeartbeatsBundle? {
     let data = try storage.read()
-    let heartbeatData = try data.decoded(using: decoder) as HeartbeatsBundle
-    return heartbeatData
+    if data.isEmpty {
+      return nil
+    } else {
+      let heartbeatData = try data.decoded(using: decoder) as HeartbeatsBundle
+      return heartbeatData
+    }
   }
 
   /// Saves the encoding of the given value to the given storage container.

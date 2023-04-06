@@ -13,7 +13,7 @@
 #endif
 
 NS_SWIFT_NAME(LogWithNameAndProperties)
-@interface MSACLogWithNameAndProperties : MSACLogWithProperties
+@interface MSACLogWithNameAndProperties : MSACLogWithProperties <NSSecureCoding>
 
 /**
  * Name of the event.

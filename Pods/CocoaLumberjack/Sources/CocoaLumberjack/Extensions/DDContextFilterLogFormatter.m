@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,19 +13,20 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <CocoaLumberjack/DDContextFilterLogFormatter.h>
-#import <pthread/pthread.h>
-
 #if !__has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
+#import <pthread/pthread.h>
+
+#import <CocoaLumberjack/DDContextFilterLogFormatter.h>
+
 @interface DDLoggingContextSet : NSObject
+
+@property (readonly, copy, nonnull) NSArray *currentSet;
 
 - (void)addToSet:(NSInteger)loggingContext;
 - (void)removeFromSet:(NSInteger)loggingContext;
-
-@property (readonly, copy) NSArray *currentSet;
 
 - (BOOL)isInSet:(NSInteger)loggingContext;
 
@@ -38,7 +39,6 @@
 @interface DDContextWhitelistFilterLogFormatter () {
     DDLoggingContextSet *_contextSet;
 }
-
 @end
 
 

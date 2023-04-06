@@ -13,7 +13,7 @@
  * Error attachment log.
  */
 NS_SWIFT_NAME(ErrorAttachmentLog)
-@interface MSACErrorAttachmentLog : MSACAbstractLog
+@interface MSACErrorAttachmentLog : MSACAbstractLog <NSSecureCoding>
 
 /**
  * Content type (text/plain for text).

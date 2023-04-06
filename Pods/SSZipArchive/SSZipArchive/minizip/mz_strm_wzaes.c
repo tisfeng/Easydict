@@ -1,8 +1,8 @@
 /* mz_strm_wzaes.c -- Stream for WinZip AES encryption
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
       https://github.com/nmoinvaz/minizip
    Copyright (C) 1998-2010 Brian Gladman, Worcester, UK
 
@@ -61,8 +61,6 @@ typedef struct mz_stream_wzaes_s {
     void            *hmac;
     uint8_t         nonce[MZ_AES_BLOCK_SIZE];
 } mz_stream_wzaes;
-
-/***************************************************************************/
 
 /***************************************************************************/
 
@@ -177,7 +175,7 @@ int32_t mz_stream_wzaes_is_open(void *stream)
     return MZ_OK;
 }
 
-static int32_t mz_stream_wzaes_encrypt_data(void *stream, uint8_t *buf, int32_t size)
+static int32_t mz_stream_wzaes_ctr_encrypt(void *stream, uint8_t *buf, int32_t size)
 {
     mz_stream_wzaes *wzaes = (mz_stream_wzaes *)stream;
     uint32_t pos = wzaes->crypt_pos;
@@ -223,7 +221,7 @@ int32_t mz_stream_wzaes_read(void *stream, void *buf, int32_t size)
     if (read > 0)
     {
         mz_crypt_hmac_update(wzaes->hmac, (uint8_t *)buf, read);
-        mz_stream_wzaes_encrypt_data(stream, (uint8_t *)buf, read);
+        mz_stream_wzaes_ctr_encrypt(stream, (uint8_t *)buf, read);
 
         wzaes->total_in += read;
     }
@@ -250,7 +248,7 @@ int32_t mz_stream_wzaes_write(void *stream, const void *buf, int32_t size)
         memcpy(wzaes->buffer, buf_ptr, bytes_to_write);
         buf_ptr += bytes_to_write;
 
-        mz_stream_wzaes_encrypt_data(stream, (uint8_t *)wzaes->buffer, bytes_to_write);
+        mz_stream_wzaes_ctr_encrypt(stream, (uint8_t *)wzaes->buffer, bytes_to_write);
         mz_crypt_hmac_update(wzaes->hmac, wzaes->buffer, bytes_to_write);
 
         written = mz_stream_write(wzaes->stream.base, wzaes->buffer, bytes_to_write);

@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,17 +13,20 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <CocoaLumberjack/DDAbstractDatabaseLogger.h>
-
-
 #if !__has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
+#import <CocoaLumberjack/DDAbstractDatabaseLogger.h>
+
 @interface DDAbstractDatabaseLogger ()
 
 - (void)destroySaveTimer;
+- (void)updateAndResumeSaveTimer;
+- (void)createSuspendedSaveTimer;
 - (void)destroyDeleteTimer;
+- (void)updateDeleteTimer;
+- (void)createAndStartDeleteTimer;
 
 @end
 
@@ -88,9 +91,9 @@
     _unsavedCount = 0;
     _unsavedTime = 0;
 
-    if (_saveTimer && !_saveTimerSuspended) {
+    if (_saveTimer != NULL && _saveTimerSuspended == 0) {
         dispatch_suspend(_saveTimer);
-        _saveTimerSuspended = YES;
+        _saveTimerSuspended = 1;
     }
 }
 
@@ -107,32 +110,50 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)destroySaveTimer {
-    if (_saveTimer) {
+    if (_saveTimer != NULL) {
         dispatch_source_cancel(_saveTimer);
 
-        if (_saveTimerSuspended) {
-            // Must resume a timer before releasing it (or it will crash)
-            dispatch_resume(_saveTimer);
-            _saveTimerSuspended = NO;
+        // Must activate a timer before releasing it (or it will crash)
+        if (@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)) {
+            if (_saveTimerSuspended < 0) {
+                dispatch_activate(_saveTimer);
+            } else if (_saveTimerSuspended > 0) {
+                dispatch_resume(_saveTimer);
+            }
+        } else {
+            if (_saveTimerSuspended != 0) {
+                dispatch_resume(_saveTimer);
+            }
         }
 
         #if !OS_OBJECT_USE_OBJC
         dispatch_release(_saveTimer);
         #endif
         _saveTimer = NULL;
+        _saveTimerSuspended = 0;
     }
 }
 
 - (void)updateAndResumeSaveTimer {
-    if ((_saveTimer != NULL) && (_saveInterval > 0.0) && (_unsavedTime > 0.0)) {
+    if ((_saveTimer != NULL) && (_saveInterval > 0.0) && (_unsavedTime > 0)) {
         uint64_t interval = (uint64_t)(_saveInterval * (NSTimeInterval) NSEC_PER_SEC);
         dispatch_time_t startTime = dispatch_time(_unsavedTime, (int64_t)interval);
 
         dispatch_source_set_timer(_saveTimer, startTime, interval, 1ull * NSEC_PER_SEC);
 
-        if (_saveTimerSuspended) {
-            dispatch_resume(_saveTimer);
-            _saveTimerSuspended = NO;
+        if (@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)) {
+            if (_saveTimerSuspended < 0) {
+                dispatch_activate(_saveTimer);
+                _saveTimerSuspended = 0;
+            } else if (_saveTimerSuspended > 0) {
+                dispatch_resume(_saveTimer);
+                _saveTimerSuspended = 0;
+            }
+        } else {
+            if (_saveTimerSuspended != 0) {
+                dispatch_resume(_saveTimer);
+                _saveTimerSuspended = 0;
+            }
         }
     }
 }
@@ -145,12 +166,12 @@
                                                             [self performSaveAndSuspendSaveTimer];
                                                         } });
 
-        _saveTimerSuspended = YES;
+        _saveTimerSuspended = -1;
     }
 }
 
 - (void)destroyDeleteTimer {
-    if (_deleteTimer) {
+    if (_deleteTimer != NULL) {
         dispatch_source_cancel(_deleteTimer);
         #if !OS_OBJECT_USE_OBJC
         dispatch_release(_deleteTimer);
@@ -185,9 +206,12 @@
 
             [self updateDeleteTimer];
 
-            if (_deleteTimer != NULL) {
+            // We are sure that -updateDeleteTimer did call dispatch_source_set_timer()
+            // since it has the same guards on _deleteInterval and _maxAge
+            if (@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *))
+                dispatch_activate(_deleteTimer);
+            else
                 dispatch_resume(_deleteTimer);
-            }
         }
     }
 }

@@ -1,5 +1,5 @@
 /* mz_compat.c -- Backwards compatible interface for older versions
-   Version 2.8.6, April 8, 2019
+   Version 2.8.9, July 4, 2019
    part of the MiniZip project
 
    Copyright (C) 2010-2019 Nathan Moinvaziri
@@ -48,7 +48,7 @@ static int32_t zipConvertAppendToStreamMode(int append)
         mode |= MZ_OPEN_MODE_CREATE | MZ_OPEN_MODE_APPEND;
         break;
     case APPEND_STATUS_ADDINZIP:
-        mode |= MZ_OPEN_MODE_READ;
+        mode |= MZ_OPEN_MODE_READ | MZ_OPEN_MODE_APPEND;
         break;
     }
     return mode;
@@ -750,14 +750,14 @@ int unzGetFilePos(unzFile file, unz_file_pos *file_pos)
 {
     mz_compat *compat = (mz_compat *)file;
     int32_t offset = 0;
-    
+
     if (compat == NULL || file_pos == NULL)
         return UNZ_PARAMERROR;
-    
+
     offset = unzGetOffset(file);
     if (offset < 0)
         return offset;
-    
+
     file_pos->pos_in_zip_directory = (uint32_t)offset;
     file_pos->num_of_file = (uint32_t)compat->entry_index;
     return MZ_OK;
@@ -781,14 +781,14 @@ int unzGetFilePos64(unzFile file, unz64_file_pos *file_pos)
 {
     mz_compat *compat = (mz_compat *)file;
     int64_t offset = 0;
-    
+
     if (compat == NULL || file_pos == NULL)
         return UNZ_PARAMERROR;
-    
+
     offset = unzGetOffset64(file);
     if (offset < 0)
         return (int)offset;
-    
+
     file_pos->pos_in_zip_directory = offset;
     file_pos->num_of_file = compat->entry_index;
     return UNZ_OK;
@@ -843,11 +843,11 @@ int unzGetLocalExtrafield(unzFile file, void *buf, unsigned int len)
 
     if (compat == NULL || buf == NULL || len >= INT32_MAX)
         return UNZ_PARAMERROR;
-    
+
     err = mz_zip_entry_get_local_info(compat->handle, &file_info);
     if (err != MZ_OK)
         return err;
-    
+
     bytes_to_copy = (int32_t)len;
     if (bytes_to_copy > file_info->extrafield_size)
         bytes_to_copy = file_info->extrafield_size;

@@ -20,7 +20,7 @@
 #import "MSACSerializableObject.h"
 #endif
 
-@interface MSACWrapperExceptionModel : MSACExceptionModel
+@interface MSACWrapperExceptionModel : MSACExceptionModel <NSSecureCoding>
 
 /*
  * Inner exceptions of this exception [optional].

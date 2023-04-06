@@ -86,7 +86,7 @@ static NSString *const kFIRAIdentitySandboxReceiptFileName = @"sandboxReceipt";
 /// AppSync or similar to disable codesignature checks.
 ///
 /// More information at <a href="http://landonf.org/2009/02/index.html">Landon Fuller's blog</a>
-static BOOL IsAppEncrypted() {
+static BOOL IsAppEncrypted(void) {
   const struct mach_header *executableHeader = NULL;
   for (uint32_t i = 0; i < _dyld_image_count(); i++) {
     const struct mach_header *header = _dyld_get_image_header(i);
@@ -130,7 +130,7 @@ static BOOL IsAppEncrypted() {
   return NO;
 }
 
-static BOOL HasSCInfoFolder() {
+static BOOL HasSCInfoFolder(void) {
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
   NSString *bundlePath = [NSBundle mainBundle].bundlePath;
   NSString *scInfoPath = [bundlePath stringByAppendingPathComponent:@"SC_Info"];
@@ -140,7 +140,7 @@ static BOOL HasSCInfoFolder() {
 #endif
 }
 
-static BOOL HasEmbeddedMobileProvision() {
+static BOOL HasEmbeddedMobileProvision(void) {
 #if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH
   return [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"].length > 0;
 #elif TARGET_OS_OSX

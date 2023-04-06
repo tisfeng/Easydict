@@ -95,6 +95,20 @@ static NSString *const kGULNetworkLogTag = @"Google/Utilities/Network";
                      queue:(dispatch_queue_t)queue
     usingBackgroundSession:(BOOL)usingBackgroundSession
          completionHandler:(GULNetworkCompletionHandler)handler {
+  return [self postURL:url
+                     headers:nil
+                     payload:payload
+                       queue:queue
+      usingBackgroundSession:usingBackgroundSession
+           completionHandler:handler];
+}
+
+- (NSString *)postURL:(NSURL *)url
+                   headers:(NSDictionary *)headers
+                   payload:(NSData *)payload
+                     queue:(dispatch_queue_t)queue
+    usingBackgroundSession:(BOOL)usingBackgroundSession
+         completionHandler:(GULNetworkCompletionHandler)handler {
   if (!url.absoluteString.length) {
     [self handleErrorWithCode:GULErrorCodeNetworkInvalidURL queue:queue withHandler:handler];
     return nil;
@@ -113,6 +127,7 @@ static NSString *const kGULNetworkLogTag = @"Google/Utilities/Network";
                   withHandler:handler];
     return nil;
   }
+  request.allHTTPHeaderFields = headers;
 
   NSError *compressError = nil;
   NSData *compressedData = [NSData gul_dataByGzippingData:payload error:&compressError];

@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -16,6 +16,8 @@
 #import <CocoaLumberjack/DDASLLogger.h>
 
 @protocol DDLogger;
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  This class provides the ability to capture the ASL (Apple System Logs)
@@ -40,3 +42,5 @@ API_DEPRECATED("Use DDOSLogger instead", macosx(10.4,10.12), ios(2.0,10.0), watc
 @property (class) DDLogLevel captureLevel;
 
 @end
+
+NS_ASSUME_NONNULL_END

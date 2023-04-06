@@ -26,15 +26,15 @@
 		</data>
 		<key>Headers/MSACEventLog.h</key>
 		<data>
-		oYQXdiN+3K5CCvIMbbOo00U8TZc=
+		2+VQaahflQ+q9Bc9O2Ss2H3K/R0=
 		</data>
 		<key>Headers/MSACEventProperties.h</key>
 		<data>
-		vZGg4s6Q/1QSzsGWD84S+mFnfBE=
+		HuPuJH9Fxk2i/tgoqH5pJOHwkEM=
 		</data>
 		<key>Headers/MSACLogWithNameAndProperties.h</key>
 		<data>
-		6S/dPB/fT2ggNWRoYwZ7wmcOBSE=
+		V9ckJyn/fLxL+Y9UjZeiAltxqkA=
 		</data>
 		<key>Headers/MSACPropertyConfigurator.h</key>
 		<data>
@@ -42,7 +42,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		t/bD2tw7yUmTJCYY7Z8zIlCBr+M=
+		n7pd7VGwAeoEJLl4wY6uNUCLiqw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -110,33 +110,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			oYQXdiN+3K5CCvIMbbOo00U8TZc=
+			2+VQaahflQ+q9Bc9O2Ss2H3K/R0=
 			</data>
 			<key>hash2</key>
 			<data>
-			eTIJL3LVp+gDX2sWuYnj8nqlfyp9+bFNZNKeMN9M6Q0=
+			O0mYpmyIBfdkuWzkajHAe1W0T67V8+cI2vNnSQwieYk=
 			</data>
 		</dict>
 		<key>Headers/MSACEventProperties.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vZGg4s6Q/1QSzsGWD84S+mFnfBE=
+			HuPuJH9Fxk2i/tgoqH5pJOHwkEM=
 			</data>
 			<key>hash2</key>
 			<data>
-			Y4BEaISVry4wv+Z7jjbM6KP8fiyiHk+aB9YMzAvfUV0=
+			9tMXedNUoB+Pn7/KugCgElXick6WiYWrREaZjmXQnLQ=
 			</data>
 		</dict>
 		<key>Headers/MSACLogWithNameAndProperties.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			6S/dPB/fT2ggNWRoYwZ7wmcOBSE=
+			V9ckJyn/fLxL+Y9UjZeiAltxqkA=
 			</data>
 			<key>hash2</key>
 			<data>
-			DiLnJ6tiJacyKthLgB4INSWg7l0ZArp2pNmSbFfsfsk=
+			6/mR4rUZjl7HKsVEyOOTCGmHSZ7+GLMzvCWphd3TZvM=
 			</data>
 		</dict>
 		<key>Headers/MSACPropertyConfigurator.h</key>
