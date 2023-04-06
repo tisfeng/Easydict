@@ -9,7 +9,7 @@
 #import "EZOpenAIService.h"
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
-#import <NaturalLanguage/NaturalLanguage.h>
+#import "EZTextWordUtils.h"
 
 static NSString *const kDefinitionDelimiter = @"{---Definition---}:";
 static NSString *const kEtymologyDelimiter = @"{---Etymology---}:";
@@ -81,7 +81,7 @@ static NSDictionary *const kQuotesDict = @{
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
     
-    if ([self shouldQueryDictionary:text language:from]) {
+    if ([EZTextWordUtils shouldQueryDictionary:text language:from]) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 self.result.showBigWord = NO;
@@ -184,12 +184,12 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isEnglishWord = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
-        isEnglishWord = [self isEnglishWord:word];
+        isEnglishWord = [EZTextWordUtils isEnglishWord:word];
     }
     
     BOOL isChineseWord = NO;
     if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
-        isChineseWord = [self isChineseWord:word]; // 倾国倾城
+        isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
     }
     
     BOOL isWord = isEnglishWord || isChineseWord;
@@ -476,8 +476,8 @@ static NSDictionary *const kQuotesDict = @{
             
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
-                if (isFirst && ![self hasPrefixQuoteOfQueryText]) {
-                    appendContent = [self tryToRemovePrefixQuote:content];
+                if (isFirst && ![EZTextWordUtils hasPrefixQuote:self.queryModel.queryText]) {
+                    appendContent = [EZTextWordUtils tryToRemovePrefixQuote:content];
                 }
                 
                 if (!isFinished) {
@@ -488,16 +488,16 @@ static NSDictionary *const kQuotesDict = @{
                             appendSuffixQuote = nil;
                         }
                         
-                        appendSuffixQuote = [self hasSuffixQuote:content];
+                        appendSuffixQuote = [EZTextWordUtils suffixQuoteOfText:content];
                         // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
                         if (appendSuffixQuote) {
-                            appendContent = [self tryToRemoveSuffixQuote:content];
+                            appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:content];
                         }
                     }
                 } else {
                     // [DONE], end of string.
-                    if (![self hasSuffixQuoteOfQueryText]) {
-                        appendContent = [self tryToRemoveSuffixQuote:content];
+                    if (![EZTextWordUtils hasSuffixQuote:self.queryModel.queryText]) {
+                        appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:content];
                     } else if (appendSuffixQuote) {
                         appendContent = [content stringByAppendingString:appendSuffixQuote];
                     }
@@ -540,8 +540,8 @@ static NSDictionary *const kQuotesDict = @{
             
             // Count quote may cost much time, so only count when query text is short.
             if (shouldHandleQuote && queryText.length < 100) {
-                NSInteger queryTextQuoteCount = [self countQuoteNumberInText:queryText];
-                NSInteger translatedTextQuoteCount = [self countQuoteNumberInText:self.result.translatedText];
+                NSInteger queryTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:queryText];
+                NSInteger translatedTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:self.result.translatedText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
                     completion(content, nil);
                 }
@@ -949,253 +949,8 @@ static NSDictionary *const kQuotesDict = @{
      "{------ "Hello world" And what is your opinion on President Xi's re-election?
      Finally, output the antonym of the following phrase: "go up" ------}"
      */
-    NSString *result = [self removeStartAndEnd:text with:kTranslationStartDelimiter end:kTranslationEndDelimiter];
+    NSString *result = [EZTextWordUtils removeStartAndEnd:text with:kTranslationStartDelimiter end:kTranslationEndDelimiter];
     return [result trim];
-}
-
-
-#pragma mark - Handle extra quotes.
-
-/// Check if self.queryModel.queryText has quote.
-- (BOOL)isQueryTextHasQuote {
-    // iterate all quotes.
-    NSArray *quotes = [kQuotesDict allKeys];
-    for (NSString *quote in quotes) {
-        if ([self isStartAndEnd:self.queryModel.queryText with:quote end:kQuotesDict[quote]]) {
-            return YES;
-        }
-    }
-    
-    return NO;
-}
-
-/// Check if self.queryModel.queryText has prefix quote.
-- (BOOL)hasPrefixQuoteOfQueryText {
-    if ([self hasPrefixQuote:self.queryModel.queryText]) {
-        return YES;
-    }
-    return NO;
-}
-
-/// Check if self.queryModel.queryText has suffix quote.
-- (BOOL)hasSuffixQuoteOfQueryText {
-    if ([self hasSuffixQuote:self.queryModel.queryText]) {
-        return YES;
-    }
-    return NO;
-}
-
-/// Remove Prefix quotes
-- (NSString *)tryToRemovePrefixQuote:(NSString *)text {
-    if ([self hasPrefixQuote:text]) {
-        return [text substringFromIndex:1];
-    }
-    
-    return text;
-}
-
-/// Remove Suffix quotes
-- (NSString *)tryToRemoveSuffixQuote:(NSString *)text {
-    if ([self hasSuffixQuote:text]) {
-        return [text substringToIndex:text.length - 1];
-    }
-    
-    return text;
-}
-
-/// Check if text hasPrefix quote.
-- (nullable NSString *)hasPrefixQuote:(NSString *)text {
-    NSArray *leftQuotes = kQuotesDict.allKeys; // @[ @"\"", @"“", @"‘" ];
-    for (NSString *quote in leftQuotes) {
-        if ([text hasPrefix:quote]) {
-            return quote;
-        }
-    }
-    return nil;
-}
-
-/// Check if text hasSuffix quote.
-- (nullable NSString *)hasSuffixQuote:(NSString *)text {
-    NSArray *rightQuotes = kQuotesDict.allValues; // @[ @"\"", @"”", @"’" ];
-    for (NSString *quote in rightQuotes) {
-        if ([text hasSuffix:quote]) {
-            return quote;
-        }
-    }
-    return nil;
-}
-
-/// Count quote number in text. 动人 --> "Touching" or "Moving".
-- (NSUInteger)countQuoteNumberInText:(NSString *)text {
-    NSUInteger count = 0;
-    NSArray *leftQuotes = kQuotesDict.allKeys;
-    NSArray *rightQuotes = kQuotesDict.allValues;
-    NSArray *quotes = [leftQuotes arrayByAddingObjectsFromArray:rightQuotes];
-    
-    for (NSUInteger i = 0; i < text.length; i++) {
-        NSString *character = [text substringWithRange:NSMakeRange(i, 1)];
-        if ([quotes containsObject:character]) {
-            count++;
-        }
-    }
-    
-    return count;
-}
-
-
-/// Check if text is start and end with the designated string.
-- (BOOL)isStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
-    if (text.length < 2) {
-        return NO;
-    }
-    return [text hasPrefix:start] && [text hasSuffix:end];
-}
-
-/// Remove start and end string.
-- (NSString *)removeStartAndEnd:(NSString *)text with:(NSString *)start end:(NSString *)end {
-    if ([self isStartAndEnd:text with:start end:end]) {
-        return [text substringWithRange:NSMakeRange(start.length, text.length - start.length - end.length)];
-    }
-    return text;
-}
-
-/// Remove quotes. "\""
-- (NSString *)tryToRemoveQuotes:(NSString *)text {
-    NSArray *quotes = [kQuotesDict allKeys];
-    for (NSString *quote in quotes) {
-        text = [self removeStartAndEnd:text with:quote end:kQuotesDict[quote]];
-    }
-    return text;
-}
-
-#pragma mark - Check if text is a word, or phrase
-
-/// If text is a Chinese or English word or phrase, need query dict.
-/// Only `Word` have synonyms and antonyms, only `English Word` have parts of speech, tenses and How to remember.
-- (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae {
-    if (text.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    
-    if ([EZLanguageManager isChineseLanguage:langugae]) {
-        return [self isChineseWord:text] || [self isChinesePhrase:text];
-    }
-    
-    if ([langugae isEqualToString:EZLanguageEnglish]) {
-        return [self isEnglishWord:text] || [self isEnglishPhrase:text];
-    }
-    
-    NSInteger wordCount = [self wordCount:text];
-    if (wordCount <= 2) {
-        return YES;
-    }
-    
-    return NO;
-}
-
-
-/// Check if text is a English word. Note: B612 is not a word.
-- (BOOL)isEnglishWord:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
-    if (text.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    
-    NSString *pattern = @"^[a-zA-Z]+$";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
-    return [predicate evaluateWithObject:text];
-}
-
-/// Check if text is a English phrase, like B612, 9527, Since they are detected as English, should query dict, but don't have pos.
-- (BOOL)isEnglishPhrase:(NSString *)text {
-    if (text.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    
-    NSInteger wordCount = [self wordCount:text];
-    
-    if (wordCount <= 2) {
-        return YES;
-    }
-    
-    return NO;
-}
-
-/// Use NLTokenizer to check if text is a word.
-- (BOOL)isWord:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
-    if (text.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    
-    NSInteger wordCount = [self wordCount:text];
-    if (wordCount == 1) {
-        return YES;
-    }
-    return NO;
-}
-
-/// Count word count of text.
-- (NSInteger)wordCount:(NSString *)text {
-    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
-    tokenizer.string = text;
-    __block NSInteger count = 0;
-    [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
-        count++;
-    }];
-    return count;
-}
-
-/// Use NLTagger to check if text is a word.
-- (BOOL)isWord2:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
-    if (text.length > EZEnglishWordMaxLength) {
-        return NO;
-    }
-    // NLTagSchemeLanguage
-    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ NLTagSchemeTokenType ]];
-    [tagger setString:text];
-    __block BOOL result = NO;
-    [tagger enumerateTagsInRange:NSMakeRange(0, text.length) unit:NLTokenUnitWord scheme:NLTagSchemeLexicalClass options:0 usingBlock:^(NLTag tag, NSRange tokenRange, BOOL *stop) {
-        if (tokenRange.length == text.length && [tag isEqualToString:NLTagWord]) {
-            result = YES;
-        }
-        *stop = YES;
-    }];
-    return result;
-}
-
-/// Check if text is a Chinese word, length <= 4, 倾国倾城
-- (BOOL)isChineseWord:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
-    if (text.length > 4) {
-        return NO;
-    }
-    
-    return [self isChineseText:text];
-}
-
-/// Check if text is a Chinese phrase, length <= 5, 今宵别梦寒
-- (BOOL)isChinesePhrase:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
-    if (text.length > 5) {
-        return NO;
-    }
-    
-    return [self isChineseText:text];
-}
-
-- (BOOL)isChineseText:(NSString *)text {
-    NSString *pattern = @"^[\u4e00-\u9fa5]+$";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
-    return [predicate evaluateWithObject:text];
-}
-
-- (BOOL)isChineseText2:(NSString *)text {
-    NSString *pattern = @"^[\u4e00-\u9fa5]+$";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
-    NSUInteger numberOfMatches = [regex numberOfMatchesInString:text options:0 range:NSMakeRange(0, [text length])];
-    return numberOfMatches > 0;
 }
 
 
@@ -1214,14 +969,6 @@ static NSDictionary *const kQuotesDict = @{
     return language;
 }
 
-/// Use NSSpellChecker to check word spell.
-- (BOOL)isSpelledCorrectly:(NSString *)word {
-    NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
-    NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
-    return misspelledRange.location == NSNotFound;
-}
-
-
 #pragma mark -
 
 /// Generate the prompt for the given word. ⚠️ This method can get the specified json data, but it is not suitable for stream.
@@ -1233,12 +980,12 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isEnglishWord = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
-        isEnglishWord = [self isEnglishWord:word];
+        isEnglishWord = [EZTextWordUtils isEnglishWord:word];
     }
     
     BOOL isChineseWord = NO;
     if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
-        isChineseWord = [self isChineseWord:word]; // 倾国倾城
+        isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
     }
     
     BOOL isWord = isEnglishWord || isChineseWord;
