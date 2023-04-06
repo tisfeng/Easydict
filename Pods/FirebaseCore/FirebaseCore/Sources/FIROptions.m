@@ -36,9 +36,6 @@ NSString *const kFIRIsMeasurementEnabled = @"IS_MEASUREMENT_ENABLED";
 NSString *const kFIRIsAnalyticsCollectionEnabled = @"FIREBASE_ANALYTICS_COLLECTION_ENABLED";
 NSString *const kFIRIsAnalyticsCollectionDeactivated = @"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED";
 
-NSString *const kFIRIsAnalyticsEnabled = @"IS_ANALYTICS_ENABLED";
-NSString *const kFIRIsSignInEnabled = @"IS_SIGNIN_ENABLED";
-
 // Library version ID formatted like:
 // @"5"     // Major version (one or more digits)
 // @"04"    // Minor version (exactly 2 digits)
@@ -485,14 +482,6 @@ static dispatch_once_t sDefaultOptionsDictionaryOnceToken;
     return NO;  // Analytics Collection is not deactivated when the key is not in the dictionary.
   }
   return [value boolValue];
-}
-
-- (BOOL)isAnalyticsEnabled {
-  return [self.optionsDictionary[kFIRIsAnalyticsEnabled] boolValue];
-}
-
-- (BOOL)isSignInEnabled {
-  return [self.optionsDictionary[kFIRIsSignInEnabled] boolValue];
 }
 
 @end

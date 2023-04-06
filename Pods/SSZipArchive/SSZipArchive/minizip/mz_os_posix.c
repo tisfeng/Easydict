@@ -1,8 +1,8 @@
 /* mz_os_posix.c -- System functions for posix
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.
@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if defined(__APPLE__) || defined(__unix__)
+#if defined(__APPLE__) || defined(__unix__) || defined(__riscos__)
 #  include <utime.h>
 #  include <unistd.h>
 #endif

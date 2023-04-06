@@ -28,7 +28,7 @@
   NSParameterAssert(queue);
   NSParameterAssert(work);
 
-  FBLPromise *promise = [[FBLPromise alloc] initPending];
+  FBLPromise *promise = [[self alloc] initPending];
   dispatch_group_async(FBLPromise.dispatchGroup, queue, ^{
     id value = work();
     if ([value isKindOfClass:[FBLPromise class]]) {

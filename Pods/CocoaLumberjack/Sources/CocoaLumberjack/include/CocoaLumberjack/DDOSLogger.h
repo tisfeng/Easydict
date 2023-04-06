@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -22,6 +22,8 @@
 
 #import <CocoaLumberjack/DDLog.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * This class provides a logger for the Apple os_log facility.
  **/
@@ -33,18 +35,21 @@ API_AVAILABLE(macos(10.12), ios(10.0), watchos(3.0), tvos(10.0))
  *
  *  @return the shared instance with OS_LOG_DEFAULT.
  */
-@property (class, readonly, strong) DDOSLogger *sharedInstance;
+@property (nonatomic, class, readonly, strong) DDOSLogger *sharedInstance;
 
 /**
- Designed initializer
+ Designated initializer
  
- @param subsystem Desired subsystem in log. Consider "org.example"
- @param category Desired category in log. Consider "Point of interests."
+ @param subsystem Desired subsystem in log. E.g. "org.example"
+ @param category Desired category in log. E.g. "Point of interests."
  @return New instance of DDOSLogger.
  
- @discussion This method accepts parameters of type (String, String)?
- If both parameters are nil, this method will return logger wrapper for `OS_LOG_DEFAULT`.
- If both parameters are not nil, it will return logger wrapper for `os_log_create(subsystem, category)`
+ @discussion This method requires either both or no parameter to be set. Much like `(String, String)?` in Swift.
+ If both parameters are nil, this method will return a logger configured with `OS_LOG_DEFAULT`.
+ If both parameters are non-nil, it will return a logger configured with `os_log_create(subsystem, category)`
  */
-- (instancetype)initWithSubsystem:(NSString *)subsystem category:(NSString *)category NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSubsystem:(nullable NSString *)subsystem category:(nullable NSString *)category NS_DESIGNATED_INITIALIZER;
+
 @end
+
+NS_ASSUME_NONNULL_END

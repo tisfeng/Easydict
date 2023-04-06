@@ -1,8 +1,8 @@
 /* mz_strm.h -- Stream interface
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.
@@ -46,7 +46,7 @@ typedef void    (*mz_stream_destroy_cb)        (void **stream);
 typedef int32_t (*mz_stream_get_prop_int64_cb) (void *stream, int32_t prop, int64_t *value);
 typedef int32_t (*mz_stream_set_prop_int64_cb) (void *stream, int32_t prop, int64_t value);
 
-typedef int32_t (*mz_stream_find_cb)           (void *stream, const void *find, int32_t find_size, 
+typedef int32_t (*mz_stream_find_cb)           (void *stream, const void *find, int32_t find_size,
                                                 int64_t max_seek, int64_t *position);
 
 /***************************************************************************/

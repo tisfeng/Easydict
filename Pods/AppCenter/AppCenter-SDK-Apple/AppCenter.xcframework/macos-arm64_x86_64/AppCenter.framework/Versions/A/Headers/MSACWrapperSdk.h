@@ -7,7 +7,7 @@
 #import <Foundation/Foundation.h>
 
 NS_SWIFT_NAME(WrapperSdk)
-@interface MSACWrapperSdk : NSObject
+@interface MSACWrapperSdk : NSObject <NSSecureCoding>
 
 /*
  * Version of the wrapper SDK. When the SDK is embedding another base SDK (for example Xamarin.Android wraps Android), the Xamarin specific

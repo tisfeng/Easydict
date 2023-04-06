@@ -193,7 +193,7 @@ static dispatch_queue_t gFBLPromiseDefaultDispatchQueue;
 
 - (void)addPendingObject:(id)object {
   NSParameterAssert(object);
-  
+
   @synchronized(self) {
     if (_state == FBLPromiseStatePending) {
       if (!_pendingObjects) {
@@ -254,7 +254,7 @@ static dispatch_queue_t gFBLPromiseDefaultDispatchQueue;
                chainedReject:(FBLPromiseChainedRejectBlock)chainedReject {
   NSParameterAssert(queue);
 
-  FBLPromise *promise = [[FBLPromise alloc] initPending];
+  FBLPromise *promise = [[[self class] alloc] initPending];
   __auto_type resolver = ^(id __nullable value) {
     if ([value isKindOfClass:[FBLPromise class]]) {
       [(FBLPromise *)value observeOnQueue:queue

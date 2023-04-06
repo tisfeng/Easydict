@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,8 +13,8 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
+@_exported import CocoaLumberjack
 #if SWIFT_PACKAGE
-import CocoaLumberjack
 import CocoaLumberjackSwiftSupport
 #endif
 
@@ -78,7 +78,7 @@ public func resetDefaultDebugLevel() {
 public var asyncLoggingEnabled = true
 
 @inlinable
-public func _DDLogMessage(_ message: @autoclosure () -> String,
+public func _DDLogMessage(_ message: @autoclosure () -> Any,
                           level: DDLogLevel,
                           flag: DDLogFlag,
                           context: Int,
@@ -92,7 +92,7 @@ public func _DDLogMessage(_ message: @autoclosure () -> String,
     // We cannot "mix" it with the `DDDefaultLogLevel`, because otherwise the compiler won't strip strings that are not logged.
     if level.rawValue & flag.rawValue != 0 && dynamicLogLevel.rawValue & flag.rawValue != 0 {
         // Tell the DDLogMessage constructor to copy the C strings that get passed to it.
-        let logMessage = DDLogMessage(message: message(),
+        let logMessage = DDLogMessage(message: String(describing: message()),
                                       level: level,
                                       flag: flag,
                                       context: context,
@@ -107,7 +107,7 @@ public func _DDLogMessage(_ message: @autoclosure () -> String,
 }
 
 @inlinable
-public func DDLogDebug(_ message: @autoclosure () -> String,
+public func DDLogDebug(_ message: @autoclosure () -> Any,
                        level: DDLogLevel = DDDefaultLogLevel,
                        context: Int = 0,
                        file: StaticString = #file,
@@ -120,7 +120,7 @@ public func DDLogDebug(_ message: @autoclosure () -> String,
 }
 
 @inlinable
-public func DDLogInfo(_ message: @autoclosure () -> String,
+public func DDLogInfo(_ message: @autoclosure () -> Any,
                       level: DDLogLevel = DDDefaultLogLevel,
                       context: Int = 0,
                       file: StaticString = #file,
@@ -133,7 +133,7 @@ public func DDLogInfo(_ message: @autoclosure () -> String,
 }
 
 @inlinable
-public func DDLogWarn(_ message: @autoclosure () -> String,
+public func DDLogWarn(_ message: @autoclosure () -> Any,
                       level: DDLogLevel = DDDefaultLogLevel,
                       context: Int = 0,
                       file: StaticString = #file,
@@ -146,7 +146,7 @@ public func DDLogWarn(_ message: @autoclosure () -> String,
 }
 
 @inlinable
-public func DDLogVerbose(_ message: @autoclosure () -> String,
+public func DDLogVerbose(_ message: @autoclosure () -> Any,
                          level: DDLogLevel = DDDefaultLogLevel,
                          context: Int = 0,
                          file: StaticString = #file,
@@ -159,7 +159,7 @@ public func DDLogVerbose(_ message: @autoclosure () -> String,
 }
 
 @inlinable
-public func DDLogError(_ message: @autoclosure () -> String,
+public func DDLogError(_ message: @autoclosure () -> Any,
                        level: DDLogLevel = DDDefaultLogLevel,
                        context: Int = 0,
                        file: StaticString = #file,

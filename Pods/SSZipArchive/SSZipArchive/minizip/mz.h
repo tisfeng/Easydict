@@ -1,8 +1,8 @@
 /* mz.h -- Errors codes, zip flags and magic
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.
@@ -15,7 +15,7 @@
 /***************************************************************************/
 
 /* MZ_VERSION */
-#define MZ_VERSION                      ("2.8.7")
+#define MZ_VERSION                      ("2.9.2")
 
 /* MZ_ERROR */
 #define MZ_OK                           (0)  /* zlib */
@@ -102,6 +102,7 @@
 #define MZ_HOST_SYSTEM_MSDOS            (0)
 #define MZ_HOST_SYSTEM_UNIX             (3)
 #define MZ_HOST_SYSTEM_WINDOWS_NTFS     (10)
+#define MZ_HOST_SYSTEM_RISCOS           (13)
 #define MZ_HOST_SYSTEM_OSX_DARWIN       (19)
 
 /* MZ_PKCRYPT */
@@ -230,7 +231,7 @@ typedef unsigned long long uint64_t;
 #ifndef INT16_MAX
 #  define INT16_MAX   32767
 #endif
-#ifndef INT32_MAX 
+#ifndef INT32_MAX
 #  define INT32_MAX   2147483647L
 #endif
 #ifndef INT64_MAX
@@ -239,8 +240,8 @@ typedef unsigned long long uint64_t;
 #ifndef UINT16_MAX
 #  define UINT16_MAX  65535U
 #endif
-#ifndef UINT32_MAX 
-#  define UINT32_MAX  4294967295UL 
+#ifndef UINT32_MAX
+#  define UINT32_MAX  4294967295UL
 #endif
 #ifndef UINT64_MAX
 #  define UINT64_MAX  18446744073709551615ULL

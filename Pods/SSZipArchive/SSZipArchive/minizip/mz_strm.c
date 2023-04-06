@@ -1,8 +1,8 @@
 /* mz_strm.c -- Stream interface
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.
@@ -181,7 +181,7 @@ int32_t mz_stream_copy_to_end(void *target, void *source)
     return mz_stream_copy_stream_to_end(target, NULL, source, NULL);
 }
 
-int32_t mz_stream_copy_stream(void *target, mz_stream_write_cb write_cb, void *source, 
+int32_t mz_stream_copy_stream(void *target, mz_stream_write_cb write_cb, void *source,
     mz_stream_read_cb read_cb, int32_t len)
 {
     uint8_t buf[16384];
@@ -211,7 +211,7 @@ int32_t mz_stream_copy_stream(void *target, mz_stream_write_cb write_cb, void *s
     return MZ_OK;
 }
 
-int32_t mz_stream_copy_stream_to_end(void *target, mz_stream_write_cb write_cb, void *source, 
+int32_t mz_stream_copy_stream_to_end(void *target, mz_stream_write_cb write_cb, void *source,
     mz_stream_read_cb read_cb)
 {
     uint8_t buf[16384];
@@ -284,11 +284,11 @@ int32_t mz_stream_find(void *stream, const void *find, int32_t find_size, int64_
 
     while (read_pos < max_seek)
     {
-        if (read_size > (int32_t)(max_seek - read_pos - buf_pos))
+        if (read_size > (int32_t)(max_seek - read_pos - buf_pos) && (max_seek - read_pos - buf_pos) < (int64_t)sizeof(buf))
             read_size = (int32_t)(max_seek - read_pos - buf_pos);
 
         read = mz_stream_read(stream, buf + buf_pos, read_size);
-        if ((read < 0) || (read + buf_pos < find_size))
+        if ((read <= 0) || (read + buf_pos < find_size))
             break;
 
         for (i = 0; i <= read + buf_pos - find_size; i += 1)
@@ -346,13 +346,13 @@ int32_t mz_stream_find_reverse(void *stream, const void *find, int32_t find_size
 
     while (read_pos < max_seek)
     {
-        if (read_size > (int32_t)(max_seek - read_pos))
+        if (read_size > (int32_t)(max_seek - read_pos) && (max_seek - read_pos) < (int64_t)sizeof(buf))
             read_size = (int32_t)(max_seek - read_pos);
- 
+
         if (mz_stream_seek(stream, start_pos - (read_pos + read_size), MZ_SEEK_SET) != MZ_OK)
             break;
         read = mz_stream_read(stream, buf, read_size);
-        if ((read < 0) || (read + buf_pos < find_size))
+        if ((read <= 0) || (read + buf_pos < find_size))
             break;
         if (read + buf_pos < MZ_STREAM_FIND_SIZE)
             memmove(buf + MZ_STREAM_FIND_SIZE - (read + buf_pos), buf, read);
@@ -361,7 +361,7 @@ int32_t mz_stream_find_reverse(void *stream, const void *find, int32_t find_size
         {
             if (memcmp(&buf[MZ_STREAM_FIND_SIZE - i], find, find_size) != 0)
                 continue;
-            
+
             disk_pos = mz_stream_tell(stream);
 
             /* Seek to position on disk where the data was found */

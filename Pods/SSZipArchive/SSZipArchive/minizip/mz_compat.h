@@ -158,7 +158,7 @@ typedef void *unzFile;
 typedef int (*unzFileNameComparer)(unzFile file, const char *filename1, const char *filename2);
 typedef int (*unzIteratorFunction)(unzFile file);
 typedef int (*unzIteratorFunction2)(unzFile file, unz_file_info64 *pfile_info, char *filename,
-    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment, 
+    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment,
     uint16_t comment_size);
 
 /***************************************************************************/
@@ -186,10 +186,10 @@ ZEXPORT int     unzCloseCurrentFile(unzFile file);
 
 
 ZEXPORT int     unzGetCurrentFileInfo(unzFile file, unz_file_info *pfile_info, char *filename,
-    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment, 
+    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment,
     uint16_t comment_size);
 ZEXPORT int     unzGetCurrentFileInfo64(unzFile file, unz_file_info64 * pfile_info, char *filename,
-    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment, 
+    uint16_t filename_size, void *extrafield, uint16_t extrafield_size, char *comment,
     uint16_t comment_size);
 
 ZEXPORT int     unzGoToFirstFile(unzFile file);

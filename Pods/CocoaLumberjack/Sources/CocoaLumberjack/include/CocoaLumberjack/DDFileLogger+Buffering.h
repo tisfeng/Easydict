@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,16 +13,15 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#ifndef SwiftLogLevel_h
-#define SwiftLogLevel_h
+#import <CocoaLumberjack/DDFileLogger.h>
 
-#import <CocoaLumberjack/DDLog.h>
+NS_ASSUME_NONNULL_BEGIN
 
-#ifndef DD_LOG_LEVEL
-// #warning 'DD_LOG_LEVEL' is not defined. Using 'DDLogLevelAll' as default. Consider defining it yourself.
-#define DD_LOG_LEVEL DDLogLevelAll
-#endif
+@interface DDFileLogger (Buffering)
 
-static const DDLogLevel DDDefaultLogLevel = DD_LOG_LEVEL;
+- (instancetype)wrapWithBuffer;
+- (instancetype)unwrapFromBuffer;
 
-#endif /* SwiftLogLevel_h */
+@end
+
+NS_ASSUME_NONNULL_END

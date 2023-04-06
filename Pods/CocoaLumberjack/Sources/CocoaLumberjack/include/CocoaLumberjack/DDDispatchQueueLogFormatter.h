@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -22,9 +22,12 @@
 
 #import <CocoaLumberjack/DDLog.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *  Log formatter mode
  */
+__attribute__((deprecated("DDDispatchQueueLogFormatter is always shareable")))
 typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
     /**
      *  This is the default option, means the formatter can be reused between multiple loggers and therefore is thread-safe.
@@ -38,6 +41,36 @@ typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
     DDDispatchQueueLogFormatterModeNonShareble,
 };
 
+/**
+ * Quality of Service names.
+ *
+ * Since macOS 10.10 and iOS 8.0, pthreads, dispatch queues and NSOperations express their
+ * scheduling priority by using an abstract classification called Quality of Service (QOS).
+ *
+ * This formatter will add a representation of this QOS in the log message by using those
+ * string constants.
+ * For example:
+ *
+ * `2011-10-17 20:21:45.435 AppName[19928:5207 (QOS:DF)] Your log message here`
+ *
+ * Where QOS is one of:
+ * `- UI = User Interactive`
+ * `- IN = User Initiated`
+ * `- DF = Default`
+ * `- UT = Utility`
+ * `- BG = Background`
+ * `- UN = Unspecified`
+ *
+ * Note: QOS will be absent in the log messages if running on OS versions that don't support it.
+ **/
+typedef NSString * DDQualityOfServiceName NS_STRING_ENUM;
+
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceUserInteractive NS_SWIFT_NAME(DDQualityOfServiceName.userInteractive) API_AVAILABLE(macos(10.10), ios(8.0));
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceUserInitiated NS_SWIFT_NAME(DDQualityOfServiceName.userInitiated) API_AVAILABLE(macos(10.10), ios(8.0));
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceDefault NS_SWIFT_NAME(DDQualityOfServiceName.default) API_AVAILABLE(macos(10.10), ios(8.0));
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceUtility NS_SWIFT_NAME(DDQualityOfServiceName.utility) API_AVAILABLE(macos(10.10), ios(8.0));
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceBackground NS_SWIFT_NAME(DDQualityOfServiceName.background) API_AVAILABLE(macos(10.10), ios(8.0));
+FOUNDATION_EXPORT DDQualityOfServiceName const DDQualityOfServiceUnspecified NS_SWIFT_NAME(DDQualityOfServiceName.unspecified) API_AVAILABLE(macos(10.10), ios(8.0));
 
 /**
  * This class provides a log formatter that prints the dispatch_queue label instead of the mach_thread_id.
@@ -89,7 +122,7 @@ typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
  *
  *  @param mode choose between DDDispatchQueueLogFormatterModeShareble and DDDispatchQueueLogFormatterModeNonShareble, depending if the formatter is shared between several loggers or not
  */
-- (instancetype)initWithMode:(DDDispatchQueueLogFormatterMode)mode;
+- (instancetype)initWithMode:(DDDispatchQueueLogFormatterMode)mode __attribute__((deprecated("DDDispatchQueueLogFormatter is always shareable")));
 
 /**
  * The minQueueLength restricts the minimum size of the [detail box].
@@ -140,12 +173,12 @@ typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
  *
  * To remove/undo a previous replacement, invoke this method with nil for the 'shortLabel' parameter.
  **/
-- (NSString *)replacementStringForQueueLabel:(NSString *)longLabel;
+- (nullable NSString *)replacementStringForQueueLabel:(NSString *)longLabel;
 
 /**
  *  See the `replacementStringForQueueLabel:` description
  */
-- (void)setReplacementString:(NSString *)shortLabel forQueueLabel:(NSString *)longLabel;
+- (void)setReplacementString:(nullable NSString *)shortLabel forQueueLabel:(NSString *)longLabel;
 
 @end
 
@@ -176,8 +209,9 @@ typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
 
 @end
 
-#pragma mark - DDAtomicCounter
+#pragma mark - DDAtomicCountable
 
+__attribute__((deprecated("DDAtomicCountable is useless since DDDispatchQueueLogFormatter is always shareable now")))
 @protocol DDAtomicCountable <NSObject>
 
 - (instancetype)initWithDefaultValue:(int32_t)defaultValue;
@@ -187,5 +221,8 @@ typedef NS_ENUM(NSUInteger, DDDispatchQueueLogFormatterMode){
 
 @end
 
+__attribute__((deprecated("DDAtomicCountable is deprecated")))
 @interface DDAtomicCounter: NSObject<DDAtomicCountable>
 @end
+
+NS_ASSUME_NONNULL_END

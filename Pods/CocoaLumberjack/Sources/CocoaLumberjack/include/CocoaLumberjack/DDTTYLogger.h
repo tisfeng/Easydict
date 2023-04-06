@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -28,20 +28,21 @@
     // iOS or tvOS or watchOS
     #import <UIKit/UIColor.h>
     typedef UIColor DDColor;
-    static inline DDColor* DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
+    static inline DDColor* _Nonnull DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
 #elif defined(DD_CLI) || !__has_include(<AppKit/NSColor.h>)
     // OS X CLI
     #import <CocoaLumberjack/CLIColor.h>
     typedef CLIColor DDColor;
-    static inline DDColor* DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithCalibratedRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
+    static inline DDColor* _Nonnull DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithCalibratedRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
 #else
     // OS X with AppKit
     #import <AppKit/NSColor.h>
     typedef NSColor DDColor;
-    static inline DDColor* DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithCalibratedRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
+    static inline DDColor  * _Nonnull DDMakeColor(CGFloat r, CGFloat g, CGFloat b) {return [DDColor colorWithCalibratedRed:(r/255.0f) green:(g/255.0f) blue:(b/255.0f) alpha:1.0f];}
 #endif
 #pragma clang diagnostic pop
 
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  * This class provides a logger for Terminal output or Xcode console output,
@@ -60,9 +61,9 @@
 @interface DDTTYLogger : DDAbstractLogger <DDLogger>
 
 /**
- *  Singleton method
+ *  Singleton instance. Returns `nil` if the initialization of the DDTTYLogger fails.
  */
-@property (class, readonly, strong) DDTTYLogger *sharedInstance;
+@property (nonatomic, class, readonly, strong, nullable) DDTTYLogger *sharedInstance;
 
 /* Inherited from the DDLogger protocol:
  *
@@ -104,6 +105,11 @@
 @property (nonatomic, readwrite, assign) BOOL automaticallyAppendNewlineForCustomFormatters;
 
 /**
+ Using this initializer is not supported. Please use `DDTTYLogger.sharedInstance`.
+ **/
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
  * The default color set (foregroundColor, backgroundColor) is:
  *
  * - DDLogFlagError   = (red, nil)
@@ -125,7 +131,7 @@
  *
  * This method invokes setForegroundColor:backgroundColor:forFlag:context: and applies it to `LOG_CONTEXT_ALL`.
  **/
-- (void)setForegroundColor:(DDColor *)txtColor backgroundColor:(DDColor *)bgColor forFlag:(DDLogFlag)mask;
+- (void)setForegroundColor:(nullable DDColor *)txtColor backgroundColor:(nullable DDColor *)bgColor forFlag:(DDLogFlag)mask;
 
 /**
  * Just like setForegroundColor:backgroundColor:flag, but allows you to specify a particular logging context.
@@ -138,7 +144,7 @@
  * Logging context's are explained in further detail here:
  * Documentation/CustomContext.md
  **/
-- (void)setForegroundColor:(DDColor *)txtColor backgroundColor:(DDColor *)bgColor forFlag:(DDLogFlag)mask context:(NSInteger)ctxt;
+- (void)setForegroundColor:(nullable DDColor *)txtColor backgroundColor:(nullable DDColor *)bgColor forFlag:(DDLogFlag)mask context:(NSInteger)ctxt;
 
 /**
  * Similar to the methods above, but allows you to map DDLogMessage->tag to a particular color profile.
@@ -163,7 +169,7 @@
  *
  * DDLogPurple(@"I'm a purple log message!");
  **/
-- (void)setForegroundColor:(DDColor *)txtColor backgroundColor:(DDColor *)bgColor forTag:(id <NSCopying>)tag;
+- (void)setForegroundColor:(nullable DDColor *)txtColor backgroundColor:(nullable DDColor *)bgColor forTag:(id <NSCopying>)tag;
 
 /**
  * Clearing color profiles.
@@ -176,3 +182,5 @@
 - (void)clearAllColors;
 
 @end
+
+NS_ASSUME_NONNULL_END

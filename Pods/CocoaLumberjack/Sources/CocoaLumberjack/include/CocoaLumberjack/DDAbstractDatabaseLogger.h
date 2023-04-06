@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -20,6 +20,8 @@
 
 #import <CocoaLumberjack/DDLog.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * This class provides an abstract implementation of a database logger.
  *
@@ -36,7 +38,7 @@
     NSTimeInterval _deleteInterval;
     BOOL _deleteOnEverySave;
     
-    BOOL _saveTimerSuspended;
+    NSInteger _saveTimerSuspended;
     NSUInteger _unsavedCount;
     dispatch_time_t _unsavedTime;
     dispatch_source_t _saveTimer;
@@ -121,3 +123,5 @@
 - (void)deleteOldLogEntries;
 
 @end
+
+NS_ASSUME_NONNULL_END

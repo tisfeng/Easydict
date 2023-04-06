@@ -41,7 +41,10 @@
 + (NSString *_Nullable)getNetworkMobileCountryCode {
 #ifdef TARGET_HAS_MOBILE_CONNECTIVITY
   CTTelephonyNetworkInfo *networkInfo = [GULNetworkInfo getNetworkInfo];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   CTCarrier *provider = networkInfo.subscriberCellularProvider;
+#pragma clang diagnostic push
   return provider.mobileCountryCode;
 #endif
   return nil;
@@ -50,7 +53,10 @@
 + (NSString *_Nullable)getNetworkMobileNetworkCode {
 #ifdef TARGET_HAS_MOBILE_CONNECTIVITY
   CTTelephonyNetworkInfo *networkInfo = [GULNetworkInfo getNetworkInfo];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   CTCarrier *provider = networkInfo.subscriberCellularProvider;
+#pragma clang diagnostic push
   return provider.mobileNetworkCode;
 #endif
   return nil;
@@ -120,7 +126,10 @@
 + (NSString *)getNetworkRadioType {
 #ifdef TARGET_HAS_MOBILE_CONNECTIVITY
   CTTelephonyNetworkInfo *networkInfo = [GULNetworkInfo getNetworkInfo];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   return networkInfo.currentRadioAccessTechnology;
+#pragma clang diagnostic pop
 #else
   return @"";
 #endif

@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,13 +13,6 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <CocoaLumberjack/DDASLLogCapture.h>
-
-// Disable legacy macros
-#ifndef DD_LEGACY_MACROS
-    #define DD_LEGACY_MACROS 0
-#endif
-
 #if !TARGET_OS_WATCH
 
 #include <asl.h>
@@ -27,10 +20,20 @@
 #include <notify_keys.h>
 #include <sys/time.h>
 
+#import <CocoaLumberjack/DDASLLogCapture.h>
+
+// Disable legacy macros
+#ifndef DD_LEGACY_MACROS
+    #define DD_LEGACY_MACROS 0
+#endif
+
 static BOOL _cancel = YES;
 static DDLogLevel _captureLevel = DDLogLevelVerbose;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 @implementation DDASLLogCapture
+#pragma clang diagnostic pop
 
 + (void)start {
     // Ignore subsequent calls
@@ -112,16 +115,16 @@ static DDLogLevel _captureLevel = DDLogLevelVerbose;
 
     NSDate *timeStamp = [NSDate dateWithTimeIntervalSince1970:totalSeconds];
 
-    DDLogMessage *logMessage = [[DDLogMessage alloc]initWithMessage:message
-                                                              level:_captureLevel
-                                                               flag:flag
-                                                            context:0
-                                                               file:@"DDASLLogCapture"
-                                                           function:nil
-                                                               line:0
-                                                                tag:nil
-                                                            options:0
-                                                          timestamp:timeStamp];
+    DDLogMessage *logMessage = [[DDLogMessage alloc] initWithMessage:message
+                                                               level:_captureLevel
+                                                                flag:flag
+                                                             context:0
+                                                                file:@"DDASLLogCapture"
+                                                            function:nil
+                                                                line:0
+                                                                 tag:nil
+                                                             options:0
+                                                           timestamp:timeStamp];
     
     [DDLog log:async message:logMessage];
 }

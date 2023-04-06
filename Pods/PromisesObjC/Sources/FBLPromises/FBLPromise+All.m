@@ -30,10 +30,10 @@
   NSParameterAssert(allPromises);
 
   if (allPromises.count == 0) {
-    return [[FBLPromise alloc] initWithResolution:@[]];
+    return [[self alloc] initWithResolution:@[]];
   }
   NSMutableArray *promises = [allPromises mutableCopy];
-  return [FBLPromise
+  return [self
       onQueue:queue
         async:^(FBLPromiseFulfillBlock fulfill, FBLPromiseRejectBlock reject) {
           for (NSUInteger i = 0; i < promises.count; ++i) {
@@ -45,7 +45,7 @@
               return;
             } else {
               [promises replaceObjectAtIndex:i
-                                  withObject:[[FBLPromise alloc] initWithResolution:promise]];
+                                  withObject:[[self alloc] initWithResolution:promise]];
             }
           }
           for (FBLPromise *promise in promises) {
