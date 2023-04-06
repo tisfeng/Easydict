@@ -47,19 +47,19 @@ static void FBLPromiseRetryAttempt(FBLPromise *promise, dispatch_queue_t queue, 
 
 @implementation FBLPromise (RetryAdditions)
 
-+ (FBLPromise *)retry:(FBLPromiseRetryWorkBlock)work {
++ (instancetype)retry:(FBLPromiseRetryWorkBlock)work {
   return [self onQueue:FBLPromise.defaultDispatchQueue retry:work];
 }
 
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue retry:(FBLPromiseRetryWorkBlock)work {
++ (instancetype)onQueue:(dispatch_queue_t)queue retry:(FBLPromiseRetryWorkBlock)work {
   return [self onQueue:queue attempts:FBLPromiseRetryDefaultAttemptsCount retry:work];
 }
 
-+ (FBLPromise *)attempts:(NSInteger)count retry:(FBLPromiseRetryWorkBlock)work {
++ (instancetype)attempts:(NSInteger)count retry:(FBLPromiseRetryWorkBlock)work {
   return [self onQueue:FBLPromise.defaultDispatchQueue attempts:count retry:work];
 }
 
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue
++ (instancetype)onQueue:(dispatch_queue_t)queue
                attempts:(NSInteger)count
                   retry:(FBLPromiseRetryWorkBlock)work {
   return [self onQueue:queue
@@ -69,7 +69,7 @@ static void FBLPromiseRetryAttempt(FBLPromise *promise, dispatch_queue_t queue, 
                  retry:work];
 }
 
-+ (FBLPromise *)attempts:(NSInteger)count
++ (instancetype)attempts:(NSInteger)count
                    delay:(NSTimeInterval)interval
                condition:(nullable FBLPromiseRetryPredicateBlock)predicate
                    retry:(FBLPromiseRetryWorkBlock)work {
@@ -80,7 +80,7 @@ static void FBLPromiseRetryAttempt(FBLPromise *promise, dispatch_queue_t queue, 
                  retry:work];
 }
 
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue
++ (instancetype)onQueue:(dispatch_queue_t)queue
                attempts:(NSInteger)count
                   delay:(NSTimeInterval)interval
               condition:(nullable FBLPromiseRetryPredicateBlock)predicate
@@ -88,7 +88,7 @@ static void FBLPromiseRetryAttempt(FBLPromise *promise, dispatch_queue_t queue, 
   NSParameterAssert(queue);
   NSParameterAssert(work);
 
-  FBLPromise *promise = [[FBLPromise alloc] initPending];
+  FBLPromise *promise = [[self alloc] initPending];
   FBLPromiseRetryAttempt(promise, queue, count, interval, predicate, work);
   return promise;
 }

@@ -1,8 +1,8 @@
 /* mz_crypt_apple.c -- Crypto/hash functions for Apple
-   Version 2.8.7, May 9, 2019
+   Version 2.9.2, February 12, 2020
    part of the MiniZip project
 
-   Copyright (C) 2010-2019 Nathan Moinvaziri
+   Copyright (C) 2010-2020 Nathan Moinvaziri
      https://github.com/nmoinvaz/minizip
 
    This program is distributed under the terms of the same license as zlib.
@@ -82,7 +82,7 @@ int32_t mz_crypt_sha_update(void *handle, const void *buf, int32_t size)
         sha->error = CC_SHA1_Update(&sha->ctx1, buf, size);
     else
         sha->error = CC_SHA256_Update(&sha->ctx256, buf, size);
-        
+
     if (!sha->error)
         return MZ_HASH_ERROR;
 
@@ -199,7 +199,7 @@ int32_t mz_crypt_aes_decrypt(void *handle, uint8_t *buf, int32_t size)
         return MZ_PARAM_ERROR;
 
     aes->error = CCCryptorUpdate(aes->crypt, buf, size, buf, size, &data_moved);
-    
+
     if (aes->error != kCCSuccess)
         return MZ_HASH_ERROR;
 
@@ -305,10 +305,10 @@ int32_t mz_crypt_hmac_init(void *handle, const void *key, int32_t key_length)
 {
     mz_crypt_hmac *hmac = (mz_crypt_hmac *)handle;
     CCHmacAlgorithm algorithm = 0;
-    
+
     if (hmac == NULL || key == NULL)
         return MZ_PARAM_ERROR;
-    
+
     mz_crypt_hmac_reset(handle);
 
     if (hmac->algorithm == MZ_HASH_SHA1)
@@ -406,8 +406,8 @@ void mz_crypt_hmac_delete(void **handle)
 
 /***************************************************************************/
 
-#if !defined(MZ_ZIP_NO_SIGNING)
-int32_t mz_crypt_sign(uint8_t *message, int32_t message_size, uint8_t *cert_data, int32_t cert_data_size, 
+#if defined(MZ_ZIP_SIGNING)
+int32_t mz_crypt_sign(uint8_t *message, int32_t message_size, uint8_t *cert_data, int32_t cert_data_size,
     const char *cert_pwd, uint8_t **signature, int32_t *signature_size)
 {
     CFStringRef password_ref = NULL;
@@ -525,7 +525,7 @@ int32_t mz_crypt_sign_verify(uint8_t *message, int32_t message_size, uint8_t *si
         CFRelease(trust_policy);
     if (decoder)
         CFRelease(decoder);
-    
+
     return err;
 }
 

@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,29 +13,45 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <CocoaLumberjack/DDDispatchQueueLogFormatter.h>
-#import <pthread/pthread.h>
-#import <objc/runtime.h>
-
 #if !__has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
+#import <pthread/pthread.h>
+#import <stdatomic.h>
+#import <sys/qos.h>
+
+#import <CocoaLumberjack/DDDispatchQueueLogFormatter.h>
+
+DDQualityOfServiceName const DDQualityOfServiceUserInteractive = @"UI";
+DDQualityOfServiceName const DDQualityOfServiceUserInitiated   = @"IN";
+DDQualityOfServiceName const DDQualityOfServiceDefault         = @"DF";
+DDQualityOfServiceName const DDQualityOfServiceUtility         = @"UT";
+DDQualityOfServiceName const DDQualityOfServiceBackground      = @"BG";
+DDQualityOfServiceName const DDQualityOfServiceUnspecified     = @"UN";
+
+static DDQualityOfServiceName _qos_name(NSUInteger qos) {
+    switch ((qos_class_t) qos) {
+        case QOS_CLASS_USER_INTERACTIVE: return DDQualityOfServiceUserInteractive;
+        case QOS_CLASS_USER_INITIATED:   return DDQualityOfServiceUserInitiated;
+        case QOS_CLASS_DEFAULT:          return DDQualityOfServiceDefault;
+        case QOS_CLASS_UTILITY:          return DDQualityOfServiceUtility;
+        case QOS_CLASS_BACKGROUND:       return DDQualityOfServiceBackground;
+        default:                         return DDQualityOfServiceUnspecified;
+    }
+}
+
 #pragma mark - DDDispatchQueueLogFormatter
 
 @interface DDDispatchQueueLogFormatter () {
-    DDDispatchQueueLogFormatterMode _mode;
-    NSString *_dateFormatterKey;
-    DDAtomicCounter *_atomicLoggerCounter;
-    NSDateFormatter *_threadUnsafeDateFormatter; // Use [self stringFromDate]
-    
+    NSDateFormatter *_dateFormatter;      // Use [self stringFromDate]
+
     pthread_mutex_t _mutex;
-    
+
     NSUInteger _minQueueLength;           // _prefix == Only access via atomic property
     NSUInteger _maxQueueLength;           // _prefix == Only access via atomic property
     NSMutableDictionary *_replacements;   // _prefix == Only access from within spinlock
 }
-
 @end
 
 
@@ -43,31 +59,12 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        _mode = DDDispatchQueueLogFormatterModeShareble;
+        _dateFormatter = [self createDateFormatter];
 
-        // We need to carefully pick the name for storing in thread dictionary to not
-        // use a formatter configured by subclass and avoid surprises.
-        Class cls = [self class];
-        Class superClass = class_getSuperclass(cls);
-        SEL configMethodName = @selector(configureDateFormatter:);
-        Method configMethod = class_getInstanceMethod(cls, configMethodName);
-        while (class_getInstanceMethod(superClass, configMethodName) == configMethod) {
-            cls = superClass;
-            superClass = class_getSuperclass(cls);
-        }
-        // now `cls` is the class that provides implementation for `configureDateFormatter:`
-        _dateFormatterKey = [NSString stringWithFormat:@"%s_NSDateFormatter", class_getName(cls)];
-
-        _atomicLoggerCounter = [[DDAtomicCounter alloc] initWithDefaultValue:0];
-        _threadUnsafeDateFormatter = nil;
-
-        _minQueueLength = 0;
-        _maxQueueLength = 0;
         pthread_mutex_init(&_mutex, NULL);
         _replacements = [[NSMutableDictionary alloc] init];
 
         // Set default replacements:
-
         _replacements[@"com.apple.main-thread"] = @"main";
     }
 
@@ -75,10 +72,7 @@
 }
 
 - (instancetype)initWithMode:(DDDispatchQueueLogFormatterMode)mode {
-    if ((self = [self init])) {
-        _mode = mode;
-    }
-    return self;
+    return [self init];
 }
 
 - (void)dealloc {
@@ -130,39 +124,11 @@
     [dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss:SSS"];
     [dateFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
-
-    NSString *calendarIdentifier = NSCalendarIdentifierGregorian;
-
-    [dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:calendarIdentifier]];
+    [dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian]];
 }
 
 - (NSString *)stringFromDate:(NSDate *)date {
-
-    NSDateFormatter *dateFormatter = nil;
-    if (_mode == DDDispatchQueueLogFormatterModeNonShareble) {
-        // Single-threaded mode.
-
-        dateFormatter = _threadUnsafeDateFormatter;
-        if (dateFormatter == nil) {
-            dateFormatter = [self createDateFormatter];
-            _threadUnsafeDateFormatter = dateFormatter;
-        }
-    } else {
-        // Multi-threaded mode.
-        // NSDateFormatter is NOT thread-safe.
-
-        NSString *key = _dateFormatterKey;
-
-        NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
-        dateFormatter = threadDictionary[key];
-
-        if (dateFormatter == nil) {
-            dateFormatter = [self createDateFormatter];
-            threadDictionary[key] = dateFormatter;
-        }
-    }
-
-    return [dateFormatter stringFromDate:date];
+    return [_dateFormatter stringFromDate:date];
 }
 
 - (NSString *)queueThreadLabelForLogMessage:(DDLogMessage *)logMessage {
@@ -262,69 +228,44 @@
     NSString *timestamp = [self stringFromDate:(logMessage->_timestamp)];
     NSString *queueThreadLabel = [self queueThreadLabelForLogMessage:logMessage];
 
+    if (@available(macOS 10.10, iOS 8.0, *))
+        return [NSString stringWithFormat:@"%@ [%@ (QOS:%@)] %@", timestamp, queueThreadLabel, _qos_name(logMessage->_qos), logMessage->_message];
     return [NSString stringWithFormat:@"%@ [%@] %@", timestamp, queueThreadLabel, logMessage->_message];
-}
-
-- (void)didAddToLogger:(id <DDLogger>  __attribute__((unused)))logger {
-    NSAssert([_atomicLoggerCounter increment] <= 1 || _mode == DDDispatchQueueLogFormatterModeShareble, @"Can't reuse formatter with multiple loggers in non-shareable mode.");
-}
-
-- (void)willRemoveFromLogger:(id <DDLogger> __attribute__((unused)))logger {
-    [_atomicLoggerCounter decrement];
 }
 
 @end
 
 #pragma mark - DDAtomicCounter
 
-#define DD_OSATOMIC_API_DEPRECATED (TARGET_OS_OSX && MAC_OS_X_VERSION_MIN_REQUIRED >= 101200) || (TARGET_OS_IOS && __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000) || (TARGET_OS_WATCH && __WATCH_OS_VERSION_MIN_REQUIRED >= 30000) || (TARGET_OS_TV && __TV_OS_VERSION_MIN_REQUIRED >= 100000)
-
-#if DD_OSATOMIC_API_DEPRECATED
-#import <stdatomic.h>
-#else
-#import <libkern/OSAtomic.h>
-#endif
-
 @interface DDAtomicCounter() {
-#if DD_OSATOMIC_API_DEPRECATED
-    _Atomic(int32_t) _value;
-#else
-    int32_t _value;
-#endif
+    atomic_int_fast32_t _value;
 }
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 @implementation DDAtomicCounter
+#pragma clang diagnostic pop
 
 - (instancetype)initWithDefaultValue:(int32_t)defaultValue {
     if ((self = [super init])) {
-        _value = defaultValue;
+        atomic_init(&_value, defaultValue);
     }
     return self;
 }
 
 - (int32_t)value {
-    return _value;
+    return atomic_load_explicit(&_value, memory_order_relaxed);
 }
 
-#if DD_OSATOMIC_API_DEPRECATED
 - (int32_t)increment {
-    atomic_fetch_add_explicit(&_value, 1, memory_order_relaxed);
-    return _value;
+    int32_t old = atomic_fetch_add_explicit(&_value, 1, memory_order_relaxed);
+    return (old + 1);
 }
 
 - (int32_t)decrement {
-    atomic_fetch_sub_explicit(&_value, 1, memory_order_relaxed);
-    return _value;
+    int32_t old = atomic_fetch_sub_explicit(&_value, 1, memory_order_relaxed);
+    return (old - 1);
 }
-#else
-- (int32_t)increment {
-    return OSAtomicIncrement32(&_value);
-}
-
-- (int32_t)decrement {
-    return OSAtomicDecrement32(&_value);
-}
-#endif
 
 @end

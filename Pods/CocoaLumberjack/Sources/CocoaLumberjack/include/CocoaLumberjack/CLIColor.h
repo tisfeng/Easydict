@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -18,6 +18,8 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * This class represents an NSColor replacement for CLI projects that don't link with AppKit
  **/
@@ -31,7 +33,7 @@
  *  @param blue  blue channel, between 0 and 1
  *  @param alpha alpha channel, between 0 and 1
  */
-+ (CLIColor *)colorWithCalibratedRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
++ (instancetype)colorWithCalibratedRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
 
 /**
  *  Get the RGBA components from a `CLIColor`
@@ -41,8 +43,10 @@
  *  @param blue  blue channel, between 0 and 1
  *  @param alpha alpha channel, between 0 and 1
  */
-- (void)getRed:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue alpha:(CGFloat *)alpha NS_SWIFT_NAME(get(red:green:blue:alpha:));
+- (void)getRed:(nullable CGFloat *)red green:(nullable CGFloat *)green blue:(nullable CGFloat *)blue alpha:(nullable CGFloat *)alpha NS_SWIFT_NAME(get(red:green:blue:alpha:));
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif

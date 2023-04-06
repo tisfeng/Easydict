@@ -40,7 +40,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
  @return A new pending promise that fulfills with the same value as the promise returned from `work`
          block, or rejects with the same error after all retry attempts have been exhausted.
  */
-+ (FBLPromise *)retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
++ (instancetype)retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
 
 /**
  Creates a pending promise that fulfills with the same value as the promise returned from `work`
@@ -55,7 +55,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
  @return A new pending promise that fulfills with the same value as the promise returned from `work`
          block, or rejects with the same error after all retry attempts have been exhausted.
  */
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue
++ (instancetype)onQueue:(dispatch_queue_t)queue
                   retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
 
 /**
@@ -70,7 +70,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
  @return A new pending promise that fulfills with the same value as the promise returned from `work`
          block, or rejects with the same error after all retry attempts have been exhausted.
  */
-+ (FBLPromise *)attempts:(NSInteger)count
++ (instancetype)attempts:(NSInteger)count
                    retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
 
 /**
@@ -86,7 +86,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
  @return A new pending promise that fulfills with the same value as the promise returned from `work`
          block, or rejects with the same error after all retry attempts have been exhausted.
  */
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue
++ (instancetype)onQueue:(dispatch_queue_t)queue
                attempts:(NSInteger)count
                   retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
 
@@ -109,7 +109,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
          block, or rejects with the same error after all retry attempts have been exhausted or if
          the given condition is not met.
  */
-+ (FBLPromise *)attempts:(NSInteger)count
++ (instancetype)attempts:(NSInteger)count
                    delay:(NSTimeInterval)interval
                condition:(nullable FBLPromiseRetryPredicateBlock)predicate
                    retry:(FBLPromiseRetryWorkBlock)work NS_SWIFT_UNAVAILABLE("");
@@ -134,7 +134,7 @@ typedef BOOL (^FBLPromiseRetryPredicateBlock)(NSInteger, NSError *) NS_SWIFT_UNA
          block, or rejects with the same error after all retry attempts have been exhausted or if
          the given condition is not met.
  */
-+ (FBLPromise *)onQueue:(dispatch_queue_t)queue
++ (instancetype)onQueue:(dispatch_queue_t)queue
                attempts:(NSInteger)count
                   delay:(NSTimeInterval)interval
               condition:(nullable FBLPromiseRetryPredicateBlock)predicate

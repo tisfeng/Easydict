@@ -14,7 +14,7 @@
 @class MSACMetadataExtension;
 
 NS_SWIFT_NAME(EventLog)
-@interface MSACEventLog : MSACLogWithNameAndProperties
+@interface MSACEventLog : MSACLogWithNameAndProperties <NSSecureCoding>
 
 /**
  * Unique identifier for this event.

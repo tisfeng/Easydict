@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,10 +13,10 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import "../DDFileLogger+Internal.h"
-#import <CocoaLumberjack/DDFileLogger+Buffering.h>
-
 #import <sys/mount.h>
+
+#import <CocoaLumberjack/DDFileLogger+Buffering.h>
+#import "../DDFileLogger+Internal.h"
 
 static const NSUInteger kDDDefaultBufferSize = 4096; // 4 kB, block f_bsize on iphone7
 static const NSUInteger kDDMaxBufferSize = 1048576; // ~1 mB, f_iosize on iphone7
@@ -110,23 +110,27 @@ static NSUInteger DDGetDefaultBufferSizeBytes() {
 #pragma mark - Logging
 
 - (void)logMessage:(DDLogMessage *)logMessage {
+    // Don't need to check for isOnInternalLoggerQueue, -lt_dataForMessage: will do it for us.
     NSData *data = [_fileLogger lt_dataForMessage:logMessage];
-    NSUInteger length = data.length;
-    if (length == 0) {
+
+    if (data.length == 0) {
         return;
     }
 
-#ifndef DEBUG
-    __unused
+    [data enumerateByteRangesUsingBlock:^(const void * __nonnull bytes, NSRange byteRange, BOOL * __nonnull __unused stop) {
+        NSUInteger bytesLength = byteRange.length;
+#ifdef NS_BLOCK_ASSERTIONS
+        __unused
 #endif
-    NSInteger written = [_buffer write:[data bytes] maxLength:length];
-    NSAssert(written == (NSInteger)length, @"Failed to write to memory buffer.");
+        NSInteger written = [_buffer write:bytes maxLength:bytesLength];
+        NSAssert(written > 0 && (NSUInteger)written == bytesLength, @"Failed to write to memory buffer.");
 
-    _currentBufferSizeBytes += length;
+        _currentBufferSizeBytes += bytesLength;
 
-    if (_currentBufferSizeBytes >= _maxBufferSizeBytes) {
-        [self lt_sendBufferedDataToFileLogger];
-    }
+        if (_currentBufferSizeBytes >= _maxBufferSizeBytes) {
+            [self lt_sendBufferedDataToFileLogger];
+        }
+    }];
 }
 
 - (void)flush {

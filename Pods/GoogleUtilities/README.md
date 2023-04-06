@@ -168,7 +168,7 @@ GitHub Actions will verify that any code changes are done in a style compliant
 way. Install `clang-format` and `mint`:
 
 ```console
-brew install clang-format@15
+brew install clang-format@16
 brew install mint
 ```
 

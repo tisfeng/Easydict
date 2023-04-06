@@ -9,7 +9,7 @@
 #import "MSACSerializableObject.h"
 #endif
 
-@interface MSACStackFrame : NSObject <MSACSerializableObject>
+@interface MSACStackFrame : NSObject <MSACSerializableObject, NSSecureCoding>
 
 /*
  * Frame address [optional].

@@ -7,7 +7,7 @@
 #import <Foundation/Foundation.h>
 
 NS_SWIFT_NAME(AbstractLog)
-@interface MSACAbstractLog : NSObject
+@interface MSACAbstractLog : NSObject <NSSecureCoding>
 
 @end
 

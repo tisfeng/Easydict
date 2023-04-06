@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,20 +13,23 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <CocoaLumberjack/DDASLLogger.h>
-
 #if !TARGET_OS_WATCH
-#import <asl.h>
 
 #if !__has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-const char* const kDDASLKeyDDLog = "DDLog";
+#import <asl.h>
 
+#import <CocoaLumberjack/DDASLLogger.h>
+
+const char* const kDDASLKeyDDLog = "DDLog";
 const char* const kDDASLDDLogValue = "1";
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
 static DDASLLogger *sharedInstance;
+#pragma clang diagnostic pop
 
 @interface DDASLLogger () {
     aslclient _client;
@@ -35,7 +38,10 @@ static DDASLLogger *sharedInstance;
 @end
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 @implementation DDASLLogger
+#pragma clang diagnostic pop
 
 + (instancetype)sharedInstance {
     static dispatch_once_t DDASLLoggerOnceToken;
@@ -60,6 +66,10 @@ static DDASLLogger *sharedInstance;
     }
 
     return self;
+}
+
+- (DDLoggerName)loggerName {
+    return DDLoggerNameASL;
 }
 
 - (void)logMessage:(DDLogMessage *)logMessage {
@@ -114,10 +124,6 @@ static DDASLLogger *sharedInstance;
         }
         //TODO handle asl_* failures non-silently?
     }
-}
-
-- (DDLoggerName)loggerName {
-    return DDLoggerNameASL;
 }
 
 @end

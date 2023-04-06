@@ -5,9 +5,9 @@ MJExtension
 - A fast, convenient and nonintrusive conversion framework between JSON and model.
 - 转换速度快、使用简单方便的字典转模型框架
 
+[📜✍🏻**Release Notes**: more details](https://github.com/CoderMJLee/MJExtension/releases)
 
-
-## ‼️ 纯Swift版的JSON与Model转换框架已经开源上架 ‼️
+### ‼️ 纯Swift版的JSON与Model转换框架已经开源上架 ‼️
 
 - [KakaJSON](https://github.com/kakaopensource/KakaJSON)
 - [中文教程](https://www.cnblogs.com/mjios/p/11352776.html)
@@ -17,10 +17,16 @@ MJExtension
 
 
 
-## 关于在Swift中使用MJExtension ‼️
+### Use the Framework in Swift [关于在Swift中使用MJExtension] ‼️
 
-### ‼️ 在 Swift4 之后, 请在属性前加 `@objc` 修饰. 以保证 Swift 的属性能够暴露给 Objc 使用. ‼️
-### ‼️ 请勿使用 `Bool` 类型, 因为在 Swift 中并没有桥接该类型, 不能显式的对应 `BOOL`, 请使用 `NSNumber` 替代 ‼️
+> Example: 
+>
+> - [Model - MJTester.swift](MJExtensionTests/SwiftModel/MJTester.swift)
+>
+> - [Usage - SwiftModelTests.swift](MJExtensionTests/SwiftModelTests.swift)
+
+#### ‼️ `@objc` attributes should be added to class and property for declaration of Objc accessibility [在 Swift4 之后, 请在属性前加 `@objc` 修饰. 以保证 Swift 的属性能够暴露给 Objc 使用. ]‼️
+#### ‼️ Use `NSNumber` instead of `Bool`, which is not bridged to `BOOL`. [请勿使用 `Bool` 类型, 因为在 Swift 中并没有桥接该类型, 不能显式的对应 `BOOL`, 请使用 `NSNumber` 替代] ‼️
 
 
 
@@ -42,6 +48,7 @@ MJExtension
 	* [Coding](#Coding)
 	* [Camel -> underline](#Camel_underline)
 	* [NSString -> NSDate, nil -> @""](#NSString_NSDate)
+	* [NSDate -> NSString](#NSDate_NSString)
 	* [More use cases](#More_use_cases)
 
 ---
@@ -83,6 +90,8 @@ NSObject+MJKeyValue.h   NSObject+MJKeyValue.m
 ```
 
 # <a id="Examples"></a> Examples【示例】
+
+**Add `MJKeyValue` protocol to your model if needed【如果有需要, 请在模型中加入 `MJKeyValue` 协议】**
 
 ### <a id="JSON_Model"></a> The most simple JSON -> Model【最简单的字典转模型】
 
@@ -548,7 +557,21 @@ Book *book = [Book mj_objectWithKeyValues:dict];
 NSLog(@"name=%@, publisher=%@, publishedTime=%@", book.name, book.publisher, book.publishedTime);
 ```
 
+### <a id="NSDate_NSString"></a> NSDate -> NSString【模型转字典时, 修改 Date 类型至 String】
+
+```objc
+- (void)mj_objectDidConvertToKeyValues:(NSMutableDictionary *)keyValues {
+    // NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    // formatter.dateFormat = @"yyy-MM-dd";
+    // should use sharedFormatter for better performance  
+    keyValues[@"publishedTime"] = [sharedFormatter stringFromDate:self.publishedTime];
+}
+```
+
+
+
 ### <a id="More_use_cases"></a> More use cases【更多用法】
+
 - Please reference to `NSObject+MJKeyValue.h` and `NSObject+MJCoding.h`
 
 

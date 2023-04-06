@@ -1,6 +1,6 @@
 // Software License Agreement (BSD License)
 //
-// Copyright (c) 2010-2019, Deusty, LLC
+// Copyright (c) 2010-2020, Deusty, LLC
 // All rights reserved.
 //
 // Redistribution and use of this software in source and binary forms,
@@ -13,14 +13,16 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#import <Foundation/Foundation.h>
+#ifndef SwiftLogLevel_h
+#define SwiftLogLevel_h
 
-NS_ASSUME_NONNULL_BEGIN
+#import <CocoaLumberjack/DDLog.h>
 
-typedef NSString *DDLoggerName NS_TYPED_EXTENSIBLE_ENUM;
-FOUNDATION_EXPORT DDLoggerName const DDLoggerNameASL NS_SWIFT_NAME(DDLoggerName.asl); // DDASLLogger
-FOUNDATION_EXPORT DDLoggerName const DDLoggerNameTTY NS_SWIFT_NAME(DDLoggerName.tty); // DDTTYLogger
-FOUNDATION_EXPORT DDLoggerName const DDLoggerNameOS NS_SWIFT_NAME(DDLoggerName.os); // DDOSLogger
-FOUNDATION_EXPORT DDLoggerName const DDLoggerNameFile NS_SWIFT_NAME(DDLoggerName.file); // DDFileLogger
+#ifndef DD_LOG_LEVEL
+// #warning 'DD_LOG_LEVEL' is not defined. Using 'DDLogLevelAll' as default. Consider defining it yourself.
+#define DD_LOG_LEVEL DDLogLevelAll
+#endif
 
-NS_ASSUME_NONNULL_END
+static const DDLogLevel DDDefaultLogLevel = DD_LOG_LEVEL;
+
+#endif /* SwiftLogLevel_h */
