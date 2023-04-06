@@ -41,7 +41,8 @@ install_framework()
 
   if [ -L "${source}" ]; then
     echo "Symlinked..."
-    source="$(readlink "${source}")"
+    // Fixes the issue where archives fail when using Xcode 14.3, Ref: https://github.com/CocoaPods/CocoaPods/pull/11828
+    source="$(readlink -f "${source}")"
   fi
 
   if [ -d "${source}/${BCSYMBOLMAP_DIR}" ]; then
