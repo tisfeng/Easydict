@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZCoordinateTool : NSObject
+@interface EZCoordinateUtils : NSObject
 
 
 /// Get safe point, bottom-left coordinate

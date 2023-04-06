@@ -11,7 +11,7 @@
 #import "EZFixedQueryWindow.h"
 #import "EZEventMonitor.h"
 #import "Snip.h"
-#import "EZCoordinateTool.h"
+#import "EZCoordinateUtils.h"
 #import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
@@ -88,7 +88,7 @@ static EZWindowManager *_instance;
         
         CGPoint point = [self getPopButtonWindowLocation]; // This is top-left point
         CGPoint bottomLeftPoint = CGPointMake(point.x, point.y - self.popButtonWindow.height);
-        CGPoint safePoint = [EZCoordinateTool getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
+        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
         [self.popButtonWindow setFrameOrigin:safePoint];
         
         [self.popButtonWindow orderFrontRegardless];
@@ -271,7 +271,7 @@ static EZWindowManager *_instance;
     [EZPreferencesWindowController.shared.window close];
     
     // get safe window position
-    CGPoint safeLocation = [EZCoordinateTool getFrameSafePoint:window.frame moveToPoint:point];
+    CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point];
     [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
