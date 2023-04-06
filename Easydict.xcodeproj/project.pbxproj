@@ -19,6 +19,7 @@
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
+		034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -194,6 +195,8 @@
 		033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintBeautifulLog.m; sourceTree = "<group>"; };
 		033B7132293CE2430096E2DF /* EZWebViewTranslator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewTranslator.h; sourceTree = "<group>"; };
 		033B7133293CE2430096E2DF /* EZWebViewTranslator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewTranslator.m; sourceTree = "<group>"; };
+		034B077129DEBC5800E7FD6B /* EZTextWordUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextWordUtils.h; sourceTree = "<group>"; };
+		034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextWordUtils.m; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
 		03542A2F293645DF00C34C33 /* EZAppleService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleService.m; sourceTree = "<group>"; };
 		03542A322936F70F00C34C33 /* EZLanguageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageManager.h; sourceTree = "<group>"; };
@@ -560,6 +563,15 @@
 				03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */,
 			);
 			path = WebViewTranslator;
+			sourceTree = "<group>";
+		};
+		034B077029DEBBFF00E7FD6B /* EZTextWordUtils */ = {
+			isa = PBXGroup;
+			children = (
+				034B077129DEBC5800E7FD6B /* EZTextWordUtils.h */,
+				034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */,
+			);
+			path = EZTextWordUtils;
 			sourceTree = "<group>";
 		};
 		03542A2D293645B800C34C33 /* Apple */ = {
@@ -1125,6 +1137,7 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
 				039D119629D5E21E00C93F46 /* EZAudioUtils */,
 				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
 				03D8B26B292DBD0300D5A811 /* EZCoordinateUtils */,
@@ -1573,6 +1586,7 @@
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
+				034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */,
 				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */,
