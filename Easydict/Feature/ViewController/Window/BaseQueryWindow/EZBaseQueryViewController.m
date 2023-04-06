@@ -12,7 +12,7 @@
 #import "EZResultView.h"
 #import "EZSelectLanguageCell.h"
 #import <KVOController/KVOController.h>
-#import "EZCoordinateTool.h"
+#import "EZCoordinateUtils.h"
 #import "EZWindowManager.h"
 #import "EZServiceTypes.h"
 #import "EZAppleService.h"
@@ -1132,7 +1132,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     CGFloat y = window.y + deltaHeight;
 
     CGRect newFrame = CGRectMake(window.x, y, window.width, showingWindowHeight);
-    CGRect safeFrame = [EZCoordinateTool getSafeAreaFrame:newFrame];
+    CGRect safeFrame = [EZCoordinateUtils getSafeAreaFrame:newFrame];
 
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
