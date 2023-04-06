@@ -6,9 +6,9 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZCoordinateTool.h"
+#import "EZCoordinateUtils.h"
 
-@implementation EZCoordinateTool
+@implementation EZCoordinateUtils
 
 + (CGPoint)getFrameSafePoint:(CGRect)frame moveToPoint:(CGPoint)point {
     CGRect newFrame = CGRectMake(point.x, point.y, frame.size.width, frame.size.height);
