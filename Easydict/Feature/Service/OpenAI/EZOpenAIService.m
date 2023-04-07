@@ -102,12 +102,12 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
     if (isEnglishSentence) {
-        [self translateSentence:text from:sourceLanguage to:targetLanguage completion:^(NSString * _Nullable result, NSError * _Nullable error) {
+        [self translateSentence:text from:sourceLanguage to:targetLanguage completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 completion(self.result, error);
                 return;
             }
-                        
+            
             self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
             completion(self.result, error);
         }];
@@ -184,24 +184,30 @@ static NSDictionary *const kQuotesDict = @{
 /// Translate sentence.
 - (void)translateSentence:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
-
+    
     NSString *prompt = @"";
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parse";
     NSString *translationResult = @"Translation Result";
-
-    NSString *systemPrompt = @"You are a translation expert proficient in various languages, skilled in analyzing the grammatical structure of sentences, and able to accurately identify proper nouns, idioms, metaphors, allusions, or other obscure words in sentences, translating them into clear and appropriate language. The translation result should be consistent with the context of the entire text, natural, fluent, and easy to understand.\n";
+    
+    NSString *systemPrompt = @"You are a translation expert proficient in various languages, skilled in analyzing the grammatical structure of sentences, and able to accurately identify proper nouns, idioms, metaphors, allusions, or other obscure words in sentences, translating them into clear and appropriate language. The translation result should be consistent with the context of the entire text, faithful, concise and elegant.\n";
     
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\",\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
+    /**
+     !!!: Note: These prompts' order cannot be changed, must be key words, grammar parse, translation result, otherwise the translation result will be incorrect.
+     
+     The stock market has now reached a plateau.
+     The book is simple homespun philosophy.
+     */
     NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"%@:\n xxx \",\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, format: \"%@:\n xxx \",\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. Translate it to %@, format: \"%@: xxx \",\n",  targetLanguage, translationResult];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. Translate it to %@, format: \"%@: xxx \",\n", targetLanguage, translationResult];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -213,52 +219,40 @@ static NSDictionary *const kQuotesDict = @{
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // Ukraine may get another Patriot battery.
-            @"content" : @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
-            "1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
-            "2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-            "3. Translate it to Simplified-Chinese, format: \" xxx \",\n"
-            "Answer in Simplified-Chinese. \n",
+            @"content" :
+                @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
+                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence, format: \"Key Words:\n xxx \",\n"
+                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+                @"3. Translate it to Simplified-Chinese, format: \"Translation Result: xxx \",\n"
+                @"Answer in Simplified-Chinese. \n",
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"1. 重点词汇: \n"
-            "battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
-            "Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
-            "2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
-            "3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
+            @"content" :
+                @"1. 重点词汇: \n"
+                @"battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
+                @"Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
+                @"2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
+                @"3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
         },
-//        @{
-//            @"role" : @"user", // The stock market has now reached a plateau.
-//            @"content" : @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
-//            "translate it to Simplified-Chinese, format: \" xxx \",\n"
-//            "Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-//            "List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
-//            "Answer in Simplified-Chinese. \n",
-//        },
-//        @{
-//            @"role" : @"assistant",
-//            @"content" : @"股市现在已经达到了一个高点。\n\n"
-//            "语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个高点）。 \n\n"
-//            "重点词汇: \n"
-//            "stock market: 股市。\n"
-//            "plateau: n. 高原；平稳时期，这里指股价达到一个高点稳定状态。\n",
-//        },
-//        @{
-//            @"role" : @"user", // The book is simple homespun philosophy.
-//            @"content" : @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
-//            "translate it to Simplified-Chinese, format: \" xxx \",\n"
-//            "Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-//            "List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
-//            "Answer in Simplified-Chinese. \n",
-//        },
-//        @{
-//            @"role" : @"assistant",
-//            @"content" : @"这本书是简单朴素的哲学。\n\n"
-//            "语法分析: 该句子是一个主语+系动词+表语的陈述句。主语是 \"The book\"（这本书），系动词是 \"is\"（是），表语是 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-//            "重点词汇: \n"
-//            "homespun: adj. 朴素的，自制的；n. 手织物。在此指朴素。\n"
-//            "philosophy: n. 哲学；人生观。\n",
-//        },
+        @{
+            @"role" : @"user", // The stock market has now reached a plateau.
+            @"content" :
+                @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
+                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence, format: \"Key Words:\n xxx \",\n"
+                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+                @"3. Translate it to Simplified-Chinese, format: \"Translation Result: xxx \",\n"
+                @"Answer in Simplified-Chinese. \n",
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" :
+                @"1. 重点词汇: \n"
+                @"stock market: 股市。\n"
+                @"plateau: n. 高原；平稳时期，这里指股价达到一个平稳期。\n"
+                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个高点）。 \n\n"
+                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
+        },
     ];
     
     NSArray *systemMessages = @[
@@ -334,11 +328,11 @@ static NSDictionary *const kQuotesDict = @{
     if (isEnglishWord) {
         // <abbreviation of pos>xxx. <meaning>xxx
         NSString *partOfSpeechAndMeaningPrompt = @"Look up its all parts of speech and meanings, pos always displays its English abbreviation, each line only shows one abbreviation of pos and meaning: \" xxx \" . \n"; // adj. 美好的  n. 罚款，罚金
-
+        
         prompt = [prompt stringByAppendingString:partOfSpeechAndMeaningPrompt];
         
         // TODO: Since level exams are not accurate, so disable it.
-//                NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include \"%@\", no more than 6, format: \" xxx \" . \n\n", word];
+        //                NSString *examPrompt = [NSString stringWithFormat:@"Look up the most commonly used English level exams that include \"%@\", no more than 6, format: \" xxx \" . \n\n", word];
         //        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
@@ -388,17 +382,18 @@ static NSDictionary *const kQuotesDict = @{
     // Some etymology words cannot be reached 300,
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
-
+    
     NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have antonyms, then this item does not need to be displayed.";
     prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
     
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
-
+    
     
     NSLog(@"dict prompt: %@", prompt);
     
     
+    // Few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // album
@@ -420,10 +415,10 @@ static NSDictionary *const kQuotesDict = @{
             "反义词：dispersal, disarray, disorder",
         },
         @{
-           @"role" : @"user", // raven
-           @"content" : @"Here is a English word: \"raven\" \n"
-           "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
-       },
+            @"role" : @"user", // raven
+            @"content" : @"Here is a English word: \"raven\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+        },
         @{
             @"role" : @"assistant",
             @"content" : @"发音: / ˈreɪvən / \n\n"
@@ -447,7 +442,7 @@ static NSDictionary *const kQuotesDict = @{
             "近义词: seize, blackbird \n"
             "反义词：protect, guard, defend"
         },
-        @{ //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
+        @{  //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
             @"role" : @"user", // js
             @"content" : @"Here is a word: \"js\" \n"
             "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
@@ -804,7 +799,7 @@ static NSDictionary *const kQuotesDict = @{
         @"model" : @"gpt-3.5-turbo",
         @"messages" : messages,
         @"temperature" : @(0),
-//        @"max_tokens" : @(3000),
+        //        @"max_tokens" : @(3000),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
