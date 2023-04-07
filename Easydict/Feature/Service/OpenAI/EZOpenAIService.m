@@ -100,6 +100,20 @@ static NSDictionary *const kQuotesDict = @{
         return;
     }
     
+    BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
+    if (isEnglishSentence) {
+        [self translateSentence:text from:sourceLanguage to:targetLanguage completion:^(NSString * _Nullable result, NSError * _Nullable error) {
+            if (error) {
+                completion(self.result, error);
+                return;
+            }
+                        
+            self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
+            completion(self.result, error);
+        }];
+        return;
+    }
+    
     [self translateText:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
         if (error) {
             completion(self.result, error);
@@ -161,8 +175,110 @@ static NSDictionary *const kQuotesDict = @{
     return prompt;
 }
 
+// Query dictionary.
 - (void)queryDict:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     NSArray *messages = [self dictPromptMessages:word from:sourceLanguage to:targetLanguage];
+    [self startStreamChat:messages completion:completion];
+}
+
+/// Translate sentence.
+- (void)translateSentence:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+
+    NSString *prompt = @"";
+    NSString *keyWords = @"Key Words";
+    NSString *grammarParse = @"Grammar Parse";
+    NSString *translationResult = @"Translation Result";
+
+    NSString *systemPrompt = @"You are a translation expert proficient in various languages, skilled in analyzing the grammatical structure of sentences, and able to accurately identify proper nouns, idioms, metaphors, allusions, or other obscure words in sentences, translating them into clear and appropriate language. The translation result should be consistent with the context of the entire text, natural, fluent, and easy to understand.\n";
+    
+    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\",\n", sourceLanguage, sentence];
+    prompt = [prompt stringByAppendingString:queryWordPrompt];
+    
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"%@:\n xxx \",\n", keyWords];
+    prompt = [prompt stringByAppendingString:keyWordsPrompt];
+    
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, format: \"%@:\n xxx \",\n", grammarParse];
+    prompt = [prompt stringByAppendingString:grammarParsePrompt];
+    
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. Translate it to %@, format: \"%@: xxx \",\n",  targetLanguage, translationResult];
+    prompt = [prompt stringByAppendingString:translationPrompt];
+    
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
+    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
+    
+    NSString *disableNotePrompt = @"Do not display additional information or notes.";
+    prompt = [prompt stringByAppendingString:disableNotePrompt];
+    
+    NSArray *chineseFewShot = @[
+        @{
+            @"role" : @"user", // Ukraine may get another Patriot battery.
+            @"content" : @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
+            "1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
+            "2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+            "3. Translate it to Simplified-Chinese, format: \" xxx \",\n"
+            "Answer in Simplified-Chinese. \n",
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"1. 重点词汇: \n"
+            "battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
+            "Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
+            "2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
+            "3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
+        },
+//        @{
+//            @"role" : @"user", // The stock market has now reached a plateau.
+//            @"content" : @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
+//            "translate it to Simplified-Chinese, format: \" xxx \",\n"
+//            "Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+//            "List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
+//            "Answer in Simplified-Chinese. \n",
+//        },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" : @"股市现在已经达到了一个高点。\n\n"
+//            "语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个高点）。 \n\n"
+//            "重点词汇: \n"
+//            "stock market: 股市。\n"
+//            "plateau: n. 高原；平稳时期，这里指股价达到一个高点稳定状态。\n",
+//        },
+//        @{
+//            @"role" : @"user", // The book is simple homespun philosophy.
+//            @"content" : @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
+//            "translate it to Simplified-Chinese, format: \" xxx \",\n"
+//            "Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+//            "List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"Key Words:\n xxx \",\n"
+//            "Answer in Simplified-Chinese. \n",
+//        },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" : @"这本书是简单朴素的哲学。\n\n"
+//            "语法分析: 该句子是一个主语+系动词+表语的陈述句。主语是 \"The book\"（这本书），系动词是 \"is\"（是），表语是 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
+//            "重点词汇: \n"
+//            "homespun: adj. 朴素的，自制的；n. 手织物。在此指朴素。\n"
+//            "philosophy: n. 哲学；人生观。\n",
+//        },
+    ];
+    
+    NSArray *systemMessages = @[
+        @{
+            @"role" : @"system",
+            @"content" : systemPrompt,
+        },
+    ];
+    NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
+    
+    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+        [messages addObjectsFromArray:chineseFewShot];
+    }
+    
+    NSDictionary *userMessage = @{
+        @"role" : @"user",
+        @"content" : prompt,
+    };
+    [messages addObject:userMessage];
+    
     [self startStreamChat:messages completion:completion];
 }
 
@@ -194,7 +310,7 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isWord = isEnglishWord || isChineseWord;
     
-    // Pre-prompt.
+    // TODO: need to improve, like 'Lemma'
     NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words or text.\n";
     
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word, abbreviation or text: \"%@\", ", sourceLanguage, word];
@@ -270,8 +386,12 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     // Some etymology words cannot be reached 300,
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. If there is no result for a certain item, don't show it. Do not display additional information or notes.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. If there is no result for a certain item, don't show it.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
+
+    NSString *disableNotePrompt = @"Do not display additional information or notes.";
+    prompt = [prompt stringByAppendingString:disableNotePrompt];
+
     
     NSLog(@"dict prompt: %@", prompt);
     
