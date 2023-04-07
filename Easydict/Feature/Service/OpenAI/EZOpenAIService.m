@@ -310,10 +310,10 @@ static NSDictionary *const kQuotesDict = @{
     
     BOOL isWord = isEnglishWord || isChineseWord;
     
-    // TODO: need to improve, like 'Lemma'
-    NSString *systemPrompt = @"You are an expert in linguistics and etymology and can help look up words or text.\n";
+    // Note some abbreviations: acg, ol, js, os
+    NSString *systemPrompt = @"You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n";
     
-    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word, abbreviation or text: \"%@\", ", sourceLanguage, word];
+    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
@@ -386,9 +386,12 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
     // Some etymology words cannot be reached 300,
-    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed. If there is no result for a certain item, don't show it.";
+    NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
 
+    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have antonyms, then this item does not need to be displayed.";
+    prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
+    
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
 
@@ -399,7 +402,7 @@ static NSDictionary *const kQuotesDict = @{
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // album
-            @"content" : @"Here is a English word or text: \"album\" \n"
+            @"content" : @"Here is a English word: \"album\" \n"
             "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
         },
         @{
@@ -444,22 +447,34 @@ static NSDictionary *const kQuotesDict = @{
             "近义词: seize, blackbird \n"
             "反义词：protect, guard, defend"
         },
-        @{
-            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
-            @"content" : @"Here is a English word: \"acg\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+        @{ //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
+            @"role" : @"user", // js
+            @"content" : @"Here is a word: \"js\" \n"
+            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"发音: xxx \n\n"
-            "n. 动画、漫画、游戏的总称（Animation, Comic, Game） \n\n"
-            "解释：xxx \n\n"
-            "词源学：xxx \n\n"
-            "记忆方法：xxx \n\n"
-            "同根词: xxx \n\n"
-            "近义词：xxx \n"
-            "反义词：xxx",
+            @"content" : @"Pronunciation: xxx \n\n"
+            "JavaScript 的缩写，一种直译式脚本语言 \n\n"
+            "Explanation: xxx \n\n"
+            "Etymology: xxx \n\n"
         },
+        //        @{
+        //            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
+        //            @"content" : @"Here is a English word: \"acg\" \n"
+        //            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+        //        },
+        //        @{
+        //            @"role" : @"assistant",
+        //            @"content" : @"发音: xxx \n\n"
+        //            "n. 动画、漫画、游戏的总称（Animation, Comic, Game） \n\n"
+        //            "解释：xxx \n\n"
+        //            "词源学：xxx \n\n"
+        //            "记忆方法：xxx \n\n"
+        //            "同根词: xxx \n\n"
+        //            "近义词：xxx \n"
+        //            "反义词：xxx",
+        //        },
     ];
     
     NSArray *englishFewShot = @[
