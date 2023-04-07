@@ -42,6 +42,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)isChineseText:(NSString *)text;
 + (BOOL)isChineseText2:(NSString *)text;
 
+/// Check if text is a sentence, use NLTokenizer.
++ (BOOL)isSentence:(NSString *)text;
+
+/// Sentence count of text.
++ (NSInteger)sentenceCount:(NSString *)text;
+
 
 #pragma mark - Handle extra quotes.
 
