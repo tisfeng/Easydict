@@ -156,6 +156,24 @@ static NSDictionary *const kQuotesDict = @{
     return numberOfMatches > 0;
 }
 
+/// Check if text is a sentence, use NLTokenizer.
++ (BOOL)isSentence:(NSString *)text {
+    NSInteger count = [self sentenceCount:text];
+    return count == 1;
+}
+
+/// Sentence count of text.
++ (NSInteger)sentenceCount:(NSString *)text {
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitSentence];
+    tokenizer.string = text;
+    __block NSInteger count = 0;
+    [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
+        count++;
+    }];
+    return count;
+}
+
+
 
 #pragma mark - Handle extra quotes.
 
