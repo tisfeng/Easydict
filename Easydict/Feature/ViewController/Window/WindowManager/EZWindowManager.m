@@ -476,7 +476,7 @@ static EZWindowManager *_instance;
     }
     
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
-        self.selectedText = text ?: @"";
+        self.selectedText = [text trim];
         self.queryType = self.eventMonitor.isSelectedTextByAuxiliary ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];
