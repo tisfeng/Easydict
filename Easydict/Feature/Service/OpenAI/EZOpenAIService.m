@@ -49,14 +49,21 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 }
 
 - (EZQueryServiceType)queryServiceType {
-    EZQueryServiceType type = EZQueryServiceTypeTranslation;
+    EZQueryServiceType type = EZQueryServiceTypeNone;
+    BOOL enableTranslation= [[NSUserDefaults mm_readString:EZOpenAITranslationKey defaultValue:@"1"] boolValue];
     BOOL enableDictionary = [[NSUserDefaults mm_readString:EZOpenAIDictionaryKey defaultValue:@"1"] boolValue];
-    BOOL enableSentence = [[NSUserDefaults mm_readString:EZOpenAISentenceKey defaultValue:@"0"] boolValue];
+    BOOL enableSentence = [[NSUserDefaults mm_readString:EZOpenAISentenceKey defaultValue:@"1"] boolValue];
+    if (enableTranslation) {
+        type = type | EZQueryServiceTypeTranslation;
+    }
     if (enableDictionary) {
         type = type | EZQueryServiceTypeDictionary;
     }
      if (enableSentence) {
         type = type | EZQueryServiceTypeSentence;
+    }
+    if (type == EZQueryServiceTypeNone) {
+        type = EZQueryServiceTypeTranslation;
     }
 
     return type;

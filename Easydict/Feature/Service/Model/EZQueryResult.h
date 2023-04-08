@@ -26,6 +26,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 
 
 typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
+    EZQueryServiceTypeNone = 0,
     EZQueryServiceTypeTranslation = 1 << 0,
     EZQueryServiceTypeDictionary = 1 << 1,
     EZQueryServiceTypeSentence = 1 << 2,

@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *EZYoudaoTranslationKey = @"EZYoudaoTranslationKey";
+static NSString *EZYoudaoDictionaryKey = @"EZYoudaoDictionaryKey";
+
 @interface EZYoudaoTranslate : EZQueryService
 
 @end
