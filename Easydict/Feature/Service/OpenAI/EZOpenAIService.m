@@ -48,6 +48,20 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return EZServiceTypeOpenAI;
 }
 
+- (EZQueryServiceType)queryServiceType {
+    EZQueryServiceType type = EZQueryServiceTypeTranslation;
+    BOOL enableDictionary = [[NSUserDefaults mm_readString:EZOpenAIDictionaryKey defaultValue:@"1"] boolValue];
+    BOOL enableSentence = [[NSUserDefaults mm_readString:EZOpenAISentenceKey defaultValue:@"0"] boolValue];
+    if (enableDictionary) {
+        type = type | EZQueryServiceTypeDictionary;
+    }
+     if (enableSentence) {
+        type = type | EZQueryServiceTypeSentence;
+    }
+
+    return type;
+}
+
 - (NSString *)name {
     return NSLocalizedString(@"openai_translate", nil);
 }
@@ -84,7 +98,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
     
-    if ([EZTextWordUtils shouldQueryDictionary:text language:from]) {
+    BOOL shouldQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
+    BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
+    
+    if (shouldQueryDictionary && enableDictionary) {
         [self queryDict:text from:sourceLanguageType to:targetLanguageType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 self.result.showBigWord = NO;
@@ -103,9 +120,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         return;
     }
     
+    BOOL enableSentence = self.queryServiceType & EZQueryServiceTypeSentence;
     BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
-    isEnglishSentence = NO;
-    if (isEnglishSentence) {
+    
+    if (isEnglishSentence && enableSentence) {
         [self translateSentence:text from:sourceLanguage to:targetLanguage completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 completion(self.result, error);
@@ -310,7 +328,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 //            @"content" :
 //                @"1. 重点词汇: \n"
 //                @"stock market: 股市。\n"
-//                @"plateau: n. 高原；平稳时期，这里指股价达到一个平稳期。\n"
+//                @"plateau: n. 高原；平稳时期，这里指股价达到一个平稳期。\n\n"
 //                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
 //                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
 //        },
@@ -328,9 +346,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" :
                 @"1. 重点词汇: \n"
                 @"homespun: adj. 朴素的，简朴的；手织的。这里是指朴素的。\n"
-                @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n"
+                @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n\n"
                 @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-                @"3. 翻译结果:\n这本书是简单朴素的哲学。。\n\n"
+                @"3. 翻译结果:\n这本书是简单朴素的哲学。\n\n"
         },
     ];
     
@@ -449,7 +467,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@ . \n", answerLanguage];
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
     
     //    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];

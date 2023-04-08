@@ -115,6 +115,10 @@ userInfo:nil]
     return nil;
 }
 
+- (EZQueryServiceType)queryServiceType {
+    return EZQueryServiceTypeTranslation;
+}
+
 - (NSString *)name {
     MethodNotImplemented();
     return nil;

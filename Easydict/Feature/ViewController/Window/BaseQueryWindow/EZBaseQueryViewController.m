@@ -292,6 +292,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
+    self.queryText = text;
     self.queryView.isTypingChinese = NO;
 
     __block BOOL handledSuccess;

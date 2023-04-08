@@ -24,6 +24,13 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 
+
+typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
+    EZQueryServiceTypeTranslation = 1 << 0,
+    EZQueryServiceTypeDictionary = 1 << 1,
+    EZQueryServiceTypeSentence = 1 << 2,
+};
+
 @interface EZTranslatePhonetic : NSObject
 
 /// 语种的中文名称
