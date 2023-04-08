@@ -25,6 +25,9 @@ static NSDictionary *const kQuotesDict = @{
     @"‘" : @"’",
 };
 
+// You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.
+static NSString *kTranslationSystemPrompt = @"You are a translation expert proficient in various languages, able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words. You can analyze the grammatical structure of sentences clearly, and the result of the translation should be natural and fluent.";
+
 @interface EZOpenAIService ()
 
 
@@ -101,6 +104,7 @@ static NSDictionary *const kQuotesDict = @{
     }
     
     BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
+    isEnglishSentence = NO;
     if (isEnglishSentence) {
         [self translateSentence:text from:sourceLanguage to:targetLanguage completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             if (error) {
@@ -132,7 +136,7 @@ static NSDictionary *const kQuotesDict = @{
     //   NSString *prompt = [NSString stringWithFormat:@"Translate '%@' to %@:", text, targetLangCode, souceLangCode];
     
     // !!!: This prompt must be added '\n\n' and '=>', otherwise the result will be incorrect, such as 定风波 · 南海归赠王定国侍人寓娘
-    NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];
+//    NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];
     
     /**
      Fix SQL injection. Ref: https://twitter.com/zty0826/status/1632468826137972736
@@ -155,24 +159,78 @@ static NSDictionary *const kQuotesDict = @{
     //    NSString *prompt = [NSString stringWithFormat:@"translate from %@ to %@: %@", sourceLanguage, targetLanguage, queryText];
     
     // Docs: https://platform.openai.com/docs/guides/chat/introduction
-    NSArray *messages = @[
-        @{
-            @"role" : @"system",
-            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.",
-        },
-        @{
-            @"role" : @"user",
-            @"content" : prompt
-        },
-    ];
+//    NSArray *messages = @[
+//        @{
+//            @"role" : @"system",
+//            @"content" : @"You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.",
+//        },
+//        @{
+//            @"role" : @"user",
+//            @"content" : prompt
+//        },
+//    ];
+    
+    NSArray *messages = [self translatioMessages:text from:sourceLanguage to:targetLanguage];
     
     [self startStreamChat:messages completion:completion];
 }
 
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *prompt = [NSString stringWithFormat:@"translate the following %@ text to %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"Translate the following %@ text to %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
     return prompt;
+}
+
+/// Translation messages.
+- (NSArray *)translatioMessages:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
+    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
+        sourceLanguage = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
+        targetLanguage = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
+    }
+    
+    NSString *prompt = [NSString stringWithFormat:
+                        @"Translate the following %@ text into %@. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the %@ language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
+                        @"\"%@\"", sourceLanguage, targetLanguage, targetLanguage, text];
+
+    NSArray *chineseFewShot = @[
+        @{
+            @"role" : @"user", // The stock market has now reached a plateau.
+            @"content" :
+                @"Translate the following English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
+                @"\"The stock market has now reached a plateau.\""
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"股市现在已经进入了平稳期。"
+        },
+        @{
+            @"role" : @"user", // The book is simple homespun philosophy.
+            @"content" : @"Translate the following English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
+            @"\"The book is simple homespun philosophy.\""
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" : @"这本书是简单朴素的哲学。"
+        },
+    ];
+    
+    NSArray *systemMessages = @[
+        @{
+            @"role" : @"system",
+            @"content" : kTranslationSystemPrompt,
+        },
+    ];
+    
+    NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
+    [messages addObjectsFromArray:chineseFewShot];
+    
+    NSDictionary *userMessage = @{
+        @"role" : @"user",
+        @"content" : prompt,
+    };
+    [messages addObject:userMessage];
+    
+    return messages;
 }
 
 // Query dictionary.
@@ -189,11 +247,14 @@ static NSDictionary *const kQuotesDict = @{
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parse";
     NSString *translationResult = @"Translation Result";
-    
-    NSString *systemPrompt = @"You are a translation expert proficient in various languages, skilled in analyzing the grammatical structure of sentences, and able to accurately identify proper nouns, idioms, metaphors, allusions, or other obscure words in sentences, translating them into clear and appropriate language. The translation result should be consistent with the context of the entire text, faithful, concise and elegant.\n";
-    
-    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\",\n", sourceLanguage, sentence];
-    prompt = [prompt stringByAppendingString:queryWordPrompt];
+    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+        keyWords = @"重点词汇";
+        grammarParse = @"语法分析";
+        translationResult = @"翻译结果";
+    }
+        
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\", follow the steps below step by step.\n", sourceLanguage, sentence];
+    prompt = [prompt stringByAppendingString:sentencePrompt];
     
     /**
      !!!: Note: These prompts' order cannot be changed, must be key words, grammar parse, translation result, otherwise the translation result will be incorrect.
@@ -201,13 +262,13 @@ static NSDictionary *const kQuotesDict = @{
      The stock market has now reached a plateau.
      The book is simple homespun philosophy.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence. If there are no key or difficult words, there is no need to display. Show no more than 5, format: \"%@:\n xxx \",\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence,If there are no key or difficult words, there is no need to display. Show no more than 5,  display format: \"%@:\n xxx \",\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
-    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, format: \"%@:\n xxx \",\n", grammarParse];
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. Translate it to %@, format: \"%@: xxx \",\n", targetLanguage, translationResult];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous analysis, the translation result of this sentence is obtained, display format: \"%@: xxx \",\n", translationResult];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -217,48 +278,66 @@ static NSDictionary *const kQuotesDict = @{
     prompt = [prompt stringByAppendingString:disableNotePrompt];
     
     NSArray *chineseFewShot = @[
+//        @{
+//            @"role" : @"user", // Ukraine may get another Patriot battery.
+//            @"content" :
+//                @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
+//                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its real meaning in this sentence, format: \"Key Words:\n xxx \",\n"
+//                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
+//                @"3. According to the previous analysis, the translation result of this sentence is obtained, format: \"Translation Result: xxx \",\n"
+//                @"Answer in Simplified-Chinese. \n",
+//        },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" :
+//                @"1. 重点词汇: \n"
+//                @"battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
+//                @"Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
+//                @"2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
+//                @"3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
+//        },
+//        @{
+//            @"role" : @"user", // The stock market has now reached a plateau.
+//            @"content" :
+//                @"Here is a English sentence: \"The stock market has now reached a plateau.\", follow the steps below step by step.\n"
+//                @"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence, display format: \"重点词汇:\n xxx \",\n"
+//                @"2. Analyze the grammatical structure of this sentence, display format: \"语法分析:\n xxx \",\n"
+//                @"3. According to the previous analysis, the translation result of this sentence is obtained, display format: \"翻译结果: xxx \",\n"
+//                @"Answer in Simplified-Chinese. \n",
+//        },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" :
+//                @"1. 重点词汇: \n"
+//                @"stock market: 股市。\n"
+//                @"plateau: n. 高原；平稳时期，这里指股价达到一个平稳期。\n"
+//                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
+//                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
+//        },
         @{
-            @"role" : @"user", // Ukraine may get another Patriot battery.
+            @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
-                @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence, format: \"Key Words:\n xxx \",\n"
-                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-                @"3. Translate it to Simplified-Chinese, format: \"Translation Result: xxx \",\n"
+                @"Here is a English sentence: \"The book is simple homespun philosophy.\", follow the steps below step by step.\n"
+                @"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence, display format: \"重点词汇:\n xxx \",\n"
+                @"2. Analyze the grammatical structure of this sentence, display format: \"语法分析:\n xxx \",\n"
+                @"3. According to the previous analysis, the translation result of this sentence is obtained, display format: \"翻译结果: xxx \",\n"
                 @"Answer in Simplified-Chinese. \n",
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"1. 重点词汇: \n"
-                @"battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
-                @"Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
-                @"2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
-                @"3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
-        },
-        @{
-            @"role" : @"user", // The stock market has now reached a plateau.
-            @"content" :
-                @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its meaning in this sentence, format: \"Key Words:\n xxx \",\n"
-                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-                @"3. Translate it to Simplified-Chinese, format: \"Translation Result: xxx \",\n"
-                @"Answer in Simplified-Chinese. \n",
-        },
-        @{
-            @"role" : @"assistant",
-            @"content" :
-                @"1. 重点词汇: \n"
-                @"stock market: 股市。\n"
-                @"plateau: n. 高原；平稳时期，这里指股价达到一个平稳期。\n"
-                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个高点）。 \n\n"
-                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
+                @"homespun: adj. 朴素的，简朴的；手织的。这里是指朴素的。\n"
+                @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n"
+                @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
+                @"3. 翻译结果:\n这本书是简单朴素的哲学。。\n\n"
         },
     ];
     
     NSArray *systemMessages = @[
         @{
             @"role" : @"system",
-            @"content" : systemPrompt,
+            @"content" : kTranslationSystemPrompt,
         },
     ];
     NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
