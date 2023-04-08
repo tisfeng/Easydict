@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTextWordUtils : NSObject
 
+/// If text is a Chinese or English word or phrase, need query dict.
 + (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae;
 
 /// Check if text is a English word. Note: B612 is not a word.

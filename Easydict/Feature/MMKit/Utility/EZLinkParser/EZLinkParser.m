@@ -8,6 +8,7 @@
 
 #import "EZLinkParser.h"
 #import "EZOpenAIService.h"
+#import "EZYoudaoTranslate.h"
 
 // easydict://
 static NSString *kEasydictSchema = @"easydict://";
@@ -86,9 +87,13 @@ static NSString *kEasydictSchema = @"easydict://";
     
     return @[
         EZBetaFeatureKey,
+        
         EZOpenAIKey,
         EZOpenAIDictionaryKey,
         EZOpenAISentenceKey,
+        
+        EZYoudaoTranslationKey,
+        EZYoudaoDictionaryKey,
     ];
 }
 
