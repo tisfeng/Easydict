@@ -116,6 +116,23 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return EZServiceTypeYoudao;
 }
 
+- (EZQueryServiceType)queryServiceType {
+    EZQueryServiceType type = EZQueryServiceTypeNone;
+    BOOL enableTranslation= [[NSUserDefaults mm_readString:EZYoudaoTranslationKey defaultValue:@"1"] boolValue];
+    BOOL enableDictionary = [[NSUserDefaults mm_readString:EZYoudaoDictionaryKey defaultValue:@"1"] boolValue];
+    if (enableTranslation) {
+        type = type | EZQueryServiceTypeTranslation;
+    }
+    if (enableDictionary) {
+        type = type | EZQueryServiceTypeDictionary;
+    }
+    if (type == EZQueryServiceTypeNone) {
+        type = EZQueryServiceTypeTranslation;
+    }
+
+    return type;
+}
+
 - (NSString *)name {
     return NSLocalizedString(@"youdao_dict", nil);
 }
@@ -233,10 +250,19 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
     
+    if (self.queryServiceType == EZQueryServiceTypeNone) {
+        completion(self.result, nil);
+        return;
+    }
+    
+    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
+    BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
+    
+    
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     
     // If Youdao Dictionary does not support the language, try querying translate API.
-    if (!foreignLangauge) {
+    if (!foreignLangauge && enableTranslation) {
         [self youdaoWebTranslate:text from:from to:to completion:completion];
         return;
     }
@@ -261,7 +287,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     dispatch_group_t group = dispatch_group_create();
     mm_weakify(self);
     
-    if (text.length < 30) {
+    if (text.length < 30 && enableDictionary) {
         // 1.Query Youdao dict.
         dispatch_group_enter(group);
         NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
@@ -297,20 +323,22 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         } serviceType:self.serviceType];
     }
     
-    // 2.Query Youdao translate.
-    dispatch_group_enter(group);
-    [self youdaoWebTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-        mm_strongify(self);
-        if (error) {
-            NSLog(@"translateYoudaoAPI error: %@", error);
-            self.result.error = error;
-        }
-        dispatch_group_leave(group);
-    }];
+    if (enableTranslation) {
+        // 2.Query Youdao translate.
+        dispatch_group_enter(group);
+        [self youdaoWebTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+            mm_strongify(self);
+            if (error) {
+                NSLog(@"translateYoudaoAPI error: %@", error);
+                self.result.error = error;
+            }
+            dispatch_group_leave(group);
+        }];
+    }
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         mm_strongify(self);
-        if (self.result.error && !self.result.hasTranslatedResult) {
+        if (self.result.error && !self.result.hasTranslatedResult && enableTranslation) {
             NSString *wordLink = [self wordLink:self.queryModel];
             if (wordLink) {
                 [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
