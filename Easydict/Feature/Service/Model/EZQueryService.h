@@ -54,8 +54,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 以下方法供子类重写，且必须重写
 @interface EZQueryService ()
 
-/// 当前翻译对象唯一标识符
+/// 当前翻译对象唯一标识符, OpenAI
 - (EZServiceType)serviceType;
+
+- (EZQueryServiceType)queryServiceType;
 
 /// 翻译的名字
 - (NSString *)name;
