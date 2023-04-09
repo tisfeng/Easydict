@@ -43,6 +43,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)rerty;
 
+- (void)clearInput;
+- (void)clearAll;
+
+/// Pin window, or cancel pin.
+- (void)pin;
+- (void)hide;
+
+- (void)toggleTranslationLanguages;
+
+- (void)focusInputTextView;
+
 - (void)activeLastFrontmostApplication;
 
 - (void)showOrHideDockAppAndMainWindow;

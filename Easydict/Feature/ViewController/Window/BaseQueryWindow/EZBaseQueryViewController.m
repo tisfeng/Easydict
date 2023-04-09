@@ -41,14 +41,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
-@property (nonatomic, strong) EZTitlebar *titleBar;
-
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
 
 @property (nonatomic, strong) EZQueryView *queryView;
-
+@property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
 
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
@@ -422,6 +420,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
+- (void)toggleTranslationLanguages {
+    [self.selectLanguageCell toggleTranslationLanguages];
+}
+
 #pragma mark - Query Methods
 
 - (void)startQueryText {
@@ -560,6 +562,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             selectLanguageCell.identifier = EZSelectLanguageCellId;
         }
         selectLanguageCell.queryModel = self.queryModel;
+        self.selectLanguageCell = selectLanguageCell;
 
         mm_weakify(self);
         [selectLanguageCell setEnterActionBlock:^(EZLanguage _Nonnull from, EZLanguage _Nonnull to) {

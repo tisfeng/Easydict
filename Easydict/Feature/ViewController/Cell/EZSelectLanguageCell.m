@@ -71,17 +71,7 @@
     mm_weakify(self);
     [self.transformButton setClickBlock:^(EZButton * _Nonnull button) {
         mm_strongify(self);
-        
-        EZLanguage fromLang = self.queryModel.userSourceLanguage;
-        EZLanguage toLang = self.queryModel.userTargetLanguage;
-        
-        EZConfiguration.shared.from = toLang;
-        EZConfiguration.shared.to = fromLang;
-        
-        [self.fromLanguageButton setSelectedLanguage:toLang];
-        [self.toLanguageButton setSelectedLanguage:fromLang];
-        
-        [self enterAction];
+        [self toggleTranslationLanguages];
     }];
     transformButton.mas_key = @"transformButton";
     
@@ -166,6 +156,18 @@
     }
 }
 
+- (void)toggleTranslationLanguages {
+    EZLanguage fromLang = self.queryModel.userSourceLanguage;
+    EZLanguage toLang = self.queryModel.userTargetLanguage;
+    
+    EZConfiguration.shared.from = toLang;
+    EZConfiguration.shared.to = fromLang;
+    
+    [self.fromLanguageButton setSelectedLanguage:toLang];
+    [self.toLanguageButton setSelectedLanguage:fromLang];
+    
+    [self enterAction];
+}
 
 - (void)enterAction {
     NSLog(@"enterAction");
