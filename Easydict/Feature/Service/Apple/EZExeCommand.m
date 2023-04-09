@@ -11,14 +11,33 @@
 
 @implementation EZExeCommand
 
+/// Run translate shortcut with parameters.
+- (NSTask *)runTranslateShortcut:(NSDictionary *)parameters completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+    return [self runShortcut:@"Easydict-Translate-V1.2.0" parameters:parameters completionHandler:completionHandler];;
+}
+
+/// Run shortcut with parameters.
+- (NSTask *)runShortcut:(NSString *)shortcutName
+             parameters:(NSDictionary *)parameters
+      completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+    /**
+     tell application "Shortcuts Events"
+        run the shortcut named "Easydict-Translate-V1.2.0" with input "text=apple&from=en_US&to=zh_CN"
+     end tell
+     
+     @"tell application \"Shortcuts Events\" \n run the shortcut named \"Easydict-Translate-V1.2.0\" with input \"text=apple&from=en_US&to=zh_CN\" \n end tell"
+     */
+    NSString *appleScript = [self shortcutsAppleScript:shortcutName parameters:parameters];
+    return [self runAppleScript:appleScript completionHandler:completionHandler];
+}
+
 /// Use NSTask to run AppleScript.
-/// TODO: allow to terminate script.
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+- (NSTask *)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+    NSTask *task = [[NSTask alloc] init];
+    task.launchPath = @"/usr/bin/osascript";
+    task.arguments = @[ @"-e", script ];
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSTask *task = [[NSTask alloc] init];
-        task.launchPath = @"/usr/bin/osascript";
-        task.arguments = @[ @"-e", script ];
-        
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
         NSPipe *errorPipe = [NSPipe pipe];
@@ -58,6 +77,7 @@
             completionHandler(result, error);
         });
     });
+    return task;
 }
 
 /// Use NSAppleScript to run AppleScript.
@@ -81,26 +101,11 @@
     });
 }
 
-
 - (NSString *)shortcutsAppleScript:(NSString *)shortcutName parameters:(NSDictionary *)parameters {
     NSString *queryString = AFQueryStringFromParameters(parameters);
     NSString *appleScript = [NSString stringWithFormat:@"tell application \"Shortcuts Events\" \n run the shortcut named \"%@\" with input \"%@\" \n end tell", shortcutName, queryString];
     
     return appleScript;
-}
-
-- (void)runShortcut:(NSString *)shortcutName
-         parameters:(NSDictionary *)parameters
-  completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
-    // @"tell application \"Shortcuts Events\" \n run the shortcut named \"Easydict-Translate-V1.2.0\" with input \"text=apple&from=en_US&to=zh_CN\" \n end tell"
-    NSString *appleScript = [self shortcutsAppleScript:shortcutName parameters:parameters];
-    [self runAppleScript:appleScript completionHandler:completionHandler];
-}
-
-- (void)runTranslateShortcut:(NSDictionary *)parameters
-           completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
-    NSString *appleScript = [self shortcutsAppleScript:@"Easydict-Translate-V1.2.0" parameters:parameters];
-    [self runAppleScript:appleScript completionHandler:completionHandler];
 }
 
 @end
