@@ -158,10 +158,13 @@ static EZStatusItem *_instance;
     [EZWindowManager.shared toggleTranslationLanguages];
 }
 
-- (IBAction)focusAction:(NSMenuItem *)sender {
+- (IBAction)focusInputAction:(NSMenuItem *)sender {
     [EZWindowManager.shared focusInputTextView];
 }
 
+- (IBAction)playSoundAction:(NSMenuItem *)sender {
+    [EZWindowManager.shared playQueryTextSound];
+}
 
 #pragma mark -
 

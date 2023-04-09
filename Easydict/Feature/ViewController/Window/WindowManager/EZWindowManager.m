@@ -643,6 +643,10 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController focusInputTextView];
 }
 
+- (void)playQueryTextSound {
+    [self.floatingWindow.queryViewController playQueryTextSound];
+}
+
 #pragma mark -
 
 - (void)activeLastFrontmostApplication {

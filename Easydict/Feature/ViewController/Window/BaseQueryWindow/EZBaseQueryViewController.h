@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 
+- (void)resetTableView:(void (^)(void))completion;
+
 - (void)startQueryText:(nullable NSString *)text queyType:(EZQueryType)queryType;
 - (void)startQueryWithImage:(NSImage *)image;
 
@@ -35,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)focusInputTextView;
 
-- (void)resetTableView:(void (^)(void))completion;
+- (void)playQueryTextSound;
 
 @end
 
