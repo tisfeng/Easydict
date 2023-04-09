@@ -583,7 +583,7 @@ static EZWindowManager *_instance;
     }
 }
 
-#pragma mark - Others
+#pragma mark - Shortcut
 
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {
@@ -595,6 +595,55 @@ static EZWindowManager *_instance;
         [self.floatingWindow.queryViewController retryQuery];
     }
 }
+
+- (void)clearInput {
+    NSLog(@"Clear input");
+    
+    [self.floatingWindow.queryViewController clearInput];
+}
+
+- (void)clearAll {
+    NSLog(@"Clear All");
+    
+    [self.floatingWindow.queryViewController clearAll];
+}
+
+- (void)pin {
+    NSLog(@"Pin");
+    
+    EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
+    queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
+}
+
+- (void)hide {
+    NSLog(@"Close window");
+    if (Snip.shared.isSnapshotting) {
+        [Snip.shared stop];
+    } else {
+        [EZWindowManager.shared closeFloatingWindow];
+        [EZPreferencesWindowController.shared close];
+    }
+}
+
+- (void)closeWindow {
+    NSLog(@"Close window");
+    if (Snip.shared.isSnapshotting) {
+        [Snip.shared stop];
+    } else {
+        [EZWindowManager.shared closeFloatingWindow];
+        [EZPreferencesWindowController.shared close];
+    }
+}
+
+- (void)toggleTranslationLanguages {
+    [self.floatingWindow.queryViewController toggleTranslationLanguages];
+}
+
+- (void)focusInputTextView {
+    [self.floatingWindow.queryViewController focusInputTextView];
+}
+
+#pragma mark -
 
 - (void)activeLastFrontmostApplication {
     if (!self.lastFrontmostApplication.terminated) {

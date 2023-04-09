@@ -25,13 +25,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startQueryText:(nullable NSString *)text queyType:(EZQueryType)queryType;
 - (void)startQueryWithImage:(NSImage *)image;
+
 - (void)retryQuery;
 
 - (void)clearInput;
 - (void)clearAll;
 
-- (void)resetTableView:(void (^)(void))completion;
+- (void)toggleTranslationLanguages;
+
 - (void)focusInputTextView;
+
+- (void)resetTableView:(void (^)(void))completion;
 
 @end
 

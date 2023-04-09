@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^enterActionBlock)(EZLanguage from, EZLanguage to);
 
+- (void)toggleTranslationLanguages;
+
 @end
 
 NS_ASSUME_NONNULL_END

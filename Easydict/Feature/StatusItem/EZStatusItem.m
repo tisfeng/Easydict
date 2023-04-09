@@ -135,41 +135,28 @@ static EZStatusItem *_instance;
 #pragma mark -
 
 - (IBAction)clearInputAction:(NSMenuItem *)sender {
-    NSLog(@"Clear input");
-    
-    EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
-    [queryViewController clearInput];
+    [EZWindowManager.shared clearInput];
 }
 
 - (IBAction)clearAllAction:(NSMenuItem *)sender {
-    NSLog(@"Clear All");
-    
-    EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
-    [queryViewController clearAll];
+    [EZWindowManager.shared clearAll];
 }
 
 - (IBAction)pinAction:(NSMenuItem *)sender {
-    NSLog(@"Pin");
-    
-    EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
-    queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
+    [EZWindowManager.shared pin];
 }
 
 - (IBAction)translateRetryAction:(NSMenuItem *)sender {
-    NSLog(@"Retry");
     [EZWindowManager.shared rerty];
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
-    NSLog(@"Close window");
-    if (Snip.shared.isSnapshotting) {
-        [Snip.shared stop];
-    } else {
-        [EZWindowManager.shared closeFloatingWindow];
-        [EZPreferencesWindowController.shared close];
-    }
+    [EZWindowManager.shared clearInput];
 }
 
+- (IBAction)toggleTranslationLanguages:(NSMenuItem *)sender {
+    [EZWindowManager.shared toggleTranslationLanguages];
+}
 
 #pragma mark -
 
