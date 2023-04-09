@@ -322,9 +322,24 @@
                                                 <action selector="clearAllAction:" target="qM9-fT-Fym" id="Z6m-CD-ebb"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Focus" keyEquivalent="i" toolTip="Foucs Input" id="NuA-WI-yNk" userLabel="Focus">
+                                            <connections>
+                                                <action selector="focusInputAction:" target="qM9-fT-Fym" id="EhA-U7-UKy"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Play" keyEquivalent="s" toolTip="Play Sound" id="1y8-d6-Wtj">
+                                            <connections>
+                                                <action selector="playSoundAction:" target="qM9-fT-Fym" id="1Cx-Ec-rP4"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Retry" keyEquivalent="r" toolTip="Retry Query" id="pBe-oc-b5O">
                                             <connections>
                                                 <action selector="translateRetryAction:" target="qM9-fT-Fym" id="s51-7o-oTB"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Toggle" keyEquivalent="t" toolTip="Toggle Translation Languages" id="d82-cy-RVu">
+                                            <connections>
+                                                <action selector="toggleTranslationLanguages:" target="qM9-fT-Fym" id="0S9-J8-t1W"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Pin" keyEquivalent="p" toolTip="Pin Window" id="g1Y-HC-Hcm">
@@ -335,16 +350,6 @@
                                         <menuItem title="Hide" keyEquivalent="w" toolTip="Hide Window" id="dFr-S6-9m0">
                                             <connections>
                                                 <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Toggle" keyEquivalent="t" toolTip="Toggle Translation Languages" id="d82-cy-RVu">
-                                            <connections>
-                                                <action selector="toggleTranslationLanguages:" target="qM9-fT-Fym" id="0S9-J8-t1W"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Focus" keyEquivalent="i" toolTip="Foucs Input" id="NuA-WI-yNk" userLabel="Focus">
-                                            <connections>
-                                                <action selector="focusAction:" target="qM9-fT-Fym" id="EhA-U7-UKy"/>
                                             </connections>
                                         </menuItem>
                                     </items>

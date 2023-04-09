@@ -101,7 +101,7 @@
     [self addSubview:audioButton];
     self.audioButton = audioButton;
     audioButton.image = [NSImage imageNamed:@"audio"];
-    audioButton.toolTip = @"Play";
+    audioButton.toolTip = @"Play, ⌘+S";
     
     [audioButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"audioActionBlock");
