@@ -59,7 +59,7 @@
     EZHoverButton *transformButton = [[EZHoverButton alloc] init];
     self.transformButton = transformButton;
     [languageBarView addSubview:transformButton];
-    transformButton.toolTip = @"Switch";
+    transformButton.toolTip = @"Toggle, ⌘+T";
     transformButton.image = [NSImage imageNamed:@"transform"];
     
     [transformButton excuteLight:^(EZHoverButton *transformButton) {
