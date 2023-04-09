@@ -167,7 +167,6 @@ static EZStatusItem *_instance;
     } else {
         [EZWindowManager.shared closeFloatingWindow];
         [EZPreferencesWindowController.shared close];
-        [EZWindowManager.shared activeLastFrontmostApplication];
     }
 }
 

@@ -69,7 +69,7 @@ static EZWindowManager *_instance;
     self.offsetPoint = CGPointMake(15, -15);
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
-    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@0]];
+    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
 }
 
 - (void)setupEventMonitor {
@@ -196,7 +196,7 @@ static EZWindowManager *_instance;
 }
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
-    EZBaseQueryWindow *window;
+    EZBaseQueryWindow *window = nil;
     switch (type) {
         case EZWindowTypeMain: {
             window = _mainWindow;
@@ -206,8 +206,11 @@ static EZWindowManager *_instance;
             window = self.fixedWindow;
             break;
         }
-        default: {
+        case EZWindowTypeMini: {
             window = self.miniWindow;
+            break;
+        }
+        case EZWindowTypeNone: {
             break;
         }
     }
@@ -216,7 +219,7 @@ static EZWindowManager *_instance;
 
 /// Return top-left point.
 - (CGPoint)floatingWindowLocationWithType:(EZWindowType)type {
-    CGPoint location;
+    CGPoint location = CGPointZero;
     switch (type) {
         case EZWindowTypeMain: {
             location = CGPointMake(100, 500);
@@ -226,8 +229,11 @@ static EZWindowManager *_instance;
             location = [self getFixedWindowLocation];
             break;
         }
-        default: {
+        case EZWindowTypeMini: {
             location = [self getMiniWindowLocation];
+            break;
+        }
+        case EZWindowTypeNone: {
             break;
         }
     }

@@ -16,6 +16,7 @@ static CGFloat EZInputViewMinHeight = 50;
 
 /// Window type
 typedef NS_ENUM(NSUInteger, EZWindowType) {
+    EZWindowTypeNone = -1,
     EZWindowTypeMain = 0,
     EZWindowTypeMini = 1,
     EZWindowTypeFixed = 2,
