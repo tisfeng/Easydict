@@ -146,6 +146,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeMini: {
             return self.miniWindowFrame;
         }
+        default: {
+            return CGRectZero;
+        }
     }
 }
 
@@ -179,6 +182,9 @@ static EZLayoutManager *_instance;
                                miniWindowWidth,
                                self.minimumWindowSize.height);
             break;
+        }
+        default: {
+            return CGRectZero;
         }
     }
     return frame;
@@ -216,7 +222,7 @@ static EZLayoutManager *_instance;
         case EZWindowTypeMini:
             return @"mini_window";
         default:
-            return @"mini_window";
+            return @"none_window";
     }
 }
 
