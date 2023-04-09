@@ -154,9 +154,14 @@ static EZStatusItem *_instance;
     [EZWindowManager.shared clearInput];
 }
 
-- (IBAction)toggleTranslationLanguages:(NSMenuItem *)sender {
+- (IBAction)toggleTranslationLanguagesAction:(NSMenuItem *)sender {
     [EZWindowManager.shared toggleTranslationLanguages];
 }
+
+- (IBAction)focusAction:(NSMenuItem *)sender {
+    [EZWindowManager.shared focusInputTextView];
+}
+
 
 #pragma mark -
 

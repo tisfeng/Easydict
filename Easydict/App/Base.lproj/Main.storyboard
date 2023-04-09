@@ -322,24 +322,29 @@
                                                 <action selector="clearAllAction:" target="qM9-fT-Fym" id="Z6m-CD-ebb"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Retry" keyEquivalent="r" id="pBe-oc-b5O">
+                                        <menuItem title="Retry" keyEquivalent="r" toolTip="Retry Query" id="pBe-oc-b5O">
                                             <connections>
                                                 <action selector="translateRetryAction:" target="qM9-fT-Fym" id="s51-7o-oTB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Pin" keyEquivalent="p" id="g1Y-HC-Hcm">
+                                        <menuItem title="Pin" keyEquivalent="p" toolTip="Pin Window" id="g1Y-HC-Hcm">
                                             <connections>
                                                 <action selector="pinAction:" target="qM9-fT-Fym" id="HXh-3D-1iH"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Hide" keyEquivalent="w" id="dFr-S6-9m0">
+                                        <menuItem title="Hide" keyEquivalent="w" toolTip="Hide Window" id="dFr-S6-9m0">
                                             <connections>
                                                 <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Toggle" keyEquivalent="t" id="d82-cy-RVu">
+                                        <menuItem title="Toggle" keyEquivalent="t" toolTip="Toggle Translation Languages" id="d82-cy-RVu">
                                             <connections>
                                                 <action selector="toggleTranslationLanguages:" target="qM9-fT-Fym" id="0S9-J8-t1W"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Focus" keyEquivalent="i" toolTip="Foucs Input" id="NuA-WI-yNk" userLabel="Focus">
+                                            <connections>
+                                                <action selector="focusAction:" target="qM9-fT-Fym" id="EhA-U7-UKy"/>
                                             </connections>
                                         </menuItem>
                                     </items>
