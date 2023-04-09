@@ -689,7 +689,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         __block NSString *appendSuffixQuote = nil;
         
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
-            if (self.queryModel.stop) {
+            if ([self.queryModel isServiceStopped:self.serviceType]) {
                 return;
             }
             
@@ -753,7 +753,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
     
     NSURLSessionTask *task = [manager POST:@"https://api.openai.com/v1/chat/completions" parameters:body progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        if (self.queryModel.stop) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         

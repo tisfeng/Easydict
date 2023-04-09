@@ -177,7 +177,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 // TODO: need to optimize the results of Baidu query words.
 - (void)parseResponseObject:(id _Nullable)responseObject completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    if (self.queryModel.stop) {
+    if ([self.queryModel isServiceStopped:self.serviceType]) {
         return;
     }
     
@@ -417,7 +417,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     [self.webViewTranslator monitorBaseURLString:monitorURL
                                          loadURL:[self wordLink:self.queryModel]
                                completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-        if (self.queryModel.stop) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         

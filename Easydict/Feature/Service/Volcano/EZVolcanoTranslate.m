@@ -155,7 +155,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     }
     
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-        if (self.queryModel.stop) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
        

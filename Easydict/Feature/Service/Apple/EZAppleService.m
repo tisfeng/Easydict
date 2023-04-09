@@ -174,8 +174,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     };
     //    NSLog(@"Apple translate paramters: %@", paramters);
     
-    [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
-        if (self.queryModel.stop) {
+    NSTask *task = [self.exeCommand runTranslateShortcut:paramters completionHandler:^(NSString *_Nonnull result, NSError *error) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         
@@ -193,6 +193,13 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         }
         completion(self.result, error);
     }];
+    
+    [self.queryModel setStopBlock:^{
+        [task interrupt];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [task terminate];
+        });
+    } serviceType:self.serviceType];
 }
 
 /// System detect text language,

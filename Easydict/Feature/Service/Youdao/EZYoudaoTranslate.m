@@ -342,7 +342,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             NSString *wordLink = [self wordLink:self.queryModel];
             if (wordLink) {
                 [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-                    if (self.queryModel.stop) {
+                    if ([self.queryModel isServiceStopped:self.serviceType]) {
                         return;
                     }
                     self.result.normalResults = texts;
@@ -417,10 +417,6 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     }
     
     NSURLSessionTask *task = [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        if (self.queryModel.stop) {
-            return;
-        }
-        
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSString *errorCode = dict[@"errorCode"];

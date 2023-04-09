@@ -14,6 +14,12 @@ NSString *const EZQueryTypeShortcut = @"shortcut_query";
 NSString *const EZQueryTypeInput = @"input_query";
 NSString *const EZQueryTypeOCR = @"ocr_query";
 
+@interface EZQueryModel ()
+
+@property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType: block>
+
+@end
+
 @implementation EZQueryModel
 
 - (instancetype)init {
@@ -65,15 +71,9 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return targetLanguage;
 }
 
-- (void)setStop:(BOOL)stop {
-    _stop = stop;
-    
-    if (stop) {
-        for (NSString *key in self.stopBlockDictionary.allKeys) {
-            [self stopServiceRequest:key];
-        }
-    } else {
-        [self.stopBlockDictionary removeAllObjects];
+- (void)stopAllService {
+    for (NSString *key in self.stopBlockDictionary.allKeys) {
+        [self stopServiceRequest:key];
     }
 }
 
@@ -85,7 +85,13 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     void (^stopBlock)(void) = self.stopBlockDictionary[serviceType];
     if (stopBlock) {
         stopBlock();
+        // Remove block
+        [self.stopBlockDictionary removeObjectForKey:serviceType];
     }
+}
+
+- (BOOL)isServiceStopped:(NSString *)serviceType {
+    return self.stopBlockDictionary[serviceType] == nil;
 }
 
 @end
