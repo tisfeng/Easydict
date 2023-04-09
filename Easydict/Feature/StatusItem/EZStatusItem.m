@@ -138,11 +138,18 @@ static EZStatusItem *_instance;
     NSLog(@"Clear input");
     
     EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
-    queryViewController.queryText = @"";
+    [queryViewController clearInput];
+}
+
+- (IBAction)clearAllAction:(NSMenuItem *)sender {
+    NSLog(@"Clear All");
+    
+    EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
+    [queryViewController clearAll];
 }
 
 - (IBAction)pinAction:(NSMenuItem *)sender {
-    NSLog(@"pin");
+    NSLog(@"Pin");
     
     EZBaseQueryWindow *queryWindow = EZWindowManager.shared.floatingWindow;
     queryWindow.titleBar.pin = !queryWindow.titleBar.pin;

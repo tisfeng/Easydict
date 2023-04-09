@@ -312,14 +312,14 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Shortcut" id="eIi-Yp-9Iw">
                                     <items>
-                                        <menuItem title="Clear" keyEquivalent="k" id="rr4-Iy-d6B" userLabel="Clear">
+                                        <menuItem title="Clear Input" keyEquivalent="k" id="rr4-Iy-d6B" userLabel="Clear Input">
                                             <connections>
                                                 <action selector="clearInputAction:" target="qM9-fT-Fym" id="sfK-KC-THW"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Pin" keyEquivalent="p" id="g1Y-HC-Hcm" userLabel="Pin">
+                                        <menuItem title="Clear All" keyEquivalent="K" id="4PD-8L-PDj" userLabel="Clear All">
                                             <connections>
-                                                <action selector="pinAction:" target="qM9-fT-Fym" id="HXh-3D-1iH"/>
+                                                <action selector="clearAllAction:" target="qM9-fT-Fym" id="Z6m-CD-ebb"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Retry" keyEquivalent="r" id="pBe-oc-b5O">
@@ -327,7 +327,12 @@
                                                 <action selector="translateRetryAction:" target="qM9-fT-Fym" id="s51-7o-oTB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Close" keyEquivalent="w" id="dFr-S6-9m0" userLabel="Close">
+                                        <menuItem title="Pin" keyEquivalent="p" id="g1Y-HC-Hcm">
+                                            <connections>
+                                                <action selector="pinAction:" target="qM9-fT-Fym" id="HXh-3D-1iH"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Hide" keyEquivalent="w" id="dFr-S6-9m0">
                                             <connections>
                                                 <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
                                             </connections>
