@@ -156,7 +156,6 @@
     [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");
         mm_strongify(self);
-        [self setAlertMessageHidden:YES];
         if (self.clearBlock) {
             self.clearBlock(self.copiedText);
         }

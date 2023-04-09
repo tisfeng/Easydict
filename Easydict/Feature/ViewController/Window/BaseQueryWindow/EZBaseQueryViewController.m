@@ -402,6 +402,25 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
+- (void)clearInput {
+    // Clear query text, detect language and clear button right now;
+    self.queryText = @"";
+    self.queryModel.ocrImage = nil;
+    [self.queryView setAlertMessageHidden:YES];
+}
+
+- (void)clearAll {
+    [self clearInput];
+
+    [self.queryModel stopAllService];
+
+    [self updateQueryCellWithCompletionHandler:^{
+        // !!!: To show closing animation, we cannot reset result directly.
+        [self closeAllResultView:^{
+            [self resetQueryAndResults];
+        }];
+    }];
+}
 
 #pragma mark - Query Methods
 
@@ -947,18 +966,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setClearBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
-
-        // Clear query text, detect language and clear button right now;
-        self.queryText = @"";
-        self.queryModel.ocrImage = nil;
-        [self.queryModel stopAllService];
-
-        [self updateQueryCellWithCompletionHandler:^{
-            // !!!: To show closing animation, we cannot reset result directly.
-            [self closeAllResultView:^{
-                [self resetQueryAndResults];
-            }];
-        }];
+        [self clearAll];
     }];
 
     [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
