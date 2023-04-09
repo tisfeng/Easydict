@@ -27,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startQueryWithImage:(NSImage *)image;
 - (void)retryQuery;
 
+- (void)clearInput;
+- (void)clearAll;
+
 - (void)resetTableView:(void (^)(void))completion;
 - (void)focusInputTextView;
 
