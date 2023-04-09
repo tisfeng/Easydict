@@ -40,7 +40,7 @@
     [self addSubview:pinButton];
     self.pinButton = pinButton;
     pinButton.contentTintColor = [NSColor clearColor];
-    pinButton.toolTip = @"Pin";
+    pinButton.toolTip = @"Pin, ⌘+P";
     
     pinButton.clickBlock = nil;
     self.pin = NO;
