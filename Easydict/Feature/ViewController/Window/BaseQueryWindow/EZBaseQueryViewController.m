@@ -319,7 +319,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
     
-    [self startNewQuery:text queyType:queryType];
+    // Before starting new query, we should stop the previous query.
+    [self.queryModel stopAllService];
 
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
@@ -329,10 +330,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Setup queryModel when start new query.
-- (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType  {
-    // Before starting new query, we should stop the previous query.
-    self.queryModel.stop = YES;
-    self.queryModel.stop = NO;
+- (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType serviceType:(EZServiceType)serviceType {
+    [self.queryModel stopServiceRequest:serviceType];
 
     self.queryModel.queryText = text;
     self.queryModel.queryType = queryType;
@@ -495,6 +494,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // Show result if it has been queried.
     result.isShowing = YES;
     result.isLoading = YES;
+    
+    [self startNewQuery:self.queryText queyType:self.queryModel.queryType serviceType:service.serviceType];
 
     [self updateResultLoadingAnimation:result];
     
@@ -950,7 +951,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // Clear query text, detect language and clear button right now;
         self.queryText = @"";
         self.queryModel.ocrImage = nil;
-        self.queryModel.stop = YES;
+        [self.queryModel stopAllService];
 
         [self updateQueryCellWithCompletionHandler:^{
             // !!!: To show closing animation, we cannot reset result directly.
@@ -1066,8 +1067,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
-            [self startNewQuery:self.queryText queyType:self.queryModel.queryType];
-
             [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                 result.error = error;
                 result.isShowing = YES;

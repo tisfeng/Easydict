@@ -193,14 +193,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                            from:(EZLanguage)from
                              to:(EZLanguage)to
                      completion:
-                         (void (^)(id _Nullable responseObject,
-                                   NSString *_Nullable signText,
-                                   NSMutableDictionary *reqDict,
-                                   NSError *_Nullable error))completion {
+(void (^)(id _Nullable responseObject,
+          NSString *_Nullable signText,
+          NSMutableDictionary *reqDict,
+          NSError *_Nullable error))completion {
     NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
-
+    
     NSString *url = [kGoogleRootPage(self.isCN)
-        stringByAppendingPathComponent:@"/translate_a/single"];
+                     stringByAppendingPathComponent:@"/translate_a/single"];
     NSDictionary *params = @{
         @"q" : text,
         @"sl" : [self languageCodeForLanguage:from],
@@ -210,32 +210,31 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @"ie" : @"UTF-8",
         @"client" : @"gtx",
     };
-    NSMutableDictionary *reqDict = [NSMutableDictionary
-        dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params,
-                                     EZTranslateErrorRequestParamKey, nil];
-
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params,
+                                    EZTranslateErrorRequestParamKey, nil];
+    
     NSURLSessionTask *task = [self.jsonSession GET:url
-        parameters:params
-        progress:nil
-        success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-            if (self.queryModel.stop) {
-                return;
-            }
-
-            if (responseObject) {
-                completion(responseObject, sign, reqDict, nil);
-            } else {
-                completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
-            }
+                                        parameters:params
+                                          progress:nil
+                                           success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
+            return;
         }
-        failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-            if (error.code == NSURLErrorCancelled) {
-                return;
-            }
-            [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
-        }];
-
+        
+        if (responseObject) {
+            completion(responseObject, sign, reqDict, nil);
+        } else {
+            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
+        }
+    }
+                                           failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+        completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
+    }];
+    
     [self.queryModel setStopBlock:^{
         [task cancel];
     } serviceType:self.serviceType];
@@ -615,7 +614,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
 
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        if (self.queryModel.stop) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         

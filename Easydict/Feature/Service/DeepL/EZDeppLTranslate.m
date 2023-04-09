@@ -122,7 +122,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     } serviceType:self.serviceType];
     
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-        if (self.queryModel.stop) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
         
@@ -191,7 +191,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] init];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
     NSURLSessionTask *task = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
-        if (self.queryModel.stop || error.code == NSURLErrorCancelled) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
+            return;
+        }
+        
+        if (error.code == NSURLErrorCancelled) {
             return;
         }
         
