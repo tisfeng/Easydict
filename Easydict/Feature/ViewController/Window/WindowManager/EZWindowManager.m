@@ -30,6 +30,8 @@
 
 @property (nonatomic, copy) EZQueryType queryType;
 
+@property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
+
 @end
 
 
@@ -67,6 +69,7 @@ static EZWindowManager *_instance;
     self.offsetPoint = CGPointMake(15, -15);
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
+    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@0]];
 }
 
 - (void)setupEventMonitor {
@@ -180,6 +183,10 @@ static EZWindowManager *_instance;
     return [self windowWithType:self.floatingWindowType];
 }
 
+- (EZWindowType)floatingWindowType {
+    return [self.floatingWindowTypeArray.firstObject integerValue];
+}
+
 #pragma mark - Others
 
 - (void)popButtonWindowClicked {
@@ -284,7 +291,9 @@ static EZWindowManager *_instance;
     
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.floatingWindowType = window.windowType;
+        NSNumber *windowType = @(window.windowType);
+        [self.floatingWindowTypeArray removeObject:windowType];
+        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
     });
 }
 
@@ -553,9 +562,11 @@ static EZWindowManager *_instance;
     }
 
     [_mainWindow orderBack:nil];
-    
-    self.lastFloatingWindowType = self.floatingWindowType;
-    self.floatingWindowType = EZWindowTypeMain;
+        
+    // Move floating window type to second.
+    NSNumber *windowType = @(self.floatingWindowType);
+    [self.floatingWindowTypeArray removeObject:windowType];
+    [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
 }
 
 /// Close floating window, except main window.

@@ -23,7 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) EZMiniQueryWindow *miniWindow;
 
 @property (nonatomic, assign) EZWindowType floatingWindowType;
-@property (nonatomic, assign) EZWindowType lastFloatingWindowType;
 
 @property (nonatomic, strong, nullable) EZBaseQueryWindow *floatingWindow;
 
