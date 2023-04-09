@@ -337,6 +337,11 @@
                                                 <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Toggle" keyEquivalent="t" id="d82-cy-RVu">
+                                            <connections>
+                                                <action selector="toggleTranslationLanguages:" target="qM9-fT-Fym" id="0S9-J8-t1W"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
