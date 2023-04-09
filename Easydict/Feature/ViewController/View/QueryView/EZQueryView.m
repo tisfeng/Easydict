@@ -345,14 +345,6 @@
         }
     }
     
-    if (commandSelector == @selector(insertNewlineIgnoringFieldEditor:)) {
-        // Option + Enter
-        if (flags & NSEventModifierFlagOption) {
-            [window.titleBar.eudicButton openLink];
-            return YES;
-        }
-    }
-    
     // Escape key
     if (commandSelector == @selector(cancelOperation:)) {
         //        NSLog(@"escape: %@", textView);
@@ -363,10 +355,20 @@
     
     // No operation
     if (commandSelector == NSSelectorFromString(@"noop:")) {
-        // Cmd + Enter
-        if (flags & NSEventModifierFlagCommand && keyCode == kVK_Return) {
-            [window.titleBar.googleButton openLink];
-            return YES;
+        // Cmd
+        if (flags & NSEventModifierFlagCommand) {
+            // Enter
+            if (keyCode == kVK_Return) {
+                // Cmd + Shift + Enter
+                if (flags & NSEventModifierFlagShift) {
+                    [window.titleBar.eudicButton openLink];
+                    return YES;
+                } else {
+                    // Cmd + Enter
+                    [window.titleBar.googleButton openLink];
+                    return YES;
+                }
+            }
         }
     }
     
