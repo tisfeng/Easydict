@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showMiniFloatingWindow;
 
 - (void)closeFloatingWindow;
+
 /// Close floating window, except main window.
 - (void)closeFloatingWindowExceptMain;
 

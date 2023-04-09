@@ -1016,11 +1016,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         case EZWindowTypeMain:
         case EZWindowTypeFixed: {
             offset = 2;
-        }
-        default:
             break;
+        }
+        default: {
+            offset = 2;
+        }
     }
-
+    
     return offset;
 }
 
