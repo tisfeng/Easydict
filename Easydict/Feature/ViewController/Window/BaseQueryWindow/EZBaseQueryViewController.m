@@ -424,6 +424,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
+- (void)playQueryTextSound {
+    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+    [self.audioPlayer playTextAudio:self.queryText
+                           audioURL:self.queryModel.audioURL
+                       fromLanguage:self.queryModel.queryFromLanguage
+                             serive:youdaoService];
+}
+
 #pragma mark - Query Methods
 
 - (void)startQueryText {
@@ -959,8 +967,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-        [self.audioPlayer playTextAudio:text audioURL:self.queryModel.audioURL fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
+        [self playQueryTextSound];
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {

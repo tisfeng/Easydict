@@ -54,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)focusInputTextView;
 
+- (void)playQueryTextSound;
+
 - (void)activeLastFrontmostApplication;
 
 - (void)showOrHideDockAppAndMainWindow;
