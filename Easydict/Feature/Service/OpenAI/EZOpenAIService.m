@@ -271,15 +271,22 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *prompt = @"";
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parse";
-    NSString *translationResult = @"Translation Result";
+    NSString *inferenceTranslation = @"Inference Translation";
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
         keyWords = @"重点词汇";
         grammarParse = @"语法分析";
-        translationResult = @"翻译结果";
+        inferenceTranslation = @"推理翻译";
     }
         
-    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\", follow the steps below step by step.\n", sourceLanguage, sentence];
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\".\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
+    
+    NSString *directTransaltionPrompt = @"Translate the text and provide the credibility score (between 0 and 1), display format: \" {Translation}({credibility}) \",\n";
+    prompt = [prompt stringByAppendingString:directTransaltionPrompt];
+    
+    
+    NSString *stepByStepPrompt = @"Follow the steps below step by step.";
+    prompt = [prompt stringByAppendingString:stepByStepPrompt];
     
     /**
      !!!: Note: These prompts' order cannot be changed, must be key words, grammar parse, translation result, otherwise the translation result will be incorrect.
@@ -287,13 +294,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      The stock market has now reached a plateau.
      The book is simple homespun philosophy.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence,If there are no key or difficult words, there is no need to display. Show no more than 5,  display format: \"%@:\n xxx \",\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence. Show no more than 5, display format: \"%@:\n xxx \",\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous analysis, the translation result of this sentence is obtained, display format: \"%@: xxx \",\n", translationResult];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous stpes, the inference translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display format: \"%@: xxx \",\n", inferenceTranslation];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -307,19 +314,22 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 //            @"role" : @"user", // Ukraine may get another Patriot battery.
 //            @"content" :
 //                @"Here is a English sentence: \"Ukraine may get another Patriot battery.\",\n"
-//                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its real meaning in this sentence, format: \"Key Words:\n xxx \",\n"
-//                @"2. Analyze the grammatical structure of this sentence, format: \"Grammar Parse:\n xxx \",\n"
-//                @"3. According to the previous analysis, the translation result of this sentence is obtained, format: \"Translation Result: xxx \",\n"
+//                @"Translate the text and provide the credibility score (between 0 and 1), display format: \" {Translation}({credibility}) \",\n"
+//                @"Follow the steps below step by step."
+//                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its real meaning in this sentence, display format: \"Key Words:\n xxx \",\n"
+//                @"2. Analyze the grammatical structure of this sentence, display format: \"Grammar Parse:\n xxx \",\n"
+//                @"3. According to the previous analysis, the inferential translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display format: \"Translation Result: xxx \",\n"
 //                @"Answer in Simplified-Chinese. \n",
 //        },
 //        @{
 //            @"role" : @"assistant",
 //            @"content" :
+//                @"乌克兰可能会获得另一个“爱国者”导弹系统。(0.9)\n\n"
 //                @"1. 重点词汇: \n"
 //                @"battery: n. 电池；一系列；炮组。这里指导弹炮组。\n"
 //                @"Patriot battery: 爱国者导弹防御系统, 指防空导弹系统。\n\n"
 //                @"2. 语法分析: \n该句子是一个简单的主语+谓语+宾语的陈述句。主语是 \"Ukraine\"（乌克兰），谓语是 \"may get\"（可能会获得），宾语是 \"another Patriot battery\"（另一架“爱国者”导弹防御系统）。句子中使用的情态动词 \"may\"（可能）表示一种推测或可能性。 \n\n"
-//                @"3. 翻译结果:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
+//                @"3. 推理翻译:\n乌克兰可能会获得另一套“爱国者”导弹防御系统。\n\n"
 //        },
 //        @{
 //            @"role" : @"user", // The stock market has now reached a plateau.
@@ -342,20 +352,23 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @{
             @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
-                @"Here is a English sentence: \"The book is simple homespun philosophy.\", follow the steps below step by step.\n"
-                @"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence, display format: \"重点词汇:\n xxx \",\n"
-                @"2. Analyze the grammatical structure of this sentence, display format: \"语法分析:\n xxx \",\n"
-                @"3. According to the previous analysis, the translation result of this sentence is obtained, display format: \"翻译结果: xxx \",\n"
+                @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
+                @"Translate the text and provide the credibility score (between 0 and 1), display format: \" {Translation}({credibility}) \",\n"
+                @"Follow the steps below step by step."
+                @"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its real meaning in this sentence, display format: \"1. 重点词汇:\n xxx \",\n"
+                @"2. Analyze the grammatical structure of this sentence, display format: \"2. 语法分析:\n xxx \",\n"
+                @"3. According to the previous step, the inference translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display format: \"3. 推理翻译: xxx \",\n"
                 @"Answer in Simplified-Chinese. \n",
         },
         @{
             @"role" : @"assistant",
             @"content" :
+                @"这本书是简单的乡土哲学。(0.8)\n\n"
                 @"1. 重点词汇: \n"
-                @"homespun: adj. 朴素的，简朴的；手织的。这里是指朴素的。\n"
+                @"homespun: adj. 简朴的；手织的。这里是指朴素的。\n"
                 @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n\n"
                 @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-                @"3. 翻译结果:\n这本书是简单朴素的哲学。\n\n"
+                @"3. 推理翻译:\n这本书是简单朴素的哲学。\n\n"
         },
     ];
     
