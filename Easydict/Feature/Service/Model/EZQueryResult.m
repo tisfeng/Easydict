@@ -114,7 +114,7 @@ NSString *getPartName(NSString *part) {
 }
 
 - (BOOL)hasShowingResult {
-    if (self.hasTranslatedResult || self.error) {
+    if (self.hasTranslatedResult || self.error || self.errorMessage.length) {
         return YES;
     }
     return NO;

@@ -12,6 +12,7 @@
 #import "EZYoudaoDictModel.h"
 #import "EZQueryResult+EZYoudaoDictModel.h"
 #import "EZWebViewTranslator.h"
+#import "EZTextWordUtils.h"
 
 static NSString *const kYoudaoDictURL = @"https://www.youdao.com";
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
@@ -258,19 +259,27 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
     BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
     
+    BOOL isWord = [EZTextWordUtils isWord:text];
+    
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     BOOL supportQueryDictionary = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
     if (!supportQueryDictionary) {
+        if (isWord || !enableTranslation) {
+            self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
+            completion(self.result, nil);
+            return;
+        }
+        
         if (enableTranslation) {
             [self youdaoWebTranslate:text from:from to:to completion:completion];
-        } else {
-            completion(self.result, nil);
         }
         return;
     }
     
+    
+    // 1. Query dict.
     NSArray *dictArray = @[ @[ @"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest" ] ];
     NSDictionary *dicts = @{
         @"count" : @(99),
