@@ -183,6 +183,8 @@
 - (void)setPin:(BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
+    NSString *pinToolTip = pin ? @"Unpin" : @"Pin";
+    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, ⌘+P ", pinToolTip];
     
     [self updatePinButtonImage];
 }
