@@ -451,6 +451,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     // Note some abbreviations: acg, ol, js, os
     NSString *systemPrompt = @"You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n";
     
+    // Fix: Lemma, reckon
+    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Using %@: \n", answerLanguage];
+    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
+    
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word: \"%@\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
@@ -514,12 +518,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
-    NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
-    prompt = [prompt stringByAppendingString:answerLanguagePrompt];
-    
-    //    NSString *formatPompt = [NSString stringWithFormat:@"Note that the description title text before the colon : in format output, should be translated into %@ language. \n", answerLanguage];
-    //    prompt = [prompt stringByAppendingString:formatPompt];
-    
     NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
     
@@ -533,7 +531,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
     
-    
     NSLog(@"dict prompt: %@", prompt);
     
     
@@ -541,8 +538,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // album
-            @"content" : @"Here is a English word: \"album\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+            @"content" :
+                @"Using Simplified-Chinese: \n"
+                @"Here is a English word: \"album\" \n"
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
         },
         @{
             @"role" : @"assistant",
@@ -560,8 +559,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"user", // raven
-            @"content" : @"Here is a English word: \"raven\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in Simplified-Chinese."
+            @"content" :
+                @"Using Simplified-Chinese: \n"
+                @"Here is a English word: \"raven\" \n"
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
         },
         @{
             @"role" : @"assistant",
@@ -588,13 +589,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{  //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
             @"role" : @"user", // js
-            @"content" : @"Here is a word: \"js\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
+            @"content" :
+                @"Using Simplified-Chinese: \n"
+                @"Here is a English word: \"js\" \n"
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
         },
         @{
             @"role" : @"assistant",
             @"content" : @"Pronunciation: xxx \n\n"
-            "JavaScript 的缩写，一种直译式脚本语言 \n\n"
+            "n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
             "Explanation: xxx \n\n"
             "Etymology: xxx \n\n"
         },
@@ -619,8 +622,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSArray *englishFewShot = @[
         @{
             @"role" : @"user", // raven
-            @"content" : @"Here is a English word: \"raven\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
+            @"content" :
+                @"Using English: \n"
+                @"Here is a English word: \"raven\" \n"
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
         },
         @{
             @"role" : @"assistant",
@@ -639,8 +644,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
-            @"content" : @"Here is a English word abbreviation: \"acg\" \n"
-            "Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, answer in English."
+            @"content" :
+                @"Using English: \n"
+                @"Here is a English word abbreviation: \"acg\" \n"
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
         },
         @{
             @"role" : @"assistant",
