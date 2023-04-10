@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageModel.h"
+#import <NaturalLanguage/NaturalLanguage.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Use NLTagger to check if text is a word.
 + (BOOL)isWord2:(NSString *)text;
+
++ (NSArray<NLTag> *)taggedWordsInText:(NSString *)text;
 
 /// Use NSSpellChecker to check word spell.
 + (BOOL)isSpelledCorrectly:(NSString *)word ;
