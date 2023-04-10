@@ -214,29 +214,31 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
     
     NSString *prompt = [NSString stringWithFormat:
-                        @"Translate the following %@ text into %@. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the %@ language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
-                        @"\"%@\"", sourceLanguage, targetLanguage, targetLanguage, text];
+                        @"\"%@\" \n\n"
+                        @"Translate the %@ text into %@. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the %@ language. The result of the translation should flow naturally, be easy to understand and beautiful."
+                        , text, sourceLanguage, targetLanguage, targetLanguage];
 
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // The stock market has now reached a plateau.
             @"content" :
-                @"Translate the following English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
-                @"\"The stock market has now reached a plateau.\""
+                @"\"The stock market has now reached a plateau.\" \n\n"
+                @"Translate the English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language. The result of the translation should flow naturally, be easy to understand and beautiful."
         },
         @{
             @"role" : @"assistant",
             @"content" : @"股市现在已经进入了平稳期。"
         },
-        @{
-            @"role" : @"user", // The book is simple homespun philosophy.
-            @"content" : @"Translate the following English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language, and the result of the translation should flow naturally, be easy to understand and beautiful:\n\n"
-            @"\"The book is simple homespun philosophy.\""
-        },
-        @{
-            @"role" : @"assistant",
-            @"content" : @"这本书是简单朴素的哲学。"
-        },
+//        @{
+//            @"role" : @"user", // The book is simple homespun philosophy.
+//            @"content" :
+//                @"\"The book is simple homespun philosophy.\" \n\n"
+//                @"Translate the English text into Simplified-Chinese. Be careful not to translate rigidly and directly, but to use words that fit the common expression habits of the Simplified-Chinese language. The result of the translation should flow naturally, be easy to understand and beautiful."
+//        },
+//        @{
+//            @"role" : @"assistant",
+//            @"content" : @"这本书是简单朴素的哲学。"
+//        },
     ];
     
     NSArray *systemMessages = @[
