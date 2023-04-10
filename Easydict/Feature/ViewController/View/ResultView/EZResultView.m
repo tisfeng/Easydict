@@ -209,7 +209,7 @@
     [self.wordResultView refreshWithResult:result];
 
     BOOL hideWarningImage = YES;
-    if (!result.hasTranslatedResult && result.error) {
+    if (!result.hasTranslatedResult && (result.error || result.errorMessage.length)) {
         hideWarningImage = NO;
     }
     self.warningImageView.hidden = hideWarningImage;
