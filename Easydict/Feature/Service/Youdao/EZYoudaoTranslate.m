@@ -258,15 +258,18 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
     BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
     
-    
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
+    BOOL supportQueryDictionary = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
-    if (!foreignLangauge && enableTranslation) {
-        [self youdaoWebTranslate:text from:from to:to completion:completion];
+    if (!supportQueryDictionary) {
+        if (enableTranslation) {
+            [self youdaoWebTranslate:text from:from to:to completion:completion];
+        } else {
+            completion(self.result, nil);
+        }
         return;
     }
-    
     
     NSArray *dictArray = @[ @[ @"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest" ] ];
     NSDictionary *dicts = @{
@@ -287,7 +290,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     dispatch_group_t group = dispatch_group_create();
     mm_weakify(self);
     
-    if (text.length < 30 && enableDictionary) {
+    if (text.length < 20 && enableDictionary) {
         // 1.Query Youdao dict.
         dispatch_group_enter(group);
         NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
