@@ -437,8 +437,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *antonym = @"Antonym";
     
     BOOL isEnglishWord = NO;
+    BOOL isEnglishPhrase = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
         isEnglishWord = [EZTextWordUtils isEnglishWord:word];
+        isEnglishPhrase = [EZTextWordUtils isEnglishPhrase:word];
     }
     
     BOOL isChineseWord = NO;
@@ -502,15 +504,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     if (isEnglishWord) {
         NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
+        
+        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, format: \"%@: xxx \" ", sourceLanguage, cognate];
+        //  NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
+        prompt = [prompt stringByAppendingString:cognatesPrompt];
     }
     
-    if (isWord) {
-        if (isEnglishWord) {
-            NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, format: \"%@: xxx \" ", sourceLanguage, cognate];
-            //  NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
-            prompt = [prompt stringByAppendingString:cognatesPrompt];
-        }
-        
+    if (isWord | isEnglishPhrase) {
         NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, format: \"%@: xxx \" ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
