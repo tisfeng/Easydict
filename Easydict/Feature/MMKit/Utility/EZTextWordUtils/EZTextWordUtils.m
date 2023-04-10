@@ -8,7 +8,6 @@
 
 #import "EZTextWordUtils.h"
 #import "EZLanguageManager.h"
-#import <NaturalLanguage/NaturalLanguage.h>
 
 static NSDictionary *const kQuotesDict = @{
     @"\"" : @"\"",
@@ -114,6 +113,51 @@ static NSDictionary *const kQuotesDict = @{
         *stop = YES;
     }];
     return result;
+}
+
+/// Cannot use to check a word, like 'love'.
++ (NSArray<NLTag> *)taggedWordsInText:(NSString *)text {
+    // Apple Docs: https://developer.apple.com/documentation/naturallanguage/identifying_parts_of_speech?language=objc
+    
+    NLTagScheme tagScheme = NLTagSchemeLexicalClass;
+    NLTaggerOptions options = NLTaggerOmitPunctuation | NLTaggerOmitWhitespace;
+    NSRange range = NSMakeRange(0, text.length);
+
+    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ tagScheme ]];
+    tagger.string = text;
+//    [tagger setLanguage:NLLanguageEnglish range:range];
+    
+    NSArray<NLTag> *tags = [tagger tagsInRange:range
+                                          unit:NLTokenUnitWord
+                                        scheme:tagScheme
+                                       options:options
+                                   tokenRanges:nil];
+    /**
+     The ripe taste of cheese improves with age.
+     
+     "Determiner",
+     "Adjective",
+     "Noun",
+     "Preposition",
+     "Noun",
+     "Verb",
+     "Preposition",
+     "Noun"
+     */
+    NSLog(@"tags: %@", tags);
+    
+    [tagger enumerateTagsInRange:range
+                            unit:NLTokenUnitWord
+                          scheme:tagScheme
+                         options:options
+                      usingBlock:^(NLTag _Nullable tag, NSRange tokenRange, BOOL *_Nonnull stop) {
+        if (tag != nil) {
+            NSString *token = [text substringWithRange:tokenRange];
+            NSLog(@"%@: %@", token, tag);
+        }
+    }];
+    
+    return tags;
 }
 
 /// Use NSSpellChecker to check word spell.
