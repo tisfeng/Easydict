@@ -133,8 +133,9 @@ typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
 @property (nonatomic, strong, nullable) NSError *error;
 @property (nonatomic, copy, nullable) NSString *errorMessage;
 
-/// If (self.hasTranslatedResult || self.error), then hasShowingResult = YES, that means will show result view.
+/// If (self.hasTranslatedResult || self.error || self.errorMessage.length), then hasShowingResult = YES, that means will show result view.
 @property (nonatomic, assign, readonly) BOOL hasShowingResult;
+
 /// If (self.wordResult && self.translatedText.length), YES
 @property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
 

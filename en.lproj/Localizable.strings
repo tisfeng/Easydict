@@ -89,5 +89,6 @@
 "error_unknown" = "Unknown error";
 "translate_failed" = "Translate failed, ";
 "ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select the detected language and try again.";
+"query_has_no_result" = "⚠️ The query has no results";
 
 "placeholder" = "`Enter` to query, `Shift + Enter` to newline";

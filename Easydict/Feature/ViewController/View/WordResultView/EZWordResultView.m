@@ -64,6 +64,10 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSString *errorDescription = result.error.localizedDescription;
     if (result.errorMessage.length) {
         errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", result.errorMessage];
+        
+        if (!errorDescription && !result.hasTranslatedResult) {
+            errorDescription = result.errorMessage;
+        }
     }
     
     __block CGFloat ezLabelTopOffset = 0;
