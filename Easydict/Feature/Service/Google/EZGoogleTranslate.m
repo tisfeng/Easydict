@@ -9,6 +9,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "EZTextWordUtils.h"
 
 #define kGoogleRootPage(isCN) (isCN ? @"https://translate.google.cn" : @"https://translate.google.com")
 
@@ -328,12 +329,17 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
-
-    //    [self translateSingleText:text from:from to:to completion:completion];
-    [self translateTKKText:text from:from to:to completion:completion];
+    
+    BOOL queryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
+    if (queryDictionary) {
+        // This API can get word info, like pronunciation.
+        [self translateTKKText:text from:from to:to completion:completion];
+    } else {
+        [self translateSingleText:text from:from to:to completion:completion];
+    }
 }
 
-
+/// This API can only get translation and language, the translation result is the same as web.
 - (void)translateSingleText:(NSString *)text
                        from:(EZLanguage)from
                          to:(EZLanguage)to
@@ -434,6 +440,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     return text;
 }
 
+/// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
 - (void)translateTKKText:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
