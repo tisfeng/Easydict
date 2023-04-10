@@ -119,16 +119,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 - (EZQueryServiceType)queryServiceType {
     EZQueryServiceType type = EZQueryServiceTypeNone;
-    BOOL enableTranslation= [[NSUserDefaults mm_readString:EZYoudaoTranslationKey defaultValue:@"1"] boolValue];
+    BOOL enableTranslation = [[NSUserDefaults mm_readString:EZYoudaoTranslationKey defaultValue:@"1"] boolValue];
     BOOL enableDictionary = [[NSUserDefaults mm_readString:EZYoudaoDictionaryKey defaultValue:@"1"] boolValue];
     if (enableTranslation) {
         type = type | EZQueryServiceTypeTranslation;
     }
     if (enableDictionary) {
         type = type | EZQueryServiceTypeDictionary;
-    }
-    if (type == EZQueryServiceTypeNone) {
-        type = EZQueryServiceTypeTranslation;
     }
 
     return type;
@@ -242,7 +239,47 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
     
-    [self queryYoudaoDict:text from:from to:to completion:completion];
+    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
+}
+
+- (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    if (!text.length) {
+        completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        return;
+    }
+    
+    if (self.queryServiceType == EZQueryServiceTypeNone) {
+        self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
+        completion(self.result, nil);
+        return;
+    }
+    
+    // 1. Query dict.
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    [self queryYoudaoDict:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        if (error) {
+            NSLog(@"queryYoudaoDict error: %@", error);
+        }
+        dispatch_group_leave(group);
+    }];
+    
+    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
+    if (enableTranslation) {
+        // 2.Query Youdao translate.
+        dispatch_group_enter(group);
+        [self youdaoWebTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+            if (error) {
+                NSLog(@"translateYoudaoAPI error: %@", error);
+                self.result.error = error;
+            }
+            dispatch_group_leave(group);
+        }];
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        completion(self.result, self.result.error);
+    });
 }
 
 - (void)queryYoudaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
@@ -256,30 +293,23 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         return;
     }
     
-    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
     BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
     
-    BOOL isWord = [EZTextWordUtils isWord:text];
+    // Youdao dict can query word, phrase, even short text.
+    BOOL shouldQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
-    BOOL supportQueryDictionary = foreignLangauge != nil;
+    BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;
     
     // If Youdao Dictionary does not support the language, try querying translate API.
-    if (!supportQueryDictionary) {
-        if (isWord || !enableTranslation) {
-            self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
-            completion(self.result, nil);
-            return;
-        }
-        
-        if (enableTranslation) {
-            [self youdaoWebTranslate:text from:from to:to completion:completion];
-        }
+    if (!enableDictionary || !supportQueryDictionaryLanguage || !shouldQueryDictionary) {
+        self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
+        completion(self.result, nil);
         return;
     }
     
     
-    // 1. Query dict.
+    // Query dict.
     NSArray *dictArray = @[ @[ @"web_trans", @"ec", @"ce", @"newhh", @"baike", @"wikipedia_digest" ] ];
     NSDictionary *dicts = @{
         @"count" : @(99),
@@ -296,83 +326,35 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     NSString *url = @"https://dict.youdao.com/jsonapi";
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
     
-    dispatch_group_t group = dispatch_group_create();
-    mm_weakify(self);
-    
-    if (text.length < 20 && enableDictionary) {
-        // 1.Query Youdao dict.
-        dispatch_group_enter(group);
-        NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-            mm_strongify(self);
-            NSString *message = nil;
-            if (responseObject) {
-                @try {
-                    EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
-                    [self.result setupWithYoudaoDictModel:model];
-                    dispatch_group_leave(group);
-                    return;
-                } @catch (NSException *exception) {
-                    MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
-                    message = @"有道翻译接口数据解析异常";
-                }
-            }
-            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-            self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
-            dispatch_group_leave(group);
-        } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-            if (error.code == NSURLErrorCancelled) {
+    NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        NSString *message = nil;
+        if (responseObject) {
+            @try {
+                EZYoudaoDictModel *model = [EZYoudaoDictModel mj_objectWithKeyValues:responseObject];
+                [self.result setupWithYoudaoDictModel:model];
+                completion(self.result, self.result.error);
                 return;
+            } @catch (NSException *exception) {
+                MMLogInfo(@"有道翻译接口数据解析异常 %@", exception);
+                message = @"有道翻译接口数据解析异常";
             }
-
-            mm_strongify(self);
-            [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-            self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
-            dispatch_group_leave(group);
-        }];
-        
-        [self.queryModel setStopBlock:^{
-            [task cancel];
-        } serviceType:self.serviceType];
-    }
-    
-    if (enableTranslation) {
-        // 2.Query Youdao translate.
-        dispatch_group_enter(group);
-        [self youdaoWebTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-            mm_strongify(self);
-            if (error) {
-                NSLog(@"translateYoudaoAPI error: %@", error);
-                self.result.error = error;
-            }
-            dispatch_group_leave(group);
-        }];
-    }
-    
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        mm_strongify(self);
-        if (self.result.error && !self.result.hasTranslatedResult && enableTranslation) {
-            NSString *wordLink = [self wordLink:self.queryModel];
-            if (wordLink) {
-                [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
-                    if ([self.queryModel isServiceStopped:self.serviceType]) {
-                        return;
-                    }
-                    self.result.normalResults = texts;
-                    completion(self.result, error);
-                }];
-                
-                mm_weakify(self);
-                [self.queryModel setStopBlock:^{
-                    mm_strongify(self);
-                    [self.webViewTranslator resetWebView];
-                } serviceType:self.serviceType];
-            } else {
-                completion(self.result, EZQueryUnsupportedLanguageError(self));
-            }
-        } else {
-            completion(self.result, nil);
         }
-    });
+        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+        self.result.error = EZTranslateError(EZTranslateErrorTypeAPI, message, reqDict);
+        completion(self.result, self.result.error);
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+
+        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+        self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
+        completion(self.result, self.result.error);
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
+    } serviceType:self.serviceType];
 }
 
 

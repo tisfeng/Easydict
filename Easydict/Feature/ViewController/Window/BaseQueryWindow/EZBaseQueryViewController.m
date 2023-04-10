@@ -484,9 +484,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 NSLog(@"query error: %@", error);
             }
             result.error = error;
-            result.isShowing = YES;
-            if (!result.hasTranslatedResult && result.error) {
-                result.isShowing = NO;
+            result.isShowing = NO;
+            if (result.hasTranslatedResult) {
+                result.isShowing = YES;
             }
             //  NSLog(@"update service: %@, %@", service.serviceType, result);
             [self updateCellWithResult:result reloadData:YES];
