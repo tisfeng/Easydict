@@ -185,12 +185,22 @@
             return;
         }
         
-        EZLanguage ocrLanguage = self.queryModel.queryFromLanguage;
+        EZLanguage queryFromLanguage = self.queryModel.queryFromLanguage;
         
+        // If user has specified ocr language, we don't need to detect and ocr again.
+        if (![queryFromLanguage isEqualToString:EZLanguageAuto]) {
+            [self handleOCRResult:ocrResult error:ocrError completion:completion];
+            return;
+        }
+                
+        /**
+         !!!: Even confidence is high, such as confidence is 1.0, that just means the ocr result text is accurate, but the ocr result from langauge may be not accurate, such as 'heel', it may be detected as 'Dutch'. So we need to detect text language again.
+         */
+                
         NSString *ocrText = ocrResult.mergedText;
         [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable detectError) {
-            BOOL retryOCR = ![ocrLanguage isEqualToString:queryModel.detectedLanguage];
-            if (!retryOCR) {
+            BOOL isConfidentLanguage = (ocrResult.confidence == 1.0) && [ocrResult.from isEqualToString:queryModel.detectedLanguage];
+            if (isConfidentLanguage) {
                 completion(ocrResult, nil);
                 return;
             }

@@ -26,8 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 源语言
 @property (nonatomic, assign) EZLanguage from;
+
 /// 目标语言，某些OCR服务带有翻译功能，如有道OCR。
 @property (nonatomic, assign) EZLanguage to;
+
 /// 文本识别结果，分句或分段
 @property (nonatomic, strong) NSArray<EZOCRText *> *ocrTextArray;
 
@@ -37,6 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *mergedText;
 /// OCR接口提供的原始的、未经转换的查询结果
 @property (nonatomic, strong) id raw;
+
+@property (nonatomic, assign) CGFloat confidence; // Apple OCR
 
 @end
 
