@@ -18,12 +18,13 @@ static CGFloat const EZCornerRadius_8 = 8;
 
 static CGFloat const EZTitlebarHeight_28 = 28;
 
-static CGFloat const EZAudioButtonWidth_26 = 26;
+static CGFloat const EZAudioButtonWidthHeight_26 = 26;
 static CGFloat const EZAudioButtonImageWidth_16 = 16;
 
-static CGFloat const EZAudioButtonLeftOffset_7 = 7;
-static CGFloat const EZAudioButtonBottomOffset_5 = 5;
-static CGFloat const EZAudioButtonRightOffset_2 = 2;
+static CGFloat const EZAudioButtonLeftMargin_7 = 7;
+static CGFloat const EZAudioButtonInputViewTopPadding_6 = 6;
+static CGFloat const EZAudioButtonBottomMargin_5 = 5;
+static CGFloat const EZAudioButtonRightPadding_2 = 2;
 
 
 static NSString *const EZBundleId = @"com.izual.Easydict";
