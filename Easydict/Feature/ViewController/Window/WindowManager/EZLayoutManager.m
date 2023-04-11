@@ -101,7 +101,7 @@ static EZLayoutManager *_instance;
         case EZWindowTypeMain:
             return 70;
         case EZWindowTypeFixed:
-            return 65;
+            return 60;
         case EZWindowTypeMini:
             return EZInputViewMinHeight; // two line
         default:

@@ -229,13 +229,13 @@
     [self updateCustomLayout];
     
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-EZAudioButtonBottomOffset_5);
-        make.left.offset(EZAudioButtonLeftOffset_7);
-        make.width.height.mas_equalTo(EZAudioButtonWidth_26);
+        make.bottom.offset(-EZAudioButtonBottomMargin_5);
+        make.left.offset(EZAudioButtonLeftMargin_7);
+        make.width.height.mas_equalTo(EZAudioButtonWidthHeight_26);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightOffset_2);
+        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightPadding_2);
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
@@ -244,7 +244,8 @@
     
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
-        make.bottom.equalTo(self.audioButton.mas_top).offset(0);
+        // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
+        make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_6);
         
         CGFloat textViewHeight = [self heightOfTextView];
         make.height.mas_greaterThanOrEqualTo(textViewHeight);
