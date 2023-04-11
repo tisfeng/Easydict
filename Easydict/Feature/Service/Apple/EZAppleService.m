@@ -268,10 +268,56 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return mostConfidentLanguage;
 }
 
+- (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
+    text = [text trimToMaxLength:100];
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
+    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
+    
+    // macos(10.14)
+    NLLanguageRecognizer *recognizer = [[NLLanguageRecognizer alloc] init];
+    
+    // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
+    recognizer.languageConstraints = [self designatedLanguages];
+    recognizer.languageHints = [self customLanguageHints];
+    [recognizer processString:text];
+    
+    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
+    NLLanguage dominantLanguage = recognizer.dominantLanguage;
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    
+    if (logFlag) {
+        NSLog(@"system probabilities:: %@", languageProbabilityDict);
+        NSLog(@"dominant Language: %@", dominantLanguage);
+        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
+    }
+    
+    return languageProbabilityDict;
+}
+
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    EZLanguage ocrLanguage = queryModel.queryFromLanguage;
-    [self ocrImage:queryModel.ocrImage language:ocrLanguage retry:NO completion:completion];
+    self.queryModel = queryModel;
+    
+    BOOL automaticallyDetectsLanguage = YES;
+    if (![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
+        automaticallyDetectsLanguage = NO;
+    }
+    
+    [self ocrImage:queryModel.ocrImage
+          language:queryModel.queryFromLanguage
+        autoDetect:automaticallyDetectsLanguage
+        completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+        if (error || ocrResult.confidence == 1.0) {
+            completion(ocrResult, error);
+            return;
+        }
+        
+        NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
+        [self getMostConfidenceLangaugeOCRResult:languageDict completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+            completion(ocrResult, error);
+        }];
+    }];
 }
 
 - (void)ocrImage:(NSImage *)image
@@ -330,16 +376,22 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             
             [self setupOCRResult:ocrResult request:request intelligentJoined:NO];
             
-            [self detectText:ocrResult.mergedText completion:^(EZLanguage language, NSError *_Nullable error) {
-                ocrResult.from = language;
-                if (![language isEqualToString:recognitionLanguages.firstObject]) {
-                    [self ocrImage:image language:language retry:NO completion:completion];
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(ocrResult, nil);
-                    });
-                }
+            NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
+            [self getMostConfidenceLangaugeOCRResult:languageDict completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+                completion(ocrResult, error);
             }];
+            
+            
+//            [self detectText:ocrResult.mergedText completion:^(EZLanguage language, NSError *_Nullable error) {
+//                ocrResult.from = language;
+//                if (![language isEqualToString:recognitionLanguages.firstObject]) {
+//                    [self ocrImage:image language:language retry:NO completion:completion];
+//                } else {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completion(ocrResult, nil);
+//                    });
+//                }
+//            }];
         }];
         
         if (@available(macOS 12.0, *)) {
@@ -370,17 +422,103 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     });
 }
 
+- (void)ocrImage:(NSImage *)image
+        language:(EZLanguage)preferredLanguage
+      autoDetect:(BOOL)automaticallyDetectsLanguage
+      completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    NSLog(@"ocr language: %@", preferredLanguage);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Convert NSImage to CGImage
+        CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+        
+        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+        
+        // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
+        
+        MMOrderedDictionary *appleOCRDict = [self ocrLanguageDictionary];
+        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRDict sortedKeys];
+        NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
+                                                                     preferredLanguages:[EZLanguageManager systemPreferredLanguages]];
+        
+        VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
+        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
+            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+            NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
+            
+            EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+            ocrResult.from = preferredLanguage;
+            
+            if (error) {
+                completion(ocrResult, error);
+                return;
+            }
+                        
+            [self setupOCRResult:ocrResult request:request intelligentJoined:YES];
+            if (!error && ocrResult.mergedText.length == 0) {
+                /**
+                 !!!: There are some problems with the system OCR.
+                 For example, it may return nil when ocr Japanese text:
+                 
+                 アイス・スノーセーリング世界選手権大会
+                 
+                 */
+                error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(ocrResult, error);
+            });
+            return;
+        }];
+        
+        if (@available(macOS 12.0, *)) {
+            //            NSError *error;
+            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
+            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+            //            NSLog(@"supported Languages: %@", supportedLanguages);
+        }
+        
+        if (@available(macOS 13.0, *)) {
+            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
+        }
+        
+        if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
+            // If has designated ocr language, move it to first priority.
+            recognitionLanguages = [self updateOCRRecognitionLanguages:recognitionLanguages
+                                                    preferredLanguages:@[ preferredLanguage ]];
+        }
+        
+        
+        NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
+        request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
+        
+        // TODO: need to test [usesLanguageCorrection] value.
+        // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
+        request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
+        
+        // Perform the text-recognition request.
+        [requestHandler performRequests:@[ request ] error:nil];
+    });
+}
+
 - (void)setupOCRResult:(EZOCRResult *)ocrResult
                request:(VNRequest *_Nonnull)request
      intelligentJoined:(BOOL)intelligentJoined {
     // TODO: need to optimize, check the frame of the text and determine if line breaks are necessary.
+    CGFloat confidence = 0;
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     for (VNRecognizedTextObservation *observation in request.results) {
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        VNConfidence recognizedConfidence = recognizedText.confidence;
         [recognizedStrings addObject:recognizedText.string];
+        
+        confidence += recognizedConfidence;
     }
     
     ocrResult.texts = recognizedStrings;
+    if (recognizedStrings.count > 0) {
+        ocrResult.confidence = confidence / recognizedStrings.count;
+    }
     
     NSString *mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
     if (intelligentJoined) {
@@ -391,7 +529,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     ocrResult.mergedText = mergedText;
     ocrResult.raw = recognizedStrings;
     
-    NSLog(@"ocr text: %@", recognizedStrings);
+    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, confidence, recognizedStrings);
 }
 
 // Update OCR recognitionLanguages with preferred languages.
@@ -412,7 +550,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
      风云 wind and clouds 99$ é
      
      */
-    
     if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
         // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
         for (EZLanguage language in [EZLanguageManager systemPreferredLanguages]) {
@@ -436,6 +573,72 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         }
     }
     return [appleOCRLanguageCodes copy];
+}
+
+
+- (void)getMostConfidenceLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    /**
+     
+     苔むした岩に囲まれた滝
+     
+     */
+    NSArray<NLLanguage> *sortedLanguages = [languageProbabilityDict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj2 compare:obj1];
+    }];
+
+    NSMutableArray *results = [NSMutableArray array];
+    dispatch_group_t group = dispatch_group_create();
+
+    for (NLLanguage language in sortedLanguages) {
+        EZLanguage ezLanguage = [self appleLanguageEnumFromCode:language];
+        dispatch_group_enter(group);
+
+        // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
+        [self ocrImage:self.queryModel.ocrImage
+              language:ezLanguage
+            autoDetect:YES
+            completion:^(EZOCRResult * _Nullable ocrResult, NSError *_Nullable error) {
+//            if (ocrResult && ocrResult.confidence >= 0.8) {
+//                completion(ocrResult, nil);
+//                return;
+//            } else {
+//                [results addObject:@{@"ocrResult": ocrResult ?: [NSNull null], @"error": error ?: [NSNull null]}];
+//            }
+            
+            [results addObject:@{@"ocrResult": ocrResult ?: [NSNull null], @"error": error ?: [NSNull null]}];
+            
+            dispatch_group_leave(group);
+
+        }];
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (completion) {
+            NSArray *sortedResults = [results sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                EZOCRResult *result1 = obj1[@"ocrResult"];
+                EZOCRResult *result2 = obj2[@"ocrResult"];
+                NSNumber *confidence1 = result1 ? @(result1.confidence) : @(-1);
+                NSNumber *confidence2 = result2 ? @(result2.confidence) : @(-1);
+                return [confidence2 compare:confidence1];
+            }];
+            
+            for (NSDictionary *result in sortedResults) {
+                EZOCRResult *ocrResult = result[@"ocrResult"];
+                NSLog(@"%@(%1.f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+            }
+            
+            NSDictionary *firstResult = sortedResults.firstObject;
+            EZOCRResult *ocrResult = firstResult[@"ocrResult"];
+            NSError *error = firstResult[@"error"];
+            if ([error isEqual:[NSNull null]]) {
+                error = nil;
+            }
+            
+            NSLog(@"Final ocr: %@(%1.f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+            
+            completion(ocrResult, error);
+        }
+    });
 }
 
 

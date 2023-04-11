@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion;
 
-- (void)ocr:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion ;
+- (void)ocr:(void (^)(EZOCRResult * _Nullable, NSError * _Nullable))completion;
 
 @end
 
