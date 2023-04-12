@@ -12,8 +12,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static CGFloat EZInputViewMinHeight = 50;
-
 /// Window type
 typedef NS_ENUM(NSUInteger, EZWindowType) {
     EZWindowTypeNone = -1,
@@ -47,7 +45,6 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
 
 - (CGFloat)inputViewMinHeight:(EZWindowType)type;
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type;
-- (CGSize)textContainerInset:(EZWindowType)type;
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
 - (NSString *)windowName:(EZWindowType)type;

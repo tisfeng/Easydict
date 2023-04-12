@@ -69,6 +69,7 @@
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
     textView.textStorage.delegate = self;
+    textView.textContainerInset = CGSizeMake(5, 8);
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
@@ -450,7 +451,6 @@
 - (void)updateCustomLayout {
     EZWindowType windowType = self.windowType;
     
-    self.textView.textContainerInset = [EZLayoutManager.shared textContainerInset:windowType];
     self.textViewMinHeight = [EZLayoutManager.shared inputViewMinHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
