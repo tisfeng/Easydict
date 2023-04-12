@@ -40,8 +40,9 @@
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
 
-@property (nonatomic, strong) NSTextField *snipTranslateLabel;
-@property (nonatomic, strong) NSButton *snipTranslateButton;
+@property (nonatomic, strong) NSTextField *autoQueryLabel;
+@property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
+@property (nonatomic, strong) NSButton *autoQuerySelectedTextButton;
 
 @property (nonatomic, strong) NSTextField *autoCopyTextLabel;
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
@@ -198,14 +199,19 @@
     [self.contentView addSubview:self.autoPlayAudioButton];
     
     
-    NSTextField *snipTranslateLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
-    snipTranslateLabel.font = font;
-    [self.contentView addSubview:snipTranslateLabel];
-    self.snipTranslateLabel = snipTranslateLabel;
+    NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
+    autoQueryLabel.font = font;
+    [self.contentView addSubview:autoQueryLabel];
+    self.autoQueryLabel = autoQueryLabel;
     
-    NSString *snipTranslateTitle = NSLocalizedString(@"auto_query_ocr_text", nil);
-    self.snipTranslateButton = [NSButton checkboxWithTitle:snipTranslateTitle target:self action:@selector(snipTranslateButtonClicked:)];
-    [self.contentView addSubview:self.snipTranslateButton];
+    NSString *autoQueryOCTText = NSLocalizedString(@"auto_query_ocr_text", nil);
+    self.autoQueryOCRTextButton = [NSButton checkboxWithTitle:autoQueryOCTText target:self action:@selector(autoQueryOCRTextButtonClicked:)];
+    [self.contentView addSubview:self.autoQueryOCRTextButton];
+    
+    NSString *autoQuerySelectedText = NSLocalizedString(@"auto_query_selected_text", nil);
+    self.autoQuerySelectedTextButton = [NSButton checkboxWithTitle:autoQuerySelectedText target:self action:@selector(autoQuerySelectedTextButtonClicked:)];
+    [self.contentView addSubview:self.autoQuerySelectedTextButton];
+    
     
     NSTextField *autoCopyTextLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_copy_text", nil)];
     autoCopyTextLabel.font = font;
@@ -290,7 +296,8 @@
     self.autoPlayAudioButton.mm_isOn = configuration.autoPlayAudio;
     self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
-    self.snipTranslateButton.mm_isOn = configuration.autoSnipTranslate;
+    self.autoQueryOCRTextButton.mm_isOn = configuration.autoQueryOCRText;
+    self.autoQuerySelectedTextButton.mm_isOn = configuration.autoQuerySelectedText;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
@@ -393,22 +400,27 @@
         make.centerY.equalTo(self.playAudioLabel);
     }];
     
-    [self.snipTranslateLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
-    [self.snipTranslateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.snipTranslateLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.snipTranslateLabel);
+    [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.autoQueryLabel);
     }];
+    [self.autoQuerySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoQueryOCRTextButton);
+        make.top.equalTo(self.autoQueryOCRTextButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     
     
     [self.autoCopyTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoQuerySelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.snipTranslateButton);
+        make.left.equalTo(self.autoQueryOCRTextButton);
         make.centerY.equalTo(self.autoCopyTextLabel);
     }];
     [self.autoCopySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -515,8 +527,12 @@
     [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
 }
 
-- (void)snipTranslateButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.autoSnipTranslate = sender.mm_isOn;
+- (void)autoQueryOCRTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoQueryOCRText = sender.mm_isOn;
+}
+
+- (void)autoQuerySelectedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoQuerySelectedText = sender.mm_isOn;
 }
 
 - (void)autoPlayAudioButtonClicked:(NSButton *)sender {

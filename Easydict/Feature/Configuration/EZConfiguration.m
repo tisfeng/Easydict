@@ -19,7 +19,8 @@ static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupK
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
-static NSString *const kAutoSnipTranslateKey = @"EZConfiguration_kAutoSnipTranslateKey";
+static NSString *const kAutoQueryOCTTextKey = @"EZConfiguration_kAutoQueryOCTTextKey";
+static NSString *const kAutoQuerySelectedText = @"EZConfiguration_kAutoQuerySelectedText";
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
@@ -64,9 +65,10 @@ static EZConfiguration *_instance;
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:NO];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
     self.hideMainWindow = [NSUserDefaults mm_readBool:kHideMainWindowKey defaultValue:YES];
-    self.autoSnipTranslate = [NSUserDefaults mm_readBool:kAutoSnipTranslateKey defaultValue:YES];
-    self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
+    self.autoQueryOCRText = [NSUserDefaults mm_readBool:kAutoQueryOCTTextKey defaultValue:YES];
+    self.autoQuerySelectedText = [NSUserDefaults mm_readBool:kAutoQuerySelectedText defaultValue:YES];
     self.autoCopyOCRText = [NSUserDefaults mm_readBool:kAutoCopyOCRTextKey defaultValue:NO];
+    self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:1];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
@@ -127,10 +129,16 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
 }
 
-- (void)setAutoSnipTranslate:(BOOL)autoSnipTranslate {
-    _autoSnipTranslate = autoSnipTranslate;
+- (void)setAutoQueryOCRText:(BOOL)autoSnipTranslate {
+    _autoQueryOCRText = autoSnipTranslate;
 
-    [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoSnipTranslateKey];
+    [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoQueryOCTTextKey];
+}
+
+- (void)setAutoQuerySelectedText:(BOOL)autoQuerySelectedText {
+    _autoQuerySelectedText = autoQuerySelectedText;
+
+    [NSUserDefaults mm_write:@(autoQuerySelectedText) forKey:kAutoQuerySelectedText];
 }
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
