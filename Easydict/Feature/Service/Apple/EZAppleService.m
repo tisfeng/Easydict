@@ -1164,9 +1164,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                           punctuationMarkCount:&punctuationMarkCount
                            punctuationMarkRate:&punctuationMarkRate];
     
-    NSString *newLineString = @"\n\n";
+    NSString *newLineString = @"\n";
     if (isPoetry) {
-        return [stringArray componentsJoinedByString:@"\n"];
+        return [stringArray componentsJoinedByString:newLineString];
     }
     
     for (NSInteger i = 0; i < stringArray.count; i++) {
