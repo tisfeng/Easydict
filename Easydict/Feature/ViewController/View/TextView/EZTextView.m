@@ -90,6 +90,28 @@
     // TODO: need to handle select all text and paste condition!
 }
 
+/// Rewrite the parent method, paste without format. Supported by ChatGPT 😌
+- (void)pasteAsPlainText:(id)sender {
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    NSPasteboardType stringType = [pasteboard availableTypeFromArray:@[NSPasteboardTypeString, NSPasteboardTypeRTF, NSPasteboardTypeRTFD]];
+    
+    // Trim pasteboard string.
+    NSString *pasteboardString = [[pasteboard stringForType:stringType] trim];
+    
+    if (self.selectedRange.length > 0) {
+        NSRange selectedRange = self.selectedRange;
+        NSUInteger newLocation = selectedRange.location + pasteboardString.length;
+        NSRange modifiedRange = NSMakeRange(selectedRange.location, pasteboardString.length);
+        NSString *modifiedString = [self.string stringByReplacingCharactersInRange:selectedRange withString:pasteboardString];
+        [self setString:modifiedString];
+        [self setSelectedRange:NSMakeRange(newLocation, 0)];
+        [self didChangeText];
+        [self scrollRangeToVisible:modifiedRange];
+    } else {
+        [self insertText:pasteboardString replacementRange:NSMakeRange(self.selectedRange.location, 0)];
+    }
+}
+
 
 #pragma mark -
 
