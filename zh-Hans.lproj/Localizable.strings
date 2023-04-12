@@ -58,7 +58,7 @@
 "auto_play_audio" = "查询英语单词后自动播放发音";
 
 "auto_copy_text" = "自动复制:";
-"auto_copy_selected_text" = "自动复制划词选择文本";
+"auto_copy_selected_text" = "自动复制取词文本";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";
 "language_detect_optimize"= "语种识别:";
 "language_detect_optimize_none" = "仅使用系统语种识别";
