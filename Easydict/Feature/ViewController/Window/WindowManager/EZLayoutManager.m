@@ -99,13 +99,13 @@ static EZLayoutManager *_instance;
 - (CGFloat)inputViewMinHeight:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMain:
-            return 70;
+            return 75; // three line
         case EZWindowTypeFixed:
-            return 60;
+            return 54; // two line
         case EZWindowTypeMini:
-            return EZInputViewMinHeight; // two line
+            return 38; // one line
         default:
-            return EZInputViewMinHeight;
+            return 38;
     }
 }
 
@@ -116,22 +116,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return NSScreen.mainScreen.frame.size.height / 3;
         case EZWindowTypeMini:
-            return EZInputViewMinHeight; // two line
+            return 54; // two line
         default:
-            return EZInputViewMinHeight;
-    }
-}
-
-- (CGSize)textContainerInset:(EZWindowType)type {
-    switch (type) {
-        case EZWindowTypeMain:
-            return CGSizeMake(8, 8);
-        case EZWindowTypeFixed:
-            return CGSizeMake(8, 8);
-        case EZWindowTypeMini:
-            return CGSizeMake(8, 4);
-        default:
-            return CGSizeMake(8, 4);
+            return 54;
     }
 }
 
