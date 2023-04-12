@@ -151,7 +151,7 @@ static EZStatusItem *_instance;
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
-    [EZWindowManager.shared clearInput];
+    [EZWindowManager.shared closeWindow];
 }
 
 - (IBAction)toggleTranslationLanguagesAction:(NSMenuItem *)sender {
