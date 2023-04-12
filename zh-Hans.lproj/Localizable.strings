@@ -6,7 +6,67 @@
   Copyright © 2022 izual. All rights reserved.
 */
 
-"detected" = "识别为 ";
+
+// setting
+"setting" = "设置";
+
+"input_translate" = "输入翻译:";
+"snip_translate" = "截图翻译:";
+"select_translate" = "划词翻译:";
+"show_mini_window" = "显示迷你窗口:";
+
+"show_query_icon" = "显示查询图标:";
+"auto_show_icon" = "划词后自动显示查询图标（实验功能）";
+
+"adjust_pop_button_origin" = "调整查询图标位置:";
+"avoid_conflict_with_PopClip_display" = "避免和 PopClip 显示冲突";
+
+"language_detect_optimize"= "语种识别:";
+"language_detect_optimize_none" = "仅使用系统语种识别";
+"language_detect_optimize_baidu" = "使用百度语种识别进行优化";
+"language_detect_optimize_google" = "使用 Google 语种识别进行优化";
+
+"fixed_window_position" = "侧悬浮窗口位置:";
+"fixed_window_position_right" = "屏幕右侧";
+"fixed_window_position_mouse" = "鼠标位置";
+"fixed_window_position_former" = "上次位置";
+
+"play_audio" = "播放单词发音:";
+"auto_play_audio" = "查询英语单词后自动播放发音";
+
+"auto_query" = "自动查询:";
+"auto_query_ocr_text" = "截图 OCR 后自动查询";
+"auto_query_selected_text" = "取词后自动查询";
+
+"auto_copy_text" = "自动复制:";
+"auto_copy_ocr_text" = "自动复制截图 OCR 结果";
+"auto_copy_selected_text" = "自动复制取词文本";
+
+"quick_link" = "快捷功能:";
+"show_google_quick_link" = "显示 Google 快捷图标";
+"show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
+
+"disable_empty_copy_beep" = "禁用空复制提示音:";
+"disable_empty_copy_beep_info" = "取词内容为空时生效";
+
+
+"show_main_window" = "主窗口:";
+"hide_main_window" = "启动后隐藏主窗口";
+
+"launch" = "启动:";
+"launch_at_startup" = "开机自启动";
+
+"menu_bar_icon" = "菜单栏图标:";
+"hide_menu_bar_icon" = "隐藏菜单栏图标";
+
+
+// service
+"service" = "服务";
+
+"main_window" = "主窗口";
+"mini_window" = "迷你窗口";
+"fixed_window" = "侧悬浮窗口";
+
 "google_translate" = "Google 翻译";
 "baidu_translate" = "百度翻译";
 "youdao_dict" = "有道词典";
@@ -14,6 +74,31 @@
 "system_translate" = "系统翻译";
 "volcano_translate" = "火山翻译";
 "openai_translate" = "OpenAI 翻译";
+
+
+// about
+"about" = "关于";
+"current_version" = "版本";
+"auto_check_update" = "自动检查应用程序更新";
+"lastest_version" = "最新版本";
+"author" = "开发者:";
+
+
+// error msg
+"error_parameter" = "参数异常";
+"error_network" = "网络异常";
+"error_api" = "接口异常";
+"error_unsupport_language" = "不支持的语言";
+"error_unknown" = "未知错误";
+"translate_failed" = "翻译失败，";
+"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。";
+"query_has_no_result" = "⚠️ 查询没有结果";
+
+"placeholder" = "输入内容，Enter 查询，Shift + Enter 换行";
+
+
+// query window
+"detected" = "识别为 ";
 
 "explain" = "释义:";
 "etymology" = "词源:";
@@ -31,71 +116,3 @@
 "past_participle" = "过去分词";
 "present_participle" = "现在分词";
 "root" = "词根";
-
-
-// setting
-"general" = "通用";
-"setting" = "设置";
-"shortcut" = "快捷键";
-"service" = "服务";
-
-"select_translate" = "划词翻译:";
-"input_translate" = "输入翻译:";
-"snip_translate" = "截图翻译:";
-"select_translate" = "划词翻译:";
-"show_mini_window" = "显示迷你窗口:";
-
-"check_update" = "更新:";
-"auto_check_update" = "自动检查应用程序更新";
-"show_query_icon" = "显示查询图标:";
-"auto_show_icon" = "划词后自动显示查询图标（实验功能）";
-"launch" = "启动:";
-"launch_at_startup" = "开机自启动";
-"show_main_window" = "主窗口:";
-"hide_main_window" = "启动后隐藏主窗口";
-"auto_snip_translate" = "截图 OCR 后自动翻译";
-"play_audio" = "播放单词发音:";
-"auto_play_audio" = "查询英语单词后自动播放发音";
-
-"auto_copy_text" = "自动复制:";
-"auto_copy_selected_text" = "自动复制取词文本";
-"auto_copy_ocr_text" = "自动复制截图 OCR 结果";
-"language_detect_optimize"= "语种识别:";
-"language_detect_optimize_none" = "仅使用系统语种识别";
-"language_detect_optimize_baidu" = "使用百度语种识别进行优化";
-"language_detect_optimize_google" = "使用 Google 语种识别进行优化";
-"quick_link" = "快捷功能:";
-"show_google_quick_link" = "显示 Google 快捷图标";
-"show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
-"menu_bar_icon" = "菜单栏图标:";
-"hide_menu_bar_icon" = "隐藏菜单栏图标";
-"fixed_window_position" = "侧悬浮窗口位置:";
-"fixed_window_position_right" = "屏幕右侧";
-"fixed_window_position_mouse" = "鼠标位置";
-"fixed_window_position_former" = "上次位置";
-"adjust_pop_button_origin" = "调整查询图标位置:";
-"avoid_conflict_with_PopClip_display" = "避免和 PopClip 显示冲突";
-"disable_empty_copy_beep" = "禁用空复制提示音:";
-"disable_empty_copy_beep_info" = "取词内容为空时生效";
-
-"mini_window" = "迷你窗口";
-"fixed_window" = "侧悬浮窗口";
-"main_window" = "主窗口";
-
-"about" = "关于";
-"current_version" = "版本";
-"lastest_version" = "最新版本";
-"author" = "开发者:";
-
-// error msg
-"error_parameter" = "参数异常";
-"error_network" = "网络异常";
-"error_api" = "接口异常";
-"error_unsupport_language" = "不支持的语言";
-"error_unknown" = "未知错误";
-"translate_failed" = "翻译失败，";
-"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。";
-"query_has_no_result" = "⚠️ 查询没有结果";
-
-"placeholder" = "输入内容，Enter 查询，Shift + Enter 换行";
-

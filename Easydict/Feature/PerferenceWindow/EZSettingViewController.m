@@ -77,8 +77,8 @@
     
     [self setupUI];
     
-    self.leftMargin = 120;
-    self.rightMargin = 90;
+    self.leftMargin = 110;
+    self.rightMargin = 100;
     
     [self updateViewSize];
 }
@@ -198,12 +198,12 @@
     [self.contentView addSubview:self.autoPlayAudioButton];
     
     
-    NSTextField *snipTranslateLabel = [NSTextField labelWithString:NSLocalizedString(@"snip_translate", nil)];
+    NSTextField *snipTranslateLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
     snipTranslateLabel.font = font;
     [self.contentView addSubview:snipTranslateLabel];
     self.snipTranslateLabel = snipTranslateLabel;
     
-    NSString *snipTranslateTitle = NSLocalizedString(@"auto_snip_translate", nil);
+    NSString *snipTranslateTitle = NSLocalizedString(@"auto_query_ocr_text", nil);
     self.snipTranslateButton = [NSButton checkboxWithTitle:snipTranslateTitle target:self action:@selector(snipTranslateButtonClicked:)];
     [self.contentView addSubview:self.snipTranslateButton];
     
