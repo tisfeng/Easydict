@@ -36,6 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)snipTranslate;
 - (void)showMiniFloatingWindow;
 
+- (void)closeWindow;
+
 - (void)closeFloatingWindow;
 
 /// Close floating window, except main window.
