@@ -523,7 +523,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, format: \"%@: xxx \" ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, format: \"%@: xxx \" \n", sourceLanguage, antonym];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, if have, display format: \"%@: {antonyms} \" \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
@@ -534,7 +534,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *wordCountPromt = @"Note that the explanation should be around 50 words and the etymology should be between 100 and 400 words, word count does not need to be displayed.";
     prompt = [prompt stringByAppendingString:wordCountPromt];
     
-    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have antonyms, then this item does not need to be displayed.";
+    // Why does this not work?
+//    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have cognates, antonyms, antonyms, then this item does not need to be displayed.";
+    NSString *emmitEmptyPrompt = @"If a item query has no results, just show none.";
     prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
     
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
@@ -606,9 +608,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @{
             @"role" : @"assistant",
             @"content" : @"Pronunciation: xxx \n\n"
-            "n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
-            "Explanation: xxx \n\n"
-            "Etymology: xxx \n\n"
+            @"n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
+            @"Explanation: xxx \n\n"
+            @"Etymology: xxx \n\n"
+            @"Synonym: xxx \n\n"
         },
         //        @{
         //            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
