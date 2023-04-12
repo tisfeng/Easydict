@@ -212,14 +212,13 @@
     [self.contentView addSubview:autoCopyTextLabel];
     self.autoCopyTextLabel = autoCopyTextLabel;
     
-    NSString *autoCopySelectedText = NSLocalizedString(@"auto_copy_selected_text", nil);
-    self.autoCopySelectedTextButton = [NSButton checkboxWithTitle:autoCopySelectedText target:self action:@selector(autoCopySelectedTextButtonClicked:)];
-    [self.contentView addSubview:self.autoCopySelectedTextButton];
-    
     NSString *autoCopyOCRText = NSLocalizedString(@"auto_copy_ocr_text", nil);
     self.autoCopyOCRTextButton = [NSButton checkboxWithTitle:autoCopyOCRText target:self action:@selector(autoCopyOCRTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyOCRTextButton];
     
+    NSString *autoCopySelectedText = NSLocalizedString(@"auto_copy_selected_text", nil);
+    self.autoCopySelectedTextButton = [NSButton checkboxWithTitle:autoCopySelectedText target:self action:@selector(autoCopySelectedTextButtonClicked:)];
+    [self.contentView addSubview:self.autoCopySelectedTextButton];
     
     NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
     showQuickLinkLabel.font = font;
@@ -403,22 +402,23 @@
         make.centerY.equalTo(self.snipTranslateLabel);
     }];
     
+    
     [self.autoCopyTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.snipTranslateButton.mas_bottom).offset(self.verticalPadding);
     }];
-    [self.autoCopySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.autoCopyTextLabel.mas_right).offset(self.horizontalPadding);
+    [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.snipTranslateButton);
         make.centerY.equalTo(self.autoCopyTextLabel);
     }];
-    [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.autoCopySelectedTextButton);
-        make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+    [self.autoCopySelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoCopyOCRTextButton);
+        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     
     [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showQuickLinkLabel.mas_right).offset(self.horizontalPadding);
