@@ -39,6 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)playQueryTextSound;
 
+/// Detect query text, and update select language cell.
+- (void)detectQueryText:(nullable void (^)(void))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

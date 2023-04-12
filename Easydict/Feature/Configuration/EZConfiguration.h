@@ -29,7 +29,8 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
 @property (nonatomic, assign) BOOL hideMainWindow;
-@property (nonatomic, assign) BOOL autoSnipTranslate;
+@property (nonatomic, assign) BOOL autoQueryOCRText;
+@property (nonatomic, assign) BOOL autoQuerySelectedText;
 @property (nonatomic, assign) BOOL autoPlayAudio;
 @property (nonatomic, assign) BOOL autoCopySelectedText;
 @property (nonatomic, assign) BOOL autoCopyOCRText;

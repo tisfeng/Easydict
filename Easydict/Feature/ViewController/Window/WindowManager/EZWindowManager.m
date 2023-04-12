@@ -261,13 +261,21 @@ static EZWindowManager *_instance;
     [self logSelectedText:text accessibility:self.eventMonitor.isSelectedTextByAuxiliary];
     
     // Reset tableView and window height first, avoid being affected by previous window height.
-    [window.queryViewController resetTableView:^{
+    
+    EZBaseQueryViewController *queryViewController = window.queryViewController;
+    [queryViewController resetTableView:^{
+        queryViewController.queryText = text;
+        [queryViewController detectQueryText:nil];
+        
         // !!!: window height has changed, so we need to update location again.
         location = CGPointMake(location.x, location.y - window.height);
         [self showFloatingWindow:window atPoint:location];
-        [window.queryViewController startQueryText:text queyType:self.queryType];
         
-        if (EZConfiguration.shared.autoCopySelectedText) {
+        if ([EZConfiguration.shared autoQuerySelectedText]) {
+            [queryViewController startQueryText:text queyType:self.queryType];
+        }
+        
+        if ([EZConfiguration.shared autoCopySelectedText]) {
             [text copyToPasteboard];
         }
     }];
