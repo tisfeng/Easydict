@@ -598,17 +598,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
               language:ezLanguage
             autoDetect:YES
             completion:^(EZOCRResult * _Nullable ocrResult, NSError *_Nullable error) {
-//            if (ocrResult && ocrResult.confidence >= 0.8) {
-//                completion(ocrResult, nil);
-//                return;
-//            } else {
-//                [results addObject:@{@"ocrResult": ocrResult ?: [NSNull null], @"error": error ?: [NSNull null]}];
-//            }
-            
             [results addObject:@{@"ocrResult": ocrResult ?: [NSNull null], @"error": error ?: [NSNull null]}];
-            
             dispatch_group_leave(group);
-
         }];
     }
     
@@ -624,7 +615,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             
             for (NSDictionary *result in sortedResults) {
                 EZOCRResult *ocrResult = result[@"ocrResult"];
-                NSLog(@"%@(%1.f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+                NSLog(@"%@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
             }
             
             NSDictionary *firstResult = sortedResults.firstObject;
@@ -634,7 +625,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 error = nil;
             }
             
-            NSLog(@"Final ocr: %@(%1.f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+            NSLog(@"Final ocr: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
             
             completion(ocrResult, error);
         }
