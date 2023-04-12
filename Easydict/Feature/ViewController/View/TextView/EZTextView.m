@@ -24,11 +24,11 @@
     if (self) {
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
-            style.lineSpacing = 3;
-            style.paragraphSpacing = 15;
-            style.lineHeightMultiple = 1.0;
-            style.lineBreakMode = NSLineBreakByWordWrapping;
-        }]];
+                  style.lineSpacing = 3;
+                  style.paragraphSpacing = 15;
+                  style.lineHeightMultiple = 1.0;
+                  style.lineBreakMode = NSLineBreakByWordWrapping;
+              }]];
         self.font = [NSFont systemFontOfSize:14];
 
         /**
@@ -74,7 +74,7 @@
         _placeholderText = @"placeholder";
         _placeholderColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
 
-//        [self setupPlaceHolderTextView];
+        //        [self setupPlaceHolderTextView];
     }
     return self;
 }
@@ -104,7 +104,7 @@
 
     [layoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:glyphRange];
 
-    [self setSelectedTextAttributes:@{NSBackgroundColorAttributeName: originalSelectionColor}];
+    [self setSelectedTextAttributes:@{NSBackgroundColorAttributeName : originalSelectionColor}];
     [self setDefaultParagraphStyle:originalParagraphStyle];
 }
 
@@ -123,11 +123,19 @@
 /// Rewrite the parent method, paste without format. Supported by ChatGPT 😌
 - (void)pasteAsPlainText:(id)sender {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    NSPasteboardType stringType = [pasteboard availableTypeFromArray:@[NSPasteboardTypeString, NSPasteboardTypeRTF, NSPasteboardTypeRTFD]];
-    
-    // Trim pasteboard string.
-    NSString *pasteboardString = [[pasteboard stringForType:stringType] trim];
-    
+    NSPasteboardType stringType = [pasteboard availableTypeFromArray:@[
+        NSPasteboardTypeString,
+        NSPasteboardTypeRTF,
+        NSPasteboardTypeRTFD
+    ]];
+    NSString *pasteboardString = [pasteboard stringForType:stringType];
+
+    // Remove extra new line.
+    pasteboardString = [pasteboardString stringByReplacingOccurrencesOfString:@"\n+" withString:@"\n" options:NSRegularExpressionSearch range:NSMakeRange(0, pasteboardString.length)];
+
+    // Trim string.
+    pasteboardString = [pasteboardString trim];
+
     if (self.selectedRange.length > 0) {
         NSRange selectedRange = self.selectedRange;
         NSUInteger newLocation = selectedRange.location + pasteboardString.length;
@@ -147,22 +155,22 @@
 
 - (void)setupPlaceHolderTextView {
     self.placeholderTextField = [[NSTextField alloc] initWithFrame:self.bounds];
-    
-    
+
+
     self.placeholderTextField.height = 100;
     self.placeholderTextField.font = self.font;
     self.placeholderTextField.editable = NO;
     self.placeholderTextField.selectable = NO;
-//    self.placeholderTextView.backgroundColor = [NSColor clearColor];
-    
+    //    self.placeholderTextView.backgroundColor = [NSColor clearColor];
+
     [self.placeholderTextField excuteLight:^(NSTextView *placeholderTextView) {
         [placeholderTextView setBackgroundColor:NSColor.queryViewBgLightColor];
     } dark:^(NSTextView *placeholderTextView) {
         [placeholderTextView setBackgroundColor:NSColor.queryViewBgDarkColor];
     }];
-    
+
     [self addSubview:self.placeholderTextField];
-    
+
     [self.placeholderTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self).insets(NSEdgeInsetsMake(20, 20, 15, 20));
     }];
@@ -202,7 +210,7 @@
 
 - (void)setPlaceholderColor:(NSColor *)placeholderColor {
     _placeholderColor = placeholderColor;
-    
+
     NSMutableDictionary<NSAttributedStringKey, id> *attributes = [self.placeholderAttributedString attributesAtIndex:0 effectiveRange:nil].mutableCopy;
 
     attributes[NSForegroundColorAttributeName] = self.placeholderColor;
@@ -216,7 +224,7 @@
     _placeholderText = placeholderText;
 
     NSDictionary<NSAttributedStringKey, id> *attributes = [self.placeholderAttributedString attributesAtIndex:0 longestEffectiveRange:NULL inRange:NSMakeRange(0, [self.placeholderAttributedString length])];
-    
+
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:self.placeholderText attributes:attributes];
     self.placeholderTextField.attributedStringValue = attributedString;
 }
@@ -228,9 +236,8 @@
     if (range.length == 0) {
         return;
     }
-    
+
     self.placeholderTextField.attributedStringValue = placeholderAttributedString;
 }
-
 
 @end

@@ -529,7 +529,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     ocrResult.mergedText = mergedText;
     ocrResult.raw = recognizedStrings;
     
-    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, confidence, recognizedStrings);
+    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, recognizedStrings);
 }
 
 // Update OCR recognitionLanguages with preferred languages.
