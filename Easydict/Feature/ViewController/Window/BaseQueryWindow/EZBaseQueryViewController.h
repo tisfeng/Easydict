@@ -42,7 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion;
 
+/// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text;
+
+- (void)scrollToEndOfTextView;
 
 @end
 
