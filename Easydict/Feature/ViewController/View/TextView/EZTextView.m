@@ -195,18 +195,17 @@
 }
 
 - (void)updateParagraphStyleWithText:(NSString *)text {
-    NSString *newText = [text removeExtraNewLine];
+    NSString *newText = [text removeExtraLineBreaks];
     
-    // If the text has extra line, then we don't need to add paragraph spacing.
-    BOOL hasExtraNewLine = ![newText isEqualToString:text];
-    self.paragraphSpacing = hasExtraNewLine ? 0 : self.defaultParagraphSpacing;
+    // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
+    BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
+    self.paragraphSpacing = hasExtraLineBreaks ? 0 : self.defaultParagraphSpacing;
 }
 
 #pragma mark -
 
 - (void)setupPlaceHolderTextView {
     self.placeholderTextField = [[NSTextField alloc] initWithFrame:self.bounds];
-
 
     self.placeholderTextField.height = 100;
     self.placeholderTextField.font = self.font;
