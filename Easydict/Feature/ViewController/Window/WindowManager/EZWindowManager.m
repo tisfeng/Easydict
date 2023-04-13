@@ -265,6 +265,7 @@ static EZWindowManager *_instance;
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     [queryViewController resetTableView:^{
         queryViewController.queryText = text;
+        [queryViewController updateQueryTextAndParagraphStyle:text];
         [queryViewController detectQueryText:nil];
         
         // !!!: window height has changed, so we need to update location again.
