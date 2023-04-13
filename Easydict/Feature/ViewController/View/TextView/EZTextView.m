@@ -131,9 +131,8 @@
     NSString *pasteboardString = [pasteboard stringForType:stringType];
 
     // Remove extra new line.
-    pasteboardString = [pasteboardString stringByReplacingOccurrencesOfString:@"\n+" withString:@"\n" options:NSRegularExpressionSearch range:NSMakeRange(0, pasteboardString.length)];
-
-    // Trim string.
+//    pasteboardString = [pasteboardString removeExtraNewLine];
+    
     pasteboardString = [pasteboardString trim];
 
     if (self.selectedRange.length > 0) {
