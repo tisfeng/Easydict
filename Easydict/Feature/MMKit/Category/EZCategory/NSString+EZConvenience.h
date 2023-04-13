@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)trimToMaxLength:(NSUInteger)maxLength;
 
+/// Remove extra new line.
+- (NSString *)removeExtraNewLine;
+
 - (NSString *)encode;
 
 - (void)copyToPasteboard;
