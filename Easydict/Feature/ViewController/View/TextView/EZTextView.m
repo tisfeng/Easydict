@@ -15,6 +15,8 @@
 @property (nonatomic, strong) NSColor *placeholderColor;
 @property (nonatomic, strong) NSFont *placeholderFont;
 
+@property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 12
+
 @end
 
 @implementation EZTextView
@@ -22,14 +24,17 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
+         CGFloat defaultParagraphSpacing = 12;
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
                   style.lineSpacing = 3;
-                  style.paragraphSpacing = 15;
+                  style.paragraphSpacing = defaultParagraphSpacing;
                   style.lineHeightMultiple = 1.0;
                   style.lineBreakMode = NSLineBreakByWordWrapping;
               }]];
+        
         self.font = [NSFont systemFontOfSize:14];
+        self.defaultParagraphSpacing = defaultParagraphSpacing;
 
         /**
          FIX: Since textView will auto replace some text, such as "..." to "…", so we need to disable it.
@@ -130,12 +135,21 @@
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
 
-    // Remove extra new line.
-//    pasteboardString = [pasteboardString removeExtraNewLine];
-    
     pasteboardString = [pasteboardString trim];
+    
+    BOOL enableModifyParagraphSpacing = NO;
+    
+    // Empty text.
+    if (self.textStorage.length == 0) {
+        enableModifyParagraphSpacing = YES;
+    }
 
     if (self.selectedRange.length > 0) {
+        // Select all text.
+        if (self.selectedRange.length == self.textStorage.length) {
+            enableModifyParagraphSpacing = YES;
+        }
+        
         NSRange selectedRange = self.selectedRange;
         NSUInteger newLocation = selectedRange.location + pasteboardString.length;
         NSRange modifiedRange = NSMakeRange(selectedRange.location, pasteboardString.length);
@@ -145,10 +159,48 @@
         [self didChangeText];
         [self scrollRangeToVisible:modifiedRange];
     } else {
-        [self insertText:pasteboardString replacementRange:NSMakeRange(self.selectedRange.location, 0)];
+        // !!!: We need to use NSAttributedString to paste text, otherwise the text will be displayed in the wrong ParagraphStyle.
+        NSDictionary *attributes = @{NSParagraphStyleAttributeName: self.defaultParagraphStyle};
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:pasteboardString attributes:attributes];
+        
+        [self insertText:attributedString replacementRange:NSMakeRange(self.selectedRange.location, 0)];
+    }
+    
+    if (enableModifyParagraphSpacing) {
+        [self updateParagraphStyleWithText:pasteboardString];
     }
 }
 
+#pragma mark - Setter
+
+- (void)setParagraphSpacing:(CGFloat)paragraphSpacing {
+    _paragraphSpacing = paragraphSpacing;
+    
+    // 获取默认段落样式，创建新的段落样式并设置新的 paragraphSpacing
+    NSParagraphStyle *defaultParagraphStyle = [self defaultParagraphStyle];
+    NSMutableParagraphStyle *newParagraphStyle = [defaultParagraphStyle mutableCopy];
+    [newParagraphStyle setParagraphSpacing:paragraphSpacing];
+
+    [self setDefaultParagraphStyle:newParagraphStyle];
+    
+    
+    // Update all textStorage style.
+    NSRange effectiveRange = NSMakeRange(0, self.textStorage.length);
+    [self.textStorage addAttribute:NSParagraphStyleAttributeName value:newParagraphStyle range:effectiveRange];
+    
+    // Need to notify, to update textView height.
+    [self didChangeText];
+    
+    [self setNeedsDisplay:YES];
+}
+
+- (void)updateParagraphStyleWithText:(NSString *)text {
+    NSString *newText = [text removeExtraNewLine];
+    
+    // If the text has extra line, then we don't need to add paragraph spacing.
+    BOOL hasExtraNewLine = ![newText isEqualToString:text];
+    self.paragraphSpacing = hasExtraNewLine ? 0 : self.defaultParagraphSpacing;
+}
 
 #pragma mark -
 
