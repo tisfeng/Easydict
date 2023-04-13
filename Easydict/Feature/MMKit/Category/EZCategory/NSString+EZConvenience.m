@@ -24,8 +24,8 @@
     return trimText;
 }
 
-/// Remove extra new line.
-- (NSString *)removeExtraNewLine {
+/// Remove extra LineBreaks.
+- (NSString *)removeExtraLineBreaks {
     NSString *string = [self stringByReplacingOccurrencesOfString:@"\n+" withString:@"\n" options:NSRegularExpressionSearch range:NSMakeRange(0, self.length)];
     return string;
 }
