@@ -432,6 +432,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                              serive:youdaoService];
 }
 
+- (void)updateQueryTextAndParagraphStyle:(NSString *)text {
+    [self.queryView.textView updateTextAndParagraphStyle:text];
+}
+
 #pragma mark - Query Methods
 
 - (void)startQueryText {

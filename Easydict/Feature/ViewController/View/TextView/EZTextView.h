@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// paragraphSpacing
 @property (nonatomic, assign) CGFloat paragraphSpacing;
 
-- (void)updateParagraphStyleWithText:(NSString *)text;
+- (void)updateTextAndParagraphStyle:(NSString *)text;
 
 @end
 

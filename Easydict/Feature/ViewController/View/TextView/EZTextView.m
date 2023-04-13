@@ -167,7 +167,7 @@
     }
     
     if (enableModifyParagraphSpacing) {
-        [self updateParagraphStyleWithText:pasteboardString];
+        [self updateTextAndParagraphStyle:pasteboardString];
     }
 }
 
@@ -194,7 +194,9 @@
     [self setNeedsDisplay:YES];
 }
 
-- (void)updateParagraphStyleWithText:(NSString *)text {
+- (void)updateTextAndParagraphStyle:(NSString *)text {
+    self.string = text;
+    
     NSString *newText = [text removeExtraLineBreaks];
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
