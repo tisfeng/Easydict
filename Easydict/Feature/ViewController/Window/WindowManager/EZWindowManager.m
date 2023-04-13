@@ -264,7 +264,6 @@ static EZWindowManager *_instance;
     
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     [queryViewController resetTableView:^{
-        queryViewController.queryText = text;
         [queryViewController updateQueryTextAndParagraphStyle:text];
         [queryViewController detectQueryText:nil];
         

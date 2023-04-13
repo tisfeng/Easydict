@@ -353,6 +353,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
+        [self updateQueryTextAndParagraphStyle:self.queryText];
+        
         NSLog(@"ocr result: %@", self.queryText);
 
         [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
@@ -432,8 +434,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                              serive:youdaoService];
 }
 
+/// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text {
     [self.queryView.textView updateTextAndParagraphStyle:text];
+    [self scrollToEndOfTextView];
+}
+
+- (void)scrollToEndOfTextView {
+    [self.queryView scrollToEndOfTextView];
 }
 
 #pragma mark - Query Methods

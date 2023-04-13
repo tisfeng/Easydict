@@ -532,6 +532,9 @@
     [textStorage endEditing];
 }
 
+- (void)scrollToEndOfTextView {
+    [self.textView scrollToEndOfDocument:nil];
+}
 
 #pragma mark - Undo
 
