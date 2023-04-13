@@ -24,6 +24,12 @@
     return trimText;
 }
 
+/// Remove extra new line.
+- (NSString *)removeExtraNewLine {
+    NSString *string = [self stringByReplacingOccurrencesOfString:@"\n+" withString:@"\n" options:NSRegularExpressionSearch range:NSMakeRange(0, self.length)];
+    return string;
+}
+
 - (NSString *)encode {
     NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return encodedText;
