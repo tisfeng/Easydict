@@ -14,8 +14,8 @@
 #import "EZConfiguration.h"
 
 /// general word width, alphabet count is abount 5, means if a line is short, then append \n.
-static CGFloat kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
-static CGFloat kChineseWordWidth = 15; // [self widthOfString:@"爱"]; // 13.26
+static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
+static CGFloat const kChineseWordWidth = 13; // [self widthOfString:@"爱"]; // 13.26
 
 static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
 
@@ -497,7 +497,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             // miniLineHeight = 0.1
 
             NSString *joinedString;
-             // deltaY > miniLineSpacing * 1.8 // line spacing is inaccurate 😢
+//            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate 😢
             if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
                 joinedString = @"\n\n";
             } else if (deltaY > 0) {
@@ -1326,7 +1326,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     *longLineCount = _longLineCount;
 }
 
-/// Check if string is a short line, if string frame width is less than max width - delta * 2, and not endWithPunctuationMark.
+/// Check if string is a short line, if string frame width is less than max width - delta * 2
 - (BOOL)isShortLineOfString:(NSString *)string
             maxLengthOfLine:(CGFloat)maxLengthOfLine
                    language:(EZLanguage)language
@@ -1335,27 +1335,19 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    // If string last char end with [ 。？!.?！]
-    NSString *lastChar = [string substringFromIndex:string.length - 1];
-    BOOL hasEndPunctuationMark = [self isEndPunctuationChar:lastChar];
-    
     CGFloat width = [self widthOfString:string];
     CGFloat delta = kEnglishWordWidth;
     if ([EZLanguageManager isChineseLanguage:language]) {
         delta = kChineseWordWidth;
     }
     
-    if (!hasEndPunctuationMark) {
-        delta = delta * 1.5;
-    }
-    
     // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
-    BOOL isShortLine = width < maxLengthOfLine - delta * 2;
-    
+    BOOL isShortLine = maxLengthOfLine - width >= delta * 2;
+
     return isShortLine;
 }
 
-/// Check if string is a long line, if string frame width is greater than max width - delta.
+/// Check if string is a long line, if string frame width is greater than max width - delta * 1.5
 - (BOOL)isLongLineOfString:(NSString *)string
            maxLengthOfLine:(CGFloat)maxLengthOfLine
                   language:(EZLanguage)language {
@@ -1364,7 +1356,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     if ([EZLanguageManager isChineseLanguage:language]) {
         delta = kChineseWordWidth;
     }
-    BOOL isLongLine = width >= maxLengthOfLine - delta;
+    BOOL isLongLine = maxLengthOfLine - width <= delta * 1.5;
     
     return isLongLine;
 }
