@@ -1244,7 +1244,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         for (NSInteger i = 0; i < string.length; i++) {
             totalCharCount += 1;
             NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            if ([self isPunctuationChar:charString]) {
+            NSArray *allowList = @[@"《", @"》", @"—"];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharArray:allowList];
+            if (isChar) {
                 _punctuationMarkCount += 1;
             }
         }
@@ -1383,13 +1385,22 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
 - (BOOL)isPunctuationChar:(NSString *)charString {
+    return [self isPunctuationChar:charString excludeCharArray:nil];
+}
+
+- (BOOL)isPunctuationChar:(NSString *)charString excludeCharArray:(nullable NSArray *)charArray {
     if (charString.length != 1) {
+        return NO;
+    }
+    
+    if ([charArray containsObject:charString]) {
         return NO;
     }
     
     NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
     return [punctuationCharacterSet characterIsMember:[charString characterAtIndex:0]];
 }
+
 
 /// Use regex to check if it is a punctuation mark.
 - (BOOL)isPunctuationMark2:(NSString *)charString {
