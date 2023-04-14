@@ -351,8 +351,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 completion(ocrResult, error);
                 return;
             }
-                        
-            [self setupOCRResult:ocrResult request:request intelligentJoined:YES];
+                  
+            BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
+            [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
             if (!error && ocrResult.mergedText.length == 0) {
                 /**
                  !!!: There are some problems with the system OCR.
@@ -403,31 +404,134 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                request:(VNRequest *_Nonnull)request
      intelligentJoined:(BOOL)intelligentJoined {
     // TODO: need to optimize, check the frame of the text and determine if line breaks are necessary.
-    CGFloat confidence = 0;
+    CGFloat miniLineHeight = MAXFLOAT;
+    CGFloat miniLineSpacing = MAXFLOAT;
     NSMutableArray *recognizedStrings = [NSMutableArray array];
-    for (VNRecognizedTextObservation *observation in request.results) {
+    NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
+    
+    for (int i = 0; i < observationResults.count; i++) {
+        VNRecognizedTextObservation *observation = observationResults[i];
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         VNConfidence recognizedConfidence = recognizedText.confidence;
-        [recognizedStrings addObject:recognizedText.string];
+        NSString *recognizedString = recognizedText.string;
+        [recognizedStrings addObject:recognizedString];
+
+        CGRect boundingBox = observation.boundingBox;
+        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
-        confidence += recognizedConfidence;
+        CGFloat lineHeight = boundingBox.size.height;
+        if (lineHeight < miniLineHeight) {
+            miniLineHeight = lineHeight;
+        }
+        
+        if (i > 0) {
+            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
+            CGRect prevBoundingBox = prevObservation.boundingBox;
+            CGFloat deltaY = (prevBoundingBox.origin.y - prevBoundingBox.size.height) - boundingBox.origin.y;
+            if (deltaY < miniLineSpacing) {
+                miniLineSpacing = deltaY;
+            }
+        }
     }
     
     ocrResult.texts = recognizedStrings;
+    ocrResult.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
+    
+    if (!intelligentJoined) {
+        return;
+    }
+    
+    
+    NSArray<NSString *> *stringArray = ocrResult.texts;
+    NSLog(@"ocr stringArray: %@", stringArray);
+    
+    EZLanguage language = ocrResult.from;
+    
+    NSMutableString *joinedString = [NSMutableString string];
+    CGFloat maxLengthOfLine = 0;
+    CGFloat minLengthOfLine = 0;
+    NSInteger punctuationMarkCount = 0;
+    CGFloat punctuationMarkRate = 0;
+    
+    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
+                               maxLengthOfLine:&maxLengthOfLine
+                               minLengthOfLine:&minLengthOfLine
+                          punctuationMarkCount:&punctuationMarkCount
+                           punctuationMarkRate:&punctuationMarkRate];
+    
+    CGFloat confidence = 0;
+    NSMutableString *mergedText = [NSMutableString string];
+    
+    for (int i = 0; i < observationResults.count; i++) {
+        VNRecognizedTextObservation *observation = observationResults[i];
+        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        confidence += recognizedText.confidence;
+
+        NSString *recognizedString = recognizedText.string;
+        CGRect boundingBox = observation.boundingBox;
+        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+        
+        /**
+         《摊破浣溪沙》  123  《浣溪沙》
+
+         菡萏香销翠叶残，西风愁起绿波间。还与韶光共憔悴，不堪看。
+         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
+
+         —— 五代十国 · 李璟
+         
+         
+         《摊破浣溪沙》
+         NSRect: {{0.19622092374434116, 0.72371967654986524}, {0.14098837808214662, 0.045082544702082616}}
+         
+         菡萏香销翠叶残，西风愁起绿波问。还与韶光共憔悴，不堪看。
+         NSRect: {{0.18604653059346432, 0.50134770889487879}, {0.65261626210058454, 0.064690026954177804}}
+         
+         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
+         NSRect: {{0.18604650913243892, 0.40389972491405723}, {0.65406975296814562,
+         
+         -一五代十国 •李璟
+         NSRect: {{0.19583333762553842, 0.26400000065806095}, {0.1833333311872308, 0.048668462953798897}}
+         */
+        // 如果 i 不是第一个元素，且前一个元素的 boundingBox 的 minY 值大于当前元素的 maxY 值，则认为中间有换行。
+        
+        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
+        NSString *lastChar = [recognizedString substringFromIndex:recognizedString.length - 1];
+        
+        if (i > 0) {
+            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
+            CGRect prevBoundingBox = prevObservation.boundingBox;
+            CGFloat deltaY = (prevBoundingBox.origin.y - prevBoundingBox.size.height) - boundingBox.origin.y;
+            // miniLineHeight = 0.1
+
+            NSString *joinedString;
+             // deltaY > miniLineSpacing * 1.8 // line spacing is inaccurate 😢
+            if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
+                joinedString = @"\n\n";
+            } else if (deltaY > 0) {
+                if (isPoetry) {
+                    joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
+                } else {
+                    joinedString = [self joinedStringOfText:recognizedString language:ocrResult.from];
+                }
+            } else {
+                joinedString = @" "; // the same line
+            }
+            [mergedText appendString:joinedString];
+            [mergedText appendString:recognizedString];
+        } else {
+            [mergedText appendString:recognizedString];
+        }
+    }
+    
+    ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
+    ocrResult.texts = [mergedText componentsSeparatedByString:@"\n"];
+    ocrResult.raw = recognizedStrings;
+
     if (recognizedStrings.count > 0) {
         ocrResult.confidence = confidence / recognizedStrings.count;
     }
-    
-    NSString *mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
-    if (intelligentJoined) {
-        mergedText = [self joinOCRResults:ocrResult];
-        mergedText = [self replaceSimilarDotSymbolOfString:mergedText];
-    }
-    
-    ocrResult.mergedText = mergedText;
-    ocrResult.raw = recognizedStrings;
-    
-    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, mergedText);
+
+    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
 }
 
 // Update OCR recognitionLanguages with preferred languages.
@@ -1039,6 +1143,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
  */
 - (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
     NSArray<NSString *> *stringArray = ocrResult.texts;
+    NSLog(@"ocr stringArray: %@", stringArray);
+    
     EZLanguage language = ocrResult.from;
     
     NSMutableString *joinedString = [NSMutableString string];
@@ -1055,6 +1161,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSString *newLineString = @"\n";
     if (isPoetry) {
+        NSLog(@"--> isPoetry");
         return [stringArray componentsJoinedByString:newLineString];
     }
     
@@ -1063,7 +1170,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         [joinedString appendString:string];
         
         /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-        NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
+        NSString *lastChar = [string substringFromIndex:string.length - 1];
         
         // Append \n for short line if string frame width is less than max width - delta.
         BOOL isShortLine = [self isShortLineOfString:string
@@ -1087,6 +1194,23 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     // Remove last \n.
     return [joinedString trim];
+}
+
+- (NSString *)joinedStringOfText:(NSString *)text language:(EZLanguage)language {
+    NSString *joinedString = @"";
+    NSString *lastChar = [text substringFromIndex:text.length - 1];
+    if ([self isEndPunctuationChar:lastChar]) {
+        joinedString = @"\n";
+    } else if ([self isPunctuationChar:lastChar]) {
+        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
+        joinedString = @" ";
+    } else {
+        // Like Chinese text, don't need space between words if it is not a punctuation mark.
+        if ([self isLanguageWordsNeedSpace:language]) {
+            joinedString = @" ";
+        }
+    }
+    return joinedString;
 }
 
 /// Check if string array is poetry, and get the max and min frame width of string, the punctuation count and the punctuation mark percent.
@@ -1213,6 +1337,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             maxLengthOfLine:(CGFloat)maxLengthOfLine
                    language:(EZLanguage)language
 {
+    if (string.length == 0) {
+        return YES;
+    }
+    
     // If string last char end with [ 。？!.?！]
     NSString *lastChar = [string substringFromIndex:string.length - 1];
     BOOL hasEndPunctuationMark = [self isEndPunctuationChar:lastChar];
