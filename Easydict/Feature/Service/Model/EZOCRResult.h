@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 合并过后的文本
 @property (nonatomic, copy) NSString *mergedText;
+
 /// OCR接口提供的原始的、未经转换的查询结果
 @property (nonatomic, strong) id raw;
 
