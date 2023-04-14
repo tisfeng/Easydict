@@ -406,6 +406,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     // TODO: need to optimize, check the frame of the text and determine if line breaks are necessary.
     CGFloat miniLineHeight = MAXFLOAT;
     CGFloat miniLineSpacing = MAXFLOAT;
+    CGFloat miniX = MAXFLOAT;
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
     
@@ -426,10 +427,15 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         if (i > 0) {
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
-            CGFloat deltaY = (prevBoundingBox.origin.y - prevBoundingBox.size.height) - boundingBox.origin.y;
-            if (deltaY < miniLineSpacing) {
+            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
+            if (deltaY > 0 && deltaY < miniLineSpacing) {
                 miniLineSpacing = deltaY;
             }
+        }
+        
+        CGFloat x = boundingBox.origin.x;
+        if (x < miniX) {
+            miniX = x;
         }
     }
     
@@ -493,15 +499,18 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         if (i > 0) {
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
-            CGFloat deltaY = (prevBoundingBox.origin.y - prevBoundingBox.size.height) - boundingBox.origin.y;
+            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
             // miniLineHeight = 0.1
+            
+            BOOL aligned = boundingBox.origin.x - miniX < 0.15;
+            BOOL needLineBreak = !aligned || isPoetry;
 
             NSString *joinedString;
-//            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate 😢
+//            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
             if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
                 joinedString = @"\n\n";
             } else if (deltaY > 0) {
-                if (isPoetry) {
+                if (needLineBreak) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
                     VNRecognizedText *recognizedText = [[prevObservation topCandidates:1] firstObject];
