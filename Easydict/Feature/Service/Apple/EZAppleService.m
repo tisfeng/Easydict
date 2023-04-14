@@ -412,7 +412,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     for (int i = 0; i < observationResults.count; i++) {
         VNRecognizedTextObservation *observation = observationResults[i];
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
-        VNConfidence recognizedConfidence = recognizedText.confidence;
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
 
@@ -444,10 +443,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSArray<NSString *> *stringArray = ocrResult.texts;
     NSLog(@"ocr stringArray: %@", stringArray);
-    
-    EZLanguage language = ocrResult.from;
-    
-    NSMutableString *joinedString = [NSMutableString string];
+        
     CGFloat maxLengthOfLine = 0;
     CGFloat minLengthOfLine = 0;
     NSInteger punctuationMarkCount = 0;
@@ -494,9 +490,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
          */
         // 如果 i 不是第一个元素，且前一个元素的 boundingBox 的 minY 值大于当前元素的 maxY 值，则认为中间有换行。
         
-        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-        NSString *lastChar = [recognizedString substringFromIndex:recognizedString.length - 1];
-        
         if (i > 0) {
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
@@ -511,16 +504,17 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 if (isPoetry) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
-                    joinedString = [self joinedStringOfText:recognizedString language:ocrResult.from];
+                    VNRecognizedText *recognizedText = [[prevObservation topCandidates:1] firstObject];
+                    NSString *lastString = recognizedText.string;
+                    joinedString = [self joinedStringOfText:lastString language:ocrResult.from];
                 }
             } else {
                 joinedString = @" "; // the same line
             }
             [mergedText appendString:joinedString];
-            [mergedText appendString:recognizedString];
-        } else {
-            [mergedText appendString:recognizedString];
         }
+        
+        [mergedText appendString:recognizedString];
     }
     
     ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
