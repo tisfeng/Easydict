@@ -14,8 +14,8 @@
 #import "EZConfiguration.h"
 
 /// general word width, alphabet count is abount 5, means if a line is short, then append \n.
-static CGFloat kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30
-static CGFloat kChineseWordWidth = 15; // [self widthOfString:@"爱"]; // 13
+static CGFloat kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
+static CGFloat kChineseWordWidth = 15; // [self widthOfString:@"爱"]; // 13.26
 
 static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
 
@@ -427,7 +427,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     ocrResult.mergedText = mergedText;
     ocrResult.raw = recognizedStrings;
     
-    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, recognizedStrings);
+    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, mergedText);
 }
 
 // Update OCR recognitionLanguages with preferred languages.
@@ -1062,19 +1062,20 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         NSString *string = stringArray[i];
         [joinedString appendString:string];
         
-        // Append \n for short line if string frame width is less than max width - delta.
-        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
-        
         /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
         NSString *lastChar = [joinedString substringFromIndex:joinedString.length - 1];
-        BOOL endWithPunctuationMark = [self isEndPunctuationMark:lastChar];
         
-        BOOL needAppendNewLine = isShortLine || endWithPunctuationMark;
+        // Append \n for short line if string frame width is less than max width - delta.
+        BOOL isShortLine = [self isShortLineOfString:string
+                                     maxLengthOfLine:maxLengthOfLine
+                                            language:language];
+                
+        BOOL needAppendNewLine = isShortLine;
         
         if (needAppendNewLine) {
             [joinedString appendString:newLineString];
-        } else if ([self isPunctuationMark:lastChar]) {
-            // if last char is a punctuation mark, then append a space.
+        } else if ([self isPunctuationChar:lastChar]) {
+            // if last char is a punctuation mark, then append a space, since ocr will remove white space.
             [joinedString appendString:@" "];
         } else {
             // Like Chinese text, don't need space between words if it is not a punctuation mark.
@@ -1116,7 +1117,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         for (NSInteger i = 0; i < string.length; i++) {
             totalCharCount += 1;
             NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            if ([self isPunctuationMark:charString]) {
+            if ([self isPunctuationChar:charString]) {
                 _punctuationMarkCount += 1;
             }
         }
@@ -1191,7 +1192,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSInteger _shortLineCount = 0;
     NSInteger _longLineCount = 0;
     for (NSString *string in stringArray) {
-        BOOL isShortLine = [self isShortLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
+        BOOL isShortLine = [self isShortLineOfString:string
+                                     maxLengthOfLine:maxLengthOfLine
+                                            language:language];
+        
         BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
         if (isShortLine) {
             _shortLineCount += 1;
@@ -1204,17 +1208,27 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     *longLineCount = _longLineCount;
 }
 
-/// Check if string is a short line, if string frame width is less than max width - delta * 2.
+/// Check if string is a short line, if string frame width is less than max width - delta * 2, and not endWithPunctuationMark.
 - (BOOL)isShortLineOfString:(NSString *)string
             maxLengthOfLine:(CGFloat)maxLengthOfLine
-                   language:(EZLanguage)language {
+                   language:(EZLanguage)language
+{
+    // If string last char end with [ 。？!.?！]
+    NSString *lastChar = [string substringFromIndex:string.length - 1];
+    BOOL hasEndPunctuationMark = [self isEndPunctuationChar:lastChar];
+    
     CGFloat width = [self widthOfString:string];
     CGFloat delta = kEnglishWordWidth;
     if ([EZLanguageManager isChineseLanguage:language]) {
         delta = kChineseWordWidth;
     }
+    
+    if (!hasEndPunctuationMark) {
+        delta = delta * 1.5;
+    }
+    
     // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
-    BOOL isShortLine = width <= maxLengthOfLine - delta * 2;
+    BOOL isShortLine = width < maxLengthOfLine - delta * 2;
     
     return isShortLine;
 }
@@ -1245,7 +1259,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark:(NSString *)charString {
+- (BOOL)isPunctuationChar:(NSString *)charString {
     if (charString.length != 1) {
         return NO;
     }
@@ -1266,7 +1280,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 /// Check if char is a end punctuation mark.
-- (BOOL)isEndPunctuationMark:(NSString *)charString {
+- (BOOL)isEndPunctuationChar:(NSString *)charString {
     if (charString.length != 1) {
         return NO;
     }
