@@ -266,7 +266,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     // !!!: All numbers will be return nil: 729
     if (languageProbabilityDict.count == 0) {
-        languageProbabilityDict = @{ NLLanguageEnglish : @(0) };
+        languageProbabilityDict = @{NLLanguageEnglish : @(0)};
     }
     
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
@@ -296,14 +296,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     [self ocrImage:queryModel.ocrImage
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
-        completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+        completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
         if (error || ocrResult.confidence == 1.0) {
             completion(ocrResult, error);
             return;
         }
         
         NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
-        [self getMostConfidenceLangaugeOCRResult:languageDict completion:^(EZOCRResult * _Nullable ocrResult, NSError * _Nullable error) {
+        [self getMostConfidenceLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
             completion(ocrResult, error);
         }];
     }];
@@ -340,7 +340,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 completion(ocrResult, error);
                 return;
             }
-                  
+            
             BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
             [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
             if (!error && ocrResult.mergedText.length == 0) {
@@ -403,7 +403,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
-
+        
         CGRect boundingBox = observation.boundingBox;
         NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
@@ -437,7 +437,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSArray<NSString *> *stringArray = ocrResult.texts;
     NSLog(@"ocr stringArray: %@", stringArray);
-        
+    
     CGFloat maxLengthOfLine = 0;
     CGFloat minLengthOfLine = 0;
     NSInteger punctuationMarkCount = 0;
@@ -456,17 +456,17 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         VNRecognizedTextObservation *observation = observationResults[i];
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         confidence += recognizedText.confidence;
-
+        
         NSString *recognizedString = recognizedText.string;
         CGRect boundingBox = observation.boundingBox;
         NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
         /**
          《摊破浣溪沙》  123  《浣溪沙》
-
+         
          菡萏香销翠叶残，西风愁起绿波间。还与韶光共憔悴，不堪看。
          细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
-
+         
          —— 五代十国 · 李璟
          
          
@@ -492,9 +492,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             
             BOOL aligned = boundingBox.origin.x - miniX < 0.15;
             BOOL needLineBreak = !aligned || isPoetry;
-
+            
             NSString *joinedString;
-//            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
+            //            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
             if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
                 joinedString = @"\n\n";
             } else if (deltaY > 0) {
@@ -518,11 +518,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
     ocrResult.texts = [mergedText componentsSeparatedByString:@"\n"];
     ocrResult.raw = recognizedStrings;
-
+    
     if (recognizedStrings.count > 0) {
         ocrResult.confidence = confidence / recognizedStrings.count;
     }
-
+    
     NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
 }
 
@@ -579,20 +579,20 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSArray<NLLanguage> *sortedLanguages = [languageProbabilityDict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj2 compare:obj1];
     }];
-
+    
     NSMutableArray *results = [NSMutableArray array];
     dispatch_group_t group = dispatch_group_create();
-
+    
     for (NLLanguage language in sortedLanguages) {
         EZLanguage ezLanguage = [self appleLanguageEnumFromCode:language];
         dispatch_group_enter(group);
-
+        
         // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
         [self ocrImage:self.queryModel.ocrImage
               language:ezLanguage
             autoDetect:YES
-            completion:^(EZOCRResult * _Nullable ocrResult, NSError *_Nullable error) {
-            [results addObject:@{@"ocrResult": ocrResult ?: [NSNull null], @"error": error ?: [NSNull null]}];
+            completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+            [results addObject:@{@"ocrResult" : ocrResult ?: [NSNull null], @"error" : error ?: [NSNull null]}];
             dispatch_group_leave(group);
         }];
     }
@@ -914,7 +914,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     //  月によく似た風景
     
     text = [EZTextWordUtils removeNonNormalCharacters:text];
-
+    
     NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
     NSInteger simplifiedChineseLength = [self chineseCharactersLength:text type:EZLanguageSimplifiedChinese];
     NSInteger englishLength = [self englishCharactersLength:text];
@@ -1045,7 +1045,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         BOOL isShortLine = [self isShortLineOfString:string
                                      maxLengthOfLine:maxLengthOfLine
                                             language:language];
-                
+        
         BOOL needAppendNewLine = isShortLine;
         
         if (needAppendNewLine) {
@@ -1118,7 +1118,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         for (NSInteger i = 0; i < string.length; i++) {
             totalCharCount += 1;
             NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            NSArray *allowList = @[@"《", @"》", @"—"];
+            NSArray *allowList = @[ @"《", @"》", @"—" ];
             BOOL isChar = [self isPunctuationChar:charString excludeCharArray:allowList];
             if (isChar) {
                 _punctuationMarkCount += 1;
@@ -1191,8 +1191,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
          longLineCount:(NSInteger *)longLineCount
          ofStringArray:(NSArray<NSString *> *)stringArray
        maxLengthOfLine:(CGFloat)maxLengthOfLine
-              language:(EZLanguage)language
-{
+              language:(EZLanguage)language {
     NSInteger _shortLineCount = 0;
     NSInteger _longLineCount = 0;
     for (NSString *string in stringArray) {
@@ -1215,8 +1214,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 /// Check if string is a short line, if string frame width is less than max width - delta * 2
 - (BOOL)isShortLineOfString:(NSString *)string
             maxLengthOfLine:(CGFloat)maxLengthOfLine
-                   language:(EZLanguage)language
-{
+                   language:(EZLanguage)language {
     if (string.length == 0) {
         return YES;
     }
@@ -1229,7 +1227,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
     BOOL isShortLine = maxLengthOfLine - width >= delta * 2;
-
+    
     return isShortLine;
 }
 
