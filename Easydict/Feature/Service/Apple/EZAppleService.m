@@ -8,7 +8,6 @@
 
 #import "EZAppleService.h"
 #import <Vision/Vision.h>
-#import <NaturalLanguage/NaturalLanguage.h>
 #import <AVFoundation/AVFoundation.h>
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
@@ -37,7 +36,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return _exeCommand;
 }
 
-- (NSDictionary<NSString *, EZLanguage> *)appleLangEnumFromStringDict {
+- (NSDictionary<NLLanguage, EZLanguage> *)appleLangEnumFromStringDict {
     if (!_appleLangEnumFromStringDict) {
         _appleLangEnumFromStringDict = [[[self appleLanguagesDictionary] keysAndObjects] mm_reverseKeysAndObjectsDictionary];
     }
@@ -81,7 +80,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return orderedDict;
 }
 
-- (MMOrderedDictionary *)appleLanguagesDictionary {
+- (MMOrderedDictionary<EZLanguage, NLLanguage> *)appleLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, NLLanguageUndetermined,                     // uud
                                         EZLanguageSimplifiedChinese, NLLanguageSimplifiedChinese,   // zh-Hans
@@ -263,16 +262,15 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     [recognizer processString:text];
     
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
-    
+    NLLanguage dominantLanguage = recognizer.dominantLanguage;
+
     // !!!: All numbers will be return nil: 729
     if (languageProbabilityDict.count == 0) {
-        languageProbabilityDict = @{NLLanguageEnglish : @(0)};
+        EZLanguage firstLanguage = [EZLanguageManager firstLanguage];
+        dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
+        languageProbabilityDict = @{dominantLanguage : @(0)};
     }
     
-    NLLanguage dominantLanguage = recognizer.dominantLanguage;
-    if (!dominantLanguage) {
-        dominantLanguage = languageProbabilityDict.allKeys.firstObject;
-    }
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     
     if (logFlag) {
@@ -584,7 +582,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     dispatch_group_t group = dispatch_group_create();
     
     for (NLLanguage language in sortedLanguages) {
-        EZLanguage ezLanguage = [self appleLanguageEnumFromCode:language];
+        EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:language];
         dispatch_group_enter(group);
         
         // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
@@ -680,18 +678,18 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 #pragma mark - Public Methods
 
-// zh-Hans --> Chinese-Simplified
-- (EZLanguage)appleLanguageEnumFromCode:(NSString *)langString {
-    EZLanguage language = [self.appleLangEnumFromStringDict objectForKey:langString];
-    if (!language) {
-        language = EZLanguageAuto;
+/// Convert NLLanguage to EZLanguage, e.g. zh-Hans --> Chinese-Simplified
+- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)appleLanguage {
+    EZLanguage ezLanguage = [self.appleLangEnumFromStringDict objectForKey:appleLanguage];
+    if (!ezLanguage) {
+        ezLanguage = EZLanguageAuto;
     }
-    return language;
+    return ezLanguage;
 }
 
-// Chinese-Simplified --> zh-Hans
-- (NSString *)appleLanguageCodeForLanguage:(EZLanguage)lang {
-    return [self.appleLanguagesDictionary objectForKey:lang];
+/// Convert EZLanguage to NLLanguage, e.g. Chinese-Simplified --> zh-Hans
+- (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)ezLanguage {
+    return [self.appleLanguagesDictionary objectForKey:ezLanguage];
 }
 
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
@@ -802,7 +800,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
     
     for (EZLanguage language in userPreferredLanguageProbabilities.allKeys) {
-        NLLanguage appleLanguage = [self appleLanguageCodeForLanguage:language];
+        NLLanguage appleLanguage = [self appleLanguageFromLanguageEnum:language];
         CGFloat defaultProbability = [defaultLanguageProbabilities[appleLanguage] doubleValue];
         if (defaultProbability) {
             NSNumber *userPreferredLanguageProbability = userPreferredLanguageProbabilities[language];
@@ -815,7 +813,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     }];
     
     NLLanguage mostConfidentLanguage = sortedLanguages.firstObject;
-    EZLanguage ezLanguage = [self appleLanguageEnumFromCode:mostConfidentLanguage];
+    EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:mostConfidentLanguage];
     
     if (logFlag) {
         NSLog(@"user probabilities: %@", userPreferredLanguageProbabilities);
