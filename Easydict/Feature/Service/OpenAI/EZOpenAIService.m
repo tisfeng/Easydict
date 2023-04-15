@@ -116,16 +116,49 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"stream" : @(YES),
     }.mutableCopy;
     
-    EZQueryServiceType queryServiceType;
+    EZQueryServiceType queryServiceType = EZQueryServiceTypeTranslation;
 
     BOOL shouldQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
     
+    BOOL enableSentence = self.queryServiceType & EZQueryServiceTypeSentence;
+    BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
+    
+    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
+    
     if (shouldQueryDictionary && enableDictionary) {
         queryServiceType = EZQueryServiceTypeDictionary;
         parameters[@"messages"] = [self dictMessages:text from:sourceLanguage to:targetLanguage];
-
+    } else if (isEnglishSentence && enableSentence) {
+        queryServiceType = EZQueryServiceTypeSentence;
+        parameters[@"messages"] = [self sentenceMessages:text from:from to:to];
+    } else if (enableTranslation) {
+        queryServiceType = EZQueryServiceTypeTranslation;
+        parameters[@"messages"] = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
+    }
+    
+    if (queryServiceType != EZQueryServiceTypeNone) {
         [self startStreamChat:parameters queryServiceType:queryServiceType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
+            [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
+        }];
+    }
+}
+
+- (void)handleResultText:(NSString *)resultText
+                   error:(NSError *)error
+        queryServiceType:(EZQueryServiceType)queryServiceType
+              completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    
+    NSArray *normalResults = [[resultText trim] componentsSeparatedByString:@"\n"];
+    
+    switch (queryServiceType) {
+        case EZQueryServiceTypeTranslation:
+        case EZQueryServiceTypeSentence: {
+            self.result.normalResults = normalResults;
+            completion(self.result, error);
+            break;
+        }
+        case EZQueryServiceTypeDictionary: {
             if (error) {
                 self.result.showBigWord = NO;
                 self.result.translateResultsTopInset = 0;
@@ -133,56 +166,18 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 return;
             }
             
-            NSArray *results = [[result trim] componentsSeparatedByString:@"\n"];
-            self.result.normalResults = results;
+            self.result.normalResults = normalResults;
             self.result.showBigWord = YES;
-            self.result.queryText = text;
+            self.result.queryText = self.queryModel.queryText;
             self.result.translateResultsTopInset = 10;
-            
             completion(self.result, error);
-        }];
-        return;
-    }
-    
-    BOOL enableSentence = self.queryServiceType & EZQueryServiceTypeSentence;
-    BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
-    
-    if (isEnglishSentence && enableSentence) {
-        queryServiceType = EZQueryServiceTypeSentence;
-        parameters[@"messages"] = [self sentenceMessages:text from:from to:to];
-
-        [self startStreamChat:parameters queryServiceType:queryServiceType  completion:^(NSString *_Nullable result, NSError *_Nullable error) {
-            if (error) {
-                completion(self.result, error);
-                return;
-            }
-            
-            self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
-            completion(self.result, error);
-        }];
-        return;
-    }
-    
-    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
-    if (enableTranslation) {
-        queryServiceType = EZQueryServiceTypeTranslation;
-        parameters[@"messages"] = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
-
-        [self startStreamChat:parameters queryServiceType:queryServiceType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
-            if (error) {
-                completion(self.result, error);
-                return;
-            }
-            
-            result = [self removeTranslationDelimiter:result];
-            
-            self.result.normalResults = [[result trim] componentsSeparatedByString:@"\n"];
-            completion(self.result, error);
-        }];
-        return;
+            break;
+        }
+        default:
+            completion(self.result, nil);
+            break;
     }
 }
-
 
 - (void)startStreamChat:(NSDictionary *)parameters
        queryServiceType:(EZQueryServiceType)queryServiceType
