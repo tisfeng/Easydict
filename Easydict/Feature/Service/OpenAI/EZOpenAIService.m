@@ -667,7 +667,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\".\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, display format: \" {Translation} \",\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, display format: \" xxx \",\n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -683,13 +683,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail. Show no more than 5, display format: \"%@:\n xxx \",\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail. Show no more than 5, display format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
-    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n", grammarParse];
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous stpes, the %@ inference translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display inferred translation in this format: \"%@: xxx \",\n",  targetLanguage, inferenceTranslation];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous stpes, the %@ inference translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display inferred translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -703,11 +703,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.
             @"content" :
                 @"Here is a English sentence: \"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\",\n"
-                @"First, display the Simplified-Chinese translation of this sentence.\n"
+                @"First, display the Simplified-Chinese translation of this sentence.\n\n"
                 @"Then, follow the steps below step by step."
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n"
-                @"2. Analyze the grammatical structure of this sentence.\n"
-                @"3. Show Simplified-Chinese inferred translation. \n"
+                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
+                @"2. Analyze the grammatical structure of this sentence.\n\n"
+                @"3. Show Simplified-Chinese inferred translation. \n\n"
                 @"Answer in Simplified-Chinese. \n",
         },
         @{
@@ -746,11 +746,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
                 @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
-                @"First, display the Simplified-Chinese translation of this sentence.\n"
+                @"First, display the Simplified-Chinese translation of this sentence.\n\n"
                 @"Then, follow the steps below step by step."
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n"
-                @"2. Analyze the grammatical structure of this sentence.\n"
-                @"3. Show Simplified-Chinese inferred translation. \n"
+                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
+                @"2. Analyze the grammatical structure of this sentence.\n\n"
+                @"3. Show Simplified-Chinese inferred translation. \n\n"
                 @"Answer in Simplified-Chinese. \n",
         },
         @{
