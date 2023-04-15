@@ -70,9 +70,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }
     
-    __block CGFloat ezLabelTopOffset = 0;
-    
     mm_weakify(self);
+    __block CGFloat ezLabelTopOffset = 0;
     
     BOOL isWordLength = result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
     BOOL showBigWord = result.wordResult || result.showBigWord;
