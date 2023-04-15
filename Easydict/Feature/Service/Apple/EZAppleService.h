@@ -7,13 +7,14 @@
 //
 
 #import "EZQueryService.h"
+#import <NaturalLanguage/NaturalLanguage.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAppleService : EZQueryService
 
-- (EZLanguage)appleLanguageEnumFromCode:(NSString *)langString;
-- (NSString *)appleLanguageCodeForLanguage:(EZLanguage)lang;
+- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)langString;
+- (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)lang;
 
 - (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
 

@@ -50,7 +50,7 @@
         NSString *languageCode = [array componentsJoinedByString:@"-"];
         // Convert to EZLanguage
         EZAppleService *appleService = [[EZAppleService alloc] init];
-        EZLanguage ezLanguage = [appleService appleLanguageEnumFromCode:languageCode];
+        EZLanguage ezLanguage = [appleService languageEnumFromAppleLanguage:languageCode];
         if (![ezLanguage isEqualToString:EZLanguageAuto]) {
             [languages addObject:ezLanguage];
         }
