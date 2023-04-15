@@ -52,6 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Sentence count of text.
 + (NSInteger)sentenceCount:(NSString *)text;
 
+/// Check if it is a single letter of the alphabet.
++ (BOOL)isAlphabet:(NSString *)charString;
+
+/// Check if text is numbers.
++ (BOOL)isNumbers:(NSString *)text;
 
 #pragma mark - Handle extra quotes.
 
@@ -85,6 +90,47 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Remove quotes. "\""
 + (NSString *)tryToRemoveQuotes:(NSString *)text;
+
+
+#pragma mark - Remove desingated characters.
+
+/// Remove all whitespace, punctuation, symbol and number characters.
++ (NSString *)removeNonNormalCharacters:(NSString *)string;
+
+/// Remove all whitespace and newline characters, including whitespace in the middle of the string.
++ (NSString *)removeWhitespaceAndNewlineCharacters:(NSString *)string;
+
+/// Remove all punctuation characters, including English and Chinese.
++ (NSString *)removePunctuationCharacters:(NSString *)string;
+
++ (NSString *)removePunctuationCharacters2:(NSString *)string;
+
+/// Remove all numbers.
++ (NSString *)removeNumbers:(NSString *)string;
+
+/// Remove all symbolCharacterSet. such as $, not including punctuationCharacterSet.
++ (NSString *)removeSymbolCharacterSet:(NSString *)string;
+
+/// Remove all controlCharacterSet.
++ (NSString *)removeControlCharacterSet:(NSString *)string;
+
+/// Remove all illegalCharacterSet.
++ (NSString *)removeIllegalCharacterSet:(NSString *)string;
+
+/// Remove all nonBaseCharacterSet.
++ (NSString *)removeNonBaseCharacterSet:(NSString *)string;
+
+/// Remove all alphabet.
++ (NSString *)removeAlphabet:(NSString *)string;
+
+/// Remove all alphabet, use regex.
++ (NSString *)removeAlphabet2:(NSString *)string;
+
+/// Remove all letters. Why "我123abc" will return "123"? Chinese characters are also letters ??
++ (NSString *)removeLetters:(NSString *)string;
+
+/// Remove all alphabet and numbers.
++ (NSString *)removeAlphabetAndNumbers:(NSString *)string;
 
 @end
 
