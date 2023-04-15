@@ -197,6 +197,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         return;
     }
     
+    text = [self maxTextLength:text fromLanguage:from];
+
     BOOL queryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     if (queryDictionary) {
         // This API can get word info, like pronunciation.
@@ -320,9 +322,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
-    
-    text = [self maxTextLength:text fromLanguage:from];
-    
+        
     EZQueryResult *result = self.result;
     
     void (^translateBlock)(NSString *, EZLanguage, EZLanguage) = ^(NSString *text, EZLanguage langFrom, EZLanguage langTo) {
