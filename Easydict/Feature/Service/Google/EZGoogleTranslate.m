@@ -31,24 +31,23 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (JSContext *)jsContext {
     if (!_jsContext) {
         JSContext *jsContext = [JSContext new];
-        NSString *jsPath =
-            [[NSBundle mainBundle] pathForResource:@"google-translate-sign"
-                                            ofType:@"js"];
+        NSString *jsPath = [[NSBundle mainBundle] pathForResource:@"google-translate-sign" ofType:@"js"];
         NSString *jsString = [NSString stringWithContentsOfFile:jsPath
                                                        encoding:NSUTF8StringEncoding
                                                           error:nil];
-        // 加载方法
         [jsContext evaluateScript:jsString];
         _jsContext = jsContext;
     }
     return _jsContext;
 }
+
 - (JSValue *)signFunction {
     if (!_signFunction) {
         _signFunction = [self.jsContext objectForKeyedSubscript:@"sign"];
     }
     return _signFunction;
 }
+
 - (JSValue *)window {
     if (!_window) {
         _window = [self.jsContext objectForKeyedSubscript:@"window"];
@@ -193,15 +192,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)sendTranslateSingleText:(NSString *)text
                            from:(EZLanguage)from
                              to:(EZLanguage)to
-                     completion:
-(void (^)(id _Nullable responseObject,
-          NSString *_Nullable signText,
-          NSMutableDictionary *reqDict,
-          NSError *_Nullable error))completion {
+                     completion:(void (^)(id _Nullable responseObject,
+                                          NSString *_Nullable signText,
+                                          NSMutableDictionary *reqDict,
+                                          NSError *_Nullable error))completion {
     NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
-    
+
     NSString *url = [kGoogleRootPage(self.isCN)
-                     stringByAppendingPathComponent:@"/translate_a/single"];
+        stringByAppendingPathComponent:@"/translate_a/single"];
     NSDictionary *params = @{
         @"q" : text,
         @"sl" : [self languageCodeForLanguage:from],
@@ -212,30 +210,29 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         @"client" : @"gtx",
     };
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params,
-                                    EZTranslateErrorRequestParamKey, nil];
-    
+                                                                                     EZTranslateErrorRequestParamKey, nil];
+
     NSURLSessionTask *task = [self.jsonSession GET:url
-                                        parameters:params
-                                          progress:nil
-                                           success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        if ([self.queryModel isServiceStopped:self.serviceType]) {
-            return;
-        }
-        
-        if (responseObject) {
-            completion(responseObject, sign, reqDict, nil);
-        } else {
-            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
-        }
-    }
-                                           failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        if (error.code == NSURLErrorCancelled) {
-            return;
-        }
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
-    }];
-    
+        parameters:params
+        progress:nil
+        success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+            if ([self.queryModel isServiceStopped:self.serviceType]) {
+                return;
+            }
+
+            if (responseObject) {
+                completion(responseObject, sign, reqDict, nil);
+            } else {
+                completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, nil, reqDict));
+            }
+        } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+            if (error.code == NSURLErrorCancelled) {
+                return;
+            }
+            [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+            completion(nil, nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
+        }];
+
     [self.queryModel setStopBlock:^{
         [task cancel];
     } serviceType:self.serviceType];
@@ -329,7 +326,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
-    
+
     BOOL queryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     if (queryDictionary) {
         // This API can get word info, like pronunciation.
@@ -339,7 +336,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     }
 }
 
-/// This API can only get translation and language, the translation result is the same as web.
+/// This API can only get translation and src language, the result is the same as web translation.
 - (void)translateSingleText:(NSString *)text
                        from:(EZLanguage)from
                          to:(EZLanguage)to
@@ -397,16 +394,23 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                            // 普通释义
                                            NSArray *sentences = responseDict[@"sentences"];
                                            if (sentences && [sentences isKindOfClass:NSArray.class]) {
-                                               NSString *trans = sentences[0][@"trans"];
-                                               if (trans && [trans isKindOfClass:NSString.class]) {
-                                                   result.normalResults = @[ trans.trim ];
-                                                   NSString *signTo = [[self.signFunction
-                                                       callWithArguments:@[ trans ]] toString];
-                                                   result.toSpeakURL = [self
-                                                       getAudioURLWithText:trans
-                                                                  language:[self languageCodeForLanguage:googleTo]
-                                                                      sign:signTo];
+                                               NSMutableArray *translationArray = [NSMutableArray array];
+                                             
+                                               for (NSDictionary *sentenceDict in sentences) {
+                                                   NSString *trans = sentenceDict[@"trans"];
+                                                   if (trans && [trans isKindOfClass:NSString.class]) {
+                                                       [translationArray addObject:trans];
+                                                   }
                                                }
+                                               
+                                               result.normalResults = translationArray;
+                                               NSString *transaltedText = [translationArray componentsJoinedByString:@""];
+                                               NSString *signTo = [[self.signFunction
+                                                   callWithArguments:@[ transaltedText ]] toString];
+                                               result.toSpeakURL = [self
+                                                   getAudioURLWithText:transaltedText
+                                                              language:[self languageCodeForLanguage:googleTo]
+                                                                  sign:signTo];
                                            }
 
                                            if (result.wordResult || result.normalResults) {
@@ -624,7 +628,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
-        
+
         if (responseObject) {
             completion(responseObject, sign, reqDict, nil);
         } else {
