@@ -420,6 +420,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @"abnerworks.Typora",       // Typora
         @"com.jinghaoshe.shi",      // 晓诗
         @"xyz.chatboxapp.app",      // chatbox
+        @"com.wutian.weibo", // Maipo，微博客户端
     ];
     
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
