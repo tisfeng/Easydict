@@ -501,9 +501,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 if (needLineBreak) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
-                    VNRecognizedText *recognizedText = [[prevObservation topCandidates:1] firstObject];
-                    NSString *lastString = recognizedText.string;
-                    joinedString = [self joinedStringOfText:lastString language:ocrResult.from];
+                    NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
+                    joinedString = [self joinedStringOfText:prevString
+                                            maxLengthOfLine:&maxLengthOfLine
+                                                   language:ocrResult.from];
                 }
             } else {
                 joinedString = @" "; // the same line
@@ -1064,10 +1065,18 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return [joinedString trim];
 }
 
-- (NSString *)joinedStringOfText:(NSString *)text language:(EZLanguage)language {
+/// Get joined string of text, according to its last char.
+- (NSString *)joinedStringOfText:(NSString *)text
+                 maxLengthOfLine:(CGFloat *)maxLengthOfLine
+                        language:(EZLanguage)language {
     NSString *joinedString = @"";
     NSString *lastChar = [text substringFromIndex:text.length - 1];
-    if ([self isEndPunctuationChar:lastChar]) {
+    BOOL isShortLine = [self isShortLineOfString:text
+                                 maxLengthOfLine:*maxLengthOfLine
+                                        language:language];
+    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
+    
+    if (needLineBreak) {
         joinedString = @"\n";
     } else if ([self isPunctuationChar:lastChar]) {
         // if last char is a punctuation mark, then append a space, since ocr will remove white space.
@@ -1182,7 +1191,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
          longLineCount:(NSInteger *)longLineCount
          ofStringArray:(NSArray<NSString *> *)stringArray
        maxLengthOfLine:(CGFloat)maxLengthOfLine
-              language:(EZLanguage)language {
+              language:(EZLanguage)language
+{
     NSInteger _shortLineCount = 0;
     NSInteger _longLineCount = 0;
     for (NSString *string in stringArray) {
