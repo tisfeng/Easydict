@@ -241,33 +241,13 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Apple original language detect.
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
-    text = [text trimToMaxLength:100];
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
-    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
-    
-    // macos(10.14)
-    NLLanguageRecognizer *recognizer = [[NLLanguageRecognizer alloc] init];
-    
-    // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
-    recognizer.languageConstraints = [self designatedLanguages];
-    recognizer.languageHints = [self customLanguageHints];
-    [recognizer processString:text];
-    
-    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:10];
-    NLLanguage dominantLanguage = recognizer.dominantLanguage;
-    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-    
-    if (logFlag) {
-        NSLog(@"system probabilities:: %@", languageProbabilityDict);
-        NSLog(@"dominant Language: %@", dominantLanguage);
-        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
-    }
-    
+    NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [self appleDetectTextLanguageDict:text printLog:logFlag];
     EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict printLog:logFlag];
+    
     return mostConfidentLanguage;
 }
 
+/// !!!: All numbers will be return nil: 729
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
@@ -283,6 +263,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     [recognizer processString:text];
     
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
+    if (languageProbabilityDict.count == 0) {
+        languageProbabilityDict = @{ NLLanguageEnglish : @(0) };
+    }
+    
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     
@@ -299,9 +283,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     self.queryModel = queryModel;
     
-    BOOL automaticallyDetectsLanguage = YES;
-    if (![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
-        automaticallyDetectsLanguage = NO;
+    BOOL automaticallyDetectsLanguage = NO;
+    if ([queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
+        automaticallyDetectsLanguage = YES;
     }
     
     [self ocrImage:queryModel.ocrImage

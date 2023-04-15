@@ -74,11 +74,17 @@
 
 - (void)ocrAndDetectText:(void (^)(EZQueryModel *_Nonnull, NSError *_Nullable))completion {
     [self deepOCR:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+        if (!ocrResult) {
+            completion(self.queryModel, error);
+            return;
+        }
+        
         self.queryModel.queryText = ocrResult.mergedText;
         EZLanguage sourceLanguage = ocrResult.from;
         if (![sourceLanguage isEqualToString:EZLanguageAuto]) {
             self.queryModel.detectedLanguage = sourceLanguage;
         }
+
         completion(self.queryModel, error);
     }];
 }
@@ -86,8 +92,9 @@
 /// Detect text language. Apple System detect, Google detect, Baidu detect.
 - (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     if (queryText.length == 0) {
-        NSLog(@"detectText cannot be nil");
-        completion(self.queryModel, nil);
+        NSString *errorString = @"detectText cannot be nil";
+        NSLog(@"%@", errorString);
+        completion(self.queryModel, [EZTranslateError errorWithString:errorString]);
         return;
     }
     
@@ -199,6 +206,11 @@
                 
         NSString *ocrText = ocrResult.mergedText;
         [self detectText:ocrText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable detectError) {
+            if (detectError) {
+                completion(ocrResult, detectError);
+                return;
+            }
+            
             BOOL isConfidentLanguage = (ocrResult.confidence == 1.0) && [ocrResult.from isEqualToString:queryModel.detectedLanguage];
             if (isConfidentLanguage) {
                 completion(ocrResult, nil);
