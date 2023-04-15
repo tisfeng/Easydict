@@ -17,7 +17,6 @@ static NSDictionary *const kQuotesDict = @{
 
 @implementation EZTextWordUtils
 
-
 #pragma mark - Check if text is a word, or phrase
 
 /// If text is a Chinese or English word or phrase, need query dict.
@@ -50,6 +49,14 @@ static NSDictionary *const kQuotesDict = @{
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
+    
+    NSString *pattern = @"^[a-zA-Z]+$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
+    return [predicate evaluateWithObject:text];
+}
+
++ (BOOL)isEnglishText:(NSString *)text {
+    text = [self tryToRemoveQuotes:text];
     
     NSString *pattern = @"^[a-zA-Z]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
@@ -187,6 +194,7 @@ static NSDictionary *const kQuotesDict = @{
     return [self isChineseText:text];
 }
 
+/// !!!: This method is not accurate. 権 --> zh
 + (BOOL)isChineseText:(NSString *)text {
     NSString *pattern = @"^[\u4e00-\u9fa5]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
@@ -217,7 +225,23 @@ static NSDictionary *const kQuotesDict = @{
     return count;
 }
 
+/// Check if it is a single letter of the alphabet.
++ (BOOL)isAlphabet:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[a-zA-Z]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:charString];
+}
 
+/// Check if text is numbers.
++ (BOOL)isNumbers:(NSString *)text {
+    NSString *regex = @"^[0-9]+$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:text];
+}
 
 #pragma mark - Handle extra quotes.
 
@@ -320,5 +344,121 @@ static NSDictionary *const kQuotesDict = @{
     return text;
 }
 
+#pragma mark - Remove desingated characters.
+
+/// Remove all whitespace, punctuation, symbol and number characters.
++ (NSString *)removeNonNormalCharacters:(NSString *)string {
+    NSString *text = [self removeWhitespaceAndNewlineCharacters:string];
+    text = [self removePunctuationCharacters:text];
+    text = [self removeSymbolCharacterSet:text];
+    text = [self removeNumbers:text];
+    text = [self removeNonBaseCharacterSet:text];
+    return text;
+}
+
+/// Remove all whitespace and newline characters, including whitespace in the middle of the string.
++ (NSString *)removeWhitespaceAndNewlineCharacters:(NSString *)string {
+    NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    text = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    return text;
+}
+
+/// Remove all punctuation characters, including English and Chinese.
++ (NSString *)removePunctuationCharacters:(NSString *)string {
+    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
+    NSString *result = [[string componentsSeparatedByCharactersInSet:punctuationCharacterSet] componentsJoinedByString:@""];
+    return result;
+}
+
++ (NSString *)removePunctuationCharacters2:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"~`!@#$%^&*()-_+={}[]|\\;:'\",<.>/?·~！@#￥%……&*（）——+={}【】、|；：‘“，。、《》？"];
+    NSCharacterSet *punctuationCharSet = [NSCharacterSet punctuationCharacterSet];
+    NSMutableCharacterSet *finalCharSet = [punctuationCharSet mutableCopy];
+    [finalCharSet formUnionWithCharacterSet:charSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:finalCharSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all numbers.
++ (NSString *)removeNumbers:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all symbolCharacterSet. such as $, not including punctuationCharacterSet.
++ (NSString *)removeSymbolCharacterSet:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet symbolCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all controlCharacterSet.
++ (NSString *)removeControlCharacterSet:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet controlCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all illegalCharacterSet.
++ (NSString *)removeIllegalCharacterSet:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet illegalCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all nonBaseCharacterSet.
++ (NSString *)removeNonBaseCharacterSet:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet nonBaseCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all alphabet.
++ (NSString *)removeAlphabet:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all alphabet, use regex.
++ (NSString *)removeAlphabet2:(NSString *)string {
+    NSString *regex = @"[a-zA-Z]";
+    NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
+    return text;
+}
+
+/// Remove all letters. Why "我123abc" will return "123"? Chinese characters are also letters ??
++ (NSString *)removeLetters:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet letterCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Remove all alphabet and numbers.
++ (NSString *)removeAlphabetAndNumbers:(NSString *)string {
+    NSCharacterSet *charSet = [NSCharacterSet alphanumericCharacterSet];
+    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
+    return text;
+}
+
+/// Print NSCharacterSet object.
++ (void)printCharacterSet:(NSCharacterSet *)charSet {
+    NSMutableArray *array = [NSMutableArray array];
+    for (int plane = 0; plane <= 16; plane++) {
+        if ([charSet hasMemberInPlane:plane]) {
+            UTF32Char c;
+            for (c = plane << 16; c < (plane + 1) << 16; c++) {
+                if ([charSet longCharacterIsMember:c]) {
+                    UTF32Char c1 = OSSwapHostToLittleInt32(c); // To make it byte-order safe
+                    NSString *s = [[NSString alloc] initWithBytes:&c1 length:4 encoding:NSUTF32LittleEndianStringEncoding];
+                    [array addObject:s];
+                }
+            }
+        }
+    }
+    NSLog(@"charSet: %@", array);
+}
 
 @end

@@ -12,6 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
+#import "EZTextWordUtils.h"
 
 /// general word width, alphabet count is abount 5, means if a line is short, then append \n.
 static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
@@ -247,7 +248,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return mostConfidentLanguage;
 }
 
-/// !!!: All numbers will be return nil: 729
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
@@ -263,11 +263,16 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     [recognizer processString:text];
     
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
+    
+    // !!!: All numbers will be return nil: 729
     if (languageProbabilityDict.count == 0) {
         languageProbabilityDict = @{ NLLanguageEnglish : @(0) };
     }
     
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
+    if (!dominantLanguage) {
+        dominantLanguage = languageProbabilityDict.allKeys.firstObject;
+    }
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     
     if (logFlag) {
@@ -387,7 +392,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 - (void)setupOCRResult:(EZOCRResult *)ocrResult
                request:(VNRequest *_Nonnull)request
      intelligentJoined:(BOOL)intelligentJoined {
-    // TODO: need to optimize, check the frame of the text and determine if line breaks are necessary.
     CGFloat miniLineHeight = MAXFLOAT;
     CGFloat miniLineSpacing = MAXFLOAT;
     CGFloat miniX = MAXFLOAT;
@@ -828,14 +832,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 /// - !!!: Make sure the count of Chinese characters is > 50% of the entire text.
 /// test: 開門 open, 使用 OCR 123$, 月によく似た風景, アイス・スノーセーリング世界選手権大会
 - (EZLanguage)chineseLanguageTypeOfText:(NSString *)text fromLanguage:(EZLanguage)language {
-    text = [self removeAllSymbolAndWhitespaceCharacters:text];
+    text = [EZTextWordUtils removeNonNormalCharacters:text];
     
     if (text.length == 0) {
         return EZLanguageAuto;
     }
     
     if ([language isEqualToString:EZLanguageEnglish]) {
-        NSString *noAlphabetText = [self removeAlphabet:text];
+        NSString *noAlphabetText = [EZTextWordUtils removeAlphabet:text];
         
         BOOL isChinese = [self isChineseText:noAlphabetText];
         if (isChinese) {
@@ -862,7 +866,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Count Chinese characters length in string.
 - (NSInteger)chineseCharactersLength:(NSString *)string {
-    string = [self removeAllSymbolAndWhitespaceCharacters:string];
     __block NSInteger length = 0;
     [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
         if ([self isChineseText:substring]) {
@@ -909,6 +912,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 - (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
     //  月によく似た風景
     
+    text = [EZTextWordUtils removeNonNormalCharacters:text];
+
     NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
     NSInteger simplifiedChineseLength = [self chineseCharactersLength:text type:EZLanguageSimplifiedChinese];
     NSInteger englishLength = [self englishCharactersLength:text];
@@ -928,7 +933,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Count English characters length in string.
 - (NSInteger)englishCharactersLength:(NSString *)string {
-    string = [self removeAllSymbolAndWhitespaceCharacters:string];
     __block NSInteger length = 0;
     [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
         if ([self isAlphabet:substring]) {
@@ -940,7 +944,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Count Chinese characters length in string with specific language.
 - (NSInteger)chineseCharactersLength:(NSString *)string type:(EZLanguage)language {
-    string = [self removeAllSymbolAndWhitespaceCharacters:string];
     __block NSInteger length = 0;
     for (NSInteger i = 0; i < string.length; i++) {
         NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
@@ -999,134 +1002,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return [predicate evaluateWithObject:string];
 }
 
-#pragma mark - Remove desingated characters.
-
-/// Remove all whitespace, punctuation, symbol and number characters.
-- (NSString *)removeAllSymbolAndWhitespaceCharacters:(NSString *)string {
-    NSString *text = [self removeWhitespaceAndNewlineCharacters:string];
-    text = [self removePunctuationCharacters:text];
-    text = [self removeSymbolCharacterSet:text];
-    text = [self removeNumbers:text];
-    text = [self removeNonBaseCharacterSet:text];
-    return text;
-}
-
-/// Remove all whitespace and newline characters, including whitespace in the middle of the string.
-- (NSString *)removeWhitespaceAndNewlineCharacters:(NSString *)string {
-    NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    text = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    return text;
-}
-
-/// Remove all punctuation characters, including English and Chinese.
-- (NSString *)removePunctuationCharacters:(NSString *)string {
-    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
-    NSString *result = [[string componentsSeparatedByCharactersInSet:punctuationCharacterSet] componentsJoinedByString:@""];
-    return result;
-}
-
-- (NSString *)removePunctuationCharacters2:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"~`!@#$%^&*()-_+={}[]|\\;:'\",<.>/?·~！@#￥%……&*（）——+={}【】、|；：‘“，。、《》？"];
-    NSCharacterSet *punctuationCharSet = [NSCharacterSet punctuationCharacterSet];
-    NSMutableCharacterSet *finalCharSet = [punctuationCharSet mutableCopy];
-    [finalCharSet formUnionWithCharacterSet:charSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:finalCharSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all numbers.
-- (NSString *)removeNumbers:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all symbolCharacterSet. such as $, not including punctuationCharacterSet.
-- (NSString *)removeSymbolCharacterSet:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet symbolCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all controlCharacterSet.
-- (NSString *)removeControlCharacterSet:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet controlCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all illegalCharacterSet.
-- (NSString *)removeIllegalCharacterSet:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet illegalCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all nonBaseCharacterSet.
-- (NSString *)removeNonBaseCharacterSet:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet nonBaseCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all alphabet.
-- (NSString *)removeAlphabet:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all alphabet, use regex.
-- (NSString *)removeAlphabet2:(NSString *)string {
-    NSString *regex = @"[a-zA-Z]";
-    NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
-    return text;
-}
-
-/// Remove all letters. Why "我123abc" will return "123"? Chinese characters are also letters ??
-- (NSString *)removeLetters:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet letterCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Remove all alphabet and numbers.
-- (NSString *)removeAlphabetAndNumbers:(NSString *)string {
-    NSCharacterSet *charSet = [NSCharacterSet alphanumericCharacterSet];
-    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@""];
-    return text;
-}
-
-/// Print NSCharacterSet object.
-- (void)printCharacterSet:(NSCharacterSet *)charSet {
-    NSMutableArray *array = [NSMutableArray array];
-    for (int plane = 0; plane <= 16; plane++) {
-        if ([charSet hasMemberInPlane:plane]) {
-            UTF32Char c;
-            for (c = plane << 16; c < (plane + 1) << 16; c++) {
-                if ([charSet longCharacterIsMember:c]) {
-                    UTF32Char c1 = OSSwapHostToLittleInt32(c); // To make it byte-order safe
-                    NSString *s = [[NSString alloc] initWithBytes:&c1 length:4 encoding:NSUTF32LittleEndianStringEncoding];
-                    [array addObject:s];
-                }
-            }
-        }
-    }
-    NSLog(@"charSet: %@", array);
-}
-
 #pragma mark - Handle OCR text.
 
 /**
  Hello world"
  然后请你也谈谈你对习主席连任的看法？
  最后输出以下内容的反义词："go up
- 
- 我宁愿所有痛苦都留在心里
- 也不愿忘记你的眼睛
- 给我再去相信的勇气
- Oh 越过谎言去拥抱你
  */
 - (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
     NSArray<NSString *> *stringArray = ocrResult.texts;
