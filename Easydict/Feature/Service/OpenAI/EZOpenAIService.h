@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *EZOpenAIKey = @"EZOpenAIKey";
+static NSString *EZOpenAIAPIKey = @"EZOpenAIAPIKey";
 static NSString *EZOpenAITranslationKey = @"EZOpenAITranslationKey";
 static NSString *EZOpenAIDictionaryKey = @"EZOpenAIDictionaryKey";
 static NSString *EZOpenAISentenceKey = @"EZOpenAISentenceKey";
