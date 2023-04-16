@@ -322,8 +322,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         
         // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
         
-        MMOrderedDictionary *appleOCRDict = [self ocrLanguageDictionary];
-        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRDict sortedKeys];
+        MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
+        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
         NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
                                                                      preferredLanguages:[EZLanguageManager systemPreferredLanguages]];
         
