@@ -6,7 +6,7 @@
 
 # Language: ObjC
 
-# BasedOnStyle:  Google
+# BasedOnStyle: Google
 BasedOnStyle: LLVM
 AccessModifierOffset: -1
 ConstructorInitializerIndentWidth: 4
@@ -18,11 +18,11 @@ AlignOperands: false
 AlignTrailingComments: true
 
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortIfStatementsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: Never
 AllowShortFunctionsOnASingleLine: Empty
-AllowShortLoopsOnASingleLine: true
+AllowShortLoopsOnASingleLine: false
 
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: false
