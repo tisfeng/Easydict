@@ -183,7 +183,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
        queryServiceType:(EZQueryServiceType)queryServiceType
              completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
+    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
     
     // Docs: https://platform.openai.com/docs/guides/chat/chat-vs-completions
     NSDictionary *header = @{
@@ -419,7 +419,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Chat using gpt-3.5, response so quickly, generally less than 3s.
 - (void)startChat:(NSArray<NSDictionary *> *)messages completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
+    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
     
     NSDictionary *header = @{
         @"Content-Type" : @"application/json",
@@ -521,7 +521,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Completion, Ref: https://github.com/yetone/bob-plugin-openai-translator/blob/main/src/main.js and https://github.com/scosman/voicebox/blob/9f65744ef9182f5bfad6ed29ddcd811bd8b1f71e/ios/voicebox/Util/OpenApiRequest.m
 - (void)startCompletion:(NSString *)prompt completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIKey] ?: @"";
+    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
     
     NSDictionary *header = @{
         @"Content-Type" : @"application/json",
