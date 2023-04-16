@@ -191,11 +191,9 @@
             [self handleOCRResult:ocrResult error:ocrError completion:completion];
             return;
         }
-        
-        EZLanguage queryFromLanguage = self.queryModel.queryFromLanguage;
-        
+                
         // If user has specified ocr language, we don't need to detect and ocr again.
-        if (![queryFromLanguage isEqualToString:EZLanguageAuto]) {
+        if (self.queryModel.hasQueryFromLanguage) {
             [self handleOCRResult:ocrResult error:ocrError completion:completion];
             return;
         }

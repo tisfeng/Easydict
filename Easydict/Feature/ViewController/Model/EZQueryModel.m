@@ -29,6 +29,7 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
         self.detectedLanguage = EZLanguageAuto;
         self.queryType = EZQueryTypeInput;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
+        self.needDetectLanguage = YES;
     }
     return self;
 }
@@ -43,12 +44,15 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     model.ocrImage = self.ocrImage;
     model.queryViewHeight = self.queryViewHeight;
     model.audioURL = self.audioURL;
+    model.needDetectLanguage = self.needDetectLanguage;
+    
     return model;
 }
 
 - (void)setQueryText:(NSString *)queryText {
     if (![queryText isEqualToString:_queryText]) {
         self.audioURL = nil;
+        self.needDetectLanguage = YES;
     }
     
     _queryText = queryText;
@@ -85,13 +89,16 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     void (^stopBlock)(void) = self.stopBlockDictionary[serviceType];
     if (stopBlock) {
         stopBlock();
-        // Remove block
         [self.stopBlockDictionary removeObjectForKey:serviceType];
     }
 }
 
 - (BOOL)isServiceStopped:(NSString *)serviceType {
     return self.stopBlockDictionary[serviceType] == nil;
+}
+
+- (BOOL)hasQueryFromLanguage {
+    return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
 }
 
 @end
