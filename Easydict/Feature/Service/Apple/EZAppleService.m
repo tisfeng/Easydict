@@ -578,7 +578,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return [obj2 compare:obj1];
     }];
     
-    NSMutableArray *results = [NSMutableArray array];
+    NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
     dispatch_group_t group = dispatch_group_create();
     
     for (NLLanguage language in sortedLanguages) {
@@ -597,7 +597,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         if (completion) {
-            NSArray *sortedResults = [results sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            NSArray<NSDictionary *> *sortedResults = [results sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 EZOCRResult *result1 = obj1[@"ocrResult"];
                 EZOCRResult *result2 = obj2[@"ocrResult"];
                 NSNumber *confidence1 = result1 ? @(result1.confidence) : @(-1);
@@ -605,21 +605,51 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 return [confidence2 compare:confidence1];
             }];
             
+            NSDictionary *firstResult = sortedResults.firstObject;
+            EZOCRResult *firstOCRResult = firstResult[@"ocrResult"];
+            
+            // Since there are some languages that have the same confidence, we need to get all of them.
+            NSMutableArray<NSDictionary *> *mostConfidentResults = [NSMutableArray array];
+            CGFloat mostConfidence = firstOCRResult.confidence;;
+            
             for (NSDictionary *result in sortedResults) {
                 EZOCRResult *ocrResult = result[@"ocrResult"];
+                if (ocrResult.confidence == mostConfidence) {
+                    [mostConfidentResults addObject:result];
+                }
                 NSLog(@"%@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
             }
             
-            NSDictionary *firstResult = sortedResults.firstObject;
-            EZOCRResult *ocrResult = firstResult[@"ocrResult"];
+            if (mostConfidentResults.count > 1) {
+                // iterate mostConfidentResults, find the first ocrResult.from in supportLanguages
+                NSArray<NLLanguage> *sortedAppleLanguages = [[self appleLanguagesDictionary] sortedValues];
+                
+                BOOL shouldBreak = NO;
+                for (NLLanguage appleLanguage in sortedAppleLanguages) {
+                    EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:appleLanguage];
+                    for (NSDictionary *result in mostConfidentResults) {
+                        EZOCRResult *ocrResult = result[@"ocrResult"];
+                        if ([ezLanguage isEqualToString:ocrResult.from]) {
+                            firstResult = result;
+                            shouldBreak = YES;
+                            break;
+                        }
+                    }
+                    if (shouldBreak) {
+                        break;
+                    }
+                }
+            }
+            
+            firstOCRResult = firstResult[@"ocrResult"];
             NSError *error = firstResult[@"error"];
             if ([error isEqual:[NSNull null]]) {
                 error = nil;
             }
             
-            NSLog(@"Final ocr: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+            NSLog(@"Final ocr: %@(%.1f): %@", firstOCRResult.from, firstOCRResult.confidence, firstOCRResult.mergedText);
             
-            completion(ocrResult, error);
+            completion(firstOCRResult, error);
         }
     });
 }
