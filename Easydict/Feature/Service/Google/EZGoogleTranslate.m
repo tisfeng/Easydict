@@ -11,8 +11,6 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZTextWordUtils.h"
 
-#define kGoogleRootPage(isCN) (isCN ? @"https://translate.google.cn" : @"https://translate.google.com")
-
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
 @interface EZGoogleTranslate ()
@@ -119,7 +117,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (NSString *)link {
-    return kGoogleRootPage(self.isCN);
+    return kGoogleTranslateURL;
 }
 
 // https://translate.google.com/?sl=auto&tl=zh-CN&text=good&op=translate
@@ -259,8 +257,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     NSString *audioURL = [NSString
             stringWithFormat:@"%@/"
             @"translate_tts?ie=UTF-8&q=%@&tl=%@&total=1&idx=0&"
-            @"textlen=%zd&tk=%@&client=webapp&prev=input",
-            kGoogleRootPage(self.isCN), text.mm_urlencode, language,
+            @"textlen=%zd&tk=%@&client=webapp&prev=input"
+                          , kGoogleTranslateURL, text.mm_urlencode, language,
             text.length, sign];
     return audioURL;
 }
@@ -464,7 +462,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)sendWebAppTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(id _Nullable responseObject, NSString *_Nullable signText, NSMutableDictionary *reqDict, NSError *_Nullable error))completion {
     NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
     
-    NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
+    NSString *url = [kGoogleTranslateURL stringByAppendingPathComponent:@"/translate_a/single"];
     url = [url stringByAppendingString:@"?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t"];
     
     NSString *souceLangCode = [self languageCodeForLanguage:from];
@@ -510,7 +508,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (void)sendGetWebAppTKKRequestWithCompletion:(void (^)(NSString *_Nullable TKK, NSError *_Nullable error))completion {
-    NSString *url = kGoogleRootPage(self.isCN);
+    NSString *url = kGoogleTranslateURL;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
     
     [self.htmlSession GET:url
@@ -594,7 +592,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                    NSMutableDictionary *reqDict,
                                    NSError *_Nullable error))completion {
     NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
-    NSString *url = [kGoogleRootPage(self.isCN) stringByAppendingPathComponent:@"/translate_a/single"];
+    NSString *url = [kGoogleTranslateURL stringByAppendingPathComponent:@"/translate_a/single"];
     NSDictionary *params = @{
         @"q" : text,
         @"sl" : [self languageCodeForLanguage:from],
