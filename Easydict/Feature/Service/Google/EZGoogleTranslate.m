@@ -57,18 +57,15 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
         
-        AFHTTPRequestSerializer *requestSerializer =
-        [AFHTTPRequestSerializer serializer];
+        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
          @"10_15_0) AppleWebKit/537.36 (KHTML, like "
          @"Gecko) Chrome/77.0.3865.120 Safari/537.36"
                  forHTTPHeaderField:@"User-Agent"];
         htmlSession.requestSerializer = requestSerializer;
         
-        AFHTTPResponseSerializer *responseSerializer =
-        [AFHTTPResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes =
-        [NSSet setWithObjects:@"text/html", nil];
+        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
         htmlSession.responseSerializer = responseSerializer;
         
         _htmlSession = htmlSession;
@@ -255,11 +252,11 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                          language:(NSString *)language
                              sign:(NSString *)sign {
     NSString *audioURL = [NSString
-            stringWithFormat:@"%@/"
-            @"translate_tts?ie=UTF-8&q=%@&tl=%@&total=1&idx=0&"
-            @"textlen=%zd&tk=%@&client=webapp&prev=input"
-                          , kGoogleTranslateURL, text.mm_urlencode, language,
-            text.length, sign];
+                          stringWithFormat:@"%@/"
+                          @"translate_tts?ie=UTF-8&q=%@&tl=%@&total=1&idx=0&"
+                          @"textlen=%zd&tk=%@&client=webapp&prev=input",
+                          kGoogleTranslateURL, text.mm_urlencode, language,
+                          text.length, sign];
     return audioURL;
 }
 
