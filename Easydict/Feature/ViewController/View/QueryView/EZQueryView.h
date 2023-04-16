@@ -26,7 +26,6 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, copy) NSString *placeholderText;
 @property (nonatomic, copy) NSString *alertText;
 
-@property (nonatomic, assign) BOOL enableAutoDetect;
 @property (nonatomic, assign) BOOL clearButtonHidden;
 @property (nonatomic, assign) BOOL isTypingChinese;
 

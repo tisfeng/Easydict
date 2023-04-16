@@ -23,12 +23,19 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 @property (nonatomic, copy) EZQueryType queryType;
 @property (nonatomic, copy) NSString *queryText;
 
-@property (nonatomic, assign) EZLanguage userSourceLanguage;
-@property (nonatomic, assign) EZLanguage userTargetLanguage;
+@property (nonatomic, copy) EZLanguage userSourceLanguage;
+@property (nonatomic, copy) EZLanguage userTargetLanguage;
 
-@property (nonatomic, assign) EZLanguage detectedLanguage;
-@property (nonatomic, assign, readonly) EZLanguage queryFromLanguage;
-@property (nonatomic, assign, readonly) EZLanguage queryTargetLanguage;
+@property (nonatomic, copy) EZLanguage detectedLanguage;
+
+@property (nonatomic, copy, readonly) EZLanguage queryFromLanguage;
+@property (nonatomic, copy, readonly) EZLanguage queryTargetLanguage;
+
+// Means queryFromLanguage is not auto
+@property (nonatomic, assign) BOOL hasQueryFromLanguage;
+
+// If queryText has changed, we need to detect again. But, if user has specified detected language, do not auto detect again.
+@property (nonatomic, assign) BOOL needDetectLanguage;
 
 @property (nonatomic, strong, nullable) NSImage *ocrImage;
 @property (nonatomic, copy, nullable) NSString *audioURL;

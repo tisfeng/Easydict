@@ -476,8 +476,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // !!!: Reset all result before new query.
     [self resetAllResults];
 
-    BOOL hasUserSourceLanguage = ![self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto];
-    if (!hasUserSourceLanguage && self.queryView.enableAutoDetect) {
+    BOOL needDetect = !self.queryModel.hasQueryFromLanguage && self.queryModel.needDetectLanguage;
+    if (needDetect) {
         // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
         [self detectQueryText:^{
             [self queryAllSerives:self.queryModel];
@@ -856,7 +856,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)delayDetectQueryText {
-    if (self.queryView.enableAutoDetect) {
+    if (!self.queryModel.hasQueryFromLanguage) {
         [self cancelDelayDetectQueryText];
         [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:EZDelayDetectTextLanguageInterval];
     }

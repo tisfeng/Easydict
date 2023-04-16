@@ -136,7 +136,7 @@
     
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
-        self.enableAutoDetect = NO;
+        self.queryModel.needDetectLanguage = NO;
         if (self.selectedLanguageBlock) {
             self.selectedLanguageBlock(language);
         }
@@ -418,7 +418,8 @@
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
     
-    self.enableAutoDetect = YES;
+    self.queryModel.needDetectLanguage = YES;
+    
     [self updateButtonsDisplayState:text];
     
     // cannot layout this, otherwise will crash
