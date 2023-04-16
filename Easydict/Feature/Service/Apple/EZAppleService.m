@@ -285,23 +285,24 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     self.queryModel = queryModel;
-    
-    BOOL automaticallyDetectsLanguage = NO;
-    if ([queryModel.queryFromLanguage isEqualToString:EZLanguageAuto]) {
-        automaticallyDetectsLanguage = YES;
+
+    BOOL automaticallyDetectsLanguage = YES;
+    BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
+    if (hasSpecifiedLanguage) {
+        automaticallyDetectsLanguage = NO;
     }
     
     [self ocrImage:queryModel.ocrImage
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (error || ocrResult.confidence == 1.0) {
+        if (hasSpecifiedLanguage || error || ocrResult.confidence == 1.0) {
             completion(ocrResult, error);
             return;
         }
         
         NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
-        [self getMostConfidenceLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+        [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
             completion(ocrResult, error);
         }];
     }];
@@ -568,7 +569,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 
-- (void)getMostConfidenceLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+- (void)getMostConfidentLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     /**
      
      苔むした岩に囲まれた滝
