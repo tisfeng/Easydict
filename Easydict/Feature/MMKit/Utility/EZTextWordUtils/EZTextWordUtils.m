@@ -35,7 +35,8 @@ static NSDictionary *const kQuotesDict = @{
     }
     
     NSInteger wordCount = [self wordCount:text];
-    if (wordCount <= 2) {
+    // ???: かわいい女の子 wordCount is 2 😢
+    if (wordCount == 1) {
         return YES;
     }
     
@@ -99,6 +100,9 @@ static NSDictionary *const kQuotesDict = @{
     __block NSInteger count = 0;
     [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
         count++;
+
+        NSString *charString = [text substringWithRange:tokenRange];
+        NSLog(@"char: %@", charString);
     }];
     return count;
 }
