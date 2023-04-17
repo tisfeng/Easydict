@@ -34,7 +34,7 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 // Means queryFromLanguage is not auto
 @property (nonatomic, assign) BOOL hasQueryFromLanguage;
 
-// If queryText has changed, we need to detect again. But, if user has specified detected language, do not auto detect again.
+// If queryText has changed, we need to detect again. But, if user has specified detected language, do not auto detect.
 @property (nonatomic, assign) BOOL needDetectLanguage;
 
 @property (nonatomic, strong, nullable) NSImage *ocrImage;
