@@ -855,7 +855,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)delayDetectQueryText {
-    if (!self.queryModel.hasQueryFromLanguage) {
+    if (self.queryModel.needDetectLanguage) {
         [self cancelDelayDetectQueryText];
         [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:EZDelayDetectTextLanguageInterval];
     }
