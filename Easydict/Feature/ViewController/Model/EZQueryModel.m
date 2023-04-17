@@ -101,4 +101,11 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
 }
 
+- (BOOL)needDetectLanguage {
+    if (![self.userSourceLanguage isEqualToString:EZLanguageAuto]) {
+        return NO;
+    }
+    return _needDetectLanguage;
+}
+
 @end
