@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSRunningApplication *lastFrontmostApplication;
 
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
-@property (nonatomic, copy) NSString *selectedText;
+@property ( nonatomic, copy, nullable) NSString *selectedText;
 
 /// Right-bottom offset: (15, -15)
 @property (nonatomic, assign) CGPoint offsetPoint;
@@ -246,6 +246,8 @@ static EZWindowManager *_instance;
     //        return;
     //    }
     
+    self.selectedText = text;
+    
     EZBaseQueryWindow *window = [self windowWithType:type];
     __block CGPoint location = location = [self floatingWindowLocationWithType:type];
     
@@ -405,7 +407,15 @@ static EZWindowManager *_instance;
 }
 
 - (CGPoint)getMiniWindowLocation {
-    return [self getShowingMouseLocation];
+    CGPoint position = [self getShowingMouseLocation];
+
+    // If not query text, just show mini window, then show window at last position.
+    if (!self.selectedText) {
+        CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeMini];
+        position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
+    }
+
+    return position;
 }
 
 - (CGPoint)getShowingMouseLocation {
@@ -445,10 +455,10 @@ static EZWindowManager *_instance;
             break;
         }
         case EZShowWindowPositionFormer: {
-            // !!!: origin postion is buttom-left point, we need to convert it to top-left point.
+            // !!!: origin postion is bottom-left point, we need to convert it to top-left point.
             CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeFixed];
-            CGPoint origin = formerFrame.origin;
-            position = CGPointMake(origin.x, formerFrame.size.height + origin.y);
+            position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
+            
             break;
         }
     }
