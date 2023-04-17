@@ -155,6 +155,10 @@
                          error:(NSError *_Nullable)error
                     completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
     self.queryModel.detectedLanguage = language;
+    
+    // If detect success, we don't need to detect again temporarily.
+    self.queryModel.needDetectLanguage = (error != nil);
+    
     completion(self.queryModel, error);
 }
 
