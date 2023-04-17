@@ -105,6 +105,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sourceLanguageType = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
     NSString *targetLanguageType = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
     
+    if ([sourceLanguageType isEqualToString:EZLanguageAuto]) {
+        // If source languaeg is auto, just ignore, OpenAI can handle it automatically.
+        sourceLanguageType = @"";
+    }
 
     NSMutableDictionary *parameters = @{
         @"model" : @"gpt-3.5-turbo",
@@ -128,10 +132,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     if (shouldQueryDictionary && enableDictionary) {
         queryServiceType = EZQueryServiceTypeDictionary;
-        parameters[@"messages"] = [self dictMessages:text from:sourceLanguage to:targetLanguage];
+        parameters[@"messages"] = [self dictMessages:text from:sourceLanguageType to:targetLanguageType];
     } else if (isEnglishSentence && enableSentence) {
         queryServiceType = EZQueryServiceTypeSentence;
-        parameters[@"messages"] = [self sentenceMessages:text from:from to:to];
+        parameters[@"messages"] = [self sentenceMessages:text from:sourceLanguageType to:targetLanguageType];
     } else if (enableTranslation) {
         queryServiceType = EZQueryServiceTypeTranslation;
         parameters[@"messages"] = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
@@ -601,11 +605,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Translation messages.
 - (NSArray *)translatioMessages:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
-        sourceLanguage = [self getChineseLanguageType:sourceLanguage accordingToLanguage:targetLanguage];
-        targetLanguage = [self getChineseLanguageType:targetLanguage accordingToLanguage:sourceLanguage];
-    }
-    
     NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];
 
     NSArray *chineseFewShot = @[
