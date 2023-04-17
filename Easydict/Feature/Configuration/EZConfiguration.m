@@ -69,7 +69,7 @@ static EZConfiguration *_instance;
     self.autoQuerySelectedText = [NSUserDefaults mm_readBool:kAutoQuerySelectedText defaultValue:YES];
     self.autoCopyOCRText = [NSUserDefaults mm_readBool:kAutoCopyOCRTextKey defaultValue:NO];
     self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
-    self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:1];
+    self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:0];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
     self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
