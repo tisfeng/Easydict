@@ -599,7 +599,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@ text:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
 
@@ -631,7 +631,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @{
             @"role" : @"user", // ちっちいな~
             @"content" :
-                @"Translate the following text into Simplified-Chinese: \n\n"
+                @"Translate the following text into Simplified-Chinese text: \n\n"
                 @"\"ちっちいな~\""
         },
         @{
