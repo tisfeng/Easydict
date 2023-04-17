@@ -437,7 +437,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text {
     [self.queryView.textView updateTextAndParagraphStyle:text];
-    [self scrollToEndOfTextView];
 }
 
 - (void)scrollToEndOfTextView {

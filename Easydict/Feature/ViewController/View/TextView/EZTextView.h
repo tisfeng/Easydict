@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// paragraphSpacing
 @property (nonatomic, assign) CGFloat paragraphSpacing;
 
+/// Update text, paragraphStyle, and scroll to end of textView.
 - (void)updateTextAndParagraphStyle:(NSString *)text;
 
 @end
