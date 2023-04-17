@@ -27,7 +27,7 @@
     return safeFrame.origin;
 }
 
-// Make sure frame show in screen visible frame, return left-bottom postion frame.
+/// Make sure frame show in screen visible frame, return left-bottom postion frame.
 + (CGRect)getSafeAreaFrame:(CGRect)frame {
     NSScreen *screen = [NSScreen mainScreen];
     CGRect visibleFrame = screen.visibleFrame;
@@ -64,12 +64,12 @@
 
 #pragma mark - Convert Coordinate
 
-// Convert point from top-left to left-bottom coordinate system
+/// Convert point from top-left to left-bottom coordinate system
 + (CGPoint)convertPointToBottomLeft:(CGPoint)point {
     return CGPointMake(point.x, [NSScreen mainScreen].frame.size.height - point.y);
 }
 
-// Convert rect from top-left coordinate to left-bottom coordinate
+/// Convert rect from top-left coordinate to left-bottom coordinate
 + (CGRect)convertRectToBottomLeft:(CGRect)rect {
     CGRect screenRect = NSScreen.mainScreen.frame;
     CGFloat height = screenRect.size.height;
@@ -78,17 +78,27 @@
 }
 
 
-// Convert point from bottom-left coordinate to left-top coordinate
+/// Convert point from bottom-left coordinate to left-top coordinate
 + (CGPoint)convertPointToTopLeft:(CGPoint)point {
     return CGPointMake(point.x, [NSScreen mainScreen].frame.size.height - point.y);
 }
 
-// Convert rect from bottom-left coordinate to left-top coordinate
+/// Convert rect from bottom-left coordinate to left-top coordinate
 + (CGRect)convertRectToTopLeft:(CGRect)rect {
     CGRect screenRect = NSScreen.mainScreen.frame;
     CGFloat height = screenRect.size.height;
     rect.origin.y = height - rect.origin.y - rect.size.height;
     return rect;
+}
+
+#pragma mark -
+
+/// Get frame Top-Left point, default frame origin is Bottom-Left.
+/// !!!: Coordinate system is still Bottom-Left, not changed.
++ (CGPoint)getFrameTopLeftPoint:(CGRect)frame {
+    CGPoint origin = frame.origin;
+    CGPoint position = CGPointMake(origin.x, frame.size.height + origin.y);
+    return position;
 }
 
 @end
