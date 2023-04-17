@@ -475,9 +475,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // !!!: Reset all result before new query.
     [self resetAllResults];
 
-    BOOL needDetect = !self.queryModel.hasQueryFromLanguage && self.queryModel.needDetectLanguage;
-    if (needDetect) {
-        // There may be a detected language, but since there is a 1.0s delay in the `delayDetectQueryText` method, so it may be a previously leftover value, so we must re-detect the text language before each query.
+    if (self.queryModel.needDetectLanguage) {
         [self detectQueryText:^{
             [self queryAllSerives:self.queryModel];
         }];
@@ -1092,20 +1090,29 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // !!!: Avoid capture result, the block paramter result is different from former result.
     [resultView setClickArrowBlock:^(EZQueryResult *result) {
         mm_strongify(self);
-
         BOOL isShowing = result.isShowing;
         service.enabledQuery = isShowing;
 
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
-            [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-                result.error = error;
-                result.isShowing = YES;
-                if (!result.hasTranslatedResult && result.error) {
-                    result.isShowing = NO;
-                }
-                [self updateCellWithResult:result reloadData:YES];
-            }];
+            void (^queryBlock)(void) = ^(void) {
+                [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+                    result.error = error;
+                    result.isShowing = YES;
+                    if (!result.hasTranslatedResult && result.error) {
+                        result.isShowing = NO;
+                    }
+                    [self updateCellWithResult:result reloadData:YES];
+                }];
+            };
+            
+            if (self.queryModel.needDetectLanguage) {
+                [self detectQueryText:^{
+                    queryBlock();
+                }];
+            } else {
+                queryBlock();
+            }
         } else {
             [self updateCellWithResult:result reloadData:YES];
 
