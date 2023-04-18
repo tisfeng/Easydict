@@ -12,6 +12,7 @@
 #import "Snip.h"
 #import "EZShortcut.h"
 #import <SSZipArchive/SSZipArchive.h>
+#import "EZRightClickDetector.h"
 
 @interface EZStatusItem () <NSMenuDelegate>
 
@@ -52,21 +53,62 @@ static EZStatusItem *_instance;
     }
     
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
-    [item.button setToolTip:@"Easydict"];
+    [item setMenu:self.menu];
+    self.statusItem = item;
+    
+    NSStatusBarButton *button = item.button;
+    
 #if DEBUG
     NSImage *image = [NSImage imageNamed:@"status_icon_debug"];
 #else
     NSImage *image = [NSImage imageNamed:@"status_icon"];
 #endif
+    
+    [button setImage:image];
+    [button setImageScaling:NSImageScaleProportionallyUpOrDown];
+    [button setToolTip:@"Easydict 🍃"];
     image.template = YES;
-    [item.button setImage:image];
-    [item.button setImageScaling:NSImageScaleProportionallyUpOrDown];
-    [item setMenu:self.menu];
-    self.statusItem = item;
     
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.bobItem.title = [NSString stringWithFormat:@"Easydict  %@", version];
+    
 }
+
+- (void)testRightClick {
+    NSStatusBarButton *button = self.statusItem.button;
+    
+    button.action = @selector(leftClickAction:);
+    
+    EZRightClickDetector *rightClickDetector = [[EZRightClickDetector alloc] initWithFrame:button.frame];
+    rightClickDetector.onRightMouseClicked = ^(NSEvent *event){
+        NSLog(@"onRightMouseClicked");
+        //        [self.statusItem setMenu:self.menu];
+        
+        //        [button performClick:nil];
+    };
+    [button addSubview:rightClickDetector];
+    
+    
+    // Add right click functionality
+    //    NSClickGestureRecognizer *gesture = [[NSClickGestureRecognizer alloc] init];
+    //    gesture.buttonMask = 1; // right mouse
+    //    gesture.target = self;
+    //    gesture.action = @selector(rightClickAction:);
+    //    [button addGestureRecognizer:gesture];
+}
+
+- (void)rightClickAction:(NSGestureRecognizer *)sender {
+    //    NSButton *button = (NSButton *)sender.view;
+    
+    // Handle your right click event here
+    
+    NSLog(@"right click");
+}
+
+- (void)leftClickAction:(id)sender {
+    NSLog(@"left click");
+}
+
 
 - (void)remove {
     if (self.statusItem) {
@@ -75,7 +117,8 @@ static EZStatusItem *_instance;
     }
 }
 
-#pragma mark -
+#pragma mark - Status bar action
+
 - (IBAction)translateAction:(NSMenuItem *)sender {
     NSLog(@"划词翻译");
     [EZWindowManager.shared selectTextTranslate];
@@ -132,7 +175,7 @@ static EZStatusItem *_instance;
     [NSApplication.sharedApplication terminate:nil];
 }
 
-#pragma mark -
+#pragma mark - Shorcut
 
 - (IBAction)clearInputAction:(NSMenuItem *)sender {
     [EZWindowManager.shared clearInput];
@@ -166,7 +209,8 @@ static EZStatusItem *_instance;
     [EZWindowManager.shared playQueryTextSound];
 }
 
-#pragma mark -
+
+#pragma mark - NSMenuDelegate
 
 - (void)menuWillOpen:(NSMenu *)menu {
     void (^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
@@ -190,6 +234,12 @@ static EZStatusItem *_instance;
     configItemShortcut(self.snipItem, EZSnipShortcutKey);
     configItemShortcut(self.inputItem, EZInputShortcutKey);
     configItemShortcut(self.showMiniItem, EZShowMiniShortcutKey);
+}
+
+- (void)menuDidClose:(NSMenu *)menu {
+    
+    //    [self.statusItem setMenu:nil];
+    
 }
 
 @end
