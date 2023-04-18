@@ -488,6 +488,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
     for (EZQueryService *service in self.services) {
+        BOOL enableAutoQuery = service.enabledQuery && (service.serviceUsageStatus != EZServiceUsageStatusAlwaysOff);
+        if (!enableAutoQuery) {
+            NSLog(@"service disabled: %@", service.serviceType);
+            continue;;
+        }
+        
         [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"query error: %@", error);
@@ -1095,6 +1101,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
+            
+            // TODO: need to optimize, similar to query all services.
             void (^queryBlock)(void) = ^(void) {
                 [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
                     result.error = error;

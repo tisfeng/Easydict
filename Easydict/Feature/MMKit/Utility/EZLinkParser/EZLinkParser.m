@@ -9,6 +9,7 @@
 #import "EZLinkParser.h"
 #import "EZOpenAIService.h"
 #import "EZYoudaoTranslate.h"
+#import "EZServiceTypes.h"
 
 // easydict://
 static NSString *kEasydictSchema = @"easydict://";
@@ -83,10 +84,16 @@ static NSString *kEasydictSchema = @"easydict://";
 
 /// Return allowed write keys to NSUserDefaults.
 - (NSArray *)allowedWriteKeys {
-    // easydict://writeKeyValue?EZOpenAISentenceKey=1
+    /**
+     easydict://writeKeyValue?EZOpenAISentenceKey=1
+     
+     easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+     */
     
     return @[
         EZBetaFeatureKey,
+        
+        EZOpenAIServiceUsageStatusKey,
         
         EZOpenAIAPIKey,
         EZOpenAIDictionaryKey,
@@ -95,6 +102,33 @@ static NSString *kEasydictSchema = @"easydict://";
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
     ];
+}
+
+- (NSString *)keyValuesOfServiceType:(EZServiceType)serviceType key:(NSString *)key value:(NSString *)value {
+    /**
+     easydict://writeKeyValue?ServiceType=OpenAI&ServiceUsageStatus=1
+     
+     easydict://writeKeyValue?OpenAIServiceUsageStatus=1
+     
+     easydict://writeKeyValue?OpenAIQueryServiceType=1
+     */
+    NSString *keyValueString = @"";
+    
+    NSArray *allowdKeyNames = @[
+        EZServiceUsageStatusName,
+        EZQueryServiceTypeName,
+    ];
+    
+    NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+    
+    BOOL validKey = [allServiceTypes containsObject:serviceType] && [allowdKeyNames containsObject:key];
+    
+    if (validKey) {
+        NSString *keyString = [NSString stringWithFormat:@"%@%@", serviceType, key];
+        keyValueString = [NSString stringWithFormat:@"%@=%@", keyString, value];
+    }
+    
+    return keyValueString;
 }
 
 @end

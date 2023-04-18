@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryService.h"
-#import "EZOpenAIService.h"
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
