@@ -57,7 +57,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 当前翻译对象唯一标识符, OpenAI
 - (EZServiceType)serviceType;
 
+/// Query service type: translation, dict, sentence.
 - (EZQueryServiceType)queryServiceType;
+
+/// Service usage status.
+- (EZServiceUsageStatus)serviceUsageStatus;
 
 /// 翻译的名字
 - (NSString *)name;

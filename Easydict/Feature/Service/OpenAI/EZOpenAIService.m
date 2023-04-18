@@ -69,6 +69,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return type;
 }
 
+- (EZServiceUsageStatus)serviceUsageStatus {
+    EZServiceUsageStatus serviceUsageStatus = [[NSUserDefaults mm_readString:EZOpenAIServiceUsageStatusKey defaultValue:@"0"] integerValue];
+    return serviceUsageStatus;
+}
+
 - (NSString *)name {
     return NSLocalizedString(@"openai_translate", nil);
 }
