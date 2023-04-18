@@ -339,7 +339,7 @@
                                         </menuItem>
                                         <menuItem title="Toggle" keyEquivalent="t" toolTip="Toggle Translation Languages" id="d82-cy-RVu">
                                             <connections>
-                                                <action selector="toggleTranslationLanguages:" target="qM9-fT-Fym" id="0S9-J8-t1W"/>
+                                                <action selector="toggleTranslationLanguagesAction:" target="qM9-fT-Fym" id="T9K-qk-r0c"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Pin" keyEquivalent="p" toolTip="Pin Window" id="g1Y-HC-Hcm">
