@@ -36,7 +36,7 @@ static NSDictionary *const kQuotesDict = @{
     
     NSInteger wordCount = [self wordCount:text];
     // ???: かわいい女の子 wordCount is 2 😢
-    if (wordCount == 1) {
+    if (wordCount <= 2) {
         return YES;
     }
     
