@@ -494,22 +494,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             continue;;
         }
         
-        [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-            if (error) {
-                NSLog(@"query error: %@", error);
-            }
-            result.error = error;
-            result.isShowing = NO;
-            if (result.hasTranslatedResult) {
-                result.isShowing = YES;
-            }
-            //  NSLog(@"update service: %@, %@", service.serviceType, result);
-            [self updateCellWithResult:result reloadData:YES];
-
-            if ([service.serviceType isEqualToString:EZServiceTypeYoudao]) {
-                [self autoPlayEnglishWordAudio];
-            }
-        }];
+        BOOL autoPlayWord = EZConfiguration.shared.autoPlayAudio && [service.serviceType isEqualToString:EZServiceTypeYoudao];
+        [self queryWithModel:queryModel service:service autoPlay:autoPlayWord];
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.queryText];
@@ -518,6 +504,28 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (![self.serviceTypes containsObject:EZServiceTypeYoudao]) {
         [self autoPlayEnglishWordAudio];
     }
+}
+
+- (void)queryWithModel:(EZQueryModel *)queryModel
+               service:(EZQueryService *)service
+              autoPlay:(BOOL)autoPlay
+{
+    [self queryWithModel:queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        if (error) {
+            NSLog(@"query error: %@", error);
+        }
+        result.error = error;
+        result.isShowing = NO;
+        if (result.hasTranslatedResult) {
+            result.isShowing = YES;
+        }
+        //  NSLog(@"update service: %@, %@", service.serviceType, result);
+        [self updateCellWithResult:result reloadData:YES];
+
+        if (autoPlay) {
+            [self autoPlayEnglishWordAudio];
+        }
+    }];
 }
 
 // TODO: service already has the model property.
@@ -1101,25 +1109,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // If result is not empty, update cell and show.
         if (isShowing && !result.hasShowingResult) {
-            
-            // TODO: need to optimize, similar to query all services.
-            void (^queryBlock)(void) = ^(void) {
-                [self queryWithModel:self.queryModel service:service completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-                    result.error = error;
-                    result.isShowing = YES;
-                    if (!result.hasTranslatedResult && result.error) {
-                        result.isShowing = NO;
-                    }
-                    [self updateCellWithResult:result reloadData:YES];
-                }];
-            };
-            
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^{
-                    queryBlock();
+                    [self queryWithModel:self.queryModel service:service autoPlay:NO];
                 }];
             } else {
-                queryBlock();
+                [self queryWithModel:self.queryModel service:service autoPlay:NO];
             }
         } else {
             [self updateCellWithResult:result reloadData:YES];
@@ -1251,6 +1246,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
+    // TODO: need to optimize, check text is English word.
     BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
     if (!isEnglishWord) {
         NSLog(@"query text is not an English word");
