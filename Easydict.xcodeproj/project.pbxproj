@@ -16,6 +16,7 @@
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZExeCommand.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
+		0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0329CD6E29EE924500963F78 /* EZRightClickDetector.m */; };
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
@@ -189,6 +190,8 @@
 		03247E352968158B00AFCD67 /* EZExeCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZExeCommand.m; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
+		0329CD6D29EE924500963F78 /* EZRightClickDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZRightClickDetector.h; sourceTree = "<group>"; };
+		0329CD6E29EE924500963F78 /* EZRightClickDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZRightClickDetector.m; sourceTree = "<group>"; };
 		0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageButton.h; sourceTree = "<group>"; };
 		0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageButton.m; sourceTree = "<group>"; };
 		033363A4293C4AFA00FED9C8 /* PrintBeautifulLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintBeautifulLog.h; sourceTree = "<group>"; };
@@ -1019,6 +1022,8 @@
 			children = (
 				03E02A202924E77100A10260 /* EZStatusItem.h */,
 				03E02A212924E77100A10260 /* EZStatusItem.m */,
+				0329CD6D29EE924500963F78 /* EZRightClickDetector.h */,
+				0329CD6E29EE924500963F78 /* EZRightClickDetector.m */,
 			);
 			path = StatusItem;
 			sourceTree = "<group>";
@@ -1626,6 +1631,7 @@
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
+				0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
