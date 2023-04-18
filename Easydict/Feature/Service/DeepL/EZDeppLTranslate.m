@@ -58,12 +58,23 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
     NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    /**
+     !!!: need to convert '/' to '%5C%2F'
+     
+     e.g. https://www.deepl.com/translator#en/zh/computer%5C%2FFserver
+     
+     FIX: https://github.com/tisfeng/Easydict/issues/60
+     */
+    NSString *encodedText = [text stringByReplacingOccurrencesOfString:@"/" withString:@"%5C%2F"];
 
     if (!from || !to) {
         return nil;
     }
+    
+    NSString *url = [NSString stringWithFormat:@"%@#%@/%@/%@", kDeepLTranslateURL, from, to, encodedText];
 
-    return [NSString stringWithFormat:@"%@#%@/%@/%@", kDeepLTranslateURL, from, to, text];
+    return url;
 }
 
 // Supported languages: https://www.deepl.com/zh/docs-api/translate-text/
@@ -107,9 +118,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
     }
-
+    
     [self deepLWebTranslate:text from:from to:to completion:completion];
-    //    [self webViewTranslate:completion];
+    //  [self webViewTranslate:completion];
 }
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
