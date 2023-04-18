@@ -9,28 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZQueryModel.h"
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class EZQueryService;
-
-typedef NSString *EZServiceType NS_STRING_ENUM;
-
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeApple;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
-FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
-
-
-typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
-    EZQueryServiceTypeNone = 0,
-    EZQueryServiceTypeTranslation = 1 << 0,
-    EZQueryServiceTypeDictionary = 1 << 1,
-    EZQueryServiceTypeSentence = 1 << 2,
-};
 
 @interface EZTranslatePhonetic : NSObject
 

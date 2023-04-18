@@ -15,7 +15,6 @@
 reason:[NSString stringWithFormat:@"You must override %@ in a subclass.", NSStringFromSelector(_cmd)] \
 userInfo:nil]
 
-
 @interface EZQueryService ()
 
 @property (nonatomic, strong) MMOrderedDictionary *langDict;
@@ -124,6 +123,10 @@ userInfo:nil]
 
 - (EZQueryServiceType)queryServiceType {
     return EZQueryServiceTypeTranslation;
+}
+
+- (EZServiceUsageStatus)serviceUsageStatus {
+    return EZServiceUsageStatusDefault;
 }
 
 - (NSString *)name {
