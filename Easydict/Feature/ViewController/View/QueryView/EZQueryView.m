@@ -69,7 +69,7 @@
     [textView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     textView.delegate = self;
     textView.textStorage.delegate = self;
-    textView.textContainerInset = CGSizeMake(4, 8);
+    textView.textContainerInset = CGSizeMake(5, 8);
     
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
