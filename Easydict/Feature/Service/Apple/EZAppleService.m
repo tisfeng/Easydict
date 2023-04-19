@@ -349,8 +349,16 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                  
                  アイス・スノーセーリング世界選手権大会
                  
+                 But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
                  */
-                error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                
+                if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
+                    EZLanguage tryLanguage = EZLanguageJapanese;
+                    [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
+                    return;
+                } else {
+                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                }
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(ocrResult, error);
@@ -404,7 +412,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         [recognizedStrings addObject:recognizedString];
         
         CGRect boundingBox = observation.boundingBox;
-        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+//        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
         CGFloat lineHeight = boundingBox.size.height;
         if (lineHeight < miniLineHeight) {
@@ -458,7 +466,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         
         NSString *recognizedString = recognizedText.string;
         CGRect boundingBox = observation.boundingBox;
-        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+//        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
         /**
          《摊破浣溪沙》  123  《浣溪沙》
