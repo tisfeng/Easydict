@@ -82,12 +82,15 @@
 
 // privacy
 "privacy" = "Privacy";
-"crash_log" = "Crash Log";
-"allow_collect_crash_log" = "Allow collection of crash log";
-"analytics" = "Analytics";
+"privacy_statement" = "Privacy Statement";
+"privacy_statement_content" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is an open source software, you can check the code.";
+"crash_log" = "Crash Log:";
+"allow_collect_crash_log" = "Allow collection of crash logs";
+"analytics" = "Analytics:";
 "allow_collect_analytics" = "Allow collection of analytics";
-"privacy_statement" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is an open source software, you can check the code.";
-
+"disable_crash_log_warning" = "⚠️ Note: If you disable this option, Easydict will not be able to get the crash logs of the application, which may cause the bugs of the application to be unable to be fixed in time.";
+"ok" = "Ok";
+"cancel" = "Cancel";
 
 // error msg
 "error_parameter" = "Parameter Exception";
