@@ -128,11 +128,10 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 > 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
-<details> <summary> 翻译服务支持的语言。 </summary>
+<details> <summary> 翻译服务支持的语言如下： </summary>
 
 <p>
 
-各项翻译服务支持的语言详情如下：
 
 | 语言         | 有道词典 | 🍎 系统翻译 | DeepL 翻译 | Google 翻译 | 百度翻译 | 火山翻译 |
 | :----------- | :------: | :---------: | :--------: | :---------: | :------: | :------: |
@@ -188,6 +187,24 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 </p>
 
 </details>
+
+### 配合 PopClip 使用
+
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后为 `Easydict`设置一个快捷键，默认是 `Opt + D`，那么你就可以通过 `PopClip` 快速打开 `Easydict` 啦！
+
+使用方法：选中以下代码块，`PopClip` 会显示 "安装 Easydict"，点击它即可。
+
+> Note ⚠️: 如果你修改了默认的快捷键，你需要跟着修改下面脚本中的快捷键 `key combo`。
+
+```
+  # popclip
+  name: Easydict
+  icon: square E
+  key combo: option D
+```
+
+> 参考: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+
 
 ### 偏好设置
 
