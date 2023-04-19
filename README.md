@@ -244,8 +244,8 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 若发现 OCR 识别结果不对，可通过点击 ”识别为 xx“ 按钮指定识别语言来修正 OCR 结果。
 
 <div style="display:flex;align-items:flex-start;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="50%">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="45%">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="45%">
 </div>
 
 ## 类似项目
