@@ -83,6 +83,14 @@
 "lastest_version" = "最新版本";
 "author" = "开发者:";
 
+// privacy
+"privacy" = "隐私";
+"crash_log" = "崩溃日志";
+"allow_collect_crash_log" = "允许收集崩溃日志";
+"analytics" = "匿名统计";
+"allow_collect_analytics" = "允许收集匿名统计数据";
+"privacy_statement" = "Easydict 使用了 AppCenter 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，你可以检查代码。";
+
 
 // error msg
 "error_parameter" = "参数异常";

@@ -17,6 +17,7 @@
 		03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZExeCommand.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
+		03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1E29EF8EE500EFECA0 /* EZPrivacyViewController.m */; };
 		0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0329CD6E29EE924500963F78 /* EZRightClickDetector.m */; };
 		033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333639F293A05D200FED9C8 /* EZSelectLanguageButton.m */; };
 		033363A6293C4AFA00FED9C8 /* PrintBeautifulLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 033363A5293C4AFA00FED9C8 /* PrintBeautifulLog.m */; };
@@ -193,6 +194,8 @@
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
 		03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEnumTypes.h; sourceTree = "<group>"; };
 		03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEnumTypes.m; sourceTree = "<group>"; };
+		03262C1D29EF8EE500EFECA0 /* EZPrivacyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPrivacyViewController.h; sourceTree = "<group>"; };
+		03262C1E29EF8EE500EFECA0 /* EZPrivacyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPrivacyViewController.m; sourceTree = "<group>"; };
 		0329CD6D29EE924500963F78 /* EZRightClickDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZRightClickDetector.h; sourceTree = "<group>"; };
 		0329CD6E29EE924500963F78 /* EZRightClickDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZRightClickDetector.m; sourceTree = "<group>"; };
 		0333639E293A05D200FED9C8 /* EZSelectLanguageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageButton.h; sourceTree = "<group>"; };
@@ -1045,6 +1048,8 @@
 				039F5501294B6E29004AB940 /* EZSettingViewController.m */,
 				039E501F296E5D9900072344 /* EZScrollViewController.h */,
 				039E5020296E5D9900072344 /* EZScrollViewController.m */,
+				03262C1D29EF8EE500EFECA0 /* EZPrivacyViewController.h */,
+				03262C1E29EF8EE500EFECA0 /* EZPrivacyViewController.m */,
 			);
 			path = PerferenceWindow;
 			sourceTree = "<group>";
@@ -1590,6 +1595,7 @@
 				03542A522937B69200C34C33 /* EZYoudaoTranslateResponse.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
+				03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
 				03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */,

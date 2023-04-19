@@ -10,6 +10,7 @@
 #import "EZSettingViewController.h"
 #import "EZAboutViewController.h"
 #import "EZServiceViewController.h"
+#import "EZPrivacyViewController.h"
 
 @interface EZPreferencesWindowController ()
 
@@ -25,6 +26,7 @@ static EZPreferencesWindowController *_instance;
             NSArray *viewControllers = @[
                 [[EZSettingViewController alloc] init],
                 [[EZServiceViewController alloc] init],
+                [[EZPrivacyViewController alloc] init],
                 [[EZAboutViewController alloc] init],
             ];
             
