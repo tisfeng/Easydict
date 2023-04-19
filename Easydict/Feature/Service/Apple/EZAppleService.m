@@ -297,12 +297,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
         if (hasSpecifiedLanguage || error || ocrResult.confidence == 1.0) {
+            queryModel.ocrConfidence = ocrResult.confidence;
             completion(ocrResult, error);
             return;
         }
         
         NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
         [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+            queryModel.ocrConfidence = ocrResult.confidence;
             completion(ocrResult, error);
         }];
     }];
