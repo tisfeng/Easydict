@@ -175,6 +175,8 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
+    
+    EZStatusItem.shared.googleItem.hidden = !showGoogleLink;
 }
 
 - (void)setShowEudicQuickLink:(BOOL)showEudicLink {
@@ -182,6 +184,8 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
+    
+    EZStatusItem.shared.eudicItem.hidden = !showEudicLink;
 }
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {

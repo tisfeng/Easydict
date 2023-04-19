@@ -342,6 +342,7 @@
                                                 <action selector="toggleTranslationLanguagesAction:" target="qM9-fT-Fym" id="T9K-qk-r0c"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="eJp-DJ-ckV"/>
                                         <menuItem title="Pin" keyEquivalent="p" toolTip="Pin Window" id="g1Y-HC-Hcm">
                                             <connections>
                                                 <action selector="pinAction:" target="qM9-fT-Fym" id="HXh-3D-1iH"/>
@@ -350,6 +351,24 @@
                                         <menuItem title="Hide" keyEquivalent="w" toolTip="Hide Window" id="dFr-S6-9m0">
                                             <connections>
                                                 <action selector="closeWindowAction:" target="qM9-fT-Fym" id="ds1-Hv-m1x"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="QNI-LF-G6c"/>
+                                        <menuItem title="Google" toolTip="Hide Window" id="qiF-2J-X2C" userLabel="Google">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                            <connections>
+                                                <action selector="googleAction:" target="qM9-fT-Fym" id="tUK-Z4-boc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Eudic" toolTip="Hide Window" id="sXT-M2-L5C" userLabel="Eudic">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="eudicAction:" target="qM9-fT-Fym" id="mmv-DW-Np6"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -678,6 +697,8 @@
                 <customObject id="qM9-fT-Fym" customClass="EZStatusItem">
                     <connections>
                         <outlet property="bobItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
+                        <outlet property="eudicItem" destination="sXT-M2-L5C" id="lfd-aF-Kn2"/>
+                        <outlet property="googleItem" destination="qiF-2J-X2C" id="ieo-Uu-FLp"/>
                         <outlet property="inputItem" destination="AWf-Ci-7QE" id="Isp-ch-8Q6"/>
                         <outlet property="menu" destination="A3F-ys-zOg" id="n6f-3z-A90"/>
                         <outlet property="selectionItem" destination="lUI-Zn-Bwr" id="WVP-FO-jlf"/>
