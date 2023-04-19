@@ -39,7 +39,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 @implementation EZServiceViewController
 
 - (void)loadView {
-    CGRect frame = CGRectMake(0, 0, 300, 300);
+    CGRect frame = CGRectMake(0, 0, 350, 300);
     self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
     //    [self.view excuteLight:^(NSView *view) {

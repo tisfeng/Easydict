@@ -8,10 +8,12 @@
 
 #import "EZPrivacyViewController.h"
 #import "NSImage+EZResize.h"
+#import "EZConfiguration.h"
 
 @interface EZPrivacyViewController ()
 
 @property (nonatomic, strong) NSTextField *privacyStatementTextField;
+@property (nonatomic, strong) NSTextField *privacyStatementContentTextField;
 
 @property (nonatomic, strong) NSTextField *crashLogTextField;
 @property (nonatomic, strong) NSButton *crashLogButton;
@@ -32,11 +34,14 @@
 }
 
 - (void)setupUI {
-
-    self.privacyStatementTextField = [NSTextField wrappingLabelWithString:NSLocalizedString(@"privacy_statement", nil)];
+    self.privacyStatementTextField = [NSTextField labelWithString:NSLocalizedString(@"privacy_statement", nil)];
     [self.contentView addSubview:self.privacyStatementTextField];
-    self.privacyStatementTextField.preferredMaxLayoutWidth = 300;
+    self.privacyStatementTextField.font = [NSFont systemFontOfSize:14];
     
+    self.privacyStatementContentTextField = [NSTextField wrappingLabelWithString:NSLocalizedString(@"privacy_statement_content", nil)];
+    [self.contentView addSubview:self.privacyStatementContentTextField];
+    self.privacyStatementContentTextField.preferredMaxLayoutWidth = 380;
+
 
     self.crashLogTextField = [NSTextField labelWithString:NSLocalizedString(@"crash_log", nil)];
     [self.contentView addSubview:self.crashLogTextField];
@@ -53,15 +58,24 @@
                                                       target:self
                                                       action:@selector(analyticsButtonClicked:)];
     [self.contentView addSubview:self.analyticsButton];
+    
+    EZConfiguration *configuration = [EZConfiguration shared];
+    self.crashLogButton.mm_isOn = configuration.allowCrashLog;
+    self.analyticsButton.mm_isOn = configuration.allowAnalytics;
 }
 
 - (void)updateViewConstraints {
     [self.privacyStatementTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.contentView);
     }];
+    
+    [self.privacyStatementContentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.privacyStatementTextField.mas_bottom).offset(25);
+        make.centerX.equalTo(self.contentView);
+    }];
 
     [self.crashLogTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.privacyStatementTextField.mas_bottom).offset(40);
+        make.top.equalTo(self.privacyStatementContentTextField.mas_bottom).offset(40);
         make.left.equalTo(self.contentView).offset(self.leftMargin);
     }];
 
@@ -82,8 +96,8 @@
 
     
     self.topmostView = self.privacyStatementTextField;
-    self.leftmostView = self.crashLogTextField;
-    self.rightmostView = self.privacyStatementTextField;
+    self.leftmostView = self.privacyStatementContentTextField;
+    self.rightmostView = self.privacyStatementContentTextField;
     self.bottommostView = self.analyticsTextField;
 
     [super updateViewConstraints];
@@ -92,11 +106,24 @@
 #pragma mark - Actions
 
 - (void)crashLogButtonClicked:(NSButton *)sender {
-    NSLog(@"%s", __func__);
+    EZConfiguration.shared.allowCrashLog = sender.mm_isOn;
+    
+    if (!sender.mm_isOn) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
+        alert.messageText = NSLocalizedString(@"disable_crash_log_warning", nil);
+        [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
+            // cancel
+            if (returnCode == NSAlertSecondButtonReturn) {
+                sender.mm_isOn = YES;
+            }
+        }];
+    }
 }
 
 - (void)analyticsButtonClicked:(NSButton *)sender {
-    NSLog(@"%s", __func__);
+    EZConfiguration.shared.allowAnalytics = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController
@@ -110,10 +137,12 @@
 }
 
 - (NSImage *)toolbarItemImage {
-    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
-    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
-    privacyImage = [privacyImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
-        
+//    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
+//    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
+//    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
+      
+    NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
+    
     return privacyImage;
 }
 
@@ -124,5 +153,18 @@
 - (BOOL)hasResizableHeight {
     return NO;
 }
+
+#pragma mark -
+
+- (NSWindow *)window {
+    NSResponder *responder = self;
+    while ((responder = [responder nextResponder])) {
+        if ([responder isKindOfClass:[NSWindow class]]) {
+            return (NSWindow *)responder;
+        }
+    }
+    return nil;
+}
+
 
 @end

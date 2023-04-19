@@ -85,11 +85,15 @@
 
 // privacy
 "privacy" = "隐私";
-"crash_log" = "崩溃日志";
-"allow_collect_crash_log" = "允许收集崩溃日志";
-"analytics" = "匿名统计";
+"privacy_statement" = "隐私声明";
+"privacy_statement_content" = "Easydict 使用了 AppCenter 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，你可以检查代码。";
+"crash_log" = "崩溃日志:";
+"allow_collect_crash_log" = "允许收集应用崩溃日志";
+"analytics" = "匿名统计:";
 "allow_collect_analytics" = "允许收集匿名统计数据";
-"privacy_statement" = "Easydict 使用了 AppCenter 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，你可以检查代码。";
+"disable_crash_log_warning" = "⚠️ 注意：如果关闭该选项，Easydict 将不能获取应用崩溃日志，这可能会导致应用的 bug 无法即时修复。";
+"ok" = "确定";
+"cancel" = "取消";
 
 
 // error msg
