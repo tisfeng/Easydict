@@ -49,9 +49,9 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 ### 安装
 
-支持系统 macOS 11.0+
+你可以使用下面两种方式之一安装。支持系统 macOS 11.0+
 
-#### 1. 手动下载安装
+#### 1. 手动下载安装（推荐）
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
@@ -60,6 +60,10 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 ```bash
 brew install easydict
 ```
+#### 开发者构建
+
+如果你是一名开发者，想要自己编译运行它，只需要下载这个 Repo，然后使用 Xcode 打开 Easydict.xcworkspace，编译运行即可。
+
 
 #### 签名问题 ⚠️
 
