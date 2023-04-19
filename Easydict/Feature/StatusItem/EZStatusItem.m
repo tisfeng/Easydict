@@ -71,7 +71,6 @@ static EZStatusItem *_instance;
     
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.bobItem.title = [NSString stringWithFormat:@"Easydict  %@", version];
-    
 }
 
 - (void)testRightClick {
@@ -209,6 +208,15 @@ static EZStatusItem *_instance;
     [EZWindowManager.shared playQueryTextSound];
 }
 
+- (IBAction)googleAction:(NSMenuItem *)sender {
+    EZBaseQueryWindow *window = EZWindowManager.shared.floatingWindow;
+    [window.titleBar.googleButton openLink];
+}
+
+- (IBAction)eudicAction:(NSMenuItem *)sender {
+    EZBaseQueryWindow *window = EZWindowManager.shared.floatingWindow;
+    [window.titleBar.eudicButton openLink];
+}
 
 #pragma mark - NSMenuDelegate
 
