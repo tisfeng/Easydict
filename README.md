@@ -60,15 +60,14 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 ```bash
 brew install easydict
 ```
+
 #### 开发者构建
 
 如果你是一名开发者，想要自己编译运行它，只需要下载这个 Repo，然后使用 Xcode 打开 Easydict.xcworkspace，编译运行即可。
 
-
 #### 签名问题 ⚠️
 
 Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
-
 
 - 如果遇到下面 [无法打开 Easydict 问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
@@ -80,16 +79,13 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
     <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png"  width="30%">
 </div>
 
-
 <div style="display: flex; justify-content: space-between;">
   <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
 </div>
 
-
 - 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
 
 > “Easydict” 已损坏，无法打开。
-
 
 在终端里输入以下命令，并输入密码即可。
 
@@ -107,11 +103,11 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
 </div> <br>
 
-| 方式           | 描述                                                         | 预览                                                         |
-| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`） | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| 鼠标划词翻译   | 划词后自动显示查询图标，鼠标悬浮即可查询                     | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
-| 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域       | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
+| 方式           | 描述                                                                              | 预览                                                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）                    | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| 鼠标划词翻译   | 划词后自动显示查询图标，鼠标悬浮即可查询                                          | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                            | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
 #### 注意 ⚠️
@@ -120,11 +116,21 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 2.截图翻译，需要开启 `屏幕录制` 权限，应用仅会在第一次使用 **截图翻译** 时会自动弹出权限申请对话框，若授权失败，后续需自己去系统设置中开启。
 
+### OCR
+
+目前仅支持系统 OCR，稍后会引入第三方 OCR 服务。
+
+系统 OCR 支持语言：简体中文，繁体中文，英语，日语，韩语，法语，西班牙语，葡萄牙语，德语，意大利语，俄语，乌克兰语。
+
 ### 翻译服务
 
 **目前支持有道词典，苹果系统翻译，DeepL，Google，百度和火山翻译服务。**
 
 > 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
+
+<details> <summary> 翻译服务支持的语言。 </summary>
+
+<p>
 
 各项翻译服务支持的语言详情如下：
 
@@ -179,6 +185,10 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 蒙古语       |    ❌    |     ❌      |     ❌     |     ✅      |    ✅    |    ✅    |
 | 希伯来语     |    ❌    |     ❌      |     ❌     |     ✅      |    ✅    |    ✅    |
 
+</p>
+
+</details>
+
 ### 偏好设置
 
 设置页提供了一些偏好设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
@@ -186,7 +196,6 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 #### 设置
 
 ![iShot_2023-02-19_11.33.51](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-02-19_11.33.51-1676783205.png)
-
 
 #### 服务
 
@@ -221,7 +230,6 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="50%">
 </div>
-
 
 ## 类似项目
 
