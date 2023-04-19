@@ -28,6 +28,9 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 
 @property (nonatomic, copy) EZLanguage detectedLanguage;
 
+@property (nonatomic, assign) CGFloat ocrConfidence;
+@property (nonatomic, assign) CGFloat detectConfidence;
+
 @property (nonatomic, copy, readonly) EZLanguage queryFromLanguage;
 @property (nonatomic, copy, readonly) EZLanguage queryTargetLanguage;
 
