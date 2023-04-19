@@ -57,6 +57,8 @@
 
 "menu_bar_icon" = "Menu bar icon:";
 "hide_menu_bar_icon" = "Hide Menu Bar Icon";
+"hide_menu_bar_icon_info" = "If you need to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option.";
+
 
 // service
 "service" = "Service";
@@ -91,6 +93,7 @@
 "disable_crash_log_warning" = "⚠️ Note: If you disable this option, Easydict will not be able to get the crash logs of the application, which may cause the bugs of the application to be unable to be fixed in time.";
 "ok" = "Ok";
 "cancel" = "Cancel";
+
 
 // error msg
 "error_parameter" = "Parameter Exception";

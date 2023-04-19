@@ -10,6 +10,7 @@
 #import "EZShortcut.h"
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
+#import "NSViewController+EZWindow.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
@@ -556,15 +557,23 @@
 }
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
-    
     // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)
     if (sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:@"确定"];
-        [alert setMessageText:@"如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项即可。"];
-        [alert setAlertStyle:NSAlertStyleWarning];
-        [alert runModal];
+        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
+        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon_info", nil);
+        [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
+            // ok, hide icon
+            if (returnCode == NSAlertFirstButtonReturn) {
+                sender.mm_isOn = YES;
+            } else {
+                sender.mm_isOn = NO;
+            }
+            EZConfiguration.shared.hideMenuBarIcon = sender.mm_isOn;
+        }];
+    } else {
+        EZConfiguration.shared.hideMenuBarIcon = NO;
     }
 }
 

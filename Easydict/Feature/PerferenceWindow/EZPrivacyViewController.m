@@ -9,6 +9,7 @@
 #import "EZPrivacyViewController.h"
 #import "NSImage+EZResize.h"
 #import "EZConfiguration.h"
+#import "NSViewController+EZWindow.h"
 
 @interface EZPrivacyViewController ()
 
@@ -75,7 +76,7 @@
     }];
 
     [self.crashLogTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.privacyStatementContentTextField.mas_bottom).offset(40);
+        make.top.equalTo(self.privacyStatementContentTextField.mas_bottom).offset(50);
         make.left.equalTo(self.contentView).offset(self.leftMargin);
     }];
 
@@ -105,22 +106,26 @@
 
 #pragma mark - Actions
 
-- (void)crashLogButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.allowCrashLog = sender.mm_isOn;
-    
+- (void)crashLogButtonClicked:(NSButton *)sender {    
     if (!sender.mm_isOn) {
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
         [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
         alert.messageText = NSLocalizedString(@"disable_crash_log_warning", nil);
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
-            // cancel
-            if (returnCode == NSAlertSecondButtonReturn) {
+            // ok, disable crash log
+            if (returnCode == NSAlertFirstButtonReturn) {
+                sender.mm_isOn = NO;
+            } else {
                 sender.mm_isOn = YES;
             }
+            EZConfiguration.shared.allowCrashLog = sender.mm_isOn;
         }];
+    } else {
+        EZConfiguration.shared.allowCrashLog = YES;
     }
 }
+
 
 - (void)analyticsButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.allowAnalytics = sender.mm_isOn;
@@ -153,18 +158,5 @@
 - (BOOL)hasResizableHeight {
     return NO;
 }
-
-#pragma mark -
-
-- (NSWindow *)window {
-    NSResponder *responder = self;
-    while ((responder = [responder nextResponder])) {
-        if ([responder isKindOfClass:[NSWindow class]]) {
-            return (NSWindow *)responder;
-        }
-    }
-    return nil;
-}
-
 
 @end
