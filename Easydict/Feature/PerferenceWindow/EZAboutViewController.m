@@ -84,7 +84,21 @@
     self.authorLinkButton = authorLinkButton;
 
     authorLinkButton.title = @"Tisfeng";
-    authorLinkButton.openURL = [EZRepoGithubURL stringByDeletingLastPathComponent];
+    
+    NSString *urlString = EZRepoGithubURL;
+    NSURLComponents *components = [NSURLComponents componentsWithString:urlString];
+
+    NSString *path = components.path;
+    NSArray *pathComponents = [path componentsSeparatedByString:@"/"];
+    if (pathComponents.count > 1) {
+        NSMutableArray *mutablePathComponents = [pathComponents mutableCopy];
+        [mutablePathComponents removeLastObject];
+        NSString *newPath = [mutablePathComponents componentsJoinedByString:@"/"];
+        components.path = newPath;
+    }
+    NSString *authorURL = components.URL.absoluteString;
+    
+    authorLinkButton.openURL = authorURL; // https://github.com/tisfeng
     authorLinkButton.closeWindowAfterOpeningURL = YES;
 
     NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github:", nil)];
