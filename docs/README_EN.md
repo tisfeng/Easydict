@@ -65,7 +65,6 @@ brew install easydict
 
 If you are a developer and want to compile and run it yourself, just download this Repo, then use Xcode to open Easydict.xcworkspace, compile and run it.
 
-
 #### Signature Problem ⚠️
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
@@ -107,7 +106,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Ways                      | Description                                                                                                                         | Preview                                                                                                                                        |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                 | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| Mouse select translate     | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                         | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| Mouse select translate    | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                         | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
@@ -117,11 +116,21 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 2. For screenshot Translate, you need to enable `Screen Recording` permission. The application will only automatically pop up a permission application dialog box when you use **Screenshot Translation** for the first time. If the authorization fails, you need to turn it on in the system settings manually.
 
-### Services
+### OCR
+
+Currently, only the system OCR is supported, and third-party OCR services will be introduced later.
+
+System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
+
+### Translation Services
 
 **Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
 
 > Notice ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
+
+<details> <summary> 翻译服务支持的语言。 </summary>
+
+<p>
 
 Supported languages:
 
@@ -176,6 +185,10 @@ Supported languages:
 | Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 | Hebrew                |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
 
+</p>
+
+</details>
+
 ### Preferences
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
@@ -217,8 +230,6 @@ If you find that the OCR result is incorrect, you can correct the OCR result by 
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="50%">
 </div>
-
-
 
 ## Similar Projects
 
