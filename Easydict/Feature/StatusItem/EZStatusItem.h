@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSStatusItem *statusItem;
 
+@property (weak) IBOutlet NSMenuItem *googleItem;
+@property (weak) IBOutlet NSMenuItem *eudicItem;
+
 + (instancetype)shared;
 
 - (void)setup;

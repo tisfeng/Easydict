@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
+#import "EZStatusItem.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 

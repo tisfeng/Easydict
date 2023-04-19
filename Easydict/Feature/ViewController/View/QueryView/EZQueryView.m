@@ -331,8 +331,8 @@
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     NSEvent *currentEvent = NSApplication.sharedApplication.currentEvent;
     NSEventModifierFlags flags = currentEvent.modifierFlags;
-    NSInteger keyCode = currentEvent.keyCode;
-    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+//    NSInteger keyCode = currentEvent.keyCode;
+//    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     
     if (commandSelector == @selector(insertNewline:)) {
         // Shift + Enter
@@ -356,23 +356,25 @@
     }
     
     // No operation
-    if (commandSelector == NSSelectorFromString(@"noop:")) {
-        // Cmd
-        if (flags & NSEventModifierFlagCommand) {
-            // Enter
-            if (keyCode == kVK_Return) {
-                // Cmd + Shift + Enter
-                if (flags & NSEventModifierFlagShift) {
-                    [window.titleBar.eudicButton openLink];
-                    return YES;
-                } else {
-                    // Cmd + Enter
-                    [window.titleBar.googleButton openLink];
-                    return YES;
-                }
-            }
-        }
-    }
+    
+    // Moved to EZStatusItem: googleItem, eudicItem
+//    if (commandSelector == NSSelectorFromString(@"noop:")) {
+//        // Cmd
+//        if (flags & NSEventModifierFlagCommand) {
+//            // Enter
+//            if (keyCode == kVK_Return) {
+//                // Cmd + Shift + Enter
+//                if (flags & NSEventModifierFlagShift) {
+//                    [window.titleBar.eudicButton openLink];
+//                    return YES;
+//                } else {
+//                    // Cmd + Enter
+//                    [window.titleBar.googleButton openLink];
+//                    return YES;
+//                }
+//            }
+//        }
+//    }
     
     return NO;
 }
