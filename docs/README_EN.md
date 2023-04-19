@@ -128,11 +128,10 @@ System OCR supported languages: Simplified Chinese, Traditional Chinese, English
 
 > Notice ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
-<details> <summary> 翻译服务支持的语言。 </summary>
+<details> <summary> Supported languages: </summary>
 
 <p>
 
-Supported languages:
 
 | Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
 | :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
@@ -189,6 +188,24 @@ Supported languages:
 
 </details>
 
+### Use with PopClip
+
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then set a shortcut key for `Easydict`, default is `Opt + D`, then you can open `Easydict` quickly with `PopClip`!
+
+Usage: Select the following code block, `PopClip` will show "Install Easydict", just click it.
+
+> Note ⚠️: If you have modified the default shortcut key, you need to modify the shortcut `key combo` in the script below accordingly.
+
+```
+  # popclip
+  name: Easydict
+  icon: square E
+  key combo: option D
+```
+
+> Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+
+
 ### Preferences
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
@@ -217,14 +234,14 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 ## Tips
 
-As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you accidentally hide the menu bar icon, you can reopen it in this way (≧▽≦)
+As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you hide the menu bar icon, you can reopen it in this way (≧▽≦)
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
   <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
 </div>
 
-If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xx" button to specify the recognition language.
+If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xxx" button to specify the recognition language.
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="50%">
