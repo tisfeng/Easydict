@@ -49,15 +49,22 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ### Installation
 
-#### Manual
+You can install it using one of the following two methods. Support macOS 11.0+
+
+#### 1. Manual (Recommend)
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
-#### Homebrew
+#### 2. Homebrew
 
 ```bash
 brew install easydict
 ```
+
+#### Developer Build
+
+If you are a developer and want to compile and run it yourself, just download this Repo, then use Xcode to open Easydict.xcworkspace, compile and run it.
+
 
 #### Signature Problem ⚠️
 
