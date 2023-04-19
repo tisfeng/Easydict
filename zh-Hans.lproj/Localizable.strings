@@ -56,8 +56,9 @@
 "launch" = "启动:";
 "launch_at_startup" = "开机自启动";
 
-"menu_bar_icon" = "菜单栏图标:";
-"hide_menu_bar_icon" = "隐藏菜单栏图标";
+"menu_bar_icon" = "状态栏图标:";
+"hide_menu_bar_icon" = "隐藏状态栏图标";
+"hide_menu_bar_icon_info" = "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏状态栏图标】选项即可。";
 
 
 // service
