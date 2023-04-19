@@ -7,6 +7,7 @@
 //
 
 #import "EZLog.h"
+#import "EZConfiguration.h"
 
 @import FirebaseAnalytics;
 @import AppCenterAnalytics;
@@ -69,6 +70,10 @@
 /// ⚠️ parameters dict key and value both should be NSString.
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
     //    NSLog(@"log event: %@, %@", name, dict);
+    
+    if (!EZConfiguration.shared.allowAnalytics) {
+        return;
+    }
     
 #if !DEBUG
         [MSACAnalytics trackEvent:name withProperties:dict];

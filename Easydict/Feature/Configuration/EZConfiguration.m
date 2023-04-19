@@ -33,6 +33,9 @@ static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
 static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
+static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
+static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
+
 
 @implementation EZConfiguration
 
@@ -77,6 +80,8 @@ static EZConfiguration *_instance;
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
     self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:NO];
+    self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
+    self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
 }
 
 #pragma mark - getter
@@ -204,6 +209,19 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(disableEmptyCopyBeep) forKey:kDisableEmptyCopyBeepKey];
 }
+
+- (void)setAllowCrashLog:(BOOL)allowCrashLog {
+    _allowCrashLog = allowCrashLog;
+
+    [NSUserDefaults mm_write:@(allowCrashLog) forKey:kAllowCrashLogKey];
+}
+
+- (void)setAllowAnalytics:(BOOL)allowAnalytics {
+    _allowAnalytics = allowAnalytics;
+
+    [NSUserDefaults mm_write:@(allowAnalytics) forKey:kAllowAnalyticsKey];
+}
+
 
 #pragma mark - Window Frame
 

@@ -41,6 +41,8 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 @property (nonatomic, assign) BOOL adjustPopButtomOrigin;
 @property (nonatomic, assign) BOOL disableEmptyCopyBeep; // Some apps will beep when empty copy.
+@property (nonatomic, assign) BOOL allowCrashLog;
+@property (nonatomic, assign) BOOL allowAnalytics;
 
 + (instancetype)shared;
 
