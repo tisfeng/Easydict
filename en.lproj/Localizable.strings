@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   Easydict
 
@@ -79,6 +79,15 @@
 "auto_check_update" = "Automatically check for application updates";
 "lastest_version" = "Latest version";
 "author" = "Developer:";
+
+// privacy
+"privacy" = "Privacy";
+"crash_log" = "Crash Log";
+"allow_collect_crash_log" = "Allow collection of crash log";
+"analytics" = "Analytics";
+"allow_collect_analytics" = "Allow collection of analytics";
+"privacy_statement" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is an open source software, you can check the code.";
+
 
 // error msg
 "error_parameter" = "Parameter Exception";
