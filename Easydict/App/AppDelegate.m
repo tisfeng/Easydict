@@ -28,7 +28,7 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     MMLogInfo(@"程序启动");
     
     [self setupAppLanguage];
-
+    
     [MMCrash registerHandler];
     [EZStatusItem.shared setup];
     [EZShortcut setup];
@@ -36,7 +36,7 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
     
     [self setupCrashLogService];
-
+    
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
@@ -45,12 +45,12 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     if (!EZConfiguration.shared.allowCrashLog) {
         return;
     }
-        
+    
 #if !DEBUG
     // App Center
     [MSACAppCenter start:EZAppCenterAppSecretKey withServices:@[
-      [MSACAnalytics class],
-      [MSACCrashes class]
+        [MSACAnalytics class],
+        [MSACCrashes class]
     ]];
     
     // Firebase
@@ -88,7 +88,7 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     [EZWindowManager.shared showMainWindow:YES];
     
     [EZLog logWindowAppear:EZWindowTypeMain];
-        
+    
     return YES;
 }
 
