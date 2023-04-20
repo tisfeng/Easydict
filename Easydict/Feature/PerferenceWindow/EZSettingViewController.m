@@ -29,6 +29,9 @@
 @property (nonatomic, strong) NSTextField *showQueryIconLabel;
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 
+@property (nonatomic, strong) NSTextField *clickQueryLabel;
+@property (nonatomic, strong) NSButton *clickQueryButton;
+
 @property (nonatomic, strong) NSTextField *adjustQueryIconPostionLabel;
 @property (nonatomic, strong) NSButton *adjustQueryIconPostionButton;
 
@@ -146,6 +149,16 @@
     NSString *showQueryIconTitle = NSLocalizedString(@"auto_show_icon", nil);
     self.showQueryIconButton = [NSButton checkboxWithTitle:showQueryIconTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.showQueryIconButton];
+    
+    NSTextField *clickQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"click_icon_query", nil)];
+    clickQueryLabel.font = font;
+    [self.contentView addSubview:clickQueryLabel];
+    self.clickQueryLabel = clickQueryLabel;
+    
+    NSString *clickQueryTitle = NSLocalizedString(@"click_icon_query_info", nil);
+    self.clickQueryButton = [NSButton checkboxWithTitle:clickQueryTitle target:self action:@selector(clickQueryButtonClicked:)];
+    [self.contentView addSubview:self.clickQueryButton];
+    
     
     NSTextField *adjustQueryIconPostionLabel = [NSTextField labelWithString:NSLocalizedString(@"adjust_pop_button_origin", nil)];
     adjustQueryIconPostionLabel.font = font;
@@ -291,6 +304,7 @@
     
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
+    self.clickQueryButton.mm_isOn = configuration.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = configuration.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
     [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
@@ -365,9 +379,19 @@
         make.centerY.equalTo(self.showQueryIconLabel);
     }];
     
-    [self.adjustQueryIconPostionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.clickQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.clickQueryButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clickQueryLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.clickQueryLabel);
+    }];
+    
+    
+    [self.adjustQueryIconPostionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.clickQueryLabel);
+        make.top.equalTo(self.clickQueryButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.adjustQueryIconPostionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.adjustQueryIconPostionLabel.mas_right).offset(self.horizontalPadding);
@@ -503,6 +527,13 @@
 
 #pragma mark - event
 
+- (BOOL)checkAppIsTrusted {
+    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
+    NSLog(@"isTrusted: %d", isTrusted);
+    
+    return isTrusted == YES;
+}
+
 - (void)autoSelectTextButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoSelectText = sender.mm_isOn;
     
@@ -511,12 +542,10 @@
     }
 }
 
-- (BOOL)checkAppIsTrusted {
-    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
-    NSLog(@"isTrusted: %d", isTrusted);
-    
-    return isTrusted == YES;
+- (void)clickQueryButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.clickQuery = sender.mm_isOn;
 }
+
 
 - (void)launchAtStartupButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.launchAtStartup = sender.mm_isOn;

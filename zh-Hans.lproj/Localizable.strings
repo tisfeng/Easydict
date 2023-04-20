@@ -18,6 +18,9 @@
 "show_query_icon" = "显示查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";
 
+"click_icon_query" = "点击查询:";
+"click_icon_query_info" = "点击图标时才查询（隐藏主窗口时生效）";
+
 "adjust_pop_button_origin" = "调整查询图标位置:";
 "avoid_conflict_with_PopClip_display" = "避免和 PopClip 显示冲突";
 

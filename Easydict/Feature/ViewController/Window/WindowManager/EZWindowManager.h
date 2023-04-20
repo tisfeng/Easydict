@@ -63,6 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showOrHideDockAppAndMainWindow;
 - (void)showMainWindow:(BOOL)showFlag;
 
+- (void)updatePopButtonQueryAction;
+
 @end
 
 NS_ASSUME_NONNULL_END
