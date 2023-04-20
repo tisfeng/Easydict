@@ -371,6 +371,8 @@ static EZWindowManager *_instance;
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [self mouseLocation];
+//    NSLog(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
+
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
@@ -397,14 +399,21 @@ static EZWindowManager *_instance;
     
     // self.offsetPoint is (15, -15)
     
-    if (isDirectionDown) {
-        x += self.offsetPoint.x;
-        y += self.offsetPoint.y;
-    } else {
-        x += self.offsetPoint.x;
-        // Direction up, show pop button window above the selected text.
-        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
-    }
+    x += self.offsetPoint.x;
+    y += self.offsetPoint.y;
+    
+    // FIXME: If adjust y when Direction is Up, it will cause some UI bugs 😢
+    // TODO: This codo is too ugly, need to optimize.
+    
+    
+//    if (isDirectionDown) {
+//        x += self.offsetPoint.x;
+//        y += self.offsetPoint.y;
+//    } else {
+//        x += self.offsetPoint.x;
+//        // Direction up, show pop button window above the selected text.
+//        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
+//    }
     
     //    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
     //    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
@@ -455,12 +464,15 @@ static EZWindowManager *_instance;
     
     CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
     
+    CGPoint mouseLocation = NSEvent.mouseLocation;
+    
     // if pop button is left to selected text, we need to move showing mouse location to a bit right, to show query window properly.
-    if (NSEvent.mouseLocation.x > popButtonLocation.x) {
+    if (mouseLocation.x > popButtonLocation.x) {
         x = NSEvent.mouseLocation.x + 5;
     }
     
     CGFloat y = popButtonLocation.y + 10;
+    
     CGPoint showingPosition = CGPointMake(x, y);
     
     return showingPosition;
