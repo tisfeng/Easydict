@@ -142,7 +142,7 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 **Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
 
-> Notice ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
+> Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
 <details> <summary> Supported languages: </summary>
 
@@ -246,7 +246,7 @@ Unlike the translation shortcut keys that are globally effective, the following 
 
 <div style="display: flex; justify-content: space-between;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
-</div> <br>
+</div>
 
 - `Enter`: After entering text, press Enter to start the query.
 - `Shift + Enter`: Enter a newline.
@@ -264,7 +264,7 @@ Unlike the translation shortcut keys that are globally effective, the following 
 
 ## Tips
 
-As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you hide the menu bar icon, you can reopen it in this way (≧▽≦)
+As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you hide the menu bar icon, you can reopen it in this way.
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
