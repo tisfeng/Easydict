@@ -26,6 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) EZBaseQueryWindow *floatingWindow;
 
+/// Right-bottom offset: (15, -12)
+@property (nonatomic, assign) CGPoint offsetPoint;
+
 
 + (instancetype)shared;
 
