@@ -267,6 +267,9 @@
     NSString *queryText = model.queryText;
     _queryModel = model;
     
+    // 1. set queryModel may trigger didChangeText, cause needDetectLanguage = YES
+    BOOL hasQueryFromLanguage = model.hasQueryFromLanguage;
+    
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     // !!!: do not update textView while user is typing (like Chinese input)
     if (queryText && ![queryText isEqualToString:self.textView.string] && !self.isTypingChinese) {
@@ -277,6 +280,11 @@
         [self.textView didChangeText];
         
         [self setAlertMessageHidden:YES];
+    }
+    
+    // 2. recover needDetectLanguage if has detected language.
+    if (hasQueryFromLanguage) {
+        self.queryModel.needDetectLanguage = NO;
     }
     
     [self updateButtonsDisplayState:queryText];
