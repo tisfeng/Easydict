@@ -264,13 +264,12 @@
 #pragma mark - Setter
 
 - (void)setQueryModel:(EZQueryModel *)model {
-    _queryModel = model;
-    
     NSString *queryText = model.queryText;
+    _queryModel = model;
     
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     // !!!: do not update textView while user is typing (like Chinese input)
-    if (queryText && ![queryText isEqualToString:self.copiedText] && !self.isTypingChinese) {
+    if (queryText && ![queryText isEqualToString:self.textView.string] && !self.isTypingChinese) {
         // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
         self.textView.string = queryText; // ???: need to check
         
