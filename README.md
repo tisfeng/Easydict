@@ -100,7 +100,7 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="50%" />
 </div> <br>
 
 | 方式           | 描述                                                                              | 预览                                                                                                                                           |
@@ -131,7 +131,6 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 <details> <summary> 翻译服务支持的语言如下： </summary>
 
 <p>
-
 
 | 语言         | 有道词典 | 🍎 系统翻译 | DeepL 翻译 | Google 翻译 | 百度翻译 | 火山翻译 |
 | :----------- | :------: | :---------: | :--------: | :---------: | :------: | :------: |
@@ -205,7 +204,6 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 > 参考: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-
 ### 偏好设置
 
 设置页提供了一些偏好设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
@@ -224,13 +222,31 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
 
-### 其他快捷键
+### 应用内快捷键
+
+Easydict 有一些应用内快捷键，方便你在使用过程中更加高效。
+
+不同于前面的翻译快捷键全局生效，下面这些快捷键只在 Easydict 窗口前台显示时生效。
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
+</div> <br>
+
+#### 应用内快捷键
 
 - `Enter`: 输入文本后，按下 Enter 开始查询。
 - `Shift + Enter`: 输入换行。
+- `Cmd + ,`: 打开设置页。
+- `Cmd + K`: 清空输入框。
+- `Cmd + Shift + K`: 清空输入框和查询结果，等同于点击输入框右下角的清空按钮。
+- `Cmd + I`: 聚集输入框。(Focus Input)
+- `Cmd + S`: 播放查询文本的发音。(Play Sound)
+- `Cmd + R`: 再次查询。(Retry Query)
+- `Cmd + T`: 切换翻译语言。(Toggle Translate Language)
+- `Cmd + P`: 钉住窗口。(Pin Window，再次按下取消钉住)
+- `Cmd + W`: 关闭窗口。
 - `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。
-- `Opt + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
-- `Cmd + ,`: 快速打开设置页。
+- `Cmd + Shift + Enter`: 若电脑上安装了欧路词典 App，则会在 Google 图标左边显示一个 Eudic 图标，动作为打开欧路词典 App 查询。
 
 ## Tips
 
