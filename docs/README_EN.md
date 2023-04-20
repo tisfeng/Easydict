@@ -122,6 +122,14 @@ Currently, only the system OCR is supported, and third-party OCR services will b
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
+### Language Recognition
+
+Currently, only the system language recognition is supported, and Baidu and Google language recognition are supported, but considering the speed problem of online recognition and instability (Google also needs to be flipped), the other two recognition services are only used for auxiliary optimization.
+
+The system language recognition is used by default, and after tuning, the accuracy of the system language recognition is already very high, which can meet the needs of most users.
+
+If you still feel that the system language recognition is inaccurate in actual use, you can turn on Baidu language recognition or Google language recognition optimization in the settings, but please note that this may cause the response speed to slow down, and the recognition rate will not be 100% in line with user expectations. If there is a recognition error, you can manually specify the language type.
+
 ### Translation Services
 
 **Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
