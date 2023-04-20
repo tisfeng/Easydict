@@ -41,7 +41,7 @@ install_framework()
 
   if [ -L "${source}" ]; then
     echo "Symlinked..."
-    // Fixes the issue where archives fail when using Xcode 14.3, Ref: https://github.com/CocoaPods/CocoaPods/pull/11828
+    # Fixes the issue where archives fail when using Xcode 14.3, Ref: https://github.com/CocoaPods/CocoaPods/pull/11828
     source="$(readlink -f "${source}")"
   fi
 
