@@ -69,7 +69,11 @@ brew install easydict
 
 Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
 
-- 如果遇到下面 [无法打开 Easydict 问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+<details> <summary> 常见问题： </summary>
+
+<p>
+
+1. 如果遇到下面 [无法打开 Easydict 问题](https://github.com/tisfeng/Easydict/issues/2)，请参考苹果使用手册 [打开来自身份不明开发者的 Mac App](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
 > 无法打开“Easydict.dmg”，因为它来自身份不明的开发者。
 
@@ -83,7 +87,7 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
   <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
 </div>
 
-- 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
+2. 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
 
 > “Easydict” 已损坏，无法打开。
 
@@ -92,6 +96,10 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
 ```bash
 sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 ```
+
+</p>
+
+</details>
 
 ---
 
