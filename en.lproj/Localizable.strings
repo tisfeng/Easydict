@@ -18,6 +18,9 @@
 "show_query_icon" = "Show Query Icon:";
 "auto_show_icon" = "Auto show query icon after selecting text (experimental)";
 
+"click_icon_query" = "Click to Query:";
+"click_icon_query_info" = "Query only when clicking the icon (Need to hide main window)";
+
 "adjust_pop_button_origin" = "Adjust Query Icon Position:";
 "avoid_conflict_with_PopClip_display" = "Avoid conflict with PopClip";
 

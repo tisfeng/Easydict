@@ -16,6 +16,7 @@
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
+static NSString *const kClickQuery = @"EZConfiguration_kClickQuery";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
@@ -66,6 +67,7 @@ static EZConfiguration *_instance;
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
 
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
+    self.clickQuery = [NSUserDefaults mm_readBool:kClickQuery defaultValue:NO];
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:NO];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
     self.hideMainWindow = [NSUserDefaults mm_readBool:kHideMainWindowKey defaultValue:YES];
@@ -105,6 +107,14 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
 }
 
+- (void)setClickQuery:(BOOL)clickQuery {
+    _clickQuery = clickQuery;
+
+    [NSUserDefaults mm_write:@(clickQuery) forKey:kClickQuery];
+    
+    [EZWindowManager.shared updatePopButtonQueryAction];
+}
+
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
 
@@ -134,7 +144,8 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
     
-    [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
+    [EZWindowManager.shared showOrHideDockAppAndMainWindow];
+    [EZWindowManager.shared updatePopButtonQueryAction];
 }
 
 - (void)setAutoQueryOCRText:(BOOL)autoSnipTranslate {

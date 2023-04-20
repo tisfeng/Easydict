@@ -99,12 +99,14 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
         self.popButtonWindow.level = kCGScreenSaverWindowLevel;
-        
+                
         if (!EZConfiguration.shared.hideMainWindow) {
             [self->_mainWindow orderBack:nil];
         }
     }];
     
+    [self updatePopButtonQueryAction];
+
     [self.eventMonitor setDismissPopButtonBlock:^{
         //        NSLog(@"dismiss pop button");
         mm_strongify(self);
@@ -136,6 +138,35 @@ static EZWindowManager *_instance;
     }];
 }
 
+- (void)updatePopButtonQueryAction {
+    mm_weakify(self);
+    
+    EZButton *popButton = self.popButtonWindow.popButton;
+    EZConfiguration *config = [EZConfiguration shared];
+    
+    if (config.clickQuery && config.hideMainWindow) {
+        // Disable hover
+        popButton.mouseEnterBlock = nil;
+        
+        // FIXME: Click pop button will also show preferences window.
+        [popButton setClickBlock:^(EZButton *button) {
+            mm_strongify(self);
+            [self popButtonWindowClicked];
+        }];
+    } else {
+        [popButton setMouseEnterBlock:^(EZButton *button) {
+            mm_strongify(self);
+            [self popButtonWindowClicked];
+        }];
+    }
+}
+
+- (void)popButtonWindowClicked {
+    [self->_popButtonWindow close];
+    self.queryType = EZQueryTypeAutoSelect;
+    [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
+}
+
 #pragma mark - Getter
 
 - (EZMainQueryWindow *)mainWindow {
@@ -165,19 +196,6 @@ static EZWindowManager *_instance;
 - (EZPopButtonWindow *)popButtonWindow {
     if (!_popButtonWindow) {
         _popButtonWindow = [EZPopButtonWindow shared];
-        mm_weakify(self);
-        [_popButtonWindow.popButton setMouseEnterBlock:^(EZButton *button) {
-            mm_strongify(self);
-            [self popButtonWindowClicked];
-        }];
-        
-        // FIXME: Click pop button will also show preferences window.
-//        if (EZConfiguration.shared.hideMainWindow) {
-//            [_popButtonWindow.popButton setClickBlock:^(EZButton *button) {
-//                mm_strongify(self);
-//                [self popButtonWindowClicked];
-//            }];
-//        }
     }
     return _popButtonWindow;
 }
@@ -191,12 +209,6 @@ static EZWindowManager *_instance;
 }
 
 #pragma mark - Others
-
-- (void)popButtonWindowClicked {
-    [self->_popButtonWindow close];
-    self.queryType = EZQueryTypeAutoSelect;
-    [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
-}
 
 - (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
     EZBaseQueryWindow *window = nil;
@@ -304,7 +316,9 @@ static EZWindowManager *_instance;
     [window makeKeyAndOrderFront:nil];
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
-    [_mainWindow orderOut:nil];
+    if (!EZConfiguration.shared.hideMainWindow) {
+        [_mainWindow orderOut:nil];
+    }
     
     window.level = EZFloatingWindowLevel;
     [window.queryViewController focusInputTextView];
@@ -314,7 +328,9 @@ static EZWindowManager *_instance;
         [self updateFloatingWindowType:window.windowType];
     
         // mainWindow has been ordered out before, so we need to order back.
-        [self->_mainWindow orderBack:nil];
+        if (!EZConfiguration.shared.hideMainWindow) {
+            [self->_mainWindow orderBack:nil];
+        }
     });
 }
 
@@ -488,6 +504,7 @@ static EZWindowManager *_instance;
 
 - (void)showOrHideDockAppAndMainWindow {
     BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
+    _mainWindow.releasedWhenClosed = !showFlag;
     [self showMainWindow:showFlag];
     
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
