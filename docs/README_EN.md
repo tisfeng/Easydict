@@ -55,7 +55,7 @@ You can install it using one of the following two methods. Support macOS 11.0+
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
-#### 2. Homebrew
+#### 2. Homebrew (Thanks [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
 
 ```bash
 brew install easydict
