@@ -23,8 +23,6 @@
 @property (nonatomic, strong) EZEventMonitor *eventMonitor;
 @property ( nonatomic, copy, nullable) NSString *selectedText;
 
-/// Right-bottom offset: (15, -15)
-@property (nonatomic, assign) CGPoint offsetPoint;
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 
@@ -66,7 +64,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)setup {
-    self.offsetPoint = CGPointMake(15, -15);
+    self.offsetPoint = CGPointMake(15, -12);
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
@@ -435,6 +433,10 @@ static EZWindowManager *_instance;
 
 - (CGPoint)getMiniWindowLocation {
     CGPoint position = [self getShowingMouseLocation];
+    if (EZConfiguration.shared.adjustPopButtomOrigin) {
+        position.y = position.y - 8;
+    }
+    
 
     // If not query text, just show mini window, then show window at last position.
     if (!self.selectedText) {
@@ -458,7 +460,7 @@ static EZWindowManager *_instance;
         x = NSEvent.mouseLocation.x + 5;
     }
     
-    CGFloat y = popButtonLocation.y + 5;
+    CGFloat y = popButtonLocation.y + 10;
     CGPoint showingPosition = CGPointMake(x, y);
     
     return showingPosition;
