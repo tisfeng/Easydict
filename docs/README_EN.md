@@ -132,7 +132,6 @@ System OCR supported languages: Simplified Chinese, Traditional Chinese, English
 
 <p>
 
-
 | Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
 | :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
@@ -205,7 +204,6 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 
 > Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-
 ### Preferences
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
@@ -224,13 +222,29 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
 
-#### Other Shortcuts
+#### In-App Shortcuts
+
+Easydict has some in-app shortcuts to help you use it more efficiently.
+
+Unlike the translation shortcut keys that are globally effective, the following shortcuts only take effect when the Easydict window is in the foreground.
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
+</div> <br>
 
 - `Enter`: After entering text, press Enter to start the query.
-- `Shift + Enter`: Enter a line feed.
-- `Cmd + Enter`: Opens Google search engine by default, and the search content is the entered text, which is equivalent to manually clicking the Google search icon in the upper right corner.
-- `Opt + Enter`: If you have the Eudic App installed on your computer, an Eudic icon will be displayed to the left of the Safari icon, and the shortcut will open the Eudic App for searching.
-- `Cmd + ,`: Open settings page quickly.
+- `Shift + Enter`: Enter a newline.
+- `Cmd + ,`: Open the settings page.
+- `Cmd + K`: Clear the input text.
+- `Cmd + Shift + K`: Clear the input box and query results, the same as clicking the clear button in the lower right corner of the input text.
+- `Cmd + I`: Focus the input text.
+- `Cmd + S`: Play the pronunciation of the query text.
+- `Cmd + R`: Query again.
+- `Cmd + T`: Toggle translation language.
+- `Cmd + P`: Pin the window.
+- `Cmd + W`: Close the window.
+- `Cmd + Enter`: By default, the Google search engine is opened, and the content to be searched is the input text, which is equivalent to manually clicking the browser search icon in the upper right corner.
+- `Cmd + Shift + Enter`: If the Eudic App is installed on the computer, an Eudic icon will be displayed to the left of the Google icon, and the action is to open the Eudic App to query.
 
 ## Tips
 
