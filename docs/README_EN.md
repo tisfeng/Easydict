@@ -69,7 +69,11 @@ If you are a developer and want to compile and run it yourself, just download th
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
 
-- If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+<details> <summary> Frequently Asked Questions: </summary>
+
+<p>
+
+1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
 
 > Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
 
@@ -83,7 +87,7 @@ Easydict is open source software and is inherently secure, but due to Apple's st
   <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
 </div>
 
-- If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
+2. If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
 
 > "Easydict" is corrupted and cannot be opened.
 
@@ -92,6 +96,10 @@ Just type the following command in the terminal and enter the password.
 ```bash
 sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 ```
+
+</p>
+
+</details>
 
 ---
 
