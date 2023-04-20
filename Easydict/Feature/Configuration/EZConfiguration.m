@@ -11,6 +11,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import <Sparkle/Sparkle.h>
 #import "EZStatusItem.h"
+#import "EZWindowManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -132,6 +133,8 @@ static EZConfiguration *_instance;
     _hideMainWindow = hideMainWindow;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
+    
+    [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
 }
 
 - (void)setAutoQueryOCRText:(BOOL)autoSnipTranslate {

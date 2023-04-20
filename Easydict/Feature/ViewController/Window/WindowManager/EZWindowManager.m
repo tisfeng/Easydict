@@ -70,6 +70,8 @@ static EZWindowManager *_instance;
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
+    
+    NSLog(@"%@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
@@ -504,9 +506,9 @@ static EZWindowManager *_instance;
         [mainWindow makeKeyAndOrderFront:nil];
 
     } else {
-        // ???: Why does closing the window prevent the main window from show again?
-//        [_mainWindow close];
-//        [_mainWindow orderOut:nil];
+        // TODO: may be need to release main window to reduce memory, if user do need main window anymore.
+        [_mainWindow close];
+        [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
     }
 }
 

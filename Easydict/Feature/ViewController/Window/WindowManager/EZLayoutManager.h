@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Window type
-typedef NS_ENUM(NSUInteger, EZWindowType) {
+typedef NS_ENUM(NSInteger, EZWindowType) {
     EZWindowTypeNone = -1,
     EZWindowTypeMain = 0,
     EZWindowTypeMini = 1,
