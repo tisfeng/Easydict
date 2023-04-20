@@ -900,9 +900,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
-- (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    BOOL hasQueryFromLanguage = queryModel.hasQueryFromLanguage;
-    
+- (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {    
     if (queryModel.queryText.length == 0) {
         queryModel.detectedLanguage = EZLanguageAuto;
 
@@ -911,15 +909,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     self.queryView.clearButtonHidden = (queryModel.queryText.length == 0) && ([self allShowingResults].count == 0);
 
-    // 1. set queryModel will cause needDetectLanguage = YES
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
     [self updateSelectLanguageCell];
-    
-    // 2. recover needDetectLanguage if has detected language.
-    if (hasQueryFromLanguage) {
-        self.queryModel.needDetectLanguage = NO;
-    }
 }
 
 
