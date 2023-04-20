@@ -12,6 +12,7 @@
 #import <Sparkle/Sparkle.h>
 #import "EZStatusItem.h"
 #import "EZWindowManager.h"
+#import "EZExeCommand.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -91,7 +92,6 @@ static EZConfiguration *_instance;
 
 - (BOOL)launchAtStartup {
     BOOL launchAtStartup = [[NSUserDefaults mm_read:kLaunchAtStartupKey] boolValue];
-    [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
     return launchAtStartup;
 }
 
@@ -118,7 +118,7 @@ static EZConfiguration *_instance;
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
 
-    [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
+    [self updateLoginItemWithLaunchAtStartup2:launchAtStartup];
 }
 
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
@@ -270,6 +270,7 @@ static EZConfiguration *_instance;
     NSError *error;
     if (@available(macOS 13.0, *)) {
         // Ref: https://www.bilibili.com/read/cv19361413
+        // ???: Why does it not work?
         SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
         BOOL success;
         if (launchAtStartup) {
@@ -291,6 +292,41 @@ static EZConfiguration *_instance;
         }
     }
 }
+
+/// Use apple script to implement launch at start up, or delete.
+- (void)updateLoginItemWithLaunchAtStartup2:(BOOL)launchAtStartup {
+    // ???: name is CFBundleExecutable, or CFBundleName ?
+    NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
+    NSString *appBundlePath = [[NSBundle mainBundle] bundlePath];
+        
+    NSString *script = [NSString stringWithFormat:@"\
+        tell application \"System Events\" to get the name of every login item\n\
+        tell application \"System Events\"\n\
+            set loginItems to every login item\n\
+            repeat with aLoginItem in loginItems\n\
+                if (aLoginItem's name is \"%@\") then\n\
+                    delete aLoginItem\n\
+                end if\n\
+            end repeat\n\
+            if %@ then\n\
+                make login item at end with properties {path:\"%@\", hidden:false}\n\
+            end if\n\
+        end tell"
+                        , appName,
+                        launchAtStartup ? @"true" : @"false",
+                        appBundlePath
+    ];
+
+    EZExeCommand *exeCommand = [[EZExeCommand alloc] init];
+    [exeCommand runAppleScript:script completionHandler:^(NSString * _Nonnull result, NSError * _Nonnull error) {
+        if (error) {
+            NSLog(@"launchAtStartup error: %@", error);
+        } else {
+            NSLog(@"launchAtStartup result: %@", result);
+        }
+    }];
+}
+
 
 - (BOOL)isLoginItemEnabled {
     BOOL enabled = NO;
