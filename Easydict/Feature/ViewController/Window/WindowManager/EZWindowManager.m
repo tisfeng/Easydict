@@ -139,6 +139,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
+        _mainWindow.releasedWhenClosed = NO;
     }
     return _mainWindow;
 }
@@ -287,6 +288,7 @@ static EZWindowManager *_instance;
     //    NSLog(@"show floating window: %@, %@", window, @(point));
     
     [self saveFrontmostApplication];
+    
     if (Snip.shared.isSnapshotting) {
         return;
     }
@@ -299,7 +301,7 @@ static EZWindowManager *_instance;
     
     [window makeKeyAndOrderFront:nil];
     
-    // TODO: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
+    // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     [_mainWindow orderOut:nil];
     
     window.level = EZFloatingWindowLevel;
@@ -307,10 +309,17 @@ static EZWindowManager *_instance;
     
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSNumber *windowType = @(window.windowType);
-        [self.floatingWindowTypeArray removeObject:windowType];
-        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
+        [self updateFloatingWindowType:window.windowType];
+    
+        // mainWindow has been ordered out before, so we need to order back.
+        [self->_mainWindow orderBack:nil];
     });
+}
+
+- (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
+    NSNumber *windowType = @(floatingWindowType);
+    [self.floatingWindowTypeArray removeObject:windowType];
+    [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
 }
 
 - (NSScreen *)getMouseLocatedScreen {
@@ -484,14 +493,20 @@ static EZWindowManager *_instance;
 }
 
 - (void)showMainWindow:(BOOL)showFlag {
+    NSNumber *windowType = @(EZWindowTypeMain);
+    [self.floatingWindowTypeArray removeObject:windowType];
+    
     if (showFlag) {
+        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
+
         EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
+
     } else {
         // ???: Why does closing the window prevent the main window from show again?
-        //        [mainWindow close];
-        //        [mainWindow orderOut:nil];
+//        [_mainWindow close];
+//        [_mainWindow orderOut:nil];
     }
 }
 
@@ -588,6 +603,7 @@ static EZWindowManager *_instance;
     [_mainWindow orderBack:nil];
         
     // Move floating window type to second.
+    
     NSNumber *windowType = @(self.floatingWindowType);
     [self.floatingWindowTypeArray removeObject:windowType];
     [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
