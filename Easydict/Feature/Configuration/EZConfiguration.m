@@ -116,9 +116,14 @@ static EZConfiguration *_instance;
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
+    BOOL oldLaunchAtStartup = self.launchAtStartup;
+    
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
-
-    [self updateLoginItemWithLaunchAtStartup2:launchAtStartup];
+    
+    // Avoid redundant calls, run AppleScript will ask for permission, trigger notification.
+    if (launchAtStartup != oldLaunchAtStartup) {
+        [self updateLoginItemWithLaunchAtStartup2:launchAtStartup];
+    }
 }
 
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
