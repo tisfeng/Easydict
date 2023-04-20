@@ -55,7 +55,7 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
         self.needDetectLanguage = YES;
     }
     
-    _queryText = queryText;
+    _queryText = [queryText copy];
 }
 
 - (EZLanguage)queryFromLanguage {
