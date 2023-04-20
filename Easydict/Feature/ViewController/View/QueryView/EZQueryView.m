@@ -152,7 +152,7 @@
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
-    clearButton.toolTip = @"Clear, ⌘+K";
+    clearButton.toolTip = @"Clear, ⌘+⇧+K";
     
     [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");

@@ -9,7 +9,6 @@
 #import "EZSettingViewController.h"
 #import "EZShortcut.h"
 #import "EZConfiguration.h"
-#import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
 #import "EZStatusItem.h"
 
@@ -524,9 +523,7 @@
 }
 
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.hideMainWindow = sender.mm_isOn;
-    
-    [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
+    EZConfiguration.shared.hideMainWindow = sender.mm_isOn;    
 }
 
 - (void)autoQueryOCRTextButtonClicked:(NSButton *)sender {
