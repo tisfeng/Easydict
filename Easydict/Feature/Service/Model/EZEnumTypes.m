@@ -21,6 +21,7 @@ NSString *const EZServiceTypeOpenAI = @"OpenAI";
 NSString *const EZQueryServiceTypeName = @"QueryServiceType";
 NSString *const EZServiceUsageStatusName = @"ServiceUsageStatus";
 
+NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPI";
 
 @implementation EZEnumTypes
 

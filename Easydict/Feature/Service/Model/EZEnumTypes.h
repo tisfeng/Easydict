@@ -40,6 +40,15 @@ typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
     EZServiceUsageStatusAlwaysOn = 2,
 };
 
+FOUNDATION_EXPORT NSString *const EZDeepLTranslationAPIKey;
+
+typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
+    EZDeepLTranslationAPIWebFirst = 0,
+    EZDeepLTranslationAPIOfficialFirst = 1,
+    EZDeepLTranslationAPIOnlyOfficical = 2,
+};
+
+
 @interface EZEnumTypes : NSObject
 
 @end
