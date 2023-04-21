@@ -171,8 +171,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - NSNotificationCenter
 
 - (void)handleServiceUpdate:(NSNotification *)notification {
-    EZWindowType type = [notification.userInfo[EZWindowTypeKey] integerValue];
-    if (type == self.windowType) {
+    NSDictionary *userInfo = notification.userInfo;
+    EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
+    if (type == self.windowType ||!userInfo) {
         [self updateServicesAndQuery:YES];
     }
 }
@@ -300,19 +301,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     if (handled) {
         NSString *result = handledSuccess ? @"success" : @"failed";
-        self.queryText = result;
         if (handledSuccess) {
-            [self updateServicesAndQuery:NO];
+            [self clearInput];
+            
+            // In addition to the current page, other pages need to be notified, such as the settings service page.
+            [self postUpdateServiceNotification];
         }
 
         ToastWindowController *toastWindow = [ToastWindowController getToastWindow];
         [toastWindow showCoolToast:result];
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if ([self.queryText isEqualToString:result]) {
-                self.queryText = @"";
-            }
-        });
 
         return;
     }
@@ -325,6 +322,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.queryText = text;
         [self queryCurrentModel];
     }];
+}
+
+- (void)postUpdateServiceNotification {
+    // Need to update all types window.
+    NSNotification *notification = [NSNotification notificationWithName:EZServiceHasUpdatedNotification object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 /// Setup queryModel when start new query.
