@@ -93,6 +93,8 @@ static NSString *kEasydictSchema = @"easydict://";
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
      
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
+     
+     easydict://writeKeyValue?EZDeepLTranslationAPI=1
      */
     
     return @[
@@ -107,6 +109,7 @@ static NSString *kEasydictSchema = @"easydict://";
         EZYoudaoDictionaryKey,
         
         EZDeepLAuthKey,
+        EZDeepLTranslationAPIKey,
     ];
 }
 
