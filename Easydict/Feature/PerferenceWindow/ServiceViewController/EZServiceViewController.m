@@ -62,23 +62,43 @@ static NSString *const EZColumnId = @"EZColumnId";
         @(2) : @(EZWindowTypeMain),
     };
 
-    [self setupDataWithWindowType:EZWindowTypeMini];
+    [self setupUIDataWithWindowType:EZWindowTypeMini];
 
-    // Just to be able to get tableView height automatically.
-    self.scrollView.height = 0;
-    [self tableView];
-
-    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(self.tableView.height);
-    }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate:) name:EZServiceHasUpdatedNotification object:nil];
 }
 
-- (void)setupDataWithWindowType:(EZWindowType)windowType {
+- (void)setupUIDataWithWindowType:(EZWindowType)windowType {
     self.windowType = windowType;
     self.serviceTypes = [[EZLocalStorage.shared allServiceTypes:windowType] mutableCopy];
     self.services = [[EZLocalStorage.shared allServices:windowType] mutableCopy];
+    
+    [self.tableView reloadData];
+    [self updateScrollViewHeight];
 }
 
+- (void)updateScrollViewHeight {
+    CGFloat tableViewHeight = [self getScrollViewContentHeight];
+    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(tableViewHeight);
+    }];
+}
+
+- (CGFloat)getScrollViewContentHeight {
+    self.scrollView.height = 0;
+    CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
+    return documentViewHeight;
+}
+
+#pragma mark - NSNotificationCenter
+
+- (void)handleServiceUpdate:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+
+    EZWindowType windowType = [notification.userInfo[EZWindowTypeKey] integerValue];
+    if (windowType == self.windowType || !userInfo) {
+        [self setupUIDataWithWindowType:self.windowType];
+    }
+}
 
 #pragma mark - Getter && Setter
 
@@ -264,7 +284,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (void)segmentedControlClicked:(NSSegmentedControl *)sender {
     NSInteger index = [sender selectedSegment];
     EZWindowType windowType = [self.windowTypesDictionary[@(index)] integerValue];
-    [self setupDataWithWindowType:windowType];
+    [self setupUIDataWithWindowType:windowType];
     [self.tableView reloadData];
 }
 
