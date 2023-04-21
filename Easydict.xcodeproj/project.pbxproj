@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */; };
-		03008B2B2940D3230062B821 /* EZDeppLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeppLTranslate.m */; };
+		03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeepLTranslate.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
@@ -177,8 +177,8 @@
 /* Begin PBXFileReference section */
 		03008B2529408BF50062B821 /* NSObject+EZDarkMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+EZDarkMode.h"; sourceTree = "<group>"; };
 		03008B2629408BF50062B821 /* NSObject+EZDarkMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EZDarkMode.m"; sourceTree = "<group>"; };
-		03008B292940D3230062B821 /* EZDeppLTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeppLTranslate.h; sourceTree = "<group>"; };
-		03008B2A2940D3230062B821 /* EZDeppLTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeppLTranslate.m; sourceTree = "<group>"; };
+		03008B292940D3230062B821 /* EZDeepLTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeepLTranslate.h; sourceTree = "<group>"; };
+		03008B2A2940D3230062B821 /* EZDeepLTranslate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeepLTranslate.m; sourceTree = "<group>"; };
 		03008B2C2941956D0062B821 /* EZURLSchemeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZURLSchemeHandler.h; sourceTree = "<group>"; };
 		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
@@ -500,8 +500,8 @@
 		03008B282940D2FD0062B821 /* DeepL */ = {
 			isa = PBXGroup;
 			children = (
-				03008B292940D3230062B821 /* EZDeppLTranslate.h */,
-				03008B2A2940D3230062B821 /* EZDeppLTranslate.m */,
+				03008B292940D3230062B821 /* EZDeepLTranslate.h */,
+				03008B2A2940D3230062B821 /* EZDeepLTranslate.m */,
 				0399C6A329A747E600B4AFCC /* EZDeepLTranslateResponse.h */,
 				0399C6A429A747E600B4AFCC /* EZDeepLTranslateResponse.m */,
 				0399C6A629A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.h */,
@@ -1585,7 +1585,7 @@
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
-				03008B2B2940D3230062B821 /* EZDeppLTranslate.m in Sources */,
+				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
