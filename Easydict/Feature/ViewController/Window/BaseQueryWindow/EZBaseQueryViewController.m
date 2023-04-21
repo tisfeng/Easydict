@@ -409,7 +409,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // Clear query text, detect language and clear button right now;
     self.queryText = @"";
     self.queryModel.ocrImage = nil;
-    [self.queryView setAlertMessageHidden:YES];
+    [self.queryView setAlertTextHidden:YES];
 }
 
 - (void)clearAll {
