@@ -77,7 +77,8 @@
         self.automaticLinkDetectionEnabled = YES;
 
         _placeholderText = @"placeholder";
-        _placeholderColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
+        _placeholderColor = NSColor.placeholderTextColor;
+//        _placeholderColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
 
         //        [self setupPlaceHolderTextView];
     }
@@ -86,6 +87,12 @@
 
 /// Rewirte drawRect, for modifying selected range background color, to avoid showing spacing between lines and paragraphs.
 - (void)drawRect:(NSRect)dirtyRect {
+    
+    // Ref: https://stackoverflow.com/questions/29428594/set-the-placeholder-string-for-nstextview
+//    if ([self.string isEqualToString:@""] && self != [self.window firstResponder]) {
+//        [self.placeholderAttributedString drawAtPoint:NSMakePoint(0, 0)];
+//    }
+    
     if (self.selectedRange.length == 0) {
         [super drawRect:dirtyRect];
         return;
@@ -112,6 +119,16 @@
     [self setSelectedTextAttributes:@{NSBackgroundColorAttributeName : originalSelectionColor}];
     [self setDefaultParagraphStyle:originalParagraphStyle];
 }
+
+//- (BOOL)becomeFirstResponder {
+//  [self setNeedsDisplay:YES];
+//  return [super becomeFirstResponder];
+//}
+//
+//- (BOOL)resignFirstResponder {
+//   [self setNeedsDisplay:YES];
+//   return [super resignFirstResponder];
+//}
 
 
 // 重写粘贴方法，纯文本粘贴  https://stackoverflow.com/questions/8198767/how-can-you-intercept-pasting-into-a-nstextview-to-remove-unsupported-formatting
