@@ -17,6 +17,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
+@property (nonatomic, copy) NSString *authKey;
+
+@property (nonatomic, assign) EZDeepLTranslationAPI apiType;
+
 @end
 
 @implementation EZDeepLTranslate
@@ -38,6 +42,15 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     return _webViewTranslator;
 }
 
+- (NSString *)authKey {
+    NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZDeepLAuthKey] ?: @"";
+    return authKey;
+}
+
+- (EZDeepLTranslationAPI)apiType {
+    EZDeepLTranslationAPI type = [[NSUserDefaults mm_readString:EZDeepLTranslationAPIKey defaultValue:@"0"] integerValue];
+    return type;
+}
 
 #pragma mark - 重写父类方法
 
@@ -118,11 +131,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
     }
-    
-    [self deepLTranslate:text from:from to:to completion:completion];
-    
-//    [self deepLWebTranslate:text from:from to:to completion:completion];
-    //  [self webViewTranslate:completion];
+        
+    if (self.apiType == EZDeepLTranslationAPIWebFirst) {
+        [self deepLWebTranslate:text from:from to:to completion:completion];
+    } else {
+        [self deepLTranslate:text from:from to:to completion:completion];
+    }
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
@@ -220,6 +234,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         }
         
         if (error) {
+            BOOL useOfficialAPI = (self.authKey.length > 0) && (self.apiType == EZDeepLTranslationAPIWebFirst);
+            if (useOfficialAPI) {
+                [self deepLTranslate:text from:from to:to completion:completion];
+                return;
+            }
+            
             NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
             if (errorData) {
                 /**
@@ -283,15 +303,13 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
     
-    NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZDeepLAuthKey] ?: @"";
-
     // DeepL api free and deepL pro api use different url host.
-    BOOL isFreeKey = [authKey hasSuffix:@":fx"];
+    BOOL isFreeKey = [self.authKey hasSuffix:@":fx"];
     NSString *host = isFreeKey ? @"https://api-free.deepl.com": @"https://api.deepl.com";
     NSString *url = [NSString stringWithFormat:@"%@/v2/translate", host];
     
     NSDictionary *params = @{
-        @"auth_key" : authKey,
+        @"auth_key" : self.authKey,
         @"text" : text,
         @"source_lang" : souceLangCode,
         @"target_lang" : targetLangCode
@@ -309,6 +327,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         }
         
         if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        
+        if (self.apiType == EZDeepLTranslationAPIOfficialFirst) {
+            [self deepLWebTranslate:text from:from to:to completion:completion];
             return;
         }
         
