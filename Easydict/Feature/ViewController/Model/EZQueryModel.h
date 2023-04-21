@@ -40,10 +40,16 @@ FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 // If queryText has changed, we need to detect again. But, if user has specified detected language, do not auto detect.
 @property (nonatomic, assign) BOOL needDetectLanguage;
 
+// TODO: This dict may be need to be stored in NSUserDefaults.
+@property (nonatomic, strong) NSMutableDictionary<NSString *, EZLanguage> *specifiedTextLanguageDict;
+
 @property (nonatomic, strong, nullable) NSImage *ocrImage;
 @property (nonatomic, copy, nullable) NSString *audioURL;
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
+
+
+#pragma mark - Stop Block
 
 - (void)setStopBlock:(void (^ _Nullable)(void))stopBlock serviceType:(NSString *)type; // EZServiceType
 
