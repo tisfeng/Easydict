@@ -8,7 +8,7 @@
 
 #import "EZEnumTypes.h"
 
-NSString *const EZServiceTypeName = @"ServiceType";
+NSString *const EZServiceTypeKey = @"ServiceType";
 
 NSString *const EZServiceTypeGoogle = @"Google";
 NSString *const EZServiceTypeBaidu = @"Baidu";
@@ -18,8 +18,9 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
 NSString *const EZServiceTypeVolcano = @"Volcano";
 NSString *const EZServiceTypeOpenAI = @"OpenAI";
 
-NSString *const EZQueryServiceTypeName = @"QueryServiceType";
-NSString *const EZServiceUsageStatusName = @"ServiceUsageStatus";
+NSString *const EZQueryServiceTypeKey = @"QueryServiceType";
+
+NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 
 NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPI";
 
