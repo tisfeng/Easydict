@@ -45,7 +45,7 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel;
 
 - (void)startLoadingAnimation:(BOOL)isLoading;
-- (void)setAlertMessageHidden:(BOOL)hidden;
+- (void)setAlertTextHidden:(BOOL)hidden;
 
 - (void)showAutoDetectLanguage:(BOOL)showFlag;
 

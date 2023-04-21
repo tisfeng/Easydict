@@ -22,7 +22,7 @@
 @property (nonatomic, strong) NSButton *textCopyButton;
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
-@property (nonatomic, strong) NSTextField *placeholderTextField;
+@property (nonatomic, strong) NSTextField *alertTextField;
 
 @property (nonatomic, assign) CGFloat textViewMinHeight;
 @property (nonatomic, assign) CGFloat textViewMaxHeight;
@@ -84,18 +84,6 @@
         make.top.equalTo(textView).offset(5);
         make.left.equalTo(textView).offset(10);
         make.height.mas_equalTo(30);
-    }];
-    
-    NSTextField *placeholderTextField = [[NSTextField alloc] init];
-    placeholderTextField.hidden = YES;
-    placeholderTextField.bordered = NO;
-    placeholderTextField.editable = NO;
-    placeholderTextField.backgroundColor = NSColor.clearColor;
-    placeholderTextField.font = self.textView.font;
-    [self addSubview:placeholderTextField];
-    self.placeholderTextField = placeholderTextField;
-    [placeholderTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.right.inset(10);
     }];
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
@@ -163,6 +151,26 @@
     }];
 }
 
+- (NSTextField *)alertTextField {
+    if (!_alertTextField) {
+        NSTextField *alertTextField = [[NSTextField alloc] init];
+        alertTextField.hidden = YES;
+        alertTextField.bordered = NO;
+        alertTextField.editable = NO;
+        alertTextField.enabled = NO;
+        // ???: Why does this not work?
+    //    alertTextField.refusesFirstResponder = YES;
+        alertTextField.backgroundColor = NSColor.clearColor;
+        alertTextField.font = self.textView.font;
+        [self addSubview:alertTextField];
+        _alertTextField = alertTextField;
+        [alertTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.top.right.inset(10);
+        }];
+    }
+    return _alertTextField;
+}
+
 #pragma mark - Public Methods
 
 - (CGFloat)heightOfQueryView {
@@ -184,31 +192,19 @@
 
 - (void)startLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
-        self.textView.string = @"";
+        self.textView.string = @" ";
     }
-    [self setAlertMessageHidden:YES];
+    [self setAlertTextHidden:YES];
     self.textView.editable = !isLoading;
     [self.loadingAnimationView startLoading:isLoading];
 }
 
-- (void)showAlertMessage:(NSString *)message {
-    if (message.length) {
-        [self setAlertMessageHidden:NO];
-        self.placeholderTextField.textColor = NSColor.redColor;
-        self.placeholderTextField.stringValue = message;
-        [self.clearButton setAnimatedHidden:NO];
-        
-        self.detectButton.showAutoLanguage = YES;
-        [self updateDetectButton];
-    }
-}
-
-- (void)setAlertMessageHidden:(BOOL)hidden {
+- (void)setAlertTextHidden:(BOOL)hidden {
     if (hidden) {
         self.alertText = @"";
         
     }
-    self.placeholderTextField.hidden = hidden;
+    self.alertTextField.hidden = hidden;
     self.textView.editable = hidden;
     self.detectButton.showAutoLanguage = NO;
     [self updateDetectButton];
@@ -260,7 +256,6 @@
     [super updateConstraints];
 }
 
-
 #pragma mark - Setter
 
 - (void)setQueryModel:(EZQueryModel *)model {
@@ -279,7 +274,7 @@
         // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
         [self.textView didChangeText];
         
-        [self setAlertMessageHidden:YES];
+        [self setAlertTextHidden:YES];
     }
     
     // 2. recover needDetectLanguage if has detected language.
@@ -298,20 +293,38 @@
 
 - (void)setPlaceholderText:(NSString *)placeholderText {
     _placeholderText = placeholderText;
-
-    self.placeholderTextField.textColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
-    self.placeholderTextField.stringValue = placeholderText;
-    self.placeholderTextField.hidden = NO;
+    
+//    NSColor *placeholderTextColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
+    NSDictionary *attributes = @{
+        NSForegroundColorAttributeName: NSColor.placeholderTextColor,
+        NSFontAttributeName: self.textView.font,
+    };
+    
+    // Ref: https://stackoverflow.com/questions/29428594/set-the-placeholder-string-for-nstextview
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:placeholderText attributes:attributes];
+//    self.textView.placeholderAttributedString = attributedString;
+    
+    @try {
+        [self.textView setValue:attributedString forKey:@"placeholderAttributedString"];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"setValue:forUndefinedKey: exception: %@", exception);
+    }
 }
 
 - (void)setAlertText:(NSString *)alertText {
     _alertText = alertText;
     
-    self.placeholderTextField.stringValue = alertText;
-    self.placeholderTextField.textColor = NSColor.redColor;
+    NSDictionary *attributes = @{
+        NSForegroundColorAttributeName: NSColor.redColor,
+        NSFontAttributeName: self.textView.font,
+    };
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:alertText attributes:attributes];
+    self.alertTextField.attributedStringValue = attributedString;
 
     if (alertText.length) {
-        [self setAlertMessageHidden:NO];
+        self.textView.string = @" ";
+        [self setAlertTextHidden:NO];
         [self.clearButton setAnimatedHidden:NO];
         
         self.detectButton.showAutoLanguage = YES;
@@ -465,9 +478,7 @@
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
 }
 
-- (void)updateButtonsDisplayState:(NSString *)text {
-    [self updatePlaceholderTextField];
-    
+- (void)updateButtonsDisplayState:(NSString *)text {    
     if (self.clearButtonHidden && self.alertText.length) {
         [self.clearButton setAnimatedHidden:NO];
     }
@@ -488,7 +499,7 @@
         }
     }
     
-    self.placeholderTextField.hidden = hidden;
+    self.alertTextField.hidden = hidden;
 }
 
 - (void)updateDetectButton {
