@@ -10,7 +10,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZBaiduTranslate.h"
 #import "EZYoudaoTranslate.h"
-#import "EZDeppLTranslate.h"
+#import "EZDeepLTranslate.h"
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
@@ -26,7 +26,7 @@
                                       //  EZServiceTypeOpenAI, [EZOpenAIService class],
                                       EZServiceTypeApple, [EZAppleService class],
                                       EZServiceTypeYoudao, [EZYoudaoTranslate class],
-                                      EZServiceTypeDeepL, [EZDeppLTranslate class],
+                                      EZServiceTypeDeepL, [EZDeepLTranslate class],
                                       EZServiceTypeGoogle, [EZGoogleTranslate class],
                                       EZServiceTypeBaidu, [EZBaiduTranslate class],
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
