@@ -1,25 +1,25 @@
 //
-//  EZDeppLTranslate.m
+//  EZDeepLTranslate.m
 //  Easydict
 //
 //  Created by tisfeng on 2022/12/7.
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZDeppLTranslate.h"
+#import "EZDeepLTranslate.h"
 #import "EZWebViewTranslator.h"
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
-@interface EZDeppLTranslate ()
+@interface EZDeepLTranslate ()
 
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @end
 
-@implementation EZDeppLTranslate
+@implementation EZDeepLTranslate
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -119,9 +119,17 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         return;
     }
     
-    [self deepLWebTranslate:text from:from to:to completion:completion];
+    [self deepLTranslate:text from:from to:to completion:completion];
+    
+//    [self deepLWebTranslate:text from:from to:to completion:completion];
     //  [self webViewTranslate:completion];
 }
+
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"deepL not support ocr");
+}
+
+#pragma mark - WebView Translate
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
@@ -163,6 +171,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     //    }];
 }
 
+#pragma mark - DeepL Web Translate
 
 /// DeepL web translate. Ref: https://github.com/akl7777777/bob-plugin-akl-deepl-free-translate/blob/9d194783b3eb8b3a82f21bcfbbaf29d6b28c2761/src/main.js
 - (void)deepLWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
@@ -266,9 +275,66 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     }
 }
 
+#pragma mark - DeepL Official Translate API
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"deepL not support ocr");
+- (void)deepLTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion{
+    // Docs: https://www.deepl.com/zh/docs-api/translating-text
+    
+    NSString *souceLangCode = [self languageCodeForLanguage:from];
+    NSString *targetLangCode = [self languageCodeForLanguage:to];
+    
+    NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZDeepLAuthKey] ?: @"";
+
+    // DeepL api free and deepL pro api use different url host.
+    BOOL isFreeKey = [authKey hasSuffix:@":fx"];
+    NSString *host = isFreeKey ? @"https://api-free.deepl.com": @"https://api.deepl.com";
+    NSString *url = [NSString stringWithFormat:@"%@/v2/translate", host];
+    
+    NSDictionary *params = @{
+        @"auth_key" : authKey,
+        @"text" : text,
+        @"source_lang" : souceLangCode,
+        @"target_lang" : targetLangCode
+    };
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        self.result.normalResults = [self parseOfficialResponseObject:responseObject];
+        self.result.raw = responseObject;
+        completion(self.result, nil);
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if ([self.queryModel isServiceStopped:self.serviceType]) {
+            return;
+        }
+        
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        
+        completion(self.result, error);
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
+    } serviceType:self.serviceType];
+}
+
+
+- (NSArray<NSString *> *)parseOfficialResponseObject:(NSDictionary *)responseObject {
+    /**
+     {
+       "translations" : [
+         {
+           "detected_source_language" : "EN",
+           "text" : "很好"
+         }
+       ]
+     }
+     */
+    NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
+    NSArray *translatedTextArray = [translatedText componentsSeparatedByString:@"\n"];
+    return translatedTextArray;
 }
 
 @end

@@ -10,6 +10,7 @@
 #import "EZOpenAIService.h"
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
+#import "EZDeepLTranslate.h"
 
 // easydict://
 static NSString *kEasydictSchema = @"easydict://";
@@ -90,6 +91,8 @@ static NSString *kEasydictSchema = @"easydict://";
      easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
      
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+     
+     easydict://writeKeyValue?EZDeepLAuthKey=xxx
      */
     
     return @[
@@ -102,6 +105,8 @@ static NSString *kEasydictSchema = @"easydict://";
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
+        
+        EZDeepLAuthKey,
     ];
 }
 

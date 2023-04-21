@@ -1,5 +1,5 @@
 //
-//  EZDeppLTranslate.h
+//  EZDeepLTranslate.h
 //  Easydict
 //
 //  Created by tisfeng on 2022/12/7.
@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZDeppLTranslate : EZQueryService
+static NSString *EZDeepLAuthKey = @"EZDeepLAuthKey";
+
+@interface EZDeepLTranslate : EZQueryService
 
 @end
 
