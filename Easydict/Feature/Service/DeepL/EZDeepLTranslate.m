@@ -11,6 +11,8 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
+NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
+
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 @interface EZDeepLTranslate ()

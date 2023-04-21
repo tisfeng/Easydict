@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-FOUNDATION_EXPORT NSString *const EZServiceTypeName;
+FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
 
 typedef NSString *EZServiceType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
@@ -22,8 +22,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 
 
-FOUNDATION_EXPORT NSString *const EZQueryServiceTypeName;
-
+FOUNDATION_EXPORT NSString *const EZQueryServiceTypeKey;
 typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
     EZQueryServiceTypeNone = 0,
     EZQueryServiceTypeTranslation = 1 << 0,
@@ -32,8 +31,7 @@ typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
 };
 
 
-FOUNDATION_EXPORT NSString *const EZServiceUsageStatusName;
-
+FOUNDATION_EXPORT NSString *const EZServiceUsageStatusKey;
 typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
     EZServiceUsageStatusDefault = 0,
     EZServiceUsageStatusAlwaysOff = 1,
@@ -41,7 +39,6 @@ typedef NS_ENUM(NSUInteger, EZServiceUsageStatus) {
 };
 
 FOUNDATION_EXPORT NSString *const EZDeepLTranslationAPIKey;
-
 typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
     EZDeepLTranslationAPIWebFirst = 0,
     EZDeepLTranslationAPIOfficialFirst = 1,
