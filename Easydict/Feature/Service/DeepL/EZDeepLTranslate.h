@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *EZDeepLAuthKey = @"EZDeepLAuthKey";
+FOUNDATION_EXTERN NSString *const EZDeepLAuthKey;
 
 @interface EZDeepLTranslate : EZQueryService
 

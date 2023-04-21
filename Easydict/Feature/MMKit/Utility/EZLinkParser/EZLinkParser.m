@@ -94,7 +94,7 @@ static NSString *kEasydictSchema = @"easydict://";
      
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
      
-     easydict://writeKeyValue?EZDeepLTranslationAPI=1
+     easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
      */
     
     return @[
@@ -124,8 +124,8 @@ static NSString *kEasydictSchema = @"easydict://";
     NSString *keyValueString = @"";
     
     NSArray *allowdKeyNames = @[
-        EZServiceUsageStatusName,
-        EZQueryServiceTypeName,
+        EZServiceUsageStatusKey,
+        EZQueryServiceTypeKey,
     ];
     
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
