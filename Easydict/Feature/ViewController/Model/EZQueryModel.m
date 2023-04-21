@@ -22,6 +22,8 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
 
 @implementation EZQueryModel
 
+@synthesize needDetectLanguage = _needDetectLanguage;
+
 - (instancetype)init {
     if (self = [super init]) {
         self.userSourceLanguage = EZConfiguration.shared.from;
@@ -30,6 +32,7 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
         self.queryType = EZQueryTypeInput;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
         self.needDetectLanguage = YES;
+        self.specifiedTextLanguageDict = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -45,18 +48,47 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     model.queryViewHeight = self.queryViewHeight;
     model.audioURL = self.audioURL;
     model.needDetectLanguage = self.needDetectLanguage;
+    model.specifiedTextLanguageDict = [self.specifiedTextLanguageDict mutableCopy];
     
     return model;
 }
 
 - (void)setQueryText:(NSString *)queryText {
     if (![queryText isEqualToString:_queryText]) {
+        // TODO: need to optimize, like needDetectLanguage.
         self.audioURL = nil;
         self.needDetectLanguage = YES;
     }
     
     _queryText = [queryText copy];
 }
+
+- (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
+    _detectedLanguage = detectedLanguage;
+    
+    NSString *text = [self.queryText trim];
+    [self.specifiedTextLanguageDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, EZLanguage language, BOOL *stop) {
+        if ([key isEqualToString:text]) {
+            _detectedLanguage = language;
+            _needDetectLanguage = NO;
+            *stop = YES;
+        }
+    }];
+}
+
+- (BOOL)needDetectLanguage {
+    if (![self.userSourceLanguage isEqualToString:EZLanguageAuto]) {
+        return NO;
+    }
+    return _needDetectLanguage;
+}
+
+- (void)setNeedDetectLanguage:(BOOL)needDetectLanguage {
+    _needDetectLanguage = needDetectLanguage;
+    
+    [self setDetectedLanguage:self.detectedLanguage];
+}
+
 
 - (EZLanguage)queryFromLanguage {
     EZLanguage fromLanguage = self.userSourceLanguage;
@@ -75,11 +107,12 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return targetLanguage;
 }
 
-- (void)stopAllService {
-    for (NSString *key in self.stopBlockDictionary.allKeys) {
-        [self stopServiceRequest:key];
-    }
+- (BOOL)hasQueryFromLanguage {
+    return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
 }
+
+
+#pragma mark - Stop Block
 
 - (void)setStopBlock:(void (^)(void))stopBlock serviceType:(NSString *)type {
     self.stopBlockDictionary[type] = stopBlock;
@@ -97,15 +130,10 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     return self.stopBlockDictionary[serviceType] == nil;
 }
 
-- (BOOL)hasQueryFromLanguage {
-    return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
-}
-
-- (BOOL)needDetectLanguage {
-    if (![self.userSourceLanguage isEqualToString:EZLanguageAuto]) {
-        return NO;
+- (void)stopAllService {
+    for (NSString *key in self.stopBlockDictionary.allKeys) {
+        [self stopServiceRequest:key];
     }
-    return _needDetectLanguage;
 }
 
 @end

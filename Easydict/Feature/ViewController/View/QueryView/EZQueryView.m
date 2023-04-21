@@ -125,6 +125,8 @@
     [detectButton setMenuItemSeletedBlock:^(EZLanguage language) {
         mm_strongify(self);
         self.queryModel.needDetectLanguage = NO;
+        NSString *text = [[self copiedText] trim];
+        self.queryModel.specifiedTextLanguageDict[text] = language;
         if (self.selectedLanguageBlock) {
             self.selectedLanguageBlock(language);
         }
@@ -192,6 +194,7 @@
 
 - (void)startLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
+        // Avoid to show placeholder.
         self.textView.string = @" ";
     }
     [self setAlertTextHidden:YES];
@@ -262,8 +265,7 @@
     NSString *queryText = model.queryText;
     _queryModel = model;
     
-    // 1. set queryModel may trigger didChangeText, cause needDetectLanguage = YES
-    BOOL hasQueryFromLanguage = model.hasQueryFromLanguage;
+    // !!!: Set queryModel may trigger didChangeText.
     
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     // !!!: do not update textView while user is typing (like Chinese input)
@@ -275,11 +277,6 @@
         [self.textView didChangeText];
         
         [self setAlertTextHidden:YES];
-    }
-    
-    // 2. recover needDetectLanguage if has detected language.
-    if (hasQueryFromLanguage) {
-        self.queryModel.needDetectLanguage = NO;
     }
     
     [self updateButtonsDisplayState:queryText];
@@ -294,7 +291,6 @@
 - (void)setPlaceholderText:(NSString *)placeholderText {
     _placeholderText = placeholderText;
     
-//    NSColor *placeholderTextColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
     NSDictionary *attributes = @{
         NSForegroundColorAttributeName: NSColor.placeholderTextColor,
         NSFontAttributeName: self.textView.font,
@@ -323,6 +319,7 @@
     self.alertTextField.attributedStringValue = attributedString;
 
     if (alertText.length) {
+        // Avoid to show placeholder text when alert text is not empty.
         self.textView.string = @" ";
         [self setAlertTextHidden:NO];
         [self.clearButton setAnimatedHidden:NO];
@@ -439,7 +436,7 @@
     
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
-    
+        
     self.queryModel.needDetectLanguage = YES;
     
     [self updateButtonsDisplayState:text];
