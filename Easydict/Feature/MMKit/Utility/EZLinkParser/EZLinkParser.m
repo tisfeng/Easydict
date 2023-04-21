@@ -85,7 +85,9 @@ static NSString *kEasydictSchema = @"easydict://";
 /// Return allowed write keys to NSUserDefaults.
 - (NSArray *)allowedWriteKeys {
     /**
-     easydict://writeKeyValue?EZOpenAISentenceKey=1
+     easydict://writeKeyValue?EZBetaFeatureKey=1
+     
+     easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
      
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
      */
@@ -93,11 +95,10 @@ static NSString *kEasydictSchema = @"easydict://";
     return @[
         EZBetaFeatureKey,
         
-        EZOpenAIServiceUsageStatusKey,
-        
         EZOpenAIAPIKey,
         EZOpenAIDictionaryKey,
         EZOpenAISentenceKey,
+        EZOpenAIServiceUsageStatusKey,
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
