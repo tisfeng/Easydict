@@ -46,6 +46,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *commandKeyEvents;
 
+@property (nonatomic, assign) CGFloat movedY;
+
 @end
 
 
@@ -190,6 +192,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         return;
     }
     
+    self.movedY = 0;
     self.queryType = EZQueryTypeAutoSelect;
     [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
         [self handleSelectedText:text];
@@ -481,7 +484,15 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             break;
         }
         case NSEventTypeScrollWheel: {
-            [self delayDismissPopButton];
+            CGFloat deltaY = event.scrollingDeltaY;
+            self.movedY += deltaY;
+//            NSLog(@"movedY: %.1f", self.movedY);
+
+            CGFloat maxDeltaY = 80;
+            if (fabs(self.movedY) > maxDeltaY) {
+                [self dismissPopButton];
+            }
+            break;
         }
         case NSEventTypeMouseMoved: {
             // Hide the button after exceeding a certain range of selected text frame.
