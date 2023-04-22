@@ -137,22 +137,32 @@ static EZWindowManager *_instance;
     }];
 }
 
+
+/// Update pop button query action.
 - (void)updatePopButtonQueryAction {
     mm_weakify(self);
     
     EZButton *popButton = self.popButtonWindow.popButton;
     EZConfiguration *config = [EZConfiguration shared];
     
-    if (config.clickQuery && config.hideMainWindow) {
-        // Disable hover
-        popButton.mouseEnterBlock = nil;
-        
+    if (config.hideMainWindow) {
         // FIXME: Click pop button will also show preferences window.
         [popButton setClickBlock:^(EZButton *button) {
             mm_strongify(self);
             [self popButtonWindowClicked];
         }];
+        
+        if (config.clickQuery) {
+            popButton.mouseEnterBlock = nil;
+        } else {
+            [popButton setMouseEnterBlock:^(EZButton *button) {
+                mm_strongify(self);
+                [self popButtonWindowClicked];
+            }];
+        }
     } else {
+        popButton.clickBlock = nil;
+        
         [popButton setMouseEnterBlock:^(EZButton *button) {
             mm_strongify(self);
             [self popButtonWindowClicked];
