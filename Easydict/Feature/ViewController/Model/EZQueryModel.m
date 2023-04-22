@@ -9,11 +9,6 @@
 #import "EZQueryModel.h"
 #import "EZConfiguration.h"
 
-NSString *const EZQueryTypeAutoSelect = @"auto_select_query";
-NSString *const EZQueryTypeShortcut = @"shortcut_query";
-NSString *const EZQueryTypeInput = @"input_query";
-NSString *const EZQueryTypeOCR = @"ocr_query";
-
 @interface EZQueryModel ()
 
 @property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType: block>

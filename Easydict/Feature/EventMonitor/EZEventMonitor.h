@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,7 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGRect selectedTextFrame;
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
-@property (nonatomic, assign) BOOL isSelectedTextByAuxiliary;
+
+@property (nonatomic, copy) EZQueryType queryType;
+@property (nonatomic, copy) EZSelectTextType selectTextType;
 
 @property (nonatomic, assign) NSEventMask mask;
 @property (nonatomic, copy) void (^handler)(NSEvent *event);

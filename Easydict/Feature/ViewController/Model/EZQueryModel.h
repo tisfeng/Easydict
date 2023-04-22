@@ -8,20 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NSString *EZQueryType NS_STRING_ENUM;
-
-FOUNDATION_EXPORT EZQueryType const EZQueryTypeAutoSelect;
-FOUNDATION_EXPORT EZQueryType const EZQueryTypeShortcut;
-FOUNDATION_EXPORT EZQueryType const EZQueryTypeInput;
-FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
-
 @interface EZQueryModel : NSObject <NSCopying>
 
-@property (nonatomic, copy) EZQueryType queryType;
 @property (nonatomic, copy) NSString *queryText;
+
+@property (nonatomic, copy) EZQueryType queryType;
+@property (nonatomic, copy) EZSelectTextType selectTextType;
 
 @property (nonatomic, copy) EZLanguage userSourceLanguage;
 @property (nonatomic, copy) EZLanguage userTargetLanguage;

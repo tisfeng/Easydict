@@ -147,7 +147,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
-            self.isSelectedTextByAuxiliary = YES;
+            self.selectTextType = EZSelectTextTypeAuxiliary;
             completion(nil);
             return;
         }
@@ -155,14 +155,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         BOOL useShortcut = [self checkIfNeedUseShortcut:text error:error];
         if (useShortcut) {
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
-                self.isSelectedTextByAuxiliary = NO;
+                self.selectTextType = EZSelectTextTypeSimulateKey;
                 completion(text);
             }];
             return;
         }
         
         if (error == kAXErrorSuccess) {
-            self.isSelectedTextByAuxiliary = YES;
+            self.selectTextType = EZSelectTextTypeAuxiliary;
             completion(text);
             return;
         }
@@ -178,7 +178,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             [userDefaults setBool:YES forKey:kHasUsedAutoSelectTextKey];
         }
         
-        self.isSelectedTextByAuxiliary = NO;
+        self.selectTextType = EZSelectTextTypeSimulateKey;
         completion(nil);
     }];
 }
@@ -190,6 +190,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         return;
     }
     
+    self.queryType = EZQueryTypeAutoSelect;
     [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
         [self handleSelectedText:text];
     }];
