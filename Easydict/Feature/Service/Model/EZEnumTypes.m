@@ -24,6 +24,12 @@ NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 
 NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPI";
 
-@implementation EZEnumTypes
 
-@end
+NSString *const EZQueryTypeAutoSelect = @"auto_select_query";
+NSString *const EZQueryTypeShortcut = @"shortcut_query";
+NSString *const EZQueryTypeInput = @"input_query";
+NSString *const EZQueryTypeOCR = @"ocr_query";
+
+
+NSString *const EZSelectTextTypeAuxiliary = @"auxiliary_select_text";
+NSString *const EZSelectTextTypeSimulateKey = @"simulate_key_select_text";

@@ -46,8 +46,15 @@ typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
 };
 
 
-@interface EZEnumTypes : NSObject
+typedef NSString *EZQueryType NS_STRING_ENUM;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeAutoSelect;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeShortcut;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeInput;
+FOUNDATION_EXPORT EZQueryType const EZQueryTypeOCR;
 
-@end
+
+typedef NSString *EZSelectTextType NS_STRING_ENUM;
+FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAuxiliary;
+FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulateKey; // Cmd+C
 
 NS_ASSUME_NONNULL_END

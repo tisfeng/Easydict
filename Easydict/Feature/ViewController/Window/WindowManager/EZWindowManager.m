@@ -84,6 +84,7 @@ static EZWindowManager *_instance;
         //        }
         
         self.selectedText = selectedText ?: @"";
+        self.queryType = self.eventMonitor.queryType;
         
         // !!!: Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
@@ -273,7 +274,7 @@ static EZWindowManager *_instance;
     }
     
     // Log selected text when querying.
-    [self logSelectedText:text accessibility:self.eventMonitor.isSelectedTextByAuxiliary];
+    [self logSelectedTextEvent];
     
     // Reset tableView and window height first, avoid being affected by previous window height.
     
@@ -558,7 +559,7 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         self.selectedText = [text trim];
-        self.queryType = self.eventMonitor.isSelectedTextByAuxiliary ? EZQueryTypeAutoSelect : EZQueryTypeShortcut;
+        self.queryType = EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];
 }
@@ -746,7 +747,9 @@ static EZWindowManager *_instance;
     return NO;
 }
 
-- (void)logSelectedText:(nullable NSString *)text accessibility:(BOOL)accessibilityFlag {
+- (void)logSelectedTextEvent {
+    NSString *text = self.selectedText;
+    
     if (!text) {
         return;
     }
@@ -755,11 +758,11 @@ static EZWindowManager *_instance;
     NSString *appName = application.localizedName;
     NSString *bundleID = application.bundleIdentifier;
     NSString *textLength = [EZLog textLengthRange:text];
-    NSString *type = accessibilityFlag ? @"auxiliary" : @"shortcut";
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
         @"text" : text,
-        @"type" : type,
+        @"queryType" : self.queryType,
+        @"selectTextType" : self.eventMonitor.selectTextType,
         @"textLength" : textLength,
         @"appName" : appName,
         @"bundleID" : bundleID,
