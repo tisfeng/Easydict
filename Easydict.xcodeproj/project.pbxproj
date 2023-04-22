@@ -150,6 +150,7 @@
 		03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043592928C4C800E7559E /* EZWindowManager.m */; };
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
+		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
@@ -448,6 +449,7 @@
 		03D043582928C4C800E7559E /* EZWindowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWindowManager.h; sourceTree = "<group>"; };
 		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
 		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
@@ -846,6 +848,7 @@
 				03542A442937B4C300C34C33 /* EZBaiduTranslateResponse.h */,
 				03542A452937B4C300C34C33 /* EZBaiduTranslateResponse.m */,
 				03B0222F29231FA6001C7E63 /* baidu-translate-sign.js */,
+				03D2A3DE29F42B280035CED4 /* bd.js */,
 			);
 			path = Baidu;
 			sourceTree = "<group>";
@@ -1510,6 +1513,7 @@
 				03BFBB782923A09B00C48725 /* white-blue-icon@3x.png in Resources */,
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
+				03D2A3DF29F42B290035CED4 /* bd.js in Resources */,
 				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
