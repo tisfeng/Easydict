@@ -63,6 +63,22 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
     _queryText = [queryText copy];
 }
 
+- (void)setQueryType:(EZQueryType)queryType {
+    _queryType = queryType;
+    
+    if (queryType != EZQueryTypeOCR) {
+        _ocrImage = nil;
+    }
+}
+
+- (void)setOcrImage:(NSImage *)ocrImage {
+    _ocrImage = ocrImage;
+    
+    if (ocrImage) {
+        _queryType = EZQueryTypeOCR;
+    }
+}
+
 - (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
     _detectedLanguage = detectedLanguage;
     

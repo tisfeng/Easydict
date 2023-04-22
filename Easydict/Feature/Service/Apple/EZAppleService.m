@@ -457,6 +457,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                                minLengthOfLine:&minLengthOfLine
                           punctuationMarkCount:&punctuationMarkCount
                            punctuationMarkRate:&punctuationMarkRate];
+    NSLog(@"isPoetry: %d", isPoetry);
     
     CGFloat confidence = 0;
     NSMutableString *mergedText = [NSMutableString string];

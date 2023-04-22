@@ -337,16 +337,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.queryText = text;
     self.queryModel.queryType = queryType;
     self.queryModel.audioURL = nil;
-    if (self.queryModel.queryType != EZQueryTypeOCR) {
-        self.queryModel.ocrImage = nil;
-    }
 }
 
 - (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
 
     self.queryModel.ocrImage = image;
-    self.queryModel.queryType = EZQueryTypeOCR;
 
     self.queryView.isTypingChinese = NO;
     [self.queryView startLoadingAnimation:YES];
@@ -356,6 +352,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
+        
+        // Set queryText will cause queryType to become EZQueryTypeInput.
+        self.queryModel.queryType = EZQueryTypeOCR;
+        
         [self updateQueryTextAndParagraphStyle:self.queryText];
         
         NSLog(@"ocr result: %@", self.queryText);
@@ -968,8 +968,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         //        NSLog(@"UpdateQueryTextBlock");
 
         // !!!: The code here is a bit messy, so you need to be careful about changing it.
-
-        // Since the query view is not currently reused, all views with the same content may be created and assigned multiple times, but this is actually unnecessary, so there is no need to update the content and height in this case.
 
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
 

@@ -436,6 +436,8 @@
     
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
+    
+    self.queryModel.queryType = EZQueryTypeInput;
         
     self.queryModel.needDetectLanguage = YES;
     
