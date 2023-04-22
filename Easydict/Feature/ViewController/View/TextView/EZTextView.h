@@ -12,8 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTextView : NSTextView
 
-/// property for paste text block
+/// Paste text block
 @property (nonatomic, copy) void (^pasteTextBlock)(NSString *text);
+
 
 @property (nonatomic, copy) NSString *placeholderText;
 
@@ -24,6 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Update text, paragraphStyle, and scroll to end of textView.
 - (void)updateTextAndParagraphStyle:(NSString *)text;
+
+/// Update text block, callback when updateTextAndParagraphStyle: calls.
+@property (nonatomic, copy) void (^updateTextBlock)(NSString *text);
 
 @end
 

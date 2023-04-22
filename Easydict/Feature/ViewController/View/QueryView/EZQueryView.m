@@ -76,6 +76,10 @@
         [self highlightAllLinks];
     }];
     
+    [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
+        [self updateQueryText:text];
+    }];
+    
     EZLoadingAnimationView *loadingAnimationView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingAnimationView];
     self.loadingAnimationView = loadingAnimationView;
@@ -270,11 +274,13 @@
     // Avoid unnecessary calls to NSTextStorageDelegate methods.
     // !!!: do not update textView while user is typing (like Chinese input)
     if (queryText && ![queryText isEqualToString:self.textView.string] && !self.isTypingChinese) {
-        // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
-        self.textView.string = queryText; // ???: need to check
+//        // !!!: Be careful, set `self.textView.string` will call -heightOfTextView to update textView height.
+//        self.textView.string = queryText; // ???: need to check
+//
+//        // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
+//        [self.textView didChangeText];
         
-        // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
-        [self.textView didChangeText];
+        [self updateQueryText:queryText];
         
         [self setAlertTextHidden:YES];
     }
@@ -430,32 +436,33 @@
 
 #pragma mark - NSTextDelegate
 
+// !!!: This delegate can be only invoked by user input automatically, Or call didChangeText manually.
 - (void)textDidChange:(NSNotification *)notification {
     NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
     
+    self.queryModel.queryType = EZQueryTypeInput;
+    self.queryModel.needDetectLanguage = YES;
+    
+    [self updateQueryText:text];
+}
+
+
+#pragma mark - Other
+
+- (void)updateQueryText:(NSString *)text {
+    self.textView.string = text;
+    
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
     
-    self.queryModel.queryType = EZQueryTypeInput;
-        
-    self.queryModel.needDetectLanguage = YES;
-    
     [self updateButtonsDisplayState:text];
-    
-    // cannot layout this, otherwise will crash
-    //    [self layoutSubtreeIfNeeded];
-    //    NSLog(@"self.frame: %@", @(self.frame));
-    
     
     if (self.updateQueryTextBlock) {
         CGFloat textViewHeight = [self heightOfTextView];
         self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
     }
 }
-
-
-#pragma mark - Other
 
 - (CGFloat)heightOfTextView {
     CGFloat height = [self.textView getHeightWithWidth:self.width];

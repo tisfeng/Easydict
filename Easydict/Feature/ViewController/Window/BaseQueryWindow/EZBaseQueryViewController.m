@@ -292,6 +292,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 
     self.queryText = text;
+    self.queryModel.queryType = queryType;
     self.queryView.isTypingChinese = NO;
 
     __block BOOL handledSuccess;
@@ -352,9 +353,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
-        
-        // Set queryText will cause queryType to become EZQueryTypeInput.
-        self.queryModel.queryType = EZQueryTypeOCR;
         
         [self updateQueryTextAndParagraphStyle:self.queryText];
         
