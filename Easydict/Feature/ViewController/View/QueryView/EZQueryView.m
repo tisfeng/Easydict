@@ -438,20 +438,24 @@
 
 // !!!: This delegate can be only invoked by user input automatically, Or call didChangeText manually.
 - (void)textDidChange:(NSNotification *)notification {
-    NSString *text = [self copiedText];
+//    NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
     
     self.queryModel.queryType = EZQueryTypeInput;
     self.queryModel.needDetectLanguage = YES;
     
-    [self updateQueryText:text];
+    // textView.string has been changed, we don't need to update it again.
+    [self updateQueryText:nil];
 }
 
 
 #pragma mark - Other
 
-- (void)updateQueryText:(NSString *)text {
-    self.textView.string = text;
+- (void)updateQueryText:(nullable NSString *)text {
+    // !!!: set string will change selectedRange, means it will change cursor position.
+    if (text) {
+        self.textView.string = text;
+    }
     
     // Set `self.isTypingChinese` to NO when textView string is changed.
     self.isTypingChinese = NO;
