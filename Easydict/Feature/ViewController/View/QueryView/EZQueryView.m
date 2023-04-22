@@ -455,6 +455,8 @@
     // !!!: set string will change selectedRange, means it will change cursor position.
     if (text) {
         self.textView.string = text;
+    } else {
+        text = [self copiedText];
     }
     
     // Set `self.isTypingChinese` to NO when textView string is changed.
