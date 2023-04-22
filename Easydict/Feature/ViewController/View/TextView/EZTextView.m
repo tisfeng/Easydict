@@ -78,9 +78,8 @@
 
         _placeholderText = @"placeholder";
         _placeholderColor = NSColor.placeholderTextColor;
-//        _placeholderColor = [NSColor colorWithCalibratedRed:128.0 / 255.0 green:128.0 / 255.0 blue:128.0 / 255.0 alpha:0.5];
 
-        //        [self setupPlaceHolderTextView];
+        //  [self setupPlaceHolderTextView];
     }
     return self;
 }
@@ -180,6 +179,7 @@
         NSDictionary *attributes = @{NSParagraphStyleAttributeName: self.defaultParagraphStyle};
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:pasteboardString attributes:attributes];
         
+        // This method will call textDidChange
         [self insertText:attributedString replacementRange:NSMakeRange(self.selectedRange.location, 0)];
     }
     
@@ -206,7 +206,7 @@
     [self.textStorage addAttribute:NSParagraphStyleAttributeName value:newParagraphStyle range:effectiveRange];
     
     // Need to notify, to update textView height.
-    [self didChangeText];
+//    [self didChangeText];
     
     [self setNeedsDisplay:YES];
 }
@@ -222,6 +222,11 @@
     self.paragraphSpacing = hasExtraLineBreaks ? 0 : self.defaultParagraphSpacing;
     
     [self scrollToEndOfDocument:nil];
+    
+    // Callback shoud after updating paragraphSpacing, to update textView height.
+    if (self.updateTextBlock) {
+        self.updateTextBlock(text);
+    }
 }
 
 #pragma mark -
@@ -233,7 +238,6 @@
     self.placeholderTextField.font = self.font;
     self.placeholderTextField.editable = NO;
     self.placeholderTextField.selectable = NO;
-    //    self.placeholderTextView.backgroundColor = [NSColor clearColor];
 
     [self.placeholderTextField excuteLight:^(NSTextView *placeholderTextView) {
         [placeholderTextView setBackgroundColor:NSColor.queryViewBgLightColor];
