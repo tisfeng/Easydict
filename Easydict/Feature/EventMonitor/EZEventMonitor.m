@@ -23,7 +23,7 @@ static NSInteger kRecordEventCount = 3;
 static NSInteger kCommandKeyEventCount = 4;
 static CGFloat kDoublCommandInterval = 0.5;
 
-static CGFloat kExpandedFrameValue = 50;
+static CGFloat kExpandedRadiusValue = 120;
 
 static NSString *kHasUsedAutoSelectTextKey = @"kHasUsedAutoSelectTextKey";
 
@@ -485,7 +485,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         case NSEventTypeMouseMoved: {
             // Hide the button after exceeding a certain range of selected text frame.
-            if (![self isMouseInExpandedSelectedTextFrame]) {
+            if (![self isMouseInPopButtonExpandedFrame]) {
                 [self dismissPopButton];
             }
             break;
@@ -769,8 +769,33 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return NO;
 }
 
+- (BOOL)isMouseInPopButtonExpandedFrame {
+    EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
+    CGRect popButtonFrame = popButtonWindow.frame;
+    
+    // popButtonFrame center point
+    CGPoint centerPoint = CGPointMake(popButtonFrame.origin.x + popButtonFrame.size.width / 2,
+                                      popButtonFrame.origin.y + popButtonFrame.size.height / 2);
+    
+    CGPoint mouseLocation = NSEvent.mouseLocation;
+    BOOL insideCircle = [self isPoint:mouseLocation insideCircleWithCenter:centerPoint radius:kExpandedRadiusValue];
+    if (insideCircle) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+
+- (BOOL)isPoint:(CGPoint)point insideCircleWithCenter:(CGPoint)center radius:(CGFloat)radius {
+    CGFloat distanceSqr = pow(point.x - center.x, 2) + pow(point.y - center.y, 2);
+    CGFloat radiusSqr = pow(radius, 2);
+    return distanceSqr <= radiusSqr;
+}
+
+
 /// Check if current mouse position is in expanded selected text frame.
-- (BOOL)isMouseInExpandedSelectedTextFrame {
+- (BOOL)isMouseInExpandedSelectedTextFrame2 {
     CGRect selectedTextFrame = self.selectedTextFrame;
     // means get frame failed, but get selected text may success
     if (CGSizeEqualToSize(selectedTextFrame.size, CGSizeZero)) {
@@ -780,10 +805,10 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         }
     }
     
-    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedFrameValue,
-                                                  selectedTextFrame.origin.y - kExpandedFrameValue,
-                                                  selectedTextFrame.size.width + kExpandedFrameValue * 2,
-                                                  selectedTextFrame.size.height + kExpandedFrameValue * 2);
+    CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedRadiusValue,
+                                                  selectedTextFrame.origin.y - kExpandedRadiusValue,
+                                                  selectedTextFrame.size.width + kExpandedRadiusValue * 2,
+                                                  selectedTextFrame.size.height + kExpandedRadiusValue * 2);
     
     CGPoint mouseLocation = NSEvent.mouseLocation;
     if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
@@ -804,24 +829,24 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     CGFloat x = MIN(startPoint.x, endPoint.x);
     // if endPoint.x == startPoint.x, x = endPoint.x - expandValue
     if (x == endPoint.x) {
-        x = endPoint.x - kExpandedFrameValue;
+        x = endPoint.x - kExpandedRadiusValue;
     }
     
     CGFloat y = MIN(startPoint.y, endPoint.y);
     // if endPoint.y == startPoint.y, y = endPoint.y - expandValue
     if (y == endPoint.y) {
-        y = endPoint.y - kExpandedFrameValue;
+        y = endPoint.y - kExpandedRadiusValue;
     }
     
     CGFloat width = fabs(startPoint.x - endPoint.x);
     // if endPoint.x == startPoint.x, width = expandValue * 2
     if (width == 0) {
-        width = kExpandedFrameValue * 2;
+        width = kExpandedRadiusValue * 2;
     }
     CGFloat height = fabs(startPoint.y - endPoint.y);
     // if endPoint.y == startPoint.y, height = expandValue * 2
     if (height == 0) {
-        height = kExpandedFrameValue * 2;
+        height = kExpandedRadiusValue * 2;
     }
     
     CGRect frame = CGRectMake(x, y, width, height);
