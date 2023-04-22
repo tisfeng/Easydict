@@ -1,13 +1,24 @@
-/*
- * @author: tisfeng
- * @createTime: 2023-02-10 21:53
- * @lastEditor: tisfeng
- * @lastEditTime: 2023-04-22 23:30
- * @fileName: baidu-translate-sign.js
- *
- * Copyright (c) 2023 by ${git_name}, All Rights Reserved.
+/**
+ * nodejs 爬取百度翻译
  */
+const axios = require("axios");
 
+async function fetchHtml(url, headers) {
+  try {
+    return await axios.get(url, { headers });
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function postData(url, data, headers) {
+  try {
+    const response = await axios.post(url, data, { headers });
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
 
 function n(t, e) {
   for (var n = 0; n < e.length - 2; n += 3) {
@@ -19,56 +30,6 @@ function n(t, e) {
   return t;
 }
 
-var C = null;
-
-var token = function (r, _gtk) {
-  var o = r.length;
-  o > 30 &&
-    (r =
-      "" +
-      r.substr(0, 10) +
-      r.substr(Math.floor(o / 2) - 5, 10) +
-      r.substring(r.length, r.length - 10));
-  var t = void 0,
-    t = null !== C ? C : (C = _gtk || "") || "";
-  for (
-    var e = t.split("."),
-      h = Number(e[0]) || 0,
-      i = Number(e[1]) || 0,
-      d = [],
-      f = 0,
-      g = 0;
-    g < r.length;
-    g++
-  ) {
-    var m = r.charCodeAt(g);
-    128 > m
-      ? (d[f++] = m)
-      : (2048 > m
-          ? (d[f++] = (m >> 6) | 192)
-          : (55296 === (64512 & m) &&
-            g + 1 < r.length &&
-            56320 === (64512 & r.charCodeAt(g + 1))
-              ? ((m = 65536 + ((1023 & m) << 10) + (1023 & r.charCodeAt(++g))),
-                (d[f++] = (m >> 18) | 240),
-                (d[f++] = ((m >> 12) & 63) | 128))
-              : (d[f++] = (m >> 12) | 224),
-            (d[f++] = ((m >> 6) & 63) | 128)),
-        (d[f++] = (63 & m) | 128));
-  }
-  for (var S = h, u = "+-a^+6", l = "+-3^+b+-f", s = 0; s < d.length; s++)
-    (S += d[s]), (S = n(S, u));
-
-  return (
-    (S = n(S, l)),
-    (S ^= i),
-    0 > S && (S = (2147483647 & S) + 2147483648),
-    (S %= 1e6),
-    S.toString() + "." + (S ^ h)
-  );
-};
-
-// Ref: https://github.com/akl7777777/bob-plugin-akl-baidu-free-translate/blob/main/node_js/bd.js#L34
 function encrypt(t, gtk) {
   // window.gtk = "320305.131321201";
   //   console.log(t, gtk);
@@ -197,3 +158,55 @@ function encrypt(t, gtk) {
     "".concat((b %= 1e6).toString(), ".").concat(b ^ f)
   );
 }
+
+async function translate(t) {
+  try {
+    const url = "https://fanyi.baidu.com/";
+    // 第一轮取cookie
+    const htmlResp = await fetchHtml(url);
+    const cookie = htmlResp.headers.get("set-cookie")[0];
+    console.log("cookie: ", cookie);
+    // console.log(htmlResp.text.match(/Set-Cookie:\s*(.*?);/i))
+    // 第二轮取gtk,token
+    const htmlResp2 = await fetchHtml(url, { Cookie: cookie });
+    // console.log(html2)
+    // const specialChar = html.match(/<input type="hidden" name="special_char" value="(.+?)" \/>/)[1];
+    // console.log(htmlResp2.data)
+    const gtkMatch = htmlResp2.data.match(/window\.gtk\s*=\s*"([\d.]+)"/);
+    const token = htmlResp2.data.match(/token:\s*'(\w+)'/)[1];
+    const gtk = gtkMatch ? gtkMatch[1] : null;
+    console.log("token: ", token);
+    console.log("gtk: ", gtk);
+    const headers = {
+      Cookie: cookie,
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+    };
+    const _encrypt = encrypt(t, gtk);
+    console.log("encrypt: ", _encrypt);
+    const data = {
+      from: "en",
+      to: "zh",
+      query: t,
+      transtype: "realtime",
+      simple_means_flag: "3",
+      sign: _encrypt,
+      token: token,
+    };
+    const response = await postData(
+      "https://fanyi.baidu.com/v2transapi?from=zh&to=en",
+      data,
+      headers
+    );
+    console.log(response.trans_result.data[0].dst);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const t =
+  "The API reference documentation provides detailed information about a function or object in Node.js. This documentation indicates what arguments a method accepts, the return value of that method, and what errors may be related to that method. It also indicates which methods are available for different versions of Node.js.";
+
+// translate(t);
+translate("good ");
