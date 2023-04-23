@@ -121,6 +121,7 @@
 }
 
 /// Play text URL audio.
+/// TODO: remove serive.
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
          textLanguage:(EZLanguage)language
