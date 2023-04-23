@@ -436,16 +436,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)playQueryTextSound {
-    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-//    [self.audioPlayer playTextAudio:self.queryText
-//                           audioURL:self.queryModel.audioURL
-//                       textLanguage:self.queryModel.queryFromLanguage
-//                             serive:youdaoService];
-    
     [self.audioPlayer playTextAudio:self.queryText
                            audioURL:self.queryModel.audioURL
-                       textLanguage:self.queryModel.queryFromLanguage
-                             serive:nil];
+                       textLanguage:self.queryModel.queryFromLanguage];
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
@@ -857,7 +850,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         result.isShowing = NO; // default not show, show after querying if result is not empty.
         result.isLoading = NO;
         service.result = result;
-//        service.audioPlayer = self.audioPlayer;
         
         //        [self updateResultCell:service.result];
     }
@@ -1098,14 +1090,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         fromLanguage = result.queryModel.queryTargetLanguage;
     }
 
-    mm_weakify(self, result, service);
+    mm_weakify(self, result);
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
-        mm_strongify(result, service);
-        
+        mm_strongify(result);
         [result.service.audioPlayer playTextAudio:text
                                          audioURL:audioURL
-                                     textLanguage:fromLanguage
-                                           serive:service];
+                                     textLanguage:fromLanguage];
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
@@ -1298,10 +1288,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (youdaoResult.wordResult) {
         NSString *audioURL = youdaoResult.fromSpeakURL;
         if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
-            [self.audioPlayer playTextAudio:text audioURL:audioURL textLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
+            // Currently, only Youdao audio url will download and cache.
+            self.audioPlayer.service = youdaoService;
+            [self.audioPlayer playTextAudio:text audioURL:audioURL textLanguage:self.queryModel.queryFromLanguage];
             return YES;
         }
     }
+    self.audioPlayer.service = nil;
     return NO;
 }
 
