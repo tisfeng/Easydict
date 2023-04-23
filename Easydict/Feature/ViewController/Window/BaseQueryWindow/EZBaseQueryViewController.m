@@ -437,10 +437,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)playQueryTextSound {
     EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+//    [self.audioPlayer playTextAudio:self.queryText
+//                           audioURL:self.queryModel.audioURL
+//                       textLanguage:self.queryModel.queryFromLanguage
+//                             serive:youdaoService];
+    
     [self.audioPlayer playTextAudio:self.queryText
                            audioURL:self.queryModel.audioURL
                        textLanguage:self.queryModel.queryFromLanguage
-                             serive:youdaoService];
+                             serive:nil];
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
@@ -968,6 +973,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         placeholderText = @"";
     }
     queryView.placeholderText = placeholderText;
+    
+    queryView.audioButton.audioPlayer = self.audioPlayer;
 
     mm_weakify(self);
     [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {

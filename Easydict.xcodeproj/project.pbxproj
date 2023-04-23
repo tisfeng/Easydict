@@ -127,6 +127,8 @@
 		03B0233929231FA6001C7E63 /* MMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B022DE29231FA6001C7E63 /* MMTool.m */; };
 		03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */; };
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
+		03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DE229F5772F00447EDD /* EZAudioButton.m */; };
+		03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */; };
 		03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD28192945EF5F00F5891A /* EZFlippedView.m */; };
 		03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD281D29481C0400F5891A /* EZAudioPlayer.m */; };
 		03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD282129486CF200F5891A /* EZBlueTextButton.m */; };
@@ -417,6 +419,10 @@
 		03B3B8B12925D5B200168E8D /* EZPopButtonWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonWindow.m; sourceTree = "<group>"; };
 		03B3B8B32925DD3D00168E8D /* EZPopButtonViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZPopButtonViewController.h; sourceTree = "<group>"; };
 		03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZPopButtonViewController.m; sourceTree = "<group>"; };
+		03BB2DE129F5772F00447EDD /* EZAudioButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioButton.h; sourceTree = "<group>"; };
+		03BB2DE229F5772F00447EDD /* EZAudioButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioButton.m; sourceTree = "<group>"; };
+		03BB2DE929F57DC000447EDD /* NSImage+EZSymbolmage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZSymbolmage.h"; sourceTree = "<group>"; };
+		03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZSymbolmage.m"; sourceTree = "<group>"; };
 		03BD28182945EF5F00F5891A /* EZFlippedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFlippedView.h; sourceTree = "<group>"; };
 		03BD28192945EF5F00F5891A /* EZFlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFlippedView.m; sourceTree = "<group>"; };
 		03BD281C29481C0400F5891A /* EZAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioPlayer.h; sourceTree = "<group>"; };
@@ -648,6 +654,7 @@
 		036E7D78293F4F61002675DF /* CustomButton */ = {
 			isa = PBXGroup;
 			children = (
+				03BB2DE029F576FC00447EDD /* EZAudioButton */,
 				03385AFF294B5A2800696A96 /* EZLinkButton */,
 				03BD281F29486CA600F5891A /* BlueTextButton */,
 				036E7D77293F4F51002675DF /* LanguageButton */,
@@ -1192,6 +1199,26 @@
 			path = PopButtonWindow;
 			sourceTree = "<group>";
 		};
+		03BB2DE029F576FC00447EDD /* EZAudioButton */ = {
+			isa = PBXGroup;
+			children = (
+				03BB2DE129F5772F00447EDD /* EZAudioButton.h */,
+				03BB2DE229F5772F00447EDD /* EZAudioButton.m */,
+			);
+			path = EZAudioButton;
+			sourceTree = "<group>";
+		};
+		03BB2DE829F57D8F00447EDD /* NSImage */ = {
+			isa = PBXGroup;
+			children = (
+				039CC90E292F86F40037B91E /* NSImage+EZResize.h */,
+				039CC90F292F86F40037B91E /* NSImage+EZResize.m */,
+				03BB2DE929F57DC000447EDD /* NSImage+EZSymbolmage.h */,
+				03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */,
+			);
+			path = NSImage;
+			sourceTree = "<group>";
+		};
 		03BD281B29481BE100F5891A /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1328,14 +1355,13 @@
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
 			isa = PBXGroup;
 			children = (
+				03BB2DE829F57D8F00447EDD /* NSImage */,
 				03008B3C29444A650062B821 /* NSView+AnimatedHidden */,
 				03008B2429408BCB0062B821 /* NSObject+DarkMode */,
 				03B022BB29231FA6001C7E63 /* NSTextView+Height */,
 				03B022BF29231FA6001C7E63 /* NSColor+MyColors */,
 				039CC90B292F664E0037B91E /* NSObject+EZWindowType.h */,
 				039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */,
-				039CC90E292F86F40037B91E /* NSImage+EZResize.h */,
-				039CC90F292F86F40037B91E /* NSImage+EZResize.m */,
 				03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */,
 				03BFFC7029612E10004E033E /* NSString+EZConvenience.m */,
 			);
@@ -1636,6 +1662,7 @@
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
+				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
@@ -1685,6 +1712,7 @@
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
 				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
+				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
