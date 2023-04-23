@@ -104,6 +104,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         NSLog(@"loadURL or monitorURL cannot be emtpy");
         return;
     }
+    
+    NSLog(@"monitorURL: %@", monitorURL);
 
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:completionHandler];
     [self.urlSchemeHandler monitorBaseURLString:monitorURL completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
@@ -134,6 +136,8 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         NSLog(@"querySelector is empty, url: %@", URL);
         return;
     }
+    
+    NSLog(@"queryTranslateURL: %@", URL);
 
     [self loadURL:URL];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
