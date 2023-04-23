@@ -10,6 +10,7 @@
 #import "EZQueryModel.h"
 #import "NSObject+EZWindowType.h"
 #import "EZLoadingAnimationView.h"
+#import "EZAudioButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,8 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingAnimationView;
 @property (nonatomic, copy) NSString *placeholderText;
 @property (nonatomic, copy) NSString *alertText;
+
+@property (nonatomic, strong) EZAudioButton *audioButton;
 
 @property (nonatomic, assign) BOOL clearButtonHidden;
 @property (nonatomic, assign) BOOL isTypingChinese;

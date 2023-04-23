@@ -21,6 +21,7 @@
 #import "EZQueryService.h"
 #import "EZBlueTextButton.h"
 #import "EZMyLabel.h"
+#import "EZAudioButton.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -771,53 +772,21 @@ static const CGFloat kVerticalPadding_8 = 8;
         lastView = resultLabel;
     }
     
-    EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+    EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
-    
-    NSImage *audioImage = [NSImage imageNamed:@"audio"];
-    audioButton.image = audioImage;
     audioButton.toolTip = @"Play";
     
     BOOL hasTranslatedText = result.translatedText.length > 0;
     audioButton.enabled = hasTranslatedText;
     
-    EZAudioPlayer *audioPlayer = self.result.service.audioPlayer;
-    [audioPlayer setPlayingBlock:^(BOOL isPlaying) {
-        NSLog(@"isPlaying: %d", isPlaying);
-        
-        NSImage *image = audioImage;
-        if (isPlaying) {
-            image = [NSImage imageWithSystemSymbolName:@"pause.circle" accessibilityDescription:nil];
-            image = [image resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
-        } else {
-            
-        }
-        audioButton.image = image;
-        
-        [audioButton excuteLight:^(NSButton *audioButton) {
-            audioButton.image = [image imageWithTintColor:[NSColor imageTintLightColor]];
-        } dark:^(NSButton *linkButton) {
-            audioButton.image = [image imageWithTintColor:[NSColor imageTintDarkColor]];
-        }];
-    }];
-    
-    [audioButton setClickBlock:^(EZButton *_Nonnull audioButton) {
-        BOOL isPlaying = audioPlayer.playing;
-        
-        NSLog(@"audioActionBlock: %d", isPlaying);
-        mm_strongify(self);
-
-        if (isPlaying) {
-            [audioPlayer stop];
-        } else {
-            if (self.playAudioBlock) {
-                self.playAudioBlock(self.copiedText, nil);
-            }
+    audioButton.audioPlayer = self.result.service.audioPlayer;
+    [audioButton setPlayAudioBlock:^{
+        if (self.playAudioBlock) {
+            self.playAudioBlock(self.copiedText, nil);
         }
     }];
-    audioButton.mas_key = @"audioButton";
-    
 
+    audioButton.mas_key = @"result_audioButton";
     
     EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
     [self addSubview:textCopyButton];

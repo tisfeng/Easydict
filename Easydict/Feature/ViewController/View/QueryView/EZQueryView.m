@@ -18,7 +18,6 @@
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
-@property (nonatomic, strong) NSButton *audioButton;
 @property (nonatomic, strong) NSButton *textCopyButton;
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
@@ -90,14 +89,12 @@
         make.height.mas_equalTo(30);
     }];
     
-    EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+    EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
-    audioButton.image = [NSImage imageNamed:@"audio"];
     audioButton.toolTip = @"Play, ⌘+S";
     
-    [audioButton setClickBlock:^(EZButton *_Nonnull button) {
-        NSLog(@"audioActionBlock");
+    [audioButton setPlayAudioBlock:^{
         mm_strongify(self);
         if (self.playAudioBlock) {
             self.playAudioBlock(self.copiedText);
