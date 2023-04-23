@@ -412,7 +412,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)clearAll {
     [self clearInput];
-
+    [self.audioPlayer stop];;
     [self.queryModel stopAllService];
 
     [self updateQueryCellWithCompletionHandler:^{
@@ -431,7 +431,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
     [self.audioPlayer playTextAudio:self.queryText
                            audioURL:self.queryModel.audioURL
-                       fromLanguage:self.queryModel.queryFromLanguage
+                       textLanguage:self.queryModel.queryFromLanguage
                              serive:youdaoService];
 }
 
@@ -1087,7 +1087,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             mm_strongify(self);
             [self.audioPlayer playTextAudio:text
                                    audioURL:audioURL
-                               fromLanguage:fromLanguage
+                               textLanguage:fromLanguage
                                      serive:service];
         }];
 
@@ -1268,7 +1268,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
-    [self.audioPlayer playSystemTextAudio:self.queryText fromLanguage:EZLanguageEnglish];
+    [self.audioPlayer playSystemTextAudio:self.queryText textLanguage:EZLanguageEnglish];
 }
 
 - (BOOL)playYoudaoWordAudio:(NSString *)text {
@@ -1277,7 +1277,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (youdaoResult.wordResult) {
         NSString *audioURL = youdaoResult.fromSpeakURL;
         if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
-            [self.audioPlayer playTextAudio:text audioURL:audioURL fromLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
+            [self.audioPlayer playTextAudio:text audioURL:audioURL textLanguage:self.queryModel.queryFromLanguage serive:youdaoService];
             return YES;
         }
     }
