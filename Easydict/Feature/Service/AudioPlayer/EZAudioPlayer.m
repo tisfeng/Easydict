@@ -107,10 +107,6 @@
     [self.synthesizer stopSpeaking];
 }
 
-- (void)dealloc {
-    NSLog(@"dealloc: %@", self);
-}
-
 #pragma mark -
 
 /// Get &useCache and &usPhonetic from service.
