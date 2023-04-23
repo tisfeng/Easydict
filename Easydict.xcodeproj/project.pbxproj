@@ -151,6 +151,7 @@
 		03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
+		03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZStatusItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZStatusItem.m */; };
@@ -450,6 +451,8 @@
 		03D043592928C4C800E7559E /* EZWindowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWindowManager.m; sourceTree = "<group>"; };
 		03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
+		03D2A3E129F4C6F50035CED4 /* EZNetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZNetworkManager.h; sourceTree = "<group>"; };
+		03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZNetworkManager.m; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
@@ -1160,6 +1163,7 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
 				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
 				039D119629D5E21E00C93F46 /* EZAudioUtils */,
 				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
@@ -1310,6 +1314,15 @@
 				03991169292AA2EF00E1B06D /* EZLayoutManager.m */,
 			);
 			path = WindowManager;
+			sourceTree = "<group>";
+		};
+		03D2A3E029F4C69E0035CED4 /* EZNetworkManager */ = {
+			isa = PBXGroup;
+			children = (
+				03D2A3E129F4C6F50035CED4 /* EZNetworkManager.h */,
+				03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */,
+			);
+			path = EZNetworkManager;
 			sourceTree = "<group>";
 		};
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
@@ -1697,6 +1710,7 @@
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
+				03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */,
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* main.m in Sources */,
