@@ -131,7 +131,7 @@
     EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
 
     // Do not close main window
-    if (!floatingWindow.pin) {
+    if (!floatingWindow.pin && floatingWindow.isVisible) {
         [EZWindowManager.shared closeFloatingWindowExceptMain];
     }
 }
