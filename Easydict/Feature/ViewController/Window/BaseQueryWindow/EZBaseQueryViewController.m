@@ -852,7 +852,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         result.isShowing = NO; // default not show, show after querying if result is not empty.
         result.isLoading = NO;
         service.result = result;
-        service.audioPlayer = self.audioPlayer;
+//        service.audioPlayer = self.audioPlayer;
         
         //        [self updateResultCell:service.result];
     }
@@ -1091,13 +1091,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         fromLanguage = result.queryModel.queryTargetLanguage;
     }
 
-    mm_weakify(self);
+    mm_weakify(self, result, service);
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
-        mm_strongify(self);
-        [self.audioPlayer playTextAudio:text
-                               audioURL:audioURL
-                           textLanguage:fromLanguage
-                                 serive:service];
+        mm_strongify(result, service);
+        
+        [result.service.audioPlayer playTextAudio:text
+                                         audioURL:audioURL
+                                     textLanguage:fromLanguage
+                                           serive:service];
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {

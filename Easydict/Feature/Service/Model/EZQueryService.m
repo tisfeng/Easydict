@@ -33,6 +33,13 @@ userInfo:nil]
     return self;
 }
 
+- (EZAudioPlayer *)audioPlayer {
+    if (!_audioPlayer) {
+        _audioPlayer = [[EZAudioPlayer alloc] init];
+    }
+    return _audioPlayer;
+}
+
 - (void)setEnabledQuery:(BOOL)enabledQuery {
     _enabledQuery = enabledQuery;
     
