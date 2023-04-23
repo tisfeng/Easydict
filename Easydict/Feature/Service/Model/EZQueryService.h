@@ -13,7 +13,10 @@
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"
 
+
 NS_ASSUME_NONNULL_BEGIN
+
+@class EZAudioPlayer;
 
 @interface EZQueryService : NSObject
 
@@ -28,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL enabledQuery;
 
 @property (nonatomic, assign) EZWindowType windowType;
+
+@property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;
