@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
+#import "EZEnumTypes.h"
 
 @class EZQueryService;
 
@@ -17,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) BOOL playing;
 
+@property (nonatomic, weak) EZQueryService *service;
+
 @property (nonatomic, copy, nullable) void (^playingBlock)(BOOL isPlaying);
 
 /// Play system text audio.
@@ -25,8 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
-         textLanguage:(EZLanguage)language
-               serive:(nullable EZQueryService *)service;
+         textLanguage:(EZLanguage)language;
 
 - (void)stop;
 
