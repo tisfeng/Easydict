@@ -734,11 +734,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return [self.appleLanguagesDictionary objectForKey:ezLanguage];
 }
 
-- (void)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
+- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
+    // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
+    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
+    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+    
     void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
-        // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
-        NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
-        NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
         [synthesizer startSpeakingString:text];
     };
     
@@ -749,6 +750,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     } else {
         playBlock(text, fromLanguage);
     }
+    
+    return synthesizer;
 }
 
 #pragma mark -

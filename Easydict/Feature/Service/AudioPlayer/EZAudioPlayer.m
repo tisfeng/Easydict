@@ -15,6 +15,8 @@
 @property (nonatomic, strong) EZAppleService *appleService;
 @property (nonatomic, strong) AVPlayer *player;
 
+@property (nonatomic, strong) NSSpeechSynthesizer *synthesizer;
+
 @end
 
 @implementation EZAudioPlayer
@@ -45,7 +47,8 @@
 
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from {
-    [self.appleService playTextAudio:text fromLanguage:from];
+    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:from];
+    self.synthesizer = synthesizer;
 }
 
 /// Play text URL audio.
@@ -99,7 +102,13 @@
 }
 
 - (void)stop {
+    NSLog(@"stop play");
     [self.player pause];
+    [self.synthesizer stopSpeaking];
+}
+
+- (void)dealloc {
+    NSLog(@"dealloc: %@", self);
 }
 
 #pragma mark -

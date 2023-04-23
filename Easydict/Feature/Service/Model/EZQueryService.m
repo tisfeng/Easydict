@@ -22,8 +22,6 @@ userInfo:nil]
 @property (nonatomic, strong) NSDictionary<NSString *, EZLanguage> *langEnumFromStringDict;
 @property (nonatomic, strong) NSDictionary<EZLanguage, NSNumber *> *langIndexDict;
 
-@property (nonatomic, strong) EZAudioPlayer *aduioPlayer;
-
 @end
 
 
@@ -33,13 +31,6 @@ userInfo:nil]
     if (self = [super init]) {
     }
     return self;
-}
-
-- (EZAudioPlayer *)aduioPlayer {
-    if (!_aduioPlayer) {
-        _aduioPlayer = [[EZAudioPlayer alloc] init];
-    }
-    return _aduioPlayer;
 }
 
 - (void)setEnabledQuery:(BOOL)enabledQuery {
@@ -190,7 +181,7 @@ userInfo:nil]
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioUrl, NSError *_Nullable error))completion {
-    [self.aduioPlayer playSystemTextAudio:text textLanguage:from];
+    [self.audioPlayer playSystemTextAudio:text textLanguage:from];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {

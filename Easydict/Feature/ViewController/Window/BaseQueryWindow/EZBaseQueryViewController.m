@@ -112,7 +112,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [self tableView];
 
-    self.audioPlayer = [[EZAudioPlayer alloc] init];
+//    self.audioPlayer = [[EZAudioPlayer alloc] init];
 
     mm_weakify(self);
     [self setResizeWindowBlock:^{
@@ -270,6 +270,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _linkParser;
 }
 
+- (EZAudioPlayer *)audioPlayer {
+    if (!_audioPlayer) {
+        _audioPlayer = [[EZAudioPlayer alloc] init];
+    }
+    return _audioPlayer;
+}
+
 - (void)setQueryText:(NSString *)queryText {
     // !!!: Rewrite property copy setter. Avoid text being affected.
     _queryText = [queryText copy];
@@ -408,11 +415,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryText = @"";
     self.queryModel.ocrImage = nil;
     [self.queryView setAlertTextHidden:YES];
+    
+    [self.audioPlayer stop];;
 }
 
 - (void)clearAll {
     [self clearInput];
-    [self.audioPlayer stop];;
     [self.queryModel stopAllService];
 
     [self updateQueryCellWithCompletionHandler:^{
@@ -844,7 +852,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         result.isShowing = NO; // default not show, show after querying if result is not empty.
         result.isLoading = NO;
         service.result = result;
-
+        service.audioPlayer = self.audioPlayer;
+        
         //        [self updateResultCell:service.result];
     }
 }
