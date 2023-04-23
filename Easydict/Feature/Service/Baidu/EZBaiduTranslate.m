@@ -301,7 +301,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 }
 
 - (NSString *)getAudioURLWithText:(NSString *)text language:(NSString *)language {
-    return [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=3&source=web", kBaiduTranslateURL, language, text.mm_urlencode];
+    return [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text.mm_urlencode];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
