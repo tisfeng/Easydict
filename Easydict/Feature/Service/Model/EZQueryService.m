@@ -190,7 +190,7 @@ userInfo:nil]
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioUrl, NSError *_Nullable error))completion {
-    [self.aduioPlayer playSystemTextAudio:text fromLanguage:from];
+    [self.aduioPlayer playSystemTextAudio:text textLanguage:from];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {

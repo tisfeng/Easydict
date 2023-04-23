@@ -43,19 +43,15 @@
 
 #pragma mark - Public Mehods
 
-- (void)playSystemTextAudio:(NSString *)text {
-    [self.appleService playTextAudio:text fromLanguage:EZLanguageAuto];
-}
-
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from {
+- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from {
     [self.appleService playTextAudio:text fromLanguage:from];
 }
 
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
-         fromLanguage:(EZLanguage)language
+         textLanguage:(EZLanguage)language
                serive:(nullable EZQueryService *)service {
     if (!text.length) {
         NSLog(@"playTextAudio is empty");
@@ -76,7 +72,7 @@
     }
     
     if (!service) {
-        [self playSystemTextAudio:text fromLanguage:language];
+        [self playSystemTextAudio:text textLanguage:language];
         return;
     }
     
@@ -97,11 +93,16 @@
             }
         } else {
             NSLog(@"获取音频 URL 失败 %@", error);
-            [self playSystemTextAudio:text fromLanguage:language];
+            [self playSystemTextAudio:text textLanguage:language];
         }
     }];
 }
 
+- (void)stop {
+    [self.player pause];
+}
+
+#pragma mark -
 
 /// Get &useCache and &usPhonetic from service.
 - (void)getUseCache:(BOOL *)useCache
@@ -145,7 +146,7 @@
             return;
         }
         
-        [self playSystemTextAudio:text];
+        [self playSystemTextAudio:text textLanguage:language];
         return;
     }
     

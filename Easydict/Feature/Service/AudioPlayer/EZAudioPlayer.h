@@ -15,13 +15,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZAudioPlayer : NSObject
 
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text fromLanguage:(EZLanguage)from;
+- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from;
 
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
-         fromLanguage:(EZLanguage)language
+         textLanguage:(EZLanguage)language
                serive:(nullable EZQueryService *)service;
+
+- (void)stop;
 
 @end
 
