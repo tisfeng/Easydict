@@ -10,6 +10,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZBaiduTranslateResponse.h"
 #import "EZWebViewTranslator.h"
+#import "EZNetworkManager.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
@@ -27,6 +28,8 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
+@property (nonatomic, strong) EZNetworkManager *networkManager;
+
 @property (nonatomic, copy) NSString *cookie;
 
 @end
@@ -36,7 +39,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 
 - (instancetype)init {
     if (self = [super init]) {
-
+        [self updateCookieAndToken];
     }
     return self;
 }
@@ -48,6 +51,13 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
         _webViewTranslator.querySelector = selector;
     }
     return _webViewTranslator;
+}
+
+- (EZNetworkManager *)networkManager {
+    if (!_networkManager) {
+        _networkManager = [[EZNetworkManager alloc] init];
+    }
+    return _networkManager;
 }
 
 - (JSContext *)jsContext {
@@ -73,10 +83,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-//        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
-//        [requestSerializer setValue:@"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;" forHTTPHeaderField:@"Cookie"];
         htmlSession.requestSerializer = requestSerializer;
-
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
         htmlSession.responseSerializer = responseSerializer;
@@ -90,11 +97,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     if (!_jsonSession) {
         AFHTTPSessionManager *jsonSession = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-//        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
-//        // TODO: get cookie from html dynamically
-//        [requestSerializer setValue:@"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;" forHTTPHeaderField:@"Cookie"];
         jsonSession.requestSerializer = requestSerializer;
-
         AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", nil];
         jsonSession.responseSerializer = responseSerializer;
@@ -220,29 +223,22 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     };
     
     if (!self.token || !self.gtk) {
-        // 获取 token
         MMLogInfo(@"get Baidu token and gtk");
         mm_weakify(self);
-        
-        [self requesBaiduCookie:^(NSString *cookie) {
-            [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
-                mm_strongify(self)
-                MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
-                
-                if (!error && (!token || !gtk)) {
-                    error = [EZTranslateError errorWithString:@"Get token failed."];
-                }
-                
-                if (error) {
-                    completion(self.result, error);
-                    return;
-                }
-                self.token = token;
-                self.gtk = gtk;
-                request();
-            }];
+        [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
+            mm_strongify(self)
+            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
+            if (!error && (!token || !gtk)) {
+                error = [EZTranslateError errorWithString:@"Get token failed."];
+            }
+            if (error) {
+                completion(self.result, error);
+                return;
+            }
+            self.token = token;
+            self.gtk = gtk;
+            request();
         }];
-        
     } else {
         // 直接请求
         request();
@@ -406,56 +402,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     }];
 }
 
-#pragma mark -
-
-/// Get token, gtk
-- (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *_Nullable token, NSString *_Nullable gtk, NSError *error))completion {
-    NSString *url = kBaiduTranslateURL;
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
-    
-    NSDictionary *headers = @{
-        @"Cookie" : self.cookie,
-    };
-    
-    // set headers
-    for (NSString *key in headers.allKeys) {
-        [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
-    }
-    
-    [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        NSString *html = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-
-        // token: '6d55d690ce5ade4a1fae243892f83ca6',
-        NSString *tokenPattern = @"token: '(.*?)',";
-        NSString *token = [self getStringValueFromHtml:html pattern:tokenPattern];
-
-        // window.gtk = '320305.131321201'; // default value ?
-        NSString *gtkPattern = @"window.gtk = \"(.*?)\";";
-        NSString *gtk = [self getStringValueFromHtml:html pattern:gtkPattern];
-
-        if (token.length && gtk.length) {
-            completion(token, gtk, nil);
-        } else {
-            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, @"获取 token 失败", reqDict));
-        }
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"获取 token 失败", reqDict));
-    }];
-}
-
-/// Get string value from html
-- (NSString *)getStringValueFromHtml:(NSString *)html pattern:(NSString *)pattern {
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
-    NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
-    for (NSTextCheckingResult *match in matches) {
-        NSRange range = [match rangeAtIndex:1];
-        NSString *subString = [html substringWithRange:range];
-        return subString;
-    }
-    return nil;
-}
+#pragma mark - Web translate API
 
 - (void)sendTranslateRequest:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
         
@@ -729,6 +676,9 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
             message = @"百度翻译接口数据解析异常";
         }
     }
+    
+    // If error, update cookie.
+    [self updateCookieAndToken];
 
     NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict);
     MMLogInfo(@"baidu API error: %@", error);
@@ -738,6 +688,76 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     //    [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
     //    completion(self.result, error);
 }
+
+/// Get token, gtk
+- (void)sendGetTokenAndGtkRequestWithCompletion:(void (^)(NSString *_Nullable token, NSString *_Nullable gtk, NSError *error))completion {
+    NSString *url = kBaiduTranslateURL;
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObject:url forKey:EZTranslateErrorRequestURLKey];
+    
+    NSDictionary *headers = @{
+        @"Cookie" : self.cookie,
+    };
+    
+    // set headers
+    for (NSString *key in headers.allKeys) {
+        [self.jsonSession.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+    }
+    
+    [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        NSString *html = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+
+        // token: '6d55d690ce5ade4a1fae243892f83ca6',
+        NSString *tokenPattern = @"token: '(.*?)',";
+        NSString *token = [self getStringValueFromHtml:html pattern:tokenPattern];
+
+        // window.gtk = '320305.131321201'; // default value ?
+        NSString *gtkPattern = @"window.gtk = \"(.*?)\";";
+        NSString *gtk = [self getStringValueFromHtml:html pattern:gtkPattern];
+
+        if (token.length && gtk.length) {
+            completion(token, gtk, nil);
+        } else {
+            [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+            completion(nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, @"获取 token 失败", reqDict));
+        }
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"获取 token 失败", reqDict));
+    }];
+}
+
+/// Get string value from html
+- (NSString *)getStringValueFromHtml:(NSString *)html pattern:(NSString *)pattern {
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
+    NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
+    for (NSTextCheckingResult *match in matches) {
+        NSRange range = [match rangeAtIndex:1];
+        NSString *subString = [html substringWithRange:range];
+        return subString;
+    }
+    return nil;
+}
+
+/// Update cookie and token.
+- (void)updateCookieAndToken {
+    [self.networkManager requestCookieOfURL:kBaiduTranslateURL cookieName:@"BAIDUID" completion:^(NSString *cookie) {
+        if (cookie.length) {
+            [NSUserDefaults mm_write:cookie forKey:kBaiduCookieKey];
+        }
+        
+        [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
+            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
+            if (!error && (!token || !gtk)) {
+                error = [EZTranslateError errorWithString:@"Get token failed."];
+            }
+
+            self.token = token;
+            self.gtk = gtk;
+        }];
+    }];
+}
+
+#pragma mark - WebView Translate.
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSString *monitorURL = @"https://fanyi.baidu.com/v2transapi";
@@ -761,34 +781,6 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
         mm_strongify(self);
         [self.webViewTranslator resetWebView];
     } serviceType:self.serviceType];
-}
-
-- (void)requesBaiduCookie:(nonnull void (^)(NSString *))completion {
-    [self.htmlSession GET:kBaiduTranslateURL parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:kBaiduTranslateURL]];
-        //  BAIDUID=051BDAB859A6C83B5D769F4BA8D8FCE2:FG=1; expires=Sun, 21-Apr-24 16:16:11 GMT; max-age=31536000; path=/; domain=.baidu.com; version=1
-        NSString *cookieString = @"";
-        for (NSHTTPCookie *cookie in cookies) {
-            if ([cookie.name isEqualToString:@"BAIDUID_BFESS"]) {
-                cookieString = [NSString stringWithFormat:@"%@=%@; domain=%@; expires=%@", cookie.name, cookie.value, cookie.domain, cookie.expiresDate];
-                break;
-            }
-        }
-        NSLog(@"Baidu cookie: %@", cookieString);
-        
-        NSHTTPCookie *cookie = cookies.firstObject;
-        cookieString = [NSString stringWithFormat:@"%@=%@; domain=%@; expires=%@", cookie.name, cookie.value, cookie.domain, cookie.expiresDate];
-
-        if (cookieString.length) {
-            [NSUserDefaults mm_write:cookieString forKey:kBaiduCookieKey];
-        }
-        NSLog(@"Baidu cookie: %@", cookieString);
-        
-        completion(cookieString);
-        
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        NSLog(@"request youdao cookie error: %@", error);
-    }];
 }
 
 @end
