@@ -39,29 +39,6 @@
                                              selector:@selector(didFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
-    
-    
-    // 添加周期性的时间观察器，每 0.1 秒获取一次播放进度
-//    __weak typeof(self) weakSelf = self;
-//    CMTime interval = CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC);
-//    [self.player addPeriodicTimeObserverForInterval:interval queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-//        // 判断播放器的状态
-//        if (weakSelf.player.status == AVPlayerStatusReadyToPlay) {
-//
-//        }
-//
-//        BOOL isPlaying = weakSelf.player.rate != 0 && weakSelf.player.error == nil;
-//
-//        if (weakSelf.synthesizer.isSpeaking) {
-//            isPlaying = YES;
-//        }
-//
-//        if (weakSelf.playingBlock) {
-//            weakSelf.playingBlock(isPlaying);
-//        }
-//
-//        NSLog(@"isSpeaking: %d", isPlaying);
-//    }];
 }
 
 // ???: Why is this method called multiple times?
@@ -96,20 +73,6 @@
     }
 }
 
-//- (BOOL)playing {
-//    BOOL playing = NO;
-//
-//    if (self.player.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
-//        playing = YES;
-//    }
-//
-//    if (self.synthesizer.isSpeaking) {
-//        playing = YES;
-//    }
-//
-//    return playing;
-//}
-
 #pragma mark - Public Mehods
 
 /// Play system text audio.
@@ -121,11 +84,9 @@
 }
 
 /// Play text URL audio.
-/// TODO: remove serive.
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
-         textLanguage:(EZLanguage)language
-               serive:(nullable EZQueryService *)service {
+         textLanguage:(EZLanguage)language {
     if (!text.length) {
         NSLog(@"playTextAudio is empty");
         return;
@@ -133,44 +94,35 @@
     
     self.playing = YES;
     
+    EZServiceType serviceType = self.service.serviceType;
+    
     if (audioURL.length) {
         BOOL useCache = NO;
         BOOL usPhonetic = YES;
-        [self getUseCache:&useCache usPhonetic:&usPhonetic audioURL:audioURL fromService:service];
+        [self getUseCache:&useCache usPhonetic:&usPhonetic audioURL:audioURL];
         [self playTextAudio:text
                    audioURL:audioURL
                fromLanguage:language
                    useCache:useCache
                  usPhonetic:usPhonetic
-                serviceType:service.serviceType];
+                serviceType:serviceType];
         return;
     }
     
-    if (!service) {
-        [self playSystemTextAudio:text textLanguage:language];
-        return;
-    }
-    
-    [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-        if (!error && url.length) {
-            if (service.serviceType == EZServiceTypeYoudao) {
-                BOOL useCache = NO;
-                BOOL usPhonetic = YES;
-                [self getUseCache:&useCache usPhonetic:&usPhonetic audioURL:url fromService:service];
-                [self playTextAudio:text
-                           audioURL:url
-                       fromLanguage:language
-                           useCache:useCache
-                         usPhonetic:usPhonetic
-                        serviceType:service.serviceType];
+    if (self.service) {
+        [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+            if (!error && url.length) {
+                [self.service.audioPlayer playTextAudio:text audioURL:url textLanguage:language];
             } else {
-                [self playRemoteAudio:url];
+                NSLog(@"获取音频 URL 失败 %@", error);
+                [self playSystemTextAudio:text textLanguage:language];
             }
-        } else {
-            NSLog(@"获取音频 URL 失败 %@", error);
-            [self playSystemTextAudio:text textLanguage:language];
-        }
-    }];
+        }];
+
+        return;
+    }
+    
+    [self playSystemTextAudio:text textLanguage:language];
 }
 
 - (void)stop {
@@ -198,9 +150,8 @@
 /// Get &useCache and &usPhonetic from service.
 - (void)getUseCache:(BOOL *)useCache
          usPhonetic:(BOOL *)usPhonetic
-           audioURL:(NSString *)audioURL
-        fromService:(EZQueryService *)service {
-    if (service.serviceType == EZServiceTypeYoudao) {
+           audioURL:(NSString *)audioURL {
+    if (self.service.serviceType == EZServiceTypeYoudao) {
         *useCache = YES;
         
         // uk https://dict.youdao.com/dictvoice?audio=class&type=1

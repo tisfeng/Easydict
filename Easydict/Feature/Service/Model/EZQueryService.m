@@ -36,6 +36,7 @@ userInfo:nil]
 - (EZAudioPlayer *)audioPlayer {
     if (!_audioPlayer) {
         _audioPlayer = [[EZAudioPlayer alloc] init];
+        _audioPlayer.service = self;
     }
     return _audioPlayer;
 }
