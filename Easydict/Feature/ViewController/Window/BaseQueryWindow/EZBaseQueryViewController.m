@@ -1082,15 +1082,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         fromLanguage = result.queryModel.queryTargetLanguage;
     }
 
-    mm_weakify(self)
-        [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
-            mm_strongify(self);
-            [self.audioPlayer playTextAudio:text
-                                   audioURL:audioURL
-                               textLanguage:fromLanguage
-                                     serive:service];
-        }];
-
+    mm_weakify(self);
+    [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
+        mm_strongify(self);
+        [self.audioPlayer playTextAudio:text
+                               audioURL:audioURL
+                           textLanguage:fromLanguage
+                                 serive:service];
+    }];
+    
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
         [text copyToPasteboard];
     }];
@@ -1104,6 +1104,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [resultView setClickArrowBlock:^(EZQueryResult *result) {
         mm_strongify(self);
         BOOL isShowing = result.isShowing;
+        if (!isShowing) {
+            [self.audioPlayer stop];
+        }
+        
         service.enabledQuery = isShowing;
 
         // If result is not empty, update cell and show.
