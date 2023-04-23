@@ -12,11 +12,11 @@
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"
-
+#import "EZAudioPlayer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class EZAudioPlayer;
+//@class EZAudioPlayer;
 
 @interface EZQueryService : NSObject
 

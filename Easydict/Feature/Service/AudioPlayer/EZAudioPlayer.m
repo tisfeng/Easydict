@@ -9,22 +9,67 @@
 #import "EZAudioPlayer.h"
 #import "EZAppleService.h"
 #import <AVFoundation/AVFoundation.h>
+#import "EZQueryService.h"
 
-@interface EZAudioPlayer ()
+@interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
 @property (nonatomic, strong) EZAppleService *appleService;
+@property (nonatomic, strong) NSSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVPlayer *player;
 
-@property (nonatomic, strong) NSSpeechSynthesizer *synthesizer;
+@property (nonatomic, assign) BOOL playing;
 
 @end
 
 @implementation EZAudioPlayer
 
+@synthesize playing = _playing;
+
+
 - (instancetype)init {
     if (self = [super init]) {
+        [self setup];
     }
     return self;
+}
+
+- (void)setup {
+    // 注册通知
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFinishPlaying:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:nil];
+    
+    
+    // 添加周期性的时间观察器，每 0.1 秒获取一次播放进度
+//    __weak typeof(self) weakSelf = self;
+//    CMTime interval = CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC);
+//    [self.player addPeriodicTimeObserverForInterval:interval queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+//        // 判断播放器的状态
+//        if (weakSelf.player.status == AVPlayerStatusReadyToPlay) {
+//
+//        }
+//
+//        BOOL isPlaying = weakSelf.player.rate != 0 && weakSelf.player.error == nil;
+//
+//        if (weakSelf.synthesizer.isSpeaking) {
+//            isPlaying = YES;
+//        }
+//
+//        if (weakSelf.playingBlock) {
+//            weakSelf.playingBlock(isPlaying);
+//        }
+//
+//        NSLog(@"isSpeaking: %d", isPlaying);
+//    }];
+}
+
+// ???: Why is this method called multiple times?
+- (void)didFinishPlaying:(NSNotification *)notification {
+    AVPlayerItem *playerItem = notification.object;
+    if (self.player.currentItem == playerItem) {
+        self.playing = NO;
+    }
 }
 
 #pragma mark - Getter
@@ -43,12 +88,36 @@
     return _player;
 }
 
+- (void)setPlaying:(BOOL)playing {
+    _playing = playing;
+    
+    if (self.playingBlock) {
+        self.playingBlock(playing);
+    }
+}
+
+//- (BOOL)playing {
+//    BOOL playing = NO;
+//
+//    if (self.player.timeControlStatus == AVPlayerTimeControlStatusPlaying) {
+//        playing = YES;
+//    }
+//
+//    if (self.synthesizer.isSpeaking) {
+//        playing = YES;
+//    }
+//
+//    return playing;
+//}
+
 #pragma mark - Public Mehods
 
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from {
     NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:from];
+    synthesizer.delegate = self;
     self.synthesizer = synthesizer;
+    self.playing = YES;
 }
 
 /// Play text URL audio.
@@ -60,6 +129,8 @@
         NSLog(@"playTextAudio is empty");
         return;
     }
+    
+    self.playing = YES;
     
     if (audioURL.length) {
         BOOL useCache = NO;
@@ -103,9 +174,23 @@
 
 - (void)stop {
     NSLog(@"stop play");
+    
+    // !!!: This method won't post play end notification.
     [self.player pause];
+    
+    // It wiil call delegate.
     [self.synthesizer stopSpeaking];
+    
+    self.playing = NO;
 }
+
+
+#pragma mark - NSSpeechSynthesizerDelegate
+
+- (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)finishedSpeaking {
+    self.playing = NO;
+}
+
 
 #pragma mark -
 

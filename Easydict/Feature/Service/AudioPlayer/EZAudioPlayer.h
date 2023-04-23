@@ -8,11 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
-#import "EZQueryService.h"
+
+@class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAudioPlayer : NSObject
+
+@property (nonatomic, assign, readonly) BOOL playing;
+
+@property (nonatomic, copy, nullable) void (^playingBlock)(BOOL isPlaying);
 
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from;
