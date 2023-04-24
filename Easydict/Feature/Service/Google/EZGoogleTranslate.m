@@ -581,7 +581,9 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 
-#pragma mark - GTX
+#pragma mark - GTX Transalte, the same as web translation.
+
+/// GTX can only get translation and src language.
 
 - (void)sendGTXTranslate:(NSString *)text
                     from:(EZLanguage)from
@@ -592,18 +594,27 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                    NSError *_Nullable error))completion {
     NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
     NSString *url = [kGoogleTranslateURL stringByAppendingPathComponent:@"/translate_a/single"];
+    
+    NSString *fromLanguage = [self languageCodeForLanguage:from];
+    NSString *toLanguage = [self languageCodeForLanguage:to];
+    
+    /**
+     TODO: This API translates the same content as the web version, but it makes its own line breaks. Later, we need to switch to the API that is exactly the same as the web page.
+     */
     NSDictionary *params = @{
         @"q" : text,
-        @"sl" : [self languageCodeForLanguage:from],
-        @"tl" : [self languageCodeForLanguage:to],
+        @"sl" : fromLanguage,
+        @"tl" : toLanguage,
         @"dt" : @"t",
         @"dj" : @"1",
         @"ie" : @"UTF-8",
         @"client" : @"gtx",
     };
     
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params,
-                                    EZTranslateErrorRequestParamKey, nil];
+    NSMutableDictionary *reqDict = @{
+        EZTranslateErrorRequestURLKey : url,
+        EZTranslateErrorRequestParamKey : params,
+    }.mutableCopy;
     
     NSURLSessionTask *task = [self.jsonSession GET:url
                                         parameters:params
@@ -631,7 +642,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     } serviceType:self.serviceType];
 }
 
-/// This API can only get translation and src language, the result is the same as web translation.
 - (void)gtxTranslate:(NSString *)text
                 from:(EZLanguage)from
                   to:(EZLanguage)to
