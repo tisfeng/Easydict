@@ -61,10 +61,14 @@
 - (void)setIsPlaying:(BOOL)isPlaying {
     _isPlaying = isPlaying;
     
-    NSString *symbolName = isPlaying ? @"pause.circle" : @"play.circle";
-    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
-    self.image = audioImage;
+//    NSString *symbolName = isPlaying ? @"pause.circle" : @"play.circle";
+//    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
     
+    NSImage *playImage = [NSImage imageNamed:@"audio"];
+    NSImage *pauseImage = [NSImage ez_imageWithSymbolName:@"pause.circle"];
+
+    self.image = isPlaying ? pauseImage : playImage;
+
     [self excuteLight:^(NSButton *audioButton) {
         audioButton.image = [audioButton.image imageWithTintColor:[NSColor imageTintLightColor]];
     } dark:^(NSButton *audioButton) {
