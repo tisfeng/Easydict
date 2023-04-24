@@ -23,6 +23,7 @@
 #import "EZTableRowView.h"
 #import "EZLinkParser.h"
 #import "CoolToast.h"
+#import "EZBaiduTranslate.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -55,7 +56,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZLinkParser *linkParser;
-
 
 @property (nonatomic, strong) FBKVOController *kvo;
 
@@ -111,9 +111,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self resetQueryAndResults];
 
     [self tableView];
-
-//    self.audioPlayer = [[EZAudioPlayer alloc] init];
-
+    
     mm_weakify(self);
     [self setResizeWindowBlock:^{
         mm_strongify(self);
@@ -161,6 +159,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     self.services = services;
     self.serviceTypes = serviceTypes;
+    
+    self.audioPlayer = [[EZAudioPlayer alloc] init];
 }
 
 - (void)dealloc {
@@ -1279,7 +1279,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
-    [self.audioPlayer playSystemTextAudio:self.queryText textLanguage:EZLanguageEnglish];
+    [self.audioPlayer playTextAudio:self.queryText textLanguage:EZLanguageEnglish];
 }
 
 - (BOOL)playYoudaoWordAudio:(NSString *)text {
@@ -1289,12 +1289,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSString *audioURL = youdaoResult.fromSpeakURL;
         if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
             // Currently, only Youdao audio url will download and cache.
-            self.audioPlayer.service = youdaoService;
+            self.audioPlayer.enableDownload = YES;
             [self.audioPlayer playTextAudio:text audioURL:audioURL textLanguage:self.queryModel.queryFromLanguage];
             return YES;
         }
     }
-    self.audioPlayer.service = nil;
+    self.audioPlayer.enableDownload = NO;
+    
     return NO;
 }
 

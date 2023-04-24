@@ -57,4 +57,12 @@ typedef NSString *EZSelectTextType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAuxiliary;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulateKey; // Cmd+C
 
+
+FOUNDATION_EXPORT NSString *const EZDefaultTTSServiceKey;
+typedef NS_ENUM(NSUInteger, EZTTSServiceType) {
+    EZTTSServiceTypeApple = 0,
+    EZTTSServiceTypeBaidu = 1,
+    EZTTSServiceTypeGoogle = 2,
+};
+
 NS_ASSUME_NONNULL_END
