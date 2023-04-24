@@ -802,22 +802,23 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
-    CGFloat leftOffset = EZAudioButtonLeftMargin_7;
-    CGFloat kRightMargin = EZAudioButtonRightPadding_2;
+    CGFloat leftOffset = EZAudioButtonLeftMargin_6;
+    CGFloat topOffset = 6;
+    CGFloat kRightMargin = EZAudioButtonRightPadding_0;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.top.equalTo(lastView.mas_bottom).offset(leftOffset);
+            make.top.equalTo(lastView.mas_bottom).offset(topOffset);
         } else {
-            make.top.equalTo(self).offset(leftOffset);
+            make.top.equalTo(self).offset(topOffset);
         }
         
         make.left.offset(leftOffset);
-        make.width.height.mas_equalTo(EZAudioButtonWidthHeight_26);
+        make.width.height.mas_equalTo(EZAudioButtonWidthHeight_25);
     }];
     lastView = audioButton;
     
-    height += (leftOffset + EZAudioButtonWidthHeight_26 + EZAudioButtonBottomMargin_5);
+    height += (topOffset + EZAudioButtonWidthHeight_25 + EZAudioButtonBottomMargin_5);
     
     _viewHeight = height;
     
