@@ -1,7 +1,6 @@
 {
   "images" : [
     {
-      "filename" : "copy_Normal.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,12 +11,11 @@
           "value" : "dark"
         }
       ],
-      "filename" : "copy_dark.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "copy_Normal@2x.png",
+      "filename" : "copy@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -28,11 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "copy_dark@2x.png",
+      "filename" : "复制_暗黑@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "copy@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -43,6 +42,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "复制_暗黑@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -50,5 +50,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "template-rendering-intent" : "template"
   }
 }

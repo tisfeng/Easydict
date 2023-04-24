@@ -129,6 +129,8 @@
 		03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B3B8B42925DD3D00168E8D /* EZPopButtonViewController.m */; };
 		03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DE229F5772F00447EDD /* EZAudioButton.m */; };
 		03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */; };
+		03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DEE29F59C8A00447EDD /* EZSymbolImageButton.m */; };
+		03BB2DF329F6350200447EDD /* EZCopyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BB2DF229F6350200447EDD /* EZCopyButton.m */; };
 		03BD281A2945EF5F00F5891A /* EZFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD28192945EF5F00F5891A /* EZFlippedView.m */; };
 		03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD281D29481C0400F5891A /* EZAudioPlayer.m */; };
 		03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD282129486CF200F5891A /* EZBlueTextButton.m */; };
@@ -423,6 +425,10 @@
 		03BB2DE229F5772F00447EDD /* EZAudioButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAudioButton.m; sourceTree = "<group>"; };
 		03BB2DE929F57DC000447EDD /* NSImage+EZSymbolmage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+EZSymbolmage.h"; sourceTree = "<group>"; };
 		03BB2DEA29F57DC000447EDD /* NSImage+EZSymbolmage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+EZSymbolmage.m"; sourceTree = "<group>"; };
+		03BB2DED29F59C8A00447EDD /* EZSymbolImageButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSymbolImageButton.h; sourceTree = "<group>"; };
+		03BB2DEE29F59C8A00447EDD /* EZSymbolImageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSymbolImageButton.m; sourceTree = "<group>"; };
+		03BB2DF129F6350200447EDD /* EZCopyButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCopyButton.h; sourceTree = "<group>"; };
+		03BB2DF229F6350200447EDD /* EZCopyButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCopyButton.m; sourceTree = "<group>"; };
 		03BD28182945EF5F00F5891A /* EZFlippedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZFlippedView.h; sourceTree = "<group>"; };
 		03BD28192945EF5F00F5891A /* EZFlippedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZFlippedView.m; sourceTree = "<group>"; };
 		03BD281C29481C0400F5891A /* EZAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAudioPlayer.h; sourceTree = "<group>"; };
@@ -654,6 +660,8 @@
 		036E7D78293F4F61002675DF /* CustomButton */ = {
 			isa = PBXGroup;
 			children = (
+				03BB2DF029F634F400447EDD /* EZCopyButton */,
+				03BB2DEC29F59C6600447EDD /* EZSymbolImageButton */,
 				03BB2DE029F576FC00447EDD /* EZAudioButton */,
 				03385AFF294B5A2800696A96 /* EZLinkButton */,
 				03BD281F29486CA600F5891A /* BlueTextButton */,
@@ -1219,6 +1227,24 @@
 			path = NSImage;
 			sourceTree = "<group>";
 		};
+		03BB2DEC29F59C6600447EDD /* EZSymbolImageButton */ = {
+			isa = PBXGroup;
+			children = (
+				03BB2DED29F59C8A00447EDD /* EZSymbolImageButton.h */,
+				03BB2DEE29F59C8A00447EDD /* EZSymbolImageButton.m */,
+			);
+			path = EZSymbolImageButton;
+			sourceTree = "<group>";
+		};
+		03BB2DF029F634F400447EDD /* EZCopyButton */ = {
+			isa = PBXGroup;
+			children = (
+				03BB2DF129F6350200447EDD /* EZCopyButton.h */,
+				03BB2DF229F6350200447EDD /* EZCopyButton.m */,
+			);
+			path = EZCopyButton;
+			sourceTree = "<group>";
+		};
 		03BD281B29481BE100F5891A /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1696,11 +1722,13 @@
 				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
+				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
+				03BB2DF329F6350200447EDD /* EZCopyButton.m in Sources */,
 				03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */,
 				03E02A222924E77100A10260 /* EZStatusItem.m in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
