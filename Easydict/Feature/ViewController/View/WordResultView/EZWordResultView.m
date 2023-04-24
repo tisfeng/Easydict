@@ -22,6 +22,7 @@
 #import "EZBlueTextButton.h"
 #import "EZMyLabel.h"
 #import "EZAudioButton.h"
+#import "EZCopyButton.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -788,11 +789,8 @@ static const CGFloat kVerticalPadding_8 = 8;
 
     audioButton.mas_key = @"result_audioButton";
     
-    EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
+    EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
-    
-    textCopyButton.image = [NSImage imageNamed:@"copy"];
-    textCopyButton.toolTip = @"Copy";
     textCopyButton.enabled = hasTranslatedText;
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
@@ -802,7 +800,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             self.copyTextBlock(self.copiedText);
         }
     }];
-    textCopyButton.mas_key = @"copyButton";
+    textCopyButton.mas_key = @"result_copyButton";
     
     CGFloat leftOffset = EZAudioButtonLeftMargin_7;
     CGFloat kRightMargin = EZAudioButtonRightPadding_2;

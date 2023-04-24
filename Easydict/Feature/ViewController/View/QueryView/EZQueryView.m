@@ -15,6 +15,7 @@
 #import "NSView+EZAnimatedHidden.h"
 #import "EZDetectLanguageButton.h"
 #import "EZLinkParser.h"
+#import "EZCopyButton.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -100,14 +101,11 @@
             self.playAudioBlock(self.copiedText);
         }
     }];
-    audioButton.mas_key = @"audioButton";
+    audioButton.mas_key = @"queryView_audioButton";
     
-    EZHoverButton *textCopyButton = [[EZHoverButton alloc] init];
+    EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
     self.textCopyButton = textCopyButton;
-    
-    textCopyButton.image = [NSImage imageNamed:@"copy"];
-    textCopyButton.toolTip = @"Copy";
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
@@ -116,7 +114,7 @@
             self.copyTextBlock(self.copiedText);
         }
     }];
-    textCopyButton.mas_key = @"copyButton";
+    textCopyButton.mas_key = @"queryView_copyButton";
     
     
     EZDetectLanguageButton *detectButton = [[EZDetectLanguageButton alloc] initWithFrame:self.bounds];
