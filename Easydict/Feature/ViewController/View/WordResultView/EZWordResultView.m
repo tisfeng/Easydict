@@ -23,6 +23,7 @@
 #import "EZMyLabel.h"
 #import "EZAudioButton.h"
 #import "EZCopyButton.h"
+#import "NSImage+EZSymbolmage.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -833,18 +834,17 @@ static const CGFloat kVerticalPadding_8 = 8;
     EZLinkButton *linkButton = [[EZLinkButton alloc] init];
     [self addSubview:linkButton];
     
-    NSImage *linkImage = [NSImage imageWithSystemSymbolName:@"link" accessibilityDescription:nil];
-    linkImage = [linkImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
+    NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
     linkButton.image = linkImage;
     linkButton.toolTip = @"Link";
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {
-        linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintLightColor]];
+        linkButton.image = [linkButton.image imageWithTintColor:[NSColor imageTintLightColor]];
     } dark:^(NSButton *linkButton) {
-        linkButton.image = [linkImage imageWithTintColor:[NSColor imageTintDarkColor]];
+        linkButton.image = [linkButton.image imageWithTintColor:[NSColor imageTintDarkColor]];
     }];
-    linkButton.mas_key = @"linkButton";
+    linkButton.mas_key = @"result_linkButton";
     
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(textCopyButton.mas_right).offset(kRightMargin);
