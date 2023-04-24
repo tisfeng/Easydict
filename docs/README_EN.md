@@ -63,7 +63,9 @@ brew install easydict
 
 #### Developer Build
 
-If you are a developer and want to compile and run it yourself, just download this Repo, then use Xcode to open Easydict.xcworkspace, compile and run it.
+If you are a developer and want to compile and run it yourself, just download this Repo, then use  [Xcode](https://developer.apple.com/xcode/)  to open Easydict.xcworkspace, compile and run it.
+
+If the compile comes up with a signature error, change to use your own developer account on the `Signing & Capabilities` of target. If you are not an Apple developer yet, just go https://developer.apple.com/ sign up, it's free and very easy.
 
 #### Signature Problem ⚠️
 

@@ -63,7 +63,9 @@ brew install easydict
 
 #### 开发者构建
 
-如果你是一名开发者，想要自己编译运行它，只需要下载这个 Repo，然后使用 Xcode 打开 Easydict.xcworkspace，编译运行即可。
+如果你是一名开发者，想要自己编译运行它，只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 Easydict.xcworkspace，编译运行即可。
+
+如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 注册一下就可以，免费的，非常简单。
 
 #### 签名问题 ⚠️
 
