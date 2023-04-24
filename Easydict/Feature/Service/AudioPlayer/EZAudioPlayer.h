@@ -17,13 +17,18 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZAudioPlayer : NSObject
 
 @property (nonatomic, assign, readonly) BOOL playing;
-
-@property (nonatomic, weak) EZQueryService *service;
-
 @property (nonatomic, copy, nullable) void (^playingBlock)(BOOL isPlaying);
 
+@property (nonatomic, assign) BOOL enableDownload;
+
+@property (nonatomic, weak) EZQueryService *service;
+@property (nonatomic, strong) EZQueryService *defaultTTSService;
+
+
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from;
+//- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
+
+- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text

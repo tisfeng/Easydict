@@ -149,6 +149,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return orderedDict;
 }
 
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioURL, NSError *_Nullable error))completion {
+    completion(nil, nil);
+}
+
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (text.length == 0) {
         NSLog(@"text is empty");
@@ -735,6 +739,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 - (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
+    NSLog(@"system speak: %@(%@)", text, fromLanguage);
+    
     // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
     NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
     NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];

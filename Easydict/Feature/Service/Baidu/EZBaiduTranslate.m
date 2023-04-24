@@ -303,7 +303,8 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 - (NSString *)getAudioURLWithText:(NSString *)text language:(NSString *)language {
     // ???: As far as I tested, the max length of text is ~1000.
     text = [text trimToMaxLength:1000];
-    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text.mm_urlencode];
+    text = [text encode]; // text.mm_urlencode
+    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text];
     return audioURL;
 }
 
