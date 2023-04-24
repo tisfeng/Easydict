@@ -215,6 +215,8 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         return;
     }
     
+    // TODO: need to optimize, Ref: https://github.com/florabtw/google-translate-tts/blob/master/src/synthesize.js
+    
     if ([from isEqualToString:EZLanguageAuto]) {
         // 判断语言
         mm_weakify(self)

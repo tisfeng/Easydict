@@ -123,24 +123,23 @@
             [self addSubview:eudicButton];
             self.eudicButton = eudicButton;
             self.favoriteButton = eudicButton;
+            
+            eudicButton.link = @"eudic://dict/%@";
+            eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
+            eudicButton.toolTip = @"Eudic, ⌘+⇧+⏎";
+            eudicButton.contentTintColor = NSColor.clearColor;
+            
+            [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(self).offset(quickLinkButtonTopOffset);
+                make.size.mas_equalTo(buttonSize);
+                if (lastView) {
+                    make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
+                } else {
+                    make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+                }
+            }];
+            lastView = eudicButton;
         }
-        
-        eudicButton.link = @"eudic://dict/%@";
-        eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-        eudicButton.toolTip = @"Eudic, ⌘+⇧+⏎";
-        eudicButton.contentTintColor = NSColor.clearColor;
-        
-        [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
-            make.size.mas_equalTo(buttonSize);
-            if (lastView) {
-                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
-            } else {
-                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
-            }
-        }];
-        
-        lastView = eudicButton;
     }
     
     [super updateConstraints];
