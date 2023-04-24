@@ -255,7 +255,6 @@
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
     
     BOOL download = self.enableDownload;
-    download = download || self.service.serviceType == EZServiceTypeBaidu;
     
     if (download) {
         NSURL *URL = [NSURL URLWithString:audioURL];
