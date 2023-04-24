@@ -188,8 +188,8 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioUrl, NSError *_Nullable error))completion {
-    [self.audioPlayer playSystemTextAudio:text textLanguage:from];
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioURL, NSError *_Nullable error))completion {
+    [self.audioPlayer.defaultTTSService textToAudio:text fromLanguage:from completion:completion];
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {

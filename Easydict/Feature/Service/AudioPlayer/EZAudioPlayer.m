@@ -10,6 +10,9 @@
 #import "EZAppleService.h"
 #import <AVFoundation/AVFoundation.h>
 #import "EZQueryService.h"
+#import "EZEnumTypes.h"
+#import "EZBaiduTranslate.h"
+#import "EZGoogleTranslate.h"
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -18,6 +21,8 @@
 @property (nonatomic, strong) AVPlayer *player;
 
 @property (nonatomic, assign) BOOL playing;
+
+@property (nonatomic, assign) EZTTSServiceType ttsServiceType;
 
 @end
 
@@ -38,6 +43,21 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFinishPlaying:)
+                                                 name:AVPlayerItemFailedToPlayToEndTimeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFinishPlaying:)
+                                                 name:AVPlayerItemNewErrorLogEntryNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didFinishPlaying:)
+                                                 name:AVPlayerItemPlaybackStalledNotification
                                                object:nil];
 }
 
@@ -67,17 +87,59 @@
 
 - (void)setPlaying:(BOOL)playing {
     _playing = playing;
-    
+
     if (self.playingBlock) {
         self.playingBlock(playing);
     }
 }
 
+- (EZTTSServiceType)ttsServiceType {
+    EZTTSServiceType ttsServiceType = [[NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:@"0"] integerValue];
+    return ttsServiceType;
+}
+
+- (EZQueryService *)defaultTTSService {
+    if (!_defaultTTSService) {
+        switch (self.ttsServiceType) {
+            case EZTTSServiceTypeBaidu: {
+                _defaultTTSService = [[EZBaiduTranslate alloc] init];
+                break;
+            }
+            case EZTTSServiceTypeGoogle: {
+                _defaultTTSService = [[EZGoogleTranslate alloc] init];
+                break;
+            }
+            default: {
+                _defaultTTSService = self.appleService;
+                break;
+            }
+        }
+    }
+    _defaultTTSService.audioPlayer = self;
+
+    return _defaultTTSService;
+}
+
+- (EZQueryService *)service {
+    if (!_service) {
+        _service = self.defaultTTSService;
+    }
+    return _service;
+}
+
 #pragma mark - Public Mehods
 
+- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
+    if (self.service && self.service.serviceType != EZServiceTypeApple) {
+        [self playTextAudio:text audioURL:nil textLanguage:language];
+    } else {
+        [self playSystemTextAudio:text textLanguage:language];
+    }
+}
+
 /// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)from {
-    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:from];
+- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
+    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:language];
     synthesizer.delegate = self;
     self.synthesizer = synthesizer;
     self.playing = YES;
@@ -88,14 +150,12 @@
              audioURL:(nullable NSString *)audioURL
          textLanguage:(EZLanguage)language {
     if (!text.length) {
-        NSLog(@"playTextAudio is empty");
+        NSLog(@"play text is empty");
         return;
     }
-    
+
     self.playing = YES;
-    
-    EZServiceType serviceType = self.service.serviceType;
-    
+
     if (audioURL.length) {
         BOOL useCache = NO;
         BOOL usPhonetic = YES;
@@ -105,35 +165,35 @@
                fromLanguage:language
                    useCache:useCache
                  usPhonetic:usPhonetic
-                serviceType:serviceType];
+                serviceType:self.service.serviceType];
         return;
     }
-    
+
     if (self.service) {
         [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
             if (!error && url.length) {
                 [self.service.audioPlayer playTextAudio:text audioURL:url textLanguage:language];
             } else {
-                NSLog(@"获取音频 URL 失败 %@", error);
-                [self playSystemTextAudio:text textLanguage:language];
+                NSLog(@"get audio url error: %@", error);
+                [self playTextAudio:text textLanguage:language];
             }
         }];
 
         return;
     }
     
-    [self playSystemTextAudio:text textLanguage:language];
+    [self playTextAudio:text textLanguage:language];
 }
 
 - (void)stop {
     NSLog(@"stop play");
-    
+
     // !!!: This method won't post play end notification.
     [self.player pause];
-    
+
     // It wiil call delegate.
     [self.synthesizer stopSpeaking];
-    
+
     self.playing = NO;
 }
 
@@ -153,9 +213,9 @@
            audioURL:(NSString *)audioURL {
     if (self.service.serviceType == EZServiceTypeYoudao) {
         *useCache = YES;
-        
+
         // uk https://dict.youdao.com/dictvoice?audio=class&type=1
-        
+
         // get type from audioURL
         NSString *type = [audioURL componentsSeparatedByString:@"&type="].lastObject;
         // if type is 1, use ukPhonetic
@@ -173,27 +233,31 @@
            usPhonetic:(BOOL)usPhonetic
           serviceType:(EZServiceType)serviceType {
     NSLog(@"play audio url: %@", audioURL);
-    
+
     [self.player pause];
-    
+
     NSString *filePath = [self getWordAudioFilePath:text usPhonetic:usPhonetic serviceType:serviceType];
     // if audio file exist, play it
     if (useCache && [[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [self playLocalAudioFile:filePath];
         return;
     }
-    
+
     if (!audioURL.length) {
         if (!text.length) {
             return;
         }
-        
-        [self playSystemTextAudio:text textLanguage:language];
+
+        [self playTextAudio:text textLanguage:language];
         return;
     }
-    
+
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
-    if ([serviceType isEqualToString:EZServiceTypeYoudao]) {
+    
+    BOOL download = self.enableDownload;
+    download = download || self.service.serviceType == EZServiceTypeBaidu;
+    
+    if (download) {
         NSURL *URL = [NSURL URLWithString:audioURL];
         [self downloadWordAudio:text audioURL:URL autoPlay:YES usPhonetic:usPhonetic serviceType:serviceType];
     } else {
@@ -224,7 +288,7 @@
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }
-    
+
     NSURL *url = [NSURL fileURLWithPath:filePath];
     [self playAudioWithURL:url];
 }
@@ -234,7 +298,7 @@
     if (!urlString.length) {
         return;
     }
-    
+
     NSURL *url = [NSURL URLWithString:urlString];
     [self playAudioWithURL:url];
 }
@@ -242,8 +306,23 @@
 /// Play audio with NSURL
 - (void)playAudioWithURL:(NSURL *)url {
     [self.player pause];
-    [self.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:url]];
-    [self.player play];
+        
+    AVAsset *asset = [AVAsset assetWithURL:url];
+    if (![asset isKindOfClass:[AVURLAsset class]]) {
+        NSLog(@"Invalid asset.");
+        return;
+    }
+
+    if ([asset isPlayable]) {
+        [self.player pause];
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
+        [self.player replaceCurrentItemWithPlayerItem:playerItem];
+        [self.player play];
+    } else {
+        // TODO: maybe need to show a failure toast.
+        NSLog(@"Invalid file or file does not exist");
+        self.playing = NO;
+    }
 }
 
 // Get app cache directory
@@ -269,15 +348,16 @@
                         usPhonetic:(BOOL)usPhonetic
                        serviceType:(EZServiceType)serviceType {
     NSString *audioDirectory = [self getAudioDirectory];
-    
+
+    word = [word md5];
     NSString *audioFileName = [NSString stringWithFormat:@"%@_%@_%@", word, serviceType, usPhonetic ? @"us" : @"uk"];
-    
+
     // m4a
     NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", audioFileName]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:m4aFilePath]) {
         return m4aFilePath;
     }
-    
+
     // mp3
     NSString *mp3FilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", audioFileName]];
     return mp3FilePath;
@@ -287,9 +367,9 @@
     OSStatus status;
     AudioFileID audioFile;
     AudioFileTypeID fileType;
-    
+
     NSLog(@"kAudioFileWAVEType: %d", kAudioFileWAVEType);
-    
+
     status = AudioFileOpenURL((__bridge CFURLRef)filePathURL, kAudioFileReadPermission, 0, &audioFile);
     if (status == noErr) {
         UInt32 size = sizeof(fileType);
