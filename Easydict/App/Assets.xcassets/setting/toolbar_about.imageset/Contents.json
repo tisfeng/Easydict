@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "toolbar_about.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "toolbar_about@2x.png",
+      "filename" : "about.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "toolbar_about@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
