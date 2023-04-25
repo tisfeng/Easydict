@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典
+## Easydict 易词典 [中文简介](./README.md)
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
@@ -63,9 +63,11 @@ brew install easydict
 
 #### Developer Build
 
-If you are a developer and want to compile and run it yourself, just download this Repo, then use  [Xcode](https://developer.apple.com/xcode/)  to open Easydict.xcworkspace, compile and run it.
+If you are a developer, or are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
-If the compile comes up with a signature error, change to use your own developer account on the `Signing & Capabilities` of target. If you are not an Apple developer yet, just go https://developer.apple.com/ sign up, it's free and very easy.
+Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file, `Cmd + R` to compile and run.
+
+If a signature error occurs during compilation, please use your own developer account on the `Signing & Capabilities` page of the target. If you are not an Apple developer yet, just go to https://developer.apple.com/ and register for free.
 
 #### Signature Problem ⚠️
 
