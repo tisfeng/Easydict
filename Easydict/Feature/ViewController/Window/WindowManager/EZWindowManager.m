@@ -67,7 +67,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)setup {
-    self.offsetPoint = CGPointMake(15, -12);
+    self.offsetPoint = CGPointMake(18, -12);
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
