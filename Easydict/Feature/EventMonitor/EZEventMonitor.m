@@ -203,7 +203,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)handleSelectedText:(NSString *)text {
     [self cancelDismissPop];
     
-    NSString *trimText = [text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    NSString *trimText = [text trim];
     if (trimText.length > 0 && self.selectedTextBlock) {
         self.selectedTextBlock(trimText);
         [self cancelDismissPop];
