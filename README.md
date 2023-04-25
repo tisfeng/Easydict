@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典[【English】](https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md)
+## Easydict 易词典 [English](./docs/README_EN.md)
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
@@ -63,9 +63,11 @@ brew install easydict
 
 #### 开发者构建
 
-如果你是一名开发者，想要自己编译运行它，只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 Easydict.xcworkspace，编译运行即可。
+如果你是一名开发者，或者对这个项目感兴趣，也可以尝试手动构建运行，整个过程非常简单，甚至不需懂 macOS 开发知识。
 
-如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 注册一下就可以，免费的，非常简单。
+只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件，`Cmd + R` 编译运行即可。
+
+如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
 
 #### 签名问题 ⚠️
 
