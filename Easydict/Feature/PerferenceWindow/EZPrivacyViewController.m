@@ -10,6 +10,7 @@
 #import "NSImage+EZResize.h"
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
+#import "NSImage+EZSymbolmage.h"
 
 @interface EZPrivacyViewController ()
 
@@ -142,11 +143,13 @@
 }
 
 - (NSImage *)toolbarItemImage {
-//    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
-//    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
-//    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
-      
+    //    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
+    //    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
+    //    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
+    
     NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
+    privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+    privacyImage = [privacyImage imageWithTintColor:[NSColor imageTintBlueColor]];
     
     return privacyImage;
 }

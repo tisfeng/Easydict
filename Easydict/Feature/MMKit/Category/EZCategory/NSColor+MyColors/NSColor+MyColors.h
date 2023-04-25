@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSColor *)imageTintLightColor;
 + (NSColor *)imageTintDarkColor;
 
++ (NSColor *)imageTintBlueColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

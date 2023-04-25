@@ -82,4 +82,8 @@
     return [NSColor whiteColor];
 }
 
++ (NSColor *)imageTintBlueColor {
+    return [NSColor mm_colorWithHexString:@"#1296DB"];
+}
+
 @end
