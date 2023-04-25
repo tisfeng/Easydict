@@ -14,6 +14,7 @@
 #import "EZLog.h"
 #import "EZExeCommand.h"
 #import "EZAudioUtils.h"
+#import "EZCoordinateUtils.h"
 
 static CGFloat kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
@@ -282,7 +283,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     // !!!: This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     //    NSLog(@"selected text: %@", @(selectedTextFrame));
-    self.selectedTextFrame = [self convertRect:selectedTextFrame];
+    
+    self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
     
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
@@ -738,14 +740,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
-}
-
-// Convert rect from left-top coordinate to left-bottom coordinate
-- (CGRect)convertRect:(CGRect)rect {
-    CGRect screenRect = NSScreen.mainScreen.frame;
-    CGFloat height = screenRect.size.height;
-    rect.origin.y = height - rect.origin.y - rect.size.height;
-    return rect;
 }
 
 
