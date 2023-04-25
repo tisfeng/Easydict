@@ -101,8 +101,8 @@ static NSDictionary *const kQuotesDict = @{
     [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
         count++;
 
-        NSString *charString = [text substringWithRange:tokenRange];
-        NSLog(@"char: %@", charString);
+//        NSString *charString = [text substringWithRange:tokenRange];
+//        NSLog(@"char: %@", charString);
     }];
     return count;
 }
