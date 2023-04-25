@@ -26,6 +26,9 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 
+/// the screen where the mouse is located
+@property (nonatomic, strong) NSScreen *screen;
+
 @property (nonatomic, copy) EZQueryType queryType;
 
 @property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
@@ -92,8 +95,13 @@ static EZWindowManager *_instance;
         
         CGPoint point = [self getPopButtonWindowLocation]; // This is top-left point
         CGPoint bottomLeftPoint = CGPointMake(point.x, point.y - self.popButtonWindow.height);
-        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
-        [self.popButtonWindow setFrameOrigin:safePoint];
+//        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
+//        [self.popButtonWindow setFrameOrigin:safePoint];
+        
+        [self.popButtonWindow setFrameOrigin:bottomLeftPoint];
+        
+//        [self showWindow:self.popButtonWindow onScreen:self.screen atPoint:bottomLeftPoint];
+        
         
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
@@ -319,7 +327,7 @@ static EZWindowManager *_instance;
     [EZPreferencesWindowController.shared.window close];
     
     // get safe window position
-    CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point];
+    CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
     [window setFrameOrigin:safeLocation];
     
     [window makeKeyAndOrderFront:nil];
@@ -368,6 +376,8 @@ static EZWindowManager *_instance;
 
 - (NSPoint)mouseLocation {
     NSScreen *screen = [self getMouseLocatedScreen];
+    self.screen = screen;
+    
 #if DEBUG
     NSAssert(screen != nil, @"no screen");
 #endif
@@ -376,8 +386,50 @@ static EZWindowManager *_instance;
         return CGPointZero;
     }
     
-    return [NSEvent mouseLocation];
+    NSPoint mousePosition = [NSEvent mouseLocation];
+//    for (NSScreen *screen in [NSScreen screens]) {
+//        NSRect screenFrame = [screen frame];
+//        if (NSPointInRect(mousePosition, screenFrame)) {
+//            self.screen = screen;
+//            mousePosition.x -= screenFrame.origin.x;
+//            mousePosition.y -= screenFrame.origin.y;
+//            break;
+//        }
+//    }
+    
+    NSLog(@"Mouse location on current screen x:%f, y:%f", mousePosition.x, mousePosition.y);
+    
+    return mousePosition;
 }
+
+//- (void)showWindow:(NSWindow *)window onScreen:(NSScreen *)screen atPoint:(NSPoint)point {
+//    NSRect screenFrame = [screen frame];
+//    NSRect windowFrame = [window frame];
+//
+//    CGFloat x = screenFrame.origin.x + point.x;
+//    CGFloat y = screenFrame.size.height - point.y - windowFrame.size.height + screenFrame.origin.y;
+//
+//    NSPoint windowOrigin = NSMakePoint(x, y);
+//
+//    [window setFrameOrigin:windowOrigin];
+//
+//    [window orderFront:nil];
+//}
+
+- (void)showWindow:(NSWindow *)window onScreen:(NSScreen *)screen atPoint:(NSPoint)point {
+    NSRect screenFrame = [screen frame];
+//    NSRect windowFrame = [window frame];
+
+    CGFloat x = NSMinX(screenFrame) + point.x;
+    CGFloat y = NSMaxY(screenFrame) - point.y;
+
+    NSPoint windowOrigin = NSMakePoint(x, y);
+
+    [window setFrameOrigin:windowOrigin];
+
+    [window orderFront:nil];
+}
+
 
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
@@ -496,10 +548,12 @@ static EZWindowManager *_instance;
     EZShowWindowPosition windowPosition = EZConfiguration.shared.fixedWindowPosition;
     switch (windowPosition) {
         case EZShowWindowPositionRight: {
-            CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
-            CGFloat x = mainScreenSize.width - self.fixedWindow.width;
-            CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
-            position = CGPointMake(x, y);
+            // TODO: need to check current screen
+//            CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
+//            CGFloat x = mainScreenSize.width - self.fixedWindow.width;
+//            CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
+//            position = CGPointMake(x, y);
+            position = [self getFloatingWindowInRightSideOfScreenPoint:self.fixedWindow];
             break;
         }
         case EZShowWindowPositionMouse: {
@@ -514,6 +568,24 @@ static EZWindowManager *_instance;
             break;
         }
     }
+    return position;
+}
+
+- (CGPoint)getFloatingWindowInRightSideOfScreenPoint:(NSWindow *)floatingWindow {
+    CGPoint position = CGPointZero;
+    
+    NSScreen *targetScreen = self.screen;
+    NSRect screenRect = [targetScreen visibleFrame];
+
+//    CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
+//    CGFloat x = mainScreenSize.width - self.fixedWindow.width;
+//    CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
+//    position = CGPointMake(x, y);
+    
+    CGFloat x = screenRect.origin.x + screenRect.size.width - floatingWindow.width;
+    CGFloat y = screenRect.origin.y + screenRect.size.height;
+    position = CGPointMake(x, y);
+    
     return position;
 }
 
