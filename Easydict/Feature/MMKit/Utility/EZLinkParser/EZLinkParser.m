@@ -96,7 +96,8 @@ static NSString *kEasydictSchema = @"easydict://";
      
      easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
      
-     easydict://writeKeyValue?EZDefaultTTSServiceKey=1
+     // Google TTS
+     easydict://writeKeyValue?EZDefaultTTSServiceKey=2
      */
     
     return @[
