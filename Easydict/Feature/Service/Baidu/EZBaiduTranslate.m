@@ -290,13 +290,13 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
     if ([from isEqualToString:EZLanguageAuto]) {
         [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
-                completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:lang]], nil);
+                completion([self getAudioURLWithText:text language:[self getTTSLanguageCode:lang]], nil);
             } else {
                 completion(nil, error);
             }
         }];
     } else {
-        completion([self getAudioURLWithText:text language:[self languageCodeForLanguage:from]], nil);
+        completion([self getAudioURLWithText:text language:[self getTTSLanguageCode:from]], nil);
     }
 }
 
@@ -307,6 +307,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
      
      https://fanyi.baidu.com/gettts?lan=en&text=good&spd=4&source=web
      */
+    
     text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
     NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text];
