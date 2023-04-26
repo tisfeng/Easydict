@@ -23,17 +23,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL enableDownload;
 
 @property (nonatomic, weak) EZQueryService *service;
-@property (nonatomic, strong) EZQueryService *defaultTTSService;
+@property (nonatomic, strong, readonly) EZQueryService *defaultTTSService;
 
-
-- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
 /// Play word phonetic
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic
              serviceType:(nullable EZServiceType)serviceType;
 
+- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
+
 - (void)playTextAudio:(NSString *)text
-         textLanguage:(EZLanguage)language
+             language:(EZLanguage)language
                accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
           serviceType:(nullable EZServiceType)serviceType;
