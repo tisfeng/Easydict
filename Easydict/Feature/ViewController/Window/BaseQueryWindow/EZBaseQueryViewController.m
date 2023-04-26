@@ -339,6 +339,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Setup queryModel when start new query.
+/// TODO: need to optimize, or detelte it.
 - (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType serviceType:(EZServiceType)serviceType {
     [self.queryModel stopServiceRequest:serviceType];
 
@@ -421,7 +422,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)clearAll {
     [self clearInput];
-    [self.queryModel stopAllService];
 
     [self updateQueryCellWithCompletionHandler:^{
         // !!!: To show closing animation, we cannot reset result directly.
@@ -692,14 +692,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)closeAllResultView:(void (^)(void))completionHandler {
+    [self.queryModel stopAllService];
+
     // !!!: Need to update all result cells, even it's not showing, it may show error image.
-    NSMutableArray *allResults = [NSMutableArray array];
-    for (EZQueryService *service in self.services) {
-        EZQueryResult *result = service.result;
-        [result reset];
-        service.result = result;
-        [allResults addObject:result];
-    }
+    NSArray *allResults = [self resetAllResults];
     [self updateCellWithResults:allResults reloadData:YES completionHandler:completionHandler];
 }
 
@@ -856,19 +852,19 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryText = @"";
 }
 
-- (void)resetAllResults {
+- (NSArray<EZQueryResult *> *)resetAllResults {
+    NSMutableArray *allResults = [NSMutableArray array];
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         [result reset];
         if (!service.result) {
             result = [[EZQueryResult alloc] init];
         }
-        result.isShowing = NO; // default not show, show after querying if result is not empty.
-        result.isLoading = NO;
+        [result reset];
         service.result = result;
-        
-        //        [self updateResultCell:service.result];
+        [allResults addObject:result];
     }
+    return allResults;
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
@@ -1116,7 +1112,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         BOOL isShowing = result.isShowing;
         if (!isShowing) {
-            [self.audioPlayer stop];
+            [result.service.audioPlayer stop];
         }
         
         service.enabledQuery = isShowing;

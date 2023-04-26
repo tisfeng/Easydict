@@ -234,10 +234,10 @@
     NSLog(@"stop play");
     
     // !!!: This method won't post play end notification.
-    [self.player pause];
+    [_player pause];
     
     // It wiil call delegate.
-    [self.synthesizer stopSpeaking];
+    [_synthesizer stopSpeaking];
     
     self.playing = NO;
 }
