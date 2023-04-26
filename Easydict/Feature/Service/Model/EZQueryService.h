@@ -53,6 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// - isAutoConvert: 是否使用本地中文简繁体转换，如 API 服务支持繁简体，则最好交给 API。
 - (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isAutoConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion;
 
+/// Get TTS langauge code.
+- (NSString *)getTTSLanguageCode:(EZLanguage)language;
+
 @end
 
 

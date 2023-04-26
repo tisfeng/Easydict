@@ -363,6 +363,8 @@
     if ([asset isPlayable]) {
         [self.player pause];
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
+        // TODO: need to check playerItem status
+        
         [self.player replaceCurrentItemWithPlayerItem:playerItem];
         [self.player play];
     } else {

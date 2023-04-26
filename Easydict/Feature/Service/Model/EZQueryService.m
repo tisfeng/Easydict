@@ -192,6 +192,14 @@ userInfo:nil]
     [self.audioPlayer.defaultTTSService textToAudio:text fromLanguage:from completion:completion];
 }
 
+- (NSString *)getTTSLanguageCode:(EZLanguage)language {
+    if ([language isEqualToString:EZLanguageClassicalChinese]) {
+        language = EZLanguageSimplifiedChinese;
+    }
+    NSString *languageCode = [self languageCodeForLanguage:language];
+    return languageCode;
+}
+
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
