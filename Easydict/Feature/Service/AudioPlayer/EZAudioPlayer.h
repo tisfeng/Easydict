@@ -25,15 +25,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZQueryService *defaultTTSService;
 
 
-/// Play system text audio.
-//- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
-
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
+         textLanguage:(EZLanguage)language
              audioURL:(nullable NSString *)audioURL
-         textLanguage:(EZLanguage)language;
+          serviceType:(nullable EZServiceType)serviceType;
 
 - (void)stop;
 
