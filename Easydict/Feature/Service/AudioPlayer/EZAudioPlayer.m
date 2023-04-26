@@ -34,6 +34,15 @@
 
 @synthesize playing = _playing;
 
++ (instancetype)shared {
+    static EZAudioPlayer *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[EZAudioPlayer alloc] init];
+    });
+    return instance;
+}
+
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -131,6 +140,15 @@
 }
 
 #pragma mark - Public Mehods
+
++ (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
+    [[self shared] playTextAudio:wordPhonetic.word
+               language:wordPhonetic.language
+                 accent:wordPhonetic.accent
+               audioURL:wordPhonetic.speakURL
+            serviceType:serviceType];
+    
+}
 
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
     [self playTextAudio:wordPhonetic.word
@@ -344,7 +362,7 @@
         [self.player play];
     } else {
         // TODO: maybe need to show a failure toast.
-        NSLog(@"Invalid file or file does not exist");
+        NSLog(@"asset cannot play");
         self.playing = NO;
     }
 }

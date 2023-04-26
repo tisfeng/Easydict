@@ -1100,13 +1100,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryResult *result = resultView.result;
     EZQueryService *service = result.service;
 
-    mm_weakify(self, result);
-    
-    [resultView setPlayAudioBlock:^(EZWordPhonetic *wordPhonetic) {
-        mm_strongify(result);
-        [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:nil];
-    }];
-    
+    mm_weakify(self);
+
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
         [text copyToPasteboard];
     }];

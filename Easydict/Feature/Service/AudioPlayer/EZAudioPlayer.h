@@ -22,9 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL enableDownload;
 
+// If not sepecify service, it will be defaultTTSService.
 @property (nonatomic, weak) EZQueryService *service;
+
 @property (nonatomic, strong, readonly) EZQueryService *defaultTTSService;
 
++ (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic
+             serviceType:(nullable EZServiceType)serviceType;
 
 /// Play word phonetic
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic
