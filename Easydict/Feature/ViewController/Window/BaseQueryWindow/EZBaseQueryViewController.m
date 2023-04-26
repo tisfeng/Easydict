@@ -441,7 +441,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSString *audioURL = self.queryModel.audioURL;
         EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
         [self.audioPlayer playTextAudio:self.queryText
-                           textLanguage:self.queryModel.queryFromLanguage
+                                        language:self.queryModel.queryFromLanguage
                                  accent:nil
                                audioURL:audioURL
                             serviceType:serviceType];
@@ -1258,17 +1258,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return queryViewHeight;
 }
 
-#pragma mark - Others
+#pragma mark - Auto play English word
 
 - (void)autoPlayEnglishWordAudio {
     if (!EZConfiguration.shared.autoPlayAudio) {
         return;
     }
 
-    // TODO: need to optimize, check text is English word.
     BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
     if (!isEnglishWord) {
-        NSLog(@"query text is not an English word");
+        NSLog(@"query text is not an English");
         return;
     }
 
@@ -1296,9 +1295,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryResult *youdaoResult = youdaoService.result;
     if (youdaoResult.wordResult) {
         NSString *audioURL = youdaoResult.fromSpeakURL;
-        if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
+        BOOL hasAudioURL = audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]];
+        if (hasAudioURL) {
             [self.audioPlayer playTextAudio:text
-                               textLanguage:self.queryModel.queryFromLanguage
+                                   language:EZLanguageEnglish
                                      accent:nil
                                    audioURL:audioURL
                                 serviceType:EZServiceTypeYoudao];
