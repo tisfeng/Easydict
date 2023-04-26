@@ -491,18 +491,23 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                     if (basic) {
                         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
                         
+                        EZLanguage language = result.queryModel.queryFromLanguage;
                         // 解析音频
                         NSMutableArray *phoneticArray = [NSMutableArray array];
                         if (basic.us_phonetic && basic.us_speech) {
-                            EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
+                            EZWordPhonetic *phonetic = [EZWordPhonetic new];
                             phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+                            phonetic.language = language;
+                            phonetic.accent = @"us";
                             phonetic.value = basic.us_phonetic;
                             phonetic.speakURL = basic.us_speech;
                             [phoneticArray addObject:phonetic];
                         }
                         if (basic.uk_phonetic && basic.uk_speech) {
-                            EZTranslatePhonetic *phonetic = [EZTranslatePhonetic new];
+                            EZWordPhonetic *phonetic = [EZWordPhonetic new];
                             phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
+                            phonetic.language = language;
+                            phonetic.accent = @"uk";
                             phonetic.value = basic.uk_phonetic;
                             phonetic.speakURL = basic.uk_speech;
                             [phoneticArray addObject:phonetic];
@@ -583,7 +588,10 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                                 result.wordResult = wordResult;
                             }
                             // 如果是单词或短语，优先使用美式发音
-                            if ([result.from isEqualToString:EZLanguageEnglish] && [result.to isEqualToString:EZLanguageSimplifiedChinese] && wordResult.phonetics.firstObject.speakURL.length) {
+                            BOOL hasEnglishWordAudioURL = [result.from isEqualToString:EZLanguageEnglish]
+                            && [result.to isEqualToString:EZLanguageSimplifiedChinese]
+                            && wordResult.phonetics.firstObject.speakURL.length;
+                            if (hasEnglishWordAudioURL) {
                                 result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
                             }
                         }

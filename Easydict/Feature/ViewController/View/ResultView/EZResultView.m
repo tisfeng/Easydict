@@ -243,10 +243,15 @@
     [self updateLoadingAnimation];
 }
 
-- (void)setPlayAudioBlock:(void (^)(NSString *_Nonnull, NSString *_Nonnull))playAudioBlock {
+- (void)setPlayAudioBlock:(void (^)(EZWordPhonetic * _Nonnull))playAudioBlock {
     _playAudioBlock = playAudioBlock;
     self.wordResultView.playAudioBlock = playAudioBlock;
 }
+
+//- (void)setPlayAudioBlock:(void (^)(NSString * _Nonnull, EZLanguage _Nonnull, NSString * _Nullable))playAudioBlock {
+//    _playAudioBlock = playAudioBlock;
+//    self.wordResultView.playAudioBlock = playAudioBlock;
+//}
 
 - (void)setCopyTextBlock:(void (^)(NSString *_Nonnull))copyTextBlock {
     _copyTextBlock = copyTextBlock;

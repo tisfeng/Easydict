@@ -89,7 +89,7 @@
 
 - (void)setPlaying:(BOOL)playing {
     _playing = playing;
-
+    
     if (self.playingBlock) {
         self.playingBlock(playing);
     }
@@ -118,7 +118,7 @@
         }
     }
     _defaultTTSService.audioPlayer = self;
-
+    
     return _defaultTTSService;
 }
 
@@ -134,7 +134,12 @@
 // TODO: need to optimize
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
     if (self.service && self.service.serviceType != EZServiceTypeApple) {
-        [self playTextAudio:text textLanguage:language audioURL:nil serviceType:nil];
+        [self playTextAudio:text
+               textLanguage:language
+                     accent:nil
+                   audioURL:nil
+                serviceType:nil];
+        //        [self playTextAudio:text textLanguage:language audioURL:nil serviceType:nil];
     } else {
         [self playSystemTextAudio:text textLanguage:language];
     }
@@ -148,16 +153,25 @@
     self.playing = YES;
 }
 
+- (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
+    [self playTextAudio:wordPhonetic.word
+           textLanguage:wordPhonetic.language
+                 accent:wordPhonetic.accent
+               audioURL:wordPhonetic.speakURL
+            serviceType:serviceType];
+}
+
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
          textLanguage:(EZLanguage)language
+               accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
           serviceType:(nullable EZServiceType)serviceType {
     if (!text.length) {
         NSLog(@"play text is empty");
         return;
     }
-
+    
     self.playing = YES;
     if (!serviceType) {
         serviceType = self.service.serviceType;
@@ -166,44 +180,50 @@
     
     BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
     self.enableDownload = isEnglishWord;
-
+    
     if (audioURL.length) {
         BOOL useCache = isEnglishWord;
-        BOOL usPhonetic = [self isUSPhoneticOfAudioURL:audioURL];
         [self playTextAudio:text
                    audioURL:audioURL
                fromLanguage:language
                 serviceType:serviceType
                    useCache:useCache
-                 usPhonetic:usPhonetic];
+                     accent:accent];
         return;
     }
-
+    
     if (self.service) {
         [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
             if (!error && url.length) {
-                [self.service.audioPlayer playTextAudio:text textLanguage:language audioURL:url serviceType:nil];
+                [self.service.audioPlayer
+                 playTextAudio:text
+                 textLanguage:language
+                 accent:nil
+                 audioURL:url
+                 serviceType:nil];
+                //                [self.service.audioPlayer playTextAudio:text textLanguage:language audioURL:url serviceType:nil];
             } else {
                 NSLog(@"get audio url error: %@", error);
                 [self playTextAudio:text textLanguage:language];
             }
         }];
-
+        
         return;
     }
     
     [self playTextAudio:text textLanguage:language];
 }
 
+
 - (void)stop {
     NSLog(@"stop play");
-
+    
     // !!!: This method won't post play end notification.
     [self.player pause];
-
+    
     // It wiil call delegate.
     [self.synthesizer stopSpeaking];
-
+    
     self.playing = NO;
 }
 
@@ -217,59 +237,46 @@
 
 #pragma mark -
 
-- (BOOL)isUSPhoneticOfAudioURL:(NSString *)audioURL {
-    BOOL usPhonetic = YES;
-    
-    // TODO: need to optimize.
-    if (self.serviceType == EZServiceTypeYoudao) {
-        /**
-         get type from audioURL
-         
-         us: https://dict.youdao.com/dictvoice?audio=good&type=2
-         uk: https://dict.youdao.com/dictvoice?audio=good&type=1
-         */
-        NSString *type = [audioURL componentsSeparatedByString:@"&type="].lastObject;
-        // if type is 1, use ukPhonetic
-        if ([type isEqualToString:@"1"]) {
-            usPhonetic = NO;
-        }
-    }
-    return usPhonetic;
-}
-
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
          fromLanguage:(EZLanguage)language
           serviceType:(EZServiceType)serviceType
              useCache:(BOOL)useCache
-           usPhonetic:(BOOL)usPhonetic
- {
+               accent:(nullable NSString *)accent {
     NSLog(@"play audio url: %@", audioURL);
-
+    
     [self.player pause];
-
-    NSString *filePath = [self getWordAudioFilePath:text usPhonetic:usPhonetic serviceType:serviceType];
+    
+    NSString *filePath = [self getWordAudioFilePath:text
+                                           language:language
+                                             accent:accent
+                                        serviceType:serviceType];
     // if audio file exist, play it
     if (useCache && [[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [self playLocalAudioFile:filePath];
         return;
     }
-
+    
     if (!audioURL.length) {
         if (!text.length) {
             return;
         }
-
+        
         [self playTextAudio:text textLanguage:language];
         return;
     }
-
+    
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
-    BOOL download = self.enableDownload || serviceType == EZServiceTypeYoudao;
+    BOOL download = self.enableDownload;
     
     if (download) {
         NSURL *URL = [NSURL URLWithString:audioURL];
-        [self downloadWordAudio:text audioURL:URL autoPlay:YES usPhonetic:usPhonetic serviceType:serviceType];
+        [self downloadWordAudio:text
+                       audioURL:URL
+                       autoPlay:YES
+                       language:language
+                         accent:accent
+                    serviceType:serviceType];
     } else {
         [self playRemoteAudio:audioURL];
     }
@@ -278,12 +285,16 @@
 - (void)downloadWordAudio:(NSString *)word
                  audioURL:(NSURL *)url
                  autoPlay:(BOOL)autoPlay
-               usPhonetic:(BOOL)usPhonetic
+                 language:(EZLanguage)language
+                   accent:(nullable NSString *)accent
               serviceType:(EZServiceType)serviceType {
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-        NSString *filePath = [self getWordAudioFilePath:word usPhonetic:usPhonetic serviceType:serviceType];
+        NSString *filePath = [self getWordAudioFilePath:word
+                                               language:language
+                                                 accent:accent
+                                            serviceType:serviceType];
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         NSLog(@"File downloaded to: %@", filePath);
@@ -298,7 +309,7 @@
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }
-
+    
     NSURL *url = [NSURL fileURLWithPath:filePath];
     [self playAudioWithURL:url];
 }
@@ -308,7 +319,7 @@
     if (!urlString.length) {
         return;
     }
-
+    
     NSURL *url = [NSURL URLWithString:urlString];
     [self playAudioWithURL:url];
 }
@@ -316,13 +327,13 @@
 /// Play audio with NSURL
 - (void)playAudioWithURL:(NSURL *)url {
     [self.player pause];
-        
+    
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (![asset isKindOfClass:[AVURLAsset class]]) {
         NSLog(@"Invalid asset.");
         return;
     }
-
+    
     if ([asset isPlayable]) {
         [self.player pause];
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
@@ -355,26 +366,36 @@
 
 // Get word audio file path
 - (NSString *)getWordAudioFilePath:(NSString *)word
-                        usPhonetic:(BOOL)usPhonetic
+                          language:(EZLanguage)language
+                            accent:(nullable NSString *)accent
                        serviceType:(EZServiceType)serviceType {
     NSString *audioDirectory = [self getAudioDirectory];
-
+    
     // Avoid special characters in file name.
     word = [word md5];
-    NSString *audioFileName = [NSString stringWithFormat:@"%@_%@_%@", serviceType, usPhonetic ? @"us" : @"uk", word];
-
+    NSString *textLanguage = language;
+    if ([language isEqualToString:EZLanguageEnglish] && !accent) {
+        accent = @"us";
+    }
+    
+    if (accent.length) {
+        textLanguage = [textLanguage stringByAppendingFormat:@"-%@", accent];
+    }
+    
+    NSString *audioFileName = [NSString stringWithFormat:@"%@_%@_%@", serviceType, textLanguage, word];
+    
     /**
      TODO: maybe we should check the downloaded audio file type, some of them are not mp3, though the suggested extension is mp3, also can be played, but the file will 10x larger than m4a if we save it as mp3.
      
      e.g. 'set' from Youdao.
      */
-
+    
     // m4a
     NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", audioFileName]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:m4aFilePath]) {
         return m4aFilePath;
     }
-
+    
     // mp3
     NSString *mp3FilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", audioFileName]];
     return mp3FilePath;
@@ -384,9 +405,9 @@
     OSStatus status;
     AudioFileID audioFile;
     AudioFileTypeID fileType;
-
+    
     NSLog(@"kAudioFileWAVEType: %d", kAudioFileWAVEType);
-
+    
     status = AudioFileOpenURL((__bridge CFURLRef)filePathURL, kAudioFileReadPermission, 0, &audioFile);
     if (status == noErr) {
         UInt32 size = sizeof(fileType);
@@ -417,5 +438,6 @@
     }
     return YES;
 }
+
 
 @end

@@ -20,7 +20,9 @@ static const CGFloat EZResultViewMiniHeight = 30;
 
 @property (nonatomic, copy) void (^clickArrowBlock)(EZQueryResult *result);
 
-@property (nonatomic, copy) void (^playAudioBlock)(NSString *word, NSString *audioURL);
+@property (nonatomic, copy) void (^playAudioBlock)(EZWordPhonetic *wordPhonetic);
+//@property (nonatomic, copy) void (^playAudioBlock)(NSString *word, EZLanguage language, NSString * _Nullable audioURL);
+
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *word);
 @property (nonatomic, copy) void (^clickTextBlock)(NSString *word);
 

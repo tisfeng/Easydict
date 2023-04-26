@@ -442,6 +442,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
         [self.audioPlayer playTextAudio:self.queryText
                            textLanguage:self.queryModel.queryFromLanguage
+                                 accent:nil
                                audioURL:audioURL
                             serviceType:serviceType];
     };
@@ -1097,22 +1098,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)setupResultCell:(EZResultView *)resultView {
     EZQueryResult *result = resultView.result;
-    EZQueryService *service = [self serviceWithType:result.serviceType];
-
-    // TODO: need to check, language should from result.
-    EZLanguage fromLanguage = EZLanguageAuto; // Use system detect text language.
-    // If translated text, from language is query target language.
-    if (!result.wordResult) {
-        fromLanguage = result.queryModel.queryTargetLanguage;
-    }
+    EZQueryService *service = result.service;
 
     mm_weakify(self, result);
-    [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
+    
+    [resultView setPlayAudioBlock:^(EZWordPhonetic *wordPhonetic) {
         mm_strongify(result);
-        [result.service.audioPlayer playTextAudio:text
-                                     textLanguage:fromLanguage
-                                         audioURL:audioURL
-                                      serviceType:nil];
+        [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:nil];
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
@@ -1305,17 +1297,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (youdaoResult.wordResult) {
         NSString *audioURL = youdaoResult.fromSpeakURL;
         if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
-            // Currently, only Youdao audio url will download and cache.
-            self.audioPlayer.enableDownload = YES;
             [self.audioPlayer playTextAudio:text
                                textLanguage:self.queryModel.queryFromLanguage
+                                     accent:nil
                                    audioURL:audioURL
                                 serviceType:EZServiceTypeYoudao];
             
             return YES;
         }
     }
-    self.audioPlayer.enableDownload = NO;
     
     return NO;
 }
