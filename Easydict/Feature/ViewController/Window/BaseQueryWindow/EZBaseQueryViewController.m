@@ -338,16 +338,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
-/// Setup queryModel when start new query.
-/// TODO: need to optimize, or detelte it.
-- (void)startNewQuery:(NSString *)text queyType:(EZQueryType)queryType serviceType:(EZServiceType)serviceType {
-    [self.queryModel stopServiceRequest:serviceType];
-
-    self.queryModel.queryText = text;
-    self.queryModel.queryType = queryType;
-    self.queryModel.audioURL = nil;
-}
-
 - (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
 
@@ -570,8 +560,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     result.isShowing = YES;
     result.isLoading = YES;
     
-    [self startNewQuery:self.queryText queyType:self.queryModel.queryType serviceType:service.serviceType];
-
     [self updateResultLoadingAnimation:result];
     
     //    NSLog(@"query service: %@", service.serviceType);
