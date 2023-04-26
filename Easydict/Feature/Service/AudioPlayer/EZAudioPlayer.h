@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZEnumTypes.h"
+#import "EZQueryResult.h"
 
 @class EZQueryService;
 
@@ -27,9 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
-/// Play text URL audio.
+/// Play word phonetic
+- (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic
+             serviceType:(nullable EZServiceType)serviceType;
+
 - (void)playTextAudio:(NSString *)text
          textLanguage:(EZLanguage)language
+               accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
           serviceType:(nullable EZServiceType)serviceType;
 

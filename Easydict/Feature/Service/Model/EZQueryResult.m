@@ -9,8 +9,6 @@
 #import "EZQueryResult.h"
 #import "EZLocalStorage.h"
 
-
-
 /// Convert part
 /**
  adjective -> adj.
@@ -43,7 +41,14 @@ NSString *getPartName(NSString *part) {
 }
 
 
-@implementation EZTranslatePhonetic : NSObject
+@implementation EZWordPhonetic : NSObject
+
+- (instancetype)init {
+    if (self = [super init]) {
+
+    }
+    return self;
+}
 
 @end
 
