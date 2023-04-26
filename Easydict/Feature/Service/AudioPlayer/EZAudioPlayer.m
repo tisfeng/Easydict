@@ -24,6 +24,8 @@
 
 @property (nonatomic, assign) EZTTSServiceType ttsServiceType;
 
+@property (nonatomic, assign) EZServiceType serviceType;
+
 @end
 
 @implementation EZAudioPlayer
@@ -129,9 +131,10 @@
 
 #pragma mark - Public Mehods
 
+// TODO: need to optimize
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
     if (self.service && self.service.serviceType != EZServiceTypeApple) {
-        [self playTextAudio:text audioURL:nil textLanguage:language];
+        [self playTextAudio:text textLanguage:language audioURL:nil serviceType:nil];
     } else {
         [self playSystemTextAudio:text textLanguage:language];
     }
@@ -147,14 +150,19 @@
 
 /// Play text URL audio.
 - (void)playTextAudio:(NSString *)text
+         textLanguage:(EZLanguage)language
              audioURL:(nullable NSString *)audioURL
-         textLanguage:(EZLanguage)language {
+          serviceType:(nullable EZServiceType)serviceType {
     if (!text.length) {
         NSLog(@"play text is empty");
         return;
     }
 
     self.playing = YES;
+    if (!serviceType) {
+        serviceType = self.service.serviceType;
+    }
+    self.serviceType = serviceType;
 
     if (audioURL.length) {
         BOOL useCache = NO;
@@ -165,14 +173,14 @@
                fromLanguage:language
                    useCache:useCache
                  usPhonetic:usPhonetic
-                serviceType:self.service.serviceType];
+                serviceType:serviceType];
         return;
     }
 
     if (self.service) {
         [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
             if (!error && url.length) {
-                [self.service.audioPlayer playTextAudio:text audioURL:url textLanguage:language];
+                [self.service.audioPlayer playTextAudio:text textLanguage:language audioURL:url serviceType:nil];
             } else {
                 NSLog(@"get audio url error: %@", error);
                 [self playTextAudio:text textLanguage:language];
@@ -226,6 +234,14 @@
 }
 
 
+/**
+ // TODO: need to change
+ 
+ - (void)playTextAudio:(NSString *)text
+          textLanguage:(EZLanguage)language
+              audioURL:(nullable NSString *)audioURL
+           serviceType:(nullable EZServiceType)serviceType
+ */
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
          fromLanguage:(EZLanguage)language

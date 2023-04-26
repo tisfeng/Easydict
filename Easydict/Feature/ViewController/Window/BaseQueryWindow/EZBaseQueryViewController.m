@@ -436,9 +436,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)playQueryTextSound {
+    // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
+    NSString *audioURL = self.queryModel.audioURL;
+    EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
     [self.audioPlayer playTextAudio:self.queryText
-                           audioURL:self.queryModel.audioURL
-                       textLanguage:self.queryModel.queryFromLanguage];
+                       textLanguage:self.queryModel.queryFromLanguage
+                           audioURL:audioURL
+                        serviceType:serviceType];
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
@@ -1084,6 +1088,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryResult *result = resultView.result;
     EZQueryService *service = [self serviceWithType:result.serviceType];
 
+    // TODO: need to check, language should from result.
     EZLanguage fromLanguage = EZLanguageAuto; // Use system detect text language.
     // If translated text, from language is query target language.
     if (!result.wordResult) {
@@ -1094,8 +1099,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [resultView setPlayAudioBlock:^(NSString *_Nonnull text, NSString *audioURL) {
         mm_strongify(result);
         [result.service.audioPlayer playTextAudio:text
+                                     textLanguage:fromLanguage
                                          audioURL:audioURL
-                                     textLanguage:fromLanguage];
+                                      serviceType:nil];
     }];
     
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
@@ -1290,7 +1296,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]]) {
             // Currently, only Youdao audio url will download and cache.
             self.audioPlayer.enableDownload = YES;
-            [self.audioPlayer playTextAudio:text audioURL:audioURL textLanguage:self.queryModel.queryFromLanguage];
+            [self.audioPlayer playTextAudio:text
+                               textLanguage:self.queryModel.queryFromLanguage
+                                   audioURL:audioURL
+                                serviceType:EZServiceTypeYoudao];
+            
             return YES;
         }
     }
