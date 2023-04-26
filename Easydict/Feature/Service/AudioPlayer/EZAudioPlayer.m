@@ -23,7 +23,8 @@
 
 @property (nonatomic, assign) BOOL playing;
 
-@property (nonatomic, assign) EZTTSServiceType ttsServiceType;
+@property (nonatomic, assign) EZTTSServiceType defaultTTSServiceType;
+@property (nonatomic, strong) EZQueryService *defaultTTSService;
 
 @property (nonatomic, assign) EZServiceType serviceType;
 
@@ -95,14 +96,14 @@
     }
 }
 
-- (EZTTSServiceType)ttsServiceType {
+- (EZTTSServiceType)defaultTTSServiceType {
     EZTTSServiceType ttsServiceType = [[NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:@"0"] integerValue];
     return ttsServiceType;
 }
 
 - (EZQueryService *)defaultTTSService {
     if (!_defaultTTSService) {
-        switch (self.ttsServiceType) {
+        switch (self.defaultTTSServiceType) {
             case EZTTSServiceTypeBaidu: {
                 _defaultTTSService = [[EZBaiduTranslate alloc] init];
                 break;
@@ -131,39 +132,26 @@
 
 #pragma mark - Public Mehods
 
-// TODO: need to optimize
-- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
-    if (self.service && self.service.serviceType != EZServiceTypeApple) {
-        [self playTextAudio:text
-               textLanguage:language
-                     accent:nil
-                   audioURL:nil
-                serviceType:nil];
-        //        [self playTextAudio:text textLanguage:language audioURL:nil serviceType:nil];
-    } else {
-        [self playSystemTextAudio:text textLanguage:language];
-    }
-}
-
-/// Play system text audio.
-- (void)playSystemTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
-    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:language];
-    synthesizer.delegate = self;
-    self.synthesizer = synthesizer;
-    self.playing = YES;
-}
-
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
     [self playTextAudio:wordPhonetic.word
-           textLanguage:wordPhonetic.language
+               language:wordPhonetic.language
                  accent:wordPhonetic.accent
                audioURL:wordPhonetic.speakURL
             serviceType:serviceType];
 }
 
-/// Play text URL audio.
+// TODO: need to optimize
+- (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language {
+    [self playTextAudio:text
+               language:language
+                 accent:nil
+               audioURL:nil
+            serviceType:nil];
+}
+
+/// Play text audio.
 - (void)playTextAudio:(NSString *)text
-         textLanguage:(EZLanguage)language
+             language:(EZLanguage)language
                accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
           serviceType:(nullable EZServiceType)serviceType {
@@ -181,37 +169,46 @@
     BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
     self.enableDownload = isEnglishWord;
     
+    // 1. if has audio url, play audio url directly.
     if (audioURL.length) {
-        BOOL useCache = isEnglishWord;
-        [self playTextAudio:text
-                   audioURL:audioURL
-               fromLanguage:language
-                serviceType:serviceType
-                   useCache:useCache
-                     accent:accent];
+        [self playAudioURL:audioURL
+                      text:text
+                  language:language
+                    accent:accent
+               serviceType:serviceType];
         return;
     }
     
-    if (self.service) {
-        [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-            if (!error && url.length) {
-                [self.service.audioPlayer
-                 playTextAudio:text
-                 textLanguage:language
-                 accent:nil
-                 audioURL:url
-                 serviceType:nil];
-                //                [self.service.audioPlayer playTextAudio:text textLanguage:language audioURL:url serviceType:nil];
+    // 2. if service type is Apple, use system speech.
+    if (serviceType == EZServiceTypeApple) {
+        [self playSystemTextAudio:text language:language];
+        return;
+    }
+    
+    // 3. get service text audio URL, and play.
+    [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+        EZAudioPlayer *audioPlayer = self.service.audioPlayer;
+        if (!error && url.length) {
+            [audioPlayer playTextAudio:text
+                              language:language
+                                accent:nil
+                              audioURL:url
+                           serviceType:nil];
+        } else {
+            NSLog(@"get audio url error: %@", error);
+            
+            // e.g. if Baidu get audio url failed, try to use default Google tts.
+            if (![audioPlayer.service.class isEqual:audioPlayer.defaultTTSService.class]) {
+                [audioPlayer.defaultTTSService.audioPlayer playTextAudio:text
+                                                                language:language
+                                                                  accent:accent
+                                                                audioURL:audioURL
+                                                             serviceType:serviceType];
             } else {
-                NSLog(@"get audio url error: %@", error);
-                [self playTextAudio:text textLanguage:language];
+                [self playSystemTextAudio:text language:language];
             }
-        }];
-        
-        return;
-    }
-    
-    [self playTextAudio:text textLanguage:language];
+        }
+    }];
 }
 
 
@@ -237,32 +234,35 @@
 
 #pragma mark -
 
-- (void)playTextAudio:(NSString *)text
-             audioURL:(nullable NSString *)audioURL
-         fromLanguage:(EZLanguage)language
-          serviceType:(EZServiceType)serviceType
-             useCache:(BOOL)useCache
-               accent:(nullable NSString *)accent {
-    NSLog(@"play audio url: %@", audioURL);
+/// Play system text audio.
+- (void)playSystemTextAudio:(NSString *)text language:(EZLanguage)language {
+    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:language];
+    synthesizer.delegate = self;
+    self.synthesizer = synthesizer;
+    self.playing = YES;
+}
+
+/// Play audio URL.
+- (void)playAudioURL:(NSString *)audioURL
+                text:(NSString *)text
+            language:(EZLanguage)language
+              accent:(nullable NSString *)accent
+         serviceType:(EZServiceType)serviceType {
+    if (audioURL.length == 0) {
+        NSLog(@"play audio url is empty");
+        return;
+    }
     
+    NSLog(@"play audio url: %@", audioURL);
     [self.player pause];
     
     NSString *filePath = [self getWordAudioFilePath:text
                                            language:language
                                              accent:accent
                                         serviceType:serviceType];
-    // if audio file exist, play it
-    if (useCache && [[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    // if audio file exist, play it.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [self playLocalAudioFile:filePath];
-        return;
-    }
-    
-    if (!audioURL.length) {
-        if (!text.length) {
-            return;
-        }
-        
-        [self playTextAudio:text textLanguage:language];
         return;
     }
     
@@ -282,6 +282,7 @@
     }
 }
 
+/// Download word audio file.
 - (void)downloadWordAudio:(NSString *)word
                  audioURL:(NSURL *)url
                  autoPlay:(BOOL)autoPlay
@@ -298,7 +299,9 @@
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         NSLog(@"File downloaded to: %@", filePath);
-        [self playLocalAudioFile:filePath.path];
+        if (autoPlay) {
+            [self playLocalAudioFile:filePath.path];
+        }
     }];
     [downloadTask resume];
 }
@@ -438,6 +441,5 @@
     }
     return YES;
 }
-
 
 @end
