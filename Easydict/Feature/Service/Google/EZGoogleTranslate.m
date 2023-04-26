@@ -219,19 +219,18 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     if ([from isEqualToString:EZLanguageAuto]) {
         // 判断语言
-        mm_weakify(self)
-        [self detectText:text
-              completion:^(EZLanguage lang, NSError *_Nullable error) {
-            mm_strongify(self) if (error) {
+        mm_weakify(self);
+        [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
+            mm_strongify(self);
+            if (error) {
                 completion(nil, error);
                 return;
             }
             
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
-            NSString *url = [self
-                             getAudioURLWithText:text
-                             language:[self languageCodeForLanguage:lang]
-                             sign:sign];
+            NSString *url = [self getAudioURLWithText:text
+                                             language:[self getTTSLanguageCode:lang]
+                                                 sign:sign];
             completion(url, nil);
         }];
     } else {
@@ -243,7 +242,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             
             NSString *sign = [[self.signFunction callWithArguments:@[ text ]] toString];
             NSString *url = [self getAudioURLWithText:text
-                                             language:[self languageCodeForLanguage:from]
+                                             language:[self getTTSLanguageCode:from]
                                                  sign:sign];
             completion(url, nil);
         }];
