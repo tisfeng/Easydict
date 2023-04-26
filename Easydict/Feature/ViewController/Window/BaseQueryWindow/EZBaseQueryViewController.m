@@ -436,13 +436,24 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)playQueryTextSound {
-    // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
-    NSString *audioURL = self.queryModel.audioURL;
-    EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
-    [self.audioPlayer playTextAudio:self.queryText
-                       textLanguage:self.queryModel.queryFromLanguage
-                           audioURL:audioURL
-                        serviceType:serviceType];
+    void (^playBlock)(void) = ^{
+        // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
+        NSString *audioURL = self.queryModel.audioURL;
+        EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
+        [self.audioPlayer playTextAudio:self.queryText
+                           textLanguage:self.queryModel.queryFromLanguage
+                               audioURL:audioURL
+                            serviceType:serviceType];
+    };
+    
+    // Before playing audio, we should detect the query text language.
+    if (self.queryModel.hasQueryFromLanguage) {
+        playBlock();
+    } else {
+        [self detectQueryText:^{
+            playBlock();
+        }];
+    }
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
