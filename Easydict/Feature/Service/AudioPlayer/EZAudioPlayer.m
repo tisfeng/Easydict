@@ -13,6 +13,7 @@
 #import "EZEnumTypes.h"
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
+#import "EZTextWordUtils.h"
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -41,7 +42,6 @@
 }
 
 - (void)setup {
-    // 注册通知
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
@@ -163,17 +163,19 @@
         serviceType = self.service.serviceType;
     }
     self.serviceType = serviceType;
+    
+    BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
+    self.enableDownload = isEnglishWord;
 
     if (audioURL.length) {
-        BOOL useCache = NO;
-        BOOL usPhonetic = YES;
-        [self getUseCache:&useCache usPhonetic:&usPhonetic audioURL:audioURL];
+        BOOL useCache = isEnglishWord;
+        BOOL usPhonetic = [self isUSPhoneticOfAudioURL:audioURL];
         [self playTextAudio:text
                    audioURL:audioURL
                fromLanguage:language
+                serviceType:serviceType
                    useCache:useCache
-                 usPhonetic:usPhonetic
-                serviceType:serviceType];
+                 usPhonetic:usPhonetic];
         return;
     }
 
@@ -215,39 +217,33 @@
 
 #pragma mark -
 
-/// Get &useCache and &usPhonetic from service.
-- (void)getUseCache:(BOOL *)useCache
-         usPhonetic:(BOOL *)usPhonetic
-           audioURL:(NSString *)audioURL {
-    if (self.service.serviceType == EZServiceTypeYoudao) {
-        *useCache = YES;
-
-        // uk https://dict.youdao.com/dictvoice?audio=class&type=1
-
-        // get type from audioURL
+- (BOOL)isUSPhoneticOfAudioURL:(NSString *)audioURL {
+    BOOL usPhonetic = YES;
+    
+    // TODO: need to optimize.
+    if (self.serviceType == EZServiceTypeYoudao) {
+        /**
+         get type from audioURL
+         
+         us: https://dict.youdao.com/dictvoice?audio=good&type=2
+         uk: https://dict.youdao.com/dictvoice?audio=good&type=1
+         */
         NSString *type = [audioURL componentsSeparatedByString:@"&type="].lastObject;
         // if type is 1, use ukPhonetic
         if ([type isEqualToString:@"1"]) {
-            *usPhonetic = NO;
+            usPhonetic = NO;
         }
     }
+    return usPhonetic;
 }
 
-
-/**
- // TODO: need to change
- 
- - (void)playTextAudio:(NSString *)text
-          textLanguage:(EZLanguage)language
-              audioURL:(nullable NSString *)audioURL
-           serviceType:(nullable EZServiceType)serviceType
- */
 - (void)playTextAudio:(NSString *)text
              audioURL:(nullable NSString *)audioURL
          fromLanguage:(EZLanguage)language
+          serviceType:(EZServiceType)serviceType
              useCache:(BOOL)useCache
            usPhonetic:(BOOL)usPhonetic
-          serviceType:(EZServiceType)serviceType {
+ {
     NSLog(@"play audio url: %@", audioURL);
 
     [self.player pause];
@@ -363,8 +359,15 @@
                        serviceType:(EZServiceType)serviceType {
     NSString *audioDirectory = [self getAudioDirectory];
 
+    // Avoid special characters in file name.
     word = [word md5];
-    NSString *audioFileName = [NSString stringWithFormat:@"%@_%@_%@", word, serviceType, usPhonetic ? @"us" : @"uk"];
+    NSString *audioFileName = [NSString stringWithFormat:@"%@_%@_%@", serviceType, usPhonetic ? @"us" : @"uk", word];
+
+    /**
+     TODO: maybe we should check the downloaded audio file type, some of them are not mp3, though the suggested extension is mp3, also can be played, but the file will 10x larger than m4a if we save it as mp3.
+     
+     e.g. 'set' from Youdao.
+     */
 
     // m4a
     NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", audioFileName]];
