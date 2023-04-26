@@ -301,7 +301,12 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 }
 
 - (NSString *)getAudioURLWithText:(NSString *)text language:(NSString *)language {
-    // ???: As far as I tested, the max length of text is ~1000.
+    /**
+     ???: As far as I tested, the max length of text is ~1000.
+     !!!: This audio url sometimes cannot be played, Baidu web audio is not reliable.
+     
+     https://fanyi.baidu.com/gettts?lan=en&text=good&spd=4&source=web
+     */
     text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
     NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text];
