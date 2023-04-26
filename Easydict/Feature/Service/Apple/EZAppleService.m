@@ -739,7 +739,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 - (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
-    NSLog(@"system speak: %@(%@)", text, fromLanguage);
+    NSLog(@"system speak: %@ (%@)", text, fromLanguage);
     
     // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
     NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];

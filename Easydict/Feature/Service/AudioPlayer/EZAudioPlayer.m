@@ -28,6 +28,8 @@
 
 @property (nonatomic, assign) EZServiceType serviceType;
 
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) EZLanguage language;
 @end
 
 @implementation EZAudioPlayer
@@ -186,6 +188,9 @@
     
     BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
     self.enableDownload = isEnglishWord;
+    
+    self.text = text;
+    self.language = language;
     
     // 1. if has audio url, play audio url directly.
     if (audioURL.length) {
@@ -361,9 +366,12 @@
         [self.player replaceCurrentItemWithPlayerItem:playerItem];
         [self.player play];
     } else {
+        // If play audio url failed, use system play.
         // TODO: maybe need to show a failure toast.
+        
         NSLog(@"asset cannot play");
-        self.playing = NO;
+        
+        [self playSystemTextAudio:self.text language:self.language];
     }
 }
 
