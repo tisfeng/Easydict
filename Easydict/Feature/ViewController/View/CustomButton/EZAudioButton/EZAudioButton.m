@@ -34,7 +34,7 @@
     [self setClickBlock:^(EZButton *_Nonnull audioButton) {
         mm_strongify(self);
         BOOL isPlaying = self.audioPlayer.playing;
-        NSLog(@"audioActionBlock: %d", isPlaying);
+//        NSLog(@"audioActionBlock: %d", isPlaying);
 
         if (isPlaying) {
             [self.audioPlayer stop];
@@ -52,7 +52,7 @@
     mm_weakify(self);
     [audioPlayer setPlayingBlock:^(BOOL isPlaying) {
         mm_strongify(self);
-        NSLog(@"isPlaying: %d", isPlaying);
+//        NSLog(@"isPlaying: %d", isPlaying);
         
         self.isPlaying = isPlaying;
     }];

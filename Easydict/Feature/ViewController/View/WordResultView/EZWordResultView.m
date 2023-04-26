@@ -308,24 +308,21 @@ static const CGFloat kVerticalPadding_8 = 8;
             valueTextField.mas_key = @"valueTextField_phonetics";
         }
         
-        EZHoverButton *audioButton = [[EZHoverButton alloc] init];
+        EZAudioButton *audioButton = [[EZAudioButton alloc] init];
         [self addSubview:audioButton];
-        audioButton.image = [NSImage imageNamed:@"audio"];
-        audioButton.toolTip = @"Play";
+
+        EZAudioPlayer *audioPlayer = [[EZAudioPlayer alloc] init];
+        audioPlayer.service = result.service;
+        audioButton.audioPlayer = audioPlayer;
+        [audioButton setPlayAudioBlock:^{
+            [audioPlayer playWordPhonetic:obj serviceType:result.serviceType];
+        }];
+        
         [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
             NSView *leftView = valueTextField ?: nameTextFiled;
             make.left.equalTo(leftView.mas_right).offset(4);
             make.centerY.equalTo(valueTextField ?: nameTextFiled);
             make.width.height.mas_equalTo(23);
-        }];
-        
-        mm_weakify(self);
-        [audioButton setClickBlock:^(EZButton *_Nonnull button) {
-            NSLog(@"click audioButton");
-            mm_strongify(self);
-            if (self.playAudioBlock) {
-                self.playAudioBlock(obj);
-            }
         }];
         audioButton.mas_key = @"audioButton_phonetics";
     }];
@@ -783,12 +780,11 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     audioButton.audioPlayer = self.result.service.audioPlayer;
     [audioButton setPlayAudioBlock:^{
-        if (self.playAudioBlock) {
-            EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
-            wordPhonetic.word = self.copiedText;
-            wordPhonetic.language = result.queryModel.queryTargetLanguage;
-            self.playAudioBlock(wordPhonetic);
-        }
+        mm_strongify(self);
+        EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
+        wordPhonetic.word = self.copiedText;
+        wordPhonetic.language = result.queryModel.queryTargetLanguage;
+        [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:result.serviceType];
     }];
 
     audioButton.mas_key = @"result_audioButton";
@@ -800,9 +796,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
         mm_strongify(self);
-        if (self.copyTextBlock) {
-            self.copyTextBlock(self.copiedText);
-        }
+        [self.copiedText copyToPasteboard];
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
