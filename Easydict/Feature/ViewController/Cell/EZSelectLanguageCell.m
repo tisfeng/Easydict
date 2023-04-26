@@ -69,7 +69,7 @@
     }];
     
     mm_weakify(self);
-    [self.transformButton setClickBlock:^(EZButton * _Nonnull button) {
+    [self.transformButton setClickBlock:^(EZButton *button) {
         mm_strongify(self);
         [self toggleTranslationLanguages];
     }];
@@ -79,7 +79,7 @@
         [languageBarView addSubview:button];
         
         mm_weakify(self);
-        [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
+        [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
             self.queryModel.userSourceLanguage = selectedLanguage;
             
@@ -96,7 +96,7 @@
         button.autoChineseSelectedTitle = @"自动选择";
 
         mm_weakify(self);
-        [button setSelectedMenuItemBlock:^(EZLanguage  _Nonnull selectedLanguage) {
+        [button setSelectedMenuItemBlock:^(EZLanguage selectedLanguage) {
             mm_strongify(self);
             self.queryModel.userTargetLanguage = selectedLanguage;
             
@@ -160,15 +160,18 @@
     EZLanguage fromLang = self.queryModel.userSourceLanguage;
     EZLanguage toLang = self.queryModel.userTargetLanguage;
     
-    EZConfiguration.shared.from = toLang;
-    EZConfiguration.shared.to = fromLang;
-    
-    [self.fromLanguageButton setSelectedLanguage:toLang];
-    [self.toLanguageButton setSelectedLanguage:fromLang];
-    
-    [self enterAction];
+    if (![fromLang isEqualToString:toLang]) {
+        EZConfiguration.shared.from = toLang;
+        EZConfiguration.shared.to = fromLang;
+        
+        [self.fromLanguageButton setSelectedLanguage:toLang];
+        [self.toLanguageButton setSelectedLanguage:fromLang];
+        
+        [self enterAction];
+    }
 }
 
+// TODO: need to optimize. This should not use EZConfiguration directly.
 - (void)enterAction {
     NSLog(@"enterAction");
     

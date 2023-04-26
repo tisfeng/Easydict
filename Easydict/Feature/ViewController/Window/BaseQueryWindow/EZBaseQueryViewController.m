@@ -611,8 +611,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             mm_strongify(self);
             self.queryModel.userSourceLanguage = from;
             self.queryModel.userTargetLanguage = to;
-            self.queryModel.detectedLanguage = EZLanguageAuto;
-
+            
             [self retryQuery];
         }];
         return selectLanguageCell;
@@ -845,10 +844,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryService *service in self.services) {
         EZQueryResult *result = service.result;
         [result reset];
-        if (!service.result) {
+        if (!result) {
             result = [[EZQueryResult alloc] init];
         }
-        [result reset];
         service.result = result;
         [allResults addObject:result];
     }
@@ -1244,7 +1242,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
-    BOOL isEnglishWord = [self.queryModel.detectedLanguage isEqualToString:EZLanguageEnglish];
+    BOOL isEnglishWord = [self.queryModel.queryFromLanguage isEqualToString:EZLanguageEnglish];
     if (!isEnglishWord) {
         NSLog(@"query text is not an English");
         return;
