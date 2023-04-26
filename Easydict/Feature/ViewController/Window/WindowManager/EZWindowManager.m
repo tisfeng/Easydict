@@ -95,13 +95,8 @@ static EZWindowManager *_instance;
         
         CGPoint point = [self getPopButtonWindowLocation]; // This is top-left point
         CGPoint bottomLeftPoint = CGPointMake(point.x, point.y - self.popButtonWindow.height);
-//        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint];
-//        [self.popButtonWindow setFrameOrigin:safePoint];
-        
-        [self.popButtonWindow setFrameOrigin:bottomLeftPoint];
-        
-//        [self showWindow:self.popButtonWindow onScreen:self.screen atPoint:bottomLeftPoint];
-        
+        CGPoint safePoint = [EZCoordinateUtils getFrameSafePoint:self.popButtonWindow.frame moveToPoint:bottomLeftPoint inScreen:self.screen];
+        [self.popButtonWindow setFrameOrigin:safePoint];
         
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
