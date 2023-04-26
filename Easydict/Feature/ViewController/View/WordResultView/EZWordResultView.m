@@ -250,7 +250,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }
     
-    [wordResult.phonetics enumerateObjectsUsingBlock:^(EZTranslatePhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [wordResult.phonetics enumerateObjectsUsingBlock:^(EZWordPhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         NSTextField *nameTextFiled = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
             [self addSubview:textField];
             textField.stringValue = obj.name;
@@ -324,7 +324,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             NSLog(@"click audioButton");
             mm_strongify(self);
             if (self.playAudioBlock) {
-                self.playAudioBlock(result.queryText, obj.speakURL);
+                self.playAudioBlock(obj);
             }
         }];
         audioButton.mas_key = @"audioButton_phonetics";
@@ -784,7 +784,10 @@ static const CGFloat kVerticalPadding_8 = 8;
     audioButton.audioPlayer = self.result.service.audioPlayer;
     [audioButton setPlayAudioBlock:^{
         if (self.playAudioBlock) {
-            self.playAudioBlock(self.copiedText, nil);
+            EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
+            wordPhonetic.word = self.copiedText;
+            wordPhonetic.language = result.queryModel.queryTargetLanguage;
+            self.playAudioBlock(wordPhonetic);
         }
     }];
 

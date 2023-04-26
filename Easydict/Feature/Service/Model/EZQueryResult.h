@@ -7,22 +7,29 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZLanguageManager.h"
 #import "EZQueryModel.h"
 #import "EZEnumTypes.h"
+#import "EZLanguageModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class EZQueryService;
 
-@interface EZTranslatePhonetic : NSObject
+@interface EZWordPhonetic : NSObject
 
-/// 语种的中文名称
-@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *word;
 /// 此语种对应的音标值
 @property (nonatomic, copy, nullable) NSString *value;
 /// 此音标对应的语音地址
 @property (nonatomic, copy) NSString *speakURL;
+
+/// 音标类型，美/英
+@property (nonatomic, copy) NSString *name;
+
+@property (nonatomic, copy) EZLanguage language;
+
+// 口音，us, uk
+@property (nonatomic, copy, nullable) NSString *accent;
 
 @end
 
@@ -67,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZTranslateWordResult : NSObject
 
 /// 音标
-@property (nonatomic, copy, nullable) NSArray<EZTranslatePhonetic *> *phonetics;
+@property (nonatomic, copy, nullable) NSArray<EZWordPhonetic *> *phonetics;
 /// 词性词义
 @property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *parts;
 /// 其他形式

@@ -488,23 +488,31 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
                             }
                         }
                         wordResult.tags = tags;
-
+                        
                         [simple_means.symbols.firstObject mm_anyPut:^(EZBaiduTranslateResponseSymbol *_Nonnull symbol) {
                             // 解析音标
                             NSMutableArray *phonetics = [NSMutableArray array];
+                            EZLanguage language = self.queryModel.queryFromLanguage;
+                            
                             if (symbol.ph_am.length) {
-                                [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"us_phonetic", nil);
-                                               obj.value = symbol.ph_am;
-                                               obj.speakURL = [self getAudioURLWithText:result.queryText language:@"en"];
-                                           }]];
+                                [phonetics addObject:[EZWordPhonetic mm_anyMake:^(EZWordPhonetic *_Nonnull obj) {
+                                    obj.name = NSLocalizedString(@"us_phonetic", nil);
+                                    obj.language = language;
+                                    obj.accent = @"us";
+                                    obj.word = text;
+                                    obj.value = symbol.ph_am;
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"en"];
+                                }]];
                             }
                             if (symbol.ph_en.length) {
-                                [phonetics addObject:[EZTranslatePhonetic mm_anyMake:^(EZTranslatePhonetic *_Nonnull obj) {
-                                               obj.name = NSLocalizedString(@"uk_phonetic", nil);
-                                               obj.value = symbol.ph_en;
-                                               obj.speakURL = [self getAudioURLWithText:result.queryText language:@"uk"];
-                                           }]];
+                                [phonetics addObject:[EZWordPhonetic mm_anyMake:^(EZWordPhonetic *_Nonnull obj) {
+                                    obj.name = NSLocalizedString(@"uk_phonetic", nil);
+                                    obj.language = language;
+                                    obj.accent = @"uk";
+                                    obj.word = text;
+                                    obj.value = symbol.ph_en;
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"uk"];
+                                }]];
                             }
                             wordResult.phonetics = phonetics.count ? phonetics.copy : nil;
 

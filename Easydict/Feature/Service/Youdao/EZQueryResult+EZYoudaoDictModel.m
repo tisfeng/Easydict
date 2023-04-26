@@ -20,12 +20,16 @@
         // 解析音频
         NSMutableArray *phoneticArray = [NSMutableArray array];
         EZEcWord *word = model.ec.word.firstObject;
+        EZLanguage language = self.queryModel.queryFromLanguage;
         
         // https://dict.youdao.com/dictvoice?audio=good&type=2
         NSString *aduioURL = @"https://dict.youdao.com/dictvoice?audio=";
         if (word.usphone) {
-            EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
+            EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
             phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+            phonetic.language = language;
+            phonetic.accent = @"us";
+            phonetic.word = self.queryText;
             phonetic.value = word.usphone; // ɡʊd
             // usspeech: "good&type=2"
             NSString *usspeech = [NSString stringWithFormat:@"%@%@", aduioURL, word.usspeech];
@@ -36,8 +40,11 @@
             self.queryModel.audioURL = usspeech;
         }
         if (word.ukphone) {
-            EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
+            EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
             phonetic.name = NSLocalizedString(@"uk_phonetic", nil);
+            phonetic.language = language;
+            phonetic.accent = @"uk";
+            phonetic.word = self.queryText;
             phonetic.value = word.ukphone;
             phonetic.speakURL = [NSString stringWithFormat:@"%@%@", aduioURL, word.ukspeech];
             [phoneticArray addObject:phonetic];
@@ -94,7 +101,7 @@
         NSMutableArray *phoneticArray = [NSMutableArray array];
         EZCeWord *word = model.ce.word.firstObject;
         if (word.phone) {
-            EZTranslatePhonetic *phonetic = [[EZTranslatePhonetic alloc] init];
+            EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
             phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
             phonetic.value = word.phone; // ɡʊd
             [phoneticArray addObject:phonetic];
