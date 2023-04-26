@@ -289,8 +289,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Public Methods
 
 /// Before starting query text, close all result view.
-- (void)startQueryInputText:(NSString *)text {
-    [self startQueryText:text queyType:EZQueryTypeInput];
+- (void)startQueryText:(NSString *)text {
+    [self startQueryText:text queyType:self.queryModel.queryType];
 }
 
 - (void)startQueryText:(NSString *)text queyType:(EZQueryType)queryType {
@@ -458,7 +458,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Close all result view, then query.
 - (void)startQueryInputText {
-    [self startQueryInputText:self.queryModel.queryText];
+    [self startQueryText:self.queryModel.queryText];
 }
 
 - (void)startQueryWithType:(EZQueryType)queryType {
@@ -992,7 +992,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setEnterActionBlock:^(NSString *text) {
         mm_strongify(self);
-        [self startQueryInputText:text];
+        [self startQueryText:text];
     }];
 
     [queryView setPlayAudioBlock:^(NSString *text) {
@@ -1104,7 +1104,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [resultView setClickTextBlock:^(NSString *_Nonnull word) {
         mm_strongify(self);
-        [self startQueryInputText:word];
+        [self startQueryText:word];
     }];
 
     // !!!: Avoid capture result, the block paramter result is different from former result.
