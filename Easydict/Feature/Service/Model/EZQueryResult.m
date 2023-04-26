@@ -131,6 +131,7 @@ NSString *getPartName(NSString *part) {
     self.wordResult = nil;
     self.error = nil;
     self.serviceType = EZServiceTypeYoudao;
+    [self.service.audioPlayer stop];
     self.service = nil;
     self.isShowing = NO;
     self.isLoading = NO;
