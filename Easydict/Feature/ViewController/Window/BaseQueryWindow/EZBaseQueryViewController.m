@@ -508,6 +508,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             continue;;
         }
         
+        // 1. If Youdao dict is enabled, prefer to play Youdao word audio.
         BOOL autoPlayWord = EZConfiguration.shared.autoPlayAudio && [service.serviceType isEqualToString:EZServiceTypeYoudao];
         [self queryWithModel:queryModel service:service autoPlay:autoPlayWord];
     }
@@ -515,7 +516,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [[EZLocalStorage shared] increaseQueryCount:self.queryText];
     [EZLog logQuery:queryModel];
 
-    if (![self.serviceTypes containsObject:EZServiceTypeYoudao]) {
+    
+    // 2. If Youdao is not enabled, use default TTS to play.
+    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+    if (!youdaoService.enabledQuery) {
         [self autoPlayEnglishWordAudio];
     }
 }
