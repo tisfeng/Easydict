@@ -454,7 +454,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         case NSEventTypeLeftMouseDown: {
             //                NSLog(@"mouse down");
+            
             self.startPoint = NSEvent.mouseLocation;
+
+            if (self.mouseClickBlock) {
+                self.mouseClickBlock(self.startPoint);
+            }
+            
             [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
             
             // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
@@ -536,7 +542,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     [self updateRecoredEvents:event];
 }
 
-- (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {    
+- (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {
     EZWindowManager *windowManager = EZWindowManager.shared;
     if (windowManager.floatingWindowType == EZWindowTypeMini) {
         BOOL outsideMiniWindow = ![self checkIfMouseLocationInWindow:windowManager.miniWindow];
