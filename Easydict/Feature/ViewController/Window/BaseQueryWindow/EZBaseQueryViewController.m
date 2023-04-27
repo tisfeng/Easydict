@@ -429,12 +429,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     void (^playBlock)(void) = ^{
         // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
         NSString *audioURL = self.queryModel.audioURL;
-        EZServiceType serviceType = audioURL.length ? EZServiceTypeYoudao : nil;
+        EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+        EZQueryService *service = audioURL.length ? youdaoService : nil;
         [self.audioPlayer playTextAudio:self.queryText
-                                        language:self.queryModel.queryFromLanguage
+                               language:self.queryModel.queryFromLanguage
                                  accent:nil
                                audioURL:audioURL
-                            serviceType:serviceType];
+                      designatedService:service];
     };
     
     // Before playing audio, we should detect the query text language.
@@ -1278,7 +1279,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                                    language:EZLanguageEnglish
                                      accent:nil
                                    audioURL:audioURL
-                                serviceType:EZServiceTypeYoudao];
+                          designatedService:youdaoService];
             
             return YES;
         }
