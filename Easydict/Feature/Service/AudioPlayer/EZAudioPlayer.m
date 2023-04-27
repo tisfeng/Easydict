@@ -159,7 +159,7 @@
                language:wordPhonetic.language
                  accent:wordPhonetic.accent
                audioURL:wordPhonetic.speakURL
-            serviceType:serviceType];
+      designatedService:nil];
 }
 
 // TODO: need to optimize
@@ -168,7 +168,7 @@
                language:language
                  accent:nil
                audioURL:nil
-            serviceType:nil];
+      designatedService:nil];
 }
 
 /// Play text audio.
@@ -176,17 +176,14 @@
              language:(EZLanguage)language
                accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
-          serviceType:(nullable EZServiceType)serviceType {
+    designatedService:(nullable EZQueryService *)designatedService {
     if (!text.length) {
         NSLog(@"play text is empty");
         return;
     }
     
     self.playing = YES;
-    if (!serviceType) {
-        serviceType = self.service.serviceType;
-    }
-    self.serviceType = serviceType;
+    self.serviceType = designatedService.serviceType ?: self.service.serviceType;
     
     self.text = text;
     self.language = language;
@@ -202,25 +199,27 @@
                       text:text
                   language:language
                     accent:accent
-               serviceType:serviceType];
+               serviceType:self.serviceType];
         return;
     }
     
     // 2. if service type is Apple, use system speech.
-    if (serviceType == EZServiceTypeApple) {
+    if (self.serviceType == EZServiceTypeApple) {
         [self playSystemTextAudio:text language:language];
         return;
     }
     
+    EZQueryService *service = designatedService ?: self.service;
+    
     // 3. get service text audio URL, and play.
-    [self.service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+    [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
         EZAudioPlayer *audioPlayer = self.service.audioPlayer;
         if (!error && url.length) {
             [audioPlayer playTextAudio:text
                               language:language
                                 accent:nil
                               audioURL:url
-                           serviceType:nil];
+                     designatedService:nil];
         } else {
             NSLog(@"get audio url error: %@", error);
             
@@ -317,7 +316,7 @@
                                             serviceType:serviceType];
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        NSLog(@"File downloaded to: %@", filePath);
+        NSLog(@"Download file to: %@", filePath);
         if (autoPlay) {
             [self playLocalAudioFile:filePath.path];
         }
@@ -332,6 +331,7 @@
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }
+    NSLog(@"play local audio file: %@", filePath);
     
     NSURL *URL = [NSURL fileURLWithPath:filePath];
     [self playAudioURL:URL];
@@ -350,7 +350,6 @@
         if (asset) {
             AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
             [self playWithPlayerItem:playerItem];
-            [self playAudioURL:URL];
         } else {
             [self playWithDefaultTTSService];
         }
@@ -384,8 +383,8 @@
         [defaultTTSAudioPlayer playTextAudio:self.text
                                     language:self.language
                                       accent:self.accent
-                                    audioURL:self.audioURL
-                                 serviceType:self.serviceType];
+                                    audioURL:nil
+                                 designatedService:defaultTTSAudioPlayer.defaultTTSService];
     } else {
         if (self.useSystemTTSWhenPlayFailed) {
             [self playSystemTextAudio:self.text language:self.language];
@@ -423,7 +422,7 @@
                 isPlayable = YES;
             }
         } else {
-            NSLog(@"load playable failed: %@", error);
+            NSLog(@"load playable failed: %@", [error localizedDescription]);
         }
         NSLog(@"audio url isPlayable: %d", isPlayable);
         

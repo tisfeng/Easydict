@@ -36,11 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
+/// Play audio, perfer to use designatedService, else use self.service
 - (void)playTextAudio:(NSString *)text
              language:(EZLanguage)language
                accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
-          serviceType:(nullable EZServiceType)serviceType;
+    designatedService:(nullable EZQueryService *)designatedService;
 
 - (void)stop;
 
