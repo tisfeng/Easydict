@@ -1,6 +1,6 @@
 name: Feature request
 description: 功能建议
-title: "🚀 功能建议：xxx"
+title: "🚀 功能建议："
 labels: ["enhancement"]
 assignees:
   -
@@ -13,7 +13,7 @@ body:
       options:
         - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
-        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过，未发现类似功能建议
+        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过（包括已关闭的 issue），未发现类似功能建议
           required: true
         - label: Easydict 已升级到最新版本
           required: true
