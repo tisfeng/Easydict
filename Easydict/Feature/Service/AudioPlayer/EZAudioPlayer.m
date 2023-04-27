@@ -20,16 +20,19 @@
 @property (nonatomic, strong) EZAppleService *appleService;
 @property (nonatomic, strong) NSSpeechSynthesizer *synthesizer;
 @property (nonatomic, strong) AVPlayer *player;
+@property (nonatomic, strong) AVPlayerItem *playerItem;
 
 @property (nonatomic, assign) BOOL playing;
 
 @property (nonatomic, assign) EZTTSServiceType defaultTTSServiceType;
 @property (nonatomic, strong) EZQueryService *defaultTTSService;
 
-@property (nonatomic, assign) EZServiceType serviceType;
-
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) EZLanguage language;
+@property (nonatomic, copy) NSString *audioURL;
+@property (nonatomic, copy, nullable) NSString *accent;
+@property (nonatomic, copy, nonnull) EZServiceType serviceType;
+
 @end
 
 @implementation EZAudioPlayer
@@ -45,7 +48,6 @@
     return instance;
 }
 
-
 - (instancetype)init {
     if (self = [super init]) {
         [self setup];
@@ -54,6 +56,10 @@
 }
 
 - (void)setup {
+    self.useSystemTTSWhenPlayFailed = YES;
+    
+    // KVO timeControlStatus is not a good choice
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didFinishPlaying:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
@@ -66,22 +72,26 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didFinishPlaying:)
-                                                 name:AVPlayerItemNewErrorLogEntryNotification
+                                                 name:AVPlayerItemPlaybackStalledNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didFinishPlaying:)
-                                                 name:AVPlayerItemPlaybackStalledNotification
+                                                 name:AVPlayerItemNewErrorLogEntryNotification
                                                object:nil];
 }
 
-// ???: Why is this method called multiple times?
 - (void)didFinishPlaying:(NSNotification *)notification {
     AVPlayerItem *playerItem = notification.object;
     if (self.player.currentItem == playerItem) {
         self.playing = NO;
     }
 }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 #pragma mark - Getter
 
@@ -141,16 +151,8 @@
     return _service;
 }
 
-#pragma mark - Public Mehods
 
-+ (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
-    [[self shared] playTextAudio:wordPhonetic.word
-               language:wordPhonetic.language
-                 accent:wordPhonetic.accent
-               audioURL:wordPhonetic.speakURL
-            serviceType:serviceType];
-    
-}
+#pragma mark - Public Mehods
 
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
     [self playTextAudio:wordPhonetic.word
@@ -186,11 +188,13 @@
     }
     self.serviceType = serviceType;
     
-    BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
-    self.enableDownload = isEnglishWord;
-    
     self.text = text;
     self.language = language;
+    self.audioURL = audioURL;
+    self.accent = accent;
+    
+    BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
+    self.enableDownload = isEnglishWord;
     
     // 1. if has audio url, play audio url directly.
     if (audioURL.length) {
@@ -220,16 +224,8 @@
         } else {
             NSLog(@"get audio url error: %@", error);
             
-            // e.g. if Baidu get audio url failed, try to use default Google tts.
-            if (![audioPlayer.service.class isEqual:audioPlayer.defaultTTSService.class]) {
-                [audioPlayer.defaultTTSService.audioPlayer playTextAudio:text
-                                                                language:language
-                                                                  accent:accent
-                                                                audioURL:audioURL
-                                                             serviceType:serviceType];
-            } else {
-                [self playSystemTextAudio:text language:language];
-            }
+            // e.g. if Baidu get audio url failed, try to use default tts, such as Google.
+            [self playWithDefaultTTSService];
         }
     }];
 }
@@ -332,12 +328,13 @@
 /// Play local audio file
 - (void)playLocalAudioFile:(NSString *)filePath {
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        self.playing = NO;
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }
     
-    NSURL *url = [NSURL fileURLWithPath:filePath];
-    [self playAudioWithURL:url];
+    NSURL *URL = [NSURL fileURLWithPath:filePath];
+    [self playAudioURL:URL];
 }
 
 /// Play audio with remote url string.
@@ -346,36 +343,103 @@
         return;
     }
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    [self playAudioWithURL:url];
+    // TODO: maybe we need to pre-load audio url, then play when user click.
+    
+    NSURL *URL = [NSURL URLWithString:urlString];
+    [self loadAudioURL:URL completion:^( AVAsset * _Nullable asset) {
+        if (asset) {
+            AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+            [self playWithPlayerItem:playerItem];
+            [self playAudioURL:URL];
+        } else {
+            [self playWithDefaultTTSService];
+        }
+    }];
 }
 
+
 /// Play audio with NSURL
-- (void)playAudioWithURL:(NSURL *)url {
+- (void)playAudioURL:(NSURL *)URL {
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:URL];
+    [self playWithPlayerItem:playerItem];
+}
+
+- (void)playWithPlayerItem:(AVPlayerItem *)playerItem {
     [self.player pause];
+    [self.player replaceCurrentItemWithPlayerItem:playerItem];
+    [self.player play];
+}
+
+- (void)play {
+    NSURL *URL = [NSURL URLWithString:self.audioURL];
+    [self playAudioURL:URL];
+}
+
+- (void)playWithDefaultTTSService {
+    NSLog(@"playWithDefaultTTSService");
     
-    AVAsset *asset = [AVAsset assetWithURL:url];
-    if (![asset isKindOfClass:[AVURLAsset class]]) {
-        NSLog(@"Invalid asset.");
+    EZAudioPlayer *audioPlayer = self.service.audioPlayer;
+    if (![audioPlayer.service.class isEqual:audioPlayer.defaultTTSService.class]) {
+        EZAudioPlayer *defaultTTSAudioPlayer = audioPlayer.defaultTTSService.audioPlayer;
+        [defaultTTSAudioPlayer playTextAudio:self.text
+                                    language:self.language
+                                      accent:self.accent
+                                    audioURL:self.audioURL
+                                 serviceType:self.serviceType];
+    } else {
+        if (self.useSystemTTSWhenPlayFailed) {
+            [self playSystemTextAudio:self.text language:self.language];
+        }
+    }
+}
+
+- (void)loadAudioURL:(NSURL *)URL completion:(void(^)( AVAsset * _Nullable asset))completion {
+    if ([URL isFileURL]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:URL.path]) {
+            AVAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
+            completion(asset);
+        } else {
+            completion(nil);
+        }
         return;
     }
     
-    if ([asset isPlayable]) {
-        [self.player pause];
-        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
-        // TODO: need to check playerItem status
-        
-        [self.player replaceCurrentItemWithPlayerItem:playerItem];
-        [self.player play];
-    } else {
-        // If play audio url failed, use system play.
-        // TODO: maybe need to show a failure toast.
-        
-        NSLog(@"asset cannot play");
-        
-        [self playSystemTextAudio:self.text language:self.language];
+    // Check URL is valid
+    if (!URL || !URL.scheme || !URL.host) {
+        NSLog(@"audio url is invalid: %@", URL);
+        completion(nil);
+        return;
     }
+    
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
+    NSArray *resourceKeys = @[@"playable"];
+    [asset loadValuesAsynchronouslyForKeys:resourceKeys completionHandler:^{
+        NSError *error = nil;
+        AVKeyValueStatus status = [asset statusOfValueForKey:@"playable" error:&error];
+        
+        BOOL isPlayable = NO;
+        if (status == AVKeyValueStatusLoaded) {
+            if (asset.isPlayable) {
+                isPlayable = YES;
+            }
+        } else {
+            NSLog(@"load playable failed: %@", error);
+        }
+        NSLog(@"audio url isPlayable: %d", isPlayable);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (isPlayable) {
+                completion(asset);
+            } else {
+                completion(nil);
+            }
+        });
+    }];
 }
+
+
+
+#pragma mark -
 
 // Get app cache directory
 - (NSString *)getCacheDirectory {
