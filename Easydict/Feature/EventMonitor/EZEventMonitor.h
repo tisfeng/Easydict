@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^dismissMiniWindowBlock)(void);
 @property (nonatomic, copy) void (^dismissFixedWindowBlock)(void);
 @property (nonatomic, copy) void (^doubleCommandBlock)(void);
+@property (nonatomic, copy) void (^mouseClickBlock)(CGPoint clickPoint);
 
 @property (nonatomic, assign) CGRect selectedTextFrame;
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
