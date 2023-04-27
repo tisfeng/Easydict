@@ -34,6 +34,8 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
 @property (nonatomic, assign) CGRect fixedWindowFrame;
 @property (nonatomic, assign) CGRect mainWindowFrame;
 
+@property (nonatomic, strong) NSScreen *screen;
+
 
 + (instancetype)shared;
 
