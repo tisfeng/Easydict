@@ -114,6 +114,7 @@ static EZWindowManager *_instance;
         mm_strongify(self);
         self.startPoint = clickPoint;
         self.screen = [EZCoordinateUtils screenOfPoint:clickPoint];
+        EZLayoutManager.shared.screen = self.screen;
     }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
