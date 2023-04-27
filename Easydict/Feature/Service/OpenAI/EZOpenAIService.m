@@ -135,6 +135,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
     
+    self.result.from = from;
+    self.result.to = to;
+    
     if (shouldQueryDictionary && enableDictionary) {
         queryServiceType = EZQueryServiceTypeDictionary;
         parameters[@"messages"] = [self dictMessages:text from:sourceLanguageType to:targetLanguageType];
@@ -667,6 +670,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Sentence messages.
 - (NSArray<NSDictionary *> *)sentenceMessages:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    self.result.to = answerLanguage;
     
     NSString *prompt = @"";
     NSString *keyWords = @"Key Words";
@@ -833,6 +837,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *prompt = @"";
     
     NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    self.result.to = answerLanguage;
     
     NSString *pronunciation = @"Pronunciation";
     NSString *translationTitle = @"Translation";

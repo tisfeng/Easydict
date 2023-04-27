@@ -783,7 +783,13 @@ static const CGFloat kVerticalPadding_8 = 8;
         mm_strongify(self);
         EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
         wordPhonetic.word = self.copiedText;
-        wordPhonetic.language = result.queryModel.queryTargetLanguage;
+        
+        EZLanguage language = result.queryModel.queryTargetLanguage;
+        if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
+            language = result.to;
+        }
+        
+        wordPhonetic.language = language;
         [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:result.serviceType];
     }];
 
