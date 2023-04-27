@@ -1,6 +1,6 @@
 name: Bug report
 description: 反馈问题
-title: "🐞 反馈问题：xxx"
+title: "🐞 反馈问题："
 labels: ["bug"]
 assignees:
   -
@@ -9,11 +9,11 @@ body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: 请先确认以下事项
+      label: 请先确认以下事项：
       options:
         - label: 已仔细阅读了 [README](https://github.com/tisfeng/Easydict#readme)
           required: true
-        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题，但未能找到解决方法
+        - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过问题（包括已关闭的 issue），但未能找到解决方法
           required: true
         - label: Easydict 已升级到最新版本
           required: true

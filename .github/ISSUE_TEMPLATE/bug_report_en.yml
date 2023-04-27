@@ -1,0 +1,60 @@
+name: Bug report
+description: Report an issue
+title: "🐞 Bug Report: "
+labels: ["bug"]
+assignees:
+  -
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Please confirm the following:"
+      options:
+        - label: I have carefully read the [README](https://github.com/tisfeng/Easydict#readme)
+          required: true
+        - label: I have searched through the [issues](https://github.com/tisfeng/Easydict/issues) page but couldn't find a solution.(Including issue that has been closed)
+          required: true
+        - label: Easydict has been upgraded to the latest version.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem description
+      description: Please describe the problem as clearly and detailed as possible. If it involves UI, please provide screenshots. If it's a complex problem, it would be best to provide a screencast to help developers troubleshoot.
+      placeholder: Problem description
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Please describe how to reproduce the problem.
+      placeholder: If the problem is easily reproducible, please fill in "N/A".
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: Please describe the result you expect.
+      placeholder:
+    validations:
+      required: true
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Proposed solution (optional)
+      description: Do you have any proposed solutions or suggestions for this issue?
+      placeholder:
+
+  - type: input
+    id: device
+    attributes:
+      label: Device information and OS version (optional)
+      description: If you encounter an unusual problem, you can provide device information and OS versions to help developers troubleshoot.
+      placeholder: Apple M1 Pro, macOS 11.2.3

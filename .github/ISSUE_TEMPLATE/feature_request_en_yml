@@ -1,0 +1,42 @@
+name: Feature request
+description: Request a new feature
+title: "🚀 Feature Request: "
+labels: ["enhancement"]
+assignees:
+  -
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Please confirm the following:"
+      options:
+        - label: I have carefully read the [README](https://github.com/tisfeng/Easydict#readme)
+          required: true
+        - label: I have searched through the [issues](https://github.com/tisfeng/Easydict/issues) page and didn't find a similar feature request.(Including issue that has been closed)
+          required: true
+        - label: Easydict has been upgraded to the latest version.
+          required: true
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: Feature description
+      description: Please describe the feature you would like to request. If necessary, screenshots can be provided for developers' reference.
+      placeholder:
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature_usecase
+    attributes:
+      label: Use case (optional)
+      description: Please describe the use case of the feature you're requesting, and whether there are any similar app features for reference.
+      placeholder:
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Proposed solution (optional)
+      description: Do you have any proposed solutions or suggestions for implementing this feature?
+      placeholder:
