@@ -68,6 +68,7 @@ static EZWindowManager *_instance;
 
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
+    self.screen = NSScreen.mainScreen;
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
@@ -108,6 +109,12 @@ static EZWindowManager *_instance;
     }];
     
     [self updatePopButtonQueryAction];
+    
+    [self.eventMonitor setMouseClickBlock:^(CGPoint clickPoint) {
+        mm_strongify(self);
+        self.startPoint = clickPoint;
+        self.screen = [EZCoordinateUtils screenOfPoint:clickPoint];
+    }];
 
     [self.eventMonitor setDismissPopButtonBlock:^{
         //        NSLog(@"dismiss pop button");

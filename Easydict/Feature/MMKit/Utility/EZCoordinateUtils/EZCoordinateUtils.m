@@ -63,20 +63,23 @@
     return CGRectMake(x, y, width, height);
 }
 
-+ (NSScreen *)screenOfMousePosition {
-    NSScreen *mouseInScreen = nil;
-    NSPoint mousePosition = [NSEvent mouseLocation];
++ (NSScreen *)screenOfPoint:(CGPoint)point {
+    NSScreen *mouseInScreen = NSScreen.mainScreen;
     for (NSScreen *screen in [NSScreen screens]) {
         NSRect screenFrame = [screen frame];
-        if (NSPointInRect(mousePosition, screenFrame)) {
+        if (NSPointInRect(point, screenFrame)) {
             mouseInScreen = screen;
-            mousePosition.x -= screenFrame.origin.x;
-            mousePosition.y -= screenFrame.origin.y;
             break;
         }
     }
     return mouseInScreen;
 }
+
++ (NSScreen *)screenOfMousePosition {
+    CGPoint mousePosition = [NSEvent mouseLocation];
+    return [self screenOfPoint:mousePosition];
+}
+
 
 #pragma mark - Convert Coordinate
 
@@ -148,24 +151,6 @@
     
     return bottomLeftPoint;
 }
-
-
-#pragma mark -
-
-/// Convert point from top-left to left-bottom coordinate system
-//+ (CGPoint)convertPointToBottomLeft:(CGPoint)point {
-//    return CGPointMake(point.x, [NSScreen mainScreen].frame.size.height - point.y);
-//}
-
-/// Convert rect from top-left coordinate to left-bottom coordinate
-//+ (CGRect)convertRectToBottomLeft:(CGRect)rect {
-//    CGRect screenRect = NSScreen.mainScreen.frame;
-//    CGFloat height = screenRect.size.height;
-//    rect.origin.y = height - rect.origin.y - rect.size.height;
-//
-//    return rect;
-//}
-
 
 
 #pragma mark -
