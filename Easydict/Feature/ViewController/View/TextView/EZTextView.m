@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSFont *placeholderFont;
 
 @property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 12
+@property (nonatomic, assign) CGFloat miniParagraphSpacing; // 0
 
 @end
 
@@ -24,17 +25,20 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-         CGFloat defaultParagraphSpacing = 12;
+         CGFloat defaultParagraphSpacing = 10;
+        CGFloat miniParagraphSpacing = 0;
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
-                  style.lineSpacing = 3;
-                  style.paragraphSpacing = defaultParagraphSpacing;
-                  style.lineHeightMultiple = 1.0;
-                  style.lineBreakMode = NSLineBreakByWordWrapping;
-              }]];
+            style.lineSpacing = 4;
+            style.paragraphSpacing = defaultParagraphSpacing;
+            style.paragraphSpacingBefore = defaultParagraphSpacing;
+            style.lineHeightMultiple = 1.0;
+            style.lineBreakMode = NSLineBreakByWordWrapping;
+        }]];
         
         self.font = [NSFont systemFontOfSize:14];
         self.defaultParagraphSpacing = defaultParagraphSpacing;
+        self.miniParagraphSpacing = miniParagraphSpacing;
 
         /**
          FIX: Since textView will auto replace some text, such as "..." to "…", so we need to disable it.
@@ -219,7 +223,7 @@
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
     BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
-    self.paragraphSpacing = hasExtraLineBreaks ? 0 : self.defaultParagraphSpacing;
+    self.paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
     
     [self scrollToEndOfDocument:nil];
     

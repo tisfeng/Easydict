@@ -501,6 +501,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         
         NSString *recognizedString = recognizedText.string;
         CGRect boundingBox = observation.boundingBox;
+        CGFloat lineLength = boundingBox.size.width;
 //        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
         /**
@@ -538,17 +539,23 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             NSString *joinedString;
             //  if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
             if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
-                joinedString = @"\n";
+                joinedString = @"\n"; // @"\n\n", Paragraph
             } else if (deltaY > 0) {
                 if (needLineBreak) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
                     NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
                     CGFloat prevLineLength = prevBoundingBox.size.width;
-                    BOOL isShortLine = [self isShortLineOfLength:prevLineLength maxLengthOfLine:maxLengthOfLine];
-                    joinedString = [self joinedStringOfText:prevString
-                                                   language:ocrResult.from
-                                                isShortLine:isShortLine];
+                    joinedString = [self joinedStringOfPrevText:prevString
+                                           prevLengthOfLine:prevLineLength
+                                                   lengthOfLine:lineLength
+                                            maxLengthOfLine:maxLengthOfLine
+                                                   language:ocrResult.from];
+                    
+//                    joinedString = [self joinedStringOfText:prevString
+//                                                   language:ocrResult.from
+//                                               lengthOfLine:prevLineLength
+//                                            maxLengthOfLine:maxLengthOfLine];
                 }
             } else {
                 joinedString = @" "; // the same line
@@ -1149,13 +1156,38 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 /// Get joined string of text, according to its last char.
-- (NSString *)joinedStringOfText:(NSString *)text
-                        language:(EZLanguage)language
-                     isShortLine:(BOOL)isShortLine
+- (NSString *)joinedStringOfPrevText:(NSString *)prevText
+                    prevLengthOfLine:(CGFloat)prevLengthOfLine
+                        lengthOfLine:(CGFloat)lengthOfLine
+                     maxLengthOfLine:(CGFloat)maxLengthOfLine
+                            language:(EZLanguage)language
 {
     NSString *joinedString = @"";
-    NSString *lastChar = [text substringFromIndex:text.length - 1];
-    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
+    NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
+    BOOL endPunctuationChar = [self isEndPunctuationChar:lastChar];
+    
+    // Note that some short lines are caused by indentation.
+    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.5];
+    
+    BOOL isPrevLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+
+    BOOL isLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    
+    BOOL needLineBreak = NO;
+    if (isPrevShortLine || endPunctuationChar) {
+        needLineBreak = YES;
+    }
+    
+    if (isPrevLongLine && endPunctuationChar && isLongLine) {
+        needLineBreak = NO;
+    }
+    
+    // !!!: This way cannot handle indentation 😥
+//    BOOL isEqualLength = fabs(lengthOfLine - prevLengthOfLine) < 0.02; // ~0.98
+//    if (isEqualLength && endPunctuationChar) {
+//        needLineBreak = NO;
+//    }
+
     
     if (needLineBreak) {
         joinedString = @"\n";
@@ -1296,13 +1328,25 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 - (BOOL)isShortLineOfLength:(CGFloat)length
             maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    BOOL isShortLine = length < maxLengthOfLine * 0.8;
+    return [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
+}
+
+- (BOOL)isShortLineOfLength:(CGFloat)length
+            maxLengthOfLine:(CGFloat)maxLengthOfLine
+      lessRateOfMaxLongLine:(CGFloat)lessRateOfMaxLongLine {
+    BOOL isShortLine = length < maxLengthOfLine * lessRateOfMaxLongLine;
     return isShortLine;
 }
 
 - (BOOL)isLongLineOfLength:(CGFloat)length
            maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    BOOL isLongLine = length > maxLengthOfLine * 0.9;
+    return [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.9];
+}
+
+- (BOOL)isLongLineOfLength:(CGFloat)length
+           maxLengthOfLine:(CGFloat)maxLengthOfLine
+  greaterRateOfMaxLongLine:(CGFloat)greaterRateOfMaxLongLine {
+    BOOL isLongLine = length >= maxLengthOfLine * greaterRateOfMaxLongLine;
     return isLongLine;
 }
 
