@@ -77,7 +77,7 @@
     }];
 
     [self.crashLogTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.privacyStatementContentTextField.mas_bottom).offset(50);
+        make.top.equalTo(self.privacyStatementContentTextField.mas_bottom).offset(40);
         make.left.equalTo(self.contentView).offset(self.leftMargin);
     }];
 
