@@ -3,13 +3,41 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>1.3.0</title>
+      <pubDate>Fri, 28 Apr 2023 20:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.3.0/Easydict.zip"
+        sparkle:version="14" sparkle:shortVersionString="1.3.0" type="application/octet-stream"
+        sparkle:edSignature="A1w8PLSBHw4nAX3ak4O2RqOVNDCokmAo2V7q9qu/1GENqX4OpSaYrTJlizmN5lyqog4EapGKP7scUioC7W9QCQ=="
+        length="8570604" />
+      <description><![CDATA[
+          <h2 id="-v1-3-0-2023-04-28">[v1.3.0] - 2023-04-28</h2>
+          <h3 id="-">💎 优化</h3>
+          <ul>
+          <li>优化了 OCR 文本换行处理 <a href="https://github.com/tisfeng/Easydict/issues/16">https://github.com/tisfeng/Easydict/issues/16</a></li>
+          <li>优化了 OCR 识别语言准确度</li>
+          <li>优化了快捷键取词操作，当取词内容为空时清空输入框  <a href="https://github.com/tisfeng/Easydict/issues/19">https://github.com/tisfeng/Easydict/issues/19</a></li>
+          <li>添加了一些应用内快捷键，如清空输入内容 Cmd+K，钉住窗口 Cmd+P，关闭窗口  Cmd+W，切换查询语言 Cmd+T 等  <a href="https://github.com/tisfeng/Easydict/issues/40">https://github.com/tisfeng/Easydict/issues/40</a>  <a href="https://github.com/tisfeng/Easydict/issues/42">https://github.com/tisfeng/Easydict/issues/42</a></li>
+          <li>添加了点击图标时才触发查询选项  <a href="https://github.com/tisfeng/Easydict/issues/56">https://github.com/tisfeng/Easydict/issues/56</a></li>
+          <li>添加了用户隐私管理选项 <a href="https://github.com/tisfeng/Easydict/issues/62">https://github.com/tisfeng/Easydict/issues/62</a></li>
+          </ul>
+          <h3 id="-">🐞 修复</h3>
+          <ul>
+          <li>修复了单词发音服务类型不对问题  <a href="https://github.com/tisfeng/Easydict/issues/14">https://github.com/tisfeng/Easydict/issues/14</a></li>
+          <li>修复了外接显示屏，查询窗口位置显示不对问题 <a href="https://github.com/tisfeng/Easydict/issues/30">https://github.com/tisfeng/Easydict/issues/30</a></li>
+          <li>修复了开机启动无效问题 <a href="https://github.com/tisfeng/Easydict/issues/64">https://github.com/tisfeng/Easydict/issues/64</a></li>
+          <li>修复了空复制取词出现警告提示音问题 <a href="https://github.com/tisfeng/Easydict/issues/41">https://github.com/tisfeng/Easydict/issues/41</a></li>
+          <li>修复了查询窗口位置显示有误问题 <a href="https://github.com/tisfeng/Easydict/issues/50">https://github.com/tisfeng/Easydict/issues/50</a></li>
+          </ul>
+      ]]>
+      </description>
+    </item>
+    <item>
       <title>1.2.3</title>
       <pubDate>Sun, 19 Feb 2023 16:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.3/Easydict.zip"
-        sparkle:version="14"
-        sparkle:shortVersionString="1.2.3"
-        type="application/octet-stream"
+        sparkle:version="14" sparkle:shortVersionString="1.2.3" type="application/octet-stream"
         sparkle:edSignature="O1lcXIwMNoVCzzvGkXM49zxopYMwqvSuRBvsV3dQvjYYYVgQ2SSEULeDaPGZmbekxXs8zLelmhFTSV/0UGXqCw=="
         length="8299177" />
       <description><![CDATA[
@@ -18,17 +46,15 @@
         <ul>
         <li>修复了状态栏图标显示问题。</li>
         </ul>
-      ]]>      
-    </description>
+      ]]>
+      </description>
     </item>
     <item>
       <title>1.2.2</title>
       <pubDate>Sat, 18 Feb 2023 23:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.2/Easydict.zip"
-        sparkle:version="13"
-        sparkle:shortVersionString="1.2.2"
-        type="application/octet-stream"
+        sparkle:version="13" sparkle:shortVersionString="1.2.2" type="application/octet-stream"
         sparkle:edSignature="3btFQeFaDg2l6+xVrDmEER1uxIRemX/0tvofptCZ3EuMxtt6Kd0EbU/O41U+2eGUwetvdxVL100UqeHy09a+AQ=="
         length="8300812" />
       <description><![CDATA[
@@ -44,33 +70,29 @@
         <ul>
         <li>修复了许多已知问题。</li>
         </ul>
-      ]]>      
-    </description>
+      ]]>
+      </description>
     </item>
     <item>
       <title>1.2.1</title>
       <pubDate>Sun, 22 Jan 2023 20:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.1/Easydict.zip"
-        sparkle:version="12"
-        sparkle:shortVersionString="1.2.1"
-        type="application/octet-stream"
+        sparkle:version="12" sparkle:shortVersionString="1.2.1" type="application/octet-stream"
         sparkle:edSignature="n810g5SL8Zo5FOj9VELqQPwXKYBwGT6prnNJxc7KY5XPUves1BFZVfqqeNzJbI7gUIgmr5IHDrTWe7dANy67Ag=="
         length="8255174" />
       <description><![CDATA[
         <h2 id="-v1-2-1-2023-01-22">[v1.2.1] - 2023-01-22</h2>
         <h3 id="-">🐞 修复了百度翻译失败会导致应用崩溃问题。</h3>
-      ]]>      
-    </description>
+      ]]>
+      </description>
     </item>
     <item>
       <title>1.2.0</title>
       <pubDate>Fri, 20 Jan 2023 13:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.2.0/Easydict.zip"
-        sparkle:version="11"
-        sparkle:shortVersionString="1.2.0"
-        type="application/octet-stream"
+        sparkle:version="11" sparkle:shortVersionString="1.2.0" type="application/octet-stream"
         sparkle:edSignature="gGoFieiIsD4fIx2uVF6OAJC3caWdY0neNqQ20YYbq7yxROBJbbjweYLWaiXEQKs3Ej13ixz9nCUuprimyfzMDw=="
         length="8250671" />
       <description><![CDATA[
@@ -89,17 +111,15 @@
         <li>修改了一些已知问题。</li>
         </ul>
         <h3 id="-">祝大家新年快乐！🧧</h3>        
-      ]]>      
-    </description>
+      ]]>
+      </description>
     </item>
     <item>
       <title>1.1.2</title>
       <pubDate>Sun, 8 Jan 2023 16:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.1.2/Easydict.zip"
-        sparkle:version="10"
-        sparkle:shortVersionString="1.1.2"
-        type="application/octet-stream"
+        sparkle:version="10" sparkle:shortVersionString="1.1.2" type="application/octet-stream"
         sparkle:edSignature="QbFjDN0z+sUOPSRvN3vEuJH8XVq141Ums1/cOusqr8OJOxHAlyzb8lRd1czt2xYPn3miznS9a30RSWsylL/UDg=="
         length="8217501" />
       <description><![CDATA[
@@ -107,8 +127,8 @@
       <li>Add support for macOS System Translation.</li>
       <li>Fix known issues.</li>
       </ul>
-      ]]>      
-    </description>
+      ]]>
+      </description>
     </item>
   </channel>
 </rss>
