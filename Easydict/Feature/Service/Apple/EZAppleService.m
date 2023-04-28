@@ -1443,8 +1443,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    
-    if (isPoetry) {
+    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
+    if (isPoetry && lineCount >= 4 && isChinese) {
         return YES;
     }
         
