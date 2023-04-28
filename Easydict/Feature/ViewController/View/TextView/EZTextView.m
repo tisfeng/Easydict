@@ -25,13 +25,12 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-         CGFloat defaultParagraphSpacing = 10;
+        CGFloat defaultParagraphSpacing = 12;
         CGFloat miniParagraphSpacing = 0;
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
             style.lineSpacing = 4;
             style.paragraphSpacing = defaultParagraphSpacing;
-            style.paragraphSpacingBefore = defaultParagraphSpacing;
             style.lineHeightMultiple = 1.0;
             style.lineBreakMode = NSLineBreakByWordWrapping;
         }]];
