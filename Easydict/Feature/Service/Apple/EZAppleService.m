@@ -408,6 +408,13 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     CGFloat miniLineHeight = MAXFLOAT;
     CGFloat miniLineSpacing = MAXFLOAT;
     CGFloat miniX = MAXFLOAT;
+    CGFloat maxLengthOfLine = 0;
+    CGFloat minLengthOfLine = MAXFLOAT;
+    NSInteger punctuationMarkCount = 0;
+    NSInteger totalCharCount = 0;
+
+    NSMutableArray *lineLengthArray = [NSMutableArray array];
+    
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
     
@@ -417,8 +424,22 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
         
+        // iterate string to check if has punctuation mark.
+        for (NSInteger i = 0; i < recognizedString.length; i++) {
+            totalCharCount += 1;
+            NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
+            NSArray *allowList = @[ @"《", @"》", @"—" ];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharArray:allowList];
+            if (isChar) {
+                punctuationMarkCount += 1;
+            }
+        }
+        
         CGRect boundingBox = observation.boundingBox;
 //        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+        
+        CGFloat lineLength = boundingBox.size.width;
+        [lineLengthArray addObject:@(lineLength)];
         
         CGFloat lineHeight = boundingBox.size.height;
         if (lineHeight < miniLineHeight) {
@@ -433,10 +454,19 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 miniLineSpacing = deltaY;
             }
         }
-        
+
         CGFloat x = boundingBox.origin.x;
         if (x < miniX) {
             miniX = x;
+        }
+        
+        CGFloat lengthOfLine = boundingBox.size.width;
+        if (lengthOfLine > maxLengthOfLine) {
+            maxLengthOfLine = lengthOfLine;
+        }
+        
+        if (lengthOfLine < minLengthOfLine) {
+            minLengthOfLine = lengthOfLine;
         }
     }
     
@@ -451,20 +481,18 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSArray<NSString *> *stringArray = ocrResult.texts;
     NSLog(@"ocr stringArray: %@", stringArray);
     
-    CGFloat maxLengthOfLine = 0;
-    CGFloat minLengthOfLine = 0;
-    NSInteger punctuationMarkCount = 0;
-    CGFloat punctuationMarkRate = 0;
+
+    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
+
     
-    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
-                               maxLengthOfLine:&maxLengthOfLine
-                               minLengthOfLine:&minLengthOfLine
-                          punctuationMarkCount:&punctuationMarkCount
-                           punctuationMarkRate:&punctuationMarkRate];
+    BOOL isPoetry = [self isPoetryOfLineLengthArray:lineLengthArray
+                               punctuationMarkCount:punctuationMarkCount
+                                punctuationMarkRate:punctuationMarkRate];
     NSLog(@"isPoetry: %d", isPoetry);
     
     CGFloat confidence = 0;
     NSMutableString *mergedText = [NSMutableString string];
+    
     
     for (int i = 0; i < observationResults.count; i++) {
         VNRecognizedTextObservation *observation = observationResults[i];
@@ -508,24 +536,29 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             BOOL needLineBreak = !aligned || isPoetry;
             
             NSString *joinedString;
-            //            if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
+            //  if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
             if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
-                joinedString = @"\n\n";
+                joinedString = @"\n";
             } else if (deltaY > 0) {
                 if (needLineBreak) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
                     NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
+                    CGFloat prevLineLength = prevBoundingBox.size.width;
+                    BOOL isShortLine = [self isShortLineOfLength:prevLineLength maxLengthOfLine:maxLengthOfLine];
                     joinedString = [self joinedStringOfText:prevString
-                                            maxLengthOfLine:&maxLengthOfLine
-                                                   language:ocrResult.from];
+                                                   language:ocrResult.from
+                                                isShortLine:isShortLine];
                 }
             } else {
                 joinedString = @" "; // the same line
             }
+            
+            // 1. append joined string
             [mergedText appendString:joinedString];
         }
         
+        // 2. append line text
         [mergedText appendString:recognizedString];
     }
     
@@ -539,6 +572,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
 }
+
 
 // Update OCR recognitionLanguages with preferred languages.
 - (NSArray<EZLanguage> *)updateOCRRecognitionLanguages:(NSArray<EZLanguage> *)recognitionLanguages
@@ -1116,6 +1150,29 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
 /// Get joined string of text, according to its last char.
 - (NSString *)joinedStringOfText:(NSString *)text
+                        language:(EZLanguage)language
+                     isShortLine:(BOOL)isShortLine
+{
+    NSString *joinedString = @"";
+    NSString *lastChar = [text substringFromIndex:text.length - 1];
+    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
+    
+    if (needLineBreak) {
+        joinedString = @"\n";
+    } else if ([self isPunctuationChar:lastChar]) {
+        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
+        joinedString = @" ";
+    } else {
+        // Like Chinese text, don't need space between words if it is not a punctuation mark.
+        if ([self isLanguageWordsNeedSpace:language]) {
+            joinedString = @" ";
+        }
+    }
+    return joinedString;
+}
+
+/// Get joined string of text, according to its last char.
+- (NSString *)joinedStringOfText:(NSString *)text
                  maxLengthOfLine:(CGFloat *)maxLengthOfLine
                         language:(EZLanguage)language {
     NSString *joinedString = @"";
@@ -1206,9 +1263,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
-        return YES;
-    }
+//    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
+//        return YES;
+//    }
     
     if (lineCount >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
         return YES;
@@ -1234,6 +1291,86 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     return NO;
 }
+
+#pragma mark - New check
+
+- (BOOL)isShortLineOfLength:(CGFloat)length
+            maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    BOOL isShortLine = length < maxLengthOfLine * 0.8;
+    return isShortLine;
+}
+
+- (BOOL)isLongLineOfLength:(CGFloat)length
+           maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    BOOL isLongLine = length > maxLengthOfLine * 0.9;
+    return isLongLine;
+}
+
+- (BOOL)isPoetryOfLineLengthArray:(NSArray<NSNumber *> *)lineLengthArray
+             punctuationMarkCount:(NSInteger)punctuationMarkCount
+              punctuationMarkRate:(CGFloat)punctuationMarkRate {
+    // iterate lineLengthArray, get short line count and long line count
+    NSInteger shortLineCount = 0;
+    NSInteger longLineCount = 0;
+    CGFloat maxLengthOfLine = 0;
+    CGFloat minLengthOfLine = CGFLOAT_MAX;
+    for (NSNumber *number in lineLengthArray) {
+        CGFloat length = number.floatValue;
+        if (length > maxLengthOfLine) {
+            maxLengthOfLine = length;
+        }
+        if (length < minLengthOfLine) {
+            minLengthOfLine = length;
+        }
+        
+        BOOL isShortLine = [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        if (isShortLine) {
+            shortLineCount += 1;
+        }
+        
+        BOOL isLongLine = [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        if (isLongLine) {
+            longLineCount += 1;
+        }
+    }
+    
+    NSInteger lineCount = lineLengthArray.count;
+    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)punctuationMarkCount / lineCount;
+    
+    if (maxLengthOfLine == minLengthOfLine) {
+        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
+            return YES;
+        }
+    }
+    
+    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
+    if (numberOfPunctuationMarksPerLine > 2) {
+        return NO;
+    }
+    
+    if (punctuationMarkCount == 0) {
+        return YES;
+    }
+    
+    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 3) && (punctuationMarkRate < 0.04)) {
+        return YES;
+    }
+    
+    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
+    if (tooManyLongLine) {
+        return NO;
+    }
+    
+    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
+    if (tooManyShortLine) {
+        return YES;
+    }
+    
+    
+    return NO;
+}
+    
+    
 
 /// Iterate string array, get the short line count and long line count.
 - (void)shortLineCount:(NSInteger *)shortLineCount
@@ -1261,6 +1398,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 }
 
 /// Check if string is a short line, if string frame width is less than max width - delta * 2
+/// !!!: This method can only be used to determine the consistency of the font layout, not for some PDF font spacing is not the same situation.
 - (BOOL)isShortLineOfString:(NSString *)string
             maxLengthOfLine:(CGFloat)maxLengthOfLine
                    language:(EZLanguage)language {
@@ -1293,6 +1431,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     return isLongLine;
 }
+
+
+
 
 /// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
 - (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
