@@ -406,8 +406,15 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                request:(VNRequest *_Nonnull)request
      intelligentJoined:(BOOL)intelligentJoined {
     EZLanguage language = ocrResult.from;
+    
     CGFloat miniLineHeight = MAXFLOAT;
+    CGFloat totalLineHeight = 0;
+    CGFloat averageLineHeight = 0;
+    
     CGFloat miniLineSpacing = MAXFLOAT;
+    CGFloat totalLineSpacing = 0;
+    CGFloat averageLineSpacing = 0;
+    
     CGFloat miniX = MAXFLOAT;
     CGFloat maxLengthOfLine = 0;
     CGFloat minLengthOfLine = MAXFLOAT;
@@ -444,6 +451,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         [lineLengthArray addObject:@(lineLength)];
         
         CGFloat lineHeight = boundingBox.size.height;
+        totalLineHeight += lineHeight;
         if (lineHeight < miniLineHeight) {
             miniLineHeight = lineHeight;
         }
@@ -452,8 +460,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            if (deltaY > 0 && deltaY < miniLineSpacing) {
-                miniLineSpacing = deltaY;
+            if (deltaY > 0) {
+                totalLineSpacing += deltaY;
+                if (deltaY < miniLineSpacing) {
+                    miniLineSpacing = deltaY;
+                }
             }
         }
 
@@ -486,6 +497,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
     CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
     charCountPerLine = totalCharCount / (CGFloat)stringArray.count;
+    
+    averageLineHeight = totalLineHeight / stringArray.count;
+    averageLineSpacing = totalLineSpacing / (stringArray.count - 1);
         
     BOOL isPoetry = [self isPoetryOfTextArray:recognizedStrings
                               lineLengthArray:lineLengthArray
@@ -546,16 +560,21 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            // miniLineHeight = 0.1
             
             BOOL aligned = boundingBox.origin.x - miniX < 0.15;
             BOOL needLineBreak = !aligned || isPoetry;
             
+            // !!!: line spacing is inaccurate, sometimes it's too small 😢
+            BOOL isNewParagraph = deltaY / averageLineSpacing > 2 || deltaY / averageLineHeight > 1.1;
+            
+            // Note that sometimes the line frames will overlap a little.
+            BOOL isNewLine = deltaY > miniLineSpacing;
+
             NSString *joinedString;
-            //  if (deltaY > miniLineSpacing * 1.8 ) { // line spacing is inaccurate, sometimes it's too small 😢
-            if (deltaY > miniLineHeight) { // 0.7 - 0.04 - 0.5 = 0.16
+            //  if (deltaY > miniLineSpacing * 1.8 ) {
+            if (isNewParagraph) {
                 joinedString = @"\n"; // @"\n\n", Paragraph
-            } else if (deltaY > 0) {
+            } else if (isNewLine) {
                 if (needLineBreak) {
                     joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
@@ -1174,23 +1193,26 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 {
     NSString *joinedString = @"";
     NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
+    
+    // Note: sometimes OCR is incorrect, so . may be recognized as ,
     BOOL endPunctuationChar = [self isEndPunctuationChar:lastChar];
     
     // Note that some short lines are caused by indentation.
-    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.8];
+    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.7];
     
     BOOL isPrevLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
 
-    BOOL isLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    BOOL isLongLine = [self isLongLineOfLength:lengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
     
+
     BOOL needLineBreak = NO;
     if (isPrevShortLine || endPunctuationChar) {
         needLineBreak = YES;
     }
     
-    BOOL isPoerty = [self isPoetryCharactersOfLineText:prevText language:language];
-    
-    if (isPrevLongLine && endPunctuationChar && isLongLine && !isPoerty) {
+    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
+
+    if (isPrevLongLine && endPunctuationChar && isLongLine && !isPoertyLine) {
         needLineBreak = NO;
     }
     
