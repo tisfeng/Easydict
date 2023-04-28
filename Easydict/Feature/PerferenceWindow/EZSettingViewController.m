@@ -589,7 +589,8 @@
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
         [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
-        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon_info", nil);
+        alert.messageText = NSLocalizedString(@"hide_menu_bar_icon", nil);
+        alert.informativeText = NSLocalizedString(@"hide_menu_bar_icon_info", nil);
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
             // ok, hide icon
             if (returnCode == NSAlertFirstButtonReturn) {
