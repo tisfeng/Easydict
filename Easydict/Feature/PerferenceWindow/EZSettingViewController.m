@@ -519,7 +519,7 @@
     
     if ([EZLanguageManager isEnglishFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
-        self.rightmostView = self.languageDetectOptimizePopUpButton;
+        self.rightmostView = self.showQueryIconButton;
     }
     
     [super updateViewConstraints];
