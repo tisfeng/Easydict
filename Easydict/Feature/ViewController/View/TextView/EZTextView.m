@@ -215,7 +215,7 @@
     [self setNeedsDisplay:YES];
 }
 
-/// Update text, paragraphStyle, and scroll to end of textView.
+/// Update text, paragraphStyle.
 - (void)updateTextAndParagraphStyle:(NSString *)text {
     self.string = text;
     
@@ -224,8 +224,6 @@
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
     BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
     self.paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
-    
-    [self scrollToEndOfDocument:nil];
     
     // Callback shoud after updating paragraphSpacing, to update textView height.
     if (self.updateTextBlock) {
