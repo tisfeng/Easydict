@@ -51,7 +51,7 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 你可以使用下面两种方式之一安装。支持系统 macOS 11.0+
 
-#### 1. 手动下载安装（推荐）
+#### 1. 手动下载安装
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 

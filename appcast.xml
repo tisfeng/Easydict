@@ -11,15 +11,18 @@
         sparkle:edSignature="A1w8PLSBHw4nAX3ak4O2RqOVNDCokmAo2V7q9qu/1GENqX4OpSaYrTJlizmN5lyqog4EapGKP7scUioC7W9QCQ=="
         length="8570604" />
       <description><![CDATA[
-          <h2 id="-v1-3-0-2023-04-28">[v1.3.0] - 2023-04-28</h2>
+         <h2 id="1-3-0-ocr-https-github-com-tisfeng-easydict-releases-edit-1-3-0-">1.3.0 💎 <a href="https://github.com/tisfeng/Easydict/releases/edit/1.3.0">优化 OCR 文本换行处理</a></h2>
           <h3 id="-">💎 优化</h3>
           <ul>
           <li>优化了 OCR 文本换行处理 <a href="https://github.com/tisfeng/Easydict/issues/16">https://github.com/tisfeng/Easydict/issues/16</a></li>
-          <li>优化了 OCR 识别语言准确度</li>
+          <li>优化了 OCR 识别语言准确度，尤其日文</li>
+          <li>优化了 DeepL 翻译，体验上已经接近官方 API</li>
+          <li>优化了 Google 翻译，长文本翻译和 Web 翻译保持一致</li>
           <li>优化了快捷键取词操作，当取词内容为空时清空输入框  <a href="https://github.com/tisfeng/Easydict/issues/19">https://github.com/tisfeng/Easydict/issues/19</a></li>
-          <li>添加了一些应用内快捷键，如清空输入内容 Cmd+K，钉住窗口 Cmd+P，关闭窗口  Cmd+W，切换查询语言 Cmd+T 等  <a href="https://github.com/tisfeng/Easydict/issues/40">https://github.com/tisfeng/Easydict/issues/40</a>  <a href="https://github.com/tisfeng/Easydict/issues/42">https://github.com/tisfeng/Easydict/issues/42</a></li>
+          <li>添加了一些应用内快捷键，如清空输入内容 Cmd+K，钉住窗口 Cmd+P，关闭窗口  Cmd+W，切换查询语言 Cmd+T 等，详情请看 README  <a href="https://github.com/tisfeng/Easydict/issues/40">https://github.com/tisfeng/Easydict/issues/40</a>  <a href="https://github.com/tisfeng/Easydict/issues/42">https://github.com/tisfeng/Easydict/issues/42</a></li>
           <li>添加了点击图标时才触发查询选项  <a href="https://github.com/tisfeng/Easydict/issues/56">https://github.com/tisfeng/Easydict/issues/56</a></li>
           <li>添加了用户隐私管理选项 <a href="https://github.com/tisfeng/Easydict/issues/62">https://github.com/tisfeng/Easydict/issues/62</a></li>
+          <li>许多其他优化</li>
           </ul>
           <h3 id="-">🐞 修复</h3>
           <ul>
@@ -28,6 +31,7 @@
           <li>修复了开机启动无效问题 <a href="https://github.com/tisfeng/Easydict/issues/64">https://github.com/tisfeng/Easydict/issues/64</a></li>
           <li>修复了空复制取词出现警告提示音问题 <a href="https://github.com/tisfeng/Easydict/issues/41">https://github.com/tisfeng/Easydict/issues/41</a></li>
           <li>修复了查询窗口位置显示有误问题 <a href="https://github.com/tisfeng/Easydict/issues/50">https://github.com/tisfeng/Easydict/issues/50</a></li>
+          <li>修复了许多其他已知问题</li>
           </ul>
       ]]>
       </description>

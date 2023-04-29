@@ -51,7 +51,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 You can install it using one of the following two methods. Support macOS 11.0+
 
-#### 1. Manual (Recommend)
+#### 1. Manual
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
