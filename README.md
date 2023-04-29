@@ -41,7 +41,7 @@
 
 下一步：
 
-- [ ] 支持翻译服务 API 调用，如 DeepL。
+- [ ] 支持翻译服务 API 调用。
 - [ ] 支持更多查询服务。
 - [ ] 支持 macOS 系统词典。
 
@@ -122,7 +122,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                            | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
-目前支持多种鼠标快捷取词方式：双击取词、鼠标拖动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标拖动取词】和【Shift 取词】可能会失败，此时可换其他取词方式。
+目前支持多种鼠标快捷取词方式：双击取词、鼠标拖动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标拖动取词】和【Shift 取词】可能会失败，此时可换其他取词方式。（快捷键取词在任意应用中都可以正常工作）
 
 #### 注意 ⚠️
 
@@ -232,7 +232,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 #### 设置
 
-![iShot_2023-02-19_11.33.51](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-02-19_11.33.51-1676783205.png)
+![image-20230429102509278](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230429102509278-1682735109.png)
 
 #### 服务
 

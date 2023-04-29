@@ -41,7 +41,7 @@
 
 Next step.
 
-- [ ] Supports service API calls, such as DeepL.
+- [ ] Supports service API calls.
 - [ ] Support more query services.
 - [ ] Support for macOS system dictionary.
 
@@ -122,7 +122,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
-Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
+Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.(Shortcut key select words can work fine in any application)
 
 #### Notice ⚠️
 
@@ -232,7 +232,7 @@ The settings page provides some preference setting modifications, such as automa
 
 #### Settting
 
-![iShot_2023-02-19_11.33.51](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-02-19_11.33.51-1676783205.png)
+![image-20230429102509278](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230429102509278-1682735109.png)
 
 #### Services
 
