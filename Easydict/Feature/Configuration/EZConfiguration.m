@@ -274,6 +274,17 @@ static EZConfiguration *_instance;
 
     NSError *error;
     if (@available(macOS 13.0, *)) {
+        
+        /**
+         FIX: https://github.com/tisfeng/Easydict/issues/79
+         
+         Ref: https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/cross_development/Using/using.html#//apple_ref/doc/uid/20002000-1114741-CJADDEIB
+         */
+        
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1300
+    // code only compiled when targeting OS X and not iOS
+    // note use of 1050 instead of __MAC_10_5
+
         // Ref: https://www.bilibili.com/read/cv19361413
         // ???: Why does it not work?
         SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
@@ -289,6 +300,7 @@ static EZConfiguration *_instance;
         if (!success) {
             MMLogInfo(@"SMAppService fail");
         }
+#endif
     } else {
         // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
         BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
