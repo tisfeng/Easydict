@@ -7,6 +7,7 @@
 //
 
 #import "EZQueryResult+EZYoudaoDictModel.h"
+#import <CommonCrypto/CommonCryptor.h>
 
 @implementation EZQueryResult (EZYoudaoDictModel)
 
@@ -178,5 +179,73 @@
     
     return self;
 }
+
+/*
+function A (t, o, n) {
+    o = "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl"
+    n = "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4"
+    if (!t)
+        return null;
+    const a = CryptoJS.enc.Hex.parse(m(o))
+      , r = CryptoJS.enc.Hex.parse(m(n))
+      , i = CryptoJS.AES.decrypt(CryptoJS.enc.Base64.parse(t), a, {
+        iv: r,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+    let s = i.toString(CryptoJS.enc.Utf8);
+    return s
+}
+*/
+// Convert JS function A to objc
+- (NSString *)decrypt:(NSString *)text {
+    NSString *key = @"B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl";
+    NSString *iv = @"C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4";
+    if (!text) {
+        return nil;
+    }
+    NSData *keyData = [self dataFromHexString:key];
+    NSData *ivData = [self dataFromHexString:iv];
+    NSData *textData = [[NSData alloc] initWithBase64EncodedString:text options:0];
+    NSData *decryptedData = [self aesDecrypt:textData key:keyData iv:ivData];
+    NSString *decryptedString = [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
+    return decryptedString;
+}
+
+- (NSData *)dataFromHexString:(NSString *)string {
+    NSMutableData *data = [NSMutableData dataWithCapacity:string.length / 2];
+    for (NSInteger i = 0; i < string.length; i += 2) {
+        NSString *hex = [string substringWithRange:NSMakeRange(i, 2)];
+        NSScanner *scanner = [NSScanner scannerWithString:hex];
+        unsigned int intValue;
+        [scanner scanHexInt:&intValue];
+        [data appendBytes:&intValue length:1];
+    }
+    return data;
+}
+
+- (NSData *)aesDecrypt:(NSData *)data key:(NSData *)key iv:(NSData *)iv {
+    NSMutableData *decryptedData = [NSMutableData dataWithLength:data.length];
+    size_t decryptedLength = 0;
+    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,
+                                          kCCAlgorithmAES128,
+                                          kCCOptionPKCS7Padding,
+                                          key.bytes,
+                                          key.length,
+                                          iv.bytes,
+                                          data.bytes,
+                                          data.length,
+                                          decryptedData.mutableBytes,
+                                          decryptedData.length,
+                                          &decryptedLength);
+    if (cryptStatus == kCCSuccess) {
+        decryptedData.length = decryptedLength;
+    } else {
+        decryptedData = nil;
+    }
+    return decryptedData;
+}
+
+
 
 @end

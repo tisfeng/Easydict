@@ -13,19 +13,26 @@
 #import "EZQueryResult+EZYoudaoDictModel.h"
 #import "EZWebViewTranslator.h"
 #import "EZTextWordUtils.h"
+#import <JavaScriptCore/JavaScriptCore.h>
+#import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonCryptor.h>
+#import "FWEncryptorAES.h"
+#import <WebKit/WebKit.h>
+#import "NSData+EZMD5.h"
 
-static NSString *const kYoudaoDictURL = @"https://www.youdao.com";
+static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
 static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
-
-// OUTFOX_SEARCH_USER_ID=1797292665@113.88.171.39; domain=.youdao.com; expires=Wed, 08-Jan-2053 02:18:55 GMT
-
 
 @interface EZYoudaoTranslate ()
 
 @property (nonatomic, strong) AFHTTPSessionManager *jsonSession;
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
+
+@property (nonatomic, strong) JSContext *jsContext;
+@property (nonatomic, strong) JSValue *jsFunction;
+@property (nonatomic, strong) WKWebView *webView;
 
 @end
 
@@ -34,6 +41,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 - (instancetype)init {
     if (self = [super init]) {
+        // Youdao's cookie seem to have a long expiration date, so we don't need to update them frequently.
         [self requestYoudaoCookie];
     }
     return self;
@@ -88,6 +96,70 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return _htmlSession;
 }
 
+- (JSContext *)jsContext {
+    if (!_jsContext) {
+        JSContext *jsContext = [JSContext new];
+        NSString *jsPath = [[NSBundle mainBundle] pathForResource:@"youdao-sign" ofType:@"js"];
+        NSString *jsString = [NSString stringWithContentsOfFile:jsPath encoding:NSUTF8StringEncoding error:nil];
+        // 加载方法
+        [jsContext evaluateScript:jsString];
+        _jsContext = jsContext;
+    }
+    return _jsContext;
+}
+
+- (JSValue *)jsFunction {
+    if (!_jsFunction) {
+        _jsFunction = [self.jsContext objectForKeyedSubscript:@"decrypt"];
+    }
+    return _jsFunction;
+}
+
+- (WKWebView *)webView {
+    if (!_webView) {
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        WKPreferences *preferences = [[WKPreferences alloc] init];
+        preferences.javaScriptCanOpenWindowsAutomatically = NO;
+        configuration.preferences = preferences;
+
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+        
+        NSURL *URL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"js"];
+        [webView loadFileURL:URL allowingReadAccessToURL:URL];
+
+//        URL = [NSURL URLWithString:@"https://fanyi.youdao.com/index.html#/"];
+//        [webView loadHTMLString:URL.absoluteString baseURL:nil];
+        
+//        // Define the JavaScript function to decrypt AES
+//        NSString *jsFunction = @"function decrypt (t, o, n) {\
+//        o = 'ydsecret://query/key/BRGygVywfNBwpmBaZgWT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl' \
+//        n = 'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4' \
+//        if (!t) \
+//            return null; \
+//        const a = CryptoJS.enc.Hex.parse(m(o)),\
+//            r = CryptoJS.enc.Hex.parse(m(n)),\
+//            i = CryptoJS.AES.decrypt(t, a, {\
+//                iv: r\
+//            });\
+//        return i.toString(CryptoJS.enc.Utf8);\
+//      }";
+//
+//        // Evaluate the JavaScript function
+//        [webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+//            if (error) {
+//                NSLog(@"error: %@", error);
+//            } else {
+//                NSLog(@"result: %@", result);
+//            }
+//        }];
+        
+        _webView = webView;
+    
+    }
+    return _webView;
+}
+
+// TODO: need to refactor it.
 // Get youdao fanyi cookie, and save it to user defaults.
 - (void)requestYoudaoCookie {
     // https://fanyi.youdao.com/index.html#/
@@ -139,8 +211,11 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return @"http://fanyi.youdao.com";
 }
 
-// Youdao word link, support 4 languages: en, ja, ko, fr, and to Chinese. https://www.youdao.com/result?word=good&lang=en
-// means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
+/**
+ Youdao word link, support 4 languages: en, ja, ko, fr, and to Chinese. https://www.youdao.com/result?word=good&lang=en
+ 
+ means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
+ */
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *encodedWord = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:queryModel];
@@ -238,8 +313,10 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
+
+    [self webTranslate:text from:from to:to completion:completion];
     
-    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
+//    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
 }
 
 - (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
@@ -253,6 +330,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         completion(self.result, nil);
         return;
     }
+    
     
     // 1. Query dict.
     dispatch_group_t group = dispatch_group_create();
@@ -323,7 +401,8 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         @"le" : foreignLangauge,
         @"dicts" : dicts_string,
     };
-    NSString *url = @"https://dict.youdao.com/jsonapi";
+    
+    NSString *url = [NSString stringWithFormat:@"%@/jsonapi", kYoudaoDictURL];
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
     
     NSURLSessionTask *task = [self.jsonSession GET:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
@@ -360,9 +439,6 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 /// Youdao web translate API
 - (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
-    // update cookie.
-    [self requestYoudaoCookie];
-    
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
     
@@ -415,16 +491,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             NSDictionary *dict = (NSDictionary *)responseObject;
             NSString *errorCode = dict[@"errorCode"];
             if (errorCode.integerValue == 0) {
-                NSArray *translateResult = dict[@"translateResult"];
-                NSMutableArray *texts = [NSMutableArray array];
-                for (NSArray *results in translateResult) {
-                    for (NSDictionary *resultDict in results) {
-                        NSString *text = resultDict[@"tgt"];
-                        if (text.length) {
-                            [texts addObject:text.trim];
-                        }
-                    }
-                }
+                NSArray *texts = [self parseTranslateResult:dict];
                 self.result.normalResults = texts;
                 completion(self.result, nil);
                 return;
@@ -778,6 +845,208 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             completion(nil, nil, error);
         }
     }];
+}
+
+#pragma mark -
+
+
+#pragma mark - WebView Translate
+
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    NSString *wordLink = [self wordLink:self.queryModel];
+    if (!wordLink) {
+        NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, nil, nil);
+        completion(self.result, error);
+        return;
+    }
+    
+    [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *texts, NSError *error) {
+        self.result.normalResults = texts;
+        completion(self.result, error);
+    }];
+    
+    mm_weakify(self);
+    [self.queryModel setStopBlock:^{
+        mm_strongify(self);
+        [self.webViewTranslator resetWebView];
+    } serviceType:self.serviceType];
+}
+
+
+#pragma mark - New Web Translate, 2023.5
+
+/// New Youdao web translate && dict API, Ref: https://github.com/Chen03/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
+- (void)webTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+    NSString *client = @"fanyideskweb";
+    NSString *product = @"webfanyi";
+    NSString *key = @"fsdsogkndfokasodnaso";
+    NSString *timestamp = [NSString stringWithFormat:@"%ld", (long)([[NSDate date] timeIntervalSince1970] * 1000)];
+
+    NSString *string = [NSString stringWithFormat:@"client=%@&mysticTime=%@&product=%@&key=%@", client, timestamp, product, key];
+    NSString *sign = [string md5];
+    
+    NSString *pointParam = @"client,mysticTime,product";
+    NSString *keyfrom = @"fanyi.web";
+    NSString *appVersion = @"1.0.0";
+    NSString *vendor = @"web";
+        
+    NSString *fromLanguage = [self languageCodeForLanguage:from];
+    NSString *toLanguage = [self languageCodeForLanguage:to];
+    
+    text = [text trimToMaxLength:5000];
+    
+    NSDictionary *params = @{
+        @"i" : text,
+        @"from" : fromLanguage,
+        @"to" : toLanguage,
+        @"dictResult": @"true",
+        @"keyid": @"webfanyi",
+        @"sign": sign,
+        
+        @"client": client,
+        @"product": product,
+        @"appVersion": appVersion,
+        @"vendor": vendor,
+        @"pointParam": pointParam,
+        @"mysticTime": timestamp,
+        @"keyfrom": keyfrom,
+    };
+    
+    NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
+    if (!cookie) {
+        cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
+    }
+
+    NSDictionary *headers = @{
+        @"User-Agent" : EZUserAgent,
+        @"Referer" : kYoudaoTranslatetURL,
+        @"Cookie" : cookie,
+    };
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+    manager.requestSerializer = requestSerializer;
+    AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
+    // default is AFJSONResponseSerializer
+    manager.responseSerializer = serializer;
+    
+    // set headers
+    for (NSString *key in headers.allKeys) {
+        [manager.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+    }
+    
+    NSString *url = [NSString stringWithFormat:@"%@/webtranslate", kYoudaoDictURL];
+    NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSData class]]) {
+            NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            NSString *base64String = [string stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
+            base64String = [base64String stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
+            
+            NSString *decodedString = [self decryptAESText:base64String];
+//            decodedString = [self decryptAES:base64String];
+            
+            NSDictionary *dict = [decodedString mj_JSONObject];
+//            NSLog(@"dict: %@", dict);
+            
+            NSArray *translatedTexts = [self parseTranslateResult:dict];
+            if (translatedTexts.count) {
+                self.result.normalResults = translatedTexts;
+                completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, @"翻译失败", responseObject));
+                return;
+            }
+        }
+        
+        [self webViewTranslate:completion];
+
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        if (error.code == NSURLErrorCancelled) {
+            return;
+        }
+        completion(self.result, error);
+    }];
+    
+    [self.queryModel setStopBlock:^{
+        [task cancel];
+    } serviceType:self.serviceType];
+}
+
+- (NSString *)decryptAESText:(NSString *)encryptedText {
+    NSString *key = @"ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl";
+    NSString *iv = @"ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4";
+    
+    if (!encryptedText) {
+        return nil;
+    }
+    
+    NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *ivData = [iv dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSData *keyDataMD5Data = [keyData md5];
+    NSData *ivDataMD5Data = [ivData md5];
+    
+    NSString *decryptedText = [FWEncryptorAES decryptStrFromBase64:encryptedText Key:keyDataMD5Data IV:ivDataMD5Data];
+    return decryptedText;
+}
+
+#pragma mark -
+
+- (NSArray<NSString *> *)parseTranslateResult:(NSDictionary *)dict {
+    NSArray *translateResult = dict[@"translateResult"];
+    NSMutableArray *translatedTexts = [NSMutableArray array];
+    for (NSArray *results in translateResult) {
+        for (NSDictionary *resultDict in results) {
+            NSString *text = resultDict[@"tgt"];
+            if (text.length) {
+                [translatedTexts addObject:text.trim];
+            }
+        }
+    }
+    return translatedTexts;
+}
+
+
+#pragma mark - AES Decrypt manually
+
+- (NSString *)decryptAES:(NSString *)text {
+    NSString *key = @"ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl";
+    NSString *iv = @"ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4";
+    
+    if (text == nil || [text length] == 0) {
+        return nil;
+    }
+    
+    NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *ivData = [iv dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSData *keyDataMD5Data = [keyData md5];
+    NSData *ivDataMD5Data = [ivData md5];
+    
+    return [self decryptAES:text key:keyDataMD5Data iv:ivDataMD5Data];
+}
+
+- (nullable NSString *)decryptAES:(NSString *)cipherText key:(NSData *)key iv:(NSData *)iv {
+    NSData *cipherData = [[NSData alloc] initWithBase64EncodedString:cipherText options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    NSMutableData* decryptedData = [NSMutableData dataWithLength:[cipherData length] + kCCBlockSizeAES128];
+    size_t decryptedLength = 0;
+
+    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,
+                                          kCCAlgorithmAES128,
+                                          kCCOptionPKCS7Padding,
+                                          [key bytes],
+                                          [key length],
+                                          [iv bytes],
+                                          [cipherData bytes],
+                                          [cipherData length],
+                                          [decryptedData mutableBytes],
+                                          [decryptedData length],
+                                          &decryptedLength);
+    if (cryptStatus == kCCSuccess) {
+        [decryptedData setLength:decryptedLength];
+        NSString *decryptedText = [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
+        return decryptedText;
+    }
+    
+    return nil;
 }
 
 @end
