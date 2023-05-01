@@ -39,6 +39,12 @@
 		03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A572937CC3200C34C33 /* EZConfiguration.m */; };
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
+		0361965529FFECFC00806370 /* youdao-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965429FFECFC00806370 /* youdao-sign.js */; };
+		0361965729FFED1100806370 /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965629FFED1100806370 /* main.js */; };
+		036196752A000F5900806370 /* FWEncryptorAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196702A000F5800806370 /* FWEncryptorAES.m */; };
+		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
+		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
+		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
 		036E7D7B293F4FC8002675DF /* EZLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZLinkButton.m */; };
 		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
 		037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AF2957FEB200D0E2CF /* EZServiceViewController.m */; };
@@ -245,6 +251,16 @@
 		03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDetectLanguageButton.m; sourceTree = "<group>"; };
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
+		0361965429FFECFC00806370 /* youdao-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "youdao-sign.js"; sourceTree = "<group>"; };
+		0361965629FFED1100806370 /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = main.js; path = "../../../../../../../../Downloads/bob-plugin-akl-youdao-free-translate-main/bobplugin/independently/src/main.js"; sourceTree = "<group>"; };
+		0361966F2A000F5800806370 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		036196702A000F5800806370 /* FWEncryptorAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWEncryptorAES.m; sourceTree = "<group>"; };
+		036196712A000F5900806370 /* FWEncryptorAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWEncryptorAES.h; sourceTree = "<group>"; };
+		036196722A000F5900806370 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		036196732A000F5900806370 /* NSData+CommonCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCrypto.h"; sourceTree = "<group>"; };
+		036196742A000F5900806370 /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
+		036196792A0037F700806370 /* NSData+EZMD5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+EZMD5.h"; sourceTree = "<group>"; };
+		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLinkButton.m; sourceTree = "<group>"; };
 		0375090B294F58D600C887B8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -646,6 +662,28 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		0361966B2A000E7800806370 /* FWEncryptorAES */ = {
+			isa = PBXGroup;
+			children = (
+				036196712A000F5900806370 /* FWEncryptorAES.h */,
+				036196702A000F5800806370 /* FWEncryptorAES.m */,
+				0361966F2A000F5800806370 /* NSData+Base64.h */,
+				036196722A000F5900806370 /* NSData+Base64.m */,
+				036196732A000F5900806370 /* NSData+CommonCrypto.h */,
+				036196742A000F5900806370 /* NSData+CommonCrypto.m */,
+			);
+			path = FWEncryptorAES;
+			sourceTree = "<group>";
+		};
+		036196782A0037D900806370 /* NSData+MD5 */ = {
+			isa = PBXGroup;
+			children = (
+				036196792A0037F700806370 /* NSData+EZMD5.h */,
+				0361967A2A0037F700806370 /* NSData+EZMD5.m */,
+			);
+			path = "NSData+MD5";
+			sourceTree = "<group>";
+		};
 		036E7D77293F4F51002675DF /* LanguageButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -884,6 +922,8 @@
 		03B0223629231FA6001C7E63 /* Youdao */ = {
 			isa = PBXGroup;
 			children = (
+				0361965429FFECFC00806370 /* youdao-sign.js */,
+				0361965629FFED1100806370 /* main.js */,
 				03542A4A2937B5F100C34C33 /* EZYoudaoTranslate.h */,
 				03542A4B2937B5F100C34C33 /* EZYoudaoTranslate.m */,
 				03542A4D2937B64B00C34C33 /* EZYoudaoOCRResponse.h */,
@@ -1178,6 +1218,7 @@
 		03B022D629231FA6001C7E63 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
 				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
 				039D119629D5E21E00C93F46 /* EZAudioUtils */,
@@ -1381,6 +1422,7 @@
 		03D8B26A292DBC8800D5A811 /* EZCategory */ = {
 			isa = PBXGroup;
 			children = (
+				036196782A0037D900806370 /* NSData+MD5 */,
 				03BB2DE829F57D8F00447EDD /* NSImage */,
 				03008B3C29444A650062B821 /* NSView+AnimatedHidden */,
 				03008B2429408BCB0062B821 /* NSObject+DarkMode */,
@@ -1582,7 +1624,9 @@
 				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
+				0361965729FFED1100806370 /* main.js in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
+				0361965529FFECFC00806370 /* youdao-sign.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1707,6 +1751,7 @@
 				03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */,
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
+				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
 				03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */,
@@ -1714,6 +1759,7 @@
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
+				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
@@ -1725,6 +1771,7 @@
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
+				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
@@ -1757,6 +1804,7 @@
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
+				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				037852B629588EDE00D0E2CF /* EZServiceRowView.m in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,

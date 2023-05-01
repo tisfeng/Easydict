@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
 
 
 /// 错误，不支持的语言
-FOUNDATION_EXPORT NSError * EZQueryUnsupportedLanguageError(EZQueryService *service);
+FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *service);
 
 
 @interface EZTranslateError : NSObject
