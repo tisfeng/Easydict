@@ -43,11 +43,16 @@
         return 0.0;
     }
     
-    return volume * 100;
+    float currentVolume = volume * 100;
+//    NSLog(@"--> getSystemVolume: %1.f", currentVolume);
+    
+    return currentVolume;
 }
 
 /// Set system volume, [0, 100]
 + (void)setSystemVolume:(float)volume {
+//    NSLog(@"--> setSystemVolume: %1.f", volume);
+    
     AudioDeviceID outputDeviceID = [self getDefaultOutputDeviceID];
     if (outputDeviceID == kAudioObjectUnknown) {
         NSLog(@"Unknown device");

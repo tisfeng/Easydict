@@ -16,17 +16,20 @@
 #import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
 
-static CGFloat kDismissPopButtonDelayTime = 0.5;
-static NSTimeInterval kDelayGetSelectedTextTime = 0.1;
+static CGFloat const kDismissPopButtonDelayTime = 0.5;
+static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
 
-static NSInteger kRecordEventCount = 3;
+// The longest system alert audio is Crystal, named Glass.aiff, its effective playback time is less than 0.8s
+static NSTimeInterval const kDelayRecoverVolumeTime = 0.8;
 
-static NSInteger kCommandKeyEventCount = 4;
-static CGFloat kDoublCommandInterval = 0.5;
+static NSInteger const kRecordEventCount = 3;
 
-static CGFloat kExpandedRadiusValue = 120;
+static NSInteger const kCommandKeyEventCount = 4;
+static CGFloat const kDoublCommandInterval = 0.5;
 
-static NSString *kHasUsedAutoSelectTextKey = @"kHasUsedAutoSelectTextKey";
+static CGFloat const kExpandedRadiusValue = 120;
+
+static NSString *const kHasUsedAutoSelectTextKey = @"kHasUsedAutoSelectTextKey";
 
 typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     EZEventMonitorTypeLocal,
@@ -48,6 +51,11 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *commandKeyEvents;
 
 @property (nonatomic, assign) CGFloat movedY;
+
+// We need to store the current volume, because the volume will be set to 0 when empty copy.
+@property (nonatomic, assign) float currentVolume;
+// When isMuting, we should not read system volume.
+@property (nonatomic, assign) BOOL isMuting;
 
 @end
 
@@ -88,8 +96,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)start {
     [self stop];
+    mm_weakify(self);
+    
     if (self.type == EZEventMonitorTypeLocal) {
-        mm_weakify(self)
         self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
@@ -98,7 +107,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     } else if (self.type == EZEventMonitorTypeGlobal) {
         self.globalMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:self.mask handler:self.handler];
     } else {
-        mm_weakify(self)
         self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
             self.handler(event);
@@ -210,6 +218,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 }
 
+
 /// Get selected text by shortcut: Cmd + C
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     self.endPoint = NSEvent.mouseLocation;
@@ -219,13 +228,15 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     NSString *lastText = [self getPasteboardText];
     
-    float currentVolume = 0.0;
     BOOL shouldTurnOffSoundTemporarily = ![self isSupportEmptyCopy] && EZConfiguration.shared.disableEmptyCopyBeep;
     
-    // If app doesn't support empty copy, set volume to 0 to avoid system sound.
+    // If app doesn't support empty copy, set volume to 0 to avoid system alert.
     if (shouldTurnOffSoundTemporarily) {
-        currentVolume = [EZAudioUtils getSystemVolume];
+        if (!self.isMuting) {
+            self.currentVolume = [EZAudioUtils getSystemVolume];
+        }
         [EZAudioUtils setSystemVolume:0];
+        self.isMuting = YES;
     }
     
     // Simulate keyboard event: Cmd + C
@@ -233,9 +244,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
     
     if (shouldTurnOffSoundTemporarily) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.09 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [EZAudioUtils setSystemVolume:currentVolume];
-        });
+        [self cancelDelayRecoverVolume];
+        [self delayRecoverVolume];
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -256,13 +266,29 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     });
 }
 
-// Return last NSPasteboard string text.
+/// Get last NSPasteboard string text.
 - (nullable NSString *)getPasteboardText {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     // !!!: Do not use [pasteboard stringForType:NSPasteboardTypeString], it will get the last text even current copy value is nil.
     NSString *text = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
     return text;
 }
+
+#pragma mark - Delay to recover volume
+
+- (void)delayRecoverVolume {
+    [self performSelector:@selector(recoverVolume) withObject:nil afterDelay:kDelayRecoverVolumeTime];
+}
+
+- (void)cancelDelayRecoverVolume {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(recoverVolume) object:nil];
+}
+
+- (void)recoverVolume {
+    [EZAudioUtils setSystemVolume:self.currentVolume];
+    self.isMuting = NO;
+}
+
 
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
@@ -426,7 +452,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @"abnerworks.Typora",       // Typora
         @"com.jinghaoshe.shi",      // 晓诗
         @"xyz.chatboxapp.app",      // chatbox
-        @"com.wutian.weibo", // Maipo，微博客户端
+        @"com.wutian.weibo",        // Maipo，微博客户端
     ];
     
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
@@ -456,7 +482,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             //                NSLog(@"mouse down");
             
             self.startPoint = NSEvent.mouseLocation;
-
+            
             if (self.mouseClickBlock) {
                 self.mouseClickBlock(self.startPoint);
             }
@@ -494,8 +520,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         case NSEventTypeScrollWheel: {
             CGFloat deltaY = event.scrollingDeltaY;
             self.movedY += deltaY;
-//            NSLog(@"movedY: %.1f", self.movedY);
-
+            //            NSLog(@"movedY: %.1f", self.movedY);
+            
             CGFloat maxDeltaY = 80;
             if (fabs(self.movedY) > maxDeltaY) {
                 [self dismissPopButton];
@@ -631,9 +657,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 }
 
-#pragma mark -
+#pragma mark - Delay get selected text
 
-/// Delay get selected text.
 - (void)delayGetSelectedText {
     [self performSelector:@selector(autoGetSelectedText:) withObject:@(NO) afterDelay:kDelayGetSelectedTextTime];
 }
