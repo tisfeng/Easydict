@@ -8,6 +8,11 @@
 
 #import "EZAudioUtils.h"
 #import <CoreAudio/CoreAudio.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import <CoreAudio/CoreAudioTypes.h>
+#import <AudioToolbox/AudioServices.h>
+#include <dlfcn.h>
 
 @implementation EZAudioUtils
 
@@ -23,8 +28,7 @@
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertyVolumeScalar,
         kAudioDevicePropertyScopeOutput,
-        kAudioObjectPropertyElementMaster
-    };
+        kAudioObjectPropertyElementMaster};
     
     if (!AudioObjectHasProperty(outputDeviceID, &address)) {
         NSLog(@"No volume returned for device 0x%0x", outputDeviceID);
@@ -62,8 +66,7 @@
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertyVolumeScalar,
         kAudioDevicePropertyScopeOutput,
-        kAudioObjectPropertyElementMaster
-    };
+        kAudioObjectPropertyElementMaster};
     
     if (!AudioObjectHasProperty(outputDeviceID, &address)) {
         NSLog(@"No volume returned for device 0x%0x", outputDeviceID);
@@ -83,8 +86,7 @@
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDefaultOutputDevice,
         kAudioObjectPropertyScopeGlobal,
-        kAudioObjectPropertyElementMaster
-    };
+        kAudioObjectPropertyElementMaster};
     
     UInt32 dataSize = sizeof(AudioDeviceID);
     OSStatus status = AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, 0, NULL, &dataSize, &outputDeviceID);
@@ -94,5 +96,66 @@
     
     return outputDeviceID;
 }
+
+
+/// Get playing song info, Ref: https://stackoverflow.com/questions/61003379/how-to-get-currently-playing-song-on-mac-swift
++ (void)getPlayingSongInfo {
+    CFBundleRef mediaRemoteBundle = mediaRemoteBundle = CFBundleCreate(NULL, (__bridge CFURLRef)[NSURL URLWithString:@"/System/Library/PrivateFrameworks/MediaRemote.framework"]);
+
+    // Get a C function pointer for MRMediaRemoteGetNowPlayingInfo
+    void *mrMediaRemoteGetNowPlayingInfoPointer = CFBundleGetFunctionPointerForName(mediaRemoteBundle, CFSTR("MRMediaRemoteGetNowPlayingInfo"));
+    if (!mrMediaRemoteGetNowPlayingInfoPointer) {
+        NSLog(@"Failed to get MRMediaRemoteGetNowPlayingInfo function pointer");
+        CFRelease(mediaRemoteBundle);
+    }
+    typedef void (*MRMediaRemoteGetNowPlayingInfoFunction)(dispatch_queue_t queue, void (^completionHandler)(NSDictionary *information));
+    MRMediaRemoteGetNowPlayingInfoFunction mrMediaRemoteGetNowPlayingInfo = (MRMediaRemoteGetNowPlayingInfoFunction)mrMediaRemoteGetNowPlayingInfoPointer;
+    
+    // Get a C function pointer for MRNowPlayingClientGetBundleIdentifier
+    void *mrNowPlayingClientGetBundleIdentifierPointer = CFBundleGetFunctionPointerForName(mediaRemoteBundle, CFSTR("MRNowPlayingClientGetBundleIdentifier"));
+    if (!mrNowPlayingClientGetBundleIdentifierPointer) {
+        NSLog(@"Failed to get MRNowPlayingClientGetBundleIdentifier function pointer");
+        CFRelease(mediaRemoteBundle);
+    }
+    
+    // Get song info
+    mrMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(NSDictionary *_Nonnull information) {
+        NSLog(@"information: %@", information);
+        
+        NSLog(@"%@", information[@"kMRMediaRemoteNowPlayingInfoTitle"]);
+        NSLog(@"now date: %@", NSDate.now);
+    });
+    
+    CFRelease(mediaRemoteBundle);
+}
+
+
+/// Use MediaRemote.framework to get MRMediaRemoteGetNowPlayingApplicationIsPlaying, Ref: https://github.com/PrivateFrameworks/MediaRemote/blob/5c10fd20fd6b1ef10d912f3bcb9037b1f61efb9e/Sources/PrivateMediaRemote/Functions.h
++ (void)isPlayingAudio:(void (^)(BOOL isPlaying))completion {
+    CFBundleRef mediaRemoteBundle = mediaRemoteBundle = CFBundleCreate(NULL, (__bridge CFURLRef)[NSURL URLWithString:@"/System/Library/PrivateFrameworks/MediaRemote.framework"]);
+    
+    if (!mediaRemoteBundle) {
+        NSLog(@"Failed to load MediaRemote.framework");
+    }
+    
+    // Get a C function pointer for MRMediaRemoteGetNowPlayingApplicationIsPlaying
+    void *mrMediaRemoteGetNowPlayingApplicationIsPlayingPointer = CFBundleGetFunctionPointerForName(mediaRemoteBundle, CFSTR("MRMediaRemoteGetNowPlayingApplicationIsPlaying"));
+    if (!mrMediaRemoteGetNowPlayingApplicationIsPlayingPointer) {
+        NSLog(@"Failed to get MRMediaRemoteGetNowPlayingApplicationIsPlaying function pointer");
+        CFRelease(mediaRemoteBundle);
+    }
+    
+    typedef void (*MRMediaRemoteGetNowPlayingApplicationIsPlayingFunction)(dispatch_queue_t queue, void (^completionHandler)(BOOL isPlaying));
+    
+    MRMediaRemoteGetNowPlayingApplicationIsPlayingFunction mrMediaRemoteGetNowPlayingApplicationIsPlaying = (MRMediaRemoteGetNowPlayingApplicationIsPlayingFunction)mrMediaRemoteGetNowPlayingApplicationIsPlayingPointer;
+    
+    mrMediaRemoteGetNowPlayingApplicationIsPlaying(dispatch_get_main_queue(), ^(BOOL playing) {
+        NSLog(@"isPlaying: %d", playing);
+        completion(playing);
+    });
+    
+    CFRelease(mediaRemoteBundle);
+}
+
 
 @end

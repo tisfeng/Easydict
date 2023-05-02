@@ -227,43 +227,46 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSInteger changeCount = [pasteboard changeCount];
     
     NSString *lastText = [self getPasteboardText];
-    
-    BOOL shouldTurnOffSoundTemporarily = ![self isSupportEmptyCopy] && EZConfiguration.shared.disableEmptyCopyBeep;
-    
-    // If app doesn't support empty copy, set volume to 0 to avoid system alert.
-    if (shouldTurnOffSoundTemporarily) {
-        if (!self.isMuting) {
-            self.currentVolume = [EZAudioUtils getSystemVolume];
-        }
-        [EZAudioUtils setSystemVolume:0];
-        self.isMuting = YES;
-    }
-    
-    // Simulate keyboard event: Cmd + C
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
-    
-    if (shouldTurnOffSoundTemporarily) {
-        [self cancelDelayRecoverVolume];
-        [self delayRecoverVolume];
-    }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSInteger newChangeCount = [pasteboard changeCount];
-        // If changeCount is equal to newChangeCount, it means that the copy value is nil.
-        if (changeCount == newChangeCount) {
-            completion(nil);
-            return;
+        
+    // If playing audio, we do not silence system volume.
+    [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
+        BOOL shouldTurnOffSoundTemporarily = ![self isSupportEmptyCopy] && EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying;
+        
+        // If app doesn't support empty copy, set volume to 0 to avoid system alert.
+        if (shouldTurnOffSoundTemporarily) {
+            if (!self.isMuting) {
+                self.currentVolume = [EZAudioUtils getSystemVolume];
+            }
+            [EZAudioUtils setSystemVolume:0];
+            self.isMuting = YES;
         }
         
-        NSString *selectedText = [self getPasteboardText];
-        self.selectedText = selectedText;
-        MMLogInfo(@"--> Key getText: %@", selectedText);
+        // Simulate keyboard event: Cmd + C
+        PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
+        PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
         
-        [lastText copyToPasteboard];
+        if (shouldTurnOffSoundTemporarily) {
+            [self cancelDelayRecoverVolume];
+            [self delayRecoverVolume];
+        }
         
-        completion(selectedText);
-    });
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSInteger newChangeCount = [pasteboard changeCount];
+            // If changeCount is equal to newChangeCount, it means that the copy value is nil.
+            if (changeCount == newChangeCount) {
+                completion(nil);
+                return;
+            }
+            
+            NSString *selectedText = [self getPasteboardText];
+            self.selectedText = selectedText;
+            MMLogInfo(@"--> Key getText: %@", selectedText);
+            
+            [lastText copyToPasteboard];
+            
+            completion(selectedText);
+        });
+    }];
 }
 
 /// Get last NSPasteboard string text.
