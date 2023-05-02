@@ -127,32 +127,6 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         NSURL *URL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"js"];
         [webView loadFileURL:URL allowingReadAccessToURL:URL];
 
-//        URL = [NSURL URLWithString:@"https://fanyi.youdao.com/index.html#/"];
-//        [webView loadHTMLString:URL.absoluteString baseURL:nil];
-        
-//        // Define the JavaScript function to decrypt AES
-//        NSString *jsFunction = @"function decrypt (t, o, n) {\
-//        o = 'ydsecret://query/key/BRGygVywfNBwpmBaZgWT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl' \
-//        n = 'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4' \
-//        if (!t) \
-//            return null; \
-//        const a = CryptoJS.enc.Hex.parse(m(o)),\
-//            r = CryptoJS.enc.Hex.parse(m(n)),\
-//            i = CryptoJS.AES.decrypt(t, a, {\
-//                iv: r\
-//            });\
-//        return i.toString(CryptoJS.enc.Utf8);\
-//      }";
-//
-//        // Evaluate the JavaScript function
-//        [webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-//            if (error) {
-//                NSLog(@"error: %@", error);
-//            } else {
-//                NSLog(@"result: %@", result);
-//            }
-//        }];
-        
         _webView = webView;
     
     }
@@ -249,6 +223,9 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return nil;
 }
 
+/**
+ Note: The official Youdao API supports most languages, but its web page shows that only 15 languages are supported. https://fanyi.youdao.com/index.html#/
+ */
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto",
@@ -264,42 +241,42 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                                         EZLanguageGerman, @"de",
                                         EZLanguageRussian, @"ru",
                                         EZLanguageArabic, @"ar",
-                                        EZLanguageSwedish, @"sv",
-                                        EZLanguageRomanian, @"ro",
+//                                        EZLanguageSwedish, @"sv",
+//                                        EZLanguageRomanian, @"ro",
                                         EZLanguageThai, @"th",
-                                        EZLanguageSlovak, @"sk",
+//                                        EZLanguageSlovak, @"sk",
                                         EZLanguageDutch, @"nl",
-                                        EZLanguageHungarian, @"hu",
-                                        EZLanguageGreek, @"el",
-                                        EZLanguageDanish, @"da",
-                                        EZLanguageFinnish, @"fi",
-                                        EZLanguagePolish, @"pl",
-                                        EZLanguageCzech, @"cs",
-                                        EZLanguageTurkish, @"tr",
-                                        EZLanguageLithuanian, @"lt",
-                                        EZLanguageLatvian, @"lv",
-                                        EZLanguageUkrainian, @"uk",
-                                        EZLanguageBulgarian, @"bg",
+//                                        EZLanguageHungarian, @"hu",
+//                                        EZLanguageGreek, @"el",
+//                                        EZLanguageDanish, @"da",
+//                                        EZLanguageFinnish, @"fi",
+//                                        EZLanguagePolish, @"pl",
+//                                        EZLanguageCzech, @"cs",
+//                                        EZLanguageTurkish, @"tr",
+//                                        EZLanguageLithuanian, @"lt",
+//                                        EZLanguageLatvian, @"lv",
+//                                        EZLanguageUkrainian, @"uk",
+//                                        EZLanguageBulgarian, @"bg",
                                         EZLanguageIndonesian, @"id",
-                                        EZLanguageMalay, @"ms",
-                                        EZLanguageSlovenian, @"sl",
-                                        EZLanguageEstonian, @"et",
+//                                        EZLanguageMalay, @"ms",
+//                                        EZLanguageSlovenian, @"sl",
+//                                        EZLanguageEstonian, @"et",
                                         EZLanguageVietnamese, @"vi",
-                                        EZLanguagePersian, @"fa",
-                                        EZLanguageHindi, @"hi",
-                                        EZLanguageTelugu, @"te",
-                                        EZLanguageTamil, @"ta",
-                                        EZLanguageUrdu, @"ur",
-                                        EZLanguageFilipino, @"tl",
-                                        EZLanguageKhmer, @"km",
-                                        EZLanguageLao, @"lo",
-                                        EZLanguageBengali, @"bn",
-                                        EZLanguageBurmese, @"my",
-                                        EZLanguageNorwegian, @"no",
-                                        EZLanguageSerbian, @"sr",
-                                        EZLanguageCroatian, @"hr",
-                                        EZLanguageMongolian, @"mn",
-                                        EZLanguageHebrew, @"iw",
+//                                        EZLanguagePersian, @"fa",
+//                                        EZLanguageHindi, @"hi",
+//                                        EZLanguageTelugu, @"te",
+//                                        EZLanguageTamil, @"ta",
+//                                        EZLanguageUrdu, @"ur",
+//                                        EZLanguageFilipino, @"tl",
+//                                        EZLanguageKhmer, @"km",
+//                                        EZLanguageLao, @"lo",
+//                                        EZLanguageBengali, @"bn",
+//                                        EZLanguageBurmese, @"my",
+//                                        EZLanguageNorwegian, @"no",
+//                                        EZLanguageSerbian, @"sr",
+//                                        EZLanguageCroatian, @"hr",
+//                                        EZLanguageMongolian, @"mn",
+//                                        EZLanguageHebrew, @"iw",
                                         nil];
     return orderedDict;
 }
