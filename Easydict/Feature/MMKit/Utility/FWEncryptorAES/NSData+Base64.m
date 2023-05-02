@@ -81,58 +81,58 @@ void *NewBase64Decode(
                       size_t length,
                       size_t *outputLength)
 {
-	if (length == -1)
-	{
-		length = strlen(inputBuffer);
-	}
+    if (length == -1)
+    {
+        length = strlen(inputBuffer);
+    }
     
-	size_t outputBufferSize =
+    size_t outputBufferSize =
     ((length+BASE64_UNIT_SIZE-1) / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE;
-	unsigned char *outputBuffer = (unsigned char *)malloc(outputBufferSize);
+    unsigned char *outputBuffer = (unsigned char *)malloc(outputBufferSize);
     
-	size_t i = 0;
-	size_t j = 0;
-	while (i < length)
-	{
-		//
-		// Accumulate 4 valid characters (ignore everything else)
-		//
-		unsigned char accumulated[BASE64_UNIT_SIZE];
-		size_t accumulateIndex = 0;
-		while (i < length)
-		{
-			unsigned char decode = base64DecodeLookup[inputBuffer[i++]];
-			if (decode != xx)
-			{
-				accumulated[accumulateIndex] = decode;
-				accumulateIndex++;
+    size_t i = 0;
+    size_t j = 0;
+    while (i < length)
+    {
+        //
+        // Accumulate 4 valid characters (ignore everything else)
+        //
+        unsigned char accumulated[BASE64_UNIT_SIZE];
+        size_t accumulateIndex = 0;
+        while (i < length)
+        {
+            unsigned char decode = base64DecodeLookup[inputBuffer[i++]];
+            if (decode != xx)
+            {
+                accumulated[accumulateIndex] = decode;
+                accumulateIndex++;
                 
-				if (accumulateIndex == BASE64_UNIT_SIZE)
-				{
-					break;
-				}
-			}
-		}
+                if (accumulateIndex == BASE64_UNIT_SIZE)
+                {
+                    break;
+                }
+            }
+        }
         
-		//
-		// Store the 6 bits from each of the 4 characters as 3 bytes
-		//
-		// (Uses improved bounds checking suggested by Alexandre Colucci)
-		//
-		if(accumulateIndex >= 2)
-			outputBuffer[j] = (accumulated[0] << 2) | (accumulated[1] >> 4);
-		if(accumulateIndex >= 3)
-			outputBuffer[j + 1] = (accumulated[1] << 4) | (accumulated[2] >> 2);
-		if(accumulateIndex >= 4)
-			outputBuffer[j + 2] = (accumulated[2] << 6) | accumulated[3];
-		j += accumulateIndex - 1;
-	}
+        //
+        // Store the 6 bits from each of the 4 characters as 3 bytes
+        //
+        // (Uses improved bounds checking suggested by Alexandre Colucci)
+        //
+        if(accumulateIndex >= 2)
+            outputBuffer[j] = (accumulated[0] << 2) | (accumulated[1] >> 4);
+        if(accumulateIndex >= 3)
+            outputBuffer[j + 1] = (accumulated[1] << 4) | (accumulated[2] >> 2);
+        if(accumulateIndex >= 4)
+            outputBuffer[j + 2] = (accumulated[2] << 6) | accumulated[3];
+        j += accumulateIndex - 1;
+    }
     
-	if (outputLength)
-	{
-		*outputLength = j;
-	}
-	return outputBuffer;
+    if (outputLength)
+    {
+        *outputLength = j;
+    }
+    return outputBuffer;
 }
 
 //
@@ -157,109 +157,109 @@ char *NewBase64Encode(
                       bool separateLines,
                       size_t *outputLength)
 {
-	const unsigned char *inputBuffer = (const unsigned char *)buffer;
+    const unsigned char *inputBuffer = (const unsigned char *)buffer;
     
 #define MAX_NUM_PADDING_CHARS 2
 #define OUTPUT_LINE_LENGTH 64
 #define INPUT_LINE_LENGTH ((OUTPUT_LINE_LENGTH / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE)
 #define CR_LF_SIZE 2
     
-	//
-	// Byte accurate calculation of final buffer size
-	//
-	size_t outputBufferSize =
+    //
+    // Byte accurate calculation of final buffer size
+    //
+    size_t outputBufferSize =
     ((length / BINARY_UNIT_SIZE)
      + ((length % BINARY_UNIT_SIZE) ? 1 : 0))
     * BASE64_UNIT_SIZE;
-	if (separateLines)
-	{
-		outputBufferSize +=
+    if (separateLines)
+    {
+        outputBufferSize +=
         (outputBufferSize / OUTPUT_LINE_LENGTH) * CR_LF_SIZE;
-	}
+    }
     
-	//
-	// Include space for a terminating zero
-	//
-	outputBufferSize += 1;
+    //
+    // Include space for a terminating zero
+    //
+    outputBufferSize += 1;
     
-	//
-	// Allocate the output buffer
-	//
-	char *outputBuffer = (char *)malloc(outputBufferSize);
-	if (!outputBuffer)
-	{
-		return NULL;
-	}
+    //
+    // Allocate the output buffer
+    //
+    char *outputBuffer = (char *)malloc(outputBufferSize);
+    if (!outputBuffer)
+    {
+        return NULL;
+    }
     
-	size_t i = 0;
-	size_t j = 0;
-	const size_t lineLength = separateLines ? INPUT_LINE_LENGTH : length;
-	size_t lineEnd = lineLength;
+    size_t i = 0;
+    size_t j = 0;
+    const size_t lineLength = separateLines ? INPUT_LINE_LENGTH : length;
+    size_t lineEnd = lineLength;
     
-	while (true)
-	{
-		if (lineEnd > length)
-		{
-			lineEnd = length;
-		}
+    while (true)
+    {
+        if (lineEnd > length)
+        {
+            lineEnd = length;
+        }
         
-		for (; i + BINARY_UNIT_SIZE - 1 < lineEnd; i += BINARY_UNIT_SIZE)
-		{
-			//
-			// Inner loop: turn 48 bytes into 64 base64 characters
-			//
-			outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
-			outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i] & 0x03) << 4)
+        for (; i + BINARY_UNIT_SIZE - 1 < lineEnd; i += BINARY_UNIT_SIZE)
+        {
+            //
+            // Inner loop: turn 48 bytes into 64 base64 characters
+            //
+            outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
+            outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i] & 0x03) << 4)
                                                    | ((inputBuffer[i + 1] & 0xF0) >> 4)];
-			outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i + 1] & 0x0F) << 2)
+            outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i + 1] & 0x0F) << 2)
                                                    | ((inputBuffer[i + 2] & 0xC0) >> 6)];
-			outputBuffer[j++] = base64EncodeLookup[inputBuffer[i + 2] & 0x3F];
-		}
+            outputBuffer[j++] = base64EncodeLookup[inputBuffer[i + 2] & 0x3F];
+        }
         
-		if (lineEnd == length)
-		{
-			break;
-		}
+        if (lineEnd == length)
+        {
+            break;
+        }
         
-		//
-		// Add the newline
-		//
-		outputBuffer[j++] = '\r';
-		outputBuffer[j++] = '\n';
-		lineEnd += lineLength;
-	}
+        //
+        // Add the newline
+        //
+        outputBuffer[j++] = '\r';
+        outputBuffer[j++] = '\n';
+        lineEnd += lineLength;
+    }
     
-	if (i + 1 < length)
-	{
-		//
-		// Handle the single '=' case
-		//
-		outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
-		outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i] & 0x03) << 4)
+    if (i + 1 < length)
+    {
+        //
+        // Handle the single '=' case
+        //
+        outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
+        outputBuffer[j++] = base64EncodeLookup[((inputBuffer[i] & 0x03) << 4)
                                                | ((inputBuffer[i + 1] & 0xF0) >> 4)];
-		outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i + 1] & 0x0F) << 2];
-		outputBuffer[j++] =	'=';
-	}
-	else if (i < length)
-	{
-		//
-		// Handle the double '=' case
-		//
-		outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
-		outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0x03) << 4];
-		outputBuffer[j++] = '=';
-		outputBuffer[j++] = '=';
-	}
-	outputBuffer[j] = 0;
+        outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i + 1] & 0x0F) << 2];
+        outputBuffer[j++] =	'=';
+    }
+    else if (i < length)
+    {
+        //
+        // Handle the double '=' case
+        //
+        outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0xFC) >> 2];
+        outputBuffer[j++] = base64EncodeLookup[(inputBuffer[i] & 0x03) << 4];
+        outputBuffer[j++] = '=';
+        outputBuffer[j++] = '=';
+    }
+    outputBuffer[j] = 0;
     
-	//
-	// Set the output length and return the buffer
-	//
-	if (outputLength)
-	{
-		*outputLength = j;
-	}
-	return outputBuffer;
+    //
+    // Set the output length and return the buffer
+    //
+    if (outputLength)
+    {
+        *outputLength = j;
+    }
+    return outputBuffer;
 }
 
 @implementation NSData (Base64)
@@ -277,12 +277,12 @@ char *NewBase64Encode(
 //
 + (NSData *)dataFromBase64String:(NSString *)aString
 {
-	NSData *data = [aString dataUsingEncoding:NSASCIIStringEncoding];
-	size_t outputLength;
-	void *outputBuffer = NewBase64Decode([data bytes], [data length], &outputLength);
-	NSData *result = [NSData dataWithBytes:outputBuffer length:outputLength];
-	free(outputBuffer);
-	return result;
+    NSData *data = [aString dataUsingEncoding:NSASCIIStringEncoding];
+    size_t outputLength;
+    void *outputBuffer = NewBase64Decode([data bytes], [data length], &outputLength);
+    NSData *result = [NSData dataWithBytes:outputBuffer length:outputLength];
+    free(outputBuffer);
+    return result;
 }
 
 //
@@ -296,35 +296,27 @@ char *NewBase64Encode(
 //
 - (NSString *)base64EncodedString
 {
-	size_t outputLength;
-	char *outputBuffer =
-    NewBase64Encode([self bytes], [self length], true, &outputLength);
+    size_t outputLength;
+    char *outputBuffer = NewBase64Encode([self bytes], [self length], true, &outputLength);
     
-	NSString *result =
-    [[NSString alloc]
-      initWithBytes:outputBuffer
-      length:outputLength
-      encoding:NSASCIIStringEncoding]
-     ;
-	free(outputBuffer);
-	return result;
+    NSString *result = [[NSString alloc] initWithBytes:outputBuffer
+                                                length:outputLength
+                                              encoding:NSASCIIStringEncoding];
+    free(outputBuffer);
+    return result;
 }
 
 // added by Hiroshi Hashiguchi
 - (NSString *)base64EncodedStringWithSeparateLines:(BOOL)separateLines
 {
-	size_t outputLength;
-	char *outputBuffer =
-    NewBase64Encode([self bytes], [self length], separateLines, &outputLength);
+    size_t outputLength;
+    char *outputBuffer =  NewBase64Encode([self bytes], [self length], separateLines, &outputLength);
     
-	NSString *result =
-    [[NSString alloc]
-      initWithBytes:outputBuffer
-      length:outputLength
-      encoding:NSASCIIStringEncoding]
-     ;
-	free(outputBuffer);
-	return result;
+    NSString *result = [[NSString alloc] initWithBytes:outputBuffer
+                                                length:outputLength
+                                              encoding:NSASCIIStringEncoding];
+    free(outputBuffer);
+    return result;
 }
 
 

@@ -121,14 +121,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         WKPreferences *preferences = [[WKPreferences alloc] init];
         preferences.javaScriptCanOpenWindowsAutomatically = NO;
         configuration.preferences = preferences;
-
+        
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         
         NSURL *URL = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"js"];
         [webView loadFileURL:URL allowingReadAccessToURL:URL];
-
+        
         _webView = webView;
-    
     }
     return _webView;
 }
@@ -173,7 +172,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     if (enableDictionary) {
         type = type | EZQueryServiceTypeDictionary;
     }
-
+    
     return type;
 }
 
@@ -241,42 +240,42 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                                         EZLanguageGerman, @"de",
                                         EZLanguageRussian, @"ru",
                                         EZLanguageArabic, @"ar",
-//                                        EZLanguageSwedish, @"sv",
-//                                        EZLanguageRomanian, @"ro",
+                                        //                                        EZLanguageSwedish, @"sv",
+                                        //                                        EZLanguageRomanian, @"ro",
                                         EZLanguageThai, @"th",
-//                                        EZLanguageSlovak, @"sk",
+                                        //                                        EZLanguageSlovak, @"sk",
                                         EZLanguageDutch, @"nl",
-//                                        EZLanguageHungarian, @"hu",
-//                                        EZLanguageGreek, @"el",
-//                                        EZLanguageDanish, @"da",
-//                                        EZLanguageFinnish, @"fi",
-//                                        EZLanguagePolish, @"pl",
-//                                        EZLanguageCzech, @"cs",
-//                                        EZLanguageTurkish, @"tr",
-//                                        EZLanguageLithuanian, @"lt",
-//                                        EZLanguageLatvian, @"lv",
-//                                        EZLanguageUkrainian, @"uk",
-//                                        EZLanguageBulgarian, @"bg",
+                                        //                                        EZLanguageHungarian, @"hu",
+                                        //                                        EZLanguageGreek, @"el",
+                                        //                                        EZLanguageDanish, @"da",
+                                        //                                        EZLanguageFinnish, @"fi",
+                                        //                                        EZLanguagePolish, @"pl",
+                                        //                                        EZLanguageCzech, @"cs",
+                                        //                                        EZLanguageTurkish, @"tr",
+                                        //                                        EZLanguageLithuanian, @"lt",
+                                        //                                        EZLanguageLatvian, @"lv",
+                                        //                                        EZLanguageUkrainian, @"uk",
+                                        //                                        EZLanguageBulgarian, @"bg",
                                         EZLanguageIndonesian, @"id",
-//                                        EZLanguageMalay, @"ms",
-//                                        EZLanguageSlovenian, @"sl",
-//                                        EZLanguageEstonian, @"et",
+                                        //                                        EZLanguageMalay, @"ms",
+                                        //                                        EZLanguageSlovenian, @"sl",
+                                        //                                        EZLanguageEstonian, @"et",
                                         EZLanguageVietnamese, @"vi",
-//                                        EZLanguagePersian, @"fa",
-//                                        EZLanguageHindi, @"hi",
-//                                        EZLanguageTelugu, @"te",
-//                                        EZLanguageTamil, @"ta",
-//                                        EZLanguageUrdu, @"ur",
-//                                        EZLanguageFilipino, @"tl",
-//                                        EZLanguageKhmer, @"km",
-//                                        EZLanguageLao, @"lo",
-//                                        EZLanguageBengali, @"bn",
-//                                        EZLanguageBurmese, @"my",
-//                                        EZLanguageNorwegian, @"no",
-//                                        EZLanguageSerbian, @"sr",
-//                                        EZLanguageCroatian, @"hr",
-//                                        EZLanguageMongolian, @"mn",
-//                                        EZLanguageHebrew, @"iw",
+                                        //                                        EZLanguagePersian, @"fa",
+                                        //                                        EZLanguageHindi, @"hi",
+                                        //                                        EZLanguageTelugu, @"te",
+                                        //                                        EZLanguageTamil, @"ta",
+                                        //                                        EZLanguageUrdu, @"ur",
+                                        //                                        EZLanguageFilipino, @"tl",
+                                        //                                        EZLanguageKhmer, @"km",
+                                        //                                        EZLanguageLao, @"lo",
+                                        //                                        EZLanguageBengali, @"bn",
+                                        //                                        EZLanguageBurmese, @"my",
+                                        //                                        EZLanguageNorwegian, @"no",
+                                        //                                        EZLanguageSerbian, @"sr",
+                                        //                                        EZLanguageCroatian, @"hr",
+                                        //                                        EZLanguageMongolian, @"mn",
+                                        //                                        EZLanguageHebrew, @"iw",
                                         nil];
     return orderedDict;
 }
@@ -400,7 +399,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-
+        
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
         self.result.error = EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict);
         completion(self.result, self.result.error);
@@ -630,9 +629,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
                                 result.wordResult = wordResult;
                             }
                             // 如果是单词或短语，优先使用美式发音
-                            BOOL hasEnglishWordAudioURL = [result.from isEqualToString:EZLanguageEnglish]
-                            && [result.to isEqualToString:EZLanguageSimplifiedChinese]
-                            && wordResult.phonetics.firstObject.speakURL.length;
+                            BOOL hasEnglishWordAudioURL = [result.from isEqualToString:EZLanguageEnglish] && [result.to isEqualToString:EZLanguageSimplifiedChinese] && wordResult.phonetics.firstObject.speakURL.length;
                             if (hasEnglishWordAudioURL) {
                                 result.fromSpeakURL = wordResult.phonetics.firstObject.speakURL;
                             }
@@ -856,7 +853,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     NSString *product = @"webfanyi";
     NSString *key = @"fsdsogkndfokasodnaso";
     NSString *timestamp = [NSString stringWithFormat:@"%ld", (long)([[NSDate date] timeIntervalSince1970] * 1000)];
-
+    
     NSString *string = [NSString stringWithFormat:@"client=%@&mysticTime=%@&product=%@&key=%@", client, timestamp, product, key];
     NSString *sign = [string md5];
     
@@ -864,7 +861,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     NSString *keyfrom = @"fanyi.web";
     NSString *appVersion = @"1.0.0";
     NSString *vendor = @"web";
-        
+    
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
     
@@ -874,24 +871,24 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         @"i" : text,
         @"from" : fromLanguage,
         @"to" : toLanguage,
-        @"dictResult": @"true",
-        @"keyid": @"webfanyi",
-        @"sign": sign,
+        @"dictResult" : @"true",
+        @"keyid" : @"webfanyi",
+        @"sign" : sign,
         
-        @"client": client,
-        @"product": product,
-        @"appVersion": appVersion,
-        @"vendor": vendor,
-        @"pointParam": pointParam,
-        @"mysticTime": timestamp,
-        @"keyfrom": keyfrom,
+        @"client" : client,
+        @"product" : product,
+        @"appVersion" : appVersion,
+        @"vendor" : vendor,
+        @"pointParam" : pointParam,
+        @"mysticTime" : timestamp,
+        @"keyfrom" : keyfrom,
     };
     
     NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
     if (!cookie) {
         cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
     }
-
+    
     NSDictionary *headers = @{
         @"User-Agent" : EZUserAgent,
         @"Referer" : kYoudaoTranslatetURL,
@@ -928,7 +925,6 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         }
         
         [self webViewTranslate:completion];
-
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
@@ -951,7 +947,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     
     NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
     NSData *ivData = [iv dataUsingEncoding:NSUTF8StringEncoding];
-
+    
     NSData *keyDataMD5Data = [keyData md5];
     NSData *ivDataMD5Data = [ivData md5];
     
@@ -998,9 +994,9 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 - (nullable NSString *)decryptAES:(NSString *)cipherText key:(NSData *)key iv:(NSData *)iv {
     NSData *cipherData = [[NSData alloc] initWithBase64EncodedString:cipherText options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    NSMutableData* decryptedData = [NSMutableData dataWithLength:[cipherData length] + kCCBlockSizeAES128];
+    NSMutableData *decryptedData = [NSMutableData dataWithLength:[cipherData length] + kCCBlockSizeAES128];
     size_t decryptedLength = 0;
-
+    
     CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,
                                           kCCAlgorithmAES128,
                                           kCCOptionPKCS7Padding,
