@@ -18,6 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Set system volume, [0, 100]
 + (void)setSystemVolume:(float)volume;
 
++ (void)getPlayingSongInfo;
+
++ (void)isPlayingAudio:(void(^)(BOOL isPlaying))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END
