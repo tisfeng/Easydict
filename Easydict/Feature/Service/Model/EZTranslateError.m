@@ -16,11 +16,14 @@ NSString *const EZTranslateErrorRequestErrorKey = @"EZTranslateErrorRequestError
 
 NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     NSString *to = [service languageCodeForLanguage:service.queryModel.queryTargetLanguage];
-    NSString *errorMsg = service.queryModel.queryFromLanguage;
+    EZLanguage unsupportLanguage = service.queryModel.queryFromLanguage;
     if (!to) {
-        errorMsg = service.queryModel.queryTargetLanguage;
+        unsupportLanguage = service.queryModel.queryTargetLanguage;
     }
-    NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, errorMsg, nil);
+    
+    NSString *showUnsupportLanguage = [EZLanguageManager showingLanguageName:unsupportLanguage];
+    
+    NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, showUnsupportLanguage, nil);
     return error;
 }
 
