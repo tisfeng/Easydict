@@ -111,21 +111,34 @@ NSString * const kCommonCryptoErrorDomain = @"CommonCryptoErrorDomain";
 - (NSData *) MD2Sum
 {
 	unsigned char hash[CC_MD2_DIGEST_LENGTH];
-	(void) CC_MD2( [self bytes], (CC_LONG)[self length], hash );
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    (void) CC_MD2( [self bytes], (CC_LONG)[self length], hash );
+#pragma clang diagnostic pop
+    
 	return ( [NSData dataWithBytes: hash length: CC_MD2_DIGEST_LENGTH] );
 }
 
 - (NSData *) MD4Sum
 {
 	unsigned char hash[CC_MD4_DIGEST_LENGTH];
-	(void) CC_MD4( [self bytes], (CC_LONG)[self length], hash );
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    (void) CC_MD4( [self bytes], (CC_LONG)[self length], hash );
+#pragma clang diagnostic pop
+    
 	return ( [NSData dataWithBytes: hash length: CC_MD4_DIGEST_LENGTH] );
 }
 
 - (NSData *) MD5Sum
 {
 	unsigned char hash[CC_MD5_DIGEST_LENGTH];
-	(void) CC_MD5( [self bytes], (CC_LONG)[self length], hash );
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    (void) CC_MD5( [self bytes], (CC_LONG)[self length], hash );
+#pragma clang diagnostic pop
+    
 	return ( [NSData dataWithBytes: hash length: CC_MD5_DIGEST_LENGTH] );
 }
 
