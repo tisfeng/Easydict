@@ -290,10 +290,8 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
-
-    [self webTranslate:text from:from to:to completion:completion];
     
-//    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
+    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
 }
 
 - (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
@@ -323,7 +321,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     if (enableTranslation) {
         // 2.Query Youdao translate.
         dispatch_group_enter(group);
-        [self youdaoWebTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        [self webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"translateYoudaoAPI error: %@", error);
                 self.result.error = error;
@@ -920,15 +918,11 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
             base64String = [base64String stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
             
             NSString *decodedString = [self decryptAESText:base64String];
-//            decodedString = [self decryptAES:base64String];
-            
             NSDictionary *dict = [decodedString mj_JSONObject];
-//            NSLog(@"dict: %@", dict);
-            
             NSArray *translatedTexts = [self parseTranslateResult:dict];
             if (translatedTexts.count) {
                 self.result.normalResults = translatedTexts;
-                completion(self.result, EZTranslateError(EZTranslateErrorTypeAPI, @"翻译失败", responseObject));
+                completion(self.result, nil);
                 return;
             }
         }
@@ -967,6 +961,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 #pragma mark -
 
+/// Parse Youdao transalte.
 - (NSArray<NSString *> *)parseTranslateResult:(NSDictionary *)dict {
     NSArray *translateResult = dict[@"translateResult"];
     NSMutableArray *translatedTexts = [NSMutableArray array];
