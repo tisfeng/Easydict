@@ -26,7 +26,7 @@
         kAudioObjectPropertyElementMaster
     };
     
-    if(!AudioObjectHasProperty(outputDeviceID, &address)) {
+    if (!AudioObjectHasProperty(outputDeviceID, &address)) {
         NSLog(@"No volume returned for device 0x%0x", outputDeviceID);
         return 0.0;
     }
@@ -44,14 +44,14 @@
     }
     
     float currentVolume = volume * 100;
-//    NSLog(@"--> getSystemVolume: %1.f", currentVolume);
+    //    NSLog(@"--> getSystemVolume: %1.f", currentVolume);
     
     return currentVolume;
 }
 
 /// Set system volume, [0, 100]
 + (void)setSystemVolume:(float)volume {
-//    NSLog(@"--> setSystemVolume: %1.f", volume);
+    //    NSLog(@"--> setSystemVolume: %1.f", volume);
     
     AudioDeviceID outputDeviceID = [self getDefaultOutputDeviceID];
     if (outputDeviceID == kAudioObjectUnknown) {
@@ -65,7 +65,7 @@
         kAudioObjectPropertyElementMaster
     };
     
-    if(!AudioObjectHasProperty(outputDeviceID, &address)) {
+    if (!AudioObjectHasProperty(outputDeviceID, &address)) {
         NSLog(@"No volume returned for device 0x%0x", outputDeviceID);
         return;
     }
@@ -78,7 +78,7 @@
 }
 
 + (AudioDeviceID)getDefaultOutputDeviceID {
-    AudioDeviceID outputDeviceID = kAudioObjectUnknown; //get output device
+    AudioDeviceID outputDeviceID = kAudioObjectUnknown; // get output device
     
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDefaultOutputDevice,

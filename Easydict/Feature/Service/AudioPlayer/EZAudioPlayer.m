@@ -346,7 +346,7 @@
     // TODO: maybe we need to pre-load audio url, then play when user click.
     
     NSURL *URL = [NSURL URLWithString:urlString];
-    [self loadAudioURL:URL completion:^( AVAsset * _Nullable asset) {
+    [self loadAudioURL:URL completion:^(AVAsset *_Nullable asset) {
         if (asset) {
             AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
             [self playWithPlayerItem:playerItem];
@@ -384,7 +384,7 @@
                                     language:self.language
                                       accent:self.accent
                                     audioURL:nil
-                                 designatedService:defaultTTSAudioPlayer.defaultTTSService];
+                           designatedService:defaultTTSAudioPlayer.defaultTTSService];
     } else {
         if (self.useSystemTTSWhenPlayFailed) {
             [self playSystemTextAudio:self.text language:self.language];
@@ -392,7 +392,7 @@
     }
 }
 
-- (void)loadAudioURL:(NSURL *)URL completion:(void(^)( AVAsset * _Nullable asset))completion {
+- (void)loadAudioURL:(NSURL *)URL completion:(void (^)(AVAsset *_Nullable asset))completion {
     if ([URL isFileURL]) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:URL.path]) {
             AVAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
@@ -411,7 +411,7 @@
     }
     
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
-    NSArray *resourceKeys = @[@"playable"];
+    NSArray *resourceKeys = @[ @"playable" ];
     [asset loadValuesAsynchronouslyForKeys:resourceKeys completionHandler:^{
         NSError *error = nil;
         AVKeyValueStatus status = [asset statusOfValueForKey:@"playable" error:&error];
@@ -435,7 +435,6 @@
         });
     }];
 }
-
 
 
 #pragma mark -
