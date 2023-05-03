@@ -19,10 +19,10 @@
 #import "FWEncryptorAES.h"
 #import <WebKit/WebKit.h>
 #import "NSData+EZMD5.h"
+#import "EZNetworkManager.h"
 
-static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
-static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
+static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 @interface EZYoudaoTranslate ()
 
@@ -34,6 +34,10 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 @property (nonatomic, strong) JSValue *jsFunction;
 @property (nonatomic, strong) WKWebView *webView;
 
+@property (nonatomic, strong) EZNetworkManager *networkManager;
+
+@property (nonatomic, copy) NSString *cookie;
+
 @end
 
 
@@ -41,7 +45,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 
 - (instancetype)init {
     if (self = [super init]) {
-        // Youdao's cookie seem to have a long expiration date, so we don't need to update them frequently.
+        // Youdao's cookie seems to have a long expiration date, so we don't need to update them frequently.
         [self requestYoudaoCookie];
     }
     return self;
@@ -55,6 +59,13 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         _webViewTranslator.queryModel = self.queryModel;
     }
     return _webViewTranslator;
+}
+
+- (EZNetworkManager *)networkManager {
+    if (!_networkManager) {
+        _networkManager = [[EZNetworkManager alloc] init];
+    }
+    return _networkManager;
 }
 
 - (AFHTTPSessionManager *)jsonSession {
@@ -132,27 +143,12 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     return _webView;
 }
 
-// TODO: need to refactor it.
-// Get youdao fanyi cookie, and save it to user defaults.
-- (void)requestYoudaoCookie {
-    // https://fanyi.youdao.com/index.html#/
-    NSString *URLString = [NSString stringWithFormat:@"%@/index.html#/", kYoudaoTranslatetURL];
-    [self.htmlSession GET:URLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:kYoudaoTranslatetURL]];
-        // convert to OUTFOX_SEARCH_USER_ID=1797292665@113.88.171.39; domain=.youdao.com; expires=Wed, 08-Jan-2053 02:18:55 GMT
-        NSString *cookieString = @"";
-        for (NSHTTPCookie *cookie in cookies) {
-            if ([cookie.name isEqualToString:@"OUTFOX_SEARCH_USER_ID"]) {
-                cookieString = [NSString stringWithFormat:@"%@=%@; domain=%@; expires=%@", cookie.name, cookie.value, cookie.domain, cookie.expiresDate];
-                break;
-            }
-        }
-        if (cookieString.length) {
-            [NSUserDefaults mm_write:cookieString forKey:kYoudaoCookieKey];
-        }
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        NSLog(@"request youdao cookie error: %@", error);
-    }];
+- (NSString *)cookie {
+    NSString *cookie = [NSUserDefaults mm_read:kYoudaoTranslatetURL];
+    if (!cookie) {
+        cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
+    }
+    return cookie;
 }
 
 
@@ -293,6 +289,135 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
 }
 
+- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
+    if (!text.length) {
+        completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeParam, @"识别语言的文本为空", nil));
+        return;
+    }
+    
+    // 字符串太长浪费时间，截取了前面一部分。为什么是73？百度取的73，这里抄了一下...
+    NSString *queryString = [text trimToMaxLength:73];
+    
+    [self translate:queryString from:EZLanguageAuto to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+        if (result) {
+            completion(result.from, nil);
+        } else {
+            completion(EZLanguageAuto, error);
+        }
+    }];
+}
+
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+    if (!text.length) {
+        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
+        return;
+    }
+    
+    [super textToAudio:text fromLanguage:from completion:completion];
+}
+
+- (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion {
+    if (!image) {
+        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
+        return;
+    }
+    
+    NSData *data = [image mm_PNGData];
+    NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    encodedImageStr = [NSString stringWithFormat:@"data:image/png;base64,%@", encodedImageStr];
+    
+    // 目前没法指定图片翻译的目标语言
+    NSString *url = @"https://aidemo.youdao.com/ocrtransapi1";
+    NSDictionary *params = @{
+        @"imgBase" : encodedImageStr,
+    };
+    // 图片 base64 字符串过长，暂不打印
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, nil];
+    
+    mm_weakify(self);
+    [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        mm_strongify(self);
+        NSString *message = nil;
+        if (responseObject) {
+            @try {
+                EZYoudaoOCRResponse *response = [EZYoudaoOCRResponse mj_objectWithKeyValues:responseObject];
+                if (response) {
+                    EZOCRResult *result = [EZOCRResult new];
+                    result.from = [self languageEnumFromCode:response.lanFrom];
+                    result.to = [self languageEnumFromCode:response.lanTo];
+                    result.ocrTextArray = [response.lines mm_map:^id _Nullable(EZYoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        EZOCRText *text = [EZOCRText new];
+                        text.text = obj.context;
+                        text.translatedText = obj.tranContent;
+                        return text;
+                    }];
+                    result.raw = responseObject;
+                    if (result.ocrTextArray.count) {
+                        // 有道翻译自动分段，会将分布在几行的句子合并，故用换行分割
+                        NSArray<NSString *> *textArray = [result.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                            return obj.text;
+                        }];
+                        
+                        result.texts = textArray;
+                        result.mergedText = [textArray componentsJoinedByString:@"\n"];
+                        
+                        completion(result, nil);
+                        return;
+                    }
+                }
+            } @catch (NSException *exception) {
+                MMLogInfo(@"有道翻译OCR接口数据解析异常 %@", exception);
+                message = @"有道翻译OCR接口数据解析异常";
+            }
+        }
+        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
+        completion(nil, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"图片翻译失败", reqDict));
+    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
+        completion(nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"图片翻译失败", reqDict));
+    }];
+}
+
+- (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    if (!image) {
+        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
+        return;
+    }
+    
+    mm_weakify(self);
+    [self ocr:image from:from to:to completion:^(EZOCRResult *_Nullable EZOCRResult, NSError *_Nullable error) {
+        mm_strongify(self);
+        if (EZOCRResult) {
+            // 如果翻译结果的语种匹配，不是中文查词或者英文查词时，不调用翻译接口
+            if ([to isEqualToString:EZLanguageAuto] || [to isEqualToString:EZOCRResult.to]) {
+                if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese] || [EZOCRResult.to isEqualToString:EZLanguageEnglish]) && ![EZOCRResult.mergedText containsString:@" "])) {
+                    // 直接回调翻译结果
+                    NSLog(@"直接输出翻译结果");
+                    ocrSuccess(EZOCRResult, NO);
+                    EZQueryResult *result = [EZQueryResult new];
+                    result.queryText = EZOCRResult.mergedText;
+                    result.from = EZOCRResult.from;
+                    result.to = EZOCRResult.to;
+                    result.normalResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                        return obj.translatedText;
+                    }];
+                    result.raw = EZOCRResult.raw;
+                    completion(EZOCRResult, result, nil);
+                    return;
+                }
+            }
+            ocrSuccess(EZOCRResult, YES);
+            [self translate:EZOCRResult.mergedText from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
+                completion(EZOCRResult, result, error);
+            }];
+        } else {
+            completion(nil, nil, error);
+        }
+    }];
+}
+
+#pragma mark - Youdao Translate
+
 - (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
@@ -334,6 +459,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     });
 }
 
+/// Query Youdao dict, unofficial API
 - (void)queryYoudaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
@@ -411,15 +537,11 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
 }
 
 
-/// Youdao web translate API
+/// Youdao web translate API,
+/// !!!: Deprecated, 2023.5
 - (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
-    
-    NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
-    if (!cookie) {
-        cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
-    }
     
     // TODO: Handle cookie expiration cases.
     
@@ -452,7 +574,7 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     NSDictionary *headers = @{
         @"User-Agent" : EZUserAgent,
         @"Referer" : kYoudaoTranslatetURL,
-        @"Cookie" : cookie,
+        @"Cookie" : self.cookie,
     };
     
     // set headers
@@ -666,161 +788,16 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
     }];
 }
 
-- (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
-    if (!text.length) {
-        completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeParam, @"识别语言的文本为空", nil));
-        return;
-    }
-    
-    // 字符串太长浪费时间，截取了前面一部分。为什么是73？百度取的73，这里抄了一下...
-    NSString *queryString = [text trimToMaxLength:73];
-    
-    [self translate:queryString from:EZLanguageAuto to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-        if (result) {
-            completion(result.from, nil);
-        } else {
-            completion(EZLanguageAuto, error);
+// Get youdao fanyi cookie, and save it to user defaults.
+- (void)requestYoudaoCookie {
+    // https://fanyi.youdao.com/index.html#/
+    NSString *cookieURL = [NSString stringWithFormat:@"%@/index.html#/", kYoudaoTranslatetURL];
+    [self.networkManager requestCookieOfURL:cookieURL cookieName:@"OUTFOX_SEARCH_USER_ID" completion:^(NSString *cookie) {
+        if (cookie.length) {
+            [NSUserDefaults mm_write:cookie forKey:kYoudaoTranslatetURL];
         }
     }];
 }
-
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    if (!text.length) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
-        return;
-    }
-    
-    [super textToAudio:text fromLanguage:from completion:completion];
-}
-
-- (void)youdaoAIDemoTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    if (!text.length) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
-        return;
-    }
-    
-    [self youdaoAIDemoTranslate:text from:from to:EZLanguageAuto completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-        if (result) {
-            if (result.fromSpeakURL.length) {
-                completion(result.fromSpeakURL, nil);
-                return;
-            }
-        }
-        
-        //        NSDictionary *params = @{
-        //            EZTranslateErrorRequestParamKey : @{
-        //                @"text" : text ?: @"",
-        //                @"from" : from,
-        //            },
-        //        };
-        //        completion(nil, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, @"有道翻译不支持获取该语言音频", params));
-        
-        [super textToAudio:text fromLanguage:from completion:completion];
-    }];
-}
-
-- (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion {
-    if (!image) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
-        return;
-    }
-    
-    NSData *data = [image mm_PNGData];
-    NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    encodedImageStr = [NSString stringWithFormat:@"data:image/png;base64,%@", encodedImageStr];
-    
-    // 目前没法指定图片翻译的目标语言
-    NSString *url = @"https://aidemo.youdao.com/ocrtransapi1";
-    NSDictionary *params = @{
-        @"imgBase" : encodedImageStr,
-    };
-    // 图片 base64 字符串过长，暂不打印
-    NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, nil];
-    
-    mm_weakify(self);
-    [self.jsonSession POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        mm_strongify(self);
-        NSString *message = nil;
-        if (responseObject) {
-            @try {
-                EZYoudaoOCRResponse *response = [EZYoudaoOCRResponse mj_objectWithKeyValues:responseObject];
-                if (response) {
-                    EZOCRResult *result = [EZOCRResult new];
-                    result.from = [self languageEnumFromCode:response.lanFrom];
-                    result.to = [self languageEnumFromCode:response.lanTo];
-                    result.ocrTextArray = [response.lines mm_map:^id _Nullable(EZYoudaoOCRResponseLine *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                        EZOCRText *text = [EZOCRText new];
-                        text.text = obj.context;
-                        text.translatedText = obj.tranContent;
-                        return text;
-                    }];
-                    result.raw = responseObject;
-                    if (result.ocrTextArray.count) {
-                        // 有道翻译自动分段，会将分布在几行的句子合并，故用换行分割
-                        NSArray<NSString *> *textArray = [result.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                            return obj.text;
-                        }];
-                        
-                        result.texts = textArray;
-                        result.mergedText = [textArray componentsJoinedByString:@"\n"];
-                        
-                        completion(result, nil);
-                        return;
-                    }
-                }
-            } @catch (NSException *exception) {
-                MMLogInfo(@"有道翻译OCR接口数据解析异常 %@", exception);
-                message = @"有道翻译OCR接口数据解析异常";
-            }
-        }
-        [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"图片翻译失败", reqDict));
-    } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"图片翻译失败", reqDict));
-    }];
-}
-
-- (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    if (!image) {
-        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
-        return;
-    }
-    
-    mm_weakify(self);
-    [self ocr:image from:from to:to completion:^(EZOCRResult *_Nullable EZOCRResult, NSError *_Nullable error) {
-        mm_strongify(self);
-        if (EZOCRResult) {
-            // 如果翻译结果的语种匹配，不是中文查词或者英文查词时，不调用翻译接口
-            if ([to isEqualToString:EZLanguageAuto] || [to isEqualToString:EZOCRResult.to]) {
-                if (!(([EZOCRResult.to isEqualToString:EZLanguageSimplifiedChinese] || [EZOCRResult.to isEqualToString:EZLanguageEnglish]) && ![EZOCRResult.mergedText containsString:@" "])) {
-                    // 直接回调翻译结果
-                    NSLog(@"直接输出翻译结果");
-                    ocrSuccess(EZOCRResult, NO);
-                    EZQueryResult *result = [EZQueryResult new];
-                    result.queryText = EZOCRResult.mergedText;
-                    result.from = EZOCRResult.from;
-                    result.to = EZOCRResult.to;
-                    result.normalResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-                        return obj.translatedText;
-                    }];
-                    result.raw = EZOCRResult.raw;
-                    completion(EZOCRResult, result, nil);
-                    return;
-                }
-            }
-            ocrSuccess(EZOCRResult, YES);
-            [self translate:EZOCRResult.mergedText from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
-                completion(EZOCRResult, result, error);
-            }];
-        } else {
-            completion(nil, nil, error);
-        }
-    }];
-}
-
-#pragma mark -
-
 
 #pragma mark - WebView Translate
 
@@ -884,15 +861,10 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         @"keyfrom" : keyfrom,
     };
     
-    NSString *cookie = [NSUserDefaults mm_read:kYoudaoCookieKey];
-    if (!cookie) {
-        cookie = @"OUTFOX_SEARCH_USER_ID=833782676@113.88.171.235; domain=.youdao.com; expires=2052-12-31 13:12:38 +0000";
-    }
-    
     NSDictionary *headers = @{
         @"User-Agent" : EZUserAgent,
         @"Referer" : kYoudaoTranslatetURL,
-        @"Cookie" : cookie,
+        @"Cookie" : self.cookie,
     };
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -929,6 +901,9 @@ static NSString *const kYoudaoCookieKey = @"kYoudaoCookieKey";
         if (error.code == NSURLErrorCancelled) {
             return;
         }
+        
+        [self requestYoudaoCookie];
+        
         completion(self.result, error);
     }];
     

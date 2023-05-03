@@ -41,14 +41,10 @@
                 break;
             }
         }
+        NSLog(@"get cookie of URL: %@", URL);
         NSLog(@"cookie: %@", cookieString);
-        
-        NSHTTPCookie *cookie = cookies.firstObject;
-        cookieString = [NSString stringWithFormat:@"%@=%@; domain=%@; expires=%@", cookie.name, cookie.value, cookie.domain, cookie.expiresDate];
-        NSLog(@"cookie: %@", cookieString);
-        
+                
         completion(cookieString);
-        
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         NSLog(@"request cookie error: %@", error);
     }];
