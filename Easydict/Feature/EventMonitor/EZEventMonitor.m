@@ -398,6 +398,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 /// Check if need to use shortcut to get selected text.
 - (BOOL)checkIfNeedUseShortcut:(NSString *)text error:(AXError)error {
+    if (text.length > 0) {
+        return NO;
+    }
+    
     BOOL tryToUseShortcut = NO;
 
     NSDictionary *allowedDict = @{
@@ -410,14 +414,17 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @(kAXErrorSuccess) : @[
             @"com.microsoft.edgemac", // Edge
             @"com.microsoft.VSCode",  // VSCode
-            //        @"abnerworks.Typora", // Typora
         ],
         
-        /**
-         Some App return kAXErrorAttributeUnsupported but actually has selected text.
-         */
+        // Some App return kAXErrorAttributeUnsupported but actually has selected text.
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4", // Sublime Text
+            @"com.microsoft.Word", // Word
+        ],
+        
+        // kAXErrorFailure
+        @(kAXErrorFailure) : @[
+            @"com.apple.dt.Xcode", // Xcode, error when All messages page
         ],
     };
     
@@ -429,24 +436,22 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
      
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
-     kAXErrorAPIDisabled: Typora
+     kAXErrorAPIDisabled: Typora?
      */
     BOOL auxiliaryErrorNoValue = (error == kAXErrorNoValue);
-    if (auxiliaryErrorNoValue && text.length == 0) {
+    if (auxiliaryErrorNoValue) {
         tryToUseShortcut = YES;
         NSLog(@"unsupport Auxiliary App --> %@", bundleID);
     }
     
-    if (!text) {
-        // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut
-        for (NSNumber *key in allowedDict.allKeys) {
-            if ([key integerValue] == error) {
-                NSArray *bundleIDs = allowedDict[key];
-                if ([bundleIDs containsObject:bundleID]) {
-                    tryToUseShortcut = YES;
-                    NSLog(@"%@, %@, %@", key, bundleID, application.localizedName);
-                    break;
-                }
+    // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
+    for (NSNumber *key in allowedDict.allKeys) {
+        if ([key integerValue] == error) {
+            NSArray *bundleIDs = allowedDict[key];
+            if ([bundleIDs containsObject:bundleID]) {
+                tryToUseShortcut = YES;
+                NSLog(@"%@, %@, %@", key, bundleID, application.localizedName);
+                break;
             }
         }
     }
