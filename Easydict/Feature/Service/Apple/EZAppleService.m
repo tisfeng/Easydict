@@ -411,7 +411,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     CGFloat totalLineHeight = 0;
     CGFloat averageLineHeight = 0;
     
+    // OCR line spacing may be less than 0
     CGFloat miniLineSpacing = MAXFLOAT;
+    CGFloat miniPositiveLineSpacing = MAXFLOAT;
     CGFloat totalLineSpacing = 0;
     CGFloat averageLineSpacing = 0;
     
@@ -459,12 +461,17 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         if (i > 0) {
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
+            
+            // !!!: deltaY may be < 0, means the [OCR] line frame is overlapped.
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            if (deltaY > 0) {
-                totalLineSpacing += deltaY;
-                if (deltaY < miniLineSpacing) {
-                    miniLineSpacing = deltaY;
-                }
+            totalLineSpacing += deltaY;
+        
+            if (deltaY < miniLineSpacing) {
+                miniLineSpacing = deltaY;
+            }
+            
+            if (deltaY > 0 && deltaY < miniPositiveLineSpacing) {
+                miniPositiveLineSpacing = deltaY;
             }
         }
 
@@ -559,19 +566,38 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         if (i > 0) {
             VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
             CGRect prevBoundingBox = prevObservation.boundingBox;
+            
+            // !!!: deltaY may be < 0
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
+            CGFloat deltaX = boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width);
             
             BOOL aligned = boundingBox.origin.x - miniX < 0.15;
             BOOL needLineBreak = !aligned || isPoetry;
             
-            // !!!: line spacing is inaccurate, sometimes it's too small 😢
-            BOOL isNewParagraph = deltaY / averageLineSpacing > 2 || deltaY / averageLineHeight > 1.1;
+            // Note that line spacing is inaccurate, sometimes it's too small 😢
+            BOOL isNewParagraph = NO;
+            if (deltaY > 0) {
+                if (deltaY / averageLineSpacing > 2 || deltaY / averageLineHeight > 1.1) {
+                    isNewParagraph = YES;
+                }
+            }
             
-            // Note that sometimes the line frames will overlap a little.
-            BOOL isNewLine = deltaY > miniLineSpacing;
+            // Note that sometimes the line frames will overlap a little, then deltaY will less then 0
+            BOOL isNewLine = NO;
+            if (deltaY > 0) {
+                isNewLine = YES;
+            } else {
+                if (fabs(deltaY) < miniPositiveLineSpacing / 2) {
+                    isNewLine = YES;
+                }
+            }
+            
+            // System deltaX is about 0.05. If the deltaX of two line is too large, it may be a new line.
+            if (deltaX > 0.07) {
+                isNewLine = YES;
+            }
 
             NSString *joinedString;
-            //  if (deltaY > miniLineSpacing * 1.8 ) {
             if (isNewParagraph) {
                 joinedString = @"\n"; // @"\n\n", Paragraph
             } else if (isNewLine) {
@@ -587,7 +613,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                                                    language:language];
                 }
             } else {
-                joinedString = @" "; // the same line
+                joinedString = @" "; // if the same line, just join two texts
             }
             
             // 1. append joined string
