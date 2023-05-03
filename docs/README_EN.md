@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典 [（中文简介）](../README.md)
+## Easydict 易词典 | [中文简介](../README.md)
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
@@ -73,7 +73,7 @@ If a signature error occurs during compilation, please use your own developer ac
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
 
-<details> <summary> Frequently Asked Questions: </summary>
+<details> <summary> FAQ: </summary>
 
 <p>
 
@@ -122,7 +122,11 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
-Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.(Shortcut key select words can work fine in any application)
+#### Select text by Mouse
+
+Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
+
+~~The shortcut key to select words can work normally in any application~~, if you encounter an application that cannot select words, you can oen an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
 #### Notice ⚠️
 

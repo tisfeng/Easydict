@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典 [(English)](./docs/README_EN.md)
+## Easydict 易词典 | [English](./docs/README_EN.md)
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
@@ -122,7 +122,11 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                            | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译 | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
-目前支持多种鼠标快捷取词方式：双击取词、鼠标拖动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标拖动取词】和【Shift 取词】可能会失败，此时可换其他取词方式。（快捷键取词在任意应用中都可以正常工作）
+#### 鼠标取词
+
+目前支持多种鼠标快捷取词方式：双击取词、鼠标滑动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标滑动取词】可能会失败，此时可换其他取词方式。
+
+~~快捷键取词在任意应用中都可以正常工作~~，如遇到不能取词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
 
 #### 注意 ⚠️
 
