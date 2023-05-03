@@ -44,6 +44,8 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL disableEmptyCopyBeep; // Some apps will beep when empty copy.
 @property (nonatomic, assign) BOOL allowCrashLog;
 @property (nonatomic, assign) BOOL allowAnalytics;
+@property (nonatomic, assign) BOOL clearInput;
+
 
 + (instancetype)shared;
 

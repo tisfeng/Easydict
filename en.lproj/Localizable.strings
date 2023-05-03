@@ -19,7 +19,7 @@
 "auto_show_icon" = "Auto show query icon after selecting text (experimental)";
 
 "click_icon_query" = "Click to Query:";
-"click_icon_query_info" = "Query only when clicking the icon (When main window hidden)";
+"click_icon_query_info" = "Query only when clicking query icon (When main window hidden)";
 
 "adjust_pop_button_origin" = "Adjust Query Icon Position:";
 "avoid_conflict_with_PopClip_display" = "Avoid conflict with PopClip";
@@ -37,6 +37,12 @@
 "play_audio" = "Play Word Pronunciation:";
 "auto_play_audio" = "Auto play pronunciation after querying English words";
 
+"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
+"disable_empty_copy_beep_info" = "Activated when selected text is empty";
+
+"clear_input" = "Clear Input:";
+"clear_input_when_translating" = "Clear input when translating";
+
 "auto_query" = "Auto Query:";
 "auto_query_ocr_text" = "Auto query after OCR";
 "auto_query_selected_text" = "Auto query after selecting text";
@@ -49,8 +55,6 @@
 "show_google_quick_link" = "Show Google quick link icon";
 "show_eudic_quick_link" = "Show Eudic quick link icon (if installed)";
 
-"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
-"disable_empty_copy_beep_info" = "Activated when selected text is empty";
 
 "show_main_window" = "Main Window:";
 "hide_main_window" = "Hide main window at startup";
