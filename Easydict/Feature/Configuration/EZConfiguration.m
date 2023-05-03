@@ -38,6 +38,7 @@ static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopB
 static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
+static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 
 
 @implementation EZConfiguration
@@ -86,6 +87,7 @@ static EZConfiguration *_instance;
     self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:YES];
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
+    self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
 }
 
 #pragma mark - getter
@@ -243,6 +245,12 @@ static EZConfiguration *_instance;
     _allowAnalytics = allowAnalytics;
 
     [NSUserDefaults mm_write:@(allowAnalytics) forKey:kAllowAnalyticsKey];
+}
+
+- (void)setClearInput:(BOOL)clearInput {
+    _clearInput = clearInput;
+
+    [NSUserDefaults mm_write:@(clearInput) forKey:kClearInputKey];
 }
 
 

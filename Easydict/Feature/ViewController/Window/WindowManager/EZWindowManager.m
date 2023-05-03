@@ -654,8 +654,13 @@ static EZWindowManager *_instance;
         return;
     }
     
+    NSString *queryText = nil;
+    if (EZConfiguration.shared.clearInput) {
+        queryText = @"";
+    }
+    
     self.queryType = EZQueryTypeInput;
-    [self showFloatingWindowType:EZWindowTypeFixed queryText:nil];
+    [self showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
 }
 
 /// Show mini window at last positon.

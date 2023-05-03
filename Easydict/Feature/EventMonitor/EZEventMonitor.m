@@ -72,6 +72,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)setup {
     _recordEvents = [NSMutableArray array];
     _commandKeyEvents = [NSMutableArray array];
+    
+    self.queryType = EZQueryTypeAutoSelect;
+    self.selectTextType = EZSelectTextTypeAuxiliary;
 }
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {

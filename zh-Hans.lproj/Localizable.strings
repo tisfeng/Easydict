@@ -29,13 +29,19 @@
 "language_detect_optimize_baidu" = "使用百度语种识别进行优化";
 "language_detect_optimize_google" = "使用 Google 语种识别进行优化";
 
-"fixed_window_position" = "侧悬浮窗口位置:";
+"fixed_window_position" = "悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
 "fixed_window_position_mouse" = "鼠标位置";
 "fixed_window_position_former" = "上次位置";
 
 "play_audio" = "播放单词发音:";
 "auto_play_audio" = "查询英语单词后自动播放发音";
+
+"disable_empty_copy_beep" = "禁用空复制提示音:";
+"disable_empty_copy_beep_info" = "取词内容为空时生效";
+
+"clear_input" = "清空查询内容:";
+"clear_input_when_translating" = "输入翻译时，清空查询内容";
 
 "auto_query" = "自动查询:";
 "auto_query_ocr_text" = "截图 OCR 后自动查询";
@@ -48,9 +54,6 @@
 "quick_link" = "快捷功能:";
 "show_google_quick_link" = "显示 Google 快捷图标";
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
-
-"disable_empty_copy_beep" = "禁用空复制提示音:";
-"disable_empty_copy_beep_info" = "取词内容为空时生效";
 
 
 "show_main_window" = "主窗口:";
