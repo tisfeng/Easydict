@@ -13,7 +13,6 @@
 #import "EZNetworkManager.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
-static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 
 @interface EZBaiduTranslate ()
 
@@ -108,7 +107,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 }
 
 - (NSString *)cookie {
-    NSString *cookie = [[NSUserDefaults standardUserDefaults] stringForKey:kBaiduCookieKey] ?: @"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;";
+    NSString *cookie = [[NSUserDefaults standardUserDefaults] stringForKey:kBaiduTranslateURL] ?: @"BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;";
     return cookie;
 }
 
@@ -760,7 +759,7 @@ static NSString *const kBaiduCookieKey = @"kBaiduCookieKey";
 - (void)updateCookieAndToken {
     [self.networkManager requestCookieOfURL:kBaiduTranslateURL cookieName:@"BAIDUID" completion:^(NSString *cookie) {
         if (cookie.length) {
-            [NSUserDefaults mm_write:cookie forKey:kBaiduCookieKey];
+            [NSUserDefaults mm_write:cookie forKey:kBaiduTranslateURL];
         }
         
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
