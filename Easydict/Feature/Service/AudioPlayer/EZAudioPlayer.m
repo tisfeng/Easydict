@@ -231,7 +231,7 @@
 
 
 - (void)stop {
-    NSLog(@"stop play");
+//    NSLog(@"stop play");
     
     // !!!: This method won't post play end notification.
     [_player pause];
