@@ -22,7 +22,7 @@
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVPlayerItem *playerItem;
 
-@property (nonatomic, assign) BOOL playing;
+@property (nonatomic, assign) BOOL isPlaying;
 
 @property (nonatomic, assign) EZTTSServiceType defaultTTSServiceType;
 @property (nonatomic, strong) EZQueryService *defaultTTSService;
@@ -37,7 +37,7 @@
 
 @implementation EZAudioPlayer
 
-@synthesize playing = _playing;
+@synthesize isPlaying = _isPlaying;
 
 + (instancetype)shared {
     static EZAudioPlayer *instance = nil;
@@ -84,7 +84,7 @@
 - (void)didFinishPlaying:(NSNotification *)notification {
     AVPlayerItem *playerItem = notification.object;
     if (self.player.currentItem == playerItem) {
-        self.playing = NO;
+        self.isPlaying = NO;
     }
 }
 
@@ -109,8 +109,8 @@
     return _player;
 }
 
-- (void)setPlaying:(BOOL)playing {
-    _playing = playing;
+- (void)setIsPlaying:(BOOL)playing {
+    _isPlaying = playing;
     
     if (self.playingBlock) {
         self.playingBlock(playing);
@@ -182,7 +182,7 @@
         return;
     }
     
-    self.playing = YES;
+    self.isPlaying = YES;
     self.serviceType = designatedService.serviceType ?: self.service.serviceType;
     
     self.text = text;
@@ -239,14 +239,14 @@
     // It wiil call delegate.
     [_synthesizer stopSpeaking];
     
-    self.playing = NO;
+    self.isPlaying = NO;
 }
 
 
 #pragma mark - NSSpeechSynthesizerDelegate
 
 - (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)finishedSpeaking {
-    self.playing = NO;
+    self.isPlaying = NO;
 }
 
 
@@ -257,7 +257,7 @@
     NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:language];
     synthesizer.delegate = self;
     self.synthesizer = synthesizer;
-    self.playing = YES;
+    self.isPlaying = YES;
 }
 
 /// Play audio URL.
@@ -327,7 +327,7 @@
 /// Play local audio file
 - (void)playLocalAudioFile:(NSString *)filePath {
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        self.playing = NO;
+        self.isPlaying = NO;
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
     }

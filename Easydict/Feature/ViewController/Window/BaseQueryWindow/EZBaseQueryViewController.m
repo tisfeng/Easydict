@@ -426,6 +426,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)playQueryTextSound {
+    // If audio is playing, stop it.
+    if (self.audioPlayer.isPlaying) {
+        [self.audioPlayer stop];
+        return;
+    }
+    
     void (^playBlock)(void) = ^{
         // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
         NSString *audioURL = self.queryModel.audioURL;

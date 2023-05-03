@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAudioPlayer : NSObject
 
-@property (nonatomic, assign, readonly) BOOL playing;
+@property (nonatomic, assign, readonly) BOOL isPlaying;
 @property (nonatomic, copy, nullable) void (^playingBlock)(BOOL isPlaying);
 
 @property (nonatomic, assign) BOOL enableDownload;
