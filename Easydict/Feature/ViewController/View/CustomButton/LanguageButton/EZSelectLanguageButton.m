@@ -121,7 +121,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
             }
         }
         
-        NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];
+        NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageFlag, languageName];
         
         [self.languageDict setObject:languageNameWithFlag forKey:language];
     }
