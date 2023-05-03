@@ -399,14 +399,31 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 /// Check if need to use shortcut to get selected text.
 - (BOOL)checkIfNeedUseShortcut:(NSString *)text error:(AXError)error {
     BOOL tryToUseShortcut = NO;
+
+    NSDictionary *allowedDict = @{
+        /**
+         Some App return kAXErrorSuccess but text is empty, so we need to check bundleID.
+         
+         Edge: Get selected text may be a Unicode char "\U0000fffc", empty text but length is 1 😢
+         VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+         */
+        @(kAXErrorSuccess) : @[
+            @"com.microsoft.edgemac", // Edge
+            @"com.microsoft.VSCode",  // VSCode
+            //        @"abnerworks.Typora", // Typora
+        ],
+        
+        /**
+         Some App return kAXErrorAttributeUnsupported but actually has selected text.
+         */
+        @(kAXErrorAttributeUnsupported) : @[
+            @"com.sublimetext.4", // Sublime Text
+        ],
+    };
     
-    NSArray *auxiliaryFailedApps = @[
-        @"com.microsoft.edgemac", // Edge
-        @"com.microsoft.VSCode",  // VSCode
-        //        @"abnerworks.Typora", // Typora
-    ];
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
+    
     /**
      If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
@@ -414,26 +431,29 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora
      */
-    BOOL unsupportAuxiliaryError = (error == kAXErrorNoValue);
-    
-    if (unsupportAuxiliaryError && text.length == 0) {
+    BOOL auxiliaryErrorNoValue = (error == kAXErrorNoValue);
+    if (auxiliaryErrorNoValue && text.length == 0) {
         tryToUseShortcut = YES;
         NSLog(@"unsupport Auxiliary App --> %@", bundleID);
     }
     
-    /**
-     Some App return kAXErrorSuccess but text is empty, so we need to check bundleID.
-     
-     Edge: Get selected text may be a Unicode char "\U0000fffc", empty text but length is 1 😢
-     VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
-     */
-    if (error == kAXErrorSuccess && [auxiliaryFailedApps containsObject:bundleID]) {
-        tryToUseShortcut = YES;
-        NSLog(@"kAXErrorSuccess, but text is empty App --> %@", bundleID);
+    if (!text) {
+        // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut
+        for (NSNumber *key in allowedDict.allKeys) {
+            if ([key integerValue] == error) {
+                NSArray *bundleIDs = allowedDict[key];
+                if ([bundleIDs containsObject:bundleID]) {
+                    tryToUseShortcut = YES;
+                    NSLog(@"%@, %@, %@", key, bundleID, application.localizedName);
+                    break;
+                }
+            }
+        }
     }
     
     return tryToUseShortcut;
 }
+
 
 /// Check if current app support emtpy copy action.
 - (BOOL)isSupportEmptyCopy {
