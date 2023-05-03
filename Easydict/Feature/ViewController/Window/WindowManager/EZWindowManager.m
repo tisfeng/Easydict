@@ -377,48 +377,6 @@ static EZWindowManager *_instance;
     return screen;
 }
 
-- (NSPoint)mouseLocation {
-    NSScreen *screen = [self getMouseLocatedScreen];
-    self.screen = screen;
-    
-#if DEBUG
-    NSAssert(screen != nil, @"no screen");
-#endif
-    if (!screen) {
-        NSLog(@"no get MouseLocation");
-        return CGPointZero;
-    }
-    
-    NSPoint mousePosition = [NSEvent mouseLocation];
-//    for (NSScreen *screen in [NSScreen screens]) {
-//        NSRect screenFrame = [screen frame];
-//        if (NSPointInRect(mousePosition, screenFrame)) {
-//            self.screen = screen;
-//            mousePosition.x -= screenFrame.origin.x;
-//            mousePosition.y -= screenFrame.origin.y;
-//            break;
-//        }
-//    }
-    
-    NSLog(@"Mouse location on current screen x:%f, y:%f", mousePosition.x, mousePosition.y);
-    
-    return mousePosition;
-}
-
-//- (void)showWindow:(NSWindow *)window onScreen:(NSScreen *)screen atPoint:(NSPoint)point {
-//    NSRect screenFrame = [screen frame];
-//    NSRect windowFrame = [window frame];
-//
-//    CGFloat x = screenFrame.origin.x + point.x;
-//    CGFloat y = screenFrame.size.height - point.y - windowFrame.size.height + screenFrame.origin.y;
-//
-//    NSPoint windowOrigin = NSMakePoint(x, y);
-//
-//    [window setFrameOrigin:windowOrigin];
-//
-//    [window orderFront:nil];
-//}
-
 - (void)showWindow:(NSWindow *)window onScreen:(NSScreen *)screen atPoint:(NSPoint)point {
     NSRect screenFrame = [screen frame];
 //    NSRect windowFrame = [window frame];
@@ -436,7 +394,7 @@ static EZWindowManager *_instance;
 
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
-    NSPoint location = [self mouseLocation];
+    NSPoint location = [NSEvent mouseLocation];
 //    NSLog(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
 
     if (CGPointEqualToPoint(location, CGPointZero)) {
