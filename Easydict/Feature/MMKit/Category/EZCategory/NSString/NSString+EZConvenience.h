@@ -31,11 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)md5;
 
-/// Convert Simplified Chinese to Traditional Chinese.
-- (NSString *)toTraditionalChineseText;
-/// Convert Traditional Chinese to Simplified Chinese.
-- (NSString *)toSimplifiedChineseText;
-
 @end
 
 NS_ASSUME_NONNULL_END

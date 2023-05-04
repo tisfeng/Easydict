@@ -12,6 +12,7 @@
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
 #import "EZTextWordUtils.h"
+#import "NSString+EZChineseText.h"
 
 /// general word width, alphabet count is abount 5, means if a line is short, then append \n.
 static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79

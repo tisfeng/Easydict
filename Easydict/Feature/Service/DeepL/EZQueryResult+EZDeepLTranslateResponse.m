@@ -11,11 +11,11 @@
 @implementation EZQueryResult (EZDeepLTranslateResponse)
 
 - (instancetype)setupWithDeepLTranslateResponse:(EZDeepLTranslateResponse *)deepLTranslateResponse {
-    self.raw = deepLTranslateResponse;
-    NSString *firstResult = deepLTranslateResponse.result.texts.firstObject.text;
-    if (firstResult) {
-        self.normalResults = @[ firstResult.trim ];
+    NSString *translatedText = deepLTranslateResponse.result.texts.firstObject.text;
+    if (translatedText) {
+        self.normalResults = [translatedText.trim componentsSeparatedByString:@"\n"];
     }
+    self.raw = deepLTranslateResponse;
 
     return self;
 }
