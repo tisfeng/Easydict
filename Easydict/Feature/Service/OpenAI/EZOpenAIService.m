@@ -607,7 +607,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@ text:\n\n\"%@\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@ text:\n\n\"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
 
@@ -689,7 +689,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
-    NSString *stepByStepPrompt = @"Then, follow the steps below step by step.";
+    NSString *stepByStepPrompt = @"Then, follow the steps below step by step.\n";
     prompt = [prompt stringByAppendingString:stepByStepPrompt];
     
     /**
@@ -701,13 +701,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail. Show no more than 5, display format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail. display format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the previous stpes, the %@ inference translation result of this sentence is obtained, note that the inference translation result may be different from the previous translation result, display inferred translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
+    // Based on the key words and grammatical analysis, generate an inferential translation of this sentence, noting that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable.
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the key words and grammatical analysis, generate an %@ inferential translation of this sentence. Note that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
