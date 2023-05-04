@@ -135,11 +135,28 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
     }
+    
+    mm_weakify(self);
+    [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
+        mm_strongify(self);
+        NSArray *texts = result.normalResults;
+        if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
+            texts = [texts toTraditionalChineseTexts];
+        }
+        result.normalResults = texts;
+    }];
+    
+    void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
+        if (self.didFinishBlock) {
+            self.didFinishBlock(result, error);
+        }
+        completion(result, error);
+    };
         
     if (self.apiType == EZDeepLTranslationAPIWebFirst) {
-        [self deepLWebTranslate:text from:from to:to completion:completion];
+        [self deepLWebTranslate:text from:from to:to completion:callback];
     } else {
-        [self deepLTranslate:text from:from to:to completion:completion];
+        [self deepLTranslate:text from:from to:to completion:callback];
     }
 }
 
@@ -161,11 +178,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
-        }
-        
-        // Convert result to traditional Chinese.
-        if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-            texts = [texts toTraditionalChineseTexts];
         }
 
         self.result.normalResults = texts;
@@ -268,9 +280,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         NSString *translatedText = [deepLTranslateResponse.result.texts.firstObject.text trim];
         if (translatedText) {
             NSArray *results = [translatedText componentsSeparatedByString:@"\n"];
-            if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-                results = [results toTraditionalChineseTexts];;
-            }
             self.result.normalResults = results;
             self.result.raw = deepLTranslateResponse;
         }
@@ -365,10 +374,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
      */
     NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
     NSArray *translatedTextArray = [translatedText componentsSeparatedByString:@"\n"];
-    if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-        translatedTextArray = [translatedTextArray toTraditionalChineseTexts];
-    }
-    
+
     return translatedTextArray;
 }
 
