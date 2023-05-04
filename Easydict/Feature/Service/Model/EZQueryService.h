@@ -34,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 
+@property (nonatomic, copy) void (^didFinishBlock)(EZQueryResult *result, NSError *error);
+
+
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;
 
