@@ -9,6 +9,7 @@
 #import "EZQueryService.h"
 #import "EZLocalStorage.h"
 #import "EZAudioPlayer.h"
+#import "NSString+EZChineseText.h"
 
 #define MethodNotImplemented()                                                                                                           \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
