@@ -22,7 +22,7 @@ NSString *const EZQueryServiceTypeKey = @"QueryServiceType";
 
 NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 
-NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPI";
+NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
 
 NSString *const EZQueryTypeAutoSelect = @"auto_select_query";
