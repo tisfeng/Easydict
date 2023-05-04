@@ -607,6 +607,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
+    // Use """ %@ """, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
     NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@ text:\n\n\"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
@@ -682,7 +683,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         inferenceTranslation = @"推理翻译";
     }
         
-    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"%@\".\n", sourceLanguage, sentence];
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
     NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, display format: \" xxx \",\n\n", targetLanguage];
@@ -701,14 +702,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail. display format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, no more than 5 key words, display format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
     // Based on the key words and grammatical analysis, generate an inferential translation of this sentence, noting that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable.
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. According to the key words and grammatical analysis, generate an %@ inferential translation of this sentence. Note that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier and grammatical analysis. The inferential translation should be different from the direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -870,7 +871,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Using %@: \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
     
-    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word: \"%@\", ", sourceLanguage, word];
+    NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word: \"\"\"%@\"\"\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
     if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
