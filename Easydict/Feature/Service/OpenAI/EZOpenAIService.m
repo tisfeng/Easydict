@@ -183,7 +183,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             self.result.normalResults = normalResults;
             self.result.showBigWord = YES;
             self.result.queryText = self.queryModel.queryText;
-            self.result.translateResultsTopInset = 10;
+            self.result.translateResultsTopInset = 5;
             completion(self.result, error);
             break;
         }
