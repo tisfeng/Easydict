@@ -65,11 +65,11 @@ brew install easydict
 
 如果你是一名开发者，或者对这个项目感兴趣，也可以尝试手动构建运行，整个过程非常简单，甚至不需懂 macOS 开发知识。
 
-只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件，`Cmd + R` 编译运行即可。
+只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️ 不是 `Easydict.xcodeproj`!），`Cmd + R` 编译运行即可。
 
 如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
 
-构建环境：Xcode 13 macOS Big Sur 11.3。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
+构建环境：Xcode 13 macOS, Big Sur 11.3。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
 #### 签名问题 ⚠️
 
