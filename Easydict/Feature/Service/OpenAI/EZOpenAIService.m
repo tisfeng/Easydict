@@ -608,7 +608,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     // Use """ %@ """, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
-    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show additional information and notes. Translate the following %@ text into %@ text:\n\n\"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show any additional information and notes. Translate the following %@ text into %@ text:\n\n \"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
 
@@ -686,7 +686,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, display format: \" xxx \",\n\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, desired format: \" xxx \",\n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -702,10 +702,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, no more than 5 key words, display format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
-    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, display format: \"%@:\n xxx \", \n\n", grammarParse];
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
     // Based on the key words and grammatical analysis, generate an inferential translation of this sentence, noting that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable.
@@ -886,7 +886,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         antonym = @"反义词";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"\nLook up its pronunciation, format: \"%@: / xxx /\" \n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired format: \"%@: / xxx /\" \n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
@@ -900,7 +900,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         //        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
-        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form in this format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form, if has, show desired format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
@@ -908,27 +908,27 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, format: \"%@: xxx \" \n", explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, desired format: \"%@: xxx \" \n", explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, format: \"%@: xxx \" . \n\n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, desired format: \"%@: xxx \" . \n\n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, format: \"%@: xxx \" \n", howToRemember];
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
         
-        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, format: \"%@: xxx \" ", sourceLanguage, cognate];
-        //  NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, strict format: \"%@: xxx \" . ", sourceLanguage, word, cognate];
+//        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired format: \"%@: xxx \" ", sourceLanguage, cognate];
+        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
         prompt = [prompt stringByAppendingString:cognatesPrompt];
     }
     
     if (isWord | isEnglishPhrase) {
-        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, format: \"%@: xxx \" ", sourceLanguage, synonym];
+        NSString *synonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near synonyms, no more than 3, If it has synonyms, show format: \"%@: xxx \" ", sourceLanguage, synonym];
         prompt = [prompt stringByAppendingString:synonymsPrompt];
         
-        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, if have, display format: \"%@: xxx \" \n", sourceLanguage, antonym];
+        NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, If it has antonyms, show format: \"%@: xxx \" \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
     }
     
@@ -1012,11 +1012,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"assistant",
-            @"content" : @"Pronunciation: xxx \n\n"
-            @"n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
-            @"Explanation: xxx \n\n"
-            @"Etymology: xxx \n\n"
-            @"Synonym: xxx \n\n"
+            @"content" :
+                @"Pronunciation: xxx \n\n"
+                @"n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
+                @"Explanation: xxx \n\n"
+                @"Etymology: xxx \n\n"
+                @"Synonym: xxx \n\n"
         },
         //        @{
         //            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
