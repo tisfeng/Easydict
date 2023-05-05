@@ -104,6 +104,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         return;
     }
     
+    text = [text removeInvisibleChar];
+    
     NSString *sourceLanguage = [self languageCodeForLanguage:from];
     NSString *targetLanguage = [self languageCodeForLanguage:to];
     
