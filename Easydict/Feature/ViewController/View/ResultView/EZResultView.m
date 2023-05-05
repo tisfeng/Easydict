@@ -139,12 +139,14 @@
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopImage = [stopImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     stopButton.image = stopImage;
-    self.stopButton.mas_key = @"stopButton";
-    self.stopButton.toolTip = @"Stop";
-
+    stopButton.mas_key = @"stopButton";
+    stopButton.toolTip = @"Stop";
+    stopButton.hidden = YES;
+    
     [stopButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
         [self.result.queryModel stopServiceRequest:self.result.serviceType];
+        self.result.isFinished = YES;
         button.hidden = YES;
     }];
 
@@ -216,10 +218,7 @@
 
     [self updateArrowButton];
     
-    // Currently, only support stop OpenAI service.
-    BOOL isFinished = result.hasTranslatedResult && !result.isFinished;
-    BOOL isOpenAIFinished = isFinished && [serviceType isEqualToString:EZServiceTypeOpenAI];
-    self.stopButton.hidden = !isOpenAIFinished;
+    [self updateStopButton];
 
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
@@ -282,6 +281,17 @@
     } dark:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:NSColor.imageTintDarkColor];
     }];
+}
+
+- (void)updateStopButton {
+    BOOL showStopButton = NO;
+    
+    // Currently, only support stop OpenAI service.
+    if ([self.result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
+        showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
+    }
+
+    self.stopButton.hidden = !showStopButton;
 }
 
 #pragma mark - Animation
