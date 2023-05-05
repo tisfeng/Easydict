@@ -352,7 +352,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
         
-        [self updateQueryTextAndParagraphStyle:self.queryText];
+        [self updateQueryTextAndParagraphStyle:self.queryText queryType:EZQueryTypeOCR];
         
         NSLog(@"ocr result: %@", self.queryText);
 
@@ -455,8 +455,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
-- (void)updateQueryTextAndParagraphStyle:(NSString *)text {
+- (void)updateQueryTextAndParagraphStyle:(NSString *)text queryType:(EZQueryType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
+    self.queryModel.queryType = queryType;
 }
 
 - (void)scrollToEndOfTextView {
