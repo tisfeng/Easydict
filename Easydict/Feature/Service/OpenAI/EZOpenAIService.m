@@ -711,7 +711,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
     // Based on the key words and grammatical analysis, generate an inferential translation of this sentence, noting that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable.
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier and grammatical analysis. The inferential translation should be different from the direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
+    NSString *translationPrompt = [NSString stringWithFormat:@"3. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual and grammatical analysis. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:translationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
