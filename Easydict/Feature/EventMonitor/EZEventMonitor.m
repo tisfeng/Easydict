@@ -424,6 +424,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4", // Sublime Text
             @"com.microsoft.Word", // Word
+            @"com.apple.iWork.Pages", // Pages, FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
         ],
         
         // kAXErrorFailure
