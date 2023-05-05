@@ -607,8 +607,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    // Use """ %@ """, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
-    NSString *prompt = [NSString stringWithFormat:@"Only return the translated text, do not show any additional information and notes. Translate the following %@ text into %@ text:\n\n \"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
+    // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
+    NSString *prompt = [NSString stringWithFormat:@"Translate the following %@ text into %@ text:\n\n \"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
 
@@ -865,7 +865,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     BOOL isWord = isEnglishWord || isChineseWord;
     
     // Note some abbreviations: acg, ol, js, os
-    NSString *systemPrompt = @"You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n";
+    NSString *systemPrompt = @"You are a word search assistant who is skilled in multiple languages and knowledgeable in etymology. You can help search for words, phrases, slangs or abbreviations, and other information. Priority is given to queries from authoritative dictionary databases, such as Oxford Dictionary, Cambridge Dictionary, etc., as well as Wikipedia, and Chinese words are preferentially queried from Baidu Baike. If there are multiple meanings for a word or an abbreviation, please look up its most commonly used ones.\n";
     
     // Fix: Lemma, reckon
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Using %@: \n", answerLanguage];
@@ -904,15 +904,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
-        translationPrompt = [translationPrompt stringByAppendingFormat:@", display %@ translated text in this format: \"%@: xxx \" ", targetLanguage, translationTitle];
+        translationPrompt = [translationPrompt stringByAppendingFormat:@", desired format: \"%@: xxx \" ", translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief explanation in clear and understandable way, desired format: \"%@: xxx \" \n", explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief <%@> explanation in clear and understandable way, desired format: \"%@: xxx \" \n", answerLanguage, explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, desired format: \"%@: xxx \" . \n\n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, desired format: \"%@: xxx \" . \n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
