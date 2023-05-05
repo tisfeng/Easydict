@@ -69,6 +69,8 @@ Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to
 
 If a signature error occurs during compilation, please use your own developer account on the `Signing & Capabilities` page of the target. If you are not an Apple developer yet, just go to https://developer.apple.com/ and register for free.
 
+Build environment: Xcode 14.0.x macOS Monterey 12.5. To avoid unnecessary problems, it is best to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
+
 #### Signature Problem ⚠️
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
