@@ -516,7 +516,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                           punctuationMarkRate:punctuationMarkRate
                                      language:language];
     
-    NSInteger charCountPerLineOfPoetry = 60;
+    NSInteger charCountPerLineOfPoetry = 50;
     if ([EZLanguageManager isChineseLanguage:language]) {
         charCountPerLineOfPoetry = 30;
     }
@@ -1440,11 +1440,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSInteger shortLineCount = 0;
     NSInteger longLineCount = 0;
     CGFloat minLengthOfLine = CGFLOAT_MAX;
-    BOOL isPoetry = YES;
+    BOOL isPoetryLength = YES;
     
     for (NSString *text in textArray) {
         if (![self isPoetryCharactersOfLineText:text language:language]) {
-            isPoetry = NO;
+            isPoetryLength = NO;
             break;
         }
     }
@@ -1472,9 +1472,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSInteger lineCount = lineLengthArray.count;
     CGFloat numberOfPunctuationMarksPerLine = (CGFloat)punctuationMarkCount / lineCount;
     
-    BOOL isEqualLength = maxLengthOfLine - minLengthOfLine < 0.05; // ~0.95
-    if (isEqualLength) {
-        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
+    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
+    if (isChinese) {
+        BOOL isEqualLength = maxLengthOfLine - minLengthOfLine < 0.04; // ~0.96
+        if (isEqualLength && numberOfPunctuationMarksPerLine <= 4) {
+            return YES;
+        }
+        
+        if (isPoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
             return YES;
         }
     }
@@ -1488,14 +1493,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         return YES;
     }
     
-    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 3) && (punctuationMarkRate < 0.04)) {
+    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (punctuationMarkRate < 0.04)) {
         return YES;
     }
     
-    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
-    if (isPoetry && lineCount >= 4 && isChinese) {
-        return YES;
-    }
         
     BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
     if (tooManyLongLine) {
