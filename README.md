@@ -69,6 +69,8 @@ brew install easydict
 
 如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
 
+构建环境：Xcode 14.0.x macOS Monterey 12.5。 为避免不必要的问题，最好使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
+
 #### 签名问题 ⚠️
 
 Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
