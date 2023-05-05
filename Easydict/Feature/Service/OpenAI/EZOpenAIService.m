@@ -120,7 +120,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSMutableDictionary *parameters = @{
         @"model" : @"gpt-3.5-turbo",
         @"temperature" : @(0),
-        @"max_tokens" : @(3000),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
@@ -914,7 +913,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, desired format: \"%@: xxx \" . \n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. Desired format: \"%@: xxx \" . \n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
