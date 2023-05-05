@@ -24,6 +24,21 @@
     return trimText;
 }
 
+/// Remove invisible char "\U0000fffc"
+- (NSString *)removeInvisibleChar {
+    /**
+     FIX: Sometimes selected text may contain a Unicode char "\U0000fffc", empty text but length is 1 😢
+     
+     For example, if getting selected text using shortcut by three click the following text in Wikipedia, the selected text last char is "\U0000fffc"
+     
+     Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.
+     
+     From: https://zh.wikipedia.org/wiki/%E8%93%8B%E8%8C%B2%E5%A0%A1%E6%BC%94%E8%AA%AA#%E6%9E%97%E8%82%AF%E7%9A%84%E8%93%8B%E8%8C%B2%E5%A0%A1%E6%BC%94%E8%AA%AA
+     */
+    NSString *text = [self stringByReplacingOccurrencesOfString:@"\U0000fffc" withString:@""];
+    return text;
+}
+
 /// Remove extra LineBreaks.
 - (NSString *)removeExtraLineBreaks {
     NSString *regex = @"[ \\t]*\n[ \\t]*\n[ \\t]*";

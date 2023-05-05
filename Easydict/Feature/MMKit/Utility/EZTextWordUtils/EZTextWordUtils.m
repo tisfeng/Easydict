@@ -224,6 +224,7 @@ static NSDictionary *const kQuotesDict = @{
     tokenizer.string = text;
     __block NSInteger count = 0;
     [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
+//        NSLog(@"sentence: %@", [text substringWithRange:tokenRange]);
         count++;
     }];
     return count;

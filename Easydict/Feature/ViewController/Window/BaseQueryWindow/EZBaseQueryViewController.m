@@ -575,7 +575,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     //    NSLog(@"query service: %@", service.serviceType);
 
-    [service translate:queryModel.queryText
+    NSString *trimQueryText = [queryModel.queryText trim];
+    
+    [service translate:trimQueryText
                   from:queryModel.queryFromLanguage
                     to:queryModel.queryTargetLanguage
             completion:completion];

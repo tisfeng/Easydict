@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)trimToMaxLength:(NSUInteger)maxLength;
 
+/// Remove invisible char "\U0000fffc"
+- (NSString *)removeInvisibleChar;
+
 /// Remove extra LineBreaks.
 - (NSString *)removeExtraLineBreaks;
 

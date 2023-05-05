@@ -261,7 +261,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 return;
             }
             
-            NSString *selectedText = [self getPasteboardText];
+            NSString *selectedText = [[self getPasteboardText] removeInvisibleChar];
             self.selectedText = selectedText;
             MMLogInfo(@"--> Key getText: %@", selectedText);
             
@@ -324,6 +324,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         if (getSelectedTextError == kAXErrorSuccess) {
             // Note: selectedText may be @""
             selectedText = (__bridge NSString *)(selectedTextValue);
+            selectedText = [selectedText removeInvisibleChar];
             self.selectedText = selectedText;
             self.endPoint = NSEvent.mouseLocation;
             MMLogInfo(@"--> Auxiliary getText: %@", selectedText);
