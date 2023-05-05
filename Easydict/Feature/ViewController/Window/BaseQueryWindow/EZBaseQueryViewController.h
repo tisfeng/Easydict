@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)detectQueryText:(nullable void (^)(void))completion;
 
 /// Update query text, auto adjust ParagraphStyle.
-- (void)updateQueryTextAndParagraphStyle:(NSString *)text;
+- (void)updateQueryTextAndParagraphStyle:(NSString *)text queryType:(EZQueryType)queryType;
 
 - (void)scrollToEndOfTextView;
 
