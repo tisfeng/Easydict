@@ -122,9 +122,9 @@ static EZLayoutManager *_instance;
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMain:
-            return NSScreen.mainScreen.frame.size.height / 3;
+            return NSScreen.mainScreen.frame.size.height * (3.0 / 10);
         case EZWindowTypeFixed:
-            return NSScreen.mainScreen.frame.size.height / 3;
+            return NSScreen.mainScreen.frame.size.height * (3.0 / 10);
         case EZWindowTypeMini:
             return 54; // two line
         default:
