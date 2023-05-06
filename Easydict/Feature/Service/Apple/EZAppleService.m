@@ -185,7 +185,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         }
         
         if (!error) {
-            self.result.normalResults = @[ result.trim ];
+            self.result.normalResults = @[ [result.trim removeExtraLineBreaks] ];
         } else {
             self.result.promptTitle = @"如何在 Easydict 中使用 🍎 macOS 系统翻译？";
             // https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md

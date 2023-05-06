@@ -703,18 +703,16 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     for (NSDictionary *sentenceDict in sentences) {
                         NSString *trans = sentenceDict[@"trans"];
                         if (trans && [trans isKindOfClass:NSString.class]) {
-                            [translationArray addObject:trans];
+                            [translationArray addObject:trans.trim];
                         }
                     }
-                    
                     result.normalResults = translationArray;
+                    
                     NSString *transaltedText = [translationArray componentsJoinedByString:@""];
-                    NSString *signTo = [[self.signFunction
-                                         callWithArguments:@[ transaltedText ]] toString];
-                    result.toSpeakURL = [self
-                                         getAudioURLWithText:transaltedText
-                                         language:[self languageCodeForLanguage:googleTo]
-                                         sign:signTo];
+                    NSString *signTo = [[self.signFunction callWithArguments:@[ transaltedText ]] toString];
+                    result.toSpeakURL = [self getAudioURLWithText:transaltedText
+                                                         language:[self languageCodeForLanguage:googleTo]
+                                                             sign:signTo];
                 }
                 
                 if (result.wordResult || result.normalResults) {
