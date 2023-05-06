@@ -42,7 +42,6 @@
 		03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5A2938DA2B00C34C33 /* EZDetectLanguageButton.m */; };
 		03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A5D2938F05B00C34C33 /* EZLanguageModel.m */; };
 		0361965529FFECFC00806370 /* youdao-sign.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965429FFECFC00806370 /* youdao-sign.js */; };
-		0361965729FFED1100806370 /* main.js in Resources */ = {isa = PBXBuildFile; fileRef = 0361965629FFED1100806370 /* main.js */; };
 		036196752A000F5900806370 /* FWEncryptorAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196702A000F5800806370 /* FWEncryptorAES.m */; };
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
@@ -258,7 +257,6 @@
 		03542A5C2938F05B00C34C33 /* EZLanguageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLanguageModel.h; sourceTree = "<group>"; };
 		03542A5D2938F05B00C34C33 /* EZLanguageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLanguageModel.m; sourceTree = "<group>"; };
 		0361965429FFECFC00806370 /* youdao-sign.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "youdao-sign.js"; sourceTree = "<group>"; };
-		0361965629FFED1100806370 /* main.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = main.js; path = "../../../../../../../../Downloads/bob-plugin-akl-youdao-free-translate-main/bobplugin/independently/src/main.js"; sourceTree = "<group>"; };
 		0361966F2A000F5800806370 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		036196702A000F5800806370 /* FWEncryptorAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWEncryptorAES.m; sourceTree = "<group>"; };
 		036196712A000F5900806370 /* FWEncryptorAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWEncryptorAES.h; sourceTree = "<group>"; };
@@ -950,7 +948,6 @@
 				03BFFC6C295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.h */,
 				03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */,
 				0361965429FFECFC00806370 /* youdao-sign.js */,
-				0361965629FFED1100806370 /* main.js */,
 			);
 			path = Youdao;
 			sourceTree = "<group>";
@@ -1642,7 +1639,6 @@
 				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
-				0361965729FFED1100806370 /* main.js in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
 				0361965529FFECFC00806370 /* youdao-sign.js in Resources */,
 			);
