@@ -21,15 +21,7 @@
     self.editable = NO;
     self.backgroundColor = NSColor.clearColor;
     
-    [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {
-        style.lineHeightMultiple = 1.2;
-        //        style.lineSpacing = 5;
-        style.paragraphSpacing = 5;
-    }]];
-    self.font = [NSFont systemFontOfSize:14];
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
-    
-    //    self.textContainerInset = CGSizeMake(8, 12);
 }
 
 - (void)setText:(NSString *)text {
@@ -39,14 +31,16 @@
     NSRange range = NSMakeRange(0, text.length);
     
     // Character spacing
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSKernAttributeName : @(0.2)}];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     
     // Line spacing
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragraphStyle setLineSpacing:3];
+    paragraphStyle.lineSpacing = 4;
+    paragraphStyle.paragraphSpacing = 12;
     
     [attributedString addAttributes:@{
         NSParagraphStyleAttributeName : paragraphStyle,
+        NSKernAttributeName : @(0.2),
         NSFontAttributeName : [NSFont systemFontOfSize:14],
     }
                               range:range];
@@ -58,8 +52,6 @@
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];
     } dark:^(NSTextView *textView) {
-        [textView.textStorage deleteCharactersInRange:NSMakeRange(0, textView.textStorage.length)];
-        
         [attributedString addAttributes:@{
             NSForegroundColorAttributeName : NSColor.resultTextDarkColor,
         }

@@ -567,6 +567,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
+    //    NSLog(@"query service: %@", service.serviceType);
+
     EZQueryResult *result = service.result;
 
     // Show result if it has been queried.
@@ -575,9 +577,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [self updateResultLoadingAnimation:result];
     
-    //    NSLog(@"query service: %@", service.serviceType);
-
-    NSString *trimQueryText = [queryModel.queryText trim];
+    // Since query text may has extra line breaks, we should remove it, render paragraph style manually.
+    NSString *trimQueryText = [queryModel.queryText.trim removeExtraLineBreaks];
     
     [service translate:trimQueryText
                   from:queryModel.queryFromLanguage
