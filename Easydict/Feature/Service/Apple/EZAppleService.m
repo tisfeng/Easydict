@@ -515,16 +515,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                          punctuationMarkCount:punctuationMarkCount
                           punctuationMarkRate:punctuationMarkRate
                                      language:language];
-    
-    NSInteger charCountPerLineOfPoetry = 50;
-    if ([EZLanguageManager isChineseLanguage:language]) {
-        charCountPerLineOfPoetry = 30;
-    }
-    
-    if (![self isPoetryLineCharactersCount:charCountPerLine language:language]) {
-        isPoetry = NO;
-    }
-    
     NSLog(@"isPoetry: %d", isPoetry);
     
     CGFloat confidence = 0;
@@ -589,7 +579,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             if (deltaY > 0) {
                 isNewLine = YES;
             } else {
-                if (fabs(deltaY) < miniPositiveLineSpacing / 2) {
+                if (fabs(deltaY) < miniLineHeight / 2) {
                     isNewLine = YES;
                 }
             }
@@ -1437,18 +1427,21 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
              punctuationMarkCount:(NSInteger)punctuationMarkCount
               punctuationMarkRate:(CGFloat)punctuationMarkRate
                    language:(EZLanguage)language {
-    // iterate lineLengthArray, get short line count and long line count
+    
     NSInteger shortLineCount = 0;
     NSInteger longLineCount = 0;
     CGFloat minLengthOfLine = CGFLOAT_MAX;
-    BOOL isPoetryLength = YES;
     
+    CGFloat lineCount = lineLengthArray.count;
+
+    NSInteger totalCharCount = 0;
+    CGFloat charCountPerLine = 0;
+
     for (NSString *text in textArray) {
-        if (![self isPoetryCharactersOfLineText:text language:language]) {
-            isPoetryLength = NO;
-            break;
-        }
+        totalCharCount += text.length;
     }
+
+    charCountPerLine = totalCharCount / lineCount;
     
     for (NSNumber *number in lineLengthArray) {
         CGFloat length = number.floatValue;
@@ -1470,17 +1463,23 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         }
     }
     
-    NSInteger lineCount = lineLengthArray.count;
-    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)punctuationMarkCount / lineCount;
+    CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
     BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
     if (isChinese) {
+        CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
+        if (lineCount > 2) {
+            maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
+        }
+        
+        BOOL isAveragePoetryLength = charCountPerLine <= maxCharCountPerLineOfPoetry;
+        
         BOOL isEqualLength = maxLengthOfLine - minLengthOfLine < 0.04; // ~0.96
-        if (isEqualLength && numberOfPunctuationMarksPerLine <= 4) {
+        if (isEqualLength && isAveragePoetryLength) {
             return YES;
         }
         
-        if (isPoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
+        if (isAveragePoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
             return YES;
         }
     }
