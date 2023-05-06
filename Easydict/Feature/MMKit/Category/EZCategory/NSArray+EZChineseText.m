@@ -31,5 +31,13 @@
     return simplifiedTexts;
 }
 
+- (NSArray<NSString *> *)removeExtraLineBreaks {
+    NSMutableArray *texts = [NSMutableArray array];
+    for (NSString *text in self) {
+        NSString *newText = [text removeExtraLineBreaks];
+        [texts addObject:newText];
+    }
+    return texts;
+}
 
 @end

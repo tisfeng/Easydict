@@ -577,8 +577,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [self updateResultLoadingAnimation:result];
     
-    // Since query text may has extra line breaks, we should remove it, render paragraph style manually.
-    NSString *trimQueryText = [queryModel.queryText.trim removeExtraLineBreaks];
+    NSString *trimQueryText = [queryModel.queryText trim];
     
     [service translate:trimQueryText
                   from:queryModel.queryFromLanguage

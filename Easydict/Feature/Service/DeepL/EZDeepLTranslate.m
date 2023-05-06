@@ -147,9 +147,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     }];
     
     void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
-        if (self.didFinishBlock) {
-            self.didFinishBlock(result, error);
-        }
+        self.didFinishBlock(result, error);
         completion(result, error);
     };
         
@@ -279,6 +277,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         EZDeepLTranslateResponse *deepLTranslateResponse = [EZDeepLTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = [deepLTranslateResponse.result.texts.firstObject.text trim];
         if (translatedText) {
+            translatedText = [translatedText removeExtraLineBreaks];
             NSArray *results = [translatedText componentsSeparatedByString:@"\n"];
             self.result.normalResults = results;
             self.result.raw = deepLTranslateResponse;
@@ -373,7 +372,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
      }
      */
     NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
-    NSArray *translatedTextArray = [translatedText componentsSeparatedByString:@"\n"];
+    NSArray *translatedTextArray = [translatedText.trim componentsSeparatedByString:@"\n"];
 
     return translatedTextArray;
 }
