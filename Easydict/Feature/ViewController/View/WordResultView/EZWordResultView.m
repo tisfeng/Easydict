@@ -185,7 +185,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                         make.top.equalTo(self).offset(topOffset);
                     }
                     
-                    CGFloat leftPadding = 5;
+                    CGFloat leftPadding = 6;
                     exceptedWidth += leftPadding;
                     make.left.equalTo(self).offset(leftPadding);
                 }
