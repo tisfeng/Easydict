@@ -20,8 +20,10 @@
 - (void)setup {
     self.editable = NO;
     self.backgroundColor = NSColor.clearColor;
-    
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+    
+    self.lineSpacing = 4;
+    self.paragraphSpacing = 12;
 }
 
 - (void)setText:(NSString *)text {
@@ -35,8 +37,8 @@
     
     // Line spacing
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineSpacing = 4;
-    paragraphStyle.paragraphSpacing = 12;
+    paragraphStyle.lineSpacing = self.lineSpacing;
+    paragraphStyle.paragraphSpacing = self.paragraphSpacing;
     
     [attributedString addAttributes:@{
         NSParagraphStyleAttributeName : paragraphStyle,
