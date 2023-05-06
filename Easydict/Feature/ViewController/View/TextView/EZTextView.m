@@ -15,17 +15,18 @@
 @property (nonatomic, strong) NSColor *placeholderColor;
 @property (nonatomic, strong) NSFont *placeholderFont;
 
-@property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 12
+@property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 15
 @property (nonatomic, assign) CGFloat miniParagraphSpacing; // 0
 
 @end
 
 @implementation EZTextView
 
+// TODO: EZTextView is similar to EZLabel, we need to refactor them.
 - (instancetype)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     if (self) {
-        CGFloat defaultParagraphSpacing = 12;
+        CGFloat defaultParagraphSpacing = 15;
         CGFloat miniParagraphSpacing = 0;
         // https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Rulers/Concepts/AboutParaStyles.html#//apple_ref/doc/uid/20000879-CJBBEHJA
         [self setDefaultParagraphStyle:[NSMutableParagraphStyle mm_make:^(NSMutableParagraphStyle *_Nonnull style) {

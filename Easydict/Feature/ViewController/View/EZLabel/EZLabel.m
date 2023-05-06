@@ -23,7 +23,7 @@
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     
     self.lineSpacing = 4;
-    self.paragraphSpacing = 12;
+    self.paragraphSpacing = 15;
 }
 
 - (void)setText:(NSString *)text {
