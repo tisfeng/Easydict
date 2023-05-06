@@ -578,7 +578,8 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             // Note that line spacing is inaccurate, sometimes it's too small 😢
             BOOL isNewParagraph = NO;
             if (deltaY > 0) {
-                if (deltaY / averageLineSpacing > 2 || deltaY / averageLineHeight > 1.1) {
+                // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
+                if (deltaY / averageLineSpacing > 2.5 || deltaY / averageLineHeight > 1.2) {
                     isNewParagraph = YES;
                 }
             }
