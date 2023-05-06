@@ -293,7 +293,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 [mutableString appendString:appendContent];
             }
             
-            completion(mutableString, nil);
+            // Do not callback when mutableString length is 0 when isFinished is NO, to avoid auto hide reuslt view.
+            if (isFinished || mutableString.length) {
+                completion(mutableString, nil);
+            }
+            
             //  NSLog(@"mutableString: %@", mutableString);
         }];
     }
