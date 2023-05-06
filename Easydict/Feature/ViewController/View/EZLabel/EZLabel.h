@@ -15,6 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *text;
 
+@property (nonatomic, assign) CGFloat lineSpacing; // default 4
+
+@property (nonatomic, assign) CGFloat paragraphSpacing; // default 12
+
 @end
 
 NS_ASSUME_NONNULL_END

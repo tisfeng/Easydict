@@ -162,6 +162,12 @@ static const CGFloat kVerticalPadding_8 = 8;
         if (text.length) {
             EZLabel *resultLabel = [[EZLabel alloc] init];
             [self addSubview:resultLabel];
+            
+            // OpenAI result text has its own paragraph style.
+            if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
+                resultLabel.paragraphSpacing = 0;
+            }
+            
             resultLabel.text = text;
             resultLabel.delegate = self;
             
