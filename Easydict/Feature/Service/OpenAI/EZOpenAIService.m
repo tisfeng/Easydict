@@ -26,7 +26,8 @@ static NSDictionary *const kQuotesDict = @{
 };
 
 // You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.
-static NSString *kTranslationSystemPrompt = @"You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words. You can analyze the grammatical structure of sentences clearly, and the result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes.";
+
+static NSString *kTranslationSystemPrompt = @"You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes.";
 
 @interface EZOpenAIService ()
 
@@ -683,11 +684,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         grammarParse = @"语法分析";
         inferenceTranslation = @"推理翻译";
     }
-        
+    
     NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, display the %@ translation of this sentence, desired format: \" xxx \",\n\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" xxx \",\n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -698,6 +699,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      !!!: Note: These prompts' order cannot be changed, must be key words, grammar parse, translation result, otherwise the translation result will be incorrect.
      
      The stock market has now reached a plateau.
+     
+     Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.
+
      The book is simple homespun philosophy.
      He was confined to bed with a bad spinal injury.
      Improving the country's economy is a political imperative for the new president.
@@ -709,9 +713,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    // Based on the key words and grammatical analysis, generate an inferential translation of this sentence, noting that the inferential translation may not have the same result as the previous direct translation, and the inferential translation should be more accurate and reasonable.
-    NSString *translationPrompt = [NSString stringWithFormat:@"3. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual and grammatical analysis. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
-    prompt = [prompt stringByAppendingString:translationPrompt];
+    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
+    prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
