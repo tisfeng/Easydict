@@ -20,6 +20,7 @@
 #import <WebKit/WebKit.h>
 #import "NSData+EZMD5.h"
 #import "EZNetworkManager.h"
+#import "NSArray+EZChineseText.h"
 
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
 static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
@@ -286,7 +287,17 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         return;
     }
     
-    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
+    [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
+        NSArray *texts = result.normalResults;
+        result.normalResults = texts;
+    }];
+    
+    void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
+        self.didFinishBlock(result, error);
+        completion(result, error);
+    };
+    
+    [self queryYoudaoDictAndTranslation:text from:from to:to completion:callback];
 }
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
@@ -938,7 +949,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSMutableArray *translatedTexts = [NSMutableArray array];
     for (NSArray *results in translateResult) {
         for (NSDictionary *resultDict in results) {
-            NSString *text = resultDict[@"tgt"];
+            NSString *text = [resultDict[@"tgt"] trim];
             if (text.length) {
                 [translatedTexts addObject:text.trim];
             }

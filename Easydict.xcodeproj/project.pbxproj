@@ -939,8 +939,6 @@
 		03B0223629231FA6001C7E63 /* Youdao */ = {
 			isa = PBXGroup;
 			children = (
-				0361965429FFECFC00806370 /* youdao-sign.js */,
-				0361965629FFED1100806370 /* main.js */,
 				03542A4A2937B5F100C34C33 /* EZYoudaoTranslate.h */,
 				03542A4B2937B5F100C34C33 /* EZYoudaoTranslate.m */,
 				03542A4D2937B64B00C34C33 /* EZYoudaoOCRResponse.h */,
@@ -951,6 +949,8 @@
 				03BFFC67295F4B87004E033E /* EZYoudaoDictModel.m */,
 				03BFFC6C295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.h */,
 				03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */,
+				0361965429FFECFC00806370 /* youdao-sign.js */,
+				0361965629FFED1100806370 /* main.js */,
 			);
 			path = Youdao;
 			sourceTree = "<group>";

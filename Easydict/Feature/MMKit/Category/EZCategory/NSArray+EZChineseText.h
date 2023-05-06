@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Convert translated results to Simplified Chinese manually.  開門 --> 开门
 - (NSArray<NSString *> *)toSimplifiedChineseTexts;
 
+- (NSArray<NSString *> *)removeExtraLineBreaks;
+
 @end
 
 NS_ASSUME_NONNULL_END
