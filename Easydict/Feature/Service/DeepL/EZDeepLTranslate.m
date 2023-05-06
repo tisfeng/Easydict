@@ -372,7 +372,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
      }
      */
     NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
-    NSArray *translatedTextArray = [translatedText.trim componentsSeparatedByString:@"\n"];
+    translatedText = [translatedText.trim removeExtraLineBreaks];
+    NSArray *translatedTextArray = [translatedText componentsSeparatedByString:@"\n"];
 
     return translatedTextArray;
 }
