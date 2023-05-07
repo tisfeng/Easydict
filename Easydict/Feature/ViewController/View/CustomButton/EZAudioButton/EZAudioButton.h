@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^playAudioBlock)(void);
 
+@property (nonatomic, copy) void (^playStatus)(BOOL isPlaying);
 
 @end
 

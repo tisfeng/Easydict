@@ -40,8 +40,6 @@
     [self addSubview:pinButton];
     self.pinButton = pinButton;
     pinButton.contentTintColor = [NSColor clearColor];
-    pinButton.toolTip = @"Pin, ⌘+P";
-    
     pinButton.clickBlock = nil;
     self.pin = NO;
     
@@ -98,7 +96,7 @@
         
         googleButton.link = @"https://www.google.com/search?q=%@";
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
-        googleButton.toolTip = @"Google, ⌘+⏎";
+        googleButton.toolTip = @"Open in Google, ⌘+⏎";
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -126,7 +124,7 @@
             
             eudicButton.link = @"eudic://dict/%@";
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = @"Eudic, ⌘+⇧+⏎";
+            eudicButton.toolTip = @"Open in Eudic, ⌘+⇧+⏎";
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
