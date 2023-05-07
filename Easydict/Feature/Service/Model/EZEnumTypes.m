@@ -33,5 +33,6 @@ NSString *const EZQueryTypeOCR = @"ocr_query";
 
 NSString *const EZSelectTextTypeAuxiliary = @"auxiliary_select_text";
 NSString *const EZSelectTextTypeSimulateKey = @"simulate_key_select_text";
+NSString *const EZSelectTextTypeAppleScript = @"applescripte_select_text";
 
 NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";

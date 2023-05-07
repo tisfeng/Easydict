@@ -601,7 +601,8 @@ static EZWindowManager *_instance;
     }
     
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
-        self.selectedText = [text trim];
+        // If text is nil, currently, we choose to clear input.
+        self.selectedText = [text trim] ?: @"";
         self.queryType = EZQueryTypeShortcut;
         [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];

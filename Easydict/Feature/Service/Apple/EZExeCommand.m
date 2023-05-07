@@ -37,6 +37,8 @@
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[ @"-e", script ];
     
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
@@ -73,6 +75,9 @@
             }
         }
         
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(result, error);
         });
@@ -81,6 +86,7 @@
 }
 
 /// Use NSAppleScript to run AppleScript.
+/// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
 - (void)runAppleScript2:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
