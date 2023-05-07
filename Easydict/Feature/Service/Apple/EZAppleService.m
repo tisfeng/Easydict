@@ -869,7 +869,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         NLLanguageSimplifiedChinese : @(2.0),
         NLLanguageTraditionalChinese : @(0.4),
         NLLanguageJapanese : @(0.25),
-        NLLanguageFrench : @(0.25), // const, ex, delimiter
+        NLLanguageFrench : @(0.25), // const, ex, delimiter, proposition
         NLLanguageKorean : @(0.2),
         NLLanguageItalian : @(0.1),     // via
         NLLanguageSpanish : @(0.1),     // favor
@@ -898,16 +898,16 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     /**
      Increase the proportional weighting of the user's preferred language.
      
-     1. Chinese, + 0.3
-     2. English, + 0.2
-     3. Japanese, + 0.1
+     1. Chinese, + 0.4
+     2. English, + 0.3
+     3. Japanese, + 0.2
      4. ........, + 0.1
      
      */
     NSMutableDictionary<EZLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionary];
     for (NSInteger i = 0; i < preferredLanguages.count; i++) {
         EZLanguage language = preferredLanguages[i];
-        CGFloat maxWeight = 0.3;
+        CGFloat maxWeight = 0.4;
         CGFloat step = 0.1;
         CGFloat weight = maxWeight - step * i;
         if (weight < 0.1) {
