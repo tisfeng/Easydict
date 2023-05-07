@@ -26,15 +26,13 @@
 }
 
 - (void)setup {
-    self.toolTip = @"Play";
     self.isPlaying = NO;
 
     mm_weakify(self);
 
-    [self setClickBlock:^(EZButton *_Nonnull audioButton) {
+    [self setClickBlock:^(EZButton *audioButton) {
         mm_strongify(self);
         BOOL isPlaying = self.audioPlayer.isPlaying;
-//        NSLog(@"audioActionBlock: %d", isPlaying);
 
         if (isPlaying) {
             [self.audioPlayer stop];
@@ -51,16 +49,17 @@
     
     mm_weakify(self);
     [audioPlayer setPlayingBlock:^(BOOL isPlaying) {
-        mm_strongify(self);
-//        NSLog(@"isPlaying: %d", isPlaying);
-        
+        mm_strongify(self);        
         self.isPlaying = isPlaying;
     }];
 }
 
 - (void)setIsPlaying:(BOOL)isPlaying {
     _isPlaying = isPlaying;
-    
+        
+    NSString *action = isPlaying ? @"Stop" : @"Play";
+    self.toolTip = [NSString stringWithFormat:@"%@ Audio", action];
+
 //    NSString *symbolName = isPlaying ? @"pause.circle" : @"play.circle";
 //    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
     
@@ -74,6 +73,17 @@
     } dark:^(NSButton *audioButton) {
         audioButton.image = [audioButton.image imageWithTintColor:[NSColor imageTintDarkColor]];
     }];
+    
+    if (self.playStatus) {
+        self.playStatus(isPlaying);
+    }
+}
+
+- (void)setPlayStatus:(void (^)(BOOL))playStatus {
+    _playStatus = playStatus;
+    
+    // init play status
+    playStatus(self.isPlaying);
 }
 
 

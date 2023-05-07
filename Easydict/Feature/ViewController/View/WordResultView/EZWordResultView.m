@@ -779,7 +779,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
-    audioButton.toolTip = @"Play";
     
     BOOL hasTranslatedText = result.translatedText.length > 0;
     audioButton.enabled = hasTranslatedText;
@@ -845,7 +844,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
     linkButton.image = linkImage;
-    linkButton.toolTip = @"Link";
+    linkButton.toolTip = @"Open Web Link";
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {

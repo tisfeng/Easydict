@@ -93,8 +93,15 @@
     EZAudioButton *audioButton = [[EZAudioButton alloc] init];
     [self addSubview:audioButton];
     self.audioButton = audioButton;
-    audioButton.toolTip = @"Play, ⌘+S";
-    
+
+    mm_weakify(audioButton);
+    [audioButton setPlayStatus:^(BOOL isPlaying) {
+        mm_strongify(audioButton);
+        
+        NSString *action = isPlaying ? @"Stop" : @"Play";
+        audioButton.toolTip = [NSString stringWithFormat:@"%@ Audio, ⌘+S", action];
+    }];
+
     [audioButton setPlayAudioBlock:^{
         mm_strongify(self);
         if (self.playAudioBlock) {
@@ -141,7 +148,7 @@
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#868686"]];
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
-    clearButton.toolTip = @"Clear, ⌘+⇧+K";
+    clearButton.toolTip = @"Clear All, ⌘+⇧+K";
     
     [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");
