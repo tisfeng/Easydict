@@ -425,6 +425,11 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             @"com.sublimetext.4", // Sublime Text
             @"com.microsoft.Word", // Word
             @"com.apple.iWork.Pages", // Pages, FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
+            @"com.apple.iWork.Keynote", // Keynote
+            @"com.apple.iWork.Numbers", // Numbers
+            @"com.tencent.xinWeChat", // WeChat
+            @"com.apple.iBooksX", // iBooks
+            @"com.apple.freeform", // Freeform
         ],
         
         // kAXErrorFailure
