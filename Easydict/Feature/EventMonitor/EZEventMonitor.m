@@ -230,10 +230,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSInteger changeCount = [pasteboard changeCount];
     
     NSString *lastText = [self getPasteboardText];
-        
+    
     // If playing audio, we do not silence system volume.
     [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
-        BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep &&  !isPlaying && ![self isSupportEmptyCopy];
+        BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying && ![self isSupportEmptyCopy];
         
         // If app doesn't support empty copy, set volume to 0 to avoid system alert.
         if (shouldTurnOffSoundTemporarily) {
@@ -406,39 +406,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         return NO;
     }
     
-    BOOL tryToUseShortcut = NO;
-
-    NSDictionary *allowedDict = @{
-        /**
-         Some App return kAXErrorSuccess but text is empty, so we need to check bundleID.
-         
-         Edge: Get selected text may be a Unicode char "\U0000fffc", empty text but length is 1 😢
-         VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
-         IDEA: Javadoc rendered view will return empty text
-         */
-        @(kAXErrorSuccess) : @[
-            @"com.microsoft.edgemac", // Edge
-            @"com.microsoft.VSCode",  // VSCode
-            @"com.jetbrains.intellij.ce", // IDEA
-        ],
-        
-        // Some App return kAXErrorAttributeUnsupported but actually has selected text.
-        @(kAXErrorAttributeUnsupported) : @[
-            @"com.sublimetext.4", // Sublime Text
-            @"com.microsoft.Word", // Word
-            @"com.apple.iWork.Pages", // Pages, FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
-            @"com.apple.iWork.Keynote", // Keynote
-            @"com.apple.iWork.Numbers", // Numbers
-            @"com.tencent.xinWeChat", // WeChat
-            @"com.apple.iBooksX", // iBooks
-            @"com.apple.freeform", // Freeform
-        ],
-        
-        // kAXErrorFailure
-        @(kAXErrorFailure) : @[
-            @"com.apple.dt.Xcode", // Xcode, error when All messages page
-        ],
-    };
+    NSLog(@"Auxiliary error: %d", error);
     
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
@@ -450,25 +418,60 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
-    BOOL auxiliaryErrorNoValue = (error == kAXErrorNoValue);
-    if (auxiliaryErrorNoValue) {
-        tryToUseShortcut = YES;
+    BOOL errorNoValue = (error == kAXErrorNoValue);
+    if (errorNoValue) {
         NSLog(@"unsupport Auxiliary App --> %@", bundleID);
+        return YES;
     }
     
+    
+    NSDictionary *allowedAppErrorDict = @{
+        /**
+         Some Apps return kAXErrorSuccess but text is empty, so we need to check bundleID.
+         
+         VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+         */
+        @(kAXErrorSuccess) : @[
+            @"com.microsoft.VSCode",      // VSCode
+            @"com.jetbrains.intellij.ce", // IDEA
+        ],
+        
+        // Some Apps return kAXErrorAttributeUnsupported but actually has selected text.
+        @(kAXErrorAttributeUnsupported) : @[
+            @"com.sublimetext.4",  // Sublime Text
+            @"com.microsoft.Word", // Word
+            
+            @"com.tencent.xinWeChat", // WeChat
+            
+            /**
+             These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
+             
+             FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
+             */
+            @"com.apple.iWork.Pages",   // Pages,
+            @"com.apple.iWork.Keynote", // Keynote
+            @"com.apple.iWork.Numbers", // Numbers
+            @"com.apple.freeform",      // Freeform 无边记
+        ],
+        
+        // kAXErrorFailure
+        @(kAXErrorFailure) : @[
+            @"com.apple.dt.Xcode", // Xcode, error when All messages page
+        ],
+    };
+    
     // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
-    for (NSNumber *key in allowedDict.allKeys) {
-        if ([key integerValue] == error) {
-            NSArray *bundleIDs = allowedDict[key];
+    for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
+        if ([errorCode integerValue] == error) {
+            NSArray *bundleIDs = allowedAppErrorDict[errorCode];
             if ([bundleIDs containsObject:bundleID]) {
-                tryToUseShortcut = YES;
-                NSLog(@"%@, %@, %@", key, bundleID, application.localizedName);
-                break;
+                NSLog(@"%@, %@, %@", errorCode, bundleID, application.localizedName);
+                return YES;
             }
         }
     }
     
-    return tryToUseShortcut;
+    return NO;
 }
 
 
@@ -1059,7 +1062,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 #pragma mark -
-
 
 
 @end
