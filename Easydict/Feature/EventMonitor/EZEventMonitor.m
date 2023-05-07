@@ -428,7 +428,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             @"com.apple.iWork.Keynote", // Keynote
             @"com.apple.iWork.Numbers", // Numbers
             @"com.tencent.xinWeChat", // WeChat
-            @"com.apple.iBooksX", // iBooks
             @"com.apple.freeform", // Freeform
         ],
         
