@@ -1093,5 +1093,67 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 #pragma mark - Get Browser selected text by AppleScript
 
+- (void)getBrowserSelectedText:(NSString *)bundleID completion:(void (^)(NSString *_Nullable selectedText))completion {
+    //    NSLog(@"get Browser selected text: %@", bundleID);
+
+    BOOL isSafari = [bundleID isEqualToString:@"com.apple.Safari"];
+
+    NSArray *chromeKernelBrowsers = @[
+        @"com.google.Chrome",     // Google Chrome
+        @"com.microsoft.edgemac", // Microsoft Edge
+    ];
+    BOOL isChromeKernelBrowser = [chromeKernelBrowsers containsObject:bundleID];
+
+    if (isSafari) {
+        [self getSafariSelectedText:completion];
+    } else if (isChromeKernelBrowser) {
+        [self getChromeSelectedTextByAppleScript:bundleID completion:completion];
+    } else {
+        completion(nil);
+    }
+}
+
+- (BOOL)isKnownBrowser:(NSString *)bundleID {
+    NSArray *knownBrowserBundleIDs = @[
+        @"com.apple.Safari",      // Safari
+        @"com.google.Chrome",     // Google Chrome
+        @"com.microsoft.edgemac", // Microsoft Edge
+    ];
+    return [knownBrowserBundleIDs containsObject:bundleID];
+}
+
+/// Get Safari selected text by AppleScript. Cost ~100ms
+- (void)getSafariSelectedText:(void (^)(NSString *selectedText))completion {
+    NSString *bundleID = @"com.apple.Safari";
+    NSString *script = [NSString stringWithFormat:
+                                     @"tell application id \"%@\"\n"
+                                      "   tell front document\n"
+                                      "       set selection_text to do JavaScript \"window.getSelection().toString();\"\n"
+                                      "   end tell\n"
+                                      "end tell\n",
+                                     bundleID];
+
+    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        NSLog(@"Safari selected text: %@", result);
+        completion(result);
+    }];
+}
+
+/// Get Chrome kernel browser selected text by AppleScript, like Google Chrome, Microsoft Edge, etc. Cost ~100ms
+- (void)getChromeSelectedTextByAppleScript:(NSString *)bundleID completion:(void (^)(NSString *selectedText))completion {
+    NSString *script = [NSString stringWithFormat:
+                                     @"tell application id \"%@\"\n"
+                                      "   tell active tab of front window\n"
+                                      "       set selection_text to execute javascript \"window.getSelection().toString();\"\n"
+                                      "   end tell\n"
+                                      "end tell\n",
+                                     bundleID];
+
+    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        NSLog(@"Chrome Browser selected text: %@", result);
+        NSLog(@"bundleID: %@", bundleID);
+        completion(result);
+    }];
+}
 
 @end
