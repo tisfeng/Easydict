@@ -445,14 +445,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     NSString *bundleID = application.bundleIdentifier;
 
     /**
-     If auxiliary get failed but actually has selected text, error may be kAXErrorNoValue.
+     If Auxiliary get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
 
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
-    BOOL errorNoValue = (error == kAXErrorNoValue);
-    if (errorNoValue) {
+    if (error == kAXErrorNoValue) {
         NSLog(@"unsupport Auxiliary App --> %@", bundleID);
         return YES;
     }
@@ -460,15 +459,17 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
     NSDictionary *allowedAppErrorDict = @{
         /**
-         Some Apps return kAXErrorSuccess but text is empty, so we need to check bundleID.
+         Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
 
          VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+         IDEA: Javadoc rendered view will return empty text
          */
         @(kAXErrorSuccess) : @[
             @"com.microsoft.VSCode", // VSCode
+            @"com.jetbrains.intellij.ce", // IDEA
         ],
 
-        // Some Apps return kAXErrorAttributeUnsupported but actually has selected text.
+        // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4",  // Sublime Text
             @"com.microsoft.Word", // Word
@@ -480,13 +481,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
              FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
              */
-            @"com.apple.iWork.Pages",   // Pages,
+            @"com.apple.iWork.Pages",   // Pages
             @"com.apple.iWork.Keynote", // Keynote
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记
         ],
 
-        // kAXErrorFailure
+        // kAXErrorFailure -25200
         @(kAXErrorFailure) : @[
             @"com.apple.dt.Xcode", // Xcode, error when All messages page
         ],
@@ -1096,14 +1097,13 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(void (^)(NSString *_Nullable selectedText))completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
 
-    BOOL isSafari = [bundleID isEqualToString:@"com.apple.Safari"];
-
     NSArray *chromeKernelBrowsers = @[
         @"com.google.Chrome",     // Google Chrome
         @"com.microsoft.edgemac", // Microsoft Edge
     ];
     BOOL isChromeKernelBrowser = [chromeKernelBrowsers containsObject:bundleID];
 
+    BOOL isSafari = [bundleID isEqualToString:@"com.apple.Safari"];
     if (isSafari) {
         [self getSafariSelectedText:completion];
     } else if (isChromeKernelBrowser) {
