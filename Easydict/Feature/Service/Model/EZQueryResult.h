@@ -10,6 +10,7 @@
 #import "EZQueryModel.h"
 #import "EZEnumTypes.h"
 #import "EZLanguageModel.h"
+#import "EZError.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -124,6 +125,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSError *error;
 @property (nonatomic, copy, nullable) NSString *errorMessage;
+@property (nonatomic, assign) EZErrorType errorType;
+
+@property (nonatomic, assign) BOOL manulShow;
 
 /// If (self.hasTranslatedResult || self.error || self.errorMessage.length), then hasShowingResult = YES, that means will show result view.
 @property (nonatomic, assign, readonly) BOOL hasShowingResult;

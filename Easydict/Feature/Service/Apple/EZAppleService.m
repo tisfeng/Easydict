@@ -167,10 +167,6 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     NSString *appleFromLangCode = [self languageCodeForLanguage:from];
     NSString *appleToLangCode = [self languageCodeForLanguage:to];
-    if (!appleFromLangCode || !appleToLangCode) {
-        completion(self.result, EZQueryUnsupportedLanguageError(self));
-        return;
-    }
     
     NSDictionary *paramters = @{
         @"text" : text,

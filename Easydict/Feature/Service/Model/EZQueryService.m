@@ -178,6 +178,7 @@ userInfo:nil]
     NSString *fromLanguage = [self languageCodeForLanguage:self.queryModel.queryFromLanguage];
     NSString *toLanguage = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     if (!fromLanguage || !toLanguage) {
+        self.result.errorType = EZErrorTypeUnsupportedLanguage;
         completion(self.result, EZQueryUnsupportedLanguageError(self));
         return YES;
     }

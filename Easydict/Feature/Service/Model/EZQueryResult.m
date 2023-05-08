@@ -102,6 +102,7 @@ NSString *getPartName(NSString *part) {
 
 - (instancetype)init {
     if (self = [super init]) {
+        [self reset];
     }
     return self;
 }
@@ -147,7 +148,9 @@ NSString *getPartName(NSString *part) {
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
     self.errorMessage = nil;
+    self.errorType = EZErrorTypeAPI;
     self.isFinished = YES;
+    self.manulShow = NO;
 }
 
 @end

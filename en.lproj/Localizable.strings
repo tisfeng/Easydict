@@ -108,7 +108,7 @@
 "error_api" = "Interface Exception";
 "error_unsupport_language" = "Unsupported Language";
 "error_unknown" = "Unknown Error";
-"translate_failed" = "Translation failed,";
+"query_failed" = "Query failed";
 "ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select language and try again.";
 "query_has_no_result" = "⚠️ No results for query";
 

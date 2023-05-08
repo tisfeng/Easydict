@@ -193,7 +193,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeParam, @"翻译的文本为空", nil));
+        completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
     
@@ -246,7 +246,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)detectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeParam, @"识别语言的文本为空", nil));
+        completion(EZLanguageAuto, EZTranslateError(EZErrorTypeParam, @"识别语言的文本为空", nil));
         return;
     }
 
@@ -269,20 +269,20 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             if ([from isKindOfClass:NSString.class] && from.length) {
                 completion([self languageEnumFromCode:from], nil);
             } else {
-                completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, nil, reqDict));
+                completion(EZLanguageAuto, EZTranslateError(EZErrorTypeUnsupportedLanguage, nil, reqDict));
             }
             return;
         }
-        completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeAPI, @"判断语言失败", reqDict));
+        completion(EZLanguageAuto, EZTranslateError(EZErrorTypeAPI, @"判断语言失败", reqDict));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(EZLanguageAuto, EZTranslateError(EZTranslateErrorTypeNetwork, @"判断语言失败", reqDict));
+        completion(EZLanguageAuto, EZTranslateError(EZErrorTypeNetwork, @"判断语言失败", reqDict));
     }];
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"获取音频的文本为空", nil));
+        completion(nil, EZTranslateError(EZErrorTypeParam, @"获取音频的文本为空", nil));
         return;
     }
 
@@ -315,7 +315,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     if (!image) {
-        completion(nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
+        completion(nil, EZTranslateError(EZErrorTypeParam, @"图片为空", nil));
         return;
     }
 
@@ -385,16 +385,16 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             message = @"百度翻译OCR接口数据解析异常";
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeAPI, message ?: @"识别图片文本失败", reqDict));
+        completion(nil, EZTranslateError(EZErrorTypeAPI, message ?: @"识别图片文本失败", reqDict));
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"识别图片文本失败", reqDict));
+        completion(nil, EZTranslateError(EZErrorTypeNetwork, @"识别图片文本失败", reqDict));
     }];
 }
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!image) {
-        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeParam, @"图片为空", nil));
+        completion(nil, nil, EZTranslateError(EZErrorTypeParam, @"图片为空", nil));
         return;
     }
     mm_weakify(self);
@@ -450,7 +450,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
         NSMutableDictionary *reqDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:url, EZTranslateErrorRequestURLKey, params, EZTranslateErrorRequestParamKey, nil];
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, EZTranslateError(EZTranslateErrorTypeNetwork, nil, reqDict));
+        completion(self.result, EZTranslateError(EZErrorTypeNetwork, nil, reqDict));
     }];
 
     [self.queryModel setStopBlock:^{
@@ -697,7 +697,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     // If error, update cookie.
     [self updateCookieAndToken];
 
-    NSError *error = EZTranslateError(EZTranslateErrorTypeAPI, message ?: nil, reqDict);
+    NSError *error = EZTranslateError(EZErrorTypeAPI, message ?: nil, reqDict);
     MMLogInfo(@"baidu API error: %@", error);
 
     [self webViewTranslate:completion];
@@ -735,11 +735,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             completion(token, gtk, nil);
         } else {
             [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, nil, EZTranslateError(EZTranslateErrorTypeAPI, @"获取 token 失败", reqDict));
+            completion(nil, nil, EZTranslateError(EZErrorTypeAPI, @"获取 token 失败", reqDict));
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, EZTranslateError(EZTranslateErrorTypeNetwork, @"获取 token 失败", reqDict));
+        completion(nil, nil, EZTranslateError(EZErrorTypeNetwork, @"获取 token 失败", reqDict));
     }];
 }
 

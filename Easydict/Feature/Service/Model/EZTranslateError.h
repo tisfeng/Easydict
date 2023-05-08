@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryService.h"
+#import "EZError.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -20,16 +21,16 @@ extern NSString *const EZTranslateErrorRequestParamKey;
 extern NSString *const EZTranslateErrorRequestResponseKey;
 extern NSString *const EZTranslateErrorRequestErrorKey;
 
-typedef NS_ENUM(NSUInteger, EZTranslateErrorType) {
-    /// 参数异常
-    EZTranslateErrorTypeParam,
-    /// 网络异常
-    EZTranslateErrorTypeNetwork,
-    /// 接口异常
-    EZTranslateErrorTypeAPI,
-    /// 不支持的语言
-    EZTranslateErrorTypeUnsupportLanguage,
-};
+//typedef NS_ENUM(NSUInteger, EZErrorType) {
+//    /// 参数异常
+//    EZErrorTypeParam,
+//    /// 网络异常
+//    EZErrorTypeNetwork,
+//    /// 接口异常
+//    EZErrorTypeAPI,
+//    /// 不支持的语言
+//    EZErrorTypeUnsupportLanguage,
+//};
 
 
 /// 错误，不支持的语言
@@ -38,7 +39,7 @@ FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *servi
 
 @interface EZTranslateError : NSObject
 
-+ (NSError *)errorWithType:(EZTranslateErrorType)type
++ (NSError *)errorWithType:(EZErrorType)type
                    message:(NSString *_Nullable)message
                    request:(id _Nullable)request;
 
