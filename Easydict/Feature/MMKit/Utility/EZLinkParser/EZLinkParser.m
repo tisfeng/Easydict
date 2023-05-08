@@ -21,6 +21,8 @@ static NSString *kEasydictSchema = @"easydict://";
 
 /// Open URL with text and completion bool.
 - (BOOL)openURLWithText:(NSString *)text completion:(void (^)(BOOL success))completion {
+    text = [text trim];
+    
     BOOL handled = [self isEasydictSchema:text];
     if (!handled) {
         completion(NO);
