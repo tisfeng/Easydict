@@ -414,10 +414,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
          
          Edge: Get selected text may be a Unicode char "\U0000fffc", empty text but length is 1 😢
          VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
+         IDEA: Javadoc rendered view will return empty text
          */
         @(kAXErrorSuccess) : @[
             @"com.microsoft.edgemac", // Edge
             @"com.microsoft.VSCode",  // VSCode
+            @"com.jetbrains.intellij.ce", // IDEA
         ],
         
         // Some App return kAXErrorAttributeUnsupported but actually has selected text.
