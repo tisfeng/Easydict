@@ -41,7 +41,7 @@
 
 /// Remove extra LineBreaks.
 - (NSString *)removeExtraLineBreaks {
-    NSString *regex = @"[ \\t]*\n[ \\t]*\n[ \\t]*";
+    NSString *regex = @"(\n\\s*){2,}";
     NSString *string = [self stringByReplacingOccurrencesOfString:regex withString:@"\n" options:NSRegularExpressionSearch range:NSMakeRange(0, self.length)];
     return string;
 }
