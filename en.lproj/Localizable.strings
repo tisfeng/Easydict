@@ -52,7 +52,7 @@
 "auto_copy_ocr_text" = "Auto copy OCR text after OCR";
 "auto_copy_selected_text" = "Auto copy selected text";
 
-"quick_link" = "Quick Links:";
+"quick_link" = "Quick Link:";
 "show_google_quick_link" = "Show Google quick link icon";
 "show_eudic_quick_link" = "Show Eudic quick link icon (if installed)";
 
