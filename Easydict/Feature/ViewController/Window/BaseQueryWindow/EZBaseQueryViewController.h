@@ -26,9 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetTableView:(void (^)(void))completion;
 
 - (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
-- (void)startQueryWithImage:(NSImage *)image;
-
-- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType completion:(nullable void (^)(NSString *ocrText))completion;
+- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType;
 
 - (void)retryQuery;
 

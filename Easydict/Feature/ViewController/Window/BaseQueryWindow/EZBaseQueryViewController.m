@@ -308,13 +308,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self startQueryText:text actionType:self.queryModel.actionType];
 }
 
-- (void)startQueryText:(NSString *)text actionType:(EZActionType)queryType {
+- (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
+    NSLog(@"query actionType: %@", actionType);
+    
     if (text.trim.length == 0) {
         return;
     }
 
     self.queryText = text;
-    self.queryModel.actionType = queryType;
+    self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
     __block BOOL handledSuccess;
@@ -353,55 +355,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
-// TODO: need to use startOCRImage to refactor.
-- (void)startQueryWithImage:(NSImage *)image {
-    NSLog(@"startQueryImage");
-
-    self.queryModel.ocrImage = image;
-
-    self.queryView.isTypingChinese = NO;
-    [self.queryView startLoadingAnimation:YES];
-
-    mm_weakify(self);
-    [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
-        mm_strongify(self);
-        [self.queryView startLoadingAnimation:NO];
-        self.queryText = queryModel.queryText;
-        
-        [self updateQueryTextAndParagraphStyle:self.queryText actionType:EZActionTypeOCRQuery];
-        
-        NSLog(@"ocr result: %@", self.queryText);
-
-        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
-
-        if (error) {
-            NSString *errorMsg = [error localizedDescription];
-            self.queryView.alertText = errorMsg;
-            return;
-        }
-
-        if (EZConfiguration.shared.autoCopyOCRText) {
-            [self.queryText copyToPasteboard];
-        }
-
-        [self.queryView highlightAllLinks];
-
-        if ([self.queryText isURL]) {
-            // Append a whitespace to beautify the link.
-            self.queryText = [self.queryText stringByAppendingString:@" "];
-
-            return;
-        }
-
-        BOOL autoSnipTranslate = EZConfiguration.shared.autoQueryOCRText;
-        if (autoSnipTranslate) {
-            [self startQueryText];
-        }
-    }];
-}
-
-- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType completion:(void (^)(NSString * _Nonnull))completion {
-    NSLog(@"startOCRImage");
+- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
+    NSLog(@"start OCR Image");
 
     self.queryModel.ocrImage = image;
     self.queryModel.actionType = actionType;
@@ -413,14 +368,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
         NSString *queryText = queryModel.queryText;
-        
         NSLog(@"ocr result: %@", queryText);
+        
+        NSDictionary *dict = @{
+            @"detectedLanguage" : queryModel.detectedLanguage,
+            @"actionType" : actionType,
+        };
+        [EZLog logEventWithName:@"ocr" parameters:dict];
 
-        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
-
-
+        
         if (actionType == EZActionTypeScreenshotOCR) {
             [queryText copyToPasteboard];
+            return;
         }
         
         
@@ -428,7 +387,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self.queryView startLoadingAnimation:NO];
 
             self.queryText = queryText;
-            [self updateQueryTextAndParagraphStyle:self.queryText actionType:actionType];
+            [self updateQueryTextAndParagraphStyle:queryText actionType:actionType];
             
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
@@ -437,7 +396,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             if (EZConfiguration.shared.autoCopyOCRText) {
-                [self.queryText copyToPasteboard];
+                [queryText copyToPasteboard];
             }
             
             [self.queryView highlightAllLinks];
@@ -548,12 +507,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self startQueryText:self.queryModel.queryText];
 }
 
-- (void)startQueryWithType:(EZActionType)queryType {
+- (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.ocrImage;
-    if (queryType == EZActionTypeOCRQuery && ocrImage) {
-        [self startQueryWithImage:ocrImage];
+    if (actionType == EZActionTypeOCRQuery && ocrImage) {
+        [self startOCRImage:ocrImage actionType:actionType];
     } else {
-        [self startQueryText:self.queryText actionType:queryType];
+        [self startQueryText:self.queryText actionType:actionType];
     }
 }
 

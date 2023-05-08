@@ -654,7 +654,7 @@ static EZWindowManager *_instance;
         // Reset window height first, avoid being affected by previous window height.
         [window.queryViewController resetTableView:^{
             [self showFloatingWindowType:windowType queryText:nil];
-            [window.queryViewController startQueryWithImage:image];
+            [window.queryViewController startOCRImage:image actionType:EZActionTypeOCRQuery];
         }];
     }];
 }
@@ -705,10 +705,7 @@ static EZWindowManager *_instance;
         [image mm_writeToFileAsPNG:_imagePath];
         NSLog(@"已保存图片: %@", _imagePath);
         
-        
-        [self.screenshotOCRController startOCRImage:image actionType:EZActionTypeScreenshotOCR completion:^(NSString *ocrText) {
-            NSLog(@"ocrText: %@", ocrText);
-        }];
+        [self.screenshotOCRController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
 }
 
