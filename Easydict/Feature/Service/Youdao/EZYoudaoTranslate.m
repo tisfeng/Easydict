@@ -946,16 +946,19 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 /// Parse Youdao transalte.
 - (NSArray<NSString *> *)parseTranslateResult:(NSDictionary *)dict {
     NSArray *translateResult = dict[@"translateResult"];
-    NSMutableArray *translatedTexts = [NSMutableArray array];
+    
+    NSMutableString *translatedText = [NSMutableString string];
     for (NSArray *results in translateResult) {
         for (NSDictionary *resultDict in results) {
-            NSString *text = [resultDict[@"tgt"] trim];
-            if (text.length) {
-                [translatedTexts addObject:text.trim];
+            NSString *text = resultDict[@"tgt"];
+            if (text) {
+                [translatedText appendString:text];
             }
         }
     }
-    return translatedTexts;
+    NSArray *paragraphs = [translatedText toParagraphs];
+    
+    return paragraphs;
 }
 
 

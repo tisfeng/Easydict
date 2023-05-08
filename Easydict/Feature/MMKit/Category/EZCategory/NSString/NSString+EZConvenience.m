@@ -46,6 +46,13 @@
     return string;
 }
 
+/// Convert joined string to paragraphs, remove extra line breaks.
+- (NSArray<NSString *> *)toParagraphs {
+    NSString *text = [self removeExtraLineBreaks];
+    NSArray *paragraphs = [text componentsSeparatedByString:@"\n"];
+    return paragraphs;
+}
+
 - (NSString *)encode {
     NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return encodedText;
