@@ -541,7 +541,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         result.error = error;
         
-        if (!result.hasTranslatedResult) {
+        BOOL unsupportLanguageError = (result.errorType == EZErrorTypeUnsupportedLanguage && error);
+        BOOL hideResult = !result.manulShow && !result.hasTranslatedResult && unsupportLanguageError;
+        if (hideResult) {
             result.isShowing = NO;
         }
         
@@ -857,15 +859,20 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (NSArray<EZQueryResult *> *)resetAllResults {
     NSMutableArray *allResults = [NSMutableArray array];
     for (EZQueryService *service in self.services) {
-        EZQueryResult *result = service.result;
-        [result reset];
-        if (!result) {
-            result = [[EZQueryResult alloc] init];
-        }
-        service.result = result;
+        EZQueryResult *result = [self resetServiceResult:service];
         [allResults addObject:result];
     }
     return allResults;
+}
+
+- (EZQueryResult *)resetServiceResult:(EZQueryService *)service {
+    EZQueryResult *result = service.result;
+    [result reset];
+    if (!result) {
+        result = [[EZQueryResult alloc] init];
+    }
+    service.result = result;
+    return result;
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
@@ -1107,19 +1114,27 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         [self startQueryText:word];
     }];
+    
+    [resultView setRetryBlock:^(EZQueryResult *result) {
+        mm_strongify(self);
+        EZQueryResult *newResult = [self resetServiceResult:service];
+        [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
+            [self queryWithModel:self.queryModel service:service autoPlay:NO];
+        }];
+    }];
 
     // !!!: Avoid capture result, the block paramter result is different from former result.
-    [resultView setClickArrowBlock:^(EZQueryResult *result) {
+    [resultView setClickArrowBlock:^(EZQueryResult *newResult) {
         mm_strongify(self);
-        BOOL isShowing = result.isShowing;
+        BOOL isShowing = newResult.isShowing;
         if (!isShowing) {
-            [result.service.audioPlayer stop];
+            [newResult.service.audioPlayer stop];
         }
         
         service.enabledQuery = isShowing;
 
         // If result is not empty, update cell and show.
-        if (isShowing && !result.hasShowingResult) {
+        if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
                 [self detectQueryText:^{
                     [self queryWithModel:self.queryModel service:service autoPlay:NO];
@@ -1128,7 +1143,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 [self queryWithModel:self.queryModel service:service autoPlay:NO];
             }
         } else {
-            [self updateCellWithResult:result reloadData:YES];
+            [self updateCellWithResult:newResult reloadData:YES];
 
             // if hide result view, we need to notify to update reused cell height.
             if (!isShowing) {

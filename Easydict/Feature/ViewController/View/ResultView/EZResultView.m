@@ -13,16 +13,18 @@
 #import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZResize.h"
+#import "NSImage+EZSymbolmage.h"
 
 @interface EZResultView ()
 
 @property (nonatomic, strong) NSView *topBarView;
 @property (nonatomic, strong) NSImageView *typeImageView;
 @property (nonatomic, strong) NSTextField *typeLabel;
-@property (nonatomic, strong) NSImageView *warningImageView;
+@property (nonatomic, strong) NSImageView *errorImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
-@property (nonatomic, strong) NSButton *arrowButton;
-@property (nonatomic, strong) NSButton *stopButton;
+@property (nonatomic, strong) EZHoverButton *arrowButton;
+@property (nonatomic, strong) EZHoverButton *stopButton;
+@property (nonatomic, strong) EZHoverButton *retryButton;
 
 @property (nonatomic, strong) EZWordResultView *wordResultView;
 
@@ -83,14 +85,14 @@
     }];
     self.typeLabel.mas_key = @"typeLabel";
 
-    self.warningImageView = [NSImageView mm_make:^(NSImageView *imageView) {
+    self.errorImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
         imageView.hidden = YES;
         NSImage *image = [NSImage imageNamed:@"disabled"];
         [imageView setImage:image];
     }];
-    self.warningImageView.mas_key = @"warningImageView";
+    self.errorImageView.mas_key = @"errorImageView";
 
     EZLoadingAnimationView *loadingView = [[EZLoadingAnimationView alloc] init];
     [self addSubview:loadingView];
@@ -119,6 +121,10 @@
         BOOL newIsShowing = !oldIsShowing;
         self.result.isShowing = newIsShowing;
         NSLog(@"点击 arrowButton, show: %@", @(newIsShowing));
+        
+        if (newIsShowing) {
+            self.result.manulShow = YES;
+        }
 
         [self updateArrowButton];
 
@@ -135,9 +141,8 @@
     EZHoverButton *stopButton = [[EZHoverButton alloc] init];
     self.stopButton = stopButton;
     [self addSubview:stopButton];
-    NSImage *stopImage = [NSImage imageWithSystemSymbolName:@"stop.circle" accessibilityDescription:nil];
+    NSImage *stopImage =  [NSImage ez_imageWithSymbolName:@"stop.circle"];
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
-    stopImage = [stopImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
     stopButton.toolTip = @"Stop";
@@ -148,6 +153,26 @@
         [self.result.queryModel stopServiceRequest:self.result.serviceType];
         self.result.isFinished = YES;
         button.hidden = YES;
+    }];
+    
+    EZHoverButton *retryButton = [[EZHoverButton alloc] init];
+    self.retryButton = retryButton;
+    [self addSubview:retryButton];
+    NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
+    retryButton.image = retryImage;
+    retryButton.mas_key = @"retryButton";
+    retryButton.toolTip = @"Retry";
+    retryButton.hidden = YES;
+    [retryButton excuteLight:^(NSButton *button) {
+        button.image = [button.image imageWithTintColor:[NSColor imageTintLightColor]];
+    } dark:^(NSButton *button) {
+        button.image = [button.image imageWithTintColor:[NSColor imageTintDarkColor]];
+    }];
+    
+    [retryButton setClickBlock:^(EZButton *button) {
+        if (self.retryBlock) {
+            self.retryBlock(self.result);
+        }
     }];
 
 
@@ -171,8 +196,8 @@
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
 
-    [self.warningImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.typeLabel.mas_right).offset(5);
+    [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.typeLabel.mas_right).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
@@ -195,6 +220,12 @@
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(CGSizeMake(22, 22));
     }];
+    
+    [self.retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.arrowButton.mas_left).offset(-5);
+        make.centerY.equalTo(self.topBarView);
+        make.size.mas_equalTo(CGSizeMake(22, 22));
+    }];
 }
 
 #pragma mark - Setter
@@ -207,19 +238,9 @@
 
     self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
 
-
     [self.wordResultView refreshWithResult:result];
-
-    BOOL hideWarningImage = YES;
-    if (!result.hasTranslatedResult && (result.error || result.errorMessage.length)) {
-        hideWarningImage = NO;
-    }
-    self.warningImageView.hidden = hideWarningImage;
-
-    [self updateArrowButton];
     
-    [self updateStopButton];
-
+    [self updateAllButtonStatus];
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
     [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -261,12 +282,56 @@
 
 - (void)startOrStopLoadingAnimation:(BOOL)isLoading {
     if (isLoading) {
-        self.warningImageView.hidden = YES;
+        self.errorImageView.hidden = YES;
     }
     [self.loadingView startLoading:isLoading];
 }
 
 #pragma mark -
+
+- (void)updateAllButtonStatus {
+    [self updateErrorImage];
+    
+    [self updateRetryButton];
+    [self updateStopButton];
+    [self updateArrowButton];
+}
+
+- (void)updateErrorImage {
+    BOOL hideWarningImage = YES;
+    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorMessage.length)) {
+        hideWarningImage = NO;
+    }
+    self.errorImageView.hidden = hideWarningImage;
+    
+    BOOL unsupportLanguageError = self.result.errorType == EZErrorTypeUnsupportedLanguage;
+    
+    NSString *errorImageName = @"disabled";
+    NSString *toolTip = @"Unsupported Language";
+    if (!unsupportLanguageError) {
+        errorImageName = @"error";
+    }
+    NSImage *errorImage = [NSImage imageNamed:errorImageName];
+
+    self.errorImageView.image = errorImage;
+    self.errorImageView.toolTip = toolTip;
+}
+
+- (void)updateRetryButton {
+    BOOL showRetryButton = self.result.error && (self.result.errorType != EZErrorTypeUnsupportedLanguage);
+    self.retryButton.hidden = !showRetryButton;
+}
+
+- (void)updateStopButton {
+    BOOL showStopButton = NO;
+    
+    // Currently, only support stop OpenAI service.
+    if ([self.result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
+        showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
+    }
+
+    self.stopButton.hidden = !showStopButton;
+}
 
 - (void)updateArrowButton {
     NSImage *arrowImage = [NSImage imageNamed:@"arrow-left"];
@@ -283,16 +348,6 @@
     }];
 }
 
-- (void)updateStopButton {
-    BOOL showStopButton = NO;
-    
-    // Currently, only support stop OpenAI service.
-    if ([self.result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
-        showStopButton = self.result.hasTranslatedResult && !self.result.isFinished;
-    }
-
-    self.stopButton.hidden = !showStopButton;
-}
 
 #pragma mark - Animation
 

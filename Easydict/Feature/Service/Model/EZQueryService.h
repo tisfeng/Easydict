@@ -13,6 +13,7 @@
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
+#import "EZError.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

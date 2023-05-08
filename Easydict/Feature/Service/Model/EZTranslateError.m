@@ -23,28 +23,28 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     
     NSString *showUnsupportLanguage = [EZLanguageManager showingLanguageName:unsupportLanguage];
     
-    NSError *error = EZTranslateError(EZTranslateErrorTypeUnsupportLanguage, showUnsupportLanguage, nil);
+    NSError *error = EZTranslateError(EZErrorTypeUnsupportedLanguage, showUnsupportLanguage, nil);
     return error;
 }
 
 
 @implementation EZTranslateError
 
-+ (NSError *)errorWithType:(EZTranslateErrorType)type
++ (NSError *)errorWithType:(EZErrorType)type
                    message:(NSString *_Nullable)message
                    request:(id _Nullable)request {
     NSString *errorString = nil;
     switch (type) {
-        case EZTranslateErrorTypeParam:
+        case EZErrorTypeParam:
             errorString = NSLocalizedString(@"error_parameter", nil);
             break;
-        case EZTranslateErrorTypeNetwork:
+        case EZErrorTypeNetwork:
             errorString = NSLocalizedString(@"error_network", nil);
             break;
-        case EZTranslateErrorTypeAPI:
+        case EZErrorTypeAPI:
             errorString = NSLocalizedString(@"error_api", nil);
             break;
-        case EZTranslateErrorTypeUnsupportLanguage:
+        case EZErrorTypeUnsupportedLanguage:
             errorString = NSLocalizedString(@"error_unsupport_language", nil);
             break;
         default:
@@ -52,7 +52,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
             break;
     }
 
-    errorString = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"translate_failed", nil), errorString];
+    errorString = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"query_failed", nil), errorString];
     if (message.length) {
         errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
     }
@@ -67,14 +67,12 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 
 + (NSError *)timeoutError {
     NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
-    NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:@{NSLocalizedDescriptionKey : errorString}];
-    return error;
+    return [self errorWithString:errorString];
 }
 
 + (NSError *)errorWithString:(NSString *)errorString {
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
-    
     NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:userInfo];
     return error;
 }
