@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
         printf("easydict query: %s\n", argv[1]);
         
         EZBaseQueryViewController *viewController = EZWindowManager.shared.fixedWindow.queryViewController;
-        [viewController startQueryText:queryText queyType:EZQueryTypeInput];
+        [viewController startQueryText:queryText actionType:EZActionTypeInputQuery];
     }
         
     return NSApplicationMain(argc, argv);

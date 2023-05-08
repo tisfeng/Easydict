@@ -65,9 +65,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @implementation EZBaseQueryViewController
 
+/// !!!: Must init with a type, update NSNotification need window type.
+- (instancetype)init {
+    return [self initWithWindowType:EZWindowTypeFixed];
+}
+
 - (instancetype)initWithWindowType:(EZWindowType)type {
     if (self = [super init]) {
         self.windowType = type;
+        [self setupData];
     }
     return self;
 }
@@ -90,8 +96,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self setup];
-    [self updateWindowViewHeight];
+    [self setupUI];
 }
 
 - (void)viewWillAppear {
@@ -100,28 +105,31 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [EZLog logWindowAppear:self.windowType];
 }
 
-
-- (void)setup {
+- (void)setupData {
     self.queryModel = [[EZQueryModel alloc] init];
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
     self.detectManager = [EZDetectManager managerWithModel:self.queryModel];
-
+    
     [self setupServices];
     [self resetQueryAndResults];
+}
 
+- (void)setupUI {
     [self tableView];
+    
+    [self updateWindowViewHeight];
     
     mm_weakify(self);
     [self setResizeWindowBlock:^{
         mm_strongify(self);
-
+        
         // Avoid recycling call, resize window --> update window height --> resize window
         if (self.lockResizeWindow) {
             //            NSLog(@"lockResizeWindow");
             return;
         }
-
+        
         [self reloadTableViewDataWithLock:NO completion:^{
             // Update query view height manually, and update cell height.
             CGFloat queryViewHeight = [self.queryView heightOfQueryView];
@@ -130,19 +138,25 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 NSIndexSet *firstIndexSet = [NSIndexSet indexSetWithIndex:0];
                 [self.tableView noteHeightOfRowsWithIndexesChanged:firstIndexSet];
             }
-
+            
             [self updateWindowViewHeight];
         }];
     }];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleServiceUpdate:) name:EZServiceHasUpdatedNotification object:nil];
-
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserver:self
-               selector:@selector(boundsDidChangeNotification:)
-                   name:NSViewBoundsDidChangeNotification
-                 object:[self.scrollView contentView]];
+    
+    
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    
+    [defaultCenter addObserver:self
+                      selector:@selector(handleServiceUpdate:)
+                          name:EZServiceHasUpdatedNotification
+                        object:nil];
+    
+    [defaultCenter addObserver:self
+                      selector:@selector(boundsDidChangeNotification:)
+                          name:NSViewBoundsDidChangeNotification
+                        object:[self.scrollView contentView]];
 }
+
 
 - (void)setupServices {
     NSMutableArray *serviceTypes = [NSMutableArray array];
@@ -166,6 +180,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)dealloc {
     NSLog(@"dealloc: %@", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:nil];
 }
 
 #pragma mark - NSNotificationCenter
@@ -290,16 +305,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Before starting query text, close all result view.
 - (void)startQueryText:(NSString *)text {
-    [self startQueryText:text queyType:self.queryModel.queryType];
+    [self startQueryText:text actionType:self.queryModel.actionType];
 }
 
-- (void)startQueryText:(NSString *)text queyType:(EZQueryType)queryType {
+- (void)startQueryText:(NSString *)text actionType:(EZActionType)queryType {
     if (text.trim.length == 0) {
         return;
     }
 
     self.queryText = text;
-    self.queryModel.queryType = queryType;
+    self.queryModel.actionType = queryType;
     self.queryView.isTypingChinese = NO;
 
     __block BOOL handledSuccess;
@@ -338,6 +353,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
+// TODO: need to use startOCRImage to refactor.
 - (void)startQueryWithImage:(NSImage *)image {
     NSLog(@"startQueryImage");
 
@@ -352,7 +368,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self.queryView startLoadingAnimation:NO];
         self.queryText = queryModel.queryText;
         
-        [self updateQueryTextAndParagraphStyle:self.queryText queryType:EZQueryTypeOCR];
+        [self updateQueryTextAndParagraphStyle:self.queryText actionType:EZActionTypeOCRQuery];
         
         NSLog(@"ocr result: %@", self.queryText);
 
@@ -384,9 +400,66 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
+- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType completion:(void (^)(NSString * _Nonnull))completion {
+    NSLog(@"startOCRImage");
+
+    self.queryModel.ocrImage = image;
+    self.queryModel.actionType = actionType;
+
+    self.queryView.isTypingChinese = NO;
+    [self.queryView startLoadingAnimation:YES];
+
+    mm_weakify(self);
+    [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+        mm_strongify(self);
+        NSString *queryText = queryModel.queryText;
+        
+        NSLog(@"ocr result: %@", queryText);
+
+        [EZLog logEventWithName:@"ocr" parameters:@{@"detectedLanguage" : queryModel.detectedLanguage}];
+
+
+        if (actionType == EZActionTypeScreenshotOCR) {
+            [queryText copyToPasteboard];
+        }
+        
+        
+        if (actionType == EZActionTypeOCRQuery) {
+            [self.queryView startLoadingAnimation:NO];
+
+            self.queryText = queryText;
+            [self updateQueryTextAndParagraphStyle:self.queryText actionType:actionType];
+            
+            if (error) {
+                NSString *errorMsg = [error localizedDescription];
+                self.queryView.alertText = errorMsg;
+                return;
+            }
+            
+            if (EZConfiguration.shared.autoCopyOCRText) {
+                [self.queryText copyToPasteboard];
+            }
+            
+            [self.queryView highlightAllLinks];
+
+            if ([self.queryText isURL]) {
+                // Append a whitespace to beautify the link.
+                self.queryText = [self.queryText stringByAppendingString:@" "];
+
+                return;
+            }
+
+            BOOL autoSnipTranslate = EZConfiguration.shared.autoQueryOCRText;
+            if (autoSnipTranslate) {
+                [self startQueryText];
+            }
+        }
+    }];
+}
+
 - (void)retryQuery {
     NSLog(@"retry query");
-    [self startQueryWithType:self.queryModel.queryType];
+    [self startQueryWithType:self.queryModel.actionType];
 }
 
 - (void)focusInputTextView {
@@ -455,9 +528,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Update query text, auto adjust ParagraphStyle, and scroll to end of textView.
-- (void)updateQueryTextAndParagraphStyle:(NSString *)text queryType:(EZQueryType)queryType {
+- (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)queryType {
     [self.queryView.textView updateTextAndParagraphStyle:text];
-    self.queryModel.queryType = queryType;
+    self.queryModel.actionType = queryType;
 }
 
 - (void)scrollToEndOfTextView {
@@ -467,7 +540,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Query Methods
 
 - (void)startQueryText {
-    [self startQueryText:self.queryText queyType:self.queryModel.queryType];
+    [self startQueryText:self.queryText actionType:self.queryModel.actionType];
 }
 
 /// Close all result view, then query.
@@ -475,12 +548,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self startQueryText:self.queryModel.queryText];
 }
 
-- (void)startQueryWithType:(EZQueryType)queryType {
+- (void)startQueryWithType:(EZActionType)queryType {
     NSImage *ocrImage = self.queryModel.ocrImage;
-    if (queryType == EZQueryTypeOCR && ocrImage) {
+    if (queryType == EZActionTypeOCRQuery && ocrImage) {
         [self startQueryWithImage:ocrImage];
     } else {
-        [self startQueryText:self.queryText queyType:queryType];
+        [self startQueryText:self.queryText actionType:queryType];
     }
 }
 
@@ -853,7 +926,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)resetQueryAndResults {
     [self resetAllResults];
 
-    self.queryText = @"";
+    if (self.queryText) {
+        self.queryText = @"";
+    }
 }
 
 - (NSArray<EZQueryResult *> *)resetAllResults {

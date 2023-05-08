@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)selectTextTranslate;
 - (void)snipTranslate;
 - (void)showMiniFloatingWindow;
+- (void)screenshotOCR;
 
 // TODO: need to clean close window methods.
 - (void)closeWindow;

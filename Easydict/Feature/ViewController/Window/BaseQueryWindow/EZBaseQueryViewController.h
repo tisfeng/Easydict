@@ -25,8 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)resetTableView:(void (^)(void))completion;
 
-- (void)startQueryText:(nullable NSString *)text queyType:(EZQueryType)queryType;
+- (void)startQueryText:(nullable NSString *)text actionType:(EZActionType)actionType;
 - (void)startQueryWithImage:(NSImage *)image;
+
+- (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType completion:(nullable void (^)(NSString *ocrText))completion;
 
 - (void)retryQuery;
 
@@ -43,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)detectQueryText:(nullable void (^)(void))completion;
 
 /// Update query text, auto adjust ParagraphStyle.
-- (void)updateQueryTextAndParagraphStyle:(NSString *)text queryType:(EZQueryType)queryType;
+- (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)actionType;
 
 - (void)scrollToEndOfTextView;
 

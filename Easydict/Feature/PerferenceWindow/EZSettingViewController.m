@@ -18,11 +18,13 @@
 @property (nonatomic, strong) NSTextField *inputLabel;
 @property (nonatomic, strong) NSTextField *snipLabel;
 @property (nonatomic, strong) NSTextField *showMiniLabel;
+@property (nonatomic, strong) NSTextField *screenshotOCRLabel;
 
 @property (nonatomic, strong) MASShortcutView *selectionShortcutView;
 @property (nonatomic, strong) MASShortcutView *snipShortcutView;
 @property (nonatomic, strong) MASShortcutView *inputShortcutView;
 @property (nonatomic, strong) MASShortcutView *showMiniShortcutView;
+@property (nonatomic, strong) MASShortcutView *screenshotOCRShortcutView;
 
 @property (nonatomic, strong) NSView *separatorView;
 
@@ -126,10 +128,20 @@
         self.leftmostView = self.showMiniLabel;
     }
     
+    NSTextField *screenshotOCRLabel = [NSTextField labelWithString:NSLocalizedString(@"silent_screenshot_ocr", nil)];
+    screenshotOCRLabel.font = font;
+    [self.contentView addSubview:screenshotOCRLabel];
+    self.screenshotOCRLabel = screenshotOCRLabel;
+    self.screenshotOCRShortcutView = [[MASShortcutView alloc] init];
+    [self.contentView addSubview:self.screenshotOCRShortcutView];
+    
+    
     [self.inputShortcutView setAssociatedUserDefaultsKey:EZInputShortcutKey];
     [self.snipShortcutView setAssociatedUserDefaultsKey:EZSnipShortcutKey];
     [self.selectionShortcutView setAssociatedUserDefaultsKey:EZSelectionShortcutKey];
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
+    [self.screenshotOCRShortcutView setAssociatedUserDefaultsKey:EZScreenshotOCRShortcutKey];
+    
     
     NSColor *separatorLightColor = [NSColor mm_colorWithHexString:@"#D9DADA"];
     NSColor *separatorDarkColor = [NSColor mm_colorWithHexString:@"#3C3C3C"];
@@ -375,9 +387,20 @@
         make.height.equalTo(self.selectionShortcutView);
     }];
     
+    [self.screenshotOCRLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectLabel);
+        make.top.equalTo(self.showMiniShortcutView.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.screenshotOCRShortcutView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.screenshotOCRLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.screenshotOCRLabel);
+        make.height.equalTo(self.selectionShortcutView);
+    }];
+    
+    
     [self.separatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.inset(separatorMargin);
-        make.top.equalTo(self.showMiniLabel.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.screenshotOCRLabel.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.mas_equalTo(1);
     }];
     

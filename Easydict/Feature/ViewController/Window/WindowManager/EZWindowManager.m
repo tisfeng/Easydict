@@ -29,9 +29,11 @@
 /// the screen where the mouse is located
 @property (nonatomic, strong) NSScreen *screen;
 
-@property (nonatomic, copy) EZQueryType queryType;
+@property (nonatomic, copy) EZActionType actionType;
 
 @property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
+
+@property (nonatomic, strong) EZBaseQueryViewController *screenshotOCRController;
 
 @end
 
@@ -88,7 +90,7 @@ static EZWindowManager *_instance;
         //        }
         
         self.selectedText = selectedText ?: @"";
-        self.queryType = self.eventMonitor.queryType;
+        self.actionType = self.eventMonitor.actionType;
         
         // !!!: Record current selected start and end point, eventMonitor's startPoint will change every valid event.
         self.startPoint = self.eventMonitor.startPoint;
@@ -183,7 +185,7 @@ static EZWindowManager *_instance;
 
 - (void)popButtonWindowClicked {
     [self->_popButtonWindow close];
-    self.queryType = EZQueryTypeAutoSelect;
+    self.actionType = EZActionTypeAutoSelectQuery;
     [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
 }
 
@@ -227,6 +229,14 @@ static EZWindowManager *_instance;
 - (EZWindowType)floatingWindowType {
     return [self.floatingWindowTypeArray.firstObject integerValue];
 }
+
+- (EZBaseQueryViewController *)screenshotOCRController {
+    if (!_screenshotOCRController) {
+        _screenshotOCRController = [[EZBaseQueryViewController alloc] init];
+    }
+    return _screenshotOCRController;
+}
+
 
 #pragma mark - Others
 
@@ -301,7 +311,7 @@ static EZWindowManager *_instance;
     
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     [queryViewController resetTableView:^{
-        [queryViewController updateQueryTextAndParagraphStyle:text queryType:self.queryType];
+        [queryViewController updateQueryTextAndParagraphStyle:text actionType:self.actionType];
         [queryViewController detectQueryText:nil];
         
         // !!!: window height has changed, so we need to update location again.
@@ -309,7 +319,7 @@ static EZWindowManager *_instance;
         [self showFloatingWindow:window atPoint:location];
         
         if ([EZConfiguration.shared autoQuerySelectedText]) {
-            [queryViewController startQueryText:text queyType:self.queryType];
+            [queryViewController startQueryText:text actionType:self.actionType];
         }
         
         if ([EZConfiguration.shared autoCopySelectedText]) {
@@ -603,7 +613,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
         // If text is nil, currently, we choose to clear input.
         self.selectedText = [text trim] ?: @"";
-        self.queryType = EZQueryTypeShortcut;
+        self.actionType = EZActionTypeShortcutQuery;
         [self showFloatingWindowType:EZWindowTypeFixed queryText:self.selectedText];
     }];
 }
@@ -660,16 +670,47 @@ static EZWindowManager *_instance;
         queryText = @"";
     }
     
-    self.queryType = EZQueryTypeInput;
+    self.actionType = EZActionTypeInputQuery;
     [self showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
 }
 
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
-    self.queryType = EZQueryTypeInput;
+    self.actionType = EZActionTypeInputQuery;
     [self showFloatingWindowType:EZWindowTypeMini queryText:nil];
 }
 
+- (void)screenshotOCR {
+    [self saveFrontmostApplication];
+    
+    if (Snip.shared.isSnapshotting) {
+        return;
+    }
+    
+    [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
+        if (!image) {
+            NSLog(@"not get screenshot");
+            return;
+        }
+        
+        NSLog(@"get screenshot: %@", image);
+        
+        // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
+        static NSString *_imagePath = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
+        });
+        [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
+        [image mm_writeToFileAsPNG:_imagePath];
+        NSLog(@"已保存图片: %@", _imagePath);
+        
+        
+        [self.screenshotOCRController startOCRImage:image actionType:EZActionTypeScreenshotOCR completion:^(NSString *ocrText) {
+            NSLog(@"ocrText: %@", ocrText);
+        }];
+    }];
+}
 
 /// Close floating window, and record last floating window type.
 - (void)closeFloatingWindow {
@@ -810,7 +851,7 @@ static EZWindowManager *_instance;
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
         @"text" : text,
-        @"queryType" : self.queryType,
+        @"queryType" : self.actionType,
         @"selectTextType" : self.eventMonitor.selectTextType,
         @"textLength" : textLength,
         @"appName" : appName,

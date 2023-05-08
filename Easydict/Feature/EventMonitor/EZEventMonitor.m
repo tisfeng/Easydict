@@ -238,7 +238,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }
 
     self.movedY = 0;
-    self.queryType = EZQueryTypeAutoSelect;
+    self.actionType = EZActionTypeAutoSelectQuery;
     [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
         [self handleSelectedText:text];
     }];

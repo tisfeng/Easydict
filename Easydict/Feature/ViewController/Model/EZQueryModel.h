@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *queryText;
 
-@property (nonatomic, copy) EZQueryType queryType;
+@property (nonatomic, copy) EZActionType actionType;
 @property (nonatomic, copy) EZSelectTextType selectTextType;
 
 @property (nonatomic, copy) EZLanguage userSourceLanguage;
