@@ -82,7 +82,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     _recordEvents = [NSMutableArray array];
     _commandKeyEvents = [NSMutableArray array];
 
-    self.queryType = EZQueryTypeAutoSelect;
+    self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAuxiliary;
 }
 
