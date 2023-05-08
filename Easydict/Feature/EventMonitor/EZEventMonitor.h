@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
 
-@property (nonatomic, copy) EZQueryType queryType;
+@property (nonatomic, copy) EZActionType actionType;
 @property (nonatomic, copy) EZSelectTextType selectTextType;
 
 @property (nonatomic, assign) NSEventMask mask;

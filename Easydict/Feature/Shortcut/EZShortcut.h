@@ -15,6 +15,7 @@ static NSString *const EZSelectionShortcutKey = @"EZSelectionShortcutKey";
 static NSString *const EZSnipShortcutKey = @"EZSnipShortcutKey";
 static NSString *const EZInputShortcutKey = @"EZInputShortcutKey";
 static NSString *const EZShowMiniShortcutKey = @"EZShowMiniShortcutKey";
+static NSString *const EZScreenshotOCRShortcutKey = @"EZScreenshotOCRShortcutKey";
 
 @interface EZShortcut : NSObject
 

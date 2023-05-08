@@ -25,11 +25,11 @@ NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
 
-NSString *const EZQueryTypeAutoSelect = @"auto_select_query";
-NSString *const EZQueryTypeShortcut = @"shortcut_query";
-NSString *const EZQueryTypeInput = @"input_query";
-NSString *const EZQueryTypeOCR = @"ocr_query";
-
+NSString *const EZActionTypeAutoSelectQuery = @"auto_select_query";
+NSString *const EZActionTypeShortcutQuery = @"shortcut_query";
+NSString *const EZActionTypeInputQuery = @"input_query";
+NSString *const EZActionTypeOCRQuery = @"ocr_query";
+NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 
 NSString *const EZSelectTextTypeAuxiliary = @"auxiliary_select_text";
 NSString *const EZSelectTextTypeSimulateKey = @"simulate_key_select_text";

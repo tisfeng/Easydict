@@ -12,8 +12,10 @@
 
 "input_translate" = "输入翻译:";
 "snip_translate" = "截图翻译:";
+"snip_ocr" = "截图翻译:";
 "select_translate" = "划词翻译:";
 "show_mini_window" = "显示迷你窗口:";
+"silent_screenshot_ocr" = "静默截图 OCR:";
 
 "show_query_icon" = "显示查询图标:";
 "auto_show_icon" = "划词后自动显示查询图标（实验功能）";

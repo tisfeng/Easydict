@@ -443,7 +443,7 @@
 //    NSString *text = [self copiedText];
     //    NSLog(@"textDidChange: %@", text);
     
-    self.queryModel.queryType = EZQueryTypeInput;
+    self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
     
     // textView.string has been changed, we don't need to update it again.

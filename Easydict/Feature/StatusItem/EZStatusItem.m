@@ -18,10 +18,12 @@
 
 @property (weak) IBOutlet NSMenu *menu;
 @property (weak) IBOutlet NSMenuItem *bobItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *selectionItem;
-@property (nonatomic, weak) IBOutlet NSMenuItem *snipItem;
+@property (weak) IBOutlet NSMenuItem *selectionItem;
+@property (weak) IBOutlet NSMenuItem *snipItem;
 @property (weak) IBOutlet NSMenuItem *inputItem;
 @property (weak) IBOutlet NSMenuItem *showMiniItem;
+
+@property (weak) IBOutlet NSMenuItem *screenshotOCRItem;
 
 @end
 
@@ -119,25 +121,29 @@ static EZStatusItem *_instance;
 #pragma mark - Status bar action
 
 - (IBAction)translateAction:(NSMenuItem *)sender {
-    NSLog(@"划词翻译");
+    NSLog(@"select text translate");
     [EZWindowManager.shared selectTextTranslate];
 }
 
 - (IBAction)snipAction:(NSMenuItem *)sender {
-    NSLog(@"截图翻译");
+    NSLog(@"screenshot translate");
     [EZWindowManager.shared snipTranslate];
 }
 
 - (IBAction)inputTranslate:(NSMenuItem *)sender {
-    NSLog(@"输入翻译");
+    NSLog(@"input translate");
     [EZWindowManager.shared inputTranslate];
 }
 
 - (IBAction)showMiniFloatingWindow:(NSMenuItem *)sender {
-    NSLog(@"显示迷你窗口");
+    NSLog(@"show mini windown");
     [EZWindowManager.shared showMiniFloatingWindow];
 }
 
+- (IBAction)screenshotOCRAction:(NSMenuItem *)sender {
+    NSLog(@"screenshot OCR");
+    [EZWindowManager.shared screenshotOCR];
+}
 
 - (IBAction)preferenceAction:(NSMenuItem *)sender {
     NSLog(@"偏好设置");
@@ -242,6 +248,7 @@ static EZStatusItem *_instance;
     configItemShortcut(self.snipItem, EZSnipShortcutKey);
     configItemShortcut(self.inputItem, EZInputShortcutKey);
     configItemShortcut(self.showMiniItem, EZShowMiniShortcutKey);
+    configItemShortcut(self.screenshotOCRItem, EZScreenshotOCRShortcutKey);
 }
 
 - (void)menuDidClose:(NSMenu *)menu {

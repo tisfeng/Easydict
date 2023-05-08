@@ -14,6 +14,7 @@
 "snip_translate" = "Screenshot Translation:";
 "select_translate" = "Selecte Text Translation:";
 "show_mini_window" = "Show Mini Window:";
+"silent_screenshot_ocr" = "Slient Screenshot OCR:";
 
 "show_query_icon" = "Show Query Icon:";
 "auto_show_icon" = "Auto show query icon after selecting text (experimental)";

@@ -26,12 +26,16 @@
     MASShortcut *showMiniShortcut = [MASShortcut shortcutWithKeyCode:kVK_ANSI_F modifierFlags:NSEventModifierFlagOption];
     NSData *showMiniShortcutData = [NSKeyedArchiver archivedDataWithRootObject:showMiniShortcut requiringSecureCoding:NO error:nil];
     
+    MASShortcut *screenshotOCRShortcut = [MASShortcut shortcutWithKeyCode:kVK_ANSI_S modifierFlags:NSEventModifierFlagShift | NSEventModifierFlagOption];
+    NSData *screenshotOCRShortcutData = [NSKeyedArchiver archivedDataWithRootObject:screenshotOCRShortcut requiringSecureCoding:NO error:nil];
+    
     // Register default values to be used for the first app start.
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
         EZInputShortcutKey : inputShortcutData,
         EZSelectionShortcutKey : selectionShortcutData,
         EZSnipShortcutKey : snipShortcutData,
         EZShowMiniShortcutKey : showMiniShortcutData,
+        EZScreenshotOCRShortcutKey: screenshotOCRShortcutData,
     }];
     
     EZWindowManager *windowManager = [EZWindowManager shared];
@@ -58,6 +62,10 @@
     
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
         [windowManager showMiniFloatingWindow];
+    }];
+    
+    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
+        [windowManager screenshotOCR];
     }];
     
     [[MASShortcutValidator sharedValidator] setAllowAnyShortcutWithOptionModifier:YES];

@@ -24,7 +24,7 @@
         self.userSourceLanguage = EZConfiguration.shared.from;
         self.userTargetLanguage = EZConfiguration.shared.to;
         self.detectedLanguage = EZLanguageAuto;
-        self.queryType = EZQueryTypeInput;
+        self.actionType = EZActionTypeInputQuery;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
         self.needDetectLanguage = YES;
         self.specifiedTextLanguageDict = [NSMutableDictionary dictionary];
@@ -34,7 +34,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     EZQueryModel *model = [[EZQueryModel allocWithZone:zone] init];
-    model.queryType = self.queryType;
+    model.actionType = self.actionType;
     model.queryText = self.queryText;
     model.userSourceLanguage = self.userSourceLanguage;
     model.userTargetLanguage = self.userTargetLanguage;
@@ -58,10 +58,10 @@
     _queryText = [queryText copy];
 }
 
-- (void)setQueryType:(EZQueryType)queryType {
-    _queryType = queryType;
+- (void)setActionType:(EZActionType)actionType {
+    _actionType = actionType;
     
-    if (queryType != EZQueryTypeOCR) {
+    if (actionType != EZActionTypeOCRQuery && actionType != EZActionTypeScreenshotOCR) {
         _ocrImage = nil;
     }
 }
@@ -70,7 +70,7 @@
     _ocrImage = ocrImage;
     
     if (ocrImage) {
-        _queryType = EZQueryTypeOCR;
+        _actionType = EZActionTypeOCRQuery;
     }
 }
 

@@ -26,7 +26,7 @@
     NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
         @"serviceType" : service.serviceType,
-        @"queryType" : model.queryType,
+        @"queryType" : model.actionType,
         @"from" : model.queryFromLanguage,
         @"to" : model.queryTargetLanguage,
         @"textLength" : textLengthRange,
@@ -39,7 +39,7 @@
     NSString *name = @"query";
     NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
-        @"queryType" : model.queryType,
+        @"queryType" : model.actionType,
         @"fromLanguage" : model.queryFromLanguage,
         @"toLanguage" : model.queryTargetLanguage,
         @"textLength" : textLengthRange,
