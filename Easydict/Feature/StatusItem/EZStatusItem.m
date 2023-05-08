@@ -56,6 +56,7 @@ static EZStatusItem *_instance;
     
     NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [item setMenu:self.menu];
+    self.menu.minimumWidth = 185;
     self.statusItem = item;
     
     NSStatusBarButton *button = item.button;
