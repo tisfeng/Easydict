@@ -10,6 +10,7 @@
 #import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZTextWordUtils.h"
+#import "NSArray+EZChineseText.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
@@ -700,15 +701,17 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 if (sentences && [sentences isKindOfClass:NSArray.class]) {
                     NSMutableArray *translationArray = [NSMutableArray array];
                     
+                    // !!!: This Google API has its own paragraph, \n\n , we need to join and convert to text array.
                     for (NSDictionary *sentenceDict in sentences) {
                         NSString *trans = sentenceDict[@"trans"];
                         if (trans && [trans isKindOfClass:NSString.class]) {
-                            [translationArray addObject:trans.trim];
+                            [translationArray addObject:trans];
                         }
                     }
-                    result.normalResults = translationArray;
-                    
+
                     NSString *transaltedText = [translationArray componentsJoinedByString:@""];
+                    result.normalResults = [transaltedText toParagraphs];
+                    
                     NSString *signTo = [[self.signFunction callWithArguments:@[ transaltedText ]] toString];
                     result.toSpeakURL = [self getAudioURLWithText:transaltedText
                                                          language:[self languageCodeForLanguage:googleTo]
