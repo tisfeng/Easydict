@@ -33,8 +33,8 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
 - (instancetype)initWithWindowNibName:(NSNibName)windowNibName {
     self = [super initWithWindowNibName:windowNibName];
     if (self) {
-        _leftOffset = 20;
-        _topOffset = 20;
+        _leftOffset = 50;
+        _topOffset = 60;
         _rightOffset = 20;
         _bottomOffset = 20;
         
@@ -44,6 +44,7 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
         _toastPostion = CTPositionTop | CTPositionRight;
         _backgroundColor = [NSColor clearColor];
         _imageMarginLeft = 10;
+        _labelMargin = 30;
         
         _conerRadius = 10;
         _autoDismiss = YES;
@@ -144,7 +145,7 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
     [self.window setContentSize:NSMakeSize(focusedScreen.visibleFrame.size.width, focusedScreen.frame.size.height)];
     [self.window setFrameOrigin:NSMakePoint(focusedScreen.visibleFrame.origin.x, focusedScreen.visibleFrame.origin.y)];
     [self.messageLabel setFont:self.textFont];
-    int labelMargin = 30;
+    CGFloat labelMargin = self.labelMargin;
     if (self.hiddenIcon)
         self.iconImageView.hidden = YES;
     else {
@@ -154,8 +155,14 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
         else
             self.iconImageCell.image = self.iconImage;
     }
+    
     [self.containerView needsLayout];
+    
     NSInteger iconWidth = self.iconImageView.frame.size.width;
+    if (self.hiddenIcon) {
+        iconWidth = 0;
+    }
+    
     NSInteger labelMaxWidth = self.maxWidth - labelMargin * 2 - (self.hiddenIcon ? 0 : iconWidth + _imageMarginLeft);
     NSInteger labelWidth = [CTCommon calculateFont:message withFont:self.messageLabel.font].width;
     int lineCount = [CTCommon lineCountForText:message font:self.messageLabel.font withinWidth:labelMaxWidth];

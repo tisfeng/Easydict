@@ -42,22 +42,24 @@ typedef NS_OPTIONS(NSUInteger, CTAnimater) {
 
 @property (weak) IBOutlet NSTextFieldCell *messageLabel;
 @property (weak) IBOutlet NSImageCell *iconImageCell;
+
 @property (nonatomic) NSInteger maxWidth; // 826
-@property (nonatomic) NSInteger minWidth; // 320
-@property (nonatomic) int minHeight; // 80
-@property (nonatomic) NSInteger leftOffset;
-@property (nonatomic) NSInteger topOffset;
-@property (nonatomic) NSInteger rightOffset;
-@property (nonatomic) NSInteger bottomOffset;
-@property (nonatomic) NSInteger conerRadius;
+@property (nonatomic) NSInteger minWidth; // 50
+@property (nonatomic) CGFloat minHeight; // 60
+@property (nonatomic) NSInteger leftOffset; // 50
+@property (nonatomic) NSInteger topOffset; // 60
+@property (nonatomic) NSInteger rightOffset; // 20
+@property (nonatomic) NSInteger bottomOffset; // 20
+@property (nonatomic) NSInteger conerRadius; // 10
 @property (nonatomic) BOOL autoDismiss; // YES
-@property (nonatomic) NSUInteger autoDismissTimeInSecond; // 5
+@property (nonatomic) NSUInteger autoDismissTimeInSecond; // 2.0
 @property (nonatomic) CTPosition toastPostion; // CTPositionTop | CTPositionRight
 @property (nonatomic) CTAnimater animater; // CTAnimaterFade
-@property (nonatomic) float animaterTimeSecond; // 0.5
-@property (nonatomic) BOOL hiddenIcon;
-@property (nonatomic) int imageMarginLeft;
-@property (nonatomic) NSImage *iconImage;
+@property (nonatomic) CGFloat animaterTimeSecond; // 0.5
+@property (nonatomic) BOOL hiddenIcon; // NO
+@property (nonatomic) CGFloat imageMarginLeft; // 10
+@property (nonatomic) CGFloat labelMargin; // 30
+@property (nonatomic) NSImage *iconImage; // App icon
 
 @property (nonatomic, strong) NSColor *backgroundColor;
 @property (nonatomic, strong) NSColor *toastBackgroundColor;
