@@ -31,8 +31,6 @@
 
 @property (nonatomic, copy) EZActionType actionType;
 
-@property (nonatomic, strong) NSMutableArray *floatingWindowTypeArray;
-
 @property (nonatomic, strong) EZBaseQueryViewController *screenshotOCRController;
 
 @end
@@ -71,9 +69,9 @@ static EZWindowManager *_instance;
 - (void)setup {
     self.offsetPoint = CGPointMake(18, -12);
     self.screen = NSScreen.mainScreen;
+    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
-    self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
     
     NSLog(@"%@", self.floatingWindowTypeArray);
 }
@@ -127,7 +125,7 @@ static EZWindowManager *_instance;
     
     [self.eventMonitor setDismissMiniWindowBlock:^{
         mm_strongify(self);
-        if (!self.floatingWindow.pin) {
+        if (!self.floatingWindow.pin && self.floatingWindow.visible) {
             [self closeFloatingWindow];
         }
     }];
