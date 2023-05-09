@@ -91,11 +91,10 @@ static NSString *kEasydictSchema = @"easydict://";
      easydict://writeKeyValue?EZBetaFeatureKey=1
      
      easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
-     
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+     easydict://writeKeyValue?EZOpenAIDomainKey=api.openai.com
      
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
-     
      easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
      
      // Google TTS
@@ -109,6 +108,7 @@ static NSString *kEasydictSchema = @"easydict://";
         EZOpenAIDictionaryKey,
         EZOpenAISentenceKey,
         EZOpenAIServiceUsageStatusKey,
+        EZOpenAIDomainKey,
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,

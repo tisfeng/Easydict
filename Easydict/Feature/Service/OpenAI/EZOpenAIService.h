@@ -17,6 +17,8 @@ static NSString *EZOpenAISentenceKey = @"EZOpenAISentenceKey";
 
 static NSString *EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
 
+static NSString *EZOpenAIDomainKey = @"EZOpenAIDomainKey";
+
 @interface EZOpenAIService : EZQueryService
 
 @end

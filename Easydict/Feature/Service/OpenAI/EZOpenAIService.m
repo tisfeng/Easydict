@@ -31,6 +31,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 @interface EZOpenAIService ()
 
+@property (nonatomic, copy) NSString *domain;
 
 @end
 
@@ -40,6 +41,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     if (self = [super init]) {
     }
     return self;
+}
+
+- (NSString *)domain {
+    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:@"api.openai.com"];
+    return domain;
 }
 
 
@@ -302,7 +308,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }];
     }
     
-    NSURLSessionTask *task = [manager POST:@"https://api.openai.com/v1/chat/completions" parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSString *url = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
+    NSURLSessionTask *task = [manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
@@ -460,7 +467,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"stream" : @(stream),
     };
     
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.openai.com/v1/chat/completions"]];
+    NSString *url = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
+
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
     request.allHTTPHeaderFields = header;
     request.HTTPBody = [NSJSONSerialization dataWithJSONObject:body options:0 error:nil];
@@ -556,7 +565,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         //        @"presence_penalty" : @(1),
     };
     
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.openai.com/v1/completions"]];
+    NSString *url = [NSString stringWithFormat:@"https://%@/v1/completions", self.domain];
+
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
     request.allHTTPHeaderFields = header;
     request.HTTPBody = [NSJSONSerialization dataWithJSONObject:body options:0 error:nil];
