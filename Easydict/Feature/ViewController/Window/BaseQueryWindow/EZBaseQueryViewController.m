@@ -22,8 +22,8 @@
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
 #import "EZLinkParser.h"
-#import "CoolToast.h"
 #import "EZBaiduTranslate.h"
+#import "EZToast.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -325,7 +325,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     if (handled) {
-        NSString *result = handledSuccess ? @"success" : @"failed";
+        NSString *message = handledSuccess ? @"success" : @"failed";
         if (handledSuccess) {
             [self clearInput];
             
@@ -333,8 +333,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self postUpdateServiceNotification];
         }
 
-        ToastWindowController *toastWindow = [ToastWindowController getToastWindow];
-        [toastWindow showCoolToast:result];
+        [EZToast showToast:message];
 
         return;
     }
@@ -379,6 +378,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         if (actionType == EZActionTypeScreenshotOCR) {
             [queryText copyToPasteboard];
+            
+            [EZToast showText:@"✓"];
+
             return;
         }
         
