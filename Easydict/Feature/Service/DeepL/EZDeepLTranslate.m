@@ -201,7 +201,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
 
-    NSString *url = @"https://www2.deepl.com/jsonrpc";
+    NSString *url = @"https://"
+                    @"www2."
+                    @"deepl.com"
+                    @"/jsonrpc";
+    
     NSInteger ID = [self getRandomNumber];
     NSInteger iCount = [self getICount:text];
     NSTimeInterval ts = [self getTimeStampWithIcount:iCount];

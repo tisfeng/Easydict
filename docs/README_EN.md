@@ -36,7 +36,7 @@
 - [x] Support system OCR screenshot translation.
 - [x] Support system TTS.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, Google, Baidu and Volcano Translator, no Key required, totally free!
+- [x] Support Youdao Dictionary, DeepL, Google, Baidu and Volcano Translate.
 - [x] Support for 48 languages.
 
 Next step.
@@ -128,7 +128,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
 
-~~The shortcut key to select words can work normally in any application~~, if you encounter an application that cannot select words, you can oen an issue to solve it https://github.com/tisfeng/Easydict/issues/84
+~~The shortcut key to select words can work normally in any application~~, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
 #### Notice ⚠️
 
@@ -214,6 +214,40 @@ If you still feel that the system language recognition is inaccurate in actual u
 </p>
 
 </details>
+
+#### DeepL Translate
+
+Since the DeepL web free version has a frequency limit, it is easy to trigger the 429 error, so version 1.3.0 adds support for the DeepL official API, but the interface has not been written yet and needs to be enabled through the command line.
+
+If you have a DeepL AuthKey, it is recommended to use a personal AuthKey, so that the frequency limit can be avoided, and the user experience will be better.
+
+##### Configure AuthKey
+
+Enter the following code in the input box, xxx is your DeepL AuthKey, and then enter
+
+```
+easydict://writeKeyValue?EZDeepLAuthKey=xxx
+```
+
+##### Configure API call method
+
+1. The web version API is used by default, and the personal AuthKey will be used when the web version API fails (if any)
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
+```
+
+2. Use personal AuthKey first, and use web version API when it fails. If you use DeepL frequently, it is recommended to use this method, which can reduce one failed request and improve response speed.
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
+```
+
+3. Only use personal AuthKey
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
+```
 
 ### Use with PopClip
 

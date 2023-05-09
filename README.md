@@ -36,7 +36,7 @@
 - [x] 支持系统 OCR 截图翻译。
 - [x] 支持系统 TTS。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，DeepL，Google，百度和火山翻译，不需要 Key，完全免费！
+- [x] 支持有道词典，DeepL，Google，百度和火山翻译。
 - [x] 支持 48 种语言。
 
 下一步：
@@ -214,6 +214,40 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 </p>
 
 </details>
+
+#### DeepL 翻译
+
+DeepL 网页免费版有频率限制，很容易触发 429 报错，因此 1.3.0 版本增加了对 DeepL 官方 API 支持，暂时还没写界面，需通过命令方式启用。
+
+如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制， 用户体验会更好。
+
+##### 配置 AuthKey
+
+在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 enter
+
+```
+easydict://writeKeyValue?EZDeepLAuthKey=xxx
+```
+
+##### 配置 API 调用方式
+
+1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey （如果有）
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
+```
+
+2. 优先使用个人的 AuthKey，失败时使用网页版 API。若高频率使用 DeepL，建议使用这种方式，能减少一次失败的请求，提高响应速度。
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
+```
+
+3. 只使用个人的 AuthKey
+
+```
+easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
+```
 
 ### 配合 PopClip 使用
 
