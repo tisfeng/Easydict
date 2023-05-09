@@ -17,13 +17,14 @@
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
-static NSString *const kClickQuery = @"EZConfiguration_kClickQuery";
+static NSString *const kClickQueryKey = @"EZConfiguration_kClickQueryKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 static NSString *const kAutoQueryOCTTextKey = @"EZConfiguration_kAutoQueryOCTTextKey";
-static NSString *const kAutoQuerySelectedText = @"EZConfiguration_kAutoQuerySelectedText";
+static NSString *const kAutoQuerySelectedTextKey = @"EZConfiguration_kAutoQuerySelectedTextKey";
+static NSString *const kAutoQueryPastedTextKey = @"EZConfiguration_kAutoQueryPastedTextKey";
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
@@ -69,12 +70,13 @@ static EZConfiguration *_instance;
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
 
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
-    self.clickQuery = [NSUserDefaults mm_readBool:kClickQuery defaultValue:NO];
+    self.clickQuery = [NSUserDefaults mm_readBool:kClickQueryKey defaultValue:NO];
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:NO];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
     self.hideMainWindow = [NSUserDefaults mm_readBool:kHideMainWindowKey defaultValue:YES];
     self.autoQueryOCRText = [NSUserDefaults mm_readBool:kAutoQueryOCTTextKey defaultValue:YES];
-    self.autoQuerySelectedText = [NSUserDefaults mm_readBool:kAutoQuerySelectedText defaultValue:YES];
+    self.autoQuerySelectedText = [NSUserDefaults mm_readBool:kAutoQuerySelectedTextKey defaultValue:YES];
+    self.autoQueryPastedText = [NSUserDefaults mm_readBool:kAutoQueryPastedTextKey defaultValue:NO];
     self.autoCopyOCRText = [NSUserDefaults mm_readBool:kAutoCopyOCRTextKey defaultValue:NO];
     self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:EZLanguageDetectOptimizeNone];
@@ -112,7 +114,7 @@ static EZConfiguration *_instance;
 - (void)setClickQuery:(BOOL)clickQuery {
     _clickQuery = clickQuery;
 
-    [NSUserDefaults mm_write:@(clickQuery) forKey:kClickQuery];
+    [NSUserDefaults mm_write:@(clickQuery) forKey:kClickQueryKey];
     
     [EZWindowManager.shared updatePopButtonQueryAction];
 }
@@ -164,8 +166,15 @@ static EZConfiguration *_instance;
 - (void)setAutoQuerySelectedText:(BOOL)autoQuerySelectedText {
     _autoQuerySelectedText = autoQuerySelectedText;
 
-    [NSUserDefaults mm_write:@(autoQuerySelectedText) forKey:kAutoQuerySelectedText];
+    [NSUserDefaults mm_write:@(autoQuerySelectedText) forKey:kAutoQuerySelectedTextKey];
 }
+
+- (void)setAutoQueryPastedText:(BOOL)autoQueryPastedText {
+    _autoQueryPastedText = autoQueryPastedText;
+
+    [NSUserDefaults mm_write:@(autoQueryPastedText) forKey:kAutoQueryPastedTextKey];
+}
+
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
     _autoPlayAudio = autoPlayAudio;

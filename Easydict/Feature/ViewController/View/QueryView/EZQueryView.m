@@ -16,6 +16,7 @@
 #import "EZDetectLanguageButton.h"
 #import "EZLinkParser.h"
 #import "EZCopyButton.h"
+#import "EZConfiguration.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -74,6 +75,12 @@
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
         [self highlightAllLinks];
+        
+        if (EZConfiguration.shared.autoQueryPastedText) {
+            if (self.enterActionBlock) {
+                self.enterActionBlock(text);
+            }
+        }
     }];
     
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
