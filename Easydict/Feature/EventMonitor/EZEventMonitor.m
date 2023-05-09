@@ -363,7 +363,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             MMLogInfo(@"--> Auxiliary getText: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Does not support Auxiliary, error: %d", getSelectedTextError);
+                MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
             } else {
                 MMLogInfo(@"Auxiliary error: %d", getSelectedTextError);
             }
@@ -439,7 +439,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         return NO;
     }
 
-    NSLog(@"Auxiliary error: %d", error);
+//    NSLog(@"Auxiliary error: %d", error);
 
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
@@ -863,7 +863,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     }
 
     // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
-    CGFloat expandValue = 30;
+    CGFloat expandValue = 40;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
                                                   selectedTextFrame.origin.y - expandValue,
                                                   selectedTextFrame.size.width + expandValue * 2,
