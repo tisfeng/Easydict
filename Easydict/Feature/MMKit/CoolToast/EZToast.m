@@ -47,15 +47,21 @@
 + (void)showSuccessToast {
     EZToast *toast = [EZToast toast];
     toast.toastPostion = CTPositionMouse;
-    toast.toastBackgroundColor = [NSColor mm_colorWithHexString:@"#CDCDCD"];
-    toast.textColor = [NSColor mm_colorWithHexString:@"#424242"];
+    [toast excuteLight:^(EZToast *toast) {
+        toast.toastBackgroundColor = [NSColor mm_colorWithHexString:@"#D6D6D6"];
+        toast.textColor = [NSColor mm_colorWithHexString:@"#454545"];
+    } dark:^(EZToast *toast) {
+        toast.toastBackgroundColor = [NSColor mm_colorWithHexString:@"#404040"];
+        toast.textColor = [NSColor mm_colorWithHexString:@"#C2C2C2"];
+    }];
+    
     toast.hiddenIcon = YES;
     toast.imageMarginLeft = 0;
     toast.labelMargin = 5;
     toast.minHeight = 25;
     toast.minWidth = 25;
     toast.conerRadius = 5;
-    toast.messageLabel.font = [NSFont systemFontOfSize:18 weight:NSFontWeightBlack];
+    toast.messageLabel.font = [NSFont systemFontOfSize:20 weight:NSFontWeightBlack];
 
     [toast showCoolToast:@"✓"]; // ✓  ✔︎
     toast.messageLabel.alignment = NSTextAlignmentCenter; // must set after showCoolText
