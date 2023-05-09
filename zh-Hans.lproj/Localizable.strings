@@ -48,6 +48,7 @@
 "auto_query" = "自动查询:";
 "auto_query_ocr_text" = "截图 OCR 后自动查询";
 "auto_query_selected_text" = "取词后自动查询";
+"auto_query_pasted_text" = "粘贴后自动查询";
 
 "auto_copy_text" = "自动复制:";
 "auto_copy_ocr_text" = "自动复制截图 OCR 结果";

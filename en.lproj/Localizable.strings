@@ -47,6 +47,8 @@
 "auto_query" = "Auto Query:";
 "auto_query_ocr_text" = "Auto query after OCR";
 "auto_query_selected_text" = "Auto query after selecting text";
+"auto_query_pasted_text" = "Auto query after pasting text";
+
 
 "auto_copy_text" = "Auto Copy:";
 "auto_copy_ocr_text" = "Auto copy OCR text after OCR";

@@ -55,6 +55,7 @@
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
 @property (nonatomic, strong) NSButton *autoQuerySelectedTextButton;
+@property (nonatomic, strong) NSButton *autoQueryPastedTextButton;
 
 @property (nonatomic, strong) NSTextField *autoCopyTextLabel;
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
@@ -258,6 +259,10 @@
     self.autoQuerySelectedTextButton = [NSButton checkboxWithTitle:autoQuerySelectedText target:self action:@selector(autoQuerySelectedTextButtonClicked:)];
     [self.contentView addSubview:self.autoQuerySelectedTextButton];
     
+    NSString *autoQueryPastedTextButton = NSLocalizedString(@"auto_query_pasted_text", nil);
+    self.autoQueryPastedTextButton = [NSButton checkboxWithTitle:autoQueryPastedTextButton target:self action:@selector(autoQueryPastedTextButtonClicked:)];
+    [self.contentView addSubview:self.autoQueryPastedTextButton];
+    
     
     NSTextField *autoCopyTextLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_copy_text", nil)];
     autoCopyTextLabel.font = font;
@@ -337,6 +342,7 @@
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = configuration.autoQueryOCRText;
     self.autoQuerySelectedTextButton.mm_isOn = configuration.autoQuerySelectedText;
+    self.autoQueryPastedTextButton.mm_isOn = configuration.autoQueryPastedText;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
@@ -490,11 +496,15 @@
         make.left.equalTo(self.autoQueryOCRTextButton);
         make.top.equalTo(self.autoQueryOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
+    [self.autoQueryPastedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoQuerySelectedTextButton);
+        make.top.equalTo(self.autoQuerySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+    }];
     
     
     [self.autoCopyTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.autoQuerySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoQueryPastedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryOCRTextButton);
@@ -620,6 +630,10 @@
 
 - (void)autoCopyOCRTextButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoCopyOCRText = sender.mm_isOn;
+}
+
+- (void)autoQueryPastedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoQueryPastedText = sender.mm_isOn;
 }
 
 - (void)showGoogleQuickLinkButtonClicked:(NSButton *)sender {
