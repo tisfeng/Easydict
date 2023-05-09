@@ -21,6 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Show only text.
 + (void)showText:(NSString *)message;
 
++ (void)showText:(NSString *)message toastPostion:(CTPosition)toastPostion;
+
++ (void)showSuccessToast;
+
 @end
 
 NS_ASSUME_NONNULL_END

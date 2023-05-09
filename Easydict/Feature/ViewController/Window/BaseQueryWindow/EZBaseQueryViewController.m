@@ -379,7 +379,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (actionType == EZActionTypeScreenshotOCR) {
             [queryText copyToPasteboard];
             
-            [EZToast showText:@"✓"];
+            [EZToast showSuccessToast];
 
             return;
         }
