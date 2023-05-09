@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) EZBaseQueryViewController *queryViewController;
 
 @property (nonatomic, copy) void (^resizeWindowBlock)(void);
+@property (nonatomic, copy) void (^didBecomeKeyWindowBlock)(void);
 
 - (instancetype)initWithWindowType:(EZWindowType)type;
 

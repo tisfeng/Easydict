@@ -101,10 +101,18 @@
     NSLog(@"dealloc: %@", self);
 }
 
-#pragma makr - NSWindowDelegate, NSNotification
+#pragma mark - NSWindowDelegate, NSNotification
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
 //        NSLog(@"windowDidBecomeKey: %@", self);
+    
+    // We need to update the window type when the window becomes the key window.
+    EZWindowManager *windowManager = [EZWindowManager shared];
+    [windowManager updateFloatingWindowType:self.windowType];
+    
+    if (self.didBecomeKeyWindowBlock) {
+        self.didBecomeKeyWindowBlock();
+    }
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification {
