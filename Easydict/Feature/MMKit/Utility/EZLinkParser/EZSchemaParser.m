@@ -6,62 +6,96 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZLinkParser.h"
+#import "EZSchemaParser.h"
 #import "EZOpenAIService.h"
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
 
-// easydict://
-static NSString *kEasydictSchema = @"easydict://";
+/// Easydict Schema: easydict://
+static NSString *const kEasydictSchema = @"easydict://";
 
-@implementation EZLinkParser
+@implementation EZSchemaParser
 
 #pragma mark - Write dict to NSUserDefaults
 
-/// Open URL with text and completion bool.
-- (BOOL)openURLWithText:(NSString *)text completion:(void (^)(BOOL success))completion {
-    text = [text trim];
+/// Open Easydict URL Schema.
+- (void)openURLSchema:(NSString *)URLSchema completion:(void (^)(BOOL isSuccess, NSString *_Nullable returnValue))completion {
+    NSString *text = [URLSchema trim];
     
-    BOOL handled = [self isEasydictSchema:text];
-    if (!handled) {
-        completion(NO);
-        return NO;
+    if (![self isEasydictSchema:text]) {
+        completion(NO, @"Invalid Easydict Schema");
+        return;
     }
     
     // Remove easydict://
     text = [text substringFromIndex:kEasydictSchema.length];
     
-    handled = [self tryWriteKeyValue:text];
-    completion(handled);
-    return YES;
-}
-
-
-/// Check text, if text is "easydict://writeKeyValue?key=xxx&value=xxx"
-/// easydict://writeKeyValue?EZOpenAIAPIKey=sk-5DJ2bQxdT
-/// easydict://writeKeyValue?EZBetaFeatureKey=1
-- (BOOL)tryWriteKeyValue:(NSString *)text {
-    NSString *prefix = @"writeKeyValue?";
-    if ([text hasPrefix:prefix]) {
-        NSString *keyValueText = [text substringFromIndex:prefix.length];
-        return [self writeKeyValue:keyValueText];
+    NSString *action = [self actionFromText:text];
+    if (!action) {
+        completion(NO, @"Invalid Easydict Action");
+        return;
     }
-    return NO;
+    
+    BOOL isSuccess = NO;
+    NSString *returnValue = @"Failed";
+    
+    /**
+     easydict://readValueOfKey?EZOpenAIAPIKey
+     
+     text: easydict://writeKeyValue?EZOpenAIAPIKey=sk-5DJ2bQxdT
+     Remove action: writeKeyValue
+     
+     param: EZOpenAIAPIKey=sk-5DJ2bQxdT
+     */
+    NSString *param = [text substringFromIndex:action.length + 1];
+    
+    NSString *selectorString = [self allowedActionSelectorDict][action];
+    SEL selector = NSSelectorFromString(selectorString);
+    if (selector == @selector(writeKeyValue:)) {
+        isSuccess = [self writeKeyValue:param];
+        returnValue = isSuccess ? @"Write Success" : @"Write Failed";
+    } else if (selector == @selector(readValueOfKey:)) {
+        returnValue = [self readValueOfKey:param];
+        isSuccess = returnValue ? YES : NO;
+    }
+    
+    completion(isSuccess, returnValue);
 }
 
-
-// Check if text started with easydict://
+/// Check if text started with easydict://
 - (BOOL)isEasydictSchema:(NSString *)text {
     return [[text trim] hasPrefix:kEasydictSchema];
 }
 
+/// Get action from text. readValueOfKey: or writeKeyValue:
+- (NSString *)actionFromText:(NSString *)text {
+    NSArray<NSString *> *components = [text componentsSeparatedByString:@"?"];
+    if (components.count > 0) {
+        NSString *action = components.firstObject;
+        NSArray *allowedActions = [self allowedActionSelectorDict].allKeys;
+        if ([allowedActions containsObject:action]) {
+            return action;
+        }
+    }
+    return nil;
+}
+
+/// Allowed read and write keys.
+- (NSDictionary<NSString *, NSString *> *)allowedActionSelectorDict {
+    return @{
+        @"writeKeyValue" : NSStringFromSelector(@selector(writeKeyValue:)),
+        @"readValueOfKey": NSStringFromSelector(@selector(readValueOfKey:)),
+    };
+}
+
+/// Write key value to NSUserDefaults. easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
 - (BOOL)writeKeyValue:(NSString *)text {
     NSDictionary *keyValue = [self getKeyValues:text];
     BOOL handled = NO;
     for (NSString *key in keyValue) {
         NSString *value = keyValue[key];
-        if ([self.allowedWriteKeys containsObject:key]) {
+        if ([self.allowedReadWriteKeys containsObject:key]) {
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             handled = YES;
         }
@@ -69,8 +103,16 @@ static NSString *kEasydictSchema = @"easydict://";
     return handled;
 }
 
-/// Return key values dict from text.
-/// TODO: allow multiple key-value pairs: key1=value1&key2=value2&key3=value3
+/// Read value of key from NSUserDefaults. easydict://readValueOfKey?EZOpenAIAPIKey
+- (nullable NSString *)readValueOfKey:(NSString *)key {
+    if ([self.allowedReadWriteKeys containsObject:key]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    } else {
+        return nil;
+    }
+}
+
+/// Return key values dict from key-value pairs: key1=value1&key2=value2&key3=value3
 - (NSDictionary *)getKeyValues:(NSString *)text {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSArray *keyValueArray = [text componentsSeparatedByString:@"&"];
@@ -86,13 +128,14 @@ static NSString *kEasydictSchema = @"easydict://";
 }
 
 /// Return allowed write keys to NSUserDefaults.
-- (NSArray *)allowedWriteKeys {
+- (NSArray *)allowedReadWriteKeys {
     /**
      easydict://writeKeyValue?EZBetaFeatureKey=1
      
      easydict://writeKeyValue?EZOpenAIAPIKey=sk-zob
      easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
      easydict://writeKeyValue?EZOpenAIDomainKey=api.openai.com
+     easydict://readValueOfKey?EZOpenAIDomainKey
      
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
      easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
@@ -119,6 +162,9 @@ static NSString *kEasydictSchema = @"easydict://";
         EZDefaultTTSServiceKey,
     ];
 }
+
+
+#pragma mark -
 
 - (NSString *)keyValuesOfServiceType:(EZServiceType)serviceType key:(NSString *)key value:(NSString *)value {
     /**

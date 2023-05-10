@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZLinkParser : NSObject
+@interface EZSchemaParser : NSObject
 
 // Check if text started with easydict://
 - (BOOL)isEasydictSchema:(NSString *)text;
 
-/// Open URL with text, return YES if text is started with Easydict://.
-- (BOOL)openURLWithText:(NSString *)text completion:(void (^)(BOOL success))completion;
+/// Open Easydict URL Schema.
+- (void)openURLSchema:(NSString *)URLSchema completion:(void (^)(BOOL isSuccess, NSString *_Nullable returnValue))completion;
 
 @end
 
