@@ -58,6 +58,9 @@ static NSString *const kEasydictSchema = @"easydict://";
     } else if (selector == @selector(readValueOfKey:)) {
         returnValue = [self readValueOfKey:param];
         isSuccess = returnValue ? YES : NO;
+        if (isSuccess) {
+            [returnValue copyToPasteboard];
+        }
     }
     
     completion(isSuccess, returnValue);

@@ -181,7 +181,7 @@ static EZStatusItem *_instance;
     [NSApplication.sharedApplication terminate:nil];
 }
 
-#pragma mark - Shorcut
+#pragma mark - Shortcut
 
 - (IBAction)clearInputAction:(NSMenuItem *)sender {
     [EZWindowManager.shared clearInput];
@@ -255,7 +255,6 @@ static EZStatusItem *_instance;
 - (void)menuDidClose:(NSMenu *)menu {
     
     //    [self.statusItem setMenu:nil];
-    
 }
 
 @end

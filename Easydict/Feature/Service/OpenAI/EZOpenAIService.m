@@ -631,7 +631,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Translation prompt.
 - (NSString *)translationPrompt:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     // Use """ %@ """ to wrap user input, Ref: https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api#h_21d4f4dc3d
-    NSString *prompt = [NSString stringWithFormat:@"Translate the following %@ text into %@ text:\n\n \"\"\"%@\"\"\" ", sourceLanguage, targetLanguage, text];
+    NSString *prompt = [NSString stringWithFormat:@"Translate the following %@ text into %@ text:\n\n\"\"\"\n%@\n\"\"\" ", sourceLanguage, targetLanguage, text];
     return prompt;
 }
 
