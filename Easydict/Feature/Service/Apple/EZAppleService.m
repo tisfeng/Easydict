@@ -18,7 +18,7 @@
 static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
 static CGFloat const kChineseWordWidth = 13; // [self widthOfString:@"爱"]; // 13.26
 
-static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!" ];
+static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
 
 @interface EZAppleService ()
 
