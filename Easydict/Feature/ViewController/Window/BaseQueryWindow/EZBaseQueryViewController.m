@@ -21,7 +21,7 @@
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
-#import "EZLinkParser.h"
+#import "EZSchemaParser.h"
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
 
@@ -55,7 +55,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
-@property (nonatomic, strong) EZLinkParser *linkParser;
+@property (nonatomic, strong) EZSchemaParser *schemaParser;
 
 @property (nonatomic, strong) FBKVOController *kvo;
 
@@ -278,11 +278,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _tableView;
 }
 
-- (EZLinkParser *)linkParser {
-    if (!_linkParser) {
-        _linkParser = [[EZLinkParser alloc] init];
+- (EZSchemaParser *)schemaParser {
+    if (!_schemaParser) {
+        _schemaParser = [[EZSchemaParser alloc] init];
     }
-    return _linkParser;
+    return _schemaParser;
 }
 
 - (EZAudioPlayer *)audioPlayer {
@@ -319,25 +319,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
-    __block BOOL handledSuccess;
-    BOOL handled = [self.linkParser openURLWithText:self.queryText completion:^(BOOL success) {
-        handledSuccess = success;
-    }];
-
-    if (handled) {
-        NSString *message = handledSuccess ? @"success" : @"failed";
-        if (handledSuccess) {
-            [self clearInput];
-            
-            // In addition to the current page, other pages need to be notified, such as the settings service page.
-            [self postUpdateServiceNotification];
-        }
-
-        [EZToast showToast:message];
-
+    if ([self handleEasydictSchema:text]) {
         return;
     }
-    
+
     // Before starting new query, we should stop the previous query.
     [self.queryModel stopAllService];
 
@@ -346,6 +331,37 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         self.queryText = text;
         [self queryCurrentModel];
     }];
+}
+
+/// Handle Easydict schema.
+- (BOOL)handleEasydictSchema:(NSString *)text {
+    BOOL isEasydictSchema = [self.schemaParser isEasydictSchema:text];
+    if (!isEasydictSchema) {
+        return NO;
+    }
+    
+    [self.schemaParser openURLSchema:text completion:^(BOOL isSuccess, NSString * _Nullable returnValue) {
+        NSString *message =  isSuccess ? @"Success" : @"Failed";
+        if (returnValue.length > 0) {
+            message = returnValue;
+        }
+        
+        [EZToast showToast:message];
+
+        if (!isSuccess) {
+            return;
+        }
+        
+        [self clearInput];
+        
+        // If no result, means write key-value, need to update.
+        if (!returnValue) {
+            // Besides current window, other pages need to be notified, such as the settings service page.
+            [self postUpdateServiceNotification];
+        }
+    }];
+    
+    return YES;
 }
 
 - (void)postUpdateServiceNotification {
