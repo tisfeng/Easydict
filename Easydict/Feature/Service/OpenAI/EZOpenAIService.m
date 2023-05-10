@@ -32,6 +32,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 @interface EZOpenAIService ()
 
 @property (nonatomic, copy) NSString *domain;
+@property (nonatomic, copy) NSString *model;
 
 @end
 
@@ -46,6 +47,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSString *)domain {
     NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:@"api.openai.com"];
     return domain;
+}
+
+- (NSString *)model {
+    NSString *model = [NSUserDefaults mm_readString:EZOpenAIModelKey defaultValue:@"gpt-3.5-turbo"];
+    return model;
 }
 
 
@@ -125,7 +131,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
 
     NSMutableDictionary *parameters = @{
-        @"model" : @"gpt-3.5-turbo",
+        @"model" : self.model,
         @"temperature" : @(0),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
