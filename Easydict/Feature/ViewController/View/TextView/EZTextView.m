@@ -18,6 +18,9 @@
 @property (nonatomic, assign) CGFloat defaultParagraphSpacing; // 15
 @property (nonatomic, assign) CGFloat miniParagraphSpacing; // 0
 
+/// paragraphSpacing
+@property (nonatomic, assign) CGFloat paragraphSpacing;
+
 @end
 
 @implementation EZTextView
@@ -194,9 +197,15 @@
 
 #pragma mark - Setter
 
+- (void)setCustomParagraphSpacing:(CGFloat)customParagraphSpacing {
+    _customParagraphSpacing = customParagraphSpacing;
+    
+    [self setParagraphSpacing:customParagraphSpacing];
+}
+
 - (void)setParagraphSpacing:(CGFloat)paragraphSpacing {
     _paragraphSpacing = paragraphSpacing;
-    
+        
     // 获取默认段落样式，创建新的段落样式并设置新的 paragraphSpacing
     NSParagraphStyle *defaultParagraphStyle = [self defaultParagraphStyle];
     NSMutableParagraphStyle *newParagraphStyle = [defaultParagraphStyle mutableCopy];
@@ -223,7 +232,13 @@
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
     BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
-    self.paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
+    
+    CGFloat paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
+    // If has custom paragraphSpacing, use it.
+    if (self.customParagraphSpacing > 0) {
+        paragraphSpacing = self.customParagraphSpacing;
+    }
+    self.paragraphSpacing = paragraphSpacing;
     
     // Callback shoud after updating paragraphSpacing, to update textView height.
     if (self.updateTextBlock) {

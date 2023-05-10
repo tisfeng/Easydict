@@ -20,8 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSAttributedString *placeholderAttributedString;
 
-/// paragraphSpacing
-@property (nonatomic, assign) CGFloat paragraphSpacing;
+@property (nonatomic, assign) CGFloat customParagraphSpacing; // Should be non-zero, > 0
+
 
 /// Update text, paragraphStyle.
 - (void)updateTextAndParagraphStyle:(NSString *)text;
