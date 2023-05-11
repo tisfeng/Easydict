@@ -15,7 +15,7 @@
     return [NSColor mm_colorWithHexString:@"#FFFFFF"];
 }
 + (NSColor *)mainViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#333435"];
+    return [NSColor mm_colorWithHexString:@"#222223"]; // old: 333435, new: 212223
 }
 
 // Main border color
@@ -31,7 +31,7 @@
     return [NSColor mm_colorWithHexString:@"#F4F4F4"];
 }
 + (NSColor *)queryViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#252627"];
+    return [NSColor mm_colorWithHexString:@"#303132"];
 }
 
 // Query text color
@@ -55,7 +55,7 @@
     return [NSColor mm_colorWithHexString:@"#F1F1F1"];
 }
 + (NSColor *)topBarBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#212223"];
+    return [NSColor mm_colorWithHexString:@"#2C2D2E"];
 }
 
 // Result view background color
