@@ -106,6 +106,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)setupData {
+    _queryText = @"";
+    
     self.queryModel = [[EZQueryModel alloc] init];
     self.queryModel.queryViewHeight = [self miniQueryViewHeight];
 
