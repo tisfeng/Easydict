@@ -56,9 +56,9 @@
         [self addSubview:view];
         view.wantsLayer = YES;
         [view.layer excuteLight:^(CALayer *layer) {
-            layer.backgroundColor = NSColor.topBarBgLightColor.CGColor;
+            layer.backgroundColor = [NSColor titleBarBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
-            layer.backgroundColor = NSColor.topBarBgDarkColor.CGColor;
+            layer.backgroundColor = [NSColor titleBarBgDarkColor].CGColor;
         }];
     }];
     self.topBarView.mas_key = @"topBarView";
