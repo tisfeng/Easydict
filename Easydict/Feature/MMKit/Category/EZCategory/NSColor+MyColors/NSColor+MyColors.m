@@ -39,7 +39,7 @@
     return [NSColor mm_colorWithHexString:@"#262626"];
 }
 + (NSColor *)queryTextDarkColor {
-    return [NSColor mm_colorWithHexString:@"#DEDEDE"];
+    return [NSColor mm_colorWithHexString:@"#DFDFDF"];
 }
 
 // Result text color
@@ -50,12 +50,12 @@
     return [NSColor queryTextDarkColor];
 }
 
-// Result view top bar color
-+ (NSColor *)topBarBgLightColor {
+// Result view title bar color
++ (NSColor *)titleBarBgLightColor {
     return [NSColor mm_colorWithHexString:@"#F1F1F1"];
 }
-+ (NSColor *)topBarBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#2C2D2E"];
++ (NSColor *)titleBarBgDarkColor {
+    return [NSColor mm_colorWithHexString:@"#2D2E2F"];
 }
 
 // Result view background color

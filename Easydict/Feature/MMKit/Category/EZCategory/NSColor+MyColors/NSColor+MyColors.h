@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSColor *)resultTextDarkColor;
 
 // Result view top bar color
-+ (NSColor *)topBarBgLightColor;
-+ (NSColor *)topBarBgDarkColor;
++ (NSColor *)titleBarBgLightColor;
++ (NSColor *)titleBarBgDarkColor;
 
 // Result view background color
 + (NSColor *)resultViewBgLightColor;
