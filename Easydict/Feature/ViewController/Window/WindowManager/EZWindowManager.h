@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearInput;
 - (void)clearAll;
 
+- (void)copyQueryText;
+
 /// Pin window, or cancel pin.
 - (void)pin;
 - (void)hide;

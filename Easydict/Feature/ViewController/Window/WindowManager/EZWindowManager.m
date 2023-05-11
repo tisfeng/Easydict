@@ -761,6 +761,10 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController clearAll];
 }
 
+- (void)copyQueryText {
+    [self.floatingWindow.queryViewController copyQueryText];
+}
+
 - (void)pin {
     NSLog(@"Pin");
     

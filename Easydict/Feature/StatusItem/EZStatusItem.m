@@ -191,6 +191,10 @@ static EZStatusItem *_instance;
     [EZWindowManager.shared clearAll];
 }
 
+- (IBAction)copyQueryTextAction:(NSMenuItem *)sender {
+    [EZWindowManager.shared copyQueryText];
+}
+
 - (IBAction)pinAction:(NSMenuItem *)sender {
     [EZWindowManager.shared pin];
 }
