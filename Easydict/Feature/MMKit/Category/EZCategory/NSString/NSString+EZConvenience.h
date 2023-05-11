@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)copyToPasteboard;
 
+- (void)copyAndShowToast:(BOOL)showToast;
+
 /// Check if the string is a valid URL. eg. https://www.google.com
 - (BOOL)isURL;
 
