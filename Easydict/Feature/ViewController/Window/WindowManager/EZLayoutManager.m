@@ -113,22 +113,22 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return 54; // two line
         case EZWindowTypeMini:
-            return 38; // one line
+            return 33; // one line
         default:
-            return 38;
+            return 33;
     }
 }
 
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type {
     switch (type) {
         case EZWindowTypeMain:
-            return NSScreen.mainScreen.frame.size.height * (3.0 / 10);
+            return NSScreen.mainScreen.frame.size.height * 0.3;
         case EZWindowTypeFixed:
-            return NSScreen.mainScreen.frame.size.height * (3.0 / 10);
+            return NSScreen.mainScreen.frame.size.height * 0.3;
         case EZWindowTypeMini:
-            return 54; // two line
+            return 60; // 2.5 line
         default:
-            return 54;
+            return 60;
     }
 }
 

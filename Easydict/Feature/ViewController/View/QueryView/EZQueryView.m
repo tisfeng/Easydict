@@ -300,6 +300,10 @@
 - (void)setWindowType:(EZWindowType)windowType {
     [super setWindowType:windowType];
     
+    if (windowType == EZWindowTypeMini) {
+        self.textView.customParagraphSpacing = FLT_MIN; // minimum positive float value.
+    }
+    
     [self updateCustomLayout];
 }
 
@@ -494,9 +498,6 @@
 
 - (void)updateCustomLayout {
     EZWindowType windowType = self.windowType;
-    if (windowType == EZWindowTypeMini) {
-        self.textView.customParagraphSpacing = FLT_MIN; // minimum positive float value.
-    }
     
     self.textViewMinHeight = [EZLayoutManager.shared inputViewMinHeight:windowType];
     self.textViewMaxHeight = [EZLayoutManager.shared inputViewMaxHeight:windowType];
