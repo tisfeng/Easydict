@@ -475,7 +475,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             @"com.microsoft.Word", // Word
 
             @"com.tencent.xinWeChat", // WeChat
-
+            @"com.readdle.PDFExpert-Mac", //PDF Expert
             /**
              These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
 
