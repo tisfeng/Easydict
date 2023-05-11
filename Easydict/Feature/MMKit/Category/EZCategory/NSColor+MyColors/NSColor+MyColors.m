@@ -15,7 +15,7 @@
     return [NSColor mm_colorWithHexString:@"#FFFFFF"];
 }
 + (NSColor *)mainViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#222223"]; // old: 333435, new: 212223
+    return [NSColor mm_colorWithHexString:@"#232325"];
 }
 
 // Main border color
