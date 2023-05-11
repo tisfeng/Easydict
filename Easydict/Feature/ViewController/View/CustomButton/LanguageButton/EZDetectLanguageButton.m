@@ -36,9 +36,9 @@
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
         detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
     } dark:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#313233"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#424445"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#535556"];
+        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#3D3E3F"];
+        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#47494A"];
+        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#585A5C"];
     }];
     
     mm_weakify(self);
