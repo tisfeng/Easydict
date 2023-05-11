@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearInput;
 - (void)clearAll;
 
+- (void)copyQueryText;
+
 - (void)toggleTranslationLanguages;
 
 - (void)focusInputTextView;

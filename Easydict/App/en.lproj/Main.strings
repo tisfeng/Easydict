@@ -411,7 +411,7 @@
 "qfO-cp-Tz9.title" = "Writing Direction";
 
 /* Class = "NSMenuItem"; ibShadowedToolTip = "Hide Window"; ObjectID = "qiF-2J-X2C"; */
-"qiF-2J-X2C.ibShadowedToolTip" = "Hide Window";
+"qiF-2J-X2C.ibShadowedToolTip" = "Open in Google";
 
 /* Class = "NSMenuItem"; title = "Google"; ObjectID = "qiF-2J-X2C"; */
 "qiF-2J-X2C.title" = "Google";
@@ -429,7 +429,7 @@
 "sBq-3U-c6D.title" = "\tRight to Left";
 
 /* Class = "NSMenuItem"; ibShadowedToolTip = "Hide Window"; ObjectID = "sXT-M2-L5C"; */
-"sXT-M2-L5C.ibShadowedToolTip" = "Hide Window";
+"sXT-M2-L5C.ibShadowedToolTip" = "Open in Eudic";
 
 /* Class = "NSMenuItem"; title = "Eudic"; ObjectID = "sXT-M2-L5C"; */
 "sXT-M2-L5C.title" = "Eudic";

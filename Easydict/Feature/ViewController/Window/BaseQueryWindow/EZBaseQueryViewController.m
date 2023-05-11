@@ -471,6 +471,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
+- (void)copyQueryText {
+    [self.queryText copyToPasteboard];
+}
+
 - (void)toggleTranslationLanguages {
     [self.selectLanguageCell toggleTranslationLanguages];
 }

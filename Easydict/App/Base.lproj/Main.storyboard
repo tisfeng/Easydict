@@ -322,6 +322,11 @@
                                                 <action selector="clearAllAction:" target="qM9-fT-Fym" id="Z6m-CD-ebb"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Copy" keyEquivalent="C" toolTip="Copy Query Text" id="Lq3-CB-sQ6">
+                                            <connections>
+                                                <action selector="copyQueryTextAction:" target="qM9-fT-Fym" id="nfV-Yq-b29"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Focus" keyEquivalent="i" toolTip="Foucs Input" id="NuA-WI-yNk" userLabel="Focus">
                                             <connections>
                                                 <action selector="focusInputAction:" target="qM9-fT-Fym" id="EhA-U7-UKy"/>
@@ -354,7 +359,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="QNI-LF-G6c"/>
-                                        <menuItem title="Google" toolTip="Hide Window" id="qiF-2J-X2C" userLabel="Google">
+                                        <menuItem title="Google" toolTip="Open in Google" id="qiF-2J-X2C" userLabel="Google">
                                             <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
@@ -362,7 +367,7 @@ DQ
                                                 <action selector="googleAction:" target="qM9-fT-Fym" id="tUK-Z4-boc"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Eudic" toolTip="Hide Window" id="sXT-M2-L5C" userLabel="Eudic">
+                                        <menuItem title="Eudic" toolTip="Open in Eudic" id="sXT-M2-L5C" userLabel="Eudic">
                                             <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
