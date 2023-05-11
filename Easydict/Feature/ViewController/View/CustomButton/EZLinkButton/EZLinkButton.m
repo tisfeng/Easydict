@@ -65,7 +65,7 @@ static NSString *const EZQueryKey = @"{Query}";
 }
 
 - (void)openURLWithQueryText:(NSString *)text {
-    if (self.link.length == 0 || !text) {
+    if (self.link.length == 0) {
         NSLog(@"open link is empty");
         return;
     }
