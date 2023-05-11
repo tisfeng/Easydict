@@ -171,7 +171,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
 
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_8);
+        tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_9);
         tableView.gridColor = NSColor.clearColor;
         self.scrollView.documentView = tableView;
         [tableView sizeLastColumnToFit]; // must put in the end

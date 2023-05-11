@@ -239,7 +239,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
 
-        CGFloat bottomInset = EZHorizontalCellSpacing_12 - EZVerticalCellSpacing_8 / 2;
+        CGFloat bottomInset = EZHorizontalCellSpacing_12 - EZVerticalCellSpacing_9 / 2;
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, bottomInset, 0);
     }
     return _scrollView;
@@ -270,7 +270,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
 
         tableView.headerView = nil;
-        tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_8);
+        tableView.intercellSpacing = CGSizeMake(2 * EZHorizontalCellSpacing_12, EZVerticalCellSpacing_9);
         tableView.gridColor = NSColor.clearColor;
         self.scrollView.documentView = tableView;
         [tableView sizeLastColumnToFit]; // must put in the end
@@ -1293,7 +1293,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (int i = 0; i < rowCount; i++) {
         CGFloat rowHeight = [self tableView:self.tableView heightOfRow:i];
         //        NSLog(@"row: %d, Height: %.1f", i, rowHeight);
-        scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_8);
+        scrollViewContentHeight += (rowHeight + EZVerticalCellSpacing_9);
     }
     //    NSLog(@"scrollViewContentHeight: %.1f", scrollViewContentHeight);
 
