@@ -20,7 +20,8 @@
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
-@property (nonatomic, strong) NSButton *textCopyButton;
+@property (nonatomic, strong) EZHoverButton *textCopyButton;
+
 @property (nonatomic, strong) EZDetectLanguageButton *detectButton;
 @property (nonatomic, strong) EZHoverButton *clearButton;
 @property (nonatomic, strong) NSTextField *alertTextField;

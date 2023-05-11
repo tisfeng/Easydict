@@ -34,7 +34,7 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
     self = [super initWithWindowNibName:windowNibName];
     if (self) {
         _leftOffset = 50;
-        _topOffset = 60;
+        _topOffset = 55;
         _rightOffset = 20;
         _bottomOffset = 20;
         

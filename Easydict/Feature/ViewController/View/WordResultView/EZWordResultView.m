@@ -807,7 +807,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
         mm_strongify(self);
-        [self.copiedText copyToPasteboard];
+        [self.copiedText copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
     

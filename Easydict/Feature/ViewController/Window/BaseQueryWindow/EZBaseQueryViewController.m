@@ -472,7 +472,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)copyQueryText {
-    [self.queryText copyToPasteboard];
+    [self.queryText copyAndShowToast:YES];
 }
 
 - (void)toggleTranslationLanguages {
@@ -1077,7 +1077,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
-        [text copyToPasteboard];
+        [text copyAndShowToast:YES];
     }];
 
     [queryView setClearBlock:^(NSString *_Nonnull text) {
@@ -1163,7 +1163,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
 
     [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
-        [text copyToPasteboard];
+        [text copyAndShowToast:YES];
     }];
 
     [resultView setClickTextBlock:^(NSString *_Nonnull word) {
