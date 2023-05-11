@@ -12,7 +12,7 @@
 static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
 
 static CGFloat const EZHorizontalCellSpacing_12 = 12;
-static CGFloat const EZVerticalCellSpacing_9 = 9;
+static CGFloat const EZVerticalCellSpacing_8 = 8;
 
 static CGFloat const EZCornerRadius_8 = 8;
 
