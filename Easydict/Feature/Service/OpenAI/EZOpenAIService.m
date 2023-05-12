@@ -966,8 +966,18 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // Why does this not work?
 //    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have cognates, antonyms, antonyms, then this item does not need to be displayed.";
-    NSString *emmitEmptyPrompt = @"If a item query has no results, just show none.";
-    prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
+    
+    /**
+     // WTF?
+     
+     mitigate
+     
+     n. none
+     adj. none
+     v. 减轻，缓和
+     */
+//    NSString *emmitEmptyPrompt = @"If a item query has no results, just show none.";
+//    prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
     
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
