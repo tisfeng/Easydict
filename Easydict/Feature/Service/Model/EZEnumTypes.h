@@ -61,10 +61,6 @@ FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
 
 
 FOUNDATION_EXPORT NSString *const EZDefaultTTSServiceKey;
-typedef NS_ENUM(NSUInteger, EZTTSServiceType) {
-    EZTTSServiceTypeApple = 0,
-    EZTTSServiceTypeBaidu = 1,
-    EZTTSServiceTypeGoogle = 2,
-};
+
 
 NS_ASSUME_NONNULL_END

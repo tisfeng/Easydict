@@ -14,6 +14,7 @@
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
 #import "EZTextWordUtils.h"
+#import "EZServiceTypes.h"
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -24,7 +25,6 @@
 
 @property (nonatomic, assign) BOOL isPlaying;
 
-@property (nonatomic, assign) EZTTSServiceType defaultTTSServiceType;
 @property (nonatomic, strong) EZQueryService *defaultTTSService;
 
 @property (nonatomic, copy) NSString *text;
@@ -117,30 +117,29 @@
     }
 }
 
-- (EZTTSServiceType)defaultTTSServiceType {
-    EZTTSServiceType ttsServiceType = [[NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:@"0"] integerValue];
-    return ttsServiceType;
-}
-
 - (EZQueryService *)defaultTTSService {
     if (!_defaultTTSService) {
-        switch (self.defaultTTSServiceType) {
-            case EZTTSServiceTypeBaidu: {
-                _defaultTTSService = [[EZBaiduTranslate alloc] init];
-                break;
-            }
-            case EZTTSServiceTypeGoogle: {
-                _defaultTTSService = [[EZGoogleTranslate alloc] init];
-                break;
-            }
-            default: {
-                _defaultTTSService = self.appleService;
-                break;
-            }
+        NSArray *enabledTTSServiceTypes = @[
+            EZServiceTypeApple,
+            EZServiceTypeGoogle,
+            EZServiceTypeBaidu,
+            EZServiceTypeYoudao,
+        ];
+        
+        EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:EZServiceTypeApple];
+
+        if (![enabledTTSServiceTypes containsObject:ttsServiceType]) {
+            ttsServiceType = EZServiceTypeApple;
+        }
+        
+        EZQueryService *ttsService = [EZServiceTypes serviceWithType:ttsServiceType];
+        _defaultTTSService = ttsService;
+        _defaultTTSService.audioPlayer = self;
+        
+        if (ttsServiceType == EZServiceTypeApple) {
+            self.appleService = (EZAppleService *)ttsService;
         }
     }
-    _defaultTTSService.audioPlayer = self;
-    
     return _defaultTTSService;
 }
 
