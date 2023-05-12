@@ -36,7 +36,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([NSThread isMainThread]) {
         block();
     } else {
-        dispatch_sync(dispatch_get_main_queue(), block);
+        dispatch_async(dispatch_get_main_queue(), block);
     }
 }
 
@@ -217,7 +217,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
-
+        
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
         [scrollView excuteLight:^(NSScrollView *scrollView) {
@@ -907,7 +907,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)resetQueryAndResults {
     [self resetAllResults];
 
-    if (self.queryText) {
+    if (self.queryText.length) {
         self.queryText = @"";
     }
 }
