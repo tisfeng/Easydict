@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FWEncryptorAES : NSObject
 
 + (NSData *)encrypt:(NSData *)data Key:(id)key IV:(id)iv;
@@ -24,4 +26,15 @@
 
 + (NSString*)convertHexStringFromData:(NSData*)data;
 
+
+#pragma mark -
+
++ (NSString *)encryptText:(NSString *)text key:(NSString *)key;
++ (NSString *)decryptText:(NSString *)cipherText key:(NSString *)key;
+
++ (NSString *)encryptText:(NSString *)text key:(NSString *)key iv:(nullable NSString *)iv;
++ (NSString *)decryptText:(NSString *)cipherText key:(NSString *)key iv:(nullable NSString *)iv;
+
 @end
+
+NS_ASSUME_NONNULL_END
