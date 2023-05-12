@@ -238,7 +238,7 @@ static EZWindowManager *_instance;
 
 #pragma mark - Others
 
-- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
+- (nullable EZBaseQueryWindow *)windowWithType:(EZWindowType)type {
     EZBaseQueryWindow *window = nil;
     switch (type) {
         case EZWindowTypeMain: {
@@ -335,7 +335,11 @@ static EZWindowManager *_instance;
         return;
     }
     
-    [EZPreferencesWindowController.shared.window close];
+    EZPreferencesWindowController *preferencesWindowController = [EZPreferencesWindowController shared];
+    if (preferencesWindowController.isShowing) {
+        [preferencesWindowController.window close];
+    }
+    
     
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
@@ -595,7 +599,7 @@ static EZWindowManager *_instance;
     }
 }
 
-#pragma mark - Menu Actions
+#pragma mark - Menu Actions, Global Shorcut
 
 - (void)selectTextTranslate {
     if (![self.eventMonitor isAccessibilityTrusted]) {
@@ -707,36 +711,7 @@ static EZWindowManager *_instance;
     }];
 }
 
-/// Close floating window, and record last floating window type.
-- (void)closeFloatingWindow {
-    NSLog(@"close floating window: %@", self.floatingWindow);
-    
-    self.floatingWindow.titleBar.pin = NO;
-    [self.floatingWindow close];
-    
-    if (![EZPreferencesWindowController.shared isShowing]) {
-        // recover last app.
-        [self activeLastFrontmostApplication];
-    }
-
-    [_mainWindow orderBack:nil];
-        
-    // Move floating window type to second.
-    
-    NSNumber *windowType = @(self.floatingWindowType);
-    [self.floatingWindowTypeArray removeObject:windowType];
-    [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
-}
-
-/// Close floating window, except main window.
-- (void)closeFloatingWindowExceptMain {
-    // Do not close main window
-    if (!self.floatingWindow.pin && self.floatingWindow.windowType != EZWindowTypeMain) {
-        [[EZWindowManager shared] closeFloatingWindow];
-    }
-}
-
-#pragma mark - Shortcut
+#pragma mark - Application Shorcut
 
 - (void)rerty {
     if (Snip.shared.isSnapshotting) {
@@ -772,22 +747,15 @@ static EZWindowManager *_instance;
     queryWindow.titleBar.pin = !queryWindow.titleBar.pin;
 }
 
-- (void)hide {
-    NSLog(@"Close window");
+- (void)closeWindowOrExitSreenshot {
+    NSLog(@"Close window, or exit screenshot");
+    
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     } else {
-        [EZWindowManager.shared closeFloatingWindow];
-        [EZPreferencesWindowController.shared close];
-    }
-}
-
-- (void)closeWindow {
-    NSLog(@"Close window");
-    if (Snip.shared.isSnapshotting) {
-        [Snip.shared stop];
-    } else {
-        [EZWindowManager.shared closeFloatingWindow];
+        if (self.floatingWindow) {
+            [EZWindowManager.shared closeFloatingWindow];
+        }
         [EZPreferencesWindowController.shared close];
     }
 }
@@ -804,7 +772,37 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController playQueryTextSound];
 }
 
+
 #pragma mark -
+
+/// Close floating window, and record last floating window type.
+- (void)closeFloatingWindow {
+    NSLog(@"close floating window: %@", self.floatingWindow);
+    
+    self.floatingWindow.titleBar.pin = NO;
+    [self.floatingWindow close];
+    
+    if (![EZPreferencesWindowController.shared isShowing]) {
+        // recover last app.
+        [self activeLastFrontmostApplication];
+    }
+
+    [_mainWindow orderBack:nil];
+        
+    // Move floating window type to second.
+    
+    NSNumber *windowType = @(self.floatingWindowType);
+    [self.floatingWindowTypeArray removeObject:windowType];
+    [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
+}
+
+/// Close floating window, except main window.
+- (void)closeFloatingWindowExceptMain {
+    // Do not close main window
+    if (!self.floatingWindow.pin && self.floatingWindow.windowType != EZWindowTypeMain) {
+        [[EZWindowManager shared] closeFloatingWindow];
+    }
+}
 
 - (void)activeLastFrontmostApplication {
     if (!self.lastFrontmostApplication.terminated) {

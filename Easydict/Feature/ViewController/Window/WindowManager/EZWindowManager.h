@@ -32,7 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)shared;
 
-- (EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
+
+#pragma mark - Menu Actions, Global Shorcut
 
 - (void)inputTranslate;
 - (void)selectTextTranslate;
@@ -40,30 +41,29 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showMiniFloatingWindow;
 - (void)screenshotOCR;
 
-// TODO: need to clean close window methods.
-- (void)closeWindow;
+#pragma mark - Application Shorcut
+
+- (void)clearInput;
+- (void)clearAll;
+- (void)focusInputTextView;
+- (void)copyQueryText;
+- (void)playQueryTextSound;
+- (void)rerty;
+- (void)toggleTranslationLanguages;
+
+/// Pin window, or cancel pin.
+- (void)pin;
+- (void)closeWindowOrExitSreenshot;
+
+
+#pragma mark -
+
+- (nullable EZBaseQueryWindow *)windowWithType:(EZWindowType)type;
 
 - (void)closeFloatingWindow;
 
 /// Close floating window, except main window.
 - (void)closeFloatingWindowExceptMain;
-
-- (void)rerty;
-
-- (void)clearInput;
-- (void)clearAll;
-
-- (void)copyQueryText;
-
-/// Pin window, or cancel pin.
-- (void)pin;
-- (void)hide;
-
-- (void)toggleTranslationLanguages;
-
-- (void)focusInputTextView;
-
-- (void)playQueryTextSound;
 
 - (void)activeLastFrontmostApplication;
 

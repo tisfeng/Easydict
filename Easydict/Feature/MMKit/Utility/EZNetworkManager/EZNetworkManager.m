@@ -41,8 +41,8 @@
                 break;
             }
         }
-        NSLog(@"get cookie of URL: %@", URL);
-        NSLog(@"cookie: %@", cookieString);
+//        NSLog(@"get cookie of URL: %@", URL);
+//        NSLog(@"cookie: %@", cookieString);
                 
         completion(cookieString);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {

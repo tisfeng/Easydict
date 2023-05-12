@@ -387,7 +387,7 @@
     // Escape key
     if (commandSelector == @selector(cancelOperation:)) {
         //        NSLog(@"escape: %@", textView);
-        [[EZWindowManager shared] closeWindow];
+        [[EZWindowManager shared] closeWindowOrExitSreenshot];
         
         return YES;
     }
