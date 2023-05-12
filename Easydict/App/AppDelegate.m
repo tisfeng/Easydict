@@ -14,13 +14,12 @@
 #import "EZLanguageManager.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
+#import "FWEncryptorAES.h"
 
 @import FirebaseCore;
 @import AppCenter;
 @import AppCenterAnalytics;
 @import AppCenterCrashes;
-
-static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f421c5e8";
 
 @implementation AppDelegate
 
@@ -45,10 +44,14 @@ static NSString *const EZAppCenterAppSecretKey = @"3533eca3-c104-473e-8bce-1cd3f
     if (!EZConfiguration.shared.allowCrashLog) {
         return;
     }
-    
+
 #if !DEBUG
+    NSString *key = NSBundle.mainBundle.bundleIdentifier;
+    NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
+    NSString *appSecretKey = [FWEncryptorAES decryptText:encryptedAppSecretKey key:key];
+    
     // App Center
-    [MSACAppCenter start:EZAppCenterAppSecretKey withServices:@[
+    [MSACAppCenter start:appSecretKey withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];
