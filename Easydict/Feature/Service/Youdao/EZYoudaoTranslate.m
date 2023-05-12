@@ -323,8 +323,25 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         completion(nil, EZTranslateError(EZErrorTypeParam, @"获取音频的文本为空", nil));
         return;
     }
+    //    [super textToAudio:text fromLanguage:from completion:completion];
+
+    /**
+     It seems that the Youdao TTS audio will auto trim to 600 chars.
+     https://dict.youdao.com/dictvoice?audio=Ukraine%20may%20get%20another%20Patriot%20battery.&le=en
+     
+     Sogou language codes are the same as Youdaos.
+     https://fanyi.sogou.com/reventondc/synthesis?text=class&speed=1&lang=enS&from=translateweb&speaker=6
+     */
     
-    [super textToAudio:text fromLanguage:from completion:completion];
+    NSString *language = [self getTTSLanguageCode:from];
+
+//    text = [text trimToMaxLength:1000];
+    text = [text mm_urlencode]; // text.mm_urlencode
+    
+    NSString *audioURL = [NSString stringWithFormat:@"%@/dictvoice?audio=%@&le=%@", kYoudaoDictURL, text, language];
+//    audioURL = [NSString stringWithFormat:@"https://fanyi.sogou.com/reventondc/synthesis?text=%@&speed=1&lang=%@&from=translateweb&speaker=6", text, language];
+    
+    completion(audioURL, nil);
 }
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion {

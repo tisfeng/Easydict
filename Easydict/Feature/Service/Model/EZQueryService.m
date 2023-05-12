@@ -198,7 +198,15 @@ userInfo:nil]
     if ([language isEqualToString:EZLanguageClassicalChinese]) {
         language = EZLanguageSimplifiedChinese;
     }
+    
     NSString *languageCode = [self languageCodeForLanguage:language];
+    
+    // Youdao web TTS,
+    if (self.serviceType == EZServiceTypeYoudao) {
+        if ([EZLanguageManager isChineseLanguage:language]) {
+            languageCode = @"zh"; // Not zh-CHS
+        }
+    }
     return languageCode;
 }
 
