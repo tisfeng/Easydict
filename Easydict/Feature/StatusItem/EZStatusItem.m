@@ -204,7 +204,7 @@ static EZStatusItem *_instance;
 }
 
 - (IBAction)closeWindowAction:(NSMenuItem *)sender {
-    [EZWindowManager.shared closeWindow];
+    [EZWindowManager.shared closeWindowOrExitSreenshot];
 }
 
 - (IBAction)toggleTranslationLanguagesAction:(NSMenuItem *)sender {
