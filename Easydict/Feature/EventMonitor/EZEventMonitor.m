@@ -1107,13 +1107,15 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(void (^)(NSString *_Nullable selectedText))completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
-
+    
+    self.endPoint = [NSEvent mouseLocation];
+    
     NSArray *chromeKernelBrowsers = @[
         @"com.google.Chrome",     // Google Chrome
         @"com.microsoft.edgemac", // Microsoft Edge
     ];
     BOOL isChromeKernelBrowser = [chromeKernelBrowsers containsObject:bundleID];
-
+    
     BOOL isSafari = [bundleID isEqualToString:@"com.apple.Safari"];
     if (isSafari) {
         [self getSafariSelectedText:completion];
