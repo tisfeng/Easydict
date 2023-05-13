@@ -1,6 +1,6 @@
 ## macOS 系统翻译
 
-> 此功能为实验性功能，可能不太稳定，甚至不一定能用。😅
+> 此功能为实验性功能，可能不太稳定，甚至不一定能用。
 
 > 另外，如果之前使用过 [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict)，并且已启用了 macOS 系统翻译，那可在设置页直接开启该服务，因为它们共用同一个翻译快捷指令。
 
@@ -36,6 +36,7 @@ https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb
 
 
 ![iShot_2023-01-08_10.14.54-1673144099](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.14.54-1673144099.png)
-## 参考·感谢
+## 参考
 
-- [如何在 Bob 中使用 macOS 系统翻译？](https://ripperhe.gitee.io/bob/#/faq/use-apple-translate?id=如何在-bob-中使用-macos-系统翻译？)
+- [如何使用 macOS 系统翻译？](https://bobtranslate.com/faq/use-apple-translate.html)
+- [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
