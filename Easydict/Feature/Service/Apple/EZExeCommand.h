@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
       completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
 
 /// Use NSTask to run AppleScript.
-- (NSTask *)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
+- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
 
-- (void)runAppleScript2:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler;
 
 @end
 

@@ -43,7 +43,7 @@ typedef NS_OPTIONS(NSUInteger, CTAnimater) {
 @property (weak) IBOutlet NSTextFieldCell *messageLabel;
 @property (weak) IBOutlet NSImageCell *iconImageCell;
 
-@property (nonatomic) NSInteger maxWidth; // 826
+@property (nonatomic) NSInteger maxWidth; // 800
 @property (nonatomic) NSInteger minWidth; // 50
 @property (nonatomic) CGFloat minHeight; // 60
 @property (nonatomic) NSInteger leftOffset; // 50
