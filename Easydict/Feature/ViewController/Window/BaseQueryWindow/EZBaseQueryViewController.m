@@ -640,7 +640,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                     to:queryModel.queryTargetLanguage
             completion:completion];
 
-    [EZLog logService:service];
+    [EZLog logQueryService:service];
 }
 
 - (void)updateResultLoadingAnimation:(EZQueryResult *)result {

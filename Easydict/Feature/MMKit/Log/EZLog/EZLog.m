@@ -42,13 +42,13 @@
     [self logEventWithName:name parameters:nil];
 }
 
-+ (void)logService:(EZQueryService *)service {
++ (void)logQueryService:(EZQueryService *)service {
     NSString *name = @"query_service";
     EZQueryModel *model = service.queryModel;
     NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
         @"serviceType" : service.serviceType,
-        @"queryType" : model.actionType,
+        @"actionType" : model.actionType,
         @"from" : model.queryFromLanguage,
         @"to" : model.queryTargetLanguage,
         @"textLength" : textLengthRange,

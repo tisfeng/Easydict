@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setupCrashLogService;
 
 + (void)logWindowAppear:(EZWindowType)windowType;
-+ (void)logService:(EZQueryService *)service;
++ (void)logQueryService:(EZQueryService *)service;
 + (void)logQuery:(EZQueryModel *)model;
 + (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict;
 
