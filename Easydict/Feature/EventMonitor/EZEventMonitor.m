@@ -15,6 +15,7 @@
 #import "EZExeCommand.h"
 #import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
+#import "EZToast.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
@@ -1085,14 +1086,14 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSDate *startTime = [NSDate date];
 
     // NSTask cost 0.18s
-    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
         NSLog(@"NSTask cost: %f seconds", elapsedTime);
         NSLog(@"--> supportCopy: %@", @([result boolValue]));
     }];
 
     // NSAppleScript cost 0.06 ~ 0.12s
-    [self.exeCommand runAppleScript2:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         BOOL supportCopy = [result boolValue];
 
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
@@ -1161,10 +1162,19 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
                                       "end tell\n",
                                      bundleID];
 
+    // runAppleScript is faster ~0.1s than runAppleScriptWithTask
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
-        NSLog(@"Safari selected text: %@", result);
+        NSLog(@"Safari selected text2: %@", result);
+        if (error) {
+            [EZToast showToast:error.localizedDescription];
+        }
         completion(result);
     }];
+    
+//    [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+//        NSLog(@"Safari selected text: %@", result);
+//        completion(result);
+//    }];
 }
 
 /// Get Chrome kernel browser selected text by AppleScript, like Google Chrome, Microsoft Edge, etc. Cost ~100ms
@@ -1179,13 +1189,16 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Chrome Browser selected text: %@", result);
-        NSLog(@"bundleID: %@", bundleID);
+        if (error) {
+            [EZToast showToast:error.localizedDescription];
+        }
         completion(result);
     }];
 }
 
 #pragma mark - Get Brower tab URL
 
+// Since Brower is used so frequently, it is necessary to record tab URL like App, to optimize performance or fix bugs.
 - (void)getBrowserCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
     if ([self isSafari:bundleID]) {
         [self getSafariCurrentTabURL:bundleID completion:completion];

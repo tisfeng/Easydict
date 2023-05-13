@@ -28,11 +28,11 @@
      @"tell application \"Shortcuts Events\" \n run the shortcut named \"Easydict-Translate-V1.2.0\" with input \"text=apple&from=en_US&to=zh_CN\" \n end tell"
      */
     NSString *appleScript = [self shortcutsAppleScript:shortcutName parameters:parameters];
-    return [self runAppleScript:appleScript completionHandler:completionHandler];
+    return [self runAppleScriptWithTask:appleScript completionHandler:completionHandler];
 }
 
 /// Use NSTask to run AppleScript.
-- (NSTask *)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[ @"-e", script ];
@@ -87,7 +87,7 @@
 
 /// Use NSAppleScript to run AppleScript.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
-- (void)runAppleScript2:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
         NSDictionary *errorInfo = nil;
@@ -96,8 +96,8 @@
         resultString = [resultString trim];
         NSError *error;
         if (errorInfo) {
-            NSDictionary *userInfo = errorInfo[NSAppleScriptErrorBriefMessage];
-            NSString *errorString = [userInfo objectForKey:NSAppleScriptErrorMessage];
+            NSLog(@"runAppleScript errorInfo: %@", errorInfo);
+            NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
             error = [EZTranslateError errorWithString:errorString];
         }
         

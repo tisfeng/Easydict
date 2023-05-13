@@ -70,7 +70,9 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     return [self errorWithString:errorString];
 }
 
-+ (NSError *)errorWithString:(NSString *)errorString {
++ (NSError *)errorWithString:(NSString *)string {
+    NSString *errorString = string ?: @"error";
+    
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
     NSError *error = [NSError errorWithDomain:EZBundleId code:-1 userInfo:userInfo];

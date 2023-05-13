@@ -38,7 +38,7 @@ static NSMutableArray<ToastWindowController *> *toastWindows;
         _rightOffset = 20;
         _bottomOffset = 20;
         
-        _maxWidth = 826;
+        _maxWidth = 800;
         _minWidth = 50;
         _minHeight = 60;
         _toastPostion = CTPositionTop | CTPositionRight;
