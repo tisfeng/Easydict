@@ -181,7 +181,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
-        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
         
         // 1. If use Auxiliary to get selected text success.
         if (text.length > 0) {
@@ -206,12 +205,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             }];
         };
 
+        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+
         // 2. Use AppleScript to get Browser selected text.
         if ([self isKnownBrowser:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
             [self getBrowserSelectedText:bundleID completion:^(NSString * _Nonnull selectedText, NSError * _Nonnull error) {
                 /**
-                 ???: Why the first time to get text is nil, error
+                 ???: Why the first time to get text may be nil, error
                  {
                    "NSAppleScriptErrorNumber" : -1751
                  }
@@ -250,9 +251,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (void)recordSelectTextInfo {
+    self.endPoint = [NSEvent mouseLocation];
     self.frontmostApplication = [self getFrontmostApp];
+    
     NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-
     [self getBrowserCurrentTabURL:bundleID completion:^(NSString *URLString) {
         self.browserTabURLString = URLString;
     }];
@@ -286,8 +288,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 /// Get selected text by shortcut: Cmd + C
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
-    self.endPoint = NSEvent.mouseLocation;
-
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
 
@@ -388,7 +388,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             selectedText = (__bridge NSString *)(selectedTextValue);
             selectedText = [selectedText removeInvisibleChar];
             self.selectedText = selectedText;
-            self.endPoint = NSEvent.mouseLocation;
             MMLogInfo(@"--> Auxiliary getText: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
@@ -1125,9 +1124,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
-    
-    self.endPoint = [NSEvent mouseLocation];
-    
+        
     if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
     } else if ([self isChromeKernelBrowser:bundleID]) {
