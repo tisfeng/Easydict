@@ -843,7 +843,7 @@ static EZWindowManager *_instance;
         return;
     }
     
-    NSRunningApplication *application = NSWorkspace.sharedWorkspace.frontmostApplication;
+    NSRunningApplication *application = self.eventMonitor.frontmostApplication;
     NSString *appName = application.localizedName;
     NSString *bundleID = application.bundleIdentifier;
     NSString *textLength = [EZLog textLengthRange:text];
@@ -855,6 +855,13 @@ static EZWindowManager *_instance;
         @"appName" : appName,
         @"bundleID" : bundleID,
     }];
+    
+    NSString *browserTabURLString = self.eventMonitor.browserTabURLString;
+    if (browserTabURLString.length) {
+        NSURL *tabURL = [NSURL URLWithString:browserTabURLString];
+        NSString *host = tabURL.host ?: browserTabURLString;
+        dict[@"browserTabURLHost"] = host;
+    }
     
     [EZLog logEventWithName:@"getSelectedText" parameters:dict];
 }

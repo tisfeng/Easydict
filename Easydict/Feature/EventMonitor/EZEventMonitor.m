@@ -39,11 +39,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @interface EZEventMonitor ()
 
-@property (nonatomic, strong) NSString *selectedText;
-
 @property (nonatomic, assign) EZEventMonitorType type;
 @property (nonatomic, strong) id localMonitor;
 @property (nonatomic, strong) id globalMonitor;
+
+@property (nonatomic, assign) NSEventMask mask;
+@property (nonatomic, copy) void (^handler)(NSEvent *event);
 
 // recored last 3 events
 @property (nonatomic, strong) NSMutableArray<NSEvent *> *recordEvents;
@@ -176,6 +177,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
+        [self recordSelectTextInfo];
+        NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+        
         // 1. If use Auxiliary to get selected text success.
         if (text.length > 0) {
             self.selectTextType = EZSelectTextTypeAuxiliary;
@@ -192,8 +196,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
-        NSRunningApplication *application = [self getFrontmostApp];
-        NSString *bundleID = application.bundleIdentifier;
 
         // 2. Use AppleScript to get Browser selected text.
         if ([self isKnownBrowser:bundleID]) {
@@ -212,8 +214,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
-
         self.selectTextType = EZSelectTextTypeAuxiliary;
+        
         completion(nil);
     }];
 }
@@ -229,11 +231,20 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     return NO;
 }
 
+- (void)recordSelectTextInfo {
+    self.frontmostApplication = [self getFrontmostApp];
+    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+
+    [self getBrowserCurrentTabURL:bundleID completion:^(NSString *URLString) {
+        self.browserTabURLString = URLString;
+    }];
+}
+
 
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
     if (!enableAutoSelectText) {
-        NSLog(@"user did not enableAutoSelectText");
+        NSLog(@"user turn off enableAutoSelectText");
         return;
     }
 
@@ -1122,6 +1133,21 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     return [knownBrowserBundleIDs containsObject:bundleID];
 }
 
+/// Is Safari
+- (BOOL)isSafari:(NSString *)bundleID {
+    return [bundleID isEqualToString:@"com.apple.Safari"];
+}
+
+/// Is Chrome Kernel browser
+- (BOOL)isChromeKernelBrowser:(NSString *)bundleID {
+    NSArray *chromeKernelBrowsers = @[
+        @"com.google.Chrome",     // Google Chrome
+        @"com.microsoft.edgemac", // Microsoft Edge
+    ];
+    return [chromeKernelBrowsers containsObject:bundleID];
+}
+
+
 /// Get Safari selected text by AppleScript. Cost ~100ms
 - (void)getSafariSelectedText:(void (^)(NSString *selectedText))completion {
     NSString *bundleID = @"com.apple.Safari";
@@ -1152,6 +1178,56 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Chrome Browser selected text: %@", result);
         NSLog(@"bundleID: %@", bundleID);
+        completion(result);
+    }];
+}
+
+#pragma mark - Get Brower tab URL
+
+- (void)getBrowserCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
+    if ([self isSafari:bundleID]) {
+        [self getSafariCurrentTabURL:bundleID completion:completion];
+    } else if ([self isChromeKernelBrowser:bundleID]) {
+        [self getChromeCurrentTabURL:bundleID completion:completion];
+    } else {
+        completion(nil);
+    }
+}
+
+/// Get Chrome current tab URL.
+- (void)getChromeCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
+    /**
+     tell application "Google Chrome"
+         set theUrl to URL of active tab of front window
+     end tell
+     */
+    NSString *script = [NSString stringWithFormat:
+                                     @"tell application id \"%@\"\n"
+                                      "   set theUrl to URL of active tab of front window\n"
+                                      "end tell\n",
+                                     bundleID];
+
+    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        NSLog(@"Chrome current tab URL: %@", result);
+        completion(result);
+    }];
+}
+
+/// Get Safari current tab URL.
+- (void)getSafariCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
+    /**
+     tell application "Safari"
+         set theUrl to URL of front document
+     end tell
+     */
+    NSString *script = [NSString stringWithFormat:
+                                     @"tell application id \"%@\"\n"
+                                      "   set theUrl to URL of front document\n"
+                                      "end tell\n",
+                                     bundleID];
+
+    [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+        NSLog(@"Safari current tab URL: %@", result);
         completion(result);
     }];
 }
