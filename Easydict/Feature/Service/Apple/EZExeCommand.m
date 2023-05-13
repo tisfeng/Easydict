@@ -39,7 +39,7 @@
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSPipe *outputPipe = [NSPipe pipe];
         task.standardOutput = outputPipe;
         NSPipe *errorPipe = [NSPipe pipe];
@@ -91,7 +91,7 @@
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSDictionary *errorInfo = nil;
         NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
         NSString *resultString = [result stringValue];
