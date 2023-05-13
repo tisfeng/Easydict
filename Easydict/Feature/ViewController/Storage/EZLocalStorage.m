@@ -139,13 +139,13 @@ static EZLocalStorage *_instance;
     count++;
     NSInteger newLevel = [self queryLevel:count];
     if (count == 1 || newLevel != level) {
-        NSString *title = [self queryLevelTitle:newLevel chineseFlag:YES];
-        NSLog(@"new level: %@", title);
+        NSString *levelTitle = [self queryLevelTitle:newLevel chineseFlag:YES];
+        NSLog(@"new level: %@", levelTitle);
 
         NSDictionary *dict = @{
             @"count" : [NSString stringWithFormat:@"%ld", count],
             @"level" : [NSString stringWithFormat:@"%ld", newLevel],
-            @"title" : title,
+            @"title" : levelTitle,
         };
         [EZLog logEventWithName:@"query_count" parameters:dict];
     }

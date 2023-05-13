@@ -1085,7 +1085,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self clearAll];
     }];
 
-    [queryView setSelectedLanguageBlock:^(EZLanguage _Nonnull language) {
+    [queryView setSelectedLanguageBlock:^(EZLanguage language) {
         mm_strongify(self);
 
         EZLanguage detectedLanguage = self.queryModel.detectedLanguage;

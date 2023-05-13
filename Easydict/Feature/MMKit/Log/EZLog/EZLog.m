@@ -61,7 +61,7 @@
     NSString *name = @"query";
     NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
-        @"queryType" : model.actionType,
+        @"actionType" : model.actionType,
         @"fromLanguage" : model.queryFromLanguage,
         @"toLanguage" : model.queryTargetLanguage,
         @"textLength" : textLengthRange,
