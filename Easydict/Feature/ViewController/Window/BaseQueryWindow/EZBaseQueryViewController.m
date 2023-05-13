@@ -1173,6 +1173,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [resultView setRetryBlock:^(EZQueryResult *result) {
         mm_strongify(self);
+        
+        // Make enabledQuery = YES before retry, it may be closed manually.
+        service.enabledQuery = YES;
+        
         EZQueryResult *newResult = [self resetServiceResult:service];
         [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
             [self queryWithModel:self.queryModel service:service autoPlay:NO];
