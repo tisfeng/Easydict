@@ -169,6 +169,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 /// Use auxiliary to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
+    // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
+    [self recordSelectTextInfo];
+
     // Use Auxiliary first
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
@@ -178,7 +181,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
-        [self recordSelectTextInfo];
         NSString *bundleID = self.frontmostApplication.bundleIdentifier;
         
         // 1. If use Auxiliary to get selected text success.
@@ -210,7 +212,6 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             [self getBrowserSelectedText:bundleID completion:^(NSString * _Nonnull selectedText, NSError * _Nonnull error) {
                 /**
                  ???: Why the first time to get text is nil, error
-                 
                  {
                    "NSAppleScriptErrorNumber" : -1751
                  }
