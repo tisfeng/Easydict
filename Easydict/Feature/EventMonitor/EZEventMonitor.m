@@ -197,21 +197,37 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
+        void (^getSelectedTextByKeyBlock)(void) = ^{
+            [self getSelectedTextByKey:^(NSString *_Nullable text) {
+                self.selectTextType = EZSelectTextTypeSimulateKey;
+                completion(text);
+            }];
+        };
 
         // 2. Use AppleScript to get Browser selected text.
         if ([self isKnownBrowser:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
-            [self getBrowserSelectedText:bundleID completion:completion];
+            [self getBrowserSelectedText:bundleID completion:^(NSString * _Nonnull selectedText, NSError * _Nonnull error) {
+                /**
+                 ???: Why the first time to get text is nil, error
+                 
+                 {
+                   "NSAppleScriptErrorNumber" : -1751
+                 }
+                 */
+                if (error) {
+                    getSelectedTextByKeyBlock();
+                } else {
+                    completion(selectedText);
+                }
+            }];
             return;
         }
 
         // 3. Use shortcut to get selected text.
         BOOL useShortcut = [self checkIfUseShortcut:text error:error];
         if (useShortcut) {
-            [self getSelectedTextByKey:^(NSString *_Nullable text) {
-                self.selectTextType = EZSelectTextTypeSimulateKey;
-                completion(text);
-            }];
+            getSelectedTextByKeyBlock();
             return;
         }
 
@@ -1106,24 +1122,17 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 #pragma mark - Get Browser selected text by AppleScript
 
-- (void)getBrowserSelectedText:(NSString *)bundleID completion:(void (^)(NSString *_Nullable selectedText))completion {
+- (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
     
     self.endPoint = [NSEvent mouseLocation];
     
-    NSArray *chromeKernelBrowsers = @[
-        @"com.google.Chrome",     // Google Chrome
-        @"com.microsoft.edgemac", // Microsoft Edge
-    ];
-    BOOL isChromeKernelBrowser = [chromeKernelBrowsers containsObject:bundleID];
-    
-    BOOL isSafari = [bundleID isEqualToString:@"com.apple.Safari"];
-    if (isSafari) {
+    if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
-    } else if (isChromeKernelBrowser) {
+    } else if ([self isChromeKernelBrowser:bundleID]) {
         [self getChromeSelectedTextByAppleScript:bundleID completion:completion];
     } else {
-        completion(nil);
+        completion(nil, nil);
     }
 }
 
@@ -1152,7 +1161,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 
 /// Get Safari selected text by AppleScript. Cost ~100ms
-- (void)getSafariSelectedText:(void (^)(NSString *selectedText))completion {
+- (void)getSafariSelectedText:(AppleScriptCompletionHandler)completion {
     NSString *bundleID = @"com.apple.Safari";
     NSString *script = [NSString stringWithFormat:
                                      @"tell application id \"%@\"\n"
@@ -1164,21 +1173,18 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
     // runAppleScript is faster ~0.1s than runAppleScriptWithTask
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
-        NSLog(@"Safari selected text2: %@", result);
-        if (error) {
-            [EZToast showToast:error.localizedDescription];
-        }
-        completion(result);
+        NSLog(@"Safari selected text: %@", result);
+        completion(result, error);
     }];
     
 //    [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
-//        NSLog(@"Safari selected text: %@", result);
+//        NSLog(@"Task Safari selected text: %@", result);
 //        completion(result);
 //    }];
 }
 
 /// Get Chrome kernel browser selected text by AppleScript, like Google Chrome, Microsoft Edge, etc. Cost ~100ms
-- (void)getChromeSelectedTextByAppleScript:(NSString *)bundleID completion:(void (^)(NSString *selectedText))completion {
+- (void)getChromeSelectedTextByAppleScript:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     NSString *script = [NSString stringWithFormat:
                                      @"tell application id \"%@\"\n"
                                       "   tell active tab of front window\n"
@@ -1189,10 +1195,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Chrome Browser selected text: %@", result);
-        if (error) {
-            [EZToast showToast:error.localizedDescription];
-        }
-        completion(result);
+        completion(result, error);
     }];
 }
 

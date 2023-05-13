@@ -10,6 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^AppleScriptCompletionHandler)( NSString *_Nullable result, NSError *_Nullable error);
+
 @interface EZExeCommand : NSObject
 
 /// Run translate shortcut with parameters.

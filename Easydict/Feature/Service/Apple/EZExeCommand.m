@@ -45,7 +45,7 @@
         NSPipe *errorPipe = [NSPipe pipe];
         task.standardError = errorPipe;
         
-        NSString *result;
+        NSString *result = @"";
         // This method can only catch errors inside the NSTask object, and the error of executing the task needs to be used with standardError.
         NSError *error;
         if ([task launchAndReturnError:&error]) {
@@ -76,7 +76,7 @@
         }
         
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000); // cost ~2s
+        NSLog(@"run AppleScript Task cost: %.1f ms", (endTime - startTime) * 1000);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(result, error);
@@ -88,8 +88,10 @@
 /// Use NSAppleScript to run AppleScript.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+    NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
         NSDictionary *errorInfo = nil;
         NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
         NSString *resultString = [result stringValue];
@@ -100,6 +102,9 @@
             NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
             error = [EZTranslateError errorWithString:errorString];
         }
+        
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(resultString, error);
