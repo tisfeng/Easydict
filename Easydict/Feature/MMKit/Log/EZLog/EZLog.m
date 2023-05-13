@@ -14,6 +14,28 @@
 
 @implementation EZLog
 
++ (void)setupCrashLogService {
+    if (!EZConfiguration.shared.allowCrashLog) {
+        return;
+    }
+
+#if !DEBUG
+    NSString *key = NSBundle.mainBundle.bundleIdentifier;
+    NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
+    NSString *appSecretKey = [FWEncryptorAES decryptText:encryptedAppSecretKey key:key];
+    
+    // App Center
+    [MSACAppCenter start:appSecretKey withServices:@[
+        [MSACAnalytics class],
+        [MSACCrashes class]
+    ]];
+    
+    // Firebase
+    [FIRApp configure];
+#endif
+}
+
+
 + (void)logWindowAppear:(EZWindowType)windowType {
     NSString *windowName = [EZLayoutManager.shared windowName:windowType];
     NSString *name = [NSString stringWithFormat:@"show_%@", windowName];
@@ -61,7 +83,7 @@
     } else if (length <= 5000) {
         return @"1000-5000";
     } else {
-        return @"5000+";
+        return @"5000-∞";
     }
 }
 

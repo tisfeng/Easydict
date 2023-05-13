@@ -7,8 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "EZWindowManager.h"
-
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
