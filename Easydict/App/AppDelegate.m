@@ -16,11 +16,6 @@
 #import "EZLog.h"
 #import "FWEncryptorAES.h"
 
-@import FirebaseCore;
-@import AppCenter;
-@import AppCenterAnalytics;
-@import AppCenterCrashes;
-
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -29,37 +24,17 @@
     [self setupAppLanguage];
     
     [MMCrash registerHandler];
+    [EZLog setupCrashLogService];
+
     [EZStatusItem.shared setup];
     [EZShortcut setup];
     
     [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
     
-    [self setupCrashLogService];
-    
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
 
-- (void)setupCrashLogService {
-    if (!EZConfiguration.shared.allowCrashLog) {
-        return;
-    }
-
-#if !DEBUG
-    NSString *key = NSBundle.mainBundle.bundleIdentifier;
-    NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
-    NSString *appSecretKey = [FWEncryptorAES decryptText:encryptedAppSecretKey key:key];
-    
-    // App Center
-    [MSACAppCenter start:appSecretKey withServices:@[
-        [MSACAnalytics class],
-        [MSACCrashes class]
-    ]];
-    
-    // Firebase
-    [FIRApp configure];
-#endif
-}
 
 ///
 - (void)setupAppLanguage {

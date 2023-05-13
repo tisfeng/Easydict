@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLog : NSObject
 
++ (void)setupCrashLogService;
+
 + (void)logWindowAppear:(EZWindowType)windowType;
 + (void)logService:(EZQueryService *)service;
 + (void)logQuery:(EZQueryModel *)model;
