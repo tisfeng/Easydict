@@ -200,7 +200,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
         void (^getSelectedTextByKeyBlock)(void) = ^{
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
-                self.selectTextType = EZSelectTextTypeSimulateKey;
+                self.selectTextType = EZSelectTextTypeSimulatedKey;
                 completion(text);
             }];
         };
@@ -226,9 +226,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             return;
         }
 
-        // 3. Use shortcut to get selected text.
-        BOOL useShortcut = [self checkIfUseShortcut:text error:error];
-        if (useShortcut) {
+        // 3. Use simulate key to get selected text.
+        if ([self shouldUseSimulatedKeyPress:text error:error]) {
             getSelectedTextByKeyBlock();
             return;
         }
@@ -240,7 +239,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 }
 
 - (BOOL)useAuxiliaryForFirstTime {
-    // When user first use auto select text, show reqest Accessibility permission alert.
+    // When user first use auto select text, show request Accessibility permission alert.
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
     if (!hasUsedAutoSelectText) {
@@ -461,8 +460,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     return isTrusted == YES;
 }
 
-/// Check if need to use shortcut to get selected text.
-- (BOOL)checkIfUseShortcut:(NSString *)text error:(AXError)error {
+/// Check if should use simulation key to get selected text.
+- (BOOL)shouldUseSimulatedKeyPress:(NSString *)text error:(AXError)error {
     if (text.length > 0) {
         return NO;
     }
@@ -530,6 +529,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 return YES;
             }
         }
+    }
+    
+    // Fallback, If using shortcut, to make sure we can get text, we use simulation key to get selected text.
+    if (self.actionType == EZActionTypeShortcutQuery) {
+        MMLogInfo(@"Fallback, need to add it to allowed app error list dict");
+        MMLogInfo(@"%d, %@, %@", error, bundleID, application.localizedName);
+
+        return YES;
     }
 
     return NO;

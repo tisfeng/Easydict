@@ -56,7 +56,7 @@ FOUNDATION_EXPORT EZActionType const EZActionTypeScreenshotOCR;
 
 typedef NSString *EZSelectTextType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAuxiliary;
-FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulateKey; // Cmd+C
+FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulatedKey; // Cmd+C
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
 
 
