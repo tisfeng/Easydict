@@ -70,6 +70,8 @@ static EZWindowManager *_instance;
     self.offsetPoint = CGPointMake(18, -12);
     self.screen = NSScreen.mainScreen;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[@(EZWindowTypeNone)]];
+    self.actionType = EZActionTypeAutoSelectQuery;
+    
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     
@@ -847,8 +849,7 @@ static EZWindowManager *_instance;
     NSString *textLength = [EZLog textLengthRange:text];
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
-        @"text" : text,
-        @"queryType" : self.actionType,
+        @"actionType" : self.actionType,
         @"selectTextType" : self.eventMonitor.selectTextType,
         @"textLength" : textLength,
         @"appName" : appName,
