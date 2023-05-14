@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CGSize)mm_getTextSize:(CGSize)designatedSize;
 
+- (CGSize)mm_getTextSize;
+
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font;
 
 + (NSAttributedString *)mm_attributedStringWithString:(NSString *)text font:(NSFont *)font color:(NSColor *)color;

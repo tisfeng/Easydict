@@ -62,4 +62,8 @@
     return size;
 }
 
+- (CGSize)mm_getTextSize {
+    return [self mm_getTextSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
+}
+
 @end
