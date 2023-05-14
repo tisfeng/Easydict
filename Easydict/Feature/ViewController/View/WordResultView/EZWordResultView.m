@@ -868,10 +868,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     //        NSLog(@"text: %@, width: %@", label.text, @(width));
     //        NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
     
-    CGFloat height = [label ez_getHeightWithWidth:width]; // 397 ?
-    //    NSLog(@"height: %@", @(height));
-    
-    //    height = [label getTextViewHeightWithWidth:width]; // 377
+    CGFloat height = [label ez_getTextViewHeightDesignatedWidth:width]; // 397 ?
     //    NSLog(@"height: %@", @(height));
     
     return CGSizeMake(width, height);

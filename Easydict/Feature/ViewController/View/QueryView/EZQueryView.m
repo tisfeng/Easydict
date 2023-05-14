@@ -485,7 +485,7 @@
 }
 
 - (CGFloat)heightOfTextView {
-    CGFloat height = [self.textView ez_getHeightWithWidth:self.width];
+    CGFloat height = [self.textView ez_getTextViewHeightDesignatedWidth:self.width];
     //    NSLog(@"text: %@, height: %@", self.textView.string, @(height));
     
     height = MAX(height, self.textViewMinHeight);

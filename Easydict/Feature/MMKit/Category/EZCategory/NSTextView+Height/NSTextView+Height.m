@@ -10,48 +10,30 @@
 
 @implementation NSTextView (Height)
 
-- (CGFloat)ez_getHeight {
-    NSAssert(self.width != 0, @"self.width cannot be 0");
-    
-    CGSize textContainerInset = self.textContainerInset;
-    CGFloat width = self.width - textContainerInset.width * 2;
-    CGFloat height = [self.attributedString mm_getTextHeightWithWidth:width];
-    height += textContainerInset.height * 2;
-    
-    return ceil(height);
-}
-
-- (CGFloat)ez_getHeightWithWidth:(CGFloat)width {
-    CGSize textContainerInset = self.textContainerInset;
-    CGFloat renderWidth = width - textContainerInset.width * 2;
-    CGFloat height = [self.attributedString mm_getTextHeightWithWidth:renderWidth];
-    height += textContainerInset.height * 2;
-    
-    return ceil(height);
-}
-
-- (CGFloat)ez_getTextViewHeightWithWidth:(CGFloat)width {    
-    NSDictionary *attr;
-    if (self.string.length) {
-        attr = [self.attributedString attributesAtIndex:0 effectiveRange:nil];
-    }
-    CGSize textContainerInset = self.textContainerInset;
-    CGFloat renderWidth = width - textContainerInset.width * 2;
-    CGFloat height = [self.string mm_sizetWithAttributes:attr constrainedToSize:CGSizeMake(renderWidth, CGFLOAT_MAX)].height;
-    height += textContainerInset.height * 2;
-    
-    return ceil(height);
-}
-
-
-#pragma mark -
-
 - (CGSize)ez_getTextViewSize {
     CGSize size = [self getTextContainerSize];
     size.width += self.textContainerInset.width * 2;
     size.height += self.textContainerInset.height * 2;
     return size;
 }
+
+/// One line height
+- (CGFloat)ez_getTextViewHeight {
+    CGSize size = [self ez_getTextViewSize];
+    return size.height;
+}
+
+- (CGFloat)ez_getTextViewHeightDesignatedWidth:(CGFloat)width {
+    CGSize textContainerInset = self.textContainerInset;
+    CGFloat renderWidth = width - textContainerInset.width * 2;
+    CGFloat height = [self getTextContainerHeightDesignatedWidth:renderWidth];
+    height += textContainerInset.height * 2;
+    
+    return height;
+}
+
+
+#pragma mark - Private
 
 - (CGSize)getTextContainerSize {
     return [self getTextContainerSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
@@ -61,7 +43,7 @@
     return [self getTextContainerSize].width;
 }
 
-- (CGFloat)getTextContainerHeightWithWidth:(CGFloat)width {
+- (CGFloat)getTextContainerHeightDesignatedWidth:(CGFloat)width {
     return [self getTextContainerSize:CGSizeMake(width, CGFLOAT_MAX)].height;
 }
 
