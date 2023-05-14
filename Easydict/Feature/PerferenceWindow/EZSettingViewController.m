@@ -10,7 +10,7 @@
 #import "EZShortcut.h"
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
-#import "EZStatusItem.h"
+#import "EZMenuItemManager.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 

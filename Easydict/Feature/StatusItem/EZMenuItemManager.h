@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZStatusItem : NSObject
+@interface EZMenuItemManager : NSObject
 
 @property (nonatomic, strong, nullable) NSStatusItem *statusItem;
 
