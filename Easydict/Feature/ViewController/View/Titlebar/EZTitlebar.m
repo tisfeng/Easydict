@@ -96,7 +96,7 @@
         
         googleButton.link = @"https://www.google.com/search?q=%@";
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
-        googleButton.toolTip = @"Open in Google, ⌘+⏎";
+        googleButton.toolTip = NSLocalizedString(@"Open in Google, ⌘+⏎", nil);
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -180,8 +180,8 @@
 - (void)setPin:(BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
-    NSString *pinToolTip = pin ? @"Unpin" : @"Pin";
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, ⌘+P ", pinToolTip];
+    NSString *pinToolTip = pin ? NSLocalizedString(@"Unpin", nil) : NSLocalizedString(@"Pin", nil);
+    self.pinButton.toolTip = [NSString stringWithFormat:NSLocalizedString(@"%@, ⌘+P ", nil), pinToolTip];
     
     [self updatePinButtonImage];
 }

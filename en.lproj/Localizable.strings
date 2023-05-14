@@ -136,3 +136,15 @@
 "past_participle" = "Past participle";
 "present_participle" = "Present participle";
 "root" = "Root";
+
+"Toggle Languages, ⌘+T" = "Toggle Languages, ⌘+T";
+"Stop" = "Stop";
+"Play" = "Play";
+"%@ Audio, ⌘+S" = "%@ Audio, ⌘+S";
+"Copy Text" = "Copy Text";
+"Unpin" = "Unpin";
+"Pin" = "Pin";
+"%@, ⌘+P " = "%@, ⌘+P ";
+"Hide" = "Hide";
+"Show"= "Show";
+"Open in Google, ⌘+⏎" = "Open in Google, ⌘+⏎";
