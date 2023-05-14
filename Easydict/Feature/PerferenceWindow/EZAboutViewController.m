@@ -38,8 +38,7 @@
 
     [self updateViewSize];
 
-    NSString *repo = @"tisfeng/Easydict";
-    [self fetchLastestRepoInfo:repo];
+    [self fetchLastestRepoInfo:EZGithubRepo];
 //    [self fetchGithubRepoInfo:repo];
 }
 
@@ -85,7 +84,7 @@
 
     authorLinkButton.title = @"Tisfeng";
     
-    NSString *urlString = EZRepoGithubURL;
+    NSString *urlString = EZGithubRepoURL;
     NSURLComponents *components = [NSURLComponents componentsWithString:urlString];
 
     NSString *path = components.path;
@@ -109,8 +108,8 @@
     [self.contentView addSubview:githubLinkButton];
     self.githubLinkButton = githubLinkButton;
 
-    githubLinkButton.title = EZRepoGithubURL;
-    githubLinkButton.openURL = EZRepoGithubURL;
+    githubLinkButton.title = EZGithubRepoURL;
+    githubLinkButton.openURL = EZGithubRepoURL;
     githubLinkButton.closeWindowAfterOpeningURL = YES;
 }
 

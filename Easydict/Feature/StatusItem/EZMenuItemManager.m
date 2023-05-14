@@ -14,6 +14,9 @@
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
 
+static CGFloat const kImageMenuItemHeightRatio = 1.3;
+static CGFloat const kTitleMenuItemHeightRatio = 1.2;
+
 @interface EZMenuItemManager () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
@@ -30,7 +33,8 @@
 @property (weak) IBOutlet NSMenuItem *helpItem;
 @property (weak) IBOutlet NSMenuItem *quitItem;
 
-@property (copy) NSString *version;
+@property (copy) NSString *appVersion;
+@property (nonatomic, copy) NSString *versionTitle;
 
 @end
 
@@ -56,6 +60,14 @@ static EZMenuItemManager *_instance;
     return _instance;
 }
 
+- (NSString *)versionTitle {
+    if (!_versionTitle) {
+        _versionTitle = [NSString stringWithFormat:@"Easydict %@", self.appVersion];
+    }
+    return _versionTitle;
+}
+
+
 - (void)setup {
     if (self.statusItem) {
         return;
@@ -63,7 +75,6 @@ static EZMenuItemManager *_instance;
     
     NSStatusItem *statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [statusItem setMenu:self.menu];
-    self.menu.minimumWidth = 185;
     self.statusItem = statusItem;
     
     NSStatusBarButton *button = statusItem.button;
@@ -79,12 +90,13 @@ static EZMenuItemManager *_instance;
     [button setToolTip:@"Easydict 🍃"];
     image.template = YES;
     
-    self.version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    NSString *versionTitle = [NSString stringWithFormat:@"Easydict  %@", self.version];
-    self.versionItem.title = versionTitle;
+    self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    self.versionItem.title = self.versionTitle;
     
     NSArray *items = @[self.versionItem, self.preferencesItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
-    [self increaseMenuItemsHeight:items lineHeightRatio:1.2];
+    [self increaseMenuItemsHeight:items lineHeightRatio:kTitleMenuItemHeightRatio];
+    
+    [self updateVersionItem];
 }
 
 - (void)testRightClick {
@@ -133,7 +145,7 @@ static EZMenuItemManager *_instance;
 #pragma mark - Status bar action
 
 - (IBAction)versionAction:(NSMenuItem *)sender {
-    NSString *versionURL = [NSString stringWithFormat:@"%@/releases/tag/%@", EZRepoGithubURL, self.version];
+    NSString *versionURL = [NSString stringWithFormat:@"%@/releases", EZGithubRepoURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:versionURL]];
 }
 
@@ -173,7 +185,7 @@ static EZMenuItemManager *_instance;
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {
     NSLog(@"反馈问题");
-    NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZRepoGithubURL];
+    NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZGithubRepoURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
 }
 
@@ -249,6 +261,8 @@ static EZMenuItemManager *_instance;
 #pragma mark - NSMenuDelegate
 
 - (void)menuWillOpen:(NSMenu *)menu {
+    [self updateVersionItem];
+
     void (^configItemShortcut)(NSMenuItem *item, NSString *key) = ^(NSMenuItem *item, NSString *key) {
         @try {
             [EZShortcut readShortcutForKey:key completion:^(MASShortcut *_Nullable shorcut) {
@@ -265,7 +279,7 @@ static EZMenuItemManager *_instance;
             item.keyEquivalentModifierMask = 0;
         }
         
-        [self increaseMenuItemHeight:item lineHeightRatio:1.3];
+        [self increaseMenuItemHeight:item lineHeightRatio:kImageMenuItemHeightRatio];
     };
     
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
@@ -297,6 +311,39 @@ static EZMenuItemManager *_instance;
     for (NSMenuItem *item in itmes) {
         [self increaseMenuItemHeight:item lineHeightRatio:lineHeightRatio];
     }
+}
+
+#pragma mark - Fetch Github Repo Info
+
+- (void)updateVersionItem {
+    [self fetchRepoLatestVersion:EZGithubRepo completion:^(NSString *lastestVersion) {
+        BOOL hasNewVersion = [self.appVersion compare:lastestVersion options:NSNumericSearch] == NSOrderedAscending;
+        NSString *versionTitle = self.versionTitle;
+        if (hasNewVersion) {
+            versionTitle = [NSString stringWithFormat:@"%@  (✨ %@)", self.versionTitle, lastestVersion];
+        }
+        self.versionItem.title = versionTitle;
+        [self increaseMenuItemHeight:self.versionItem lineHeightRatio:kTitleMenuItemHeightRatio];
+    }];
+}
+
+- (void)fetchRepoLatestVersion:(NSString *)repo completion:(void (^)(NSString *lastestVersion))completion {
+    [self fetchRepoLatestRepoInfo:repo completion:^(NSDictionary *lastestVersionDict) {
+        NSString *latestVersion = lastestVersionDict[@"tag_name"];
+        completion(latestVersion);
+    }];
+}
+
+- (void)fetchRepoLatestRepoInfo:(NSString *)repo completion:(void (^)(NSDictionary *lastestVersionDict))completion {
+    NSString *urlString = [NSString stringWithFormat:@"https://api.github.com/repos/%@/releases/latest", repo];
+    NSURL *URL = [NSURL URLWithString:urlString];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager GET:URL.absoluteString parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        NSDictionary *dict = responseObject;
+        completion(dict);
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
 }
 
 @end
