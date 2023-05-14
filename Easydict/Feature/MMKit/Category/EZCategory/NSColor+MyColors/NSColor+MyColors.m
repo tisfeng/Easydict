@@ -39,7 +39,7 @@
     return [NSColor mm_colorWithHexString:@"#262626"];
 }
 + (NSColor *)queryTextDarkColor {
-    return [NSColor mm_colorWithHexString:@"#DFDFDF"];
+    return [NSColor mm_colorWithHexString:@"#E0E0E0"];
 }
 
 // Result text color
