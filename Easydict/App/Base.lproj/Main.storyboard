@@ -701,7 +701,6 @@ DQ
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="qM9-fT-Fym" customClass="EZStatusItem">
                     <connections>
-                        <outlet property="bobItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
                         <outlet property="eudicItem" destination="sXT-M2-L5C" id="lfd-aF-Kn2"/>
                         <outlet property="googleItem" destination="qiF-2J-X2C" id="ieo-Uu-FLp"/>
                         <outlet property="inputItem" destination="AWf-Ci-7QE" id="Isp-ch-8Q6"/>
@@ -710,13 +709,17 @@ DQ
                         <outlet property="selectionItem" destination="lUI-Zn-Bwr" id="WVP-FO-jlf"/>
                         <outlet property="showMiniItem" destination="PmP-cO-1HF" id="z5W-Mb-1f4"/>
                         <outlet property="snipItem" destination="2TG-8C-8RM" id="NNT-OJ-7eY"/>
+                        <outlet property="versionItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
                     </connections>
                 </customObject>
                 <customObject id="jrA-nT-KAI" customClass="SUUpdater"/>
                 <menu autoenablesItems="NO" identifier="status.item.menu" id="A3F-ys-zOg" userLabel="Status Item Menu">
                     <items>
-                        <menuItem title="Easydict" enabled="NO" id="PkP-25-JBw">
+                        <menuItem title="Easydict" id="PkP-25-JBw">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="versionAction:" target="qM9-fT-Fym" id="6xv-hH-DqD"/>
+                            </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="jsC-rB-zr4"/>
                         <menuItem title="输入翻译" image="keyboard" catalog="system" id="AWf-Ci-7QE">
