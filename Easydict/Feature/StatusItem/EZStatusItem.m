@@ -17,13 +17,14 @@
 @interface EZStatusItem () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
-@property (weak) IBOutlet NSMenuItem *bobItem;
+@property (weak) IBOutlet NSMenuItem *versionItem;
 @property (weak) IBOutlet NSMenuItem *selectionItem;
 @property (weak) IBOutlet NSMenuItem *snipItem;
 @property (weak) IBOutlet NSMenuItem *inputItem;
 @property (weak) IBOutlet NSMenuItem *showMiniItem;
-
 @property (weak) IBOutlet NSMenuItem *screenshotOCRItem;
+
+@property (copy) NSString *version;
 
 @end
 
@@ -72,8 +73,8 @@ static EZStatusItem *_instance;
     [button setToolTip:@"Easydict 🍃"];
     image.template = YES;
     
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    self.bobItem.title = [NSString stringWithFormat:@"Easydict  %@", version];
+    self.version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    self.versionItem.title = [NSString stringWithFormat:@"Easydict  %@", self.version];
 }
 
 - (void)testRightClick {
@@ -121,6 +122,11 @@ static EZStatusItem *_instance;
 
 #pragma mark - Status bar action
 
+- (IBAction)versionAction:(NSMenuItem *)sender {
+    NSString *versionURL = [NSString stringWithFormat:@"%@/releases/tag/%@", EZRepoGithubURL, self.version];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:versionURL]];
+}
+
 - (IBAction)translateAction:(NSMenuItem *)sender {
     NSLog(@"select text translate");
     [EZWindowManager.shared selectTextTranslate];
@@ -145,6 +151,7 @@ static EZStatusItem *_instance;
     NSLog(@"screenshot OCR");
     [EZWindowManager.shared screenshotOCR];
 }
+
 
 - (IBAction)preferenceAction:(NSMenuItem *)sender {
     NSLog(@"偏好设置");
