@@ -25,6 +25,11 @@
 @property (weak) IBOutlet NSMenuItem *showMiniItem;
 @property (weak) IBOutlet NSMenuItem *screenshotOCRItem;
 
+@property (weak) IBOutlet NSMenuItem *preferencesItem;
+@property (weak) IBOutlet NSMenuItem *checkForUpdateItem;
+@property (weak) IBOutlet NSMenuItem *helpItem;
+@property (weak) IBOutlet NSMenuItem *quitItem;
+
 @property (copy) NSString *version;
 
 @end
@@ -77,6 +82,9 @@ static EZMenuItemManager *_instance;
     self.version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *versionTitle = [NSString stringWithFormat:@"Easydict  %@", self.version];
     self.versionItem.title = versionTitle;
+    
+    NSArray *items = @[self.versionItem, self.preferencesItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
+    [self increaseMenuItemsHeight:items lineHeightRatio:1.2];
 }
 
 - (void)testRightClick {
@@ -257,7 +265,7 @@ static EZMenuItemManager *_instance;
             item.keyEquivalentModifierMask = 0;
         }
         
-        [self increaseMenuItemHeight:item];
+        [self increaseMenuItemHeight:item lineHeightRatio:1.3];
     };
     
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
@@ -270,10 +278,10 @@ static EZMenuItemManager *_instance;
 #pragma mark -
 
 /// Increase menu item height. Ref: https://stackoverflow.com/questions/18031666/nsmenuitem-height
-- (void)increaseMenuItemHeight:(NSMenuItem *)item {
+- (void)increaseMenuItemHeight:(NSMenuItem *)item lineHeightRatio:(CGFloat)lineHeightRatio {
     NSFont *font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
     CGFloat fontLineHeight = (font.ascender + fabs(font.descender));
-    CGFloat lineHeight = fontLineHeight * 1.3;
+    CGFloat lineHeight = fontLineHeight * lineHeightRatio;
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.minimumLineHeight = lineHeight;
     style.maximumLineHeight = lineHeight;
@@ -283,6 +291,12 @@ static EZMenuItemManager *_instance;
         NSParagraphStyleAttributeName: style,
         NSBaselineOffsetAttributeName: @(baselineOffset)
     }];
+}
+
+- (void)increaseMenuItemsHeight:(NSArray<NSMenuItem *> *)itmes lineHeightRatio:(CGFloat)lineHeightRatio {
+    for (NSMenuItem *item in itmes) {
+        [self increaseMenuItemHeight:item lineHeightRatio:lineHeightRatio];
+    }
 }
 
 @end
