@@ -145,7 +145,7 @@ static EZMenuItemManager *_instance;
 #pragma mark - Status bar action
 
 - (IBAction)versionAction:(NSMenuItem *)sender {
-    NSString *versionURL = [NSString stringWithFormat:@"%@/releases", EZGithubRepoURL];
+    NSString *versionURL = [NSString stringWithFormat:@"%@/releases", EZGithubRepoEasydictURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:versionURL]];
 }
 
@@ -185,7 +185,7 @@ static EZMenuItemManager *_instance;
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {
     NSLog(@"反馈问题");
-    NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZGithubRepoURL];
+    NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZGithubRepoEasydictURL];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:issueURL]];
 }
 
@@ -316,7 +316,7 @@ static EZMenuItemManager *_instance;
 #pragma mark - Fetch Github Repo Info
 
 - (void)updateVersionItem {
-    [self fetchRepoLatestVersion:EZGithubRepo completion:^(NSString *lastestVersion) {
+    [self fetchRepoLatestVersion:EZGithubRepoEasydict completion:^(NSString *lastestVersion) {
         BOOL hasNewVersion = [self.appVersion compare:lastestVersion options:NSNumericSearch] == NSOrderedAscending;
         NSString *versionTitle = self.versionTitle;
         if (hasNewVersion) {
@@ -327,14 +327,14 @@ static EZMenuItemManager *_instance;
     }];
 }
 
-- (void)fetchRepoLatestVersion:(NSString *)repo completion:(void (^)(NSString *lastestVersion))completion {
+- (void)fetchRepoLatestVersion:(NSString *)repo completion:(void (^)(NSString *latestVersion))completion {
     [self fetchRepoLatestRepoInfo:repo completion:^(NSDictionary *lastestVersionDict) {
         NSString *latestVersion = lastestVersionDict[@"tag_name"];
         completion(latestVersion);
     }];
 }
 
-- (void)fetchRepoLatestRepoInfo:(NSString *)repo completion:(void (^)(NSDictionary *lastestVersionDict))completion {
+- (void)fetchRepoLatestRepoInfo:(NSString *)repo completion:(void (^)(NSDictionary *latestVersionDict))completion {
     NSString *urlString = [NSString stringWithFormat:@"https://api.github.com/repos/%@/releases/latest", repo];
     NSURL *URL = [NSURL URLWithString:urlString];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
