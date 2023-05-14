@@ -19,7 +19,7 @@
 
 - (void)setTitle:(NSString *)title {    
     NSFont *textFont = [NSFont systemFontOfSize:14];
-    self.attributedTitle = [NSAttributedString mm_attributedStringWithString:title font:textFont color:[NSColor mm_colorWithHexString:@"#007AFF"]];
+    self.attributedTitle = [NSAttributedString mm_attributedStringWithString:title font:textFont color:[NSColor ez_blueTitleColor]];
     
     [self sizeToFit];
     CGSize size = self.size;

@@ -63,9 +63,9 @@ DefineMethodMMMake_m(EZPopUpButton);
                 make.top.left.bottom.equalTo(titleContainerView);
             }];
             [textField excuteLight:^(NSTextField *label) {
-                label.textColor = NSColor.resultTextLightColor;
+                label.textColor = [NSColor ez_resultTextLightColor];
             } dark:^(NSTextField *label) {
-                label.textColor = NSColor.resultTextDarkColor;
+                label.textColor = [NSColor ez_resultTextDarkColor];
             }];
         }];
         
@@ -79,9 +79,9 @@ DefineMethodMMMake_m(EZPopUpButton);
                 make.width.height.equalTo(@8);
             }];
             [imageView excuteLight:^(NSImageView *imageView) {
-                imageView.image = [image imageWithTintColor:NSColor.imageTintLightColor];
+                imageView.image = [image imageWithTintColor:[NSColor ez_imageTintLightColor]];
             } dark:^(NSTextField *label) {
-                imageView.image = [image imageWithTintColor:NSColor.imageTintDarkColor];
+                imageView.image = [image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
             }];
         }];
     }];

@@ -51,13 +51,13 @@
     
     [self excuteLight:^(NSTextView *textView) {
         [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : NSColor.resultTextLightColor,
+            NSForegroundColorAttributeName : [NSColor ez_resultTextLightColor],
         }
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];
     } dark:^(NSTextView *textView) {
         [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : NSColor.resultTextDarkColor,
+            NSForegroundColorAttributeName : [NSColor ez_resultTextDarkColor],
         }
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];

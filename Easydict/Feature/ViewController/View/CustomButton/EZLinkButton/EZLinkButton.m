@@ -42,11 +42,11 @@ static NSString *const EZQueryKey = @"{Query}";
     NSColor *darkHighlightColor = [NSColor mm_colorWithHexString:@"#525252"];
 
     [self excuteLight:^(EZButton *button) {
-        button.contentTintColor = [NSColor imageTintLightColor];
+        button.contentTintColor = [NSColor ez_imageTintLightColor];
         button.backgroundHoverColor = lightHoverColor;
         button.backgroundHighlightColor = lightHighlightColor;
     } dark:^(EZButton *button) {
-        button.contentTintColor = [NSColor imageTintDarkColor];
+        button.contentTintColor = [NSColor ez_imageTintDarkColor];
         button.backgroundHoverColor = darkHoverColor;
         button.backgroundHighlightColor = darkHighlightColor;
     }];

@@ -75,7 +75,7 @@
     
     NSMutableAttributedString *detectAttrTitle = [[NSMutableAttributedString alloc] initWithString:detectLanguageTitle];
     [detectAttrTitle addAttributes:@{
-        NSForegroundColorAttributeName : [NSColor mm_colorWithHexString:@"#007AFF"],
+        NSForegroundColorAttributeName : [NSColor ez_blueTitleColor],
         NSFontAttributeName : [NSFont systemFontOfSize:10],
     }
                              range:NSMakeRange(0, detectAttrTitle.length)];

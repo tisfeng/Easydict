@@ -44,9 +44,9 @@ static const CGFloat kVerticalPadding_8 = 8;
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
         [self.layer excuteLight:^(CALayer *layer) {
-            layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+            layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
-            layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+            layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
         }];
     }
     return self;
@@ -390,9 +390,9 @@ static const CGFloat kVerticalPadding_8 = 8;
                 [tagScrollView addSubview:tagContentView];
                 tagContentView.wantsLayer = YES;
                 [tagContentView.layer excuteLight:^(CALayer *layer) {
-                    layer.backgroundColor = NSColor.resultViewBgLightColor.CGColor;
+                    layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
                 } dark:^(CALayer *layer) {
-                    layer.backgroundColor = NSColor.resultViewBgDarkColor.CGColor;
+                    layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
                 }];
                 
                 tagContentView.height = newSize.height;
@@ -666,9 +666,9 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         [self addSubview:meanLabel];
         [meanLabel excuteLight:^(id _Nonnull x) {
-            [x setTextColor:NSColor.resultTextLightColor];
+            [x setTextColor:[NSColor ez_resultTextLightColor]];
         } dark:^(id _Nonnull x) {
-            [x setTextColor:NSColor.resultTextDarkColor];
+            [x setTextColor:[NSColor ez_resultTextDarkColor]];
         }];
         
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -837,9 +837,9 @@ static const CGFloat kVerticalPadding_8 = 8;
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {
-        linkButton.image = [linkButton.image imageWithTintColor:[NSColor imageTintLightColor]];
+        linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *linkButton) {
-        linkButton.image = [linkButton.image imageWithTintColor:[NSColor imageTintDarkColor]];
+        linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     linkButton.mas_key = @"result_linkButton";
     

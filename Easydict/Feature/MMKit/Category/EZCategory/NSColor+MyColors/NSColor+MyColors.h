@@ -13,42 +13,44 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSColor (MyColors)
 
 // Main background color
-+ (NSColor *)mainViewBgLightColor;
-+ (NSColor *)mainViewBgDarkColor;
++ (NSColor *)ez_mainViewBgLightColor;
++ (NSColor *)ez_mainViewBgDarkColor;
 
 // Main border color
-+ (NSColor *)mainBorderLightColor;
-+ (NSColor *)mainBorderDarkColor;
++ (NSColor *)ez_mainBorderLightColor;
++ (NSColor *)ez_mainBorderDarkColor;
 
 // Query view background color
-+ (NSColor *)queryViewBgLightColor;
-+ (NSColor *)queryViewBgDarkColor;
++ (NSColor *)ez_queryViewBgLightColor;
++ (NSColor *)ez_queryViewBgDarkColor;
 
 // Query text color
-+ (NSColor *)queryTextLightColor;
-+ (NSColor *)queryTextDarkColor;
++ (NSColor *)ez_queryTextLightColor;
++ (NSColor *)ez_queryTextDarkColor;
 
 // Result text color
-+ (NSColor *)resultTextLightColor;
-+ (NSColor *)resultTextDarkColor;
++ (NSColor *)ez_resultTextLightColor;
++ (NSColor *)ez_resultTextDarkColor;
 
 // Result view top bar color
-+ (NSColor *)titleBarBgLightColor;
-+ (NSColor *)titleBarBgDarkColor;
++ (NSColor *)ez_titleBarBgLightColor;
++ (NSColor *)ez_titleBarBgDarkColor;
 
 // Result view background color
-+ (NSColor *)resultViewBgLightColor;
-+ (NSColor *)resultViewBgDarkColor;
++ (NSColor *)ez_resultViewBgLightColor;
++ (NSColor *)ez_resultViewBgDarkColor;
 
 // Button hover color
-+ (NSColor *)buttonHoverLightColor;
-+ (NSColor *)buttonHoverDarkColor;
++ (NSColor *)ez_buttonHoverLightColor;
++ (NSColor *)ez_buttonHoverDarkColor;
 
 // Image tint color
-+ (NSColor *)imageTintLightColor;
-+ (NSColor *)imageTintDarkColor;
++ (NSColor *)ez_imageTintLightColor;
++ (NSColor *)ez_imageTintDarkColor;
 
-+ (NSColor *)imageTintBlueColor;
++ (NSColor *)ez_imageTintBlueColor;
+
++ (NSColor *)ez_blueTitleColor;
 
 @end
 
