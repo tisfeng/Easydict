@@ -10,7 +10,7 @@
 #import <ServiceManagement/ServiceManagement.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import <Sparkle/Sparkle.h>
-#import "EZStatusItem.h"
+#import "EZMenuItemManager.h"
 #import "EZWindowManager.h"
 #import "EZExeCommand.h"
 
@@ -206,7 +206,7 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
     
-    EZStatusItem.shared.googleItem.hidden = !showGoogleLink;
+    EZMenuItemManager.shared.googleItem.hidden = !showGoogleLink;
 }
 
 - (void)setShowEudicQuickLink:(BOOL)showEudicLink {
@@ -215,7 +215,7 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
     
-    EZStatusItem.shared.eudicItem.hidden = !showEudicLink;
+    EZMenuItemManager.shared.eudicItem.hidden = !showEudicLink;
 }
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
@@ -397,7 +397,7 @@ static EZConfiguration *_instance;
 
 // hide menu bar icon
 - (void)hideMenuBarIcon:(BOOL)hidden {
-    EZStatusItem *statusItem = [EZStatusItem shared];
+    EZMenuItemManager *statusItem = [EZMenuItemManager shared];
     if (self.hideMenuBarIcon) {
         [statusItem remove];
     } else {

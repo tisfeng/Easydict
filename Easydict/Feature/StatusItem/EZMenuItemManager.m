@@ -6,7 +6,7 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZStatusItem.h"
+#import "EZMenuItemManager.h"
 #import "EZPreferencesWindowController.h"
 #import "EZWindowManager.h"
 #import "Snip.h"
@@ -14,9 +14,10 @@
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
 
-@interface EZStatusItem () <NSMenuDelegate>
+@interface EZMenuItemManager () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
+
 @property (weak) IBOutlet NSMenuItem *versionItem;
 @property (weak) IBOutlet NSMenuItem *selectionItem;
 @property (weak) IBOutlet NSMenuItem *snipItem;
@@ -29,9 +30,9 @@
 @end
 
 
-@implementation EZStatusItem
+@implementation EZMenuItemManager
 
-static EZStatusItem *_instance;
+static EZMenuItemManager *_instance;
 + (instancetype)shared {
     if (!_instance) {
         static dispatch_once_t onceToken;
@@ -55,12 +56,12 @@ static EZStatusItem *_instance;
         return;
     }
     
-    NSStatusItem *item = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
-    [item setMenu:self.menu];
+    NSStatusItem *statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
+    [statusItem setMenu:self.menu];
     self.menu.minimumWidth = 185;
-    self.statusItem = item;
+    self.statusItem = statusItem;
     
-    NSStatusBarButton *button = item.button;
+    NSStatusBarButton *button = statusItem.button;
     
 #if DEBUG
     NSImage *image = [NSImage imageNamed:@"status_icon_debug"];
@@ -74,7 +75,8 @@ static EZStatusItem *_instance;
     image.template = YES;
     
     self.version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    self.versionItem.title = [NSString stringWithFormat:@"Easydict  %@", self.version];
+    NSString *versionTitle = [NSString stringWithFormat:@"Easydict  %@", self.version];
+    self.versionItem.title = versionTitle;
 }
 
 - (void)testRightClick {
@@ -254,6 +256,8 @@ static EZStatusItem *_instance;
             item.keyEquivalent = @"";
             item.keyEquivalentModifierMask = 0;
         }
+        
+        [self increaseMenuItemHeight:item];
     };
     
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
@@ -263,9 +267,22 @@ static EZStatusItem *_instance;
     configItemShortcut(self.screenshotOCRItem, EZScreenshotOCRShortcutKey);
 }
 
-- (void)menuDidClose:(NSMenu *)menu {
+#pragma mark -
+
+/// Increase menu item height. Ref: https://stackoverflow.com/questions/18031666/nsmenuitem-height
+- (void)increaseMenuItemHeight:(NSMenuItem *)item {
+    NSFont *font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
+    CGFloat fontLineHeight = (font.ascender + fabs(font.descender));
+    CGFloat lineHeight = fontLineHeight * 1.3;
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.minimumLineHeight = lineHeight;
+    style.maximumLineHeight = lineHeight;
+    CGFloat baselineOffset = (lineHeight - fontLineHeight) / 2;
     
-    //    [self.statusItem setMenu:nil];
+    item.attributedTitle = [[NSAttributedString alloc] initWithString:item.title attributes:@{
+        NSParagraphStyleAttributeName: style,
+        NSBaselineOffsetAttributeName: @(baselineOffset)
+    }];
 }
 
 @end

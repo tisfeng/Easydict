@@ -699,7 +699,7 @@ DQ
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="qM9-fT-Fym" customClass="EZStatusItem">
+                <customObject id="qM9-fT-Fym" customClass="EZMenuItemManager">
                     <connections>
                         <outlet property="eudicItem" destination="sXT-M2-L5C" id="lfd-aF-Kn2"/>
                         <outlet property="googleItem" destination="qiF-2J-X2C" id="ieo-Uu-FLp"/>

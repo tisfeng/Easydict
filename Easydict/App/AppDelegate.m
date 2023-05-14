@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "EZStatusItem.h"
+#import "EZMenuItemManager.h"
 #import "EZShortcut.h"
 #import "MMCrash.h"
 #import "EZWindowManager.h"
@@ -26,7 +26,7 @@
     [MMCrash registerHandler];
     [EZLog setupCrashLogService];
 
-    [EZStatusItem.shared setup];
+    [EZMenuItemManager.shared setup];
     [EZShortcut setup];
     
     [[EZWindowManager shared] showOrHideDockAppAndMainWindow];
@@ -59,7 +59,7 @@
 #pragma mark - NSApplicationDelegate
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [[EZStatusItem shared] remove];
+    [[EZMenuItemManager shared] remove];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
