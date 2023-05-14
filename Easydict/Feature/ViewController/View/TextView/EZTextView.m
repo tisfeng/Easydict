@@ -73,11 +73,11 @@
             | NSTextCheckingTypePhoneNumber | NSTextCheckingTypeTransitInformation;
 
         [self excuteLight:^(EZTextView *textView) {
-            textView.backgroundColor = NSColor.queryViewBgLightColor;
-            [textView setTextColor:NSColor.queryTextLightColor];
+            textView.backgroundColor = [NSColor ez_queryViewBgLightColor];
+            [textView setTextColor:[NSColor ez_queryTextLightColor]];
         } dark:^(EZTextView *textView) {
-            textView.backgroundColor = NSColor.queryViewBgDarkColor;
-            [textView setTextColor:NSColor.queryTextDarkColor];
+            textView.backgroundColor = [NSColor ez_queryViewBgDarkColor];
+            [textView setTextColor:[NSColor ez_queryTextDarkColor]];
         }];
         self.alignment = NSTextAlignmentLeft;
         self.textContainerInset = CGSizeMake(0, 0);
@@ -257,9 +257,9 @@
     self.placeholderTextField.selectable = NO;
 
     [self.placeholderTextField excuteLight:^(NSTextView *placeholderTextView) {
-        [placeholderTextView setBackgroundColor:NSColor.queryViewBgLightColor];
+        [placeholderTextView setBackgroundColor:[NSColor ez_queryViewBgLightColor]];
     } dark:^(NSTextView *placeholderTextView) {
-        [placeholderTextView setBackgroundColor:NSColor.queryViewBgDarkColor];
+        [placeholderTextView setBackgroundColor:[NSColor ez_queryViewBgDarkColor]];
     }];
 
     [self addSubview:self.placeholderTextField];

@@ -49,9 +49,9 @@
     languageBarView.wantsLayer = YES;
     languageBarView.layer.cornerRadius = EZCornerRadius_8;
     [languageBarView excuteLight:^(NSView *barView) {
-        barView.layer.backgroundColor = [NSColor titleBarBgLightColor].CGColor;
+        barView.layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
     } dark:^(NSView *barView) {
-        barView.layer.backgroundColor = [NSColor titleBarBgDarkColor].CGColor;
+        barView.layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
 
     }];
     languageBarView.mas_key = @"languageBarView";

@@ -24,9 +24,9 @@
     self.image = copyImage;
     
     [self excuteLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor imageTintLightColor]];
+        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor imageTintDarkColor]];
+        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     
     self.toolTip = @"Copy Text";

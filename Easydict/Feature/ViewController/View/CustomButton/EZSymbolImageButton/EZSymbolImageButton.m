@@ -17,9 +17,9 @@
     button.image = audioImage;
     
     [button excuteLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor imageTintLightColor]];
+        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
     } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor imageTintDarkColor]];
+        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     
     return button;

@@ -149,7 +149,7 @@
     
     NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
     privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
-    privacyImage = [privacyImage imageWithTintColor:[NSColor imageTintBlueColor]];
+    privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
     
     return privacyImage;
 }

@@ -31,9 +31,9 @@
         
         // !!!: must set backgroundColor
         [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgLightColor;
+            window.backgroundColor = [NSColor ez_mainViewBgLightColor];
         } dark:^(NSWindow *window) {
-            window.backgroundColor = NSColor.mainViewBgDarkColor;
+            window.backgroundColor = [NSColor ez_mainViewBgDarkColor];
         }];
         
         [self setupUI];

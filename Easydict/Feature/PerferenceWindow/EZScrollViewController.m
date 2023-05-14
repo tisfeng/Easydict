@@ -56,8 +56,8 @@ static CGFloat const kMargin = 0;
 }
 
 - (void)_setupUI {
-    NSColor *lightBgColor = [NSColor resultViewBgLightColor];
-    NSColor *darkBgColor = [NSColor resultViewBgDarkColor];
+    NSColor *lightBgColor = [NSColor ez_resultViewBgLightColor];
+    NSColor *darkBgColor = [NSColor ez_resultViewBgDarkColor];
 
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
     scrollView.hasVerticalScroller = YES;

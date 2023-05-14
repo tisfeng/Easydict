@@ -11,79 +11,83 @@
 @implementation NSColor (MyColors)
 
 // Main background color
-+ (NSColor *)mainViewBgLightColor {
++ (NSColor *)ez_mainViewBgLightColor {
     return [NSColor mm_colorWithHexString:@"#FFFFFF"];
 }
-+ (NSColor *)mainViewBgDarkColor {
++ (NSColor *)ez_mainViewBgDarkColor {
     return [NSColor mm_colorWithHexString:@"#232325"];
 }
 
 // Main border color
-+ (NSColor *)mainBorderLightColor {
++ (NSColor *)ez_mainBorderLightColor {
     return [NSColor mm_colorWithHexString:@"#FFFFFF"];
 }
-+ (NSColor *)mainBorderDarkColor {
++ (NSColor *)ez_mainBorderDarkColor {
     return [NSColor mm_colorWithHexString:@"#515253"];
 }
 
 // Query view background color
-+ (NSColor *)queryViewBgLightColor {
++ (NSColor *)ez_queryViewBgLightColor {
     return [NSColor mm_colorWithHexString:@"#F4F4F4"];
 }
-+ (NSColor *)queryViewBgDarkColor {
++ (NSColor *)ez_queryViewBgDarkColor {
     return [NSColor mm_colorWithHexString:@"#303132"];
 }
 
 // Query text color
-+ (NSColor *)queryTextLightColor {
++ (NSColor *)ez_queryTextLightColor {
     return [NSColor mm_colorWithHexString:@"#262626"];
 }
-+ (NSColor *)queryTextDarkColor {
++ (NSColor *)ez_queryTextDarkColor {
     return [NSColor mm_colorWithHexString:@"#E0E0E0"];
 }
 
 // Result text color
-+ (NSColor *)resultTextLightColor {
-    return [NSColor queryTextLightColor];
++ (NSColor *)ez_resultTextLightColor {
+    return [NSColor ez_queryTextLightColor];
 }
-+ (NSColor *)resultTextDarkColor {
-    return [NSColor queryTextDarkColor];
++ (NSColor *)ez_resultTextDarkColor {
+    return [NSColor ez_queryTextDarkColor];
 }
 
 // Result view title bar color
-+ (NSColor *)titleBarBgLightColor {
++ (NSColor *)ez_titleBarBgLightColor {
     return [NSColor mm_colorWithHexString:@"#F1F1F1"];
 }
-+ (NSColor *)titleBarBgDarkColor {
++ (NSColor *)ez_titleBarBgDarkColor {
     return [NSColor mm_colorWithHexString:@"#2D2E2F"];
 }
 
 // Result view background color
-+ (NSColor *)resultViewBgLightColor {
++ (NSColor *)ez_resultViewBgLightColor {
     return [NSColor mm_colorWithHexString:@"#F6F6F6"];
 }
-+ (NSColor *)resultViewBgDarkColor {
-    return [NSColor queryViewBgDarkColor];
++ (NSColor *)ez_resultViewBgDarkColor {
+    return [NSColor ez_queryViewBgDarkColor];
 }
 
 // Button hover color
-+ (NSColor *)buttonHoverLightColor {
++ (NSColor *)ez_buttonHoverLightColor {
     return [NSColor mm_colorWithHexString:@"#E2E2E2"];
 }
-+ (NSColor *)buttonHoverDarkColor {
-    return [NSColor mainBorderDarkColor];
++ (NSColor *)ez_buttonHoverDarkColor {
+    return [NSColor ez_mainBorderDarkColor];
 }
 
 // Image tint color
-+ (NSColor *)imageTintLightColor {
++ (NSColor *)ez_imageTintLightColor {
     return [NSColor blackColor];
 }
-+ (NSColor *)imageTintDarkColor {
++ (NSColor *)ez_imageTintDarkColor {
     return [NSColor whiteColor];
 }
 
-+ (NSColor *)imageTintBlueColor {
++ (NSColor *)ez_imageTintBlueColor {
     return [NSColor mm_colorWithHexString:@"#1296DB"];
+}
+
++ (NSColor *)ez_blueTitleColor {
+    return [NSColor mm_colorWithHexString:@"#007AFF"];
 }
 
 @end

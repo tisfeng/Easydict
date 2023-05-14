@@ -31,7 +31,7 @@
         [[NSColor whiteColor] setFill];
         NSRectFill(dirtyRect);
     } dark:^(id _Nonnull x) {
-        [[NSColor resultViewBgDarkColor] setFill];
+        [[NSColor ez_resultViewBgDarkColor] setFill];
         NSRectFill(dirtyRect);
     }];
     
