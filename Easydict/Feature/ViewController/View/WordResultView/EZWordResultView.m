@@ -289,7 +289,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             phoneticLabel = [[EZLabel alloc] init];
             [self addSubview:phoneticLabel];
             phoneticLabel.textContainer.lineFragmentPadding = 0;
-            phoneticLabel.font = textFont;
+            phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize];
             phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", obj.value];
             [phoneticLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(nameTextFiled.mas_right).offset(kHorizontalMargin_8);
@@ -340,12 +340,13 @@ static const CGFloat kVerticalPadding_8 = 8;
                 make.height.mas_equalTo(textField.height);
                 make.left.offset(kHorizontalMargin_8);
                 
+                CGFloat topOffset = kVerticalMargin_12 + 3;
                 if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalMargin_12);
+                    make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                 } else {
-                    make.top.offset(kVerticalMargin_12);
+                    make.top.offset(topOffset);
                 }
-                height += (textField.height + kVerticalMargin_12);
+                height += (textField.height + topOffset);
             }];
         }];
         tagLabel.mas_key = @"tagLabel";
@@ -364,10 +365,10 @@ static const CGFloat kVerticalPadding_8 = 8;
             NSButton *tagButton = [[NSButton alloc] init];
             tagButton.title = tag;
             [tagButton excuteLight:^(NSButton *tagButton) {
-                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#878785"];
+                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
                 [self updateTagButton:tagButton tagColor:tagColor];
             } dark:^(NSButton *tagButton) {
-                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#BDBDB9"];
+                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
                 [self updateTagButton:tagButton tagColor:tagColor];
             }];
             
