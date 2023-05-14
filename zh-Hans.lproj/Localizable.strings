@@ -138,3 +138,15 @@
 "past_participle" = "过去分词";
 "present_participle" = "现在分词";
 "root" = "词根";
+
+"Toggle Languages, ⌘+T" = "切换语言，⌘+T";
+"Stop" = "停止";
+"Play" = "播放";
+"%@ Audio, ⌘+S" = "%@音频，⌘+S";
+"Copy Text" = "拷贝文本";
+"Unpin" = "取消钉住";
+"Pin" = "钉住窗口";
+"%@, ⌘+P " = "%@，⌘+P ";
+"Hide" = "隐藏";
+"Show"= "显示";
+"Open in Google, ⌘+⏎" = "通过 Google 搜索，⌘+⏎";

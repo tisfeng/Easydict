@@ -105,9 +105,9 @@
     [audioButton setPlayStatus:^(BOOL isPlaying) {
         mm_strongify(audioButton);
         
-        NSString *action = isPlaying ? @"Stop" : @"Play";
-        audioButton.toolTip = [NSString stringWithFormat:@"%@ Audio, ⌘+S", action];
-    }];
+        NSString *action = isPlaying ? NSLocalizedString(@"Stop", nil) : NSLocalizedString(@"Play", nil);
+        audioButton.toolTip = [NSString stringWithFormat:NSLocalizedString(@"%@ Audio, ⌘+S", nil), action];
+        }];
 
     [audioButton setPlayAudioBlock:^{
         mm_strongify(self);
