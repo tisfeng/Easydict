@@ -9,6 +9,7 @@
 #import "EZAboutViewController.h"
 #import "EZBlueTextButton.h"
 #import "EZConfiguration.h"
+#import "EZMenuItemManager.h"
 
 @interface EZAboutViewController ()
 
@@ -38,7 +39,8 @@
 
     [self updateViewSize];
 
-    [self fetchLastestRepoInfo:EZGithubRepo];
+    [self updateLatestVersion];
+    
 //    [self fetchGithubRepoInfo:repo];
 }
 
@@ -84,7 +86,7 @@
 
     authorLinkButton.title = @"Tisfeng";
     
-    NSString *urlString = EZGithubRepoURL;
+    NSString *urlString = EZGithubRepoEasydictURL;
     NSURLComponents *components = [NSURLComponents componentsWithString:urlString];
 
     NSString *path = components.path;
@@ -108,8 +110,8 @@
     [self.contentView addSubview:githubLinkButton];
     self.githubLinkButton = githubLinkButton;
 
-    githubLinkButton.title = EZGithubRepoURL;
-    githubLinkButton.openURL = EZGithubRepoURL;
+    githubLinkButton.title = EZGithubRepoEasydictURL;
+    githubLinkButton.openURL = EZGithubRepoEasydictURL;
     githubLinkButton.closeWindowAfterOpeningURL = YES;
 }
 
@@ -178,16 +180,10 @@
     EZConfiguration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
 }
 
-- (void)fetchLastestRepoInfo:(NSString *)repo {
-    NSString *urlString = [NSString stringWithFormat:@"https://api.github.com/repos/%@/releases/latest", repo];
-    NSURL *url = [NSURL URLWithString:urlString];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager GET:url.absoluteString parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        NSString *latestVersion = responseObject[@"tag_name"];
+- (void)updateLatestVersion {
+    [EZMenuItemManager.shared fetchRepoLatestVersion:EZGithubRepoEasydict completion:^(NSString *latestVersion) {
         NSString *latestVersionString = [NSString stringWithFormat:@"(%@ %@)", NSLocalizedString(@"lastest_version", nil), latestVersion];
         self.latestVersionTextField.stringValue = latestVersionString;
-    } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
     }];
 }
 
