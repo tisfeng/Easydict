@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)remove;
 
+- (void)fetchRepoLatestRepoInfo:(NSString *)repo completion:(void (^)(NSDictionary *lastestVersionDict))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END
