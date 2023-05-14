@@ -12,11 +12,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSTextView (Height)
 
-- (CGFloat)getHeight;
+- (CGFloat)ez_getHeight;
 
-- (CGFloat)getHeightWithWidth:(CGFloat)width;
+- (CGFloat)ez_getHeightWithWidth:(CGFloat)width;
 
-- (CGFloat)getTextViewHeightWithWidth:(CGFloat)width;
+- (CGFloat)ez_getTextViewHeightWithWidth:(CGFloat)width;
+
+
+#pragma mark -
+
+- (CGSize)ez_getTextViewSize;
 
 @end
 

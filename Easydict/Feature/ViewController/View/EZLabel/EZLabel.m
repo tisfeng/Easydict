@@ -7,6 +7,7 @@
 //
 
 #import "EZLabel.h"
+#import "NSTextView+Height.h"
 
 @implementation EZLabel
 
@@ -24,6 +25,7 @@
     
     self.lineSpacing = 4;
     self.paragraphSpacing = 15;
+    self.font = [NSFont systemFontOfSize:14];
 }
 
 - (void)setText:(NSString *)text {
@@ -43,7 +45,7 @@
     [attributedString addAttributes:@{
         NSParagraphStyleAttributeName : paragraphStyle,
         NSKernAttributeName : @(0.2),
-        NSFontAttributeName : [NSFont systemFontOfSize:14],
+        NSFontAttributeName : self.font,
     }
                               range:range];
     
@@ -61,6 +63,15 @@
         [textView.textStorage setAttributedString:attributedString];
     }];
 }
+
+
+#pragma mark -
+
+- (CGSize)oneLineSize {
+    CGSize size = [self ez_getTextViewSize];
+    return size;
+}
+
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
