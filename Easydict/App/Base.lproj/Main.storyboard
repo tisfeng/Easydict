@@ -719,32 +719,32 @@ DQ
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="jsC-rB-zr4"/>
-                        <menuItem title="输入翻译" id="AWf-Ci-7QE">
+                        <menuItem title="输入翻译" image="keyboard" catalog="system" id="AWf-Ci-7QE">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="inputTranslate:" target="qM9-fT-Fym" id="o4F-Fg-ALf"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="截图翻译" id="2TG-8C-8RM">
+                        <menuItem title="截图翻译" image="camera.viewfinder" catalog="system" id="2TG-8C-8RM">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="snipAction:" target="qM9-fT-Fym" id="Vkh-bk-b8F"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="划词翻译" id="lUI-Zn-Bwr">
+                        <menuItem title="划词翻译" image="highlighter" catalog="system" id="lUI-Zn-Bwr">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="translateAction:" target="qM9-fT-Fym" id="d5U-cW-GgJ"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="显示迷你窗口" id="PmP-cO-1HF">
+                        <menuItem title="显示迷你窗口" image="dock.rectangle" catalog="system" id="PmP-cO-1HF">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="showMiniFloatingWindow:" target="qM9-fT-Fym" id="tpb-oQ-dVA"/>
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="ch8-gu-f7X"/>
-                        <menuItem title="静默截图 OCR" id="bGs-JX-JVH">
+                        <menuItem title="静默截图 OCR" image="camera.metering.spot" catalog="system" id="bGs-JX-JVH">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <attributedString key="userComments">
                                 <fragment content="slient screen ocr"/>
@@ -799,4 +799,11 @@ DQ
             <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="camera.metering.spot" catalog="system" width="18" height="14"/>
+        <image name="camera.viewfinder" catalog="system" width="16" height="15"/>
+        <image name="dock.rectangle" catalog="system" width="18" height="14"/>
+        <image name="highlighter" catalog="system" width="17" height="16"/>
+        <image name="keyboard" catalog="system" width="19" height="13"/>
+    </resources>
 </document>
