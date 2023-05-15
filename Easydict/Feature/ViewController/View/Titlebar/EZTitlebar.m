@@ -124,7 +124,7 @@
             
             eudicButton.link = @"eudic://dict/%@";
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = @"Open in Eudic, ⌘+⇧+⏎";
+            eudicButton.toolTip = NSLocalizedString(@"Open in Eudic, ⌘+⇧+⏎", nil);
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
