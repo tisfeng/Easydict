@@ -18,7 +18,10 @@
 static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
 static CGFloat const kChineseWordWidth = 13; // [self widthOfString:@"爱"]; // 13.26
 
-static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
+
+static NSString *const kLineBreak = @"\n";
+static NSString *const kParagraphBreak = @"\n\n";
 
 @interface EZAppleService ()
 
@@ -591,10 +594,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
             NSString *joinedString;
             if (isNewParagraph) {
-                joinedString = @"\n"; // @"\n\n", Paragraph
+                joinedString = kParagraphBreak; // @"\n\n", Paragraph
             } else if (isNewLine) {
                 if (needLineBreak) {
-                    joinedString = @"\n"; // 0.5 - 0.06 - 0.4 = 0.04
+                    joinedString = kLineBreak; // 0.5 - 0.06 - 0.4 = 0.04
                 } else {
                     NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
                     CGFloat prevLineLength = prevBoundingBox.size.width;
@@ -617,14 +620,14 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     }
     
     ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
-    ocrResult.texts = [mergedText componentsSeparatedByString:@"\n"];
+    ocrResult.texts = [mergedText componentsSeparatedByString:kLineBreak];
     ocrResult.raw = recognizedStrings;
     
     if (recognizedStrings.count > 0) {
         ocrResult.confidence = confidence / recognizedStrings.count;
     }
     
-    NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:50];
+    NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:100];
     
     NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
 }
@@ -723,7 +726,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 if (ocrResult.confidence == mostConfidence) {
                     [mostConfidentResults addObject:result];
                 }
-                NSString *mergedText = [ocrResult.mergedText trimToMaxLength:50];
+                NSString *mergedText = [ocrResult.mergedText trimToMaxLength:100];
                 NSLog(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
             }
 
@@ -764,7 +767,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
             }
             
             NSString *mergedText = firstOCRResult.mergedText;
-            NSString *logMergedText = [mergedText trimToMaxLength:50];
+            NSString *logMergedText = [mergedText trimToMaxLength:100];
             NSLog(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
                     
             completion(firstOCRResult, error);
@@ -1250,7 +1253,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
 
     
     if (needLineBreak) {
-        joinedString = @"\n";
+        joinedString = kLineBreak;
     } else if ([self isPunctuationChar:lastChar]) {
         // if last char is a punctuation mark, then append a space, since ocr will remove white space.
         joinedString = @" ";
