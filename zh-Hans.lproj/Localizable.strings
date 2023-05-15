@@ -139,15 +139,15 @@
 "present_participle" = "现在分词";
 "root" = "词根";
 
-"Toggle Languages, ⌘+T" = "切换语言，⌘+T";
-"Stop" = "停止";
-"Play" = "播放";
-"%@ Audio, ⌘+S" = "%@音频，⌘+S";
-"Copy Text" = "拷贝文本";
-"Unpin" = "取消钉住";
-"Pin" = "钉住窗口";
-"%@, ⌘+P " = "%@，⌘+P ";
-"Hide" = "隐藏";
-"Show"= "显示";
-"Open in Google, ⌘+⏎" = "通过 Google 搜索，⌘+⏎";
-"Open in Eudic, ⌘+⇧+⏎" = "在欧路词典中打开，⌘+⇧+⏎";
+"toggle_languages" = "切换语言，⌘+T";
+"stop" = "停止";
+"play" = "播放";
+"audio" = "%@音频，⌘+S";
+"copy_text" = "拷贝文本";
+"unpin" = "取消钉住";
+"pin" = "钉住窗口";
+"pin_window" = "%@，⌘+P ";
+"hide" = "隐藏";
+"show"= "显示";
+"open_in_google" = "通过 Google 搜索，⌘+⏎";
+"open_in_eudic" = "在欧路词典中打开，⌘+⇧+⏎";

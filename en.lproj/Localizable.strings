@@ -137,15 +137,15 @@
 "present_participle" = "Present participle";
 "root" = "Root";
 
-"Toggle Languages, ⌘+T" = "Toggle Languages, ⌘+T";
-"Stop" = "Stop";
-"Play" = "Play";
-"%@ Audio, ⌘+S" = "%@ Audio, ⌘+S";
-"Copy Text" = "Copy Text";
-"Unpin" = "Unpin";
-"Pin" = "Pin";
-"%@, ⌘+P " = "%@, ⌘+P ";
-"Hide" = "Hide";
-"Show"= "Show";
-"Open in Google, ⌘+⏎" = "Open in Google, ⌘+⏎";
-"Open in Eudic, ⌘+⇧+⏎" = "Open in Eudic, ⌘+⇧+⏎";
+"toggle_languages" = "Toggle Languages, ⌘+T";
+"stop" = "Stop";
+"play" = "Play";
+"audio" = "%@ Audio, ⌘+S";
+"copy_text" = "Copy Text";
+"unpin" = "Unpin";
+"pin" = "Pin";
+"pin_window" = "%@, ⌘+P ";
+"hide" = "Hide";
+"show"= "Show";
+"open_in_google" = "Open in Google, ⌘+⏎";
+"open_in_eudic" = "Open in Eudic, ⌘+⇧+⏎";
