@@ -137,7 +137,7 @@
 "present_participle" = "Present participle";
 "root" = "Root";
 
-"toggle_languages" = "Toggle Languages, ⌘+T";
+"toggle_languages" = "Toggle Languages";
 "stop" = "Stop";
 "play" = "Play";
 "audio" = "%@ Audio, ⌘+S";
@@ -147,5 +147,5 @@
 "pin_window" = "%@, ⌘+P ";
 "hide" = "Hide";
 "show"= "Show";
-"open_in_google" = "Open in Google, ⌘+⏎";
-"open_in_eudic" = "Open in Eudic, ⌘+⇧+⏎";
+"open_in_google" = "Open in Google";
+"open_in_eudic" = "Open in Eudic";
