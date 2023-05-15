@@ -139,7 +139,7 @@
 "present_participle" = "现在分词";
 "root" = "词根";
 
-"toggle_languages" = "切换语言，⌘+T";
+"toggle_languages" = "切换语言";
 "stop" = "停止";
 "play" = "播放";
 "audio" = "%@音频，⌘+S";
@@ -149,5 +149,5 @@
 "pin_window" = "%@，⌘+P ";
 "hide" = "隐藏";
 "show"= "显示";
-"open_in_google" = "通过 Google 搜索，⌘+⏎";
-"open_in_eudic" = "在欧路词典中打开，⌘+⇧+⏎";
+"open_in_google" = "通过 Google 搜索";
+"open_in_eudic" = "在欧路词典中打开";
