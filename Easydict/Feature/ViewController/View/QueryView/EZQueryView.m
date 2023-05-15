@@ -77,10 +77,8 @@
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
         [self highlightAllLinks];
         
-        if (EZConfiguration.shared.autoQueryPastedText) {
-            if (self.enterActionBlock) {
-                self.enterActionBlock(text);
-            }
+        if (self.pasteTextBlock) {
+            self.pasteTextBlock(text);
         }
     }];
     
