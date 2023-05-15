@@ -180,8 +180,9 @@
 - (void)setPin:(BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
-    NSString *pinToolTip = pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
-    self.pinButton.toolTip = [NSString stringWithFormat:NSLocalizedString(@"pin_window", nil), pinToolTip];
+    NSString *shortcut = @"⌘+P";
+    NSString *action = pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
+    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     
     [self updatePinButtonImage];
 }

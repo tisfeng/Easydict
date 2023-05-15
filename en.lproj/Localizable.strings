@@ -138,13 +138,12 @@
 "root" = "Root";
 
 "toggle_languages" = "Toggle Languages";
-"stop" = "Stop";
-"play" = "Play";
-"audio" = "%@ Audio, ⌘+S";
+"play_audio" = "Play Audio";
+"stop_play_audio" = "Stop Playing Audio";
 "copy_text" = "Copy Text";
+"clear_all" = "Clear All";
 "unpin" = "Unpin";
 "pin" = "Pin";
-"pin_window" = "%@, ⌘+P ";
 "hide" = "Hide";
 "show"= "Show";
 "open_in_google" = "Open in Google";
