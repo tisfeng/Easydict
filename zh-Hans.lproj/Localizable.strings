@@ -138,3 +138,15 @@
 "past_participle" = "过去分词";
 "present_participle" = "现在分词";
 "root" = "词根";
+
+"toggle_languages" = "切换语言";
+"play_audio" = "播放音频";
+"stop_play_audio" = "停止播放音频";
+"copy_text" = "拷贝文本";
+"clear_all" = "清空";
+"unpin" = "取消钉住";
+"pin" = "钉住窗口";
+"hide" = "隐藏";
+"show"= "显示";
+"open_in_google" = "通过 Google 搜索";
+"open_in_eudic" = "在欧路词典中打开";

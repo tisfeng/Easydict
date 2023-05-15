@@ -29,7 +29,7 @@
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     
-    self.toolTip = @"Copy Text";
+    self.toolTip = NSLocalizedString(@"copy_text", nil);
 }
 
 @end

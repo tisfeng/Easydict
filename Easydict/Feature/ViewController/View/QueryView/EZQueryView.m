@@ -104,9 +104,9 @@
     mm_weakify(audioButton);
     [audioButton setPlayStatus:^(BOOL isPlaying) {
         mm_strongify(audioButton);
-        
-        NSString *action = isPlaying ? @"Stop" : @"Play";
-        audioButton.toolTip = [NSString stringWithFormat:@"%@ Audio, ⌘+S", action];
+        NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
+        NSString *shortcut = @"⌘+S";
+        audioButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     }];
 
     [audioButton setPlayAudioBlock:^{
@@ -155,7 +155,10 @@
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#868686"]];
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
-    clearButton.toolTip = @"Clear All, ⌘+⇧+K";
+    
+    NSString *action = NSLocalizedString(@"clear_all", nil);
+    NSString *shortcut = @"⌘+⇧+K";
+    clearButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     
     [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");
