@@ -800,7 +800,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
-    CGFloat leftOffset = EZAudioButtonLeftMargin_6;
+    CGFloat leftOffset = EZAudioButtonLeftMargin_7;
     CGFloat topOffset = 6;
     CGFloat kRightMargin = EZAudioButtonRightPadding_0;
     

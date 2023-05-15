@@ -242,7 +242,7 @@
     
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-EZAudioButtonBottomMargin_5);
-        make.left.offset(EZAudioButtonLeftMargin_6);
+        make.left.offset(EZAudioButtonLeftMargin_7);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_25);
     }];
     
