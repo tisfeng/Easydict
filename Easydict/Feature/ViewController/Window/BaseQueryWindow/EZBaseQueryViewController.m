@@ -189,19 +189,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSDictionary *userInfo = notification.userInfo;
     EZWindowType type = [userInfo[EZWindowTypeKey] integerValue];
     if (type == self.windowType ||!userInfo) {
-        [self updateServicesAndQuery:YES];
+        [self updateServices];
     }
 }
 
-- (void)updateServicesAndQuery:(BOOL)startQuery {
+- (void)updateServices {
     [self setupServices];
     [self resetAllResults];
 
-    [self reloadTableViewData:^{
-        if (startQuery && self.queryText.length > 0) {
-            [self startQueryInputText];
-        }
-    }];
+    [self reloadTableViewData:nil];
 }
 
 - (void)boundsDidChangeNotification:(NSNotification *)notification {
