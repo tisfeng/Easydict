@@ -18,6 +18,7 @@
 @implementation EZQueryModel
 
 @synthesize needDetectLanguage = _needDetectLanguage;
+@synthesize detectedLanguage = _detectedLanguage;
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -27,6 +28,7 @@
         self.actionType = EZActionTypeInputQuery;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
         self.needDetectLanguage = YES;
+        self.showAutoLanguage = NO;
         self.specifiedTextLanguageDict = [NSMutableDictionary dictionary];
     }
     return self;
@@ -39,10 +41,11 @@
     model.userSourceLanguage = self.userSourceLanguage;
     model.userTargetLanguage = self.userTargetLanguage;
     model.detectedLanguage = self.detectedLanguage;
-    model.ocrImage = self.ocrImage;
+    model.OCRImage = self.OCRImage;
     model.queryViewHeight = self.queryViewHeight;
     model.audioURL = self.audioURL;
     model.needDetectLanguage = self.needDetectLanguage;
+    model.showAutoLanguage = self.showAutoLanguage;
     model.specifiedTextLanguageDict = [self.specifiedTextLanguageDict mutableCopy];
     
     return model;
@@ -62,16 +65,24 @@
     _actionType = actionType;
     
     if (actionType != EZActionTypeOCRQuery && actionType != EZActionTypeScreenshotOCR) {
-        _ocrImage = nil;
+        _OCRImage = nil;
     }
 }
 
-- (void)setOcrImage:(NSImage *)ocrImage {
-    _ocrImage = ocrImage;
+- (void)setOCRImage:(NSImage *)ocrImage {
+    _OCRImage = ocrImage;
     
     if (ocrImage) {
         _actionType = EZActionTypeOCRQuery;
     }
+}
+
+- (EZLanguage)detectedLanguage {
+    if (_queryText.length == 0) {
+        _detectedLanguage = EZLanguageAuto;
+    }
+    
+    return _detectedLanguage;
 }
 
 - (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
@@ -96,6 +107,10 @@
 
 - (void)setNeedDetectLanguage:(BOOL)needDetectLanguage {
     _needDetectLanguage = needDetectLanguage;
+    
+    if (needDetectLanguage) {
+        _showAutoLanguage = NO;
+    }
     
     [self setDetectedLanguage:self.detectedLanguage];
 }
@@ -122,6 +137,13 @@
     return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
 }
 
+- (BOOL)showAutoLanguage {
+    if (self.queryText.length == 0) {
+        return NO;
+    }
+    
+    return _showAutoLanguage;
+}
 
 #pragma mark - Stop Block
 

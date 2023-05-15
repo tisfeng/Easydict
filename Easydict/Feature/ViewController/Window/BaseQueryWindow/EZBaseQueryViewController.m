@@ -312,6 +312,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSLog(@"query actionType: %@", actionType);
     
     if (text.trim.length == 0) {
+        NSLog(@"query text is empty");
         return;
     }
 
@@ -373,7 +374,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)startOCRImage:(NSImage *)image actionType:(EZActionType)actionType {
     NSLog(@"start OCR Image");
 
-    self.queryModel.ocrImage = image;
+    self.queryModel.OCRImage = image;
     self.queryModel.actionType = actionType;
 
     self.queryView.isTypingChinese = NO;
@@ -436,6 +437,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)retryQuery {
     NSLog(@"retry query");
+    
+    // Re-detect langauge when retry.
+    self.queryModel.detectedLanguage = EZLanguageAuto;
+    self.queryModel.needDetectLanguage = YES;
+    
     [self startQueryWithType:self.queryModel.actionType];
 }
 
@@ -454,7 +460,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
     self.queryText = @"";
-    self.queryModel.ocrImage = nil;
+    self.queryModel.OCRImage = nil;
     [self.queryView setAlertTextHidden:YES];
     
     [self.audioPlayer stop];;
@@ -530,7 +536,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)startQueryWithType:(EZActionType)actionType {
-    NSImage *ocrImage = self.queryModel.ocrImage;
+    NSImage *ocrImage = self.queryModel.OCRImage;
     if (actionType == EZActionTypeOCRQuery && ocrImage) {
         [self startOCRImage:ocrImage actionType:actionType];
     } else {
@@ -973,8 +979,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.detectManager detectText:queryText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
 
-        // Show detected language button, even auto detect.
-        [self.queryView showAutoDetectLanguage:YES];
+        // Show detected language button, even detect auto.
+        self.queryModel.showAutoLanguage = YES;
         [self updateQueryViewModelAndDetectedLanguage:queryModel];
 
         if (completion) {
@@ -983,13 +989,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
-- (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {    
-    if (queryModel.queryText.length == 0) {
-        queryModel.detectedLanguage = EZLanguageAuto;
-
-        [self.queryView showAutoDetectLanguage:NO];
-    }
-
+- (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
     self.queryView.clearButtonHidden = (queryModel.queryText.length == 0) && ([self allShowingResults].count == 0);
 
     self.queryView.queryModel = queryModel;

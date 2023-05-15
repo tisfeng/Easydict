@@ -84,6 +84,7 @@
         }
     }];
     
+    // When programatically setting the text, like auto select text, or OCR text.
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
         [self updateQueryText:text];
     }];
@@ -225,10 +226,6 @@
     self.textView.editable = hidden;
     self.detectButton.showAutoLanguage = NO;
     [self updateDetectButton];
-}
-
-- (void)showAutoDetectLanguage:(BOOL)showFlag {
-    self.detectButton.showAutoLanguage = self.queryModel.queryText.length;
 }
 
 #pragma mark - Rewrite
@@ -465,6 +462,7 @@
 
 #pragma mark - Other
 
+/// Must call this method when updating query text, whether user input or program update.
 - (void)updateQueryText:(nullable NSString *)text {
     // !!!: set string will change selectedRange, means it will change cursor position.
     if (text) {
@@ -529,6 +527,7 @@
 }
 
 - (void)updateDetectButton {
+    self.detectButton.showAutoLanguage = self.queryModel.showAutoLanguage;
     self.detectButton.detectedLanguage = self.queryModel.detectedLanguage;
     
     CGFloat height = 20;
