@@ -136,3 +136,15 @@
 "past_participle" = "Past participle";
 "present_participle" = "Present participle";
 "root" = "Root";
+
+"toggle_languages" = "Toggle Languages";
+"play_audio" = "Play Audio";
+"stop_play_audio" = "Stop Playing Audio";
+"copy_text" = "Copy Text";
+"clear_all" = "Clear All";
+"unpin" = "Unpin";
+"pin" = "Pin";
+"hide" = "Hide";
+"show"= "Show";
+"open_in_google" = "Open in Google";
+"open_in_eudic" = "Open in Eudic";

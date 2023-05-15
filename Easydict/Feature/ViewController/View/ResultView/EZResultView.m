@@ -339,7 +339,7 @@
         arrowImage = [NSImage imageNamed:@"arrow-down"];
     }
     
-    self.arrowButton.toolTip = self.result.isShowing ? @"Hide" : @"Show";
+    self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
     
     [self.arrowButton excuteLight:^(NSButton *button) {
         button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];

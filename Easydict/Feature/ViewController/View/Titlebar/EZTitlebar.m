@@ -96,7 +96,7 @@
         
         googleButton.link = @"https://www.google.com/search?q=%@";
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
-        googleButton.toolTip = @"Open in Google, ⌘+⏎";
+        googleButton.toolTip = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"]; 
         googleButton.contentTintColor = NSColor.clearColor;
         
         [googleButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -124,7 +124,7 @@
             
             eudicButton.link = @"eudic://dict/%@";
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = @"Open in Eudic, ⌘+⇧+⏎";
+            eudicButton.toolTip = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];  
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -180,8 +180,9 @@
 - (void)setPin:(BOOL)pin {
     EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
     window.pin = pin;
-    NSString *pinToolTip = pin ? @"Unpin" : @"Pin";
-    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, ⌘+P ", pinToolTip];
+    NSString *shortcut = @"⌘+P";
+    NSString *action = pin ? NSLocalizedString(@"unpin", nil) : NSLocalizedString(@"pin", nil);
+    self.pinButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
     
     [self updatePinButtonImage];
 }
