@@ -50,8 +50,6 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 - (void)startLoadingAnimation:(BOOL)isLoading;
 - (void)setAlertTextHidden:(BOOL)hidden;
 
-- (void)showAutoDetectLanguage:(BOOL)showFlag;
-
 /// Highlight all links in textstorage
 - (void)highlightAllLinks;
 

@@ -163,7 +163,7 @@
 }
 
 - (void)ocr:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.ocrImage;
+    NSImage *image = self.queryModel.OCRImage;
     if (!image) {
         NSLog(@"image cannot be nil");
         return;
@@ -174,7 +174,7 @@
 
 /// If not designated ocr language, after ocr, we use detected language to ocr again.
 - (void)deepOCR:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSImage *image = self.queryModel.ocrImage;
+    NSImage *image = self.queryModel.OCRImage;
     if (!image) {
         NSLog(@"image cannot be nil");
         return;

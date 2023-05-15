@@ -297,7 +297,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         automaticallyDetectsLanguage = NO;
     }
     
-    [self ocrImage:queryModel.ocrImage
+    [self ocrImage:queryModel.OCRImage
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
@@ -692,7 +692,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         dispatch_group_enter(group);
         
         // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
-        [self ocrImage:self.queryModel.ocrImage
+        [self ocrImage:self.queryModel.OCRImage
               language:ezLanguage
             autoDetect:YES
             completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
@@ -747,6 +747,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                     NSString *mergedText = ocrResult.mergedText;
                     EZLanguage detectedLanguage = [self detectText:mergedText];
                     if ([detectedLanguage isEqualToString:ocrResult.from]) {
+                        NSLog(@"OCR detect language: %@", detectedLanguage);
                         firstResult = result;
                         shouldBreak = YES;
                     }
