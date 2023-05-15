@@ -38,6 +38,7 @@ static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 @property (nonatomic, copy) void (^copyTextBlock)(NSString *text);
 @property (nonatomic, copy) void (^detectActionBlock)(NSButton *button);
 @property (nonatomic, copy) void (^clearBlock)(NSString *text);
+@property (nonatomic, copy) void (^pasteTextBlock)(NSString *text);
 
 @property (nonatomic, copy) void (^updateQueryTextBlock)(NSString *text, CGFloat queryViewHeight);
 @property (nonatomic, copy) void (^selectedLanguageBlock)(EZLanguage language);

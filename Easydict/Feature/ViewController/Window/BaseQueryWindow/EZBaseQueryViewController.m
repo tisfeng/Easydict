@@ -1070,6 +1070,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         mm_strongify(self);
         [self startQueryText:text];
     }];
+    
+    [queryView setPasteTextBlock:^(NSString * _Nonnull text) {
+        mm_strongify(self);
+        [self detectQueryText:^{
+            if ([EZConfiguration.shared autoQueryPastedText]) {
+                [self startQueryWithType:EZActionTypeInputQuery];
+            }
+        }];
+    }];
 
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
