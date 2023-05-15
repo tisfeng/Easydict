@@ -32,10 +32,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (EZLanguage)firstLanguage;
 + (EZLanguage)secondLanguage;
 
+/// First langauge is simplified Chinese or traditional Chinese.
 + (BOOL)isChineseFirstLanguage;
++ (BOOL)isEnglishFirstLanguage;
+
+/// Is simplified Chinese or traditional Chinese.
 + (BOOL)isChineseLanguage:(EZLanguage)language;
 
-+ (BOOL)isEnglishFirstLanguage;
++ (BOOL)isSimplifiedChinese:(EZLanguage)language;
++ (BOOL)isTraditionalChinese:(EZLanguage)language;
++ (BOOL)isEnglishLangauge:(EZLanguage)language;
 
 + (BOOL)containsEnglishPreferredLanguage;
 + (BOOL)containsChinesePreferredLanguage;

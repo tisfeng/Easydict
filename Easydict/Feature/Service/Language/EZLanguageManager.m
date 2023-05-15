@@ -123,6 +123,11 @@
     return [self preferredTwoLanguages][1];
 }
 
++ (BOOL)isEnglishFirstLanguage {
+    EZLanguage firstLanguage = [self firstLanguage];
+    return [firstLanguage isEqualToString:EZLanguageEnglish];
+}
+
 + (BOOL)isChineseFirstLanguage {
     EZLanguage firstLanguage = [self firstLanguage];
     return [self isChineseLanguage:firstLanguage];
@@ -135,9 +140,16 @@
     return NO;
 }
 
-+ (BOOL)isEnglishFirstLanguage {
-    EZLanguage firstLanguage = [self firstLanguage];
-    return [firstLanguage isEqualToString:EZLanguageEnglish];
++ (BOOL)isSimplifiedChinese:(EZLanguage)language {
+    return [language isEqualToString:EZLanguageSimplifiedChinese];
+}
+
++ (BOOL)isTraditionalChinese:(EZLanguage)language {
+    return [language isEqualToString:EZLanguageTraditionalChinese];
+}
+
++ (BOOL)isEnglishLangauge:(EZLanguage)language {
+    return [language isEqualToString:EZLanguageEnglish];
 }
 
 

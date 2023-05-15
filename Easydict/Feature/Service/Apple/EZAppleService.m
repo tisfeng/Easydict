@@ -209,6 +209,11 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     completion(mostConfidentLanguage, nil);
 }
 
+- (EZLanguage)detectText:(NSString *)text {
+    EZLanguage mostConfidentLanguage = [self detectTextLanguage:text printLog:NO];
+    return mostConfidentLanguage;
+}
+
 /// Apple System language recognize, and try to correct language.
 - (EZLanguage)detectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
     EZLanguage mostConfidentLanguage = [self appleDetectTextLanguage:text printLog:logFlag];
@@ -224,7 +229,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     } else {
         // Try to detect Chinese language.
         if ([EZLanguageManager isChineseFirstLanguage]) {
-            // test: 開門 open, 使用1 OCR --> 英文 --> 中文
+            // test: 開門 open, 使用1 OCR --> 英文, --> 中文
             EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text fromLanguage:mostConfidentLanguage];
             if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
                 mostConfidentLanguage = chineseLanguage;
@@ -235,12 +240,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return mostConfidentLanguage;
 }
 
+/// Apple original detect language.
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text {
     EZLanguage mostConfidentLanguage = [self appleDetectTextLanguage:text printLog:NO];
     return mostConfidentLanguage;
 }
 
-/// Apple original language detect.
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [self appleDetectTextLanguageDict:text printLog:logFlag];
     EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict printLog:logFlag];
@@ -248,13 +253,12 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     return mostConfidentLanguage;
 }
 
+/// Apple original detect language dict.
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
-    // Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
-    
-    // macos(10.14)
+    // 10.14+  Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
     NLLanguageRecognizer *recognizer = [[NLLanguageRecognizer alloc] init];
     
     // Because Apple text recognition is often inaccurate, we need to limit the recognition language type.
@@ -265,7 +269,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
 
-    // !!!: All numbers will be return nil: 729
+    // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
         EZLanguage firstLanguage = [EZLanguageManager firstLanguage];
         dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
@@ -496,7 +500,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     
     
     NSArray<NSString *> *stringArray = ocrResult.texts;
-    NSLog(@"ocr stringArray: %@", stringArray);
+    NSLog(@"ocr stringArray (%@): %@", ocrResult.from ,stringArray);
     
 
     CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
@@ -620,7 +624,9 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
         ocrResult.confidence = confidence / recognizedStrings.count;
     }
     
-    NSLog(@"ocr text: %@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+    NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:50];
+    
+    NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
 }
 
 
@@ -705,7 +711,7 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 return [confidence2 compare:confidence1];
             }];
             
-            NSDictionary *firstResult = sortedResults.firstObject;
+            __block NSDictionary *firstResult = sortedResults.firstObject;
             EZOCRResult *firstOCRResult = firstResult[@"ocrResult"];
             
             // Since there are some languages that have the same confidence, we need to get all of them.
@@ -717,23 +723,32 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 if (ocrResult.confidence == mostConfidence) {
                     [mostConfidentResults addObject:result];
                 }
-                NSLog(@"%@(%.1f): %@", ocrResult.from, ocrResult.confidence, ocrResult.mergedText);
+                NSString *mergedText = [ocrResult.mergedText trimToMaxLength:50];
+                NSLog(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
             }
-            
+
+            /**
+             Since ocr detect language may be incorrect, we need to detect mergedText language again, get most confident OCR language.
+             
+             e.g. this lyrics may be OCR detected as simplified Chinese, but it's actually traditional Chinese.
+             
+             慢慢吹 輕輕送人生路 你就走
+             就當我倆沒有明天
+             就當我俩只剩眼前
+             就當我都不曾離開
+             還仍佔滿你心懐
+             
+             */
             if (mostConfidentResults.count > 1) {
-                // iterate mostConfidentResults, find the first ocrResult.from in supportLanguages
-                NSArray<NLLanguage> *sortedAppleLanguages = [[self appleLanguagesDictionary] sortedValues];
-                
-                BOOL shouldBreak = NO;
-                for (NLLanguage appleLanguage in sortedAppleLanguages) {
-                    EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:appleLanguage];
-                    for (NSDictionary *result in mostConfidentResults) {
-                        EZOCRResult *ocrResult = result[@"ocrResult"];
-                        if ([ezLanguage isEqualToString:ocrResult.from]) {
-                            firstResult = result;
-                            shouldBreak = YES;
-                            break;
-                        }
+                __block BOOL shouldBreak = NO;
+
+                for (NSDictionary *result in mostConfidentResults) {
+                    EZOCRResult *ocrResult = result[@"ocrResult"];
+                    NSString *mergedText = ocrResult.mergedText;
+                    EZLanguage detectedLanguage = [self detectText:mergedText];
+                    if ([detectedLanguage isEqualToString:ocrResult.from]) {
+                        firstResult = result;
+                        shouldBreak = YES;
                     }
                     if (shouldBreak) {
                         break;
@@ -747,8 +762,10 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
                 error = nil;
             }
             
-            NSLog(@"Final ocr: %@(%.1f): %@", firstOCRResult.from, firstOCRResult.confidence, firstOCRResult.mergedText);
-            
+            NSString *mergedText = firstOCRResult.mergedText;
+            NSString *logMergedText = [mergedText trimToMaxLength:50];
+            NSLog(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
+                    
             completion(firstOCRResult, error);
         }
     });
@@ -1026,19 +1043,13 @@ static NSArray *kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"
     // test: 狗，勿 --> zh-Hant --> zh-Hans
     
     // Check if simplified Chinese.
-    NSString *simplifiedChinese = [chineseText toSimplifiedChineseText];
-    if ([simplifiedChinese isEqualToString:chineseText]) {
+    if ([chineseText isSimplifiedChinese]) {
         return EZLanguageSimplifiedChinese;
     }
     
-    // Check if traditional Chinese. 開門
-    NSString *traditionalChinese = [chineseText toTraditionalChineseText];
-    if ([traditionalChinese isEqualToString:chineseText]) {
-        return EZLanguageTraditionalChinese;
-    }
-    
-    return EZLanguageSimplifiedChinese;
+    return EZLanguageTraditionalChinese;
 }
+
 
 #pragma mark -
 

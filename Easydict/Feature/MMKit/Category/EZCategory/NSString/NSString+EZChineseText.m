@@ -22,4 +22,24 @@
     return simplifiedChinese;
 }
 
+/// Is simplified Chinese.
+/// !!!: Characters in the text must be all simplified Chinese, otherwise it will return NO.
+- (BOOL)isSimplifiedChinese {
+    NSString *simplifiedChinese = [self toSimplifiedChineseText];
+    if ([simplifiedChinese isEqualToString:self]) {
+        return YES;
+    }
+    return NO;
+}
+
+/// Is traditional Chinese.
+/// !!!: Characters in the text must be all traditional Chinese, otherwise it will return NO.
+- (BOOL)isTraditionalChinese {
+    NSString *traditionalChinese = [self toTraditionalChineseText];
+    if ([traditionalChinese isEqualToString:self]) {
+        return YES;
+    }
+    return NO;
+}
+
 @end
