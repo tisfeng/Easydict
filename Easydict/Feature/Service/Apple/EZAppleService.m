@@ -19,6 +19,8 @@ static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; /
 static CGFloat const kChineseWordWidth = 13; // [self widthOfString:@"爱"]; // 13.26
 
 static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
+static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—", @"-", @"–" ];
+
 
 static NSString *const kLineBreak = @"\n";
 static NSString *const kParagraphBreak = @"\n\n";
@@ -443,8 +445,7 @@ static NSString *const kParagraphBreak = @"\n\n";
         for (NSInteger i = 0; i < recognizedString.length; i++) {
             totalCharCount += 1;
             NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
-            NSArray *allowList = @[ @"《", @"》", @"—" ];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharArray:allowList];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
             if (isChar) {
                 punctuationMarkCount += 1;
             }
@@ -1338,8 +1339,7 @@ static NSString *const kParagraphBreak = @"\n\n";
         for (NSInteger i = 0; i < string.length; i++) {
             totalCharCount += 1;
             NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            NSArray *allowList = @[ @"《", @"》", @"—" ];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharArray:allowList];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
             if (isChar) {
                 _punctuationMarkCount += 1;
             }
@@ -1599,10 +1599,10 @@ static NSString *const kParagraphBreak = @"\n\n";
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
 - (BOOL)isPunctuationChar:(NSString *)charString {
-    return [self isPunctuationChar:charString excludeCharArray:nil];
+    return [self isPunctuationChar:charString excludeCharacters:nil];
 }
 
-- (BOOL)isPunctuationChar:(NSString *)charString excludeCharArray:(nullable NSArray *)charArray {
+- (BOOL)isPunctuationChar:(NSString *)charString excludeCharacters:(nullable NSArray *)charArray {
     if (charString.length != 1) {
         return NO;
     }
