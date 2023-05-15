@@ -1,6 +1,6 @@
 name: 功能建议
 description: 功能建议
-title: "🚀 功能建议："
+title: "🚀 功能建议：{{请填写标题}}"
 labels: ["enhancement"]
 assignees:
   -
@@ -40,3 +40,11 @@ body:
       label: 实现方案（可选）
       description: 对于该功能，您有什么预想的实现方案，或者建议？
       placeholder:
+
+  - type: checkboxes
+    id: PR
+    attributes:
+      label: 是否愿意提交 PR 实现该功能
+      description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是实现功能的最快的方式。
+      options:
+        - label: 我愿意提交 PR!
