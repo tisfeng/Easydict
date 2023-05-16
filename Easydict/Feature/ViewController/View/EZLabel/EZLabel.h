@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZLabel : NSTextView
 
 @property (nonatomic, copy) NSString *text;
+@property (nonatomic, strong) NSColor *textForegroundColor;
 
 @property (nonatomic, assign) CGFloat lineSpacing; // default 4
 

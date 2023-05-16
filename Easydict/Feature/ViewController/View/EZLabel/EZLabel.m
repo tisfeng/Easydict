@@ -26,6 +26,7 @@
     self.lineSpacing = 4;
     self.paragraphSpacing = 15;
     self.font = [NSFont systemFontOfSize:14];
+    self.textContainer.lineFragmentPadding = 2; // Default value: 5.0
 }
 
 - (void)setText:(NSString *)text {
@@ -51,13 +52,13 @@
     
     [self excuteLight:^(NSTextView *textView) {
         [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : [NSColor ez_resultTextLightColor],
+            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextLightColor],
         }
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];
     } dark:^(NSTextView *textView) {
         [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : [NSColor ez_resultTextDarkColor],
+            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextDarkColor],
         }
                                   range:range];
         [textView.textStorage setAttributedString:attributedString];
