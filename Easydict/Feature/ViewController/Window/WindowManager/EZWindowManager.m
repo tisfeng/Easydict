@@ -347,16 +347,20 @@ static EZWindowManager *_instance;
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
     [window setFrameOrigin:safeLocation];
     
-    [window makeKeyAndOrderFront:nil];
+    window.level = EZFloatingWindowLevel;
+    [window.queryViewController focusInputTextView];
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     if (!EZConfiguration.shared.hideMainWindow) {
         [_mainWindow orderOut:nil];
     }
     
-    window.level = EZFloatingWindowLevel;
-    [window.queryViewController focusInputTextView];
+    [window makeKeyWindow];
+    [window orderFrontRegardless];
     
+    // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
+//    [window makeKeyAndOrderFront:nil];
+        
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self updateFloatingWindowType:window.windowType];
@@ -389,20 +393,6 @@ static EZWindowManager *_instance;
     }
     
     return screen;
-}
-
-- (void)showWindow:(NSWindow *)window onScreen:(NSScreen *)screen atPoint:(NSPoint)point {
-    NSRect screenFrame = [screen frame];
-//    NSRect windowFrame = [window frame];
-
-    CGFloat x = NSMinX(screenFrame) + point.x;
-    CGFloat y = NSMaxY(screenFrame) - point.y;
-
-    NSPoint windowOrigin = NSMakePoint(x, y);
-
-    [window setFrameOrigin:windowOrigin];
-
-    [window orderFront:nil];
 }
 
 
@@ -593,7 +583,6 @@ static EZWindowManager *_instance;
         EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
-
     } else {
         // TODO: may be need to release main window to reduce memory, if user do need main window anymore.
         [_mainWindow close];
