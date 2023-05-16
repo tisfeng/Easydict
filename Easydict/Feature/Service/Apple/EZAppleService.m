@@ -14,10 +14,6 @@
 #import "EZTextWordUtils.h"
 #import "NSString+EZChineseText.h"
 
-/// general word width, alphabet count is abount 5, means if a line is short, then append \n.
-static CGFloat const kEnglishWordWidth = 30; // [self widthOfString:@"array"]; // 30.79
-static CGFloat const kChineseWordWidth = 13; // [self widthOfString:@"爱"]; // 13.26
-
 static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—", @"-", @"–" ];
 
@@ -208,6 +204,79 @@ static NSString *const kParagraphBreak = @"\n\n";
     } serviceType:self.serviceType];
 }
 
+/// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    self.queryModel = queryModel;
+    
+    BOOL automaticallyDetectsLanguage = YES;
+    BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
+    if (hasSpecifiedLanguage) {
+        automaticallyDetectsLanguage = NO;
+    }
+    
+    [self ocrImage:queryModel.OCRImage
+          language:queryModel.queryFromLanguage
+        autoDetect:automaticallyDetectsLanguage
+        completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+        if (hasSpecifiedLanguage || error || ocrResult.confidence == 1.0) {
+            queryModel.ocrConfidence = ocrResult.confidence;
+            completion(ocrResult, error);
+            return;
+        }
+        
+        NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
+        [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+            queryModel.ocrConfidence = ocrResult.confidence;
+            completion(ocrResult, error);
+        }];
+    }];
+}
+
+- (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"Apple not support ocrAndTranslate");
+}
+
+#pragma mark - Public Methods
+
+/// Convert NLLanguage to EZLanguage, e.g. zh-Hans --> Chinese-Simplified
+- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)appleLanguage {
+    EZLanguage ezLanguage = [self.appleLangEnumFromStringDict objectForKey:appleLanguage];
+    if (!ezLanguage) {
+        ezLanguage = EZLanguageAuto;
+    }
+    return ezLanguage;
+}
+
+/// Convert EZLanguage to NLLanguage, e.g. Chinese-Simplified --> zh-Hans
+- (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)ezLanguage {
+    return [self.appleLanguagesDictionary objectForKey:ezLanguage];
+}
+
+- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
+    NSLog(@"system speak: %@ (%@)", text, fromLanguage);
+    
+    // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
+    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
+    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+    
+    void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
+        [synthesizer startSpeakingString:text];
+    };
+    
+    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+        [self detectText:text completion:^(EZLanguage _Nonnull fromLanguage, NSError *_Nullable error) {
+            playBlock(text, fromLanguage);
+        }];
+    } else {
+        playBlock(text, fromLanguage);
+    }
+    
+    return synthesizer;
+}
+
+
+#pragma mark - Apple language detect
+
 /// System detect text language,
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
     EZLanguage mostConfidentLanguage = [self detectTextLanguage:text printLog:YES];
@@ -273,7 +342,7 @@ static NSString *const kParagraphBreak = @"\n\n";
     
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
-
+    
     // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
         EZLanguage firstLanguage = [EZLanguageManager firstLanguage];
@@ -292,583 +361,7 @@ static NSString *const kParagraphBreak = @"\n\n";
     return languageProbabilityDict;
 }
 
-/// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    self.queryModel = queryModel;
-
-    BOOL automaticallyDetectsLanguage = YES;
-    BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
-    if (hasSpecifiedLanguage) {
-        automaticallyDetectsLanguage = NO;
-    }
-    
-    [self ocrImage:queryModel.OCRImage
-          language:queryModel.queryFromLanguage
-        autoDetect:automaticallyDetectsLanguage
-        completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (hasSpecifiedLanguage || error || ocrResult.confidence == 1.0) {
-            queryModel.ocrConfidence = ocrResult.confidence;
-            completion(ocrResult, error);
-            return;
-        }
-        
-        NSDictionary *languageDict = [self appleDetectTextLanguageDict:ocrResult.mergedText printLog:YES];
-        [self getMostConfidentLangaugeOCRResult:languageDict completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-            queryModel.ocrConfidence = ocrResult.confidence;
-            completion(ocrResult, error);
-        }];
-    }];
-}
-
-- (void)ocrImage:(NSImage *)image
-        language:(EZLanguage)preferredLanguage
-      autoDetect:(BOOL)automaticallyDetectsLanguage
-      completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    NSLog(@"ocr language: %@", preferredLanguage);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // Convert NSImage to CGImage
-        CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
-        
-        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-        
-        // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
-        
-        MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
-        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
-        NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
-                                                                     preferredLanguages:[EZLanguageManager systemPreferredLanguages]];
-        
-        VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
-        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
-            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-            NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
-            
-            EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
-            ocrResult.from = preferredLanguage;
-            
-            if (error) {
-                completion(ocrResult, error);
-                return;
-            }
-            
-            BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
-            [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
-            if (!error && ocrResult.mergedText.length == 0) {
-                /**
-                 !!!: There are some problems with the system OCR.
-                 For example, it may return nil when ocr Japanese text:
-                 
-                 アイス・スノーセーリング世界選手権大会
-                 
-                 But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
-                 */
-                
-                if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
-                    EZLanguage tryLanguage = EZLanguageJapanese;
-                    [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
-                    return;
-                } else {
-                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
-                }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(ocrResult, error);
-            });
-            return;
-        }];
-        
-        if (@available(macOS 12.0, *)) {
-            //            NSError *error;
-            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
-            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
-            //            NSLog(@"supported Languages: %@", supportedLanguages);
-        }
-        
-        if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
-        }
-        
-        if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
-            // If has designated ocr language, move it to first priority.
-            recognitionLanguages = [self updateOCRRecognitionLanguages:recognitionLanguages
-                                                    preferredLanguages:@[ preferredLanguage ]];
-        }
-        
-        
-        NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
-        request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
-        
-        // TODO: need to test [usesLanguageCorrection] value.
-        // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
-        request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
-        
-        // Perform the text-recognition request.
-        [requestHandler performRequests:@[ request ] error:nil];
-    });
-}
-
-- (void)setupOCRResult:(EZOCRResult *)ocrResult
-               request:(VNRequest *_Nonnull)request
-     intelligentJoined:(BOOL)intelligentJoined {
-    EZLanguage language = ocrResult.from;
-    
-    CGFloat miniLineHeight = MAXFLOAT;
-    CGFloat totalLineHeight = 0;
-    CGFloat averageLineHeight = 0;
-    
-    // OCR line spacing may be less than 0
-    CGFloat miniLineSpacing = MAXFLOAT;
-    CGFloat miniPositiveLineSpacing = MAXFLOAT;
-    CGFloat totalLineSpacing = 0;
-    CGFloat averageLineSpacing = 0;
-    
-    CGFloat miniX = MAXFLOAT;
-    CGFloat maxLengthOfLine = 0;
-    CGFloat minLengthOfLine = MAXFLOAT;
-    NSInteger punctuationMarkCount = 0;
-    NSInteger totalCharCount = 0;
-    CGFloat charCountPerLine = 0;
-
-    NSMutableArray *lineLengthArray = [NSMutableArray array];
-    
-    NSMutableArray *recognizedStrings = [NSMutableArray array];
-    NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
-    
-    for (int i = 0; i < observationResults.count; i++) {
-        VNRecognizedTextObservation *observation = observationResults[i];
-        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
-        NSString *recognizedString = recognizedText.string;
-        [recognizedStrings addObject:recognizedString];
-        
-        // iterate string to check if has punctuation mark.
-        for (NSInteger i = 0; i < recognizedString.length; i++) {
-            totalCharCount += 1;
-            NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
-            if (isChar) {
-                punctuationMarkCount += 1;
-            }
-        }
-        
-        CGRect boundingBox = observation.boundingBox;
-//        NSLog(@"%@ %@", recognizedString, @(boundingBox));
-        
-        CGFloat lineLength = boundingBox.size.width;
-        [lineLengthArray addObject:@(lineLength)];
-        
-        CGFloat lineHeight = boundingBox.size.height;
-        totalLineHeight += lineHeight;
-        if (lineHeight < miniLineHeight) {
-            miniLineHeight = lineHeight;
-        }
-        
-        if (i > 0) {
-            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
-            CGRect prevBoundingBox = prevObservation.boundingBox;
-            
-            // !!!: deltaY may be < 0, means the [OCR] line frame is overlapped.
-            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            totalLineSpacing += deltaY;
-        
-            if (deltaY < miniLineSpacing) {
-                miniLineSpacing = deltaY;
-            }
-            
-            if (deltaY > 0 && deltaY < miniPositiveLineSpacing) {
-                miniPositiveLineSpacing = deltaY;
-            }
-        }
-
-        CGFloat x = boundingBox.origin.x;
-        if (x < miniX) {
-            miniX = x;
-        }
-        
-        CGFloat lengthOfLine = boundingBox.size.width;
-        if (lengthOfLine > maxLengthOfLine) {
-            maxLengthOfLine = lengthOfLine;
-        }
-        
-        if (lengthOfLine < minLengthOfLine) {
-            minLengthOfLine = lengthOfLine;
-        }
-    }
-    
-    ocrResult.texts = recognizedStrings;
-    ocrResult.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
-    
-    if (!intelligentJoined) {
-        return;
-    }
-    
-    
-    NSArray<NSString *> *stringArray = ocrResult.texts;
-    NSLog(@"ocr stringArray (%@): %@", ocrResult.from ,stringArray);
-    
-
-    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
-    charCountPerLine = totalCharCount / (CGFloat)stringArray.count;
-    
-    averageLineHeight = totalLineHeight / stringArray.count;
-    averageLineSpacing = totalLineSpacing / (stringArray.count - 1);
-        
-    BOOL isPoetry = [self isPoetryOfTextArray:recognizedStrings
-                              lineLengthArray:lineLengthArray
-                              maxLengthOfLine:maxLengthOfLine
-                         punctuationMarkCount:punctuationMarkCount
-                          punctuationMarkRate:punctuationMarkRate
-                                     language:language];
-    NSLog(@"isPoetry: %d", isPoetry);
-    
-    CGFloat confidence = 0;
-    NSMutableString *mergedText = [NSMutableString string];
-    
-    
-    for (int i = 0; i < observationResults.count; i++) {
-        VNRecognizedTextObservation *observation = observationResults[i];
-        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
-        confidence += recognizedText.confidence;
-        
-        NSString *recognizedString = recognizedText.string;
-        CGRect boundingBox = observation.boundingBox;
-        CGFloat lineLength = boundingBox.size.width;
-//        NSLog(@"%@ %@", recognizedString, @(boundingBox));
-        
-        /**
-         《摊破浣溪沙》  123  《浣溪沙》
-         
-         菡萏香销翠叶残，西风愁起绿波间。还与韶光共憔悴，不堪看。
-         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
-         
-         —— 五代十国 · 李璟
-         
-         
-         《摊破浣溪沙》
-         NSRect: {{0.19622092374434116, 0.72371967654986524}, {0.14098837808214662, 0.045082544702082616}}
-         
-         菡萏香销翠叶残，西风愁起绿波问。还与韶光共憔悴，不堪看。
-         NSRect: {{0.18604653059346432, 0.50134770889487879}, {0.65261626210058454, 0.064690026954177804}}
-         
-         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
-         NSRect: {{0.18604650913243892, 0.40389972491405723}, {0.65406975296814562,
-         
-         -一五代十国 •李璟
-         NSRect: {{0.19583333762553842, 0.26400000065806095}, {0.1833333311872308, 0.048668462953798897}}
-         */
-        // 如果 i 不是第一个元素，且前一个元素的 boundingBox 的 minY 值大于当前元素的 maxY 值，则认为中间有换行。
-        
-        if (i > 0) {
-            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
-            CGRect prevBoundingBox = prevObservation.boundingBox;
-            
-            // !!!: deltaY may be < 0
-            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            CGFloat deltaX = boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width);
-            
-            BOOL aligned = boundingBox.origin.x - miniX < 0.15;
-            BOOL needLineBreak = !aligned || isPoetry;
-            
-            // Note that line spacing is inaccurate, sometimes it's too small 😢
-            BOOL isNewParagraph = NO;
-            if (deltaY > 0) {
-                // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
-                if (deltaY / averageLineSpacing > 2.5 || deltaY / averageLineHeight > 1.2) {
-                    isNewParagraph = YES;
-                }
-            }
-            
-            // Note that sometimes the line frames will overlap a little, then deltaY will less then 0
-            BOOL isNewLine = NO;
-            if (deltaY > 0) {
-                isNewLine = YES;
-            } else {
-                if (fabs(deltaY) < miniLineHeight / 2) {
-                    isNewLine = YES;
-                }
-            }
-            
-            // System deltaX is about 0.05. If the deltaX of two line is too large, it may be a new line.
-            if (deltaX > 0.07) {
-                isNewLine = YES;
-            }
-
-            NSString *joinedString;
-            if (isNewParagraph) {
-                joinedString = kParagraphBreak; // @"\n\n", Paragraph
-            } else if (isNewLine) {
-                if (needLineBreak) {
-                    joinedString = kLineBreak; // 0.5 - 0.06 - 0.4 = 0.04
-                } else {
-                    NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
-                    CGFloat prevLineLength = prevBoundingBox.size.width;
-                    joinedString = [self joinedStringOfPrevText:prevString
-                                           prevLengthOfLine:prevLineLength
-                                                   lengthOfLine:lineLength
-                                            maxLengthOfLine:maxLengthOfLine
-                                                   language:language];
-                }
-            } else {
-                joinedString = @" "; // if the same line, just join two texts
-            }
-            
-            // 1. append joined string
-            [mergedText appendString:joinedString];
-        }
-        
-        // 2. append line text
-        [mergedText appendString:recognizedString];
-    }
-    
-    ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
-    ocrResult.texts = [mergedText componentsSeparatedByString:kLineBreak];
-    ocrResult.raw = recognizedStrings;
-    
-    if (recognizedStrings.count > 0) {
-        ocrResult.confidence = confidence / recognizedStrings.count;
-    }
-    
-    NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:100];
-    
-    NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
-}
-
-
-// Update OCR recognitionLanguages with preferred languages.
-- (NSArray<EZLanguage> *)updateOCRRecognitionLanguages:(NSArray<EZLanguage> *)recognitionLanguages
-                                    preferredLanguages:(NSArray<EZLanguage> *)preferredLanguages {
-    NSMutableArray *newRecognitionLanguages = [NSMutableArray arrayWithArray:recognitionLanguages];
-    for (EZLanguage preferredLanguage in [[preferredLanguages reverseObjectEnumerator] allObjects]) {
-        if ([recognitionLanguages containsObject:preferredLanguage]) {
-            [newRecognitionLanguages removeObject:preferredLanguage];
-            [newRecognitionLanguages insertObject:preferredLanguage atIndex:0];
-        }
-    }
-    
-    /**
-     Since ocr Chinese mixed with English is not very accurate,
-     we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
-     
-     风云 wind and clouds 99$ é
-     
-     */
-    if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
-        // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
-        for (EZLanguage language in [EZLanguageManager systemPreferredLanguages]) {
-            if ([EZLanguageManager isChineseLanguage:language]) {
-                [newRecognitionLanguages removeObject:language];
-                [newRecognitionLanguages insertObject:language atIndex:0];
-                break;
-            }
-        }
-    }
-    return [newRecognitionLanguages copy];
-}
-
-// return Apple OCR language codes with EZLanguage array.
-- (NSArray<NSString *> *)appleOCRLangaugeCodesWithRecognitionLanguages:(NSArray<EZLanguage> *)languages {
-    NSMutableArray *appleOCRLanguageCodes = [NSMutableArray array];
-    for (EZLanguage language in languages) {
-        NSString *appleOCRLangaugeCode = [[self ocrLanguageDictionary] objectForKey:language];
-        if (appleOCRLangaugeCode.length > 0) {
-            [appleOCRLanguageCodes addObject:appleOCRLangaugeCode];
-        }
-    }
-    return [appleOCRLanguageCodes copy];
-}
-
-
-- (void)getMostConfidentLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
-    /**
-     
-     苔むした岩に囲まれた滝
-     
-     */
-    NSArray<NLLanguage> *sortedLanguages = [languageProbabilityDict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        return [obj2 compare:obj1];
-    }];
-    
-    NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
-    dispatch_group_t group = dispatch_group_create();
-    
-    for (NLLanguage language in sortedLanguages) {
-        EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:language];
-        dispatch_group_enter(group);
-        
-        // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
-        [self ocrImage:self.queryModel.OCRImage
-              language:ezLanguage
-            autoDetect:YES
-            completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-            [results addObject:@{@"ocrResult" : ocrResult ?: [NSNull null], @"error" : error ?: [NSNull null]}];
-            dispatch_group_leave(group);
-        }];
-    }
-    
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        if (completion) {
-            NSArray<NSDictionary *> *sortedResults = [results sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                EZOCRResult *result1 = obj1[@"ocrResult"];
-                EZOCRResult *result2 = obj2[@"ocrResult"];
-                NSNumber *confidence1 = result1 ? @(result1.confidence) : @(-1);
-                NSNumber *confidence2 = result2 ? @(result2.confidence) : @(-1);
-                return [confidence2 compare:confidence1];
-            }];
-            
-            __block NSDictionary *firstResult = sortedResults.firstObject;
-            EZOCRResult *firstOCRResult = firstResult[@"ocrResult"];
-            
-            // Since there are some languages that have the same confidence, we need to get all of them.
-            NSMutableArray<NSDictionary *> *mostConfidentResults = [NSMutableArray array];
-            CGFloat mostConfidence = firstOCRResult.confidence;;
-            
-            for (NSDictionary *result in sortedResults) {
-                EZOCRResult *ocrResult = result[@"ocrResult"];
-                if (ocrResult.confidence == mostConfidence) {
-                    [mostConfidentResults addObject:result];
-                }
-                NSString *mergedText = [ocrResult.mergedText trimToMaxLength:100];
-                NSLog(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
-            }
-
-            /**
-             Since ocr detect language may be incorrect, we need to detect mergedText language again, get most confident OCR language.
-             
-             e.g. this lyrics may be OCR detected as simplified Chinese, but it's actually traditional Chinese.
-             
-             慢慢吹 輕輕送人生路 你就走
-             就當我倆沒有明天
-             就當我俩只剩眼前
-             就當我都不曾離開
-             還仍佔滿你心懐
-             
-             */
-            if (mostConfidentResults.count > 1) {
-                __block BOOL shouldBreak = NO;
-
-                for (NSDictionary *result in mostConfidentResults) {
-                    EZOCRResult *ocrResult = result[@"ocrResult"];
-                    NSString *mergedText = ocrResult.mergedText;
-                    EZLanguage detectedLanguage = [self detectText:mergedText];
-                    if ([detectedLanguage isEqualToString:ocrResult.from]) {
-                        NSLog(@"OCR detect language: %@", detectedLanguage);
-                        firstResult = result;
-                        shouldBreak = YES;
-                    }
-                    if (shouldBreak) {
-                        break;
-                    }
-                }
-            }
-            
-            firstOCRResult = firstResult[@"ocrResult"];
-            NSError *error = firstResult[@"error"];
-            if ([error isEqual:[NSNull null]]) {
-                error = nil;
-            }
-            
-            NSString *mergedText = firstOCRResult.mergedText;
-            NSString *logMergedText = [mergedText trimToMaxLength:100];
-            NSLog(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
-                    
-            completion(firstOCRResult, error);
-        }
-    });
-}
-
-
-- (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
-    NSString *voiceIdentifier = nil;
-    EZLanguageModel *languageModel = [EZLanguageManager languageModelFromLanguage:language];
-    NSString *localeIdentifier = languageModel.localeIdentifier;
-    
-    NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
-    for (NSString *voice in availableVoices) {
-        //        NSLog(@"%@", voice);
-        NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
-        NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
-        if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
-            voiceIdentifier = attributesForVoice[NSVoiceIdentifier];
-            // a language has multiple voice, we use compact type.
-            if ([voiceIdentifier containsString:@"compact"]) {
-                return voiceIdentifier;
-            }
-        }
-    }
-    
-    return voiceIdentifier;
-}
-
-- (void)say {
-    // 创建语音合成器。
-    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
-    // 创建一个语音合成器的语音。
-    
-    AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:@"The quick brown fox jumped over the lazy dog."];
-    // 配置语音。
-    utterance.rate = 0.57;
-    utterance.pitchMultiplier = 0.8;
-    utterance.postUtteranceDelay = 0.2;
-    utterance.volume = 0.8;
-    
-    // 检索英式英语的声音。
-    AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
-    
-    //    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
-    //    NSLog(@"speechVoices: %@", speechVoices);
-    
-    // 将语音分配给语音合成器。
-    utterance.voice = voice;
-    // 告诉语音合成器来讲话。
-    [synthesizer speakUtterance:utterance];
-}
-
-
-- (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"Apple not support ocrAndTranslate");
-}
-
-#pragma mark - Public Methods
-
-/// Convert NLLanguage to EZLanguage, e.g. zh-Hans --> Chinese-Simplified
-- (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)appleLanguage {
-    EZLanguage ezLanguage = [self.appleLangEnumFromStringDict objectForKey:appleLanguage];
-    if (!ezLanguage) {
-        ezLanguage = EZLanguageAuto;
-    }
-    return ezLanguage;
-}
-
-/// Convert EZLanguage to NLLanguage, e.g. Chinese-Simplified --> zh-Hans
-- (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)ezLanguage {
-    return [self.appleLanguagesDictionary objectForKey:ezLanguage];
-}
-
-- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
-    NSLog(@"system speak: %@ (%@)", text, fromLanguage);
-    
-    // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
-    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
-    NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
-    
-    void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
-        [synthesizer startSpeakingString:text];
-    };
-    
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        [self detectText:text completion:^(EZLanguage _Nonnull fromLanguage, NSError *_Nullable error) {
-            playBlock(text, fromLanguage);
-        }];
-    } else {
-        playBlock(text, fromLanguage);
-    }
-    
-    return synthesizer;
-}
-
-#pragma mark -
-
-// uniqueLanguages is supportLanguagesDictionary remove some languages
+// designatedLanguages is supportLanguagesDictionary remove some languages
 - (NSArray<NLLanguage> *)designatedLanguages {
     NSArray<NLLanguage> *supportLanguages = [[self appleLanguagesDictionary] allValues];
     NSArray<NLLanguage> *removeLanguages = @[
@@ -981,7 +474,702 @@ static NSString *const kParagraphBreak = @"\n\n";
     return ezLanguage;
 }
 
-#pragma mark - Detect Language Manually
+
+#pragma mark - Apple OCR
+
+- (void)ocrImage:(NSImage *)image
+        language:(EZLanguage)preferredLanguage
+      autoDetect:(BOOL)automaticallyDetectsLanguage
+      completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    NSLog(@"ocr language: %@", preferredLanguage);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Convert NSImage to CGImage
+        CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+        
+        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+        
+        // Ref: https://developer.apple.com/documentation/vision/recognizing_text_in_images?language=objc
+        
+        MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
+        NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
+        NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
+                                                                     preferredLanguages:[EZLanguageManager systemPreferredLanguages]];
+        
+        VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
+        VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
+            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+            NSLog(@"ocr cost: %.1f ms", (endTime - startTime) * 1000);
+            
+            EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+            ocrResult.from = preferredLanguage;
+            
+            if (error) {
+                completion(ocrResult, error);
+                return;
+            }
+            
+            BOOL joined = ![ocrResult.from isEqualToString:EZLanguageAuto] || ocrResult.confidence == 1.0;
+            [self setupOCRResult:ocrResult request:request intelligentJoined:joined];
+            if (!error && ocrResult.mergedText.length == 0) {
+                /**
+                 !!!: There are some problems with the system OCR.
+                 For example, it may return nil when ocr Japanese text:
+                 
+                 アイス・スノーセーリング世界選手権大会
+                 
+                 But if specify Japanese as preferredLanguage, we can get right OCR text, So we need to OCR again.
+                 */
+                
+                if ([preferredLanguage isEqualToString:EZLanguageAuto]) {
+                    EZLanguage tryLanguage = EZLanguageJapanese;
+                    [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
+                    return;
+                } else {
+                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                }
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(ocrResult, error);
+            });
+            return;
+        }];
+        
+        if (@available(macOS 12.0, *)) {
+            //            NSError *error;
+            //            NSArray<NSString *> *supportedLanguages = [request supportedRecognitionLanguagesAndReturnError:&error];
+            // "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR", "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant", "ko-KR", "ja-JP", "ru-RU", "uk-UA"
+            //            NSLog(@"supported Languages: %@", supportedLanguages);
+        }
+        
+        if (@available(macOS 13.0, *)) {
+            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
+        }
+        
+        if (![preferredLanguage isEqualToString:EZLanguageAuto]) {
+            // If has designated ocr language, move it to first priority.
+            recognitionLanguages = [self updateOCRRecognitionLanguages:recognitionLanguages
+                                                    preferredLanguages:@[ preferredLanguage ]];
+        }
+        
+        
+        NSArray *appleOCRLangaugeCodes = [self appleOCRLangaugeCodesWithRecognitionLanguages:recognitionLanguages];
+        request.recognitionLanguages = appleOCRLangaugeCodes; // ISO language codes
+        
+        // TODO: need to test [usesLanguageCorrection] value.
+        // If we use automaticallyDetectsLanguage = YES, means we are not sure about the OCR text language, that we don't need auto correction.
+        request.usesLanguageCorrection = !automaticallyDetectsLanguage; // Default is YES
+        
+        // Perform the text-recognition request.
+        [requestHandler performRequests:@[ request ] error:nil];
+    });
+}
+
+// Update OCR recognitionLanguages with preferred languages.
+- (NSArray<EZLanguage> *)updateOCRRecognitionLanguages:(NSArray<EZLanguage> *)recognitionLanguages
+                                    preferredLanguages:(NSArray<EZLanguage> *)preferredLanguages {
+    NSMutableArray *newRecognitionLanguages = [NSMutableArray arrayWithArray:recognitionLanguages];
+    for (EZLanguage preferredLanguage in [[preferredLanguages reverseObjectEnumerator] allObjects]) {
+        if ([recognitionLanguages containsObject:preferredLanguage]) {
+            [newRecognitionLanguages removeObject:preferredLanguage];
+            [newRecognitionLanguages insertObject:preferredLanguage atIndex:0];
+        }
+    }
+    
+    /**
+     Since ocr Chinese mixed with English is not very accurate,
+     we need to move Chinese to the first priority if newRecognitionLanguages first object is English and if user system language contains Chinese.
+     
+     风云 wind and clouds 99$ é
+     
+     */
+    if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
+        // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
+        for (EZLanguage language in [EZLanguageManager systemPreferredLanguages]) {
+            if ([EZLanguageManager isChineseLanguage:language]) {
+                [newRecognitionLanguages removeObject:language];
+                [newRecognitionLanguages insertObject:language atIndex:0];
+                break;
+            }
+        }
+    }
+    return [newRecognitionLanguages copy];
+}
+
+// return Apple OCR language codes with EZLanguage array.
+- (NSArray<NSString *> *)appleOCRLangaugeCodesWithRecognitionLanguages:(NSArray<EZLanguage> *)languages {
+    NSMutableArray *appleOCRLanguageCodes = [NSMutableArray array];
+    for (EZLanguage language in languages) {
+        NSString *appleOCRLangaugeCode = [[self ocrLanguageDictionary] objectForKey:language];
+        if (appleOCRLangaugeCode.length > 0) {
+            [appleOCRLanguageCodes addObject:appleOCRLangaugeCode];
+        }
+    }
+    return [appleOCRLanguageCodes copy];
+}
+
+
+- (void)getMostConfidentLangaugeOCRResult:(NSDictionary<NLLanguage, NSNumber *> *)languageProbabilityDict completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
+    /**
+     
+     苔むした岩に囲まれた滝
+     
+     */
+    NSArray<NLLanguage> *sortedLanguages = [languageProbabilityDict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj2 compare:obj1];
+    }];
+    
+    NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
+    dispatch_group_t group = dispatch_group_create();
+    
+    for (NLLanguage language in sortedLanguages) {
+        EZLanguage ezLanguage = [self languageEnumFromAppleLanguage:language];
+        dispatch_group_enter(group);
+        
+        // !!!: automaticallyDetectsLanguage must be YES, otherwise confidence will be always 1.0
+        [self ocrImage:self.queryModel.OCRImage
+              language:ezLanguage
+            autoDetect:YES
+            completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
+            [results addObject:@{@"ocrResult" : ocrResult ?: [NSNull null], @"error" : error ?: [NSNull null]}];
+            dispatch_group_leave(group);
+        }];
+    }
+    
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (completion) {
+            NSArray<NSDictionary *> *sortedResults = [results sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                EZOCRResult *result1 = obj1[@"ocrResult"];
+                EZOCRResult *result2 = obj2[@"ocrResult"];
+                NSNumber *confidence1 = result1 ? @(result1.confidence) : @(-1);
+                NSNumber *confidence2 = result2 ? @(result2.confidence) : @(-1);
+                return [confidence2 compare:confidence1];
+            }];
+            
+            __block NSDictionary *firstResult = sortedResults.firstObject;
+            EZOCRResult *firstOCRResult = firstResult[@"ocrResult"];
+            
+            // Since there are some languages that have the same confidence, we need to get all of them.
+            NSMutableArray<NSDictionary *> *mostConfidentResults = [NSMutableArray array];
+            CGFloat mostConfidence = firstOCRResult.confidence;
+            ;
+            
+            for (NSDictionary *result in sortedResults) {
+                EZOCRResult *ocrResult = result[@"ocrResult"];
+                if (ocrResult.confidence == mostConfidence) {
+                    [mostConfidentResults addObject:result];
+                }
+                NSString *mergedText = [ocrResult.mergedText trimToMaxLength:100];
+                NSLog(@"%@(%.2f): %@", ocrResult.from, ocrResult.confidence, mergedText);
+            }
+            
+            /**
+             Since ocr detect language may be incorrect, we need to detect mergedText language again, get most confident OCR language.
+             
+             e.g. this lyrics may be OCR detected as simplified Chinese, but it's actually traditional Chinese.
+             
+             慢慢吹 輕輕送人生路 你就走
+             就當我倆沒有明天
+             就當我俩只剩眼前
+             就當我都不曾離開
+             還仍佔滿你心懐
+             
+             */
+            if (mostConfidentResults.count > 1) {
+                __block BOOL shouldBreak = NO;
+                
+                for (NSDictionary *result in mostConfidentResults) {
+                    EZOCRResult *ocrResult = result[@"ocrResult"];
+                    NSString *mergedText = ocrResult.mergedText;
+                    EZLanguage detectedLanguage = [self detectText:mergedText];
+                    if ([detectedLanguage isEqualToString:ocrResult.from]) {
+                        NSLog(@"OCR detect language: %@", detectedLanguage);
+                        firstResult = result;
+                        shouldBreak = YES;
+                    }
+                    if (shouldBreak) {
+                        break;
+                    }
+                }
+            }
+            
+            firstOCRResult = firstResult[@"ocrResult"];
+            NSError *error = firstResult[@"error"];
+            if ([error isEqual:[NSNull null]]) {
+                error = nil;
+            }
+            
+            NSString *mergedText = firstOCRResult.mergedText;
+            NSString *logMergedText = [mergedText trimToMaxLength:100];
+            NSLog(@"Final ocr: %@(%.2f): %@", firstOCRResult.from, firstOCRResult.confidence, logMergedText);
+            
+            completion(firstOCRResult, error);
+        }
+    });
+}
+
+
+#pragma mark - Join OCR text array
+
+- (void)setupOCRResult:(EZOCRResult *)ocrResult
+               request:(VNRequest *_Nonnull)request
+     intelligentJoined:(BOOL)intelligentJoined {
+    EZLanguage language = ocrResult.from;
+    
+    CGFloat miniLineHeight = MAXFLOAT;
+    CGFloat totalLineHeight = 0;
+    CGFloat averageLineHeight = 0;
+    
+    // OCR line spacing may be less than 0
+    CGFloat miniLineSpacing = MAXFLOAT;
+    CGFloat miniPositiveLineSpacing = MAXFLOAT;
+    CGFloat totalLineSpacing = 0;
+    CGFloat averageLineSpacing = 0;
+    
+    CGFloat miniX = MAXFLOAT;
+    CGFloat maxLengthOfLine = 0;
+    CGFloat minLengthOfLine = MAXFLOAT;
+    NSInteger punctuationMarkCount = 0;
+    NSInteger totalCharCount = 0;
+    CGFloat charCountPerLine = 0;
+    
+    NSMutableArray *lineLengthArray = [NSMutableArray array];
+    
+    NSMutableArray *recognizedStrings = [NSMutableArray array];
+    NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
+    
+    for (int i = 0; i < observationResults.count; i++) {
+        VNRecognizedTextObservation *observation = observationResults[i];
+        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        NSString *recognizedString = recognizedText.string;
+        [recognizedStrings addObject:recognizedString];
+        
+        // iterate string to check if has punctuation mark.
+        for (NSInteger i = 0; i < recognizedString.length; i++) {
+            totalCharCount += 1;
+            NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
+            if (isChar) {
+                punctuationMarkCount += 1;
+            }
+        }
+        
+        CGRect boundingBox = observation.boundingBox;
+        //        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+        
+        CGFloat lineLength = boundingBox.size.width;
+        [lineLengthArray addObject:@(lineLength)];
+        
+        CGFloat lineHeight = boundingBox.size.height;
+        totalLineHeight += lineHeight;
+        if (lineHeight < miniLineHeight) {
+            miniLineHeight = lineHeight;
+        }
+        
+        if (i > 0) {
+            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
+            CGRect prevBoundingBox = prevObservation.boundingBox;
+            
+            // !!!: deltaY may be < 0, means the [OCR] line frame is overlapped.
+            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
+            totalLineSpacing += deltaY;
+            
+            if (deltaY < miniLineSpacing) {
+                miniLineSpacing = deltaY;
+            }
+            
+            if (deltaY > 0 && deltaY < miniPositiveLineSpacing) {
+                miniPositiveLineSpacing = deltaY;
+            }
+        }
+        
+        CGFloat x = boundingBox.origin.x;
+        if (x < miniX) {
+            miniX = x;
+        }
+        
+        CGFloat lengthOfLine = boundingBox.size.width;
+        if (lengthOfLine > maxLengthOfLine) {
+            maxLengthOfLine = lengthOfLine;
+        }
+        
+        if (lengthOfLine < minLengthOfLine) {
+            minLengthOfLine = lengthOfLine;
+        }
+    }
+    
+    ocrResult.texts = recognizedStrings;
+    ocrResult.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
+    
+    if (!intelligentJoined) {
+        return;
+    }
+    
+    
+    NSArray<NSString *> *stringArray = ocrResult.texts;
+    NSLog(@"ocr stringArray (%@): %@", ocrResult.from, stringArray);
+    
+    
+    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
+    charCountPerLine = totalCharCount / (CGFloat)stringArray.count;
+    
+    averageLineHeight = totalLineHeight / stringArray.count;
+    averageLineSpacing = totalLineSpacing / (stringArray.count - 1);
+    
+    BOOL isPoetry = [self isPoetryOfTextArray:recognizedStrings
+                              lineLengthArray:lineLengthArray
+                              maxLengthOfLine:maxLengthOfLine
+                         punctuationMarkCount:punctuationMarkCount
+                          punctuationMarkRate:punctuationMarkRate
+                                     language:language];
+    NSLog(@"isPoetry: %d", isPoetry);
+    
+    CGFloat confidence = 0;
+    NSMutableString *mergedText = [NSMutableString string];
+    
+    
+    for (int i = 0; i < observationResults.count; i++) {
+        VNRecognizedTextObservation *observation = observationResults[i];
+        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        confidence += recognizedText.confidence;
+        
+        NSString *recognizedString = recognizedText.string;
+        CGRect boundingBox = observation.boundingBox;
+        CGFloat lineLength = boundingBox.size.width;
+        //        NSLog(@"%@ %@", recognizedString, @(boundingBox));
+        
+        /**
+         《摊破浣溪沙》  123  《浣溪沙》
+         
+         菡萏香销翠叶残，西风愁起绿波间。还与韶光共憔悴，不堪看。
+         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
+         
+         —— 五代十国 · 李璟
+         
+         
+         《摊破浣溪沙》
+         NSRect: {{0.19622092374434116, 0.72371967654986524}, {0.14098837808214662, 0.045082544702082616}}
+         
+         菡萏香销翠叶残，西风愁起绿波问。还与韶光共憔悴，不堪看。
+         NSRect: {{0.18604653059346432, 0.50134770889487879}, {0.65261626210058454, 0.064690026954177804}}
+         
+         细雨梦回鸡塞远，小楼吹彻玉笙寒。多少泪珠何限恨，倚阑干。
+         NSRect: {{0.18604650913243892, 0.40389972491405723}, {0.65406975296814562,
+         
+         -一五代十国 •李璟
+         NSRect: {{0.19583333762553842, 0.26400000065806095}, {0.1833333311872308, 0.048668462953798897}}
+         */
+        // 如果 i 不是第一个元素，且前一个元素的 boundingBox 的 minY 值大于当前元素的 maxY 值，则认为中间有换行。
+        
+        if (i > 0) {
+            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
+            CGRect prevBoundingBox = prevObservation.boundingBox;
+            
+            // !!!: deltaY may be < 0
+            CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
+            CGFloat deltaX = boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width);
+            
+            BOOL aligned = boundingBox.origin.x - miniX < 0.15;
+            BOOL needLineBreak = !aligned || isPoetry;
+            
+            // Note that line spacing is inaccurate, sometimes it's too small 😢
+            BOOL isNewParagraph = NO;
+            if (deltaY > 0) {
+                // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
+                if (deltaY / averageLineSpacing > 2.5 || deltaY / averageLineHeight > 1.2) {
+                    isNewParagraph = YES;
+                }
+            }
+            
+            // Note that sometimes the line frames will overlap a little, then deltaY will less then 0
+            BOOL isNewLine = NO;
+            if (deltaY > 0) {
+                isNewLine = YES;
+            } else {
+                if (fabs(deltaY) < miniLineHeight / 2) {
+                    isNewLine = YES;
+                }
+            }
+            
+            // System deltaX is about 0.05. If the deltaX of two line is too large, it may be a new line.
+            if (deltaX > 0.07) {
+                isNewLine = YES;
+            }
+            
+            NSString *joinedString;
+            if (isNewParagraph) {
+                joinedString = kParagraphBreak; // @"\n\n", Paragraph
+            } else if (isNewLine) {
+                if (needLineBreak) {
+                    joinedString = kLineBreak; // 0.5 - 0.06 - 0.4 = 0.04
+                } else {
+                    NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
+                    CGFloat prevLineLength = prevBoundingBox.size.width;
+                    joinedString = [self joinedStringOfPrevText:prevString
+                                               prevLengthOfLine:prevLineLength
+                                                   lengthOfLine:lineLength
+                                                maxLengthOfLine:maxLengthOfLine
+                                                       language:language];
+                }
+            } else {
+                joinedString = @" "; // if the same line, just join two texts
+            }
+            
+            // 1. append joined string
+            [mergedText appendString:joinedString];
+        }
+        
+        // 2. append line text
+        [mergedText appendString:recognizedString];
+    }
+    
+    ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
+    ocrResult.texts = [mergedText componentsSeparatedByString:kLineBreak];
+    ocrResult.raw = recognizedStrings;
+    
+    if (recognizedStrings.count > 0) {
+        ocrResult.confidence = confidence / recognizedStrings.count;
+    }
+    
+    NSString *showMergedText = [ocrResult.mergedText trimToMaxLength:100];
+    
+    NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
+}
+
+- (BOOL)isPoetryOfTextArray:(NSArray<NSString *> *)textArray
+            lineLengthArray:(NSArray<NSNumber *> *)lineLengthArray
+            maxLengthOfLine:(CGFloat)maxLengthOfLine
+       punctuationMarkCount:(NSInteger)punctuationMarkCount
+        punctuationMarkRate:(CGFloat)punctuationMarkRate
+                   language:(EZLanguage)language {
+    NSInteger shortLineCount = 0;
+    NSInteger longLineCount = 0;
+    CGFloat minLengthOfLine = CGFLOAT_MAX;
+    
+    CGFloat lineCount = lineLengthArray.count;
+    
+    NSInteger totalCharCount = 0;
+    CGFloat charCountPerLine = 0;
+    
+    for (NSString *text in textArray) {
+        totalCharCount += text.length;
+    }
+    
+    charCountPerLine = totalCharCount / lineCount;
+    
+    for (NSNumber *number in lineLengthArray) {
+        CGFloat length = number.floatValue;
+        if (length > maxLengthOfLine) {
+            maxLengthOfLine = length;
+        }
+        if (length < minLengthOfLine) {
+            minLengthOfLine = length;
+        }
+        
+        BOOL isShortLine = [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        if (isShortLine) {
+            shortLineCount += 1;
+        }
+        
+        BOOL isLongLine = [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        if (isLongLine) {
+            longLineCount += 1;
+        }
+    }
+    
+    CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
+    
+    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
+    if (isChinese) {
+        CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
+        if (lineCount > 2) {
+            maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
+        }
+        
+        BOOL isAveragePoetryLength = charCountPerLine <= maxCharCountPerLineOfPoetry;
+        
+        BOOL isEqualLength = maxLengthOfLine - minLengthOfLine < 0.04; // ~0.96
+        if (isEqualLength && isAveragePoetryLength) {
+            return YES;
+        }
+        
+        if (isAveragePoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
+            return YES;
+        }
+    }
+    
+    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
+    if (numberOfPunctuationMarksPerLine > 2) {
+        return NO;
+    }
+    
+    if (punctuationMarkCount == 0) {
+        return YES;
+    }
+    
+    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (punctuationMarkRate < 0.04)) {
+        return YES;
+    }
+    
+    
+    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
+    if (tooManyLongLine) {
+        return NO;
+    }
+    
+    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
+    if (tooManyShortLine) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+/// Get joined string of text, according to its last char.
+- (NSString *)joinedStringOfPrevText:(NSString *)prevText
+                    prevLengthOfLine:(CGFloat)prevLengthOfLine
+                        lengthOfLine:(CGFloat)lengthOfLine
+                     maxLengthOfLine:(CGFloat)maxLengthOfLine
+                            language:(EZLanguage)language {
+    NSString *joinedString = @"";
+    NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
+    
+    // Note: sometimes OCR is incorrect, so . may be recognized as ,
+    BOOL endPunctuationChar = [self isEndPunctuationChar:lastChar];
+    
+    // Note that some short lines are caused by indentation.
+    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.7];
+    
+    BOOL isPrevLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    
+    BOOL isLongLine = [self isLongLineOfLength:lengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    
+    
+    BOOL needLineBreak = NO;
+    if (isPrevShortLine || endPunctuationChar) {
+        needLineBreak = YES;
+    }
+    
+    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
+    
+    if (isPrevLongLine && endPunctuationChar && isLongLine && !isPoertyLine) {
+        needLineBreak = NO;
+    }
+    
+    // !!!: This way cannot handle indentation 😥
+    //    BOOL isEqualLength = fabs(lengthOfLine - prevLengthOfLine) < 0.02; // ~0.98
+    //    if (isEqualLength && endPunctuationChar) {
+    //        needLineBreak = NO;
+    //    }
+    
+    
+    if (needLineBreak) {
+        joinedString = kLineBreak;
+    } else if ([self isPunctuationChar:lastChar]) {
+        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
+        joinedString = @" ";
+    } else {
+        // Like Chinese text, don't need space between words if it is not a punctuation mark.
+        if ([self isLanguageWordsNeedSpace:language]) {
+            joinedString = @" ";
+        }
+    }
+    return joinedString;
+}
+
+- (BOOL)isShortLineOfLength:(CGFloat)length
+            maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    return [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
+}
+
+- (BOOL)isShortLineOfLength:(CGFloat)length
+            maxLengthOfLine:(CGFloat)maxLengthOfLine
+      lessRateOfMaxLongLine:(CGFloat)lessRateOfMaxLongLine {
+    BOOL isShortLine = length < maxLengthOfLine * lessRateOfMaxLongLine;
+    return isShortLine;
+}
+
+- (BOOL)isLongLineOfLength:(CGFloat)length
+           maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    return [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.9];
+}
+
+- (BOOL)isLongLineOfLength:(CGFloat)length
+           maxLengthOfLine:(CGFloat)maxLengthOfLine
+  greaterRateOfMaxLongLine:(CGFloat)greaterRateOfMaxLongLine {
+    BOOL isLongLine = length >= maxLengthOfLine * greaterRateOfMaxLongLine;
+    return isLongLine;
+}
+
+- (BOOL)isPoetryCharactersOfLineText:(NSString *)lineText language:(EZLanguage)language {
+    NSInteger charactersCount = lineText.length;
+    return [self isPoetryLineCharactersCount:charactersCount language:language];
+}
+
+- (BOOL)isPoetryLineCharactersCount:(NSInteger)charactersCount language:(EZLanguage)language {
+    BOOL isPoetry = NO;
+    NSInteger charCountPerLineOfPoetry = 60;
+    if ([EZLanguageManager isChineseLanguage:language]) {
+        charCountPerLineOfPoetry = 40;
+    }
+    
+    if (charactersCount <= charCountPerLineOfPoetry) {
+        isPoetry = YES;
+    }
+    
+    return isPoetry;
+}
+
+#pragma mark - Apple Speech Synthesizer
+
+- (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
+    NSString *voiceIdentifier = nil;
+    EZLanguageModel *languageModel = [EZLanguageManager languageModelFromLanguage:language];
+    NSString *localeIdentifier = languageModel.localeIdentifier;
+    
+    NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
+    for (NSString *voice in availableVoices) {
+        //        NSLog(@"%@", voice);
+        NSDictionary *attributesForVoice = [NSSpeechSynthesizer attributesForVoice:voice];
+        NSString *voiceLocaleIdentifier = attributesForVoice[NSVoiceLocaleIdentifier];
+        if ([voiceLocaleIdentifier isEqualToString:localeIdentifier]) {
+            voiceIdentifier = attributesForVoice[NSVoiceIdentifier];
+            // a language has multiple voice, we use compact type.
+            if ([voiceIdentifier containsString:@"compact"]) {
+                return voiceIdentifier;
+            }
+        }
+    }
+    
+    return voiceIdentifier;
+}
+
+- (void)say {
+    // 创建语音合成器。
+    AVSpeechSynthesizer *synthesizer = [[AVSpeechSynthesizer alloc] init];
+    // 创建一个语音合成器的语音。
+    
+    AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:@"The quick brown fox jumped over the lazy dog."];
+    // 配置语音。
+    utterance.rate = 0.57;
+    utterance.pitchMultiplier = 0.8;
+    utterance.postUtteranceDelay = 0.2;
+    utterance.volume = 0.8;
+    
+    // 检索英式英语的声音。
+    AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
+    
+    //    NSArray<AVSpeechSynthesisVoice *> *speechVoices = [AVSpeechSynthesisVoice speechVoices];
+    //    NSLog(@"speechVoices: %@", speechVoices);
+    
+    // 将语音分配给语音合成器。
+    utterance.voice = voice;
+    // 告诉语音合成器来讲话。
+    [synthesizer speakUtterance:utterance];
+}
+
+
+#pragma mark - Manually detect language, simply
 
 /// Get Chinese language type of text, traditional or simplified. If it is not Chinese, return EZLanguageAuto.
 /// If it is Chinese, try to remove all English characters, then check if it is traditional or simplified.
@@ -1056,7 +1244,102 @@ static NSString *const kParagraphBreak = @"\n\n";
 }
 
 
-#pragma mark -
+#pragma mark - Check character punctuation
+
+/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
+    NSArray *languages = @[
+        EZLanguageSimplifiedChinese,
+        EZLanguageTraditionalChinese,
+        EZLanguageJapanese,
+        EZLanguageKorean,
+    ];
+    return ![languages containsObject:language];
+}
+
+/// Use punctuationCharacterSet to check if it is a punctuation mark.
+- (BOOL)isPunctuationChar:(NSString *)charString {
+    return [self isPunctuationChar:charString excludeCharacters:nil];
+}
+
+- (BOOL)isPunctuationChar:(NSString *)charString excludeCharacters:(nullable NSArray *)charArray {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    if ([charArray containsObject:charString]) {
+        return NO;
+    }
+    
+    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
+    return [punctuationCharacterSet characterIsMember:[charString characterAtIndex:0]];
+}
+
+
+/// Use regex to check if it is a punctuation mark.
+- (BOOL)isPunctuationMark2:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    NSString *regex = @"[\\p{Punct}]";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    return [predicate evaluateWithObject:charString];
+}
+
+/// Check if char is a end punctuation mark.
+- (BOOL)isEndPunctuationChar:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    return [kEndPunctuationMarks containsObject:charString];
+}
+
+/// Check if char is a punctuation mark but not a end punctuation mark.
+- (BOOL)isNonEndPunctuationMark:(NSString *)charString {
+    if (charString.length != 1) {
+        return NO;
+    }
+    
+    NSArray *punctuationMarks = @[ @"，", @"、", @"；", @",", @";" ];
+    return [punctuationMarks containsObject:charString];
+}
+
+
+#pragma mark - Handle special characters
+
+/// Use NSCharacterSet to replace simlar dot sybmol with char "·"
+- (NSString *)replaceSimilarDotSymbolOfString:(NSString *)string {
+    // 《蝶恋花 • 阅尽天涯离别苦》
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"•‧∙"];
+    //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
+    
+    NSArray *strings = [string componentsSeparatedByCharactersInSet:charSet];
+    // Remove extra white space.
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSString *string in strings) {
+        NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (text.length > 0) {
+            [array addObject:text];
+        }
+    }
+    
+    // Add white space for better reading.
+    NSString *text = [array componentsJoinedByString:@" · "];
+    
+    return text;
+}
+
+/// Use regex to replace simlar dot sybmol with char "·"
+- (NSString *)replaceSimilarDotSymbolOfString2:(NSString *)string {
+    NSString *regex = @"[•‧∙]"; // [•‧∙・]
+    NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"·" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
+    return text;
+}
+
+
+#pragma mark - deprecated
 
 /// ⚠️ This method is not accurate, it is only used to detect Chinese language type.
 - (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
@@ -1152,499 +1435,251 @@ static NSString *const kParagraphBreak = @"\n\n";
     return [predicate evaluateWithObject:string];
 }
 
-#pragma mark - Handle OCR text.
+
+#pragma mark - Handle OCR text, deprecated
 
 /**
  Hello world"
  然后请你也谈谈你对习主席连任的看法？
  最后输出以下内容的反义词："go up
  */
-- (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
-    NSArray<NSString *> *stringArray = ocrResult.texts;
-    NSLog(@"ocr stringArray: %@", stringArray);
-    
-    EZLanguage language = ocrResult.from;
-    
-    NSMutableString *joinedString = [NSMutableString string];
-    CGFloat maxLengthOfLine = 0;
-    CGFloat minLengthOfLine = 0;
-    NSInteger punctuationMarkCount = 0;
-    CGFloat punctuationMarkRate = 0;
-    
-    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
-                               maxLengthOfLine:&maxLengthOfLine
-                               minLengthOfLine:&minLengthOfLine
-                          punctuationMarkCount:&punctuationMarkCount
-                           punctuationMarkRate:&punctuationMarkRate];
-    
-    NSString *newLineString = @"\n";
-    if (isPoetry) {
-        NSLog(@"--> isPoetry");
-        return [stringArray componentsJoinedByString:newLineString];
-    }
-    
-    for (NSInteger i = 0; i < stringArray.count; i++) {
-        NSString *string = stringArray[i];
-        [joinedString appendString:string];
-        
-        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-        NSString *lastChar = [string substringFromIndex:string.length - 1];
-        
-        // Append \n for short line if string frame width is less than max width - delta.
-        BOOL isShortLine = [self isShortLineOfString:string
-                                     maxLengthOfLine:maxLengthOfLine
-                                            language:language];
-        
-        BOOL needAppendNewLine = isShortLine;
-        
-        if (needAppendNewLine) {
-            [joinedString appendString:newLineString];
-        } else if ([self isPunctuationChar:lastChar]) {
-            // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-            [joinedString appendString:@" "];
-        } else {
-            // Like Chinese text, don't need space between words if it is not a punctuation mark.
-            if ([self isLanguageWordsNeedSpace:language]) {
-                [joinedString appendString:@" "];
-            }
-        }
-    }
-    
-    // Remove last \n.
-    return [joinedString trim];
-}
-
-/// Get joined string of text, according to its last char.
-- (NSString *)joinedStringOfPrevText:(NSString *)prevText
-                    prevLengthOfLine:(CGFloat)prevLengthOfLine
-                        lengthOfLine:(CGFloat)lengthOfLine
-                     maxLengthOfLine:(CGFloat)maxLengthOfLine
-                            language:(EZLanguage)language
-{
-    NSString *joinedString = @"";
-    NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
-    
-    // Note: sometimes OCR is incorrect, so . may be recognized as ,
-    BOOL endPunctuationChar = [self isEndPunctuationChar:lastChar];
-    
-    // Note that some short lines are caused by indentation.
-    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.7];
-    
-    BOOL isPrevLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
-
-    BOOL isLongLine = [self isLongLineOfLength:lengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
-    
-
-    BOOL needLineBreak = NO;
-    if (isPrevShortLine || endPunctuationChar) {
-        needLineBreak = YES;
-    }
-    
-    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
-
-    if (isPrevLongLine && endPunctuationChar && isLongLine && !isPoertyLine) {
-        needLineBreak = NO;
-    }
-    
-    // !!!: This way cannot handle indentation 😥
-//    BOOL isEqualLength = fabs(lengthOfLine - prevLengthOfLine) < 0.02; // ~0.98
-//    if (isEqualLength && endPunctuationChar) {
-//        needLineBreak = NO;
+//- (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
+//    NSArray<NSString *> *stringArray = ocrResult.texts;
+//    NSLog(@"ocr stringArray: %@", stringArray);
+//
+//    EZLanguage language = ocrResult.from;
+//
+//    NSMutableString *joinedString = [NSMutableString string];
+//    CGFloat maxLengthOfLine = 0;
+//    CGFloat minLengthOfLine = 0;
+//    NSInteger punctuationMarkCount = 0;
+//    CGFloat punctuationMarkRate = 0;
+//
+//    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
+//                               maxLengthOfLine:&maxLengthOfLine
+//                               minLengthOfLine:&minLengthOfLine
+//                          punctuationMarkCount:&punctuationMarkCount
+//                           punctuationMarkRate:&punctuationMarkRate];
+//
+//    NSString *newLineString = @"\n";
+//    if (isPoetry) {
+//        NSLog(@"--> isPoetry");
+//        return [stringArray componentsJoinedByString:newLineString];
 //    }
-
-    
-    if (needLineBreak) {
-        joinedString = kLineBreak;
-    } else if ([self isPunctuationChar:lastChar]) {
-        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-        joinedString = @" ";
-    } else {
-        // Like Chinese text, don't need space between words if it is not a punctuation mark.
-        if ([self isLanguageWordsNeedSpace:language]) {
-            joinedString = @" ";
-        }
-    }
-    return joinedString;
-}
-
-- (BOOL)isPoetryCharactersOfLineText:(NSString *)lineText language:(EZLanguage)language {
-    NSInteger charactersCount = lineText.length;
-    return [self isPoetryLineCharactersCount:charactersCount language:language];
-}
-
-- (BOOL)isPoetryLineCharactersCount:(NSInteger)charactersCount language:(EZLanguage)language {
-    BOOL isPoetry = NO;
-    NSInteger charCountPerLineOfPoetry = 60;
-    if ([EZLanguageManager isChineseLanguage:language]) {
-        charCountPerLineOfPoetry = 40;
-    }
-    
-    if (charactersCount <= charCountPerLineOfPoetry) {
-        isPoetry = YES;
-    }
-    
-    return isPoetry;
-}
-
-/// Get joined string of text, according to its last char.
-- (NSString *)joinedStringOfText:(NSString *)text
-                 maxLengthOfLine:(CGFloat *)maxLengthOfLine
-                        language:(EZLanguage)language {
-    NSString *joinedString = @"";
-    NSString *lastChar = [text substringFromIndex:text.length - 1];
-    BOOL isShortLine = [self isShortLineOfString:text
-                                 maxLengthOfLine:*maxLengthOfLine
-                                        language:language];
-    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
-    
-    if (needLineBreak) {
-        joinedString = @"\n";
-    } else if ([self isPunctuationChar:lastChar]) {
-        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-        joinedString = @" ";
-    } else {
-        // Like Chinese text, don't need space between words if it is not a punctuation mark.
-        if ([self isLanguageWordsNeedSpace:language]) {
-            joinedString = @" ";
-        }
-    }
-    return joinedString;
-}
-
-/// Check if string array is poetry, and get the max and min frame width of string, the punctuation count and the punctuation mark percent.
-- (BOOL)isPoetryOfOCRResults:(EZOCRResult *)ocrResult
-             maxLengthOfLine:(CGFloat *)maxLengthOfLine
-             minLengthOfLine:(CGFloat *)minLengthOfLine
-        punctuationMarkCount:(NSInteger *)punctuationMarkCount
-         punctuationMarkRate:(CGFloat *)punctuationMarkRate {
-    NSArray<NSString *> *stringArray = ocrResult.texts;
-    EZLanguage language = ocrResult.from;
-    
-    CGFloat _maxLengthOfLine = 0;
-    CGFloat _minLengthOfLine = CGFLOAT_MAX;
-    NSInteger _punctuationMarkCount = 0;
-    CGFloat _punctuationMarkRate = 0;
-    
-    NSInteger totalCharCount = 0;
-    for (NSString *string in stringArray) {
-        CGFloat width = [self widthOfString:string];
-        if (width > _maxLengthOfLine) {
-            _maxLengthOfLine = width;
-        }
-        if (width < _minLengthOfLine) {
-            _minLengthOfLine = width;
-        }
-        
-        // iterate string to check if has punctuation mark.
-        for (NSInteger i = 0; i < string.length; i++) {
-            totalCharCount += 1;
-            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
-            if (isChar) {
-                _punctuationMarkCount += 1;
-            }
-        }
-    }
-    
-    *maxLengthOfLine = _maxLengthOfLine;
-    *minLengthOfLine = _minLengthOfLine;
-    *punctuationMarkCount = _punctuationMarkCount;
-    
-    _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
-    *punctuationMarkRate = _punctuationMarkRate;
-    
-    NSInteger lineCount = stringArray.count;
-    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / lineCount;
-    
-    /**
-     曾经沧海难为水，
-     除却巫山不是云。
-     取次花丛懒回顾，
-     半缘修道半缘君。
-     */
-    if (_maxLengthOfLine == _minLengthOfLine) {
-        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
-            return YES;
-        }
-    }
-    
-    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
-    if (numberOfPunctuationMarksPerLine > 2) {
-        return NO;
-    }
-    
-    if (_punctuationMarkCount == 0 && [EZLanguageManager isChineseLanguage:language]) {
-        return YES;
-    }
-    
-//    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
+//
+//    for (NSInteger i = 0; i < stringArray.count; i++) {
+//        NSString *string = stringArray[i];
+//        [joinedString appendString:string];
+//
+//        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
+//        NSString *lastChar = [string substringFromIndex:string.length - 1];
+//
+//        // Append \n for short line if string frame width is less than max width - delta.
+//        BOOL isShortLine = [self isShortLineOfString:string
+//                                     maxLengthOfLine:maxLengthOfLine
+//                                            language:language];
+//
+//        BOOL needAppendNewLine = isShortLine;
+//
+//        if (needAppendNewLine) {
+//            [joinedString appendString:newLineString];
+//        } else if ([self isPunctuationChar:lastChar]) {
+//            // if last char is a punctuation mark, then append a space, since ocr will remove white space.
+//            [joinedString appendString:@" "];
+//        } else {
+//            // Like Chinese text, don't need space between words if it is not a punctuation mark.
+//            if ([self isLanguageWordsNeedSpace:language]) {
+//                [joinedString appendString:@" "];
+//            }
+//        }
+//    }
+//
+//    // Remove last \n.
+//    return [joinedString trim];
+//}
+//
+//
+///// Get joined string of text, according to its last char.
+//- (NSString *)joinedStringOfText:(NSString *)text
+//                 maxLengthOfLine:(CGFloat *)maxLengthOfLine
+//                        language:(EZLanguage)language {
+//    NSString *joinedString = @"";
+//    NSString *lastChar = [text substringFromIndex:text.length - 1];
+//    BOOL isShortLine = [self isShortLineOfString:text
+//                                 maxLengthOfLine:*maxLengthOfLine
+//                                        language:language];
+//    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
+//
+//    if (needLineBreak) {
+//        joinedString = @"\n";
+//    } else if ([self isPunctuationChar:lastChar]) {
+//        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
+//        joinedString = @" ";
+//    } else {
+//        // Like Chinese text, don't need space between words if it is not a punctuation mark.
+//        if ([self isLanguageWordsNeedSpace:language]) {
+//            joinedString = @" ";
+//        }
+//    }
+//    return joinedString;
+//}
+//
+///// Check if string array is poetry, and get the max and min frame width of string, the punctuation count and the punctuation mark percent.
+//- (BOOL)isPoetryOfOCRResults:(EZOCRResult *)ocrResult
+//             maxLengthOfLine:(CGFloat *)maxLengthOfLine
+//             minLengthOfLine:(CGFloat *)minLengthOfLine
+//        punctuationMarkCount:(NSInteger *)punctuationMarkCount
+//         punctuationMarkRate:(CGFloat *)punctuationMarkRate {
+//    NSArray<NSString *> *stringArray = ocrResult.texts;
+//    EZLanguage language = ocrResult.from;
+//
+//    CGFloat _maxLengthOfLine = 0;
+//    CGFloat _minLengthOfLine = CGFLOAT_MAX;
+//    NSInteger _punctuationMarkCount = 0;
+//    CGFloat _punctuationMarkRate = 0;
+//
+//    NSInteger totalCharCount = 0;
+//    for (NSString *string in stringArray) {
+//        CGFloat width = [self widthOfString:string];
+//        if (width > _maxLengthOfLine) {
+//            _maxLengthOfLine = width;
+//        }
+//        if (width < _minLengthOfLine) {
+//            _minLengthOfLine = width;
+//        }
+//
+//        // iterate string to check if has punctuation mark.
+//        for (NSInteger i = 0; i < string.length; i++) {
+//            totalCharCount += 1;
+//            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
+//            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
+//            if (isChar) {
+//                _punctuationMarkCount += 1;
+//            }
+//        }
+//    }
+//
+//    *maxLengthOfLine = _maxLengthOfLine;
+//    *minLengthOfLine = _minLengthOfLine;
+//    *punctuationMarkCount = _punctuationMarkCount;
+//
+//    _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
+//    *punctuationMarkRate = _punctuationMarkRate;
+//
+//    NSInteger lineCount = stringArray.count;
+//    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / lineCount;
+//
+//    /**
+//     曾经沧海难为水，
+//     除却巫山不是云。
+//     取次花丛懒回顾，
+//     半缘修道半缘君。
+//     */
+//    if (_maxLengthOfLine == _minLengthOfLine) {
+//        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
+//            return YES;
+//        }
+//    }
+//
+//    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
+//    if (numberOfPunctuationMarksPerLine > 2) {
+//        return NO;
+//    }
+//
+//    if (_punctuationMarkCount == 0 && [EZLanguageManager isChineseLanguage:language]) {
 //        return YES;
 //    }
-    
-    if (lineCount >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
-        return YES;
-    }
-    
-    NSInteger shortLineCount = 0;
-    NSInteger longLineCount = 0;
-    [self shortLineCount:&shortLineCount
-           longLineCount:&longLineCount
-           ofStringArray:stringArray
-         maxLengthOfLine:_maxLengthOfLine
-                language:language];
-    
-    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
-    if (tooManyLongLine) {
-        return NO;
-    }
-    
-    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
-    if (tooManyShortLine) {
-        return YES;
-    }
-    
-    return NO;
-}
+//
+////    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
+////        return YES;
+////    }
+//
+//    if (lineCount >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
+//        return YES;
+//    }
+//
+//    NSInteger shortLineCount = 0;
+//    NSInteger longLineCount = 0;
+//    [self shortLineCount:&shortLineCount
+//           longLineCount:&longLineCount
+//           ofStringArray:stringArray
+//         maxLengthOfLine:_maxLengthOfLine
+//                language:language];
+//
+//    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
+//    if (tooManyLongLine) {
+//        return NO;
+//    }
+//
+//    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
+//    if (tooManyShortLine) {
+//        return YES;
+//    }
+//
+//    return NO;
+//}
+//
+//
+///// Iterate string array, get the short line count and long line count.
+//- (void)shortLineCount:(NSInteger *)shortLineCount
+//         longLineCount:(NSInteger *)longLineCount
+//         ofStringArray:(NSArray<NSString *> *)stringArray
+//       maxLengthOfLine:(CGFloat)maxLengthOfLine
+//              language:(EZLanguage)language {
+//    NSInteger _shortLineCount = 0;
+//    NSInteger _longLineCount = 0;
+//    for (NSString *string in stringArray) {
+//        BOOL isShortLine = [self isShortLineOfString:string
+//                                     maxLengthOfLine:maxLengthOfLine
+//                                            language:language];
+//
+//        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
+//        if (isShortLine) {
+//            _shortLineCount += 1;
+//        }
+//        if (isLongLine) {
+//            _longLineCount += 1;
+//        }
+//    }
+//    *shortLineCount = _shortLineCount;
+//    *longLineCount = _longLineCount;
+//}
+//
+///// Check if string is a short line, if string frame width is less than max width - delta * 2
+///// !!!: This method can only be used to determine the consistency of the font layout, not for some PDF font spacing is not the same situation.
+//- (BOOL)isShortLineOfString:(NSString *)string
+//            maxLengthOfLine:(CGFloat)maxLengthOfLine
+//                   language:(EZLanguage)language {
+//    if (string.length == 0) {
+//        return YES;
+//    }
+//
+//    CGFloat width = [self widthOfString:string];
+//    CGFloat delta = kEnglishWordWidth;
+//    if ([EZLanguageManager isChineseLanguage:language]) {
+//        delta = kChineseWordWidth;
+//    }
+//
+//    // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
+//    BOOL isShortLine = maxLengthOfLine - width >= delta * 2;
+//
+//    return isShortLine;
+//}
+//
+///// Check if string is a long line, if string frame width is greater than max width - delta * 1.5
+//- (BOOL)isLongLineOfString:(NSString *)string
+//           maxLengthOfLine:(CGFloat)maxLengthOfLine
+//                  language:(EZLanguage)language {
+//    CGFloat width = [self widthOfString:string];
+//    CGFloat delta = kEnglishWordWidth;
+//    if ([EZLanguageManager isChineseLanguage:language]) {
+//        delta = kChineseWordWidth;
+//    }
+//    BOOL isLongLine = maxLengthOfLine - width <= delta * 1.5;
+//
+//    return isLongLine;
+//}
 
-#pragma mark - New check
-
-- (BOOL)isShortLineOfLength:(CGFloat)length
-            maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    return [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
-}
-
-- (BOOL)isShortLineOfLength:(CGFloat)length
-            maxLengthOfLine:(CGFloat)maxLengthOfLine
-      lessRateOfMaxLongLine:(CGFloat)lessRateOfMaxLongLine {
-    BOOL isShortLine = length < maxLengthOfLine * lessRateOfMaxLongLine;
-    return isShortLine;
-}
-
-- (BOOL)isLongLineOfLength:(CGFloat)length
-           maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    return [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.9];
-}
-
-- (BOOL)isLongLineOfLength:(CGFloat)length
-           maxLengthOfLine:(CGFloat)maxLengthOfLine
-  greaterRateOfMaxLongLine:(CGFloat)greaterRateOfMaxLongLine {
-    BOOL isLongLine = length >= maxLengthOfLine * greaterRateOfMaxLongLine;
-    return isLongLine;
-}
-
-- (BOOL)isPoetryOfTextArray:(NSArray<NSString *> *)textArray
-            lineLengthArray:(NSArray<NSNumber *> *)lineLengthArray
-                  maxLengthOfLine:(CGFloat)maxLengthOfLine
-             punctuationMarkCount:(NSInteger)punctuationMarkCount
-              punctuationMarkRate:(CGFloat)punctuationMarkRate
-                   language:(EZLanguage)language {
-    
-    NSInteger shortLineCount = 0;
-    NSInteger longLineCount = 0;
-    CGFloat minLengthOfLine = CGFLOAT_MAX;
-    
-    CGFloat lineCount = lineLengthArray.count;
-
-    NSInteger totalCharCount = 0;
-    CGFloat charCountPerLine = 0;
-
-    for (NSString *text in textArray) {
-        totalCharCount += text.length;
-    }
-
-    charCountPerLine = totalCharCount / lineCount;
-    
-    for (NSNumber *number in lineLengthArray) {
-        CGFloat length = number.floatValue;
-        if (length > maxLengthOfLine) {
-            maxLengthOfLine = length;
-        }
-        if (length < minLengthOfLine) {
-            minLengthOfLine = length;
-        }
-        
-        BOOL isShortLine = [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine];
-        if (isShortLine) {
-            shortLineCount += 1;
-        }
-        
-        BOOL isLongLine = [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine];
-        if (isLongLine) {
-            longLineCount += 1;
-        }
-    }
-    
-    CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
-    
-    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
-    if (isChinese) {
-        CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
-        if (lineCount > 2) {
-            maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
-        }
-        
-        BOOL isAveragePoetryLength = charCountPerLine <= maxCharCountPerLineOfPoetry;
-        
-        BOOL isEqualLength = maxLengthOfLine - minLengthOfLine < 0.04; // ~0.96
-        if (isEqualLength && isAveragePoetryLength) {
-            return YES;
-        }
-        
-        if (isAveragePoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
-            return YES;
-        }
-    }
-    
-    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
-    if (numberOfPunctuationMarksPerLine > 2) {
-        return NO;
-    }
-    
-    if (punctuationMarkCount == 0) {
-        return YES;
-    }
-    
-    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (punctuationMarkRate < 0.04)) {
-        return YES;
-    }
-    
-        
-    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
-    if (tooManyLongLine) {
-        return NO;
-    }
-    
-    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
-    if (tooManyShortLine) {
-        return YES;
-    }
-    
-    return NO;
-}
-    
-
-/// Iterate string array, get the short line count and long line count.
-- (void)shortLineCount:(NSInteger *)shortLineCount
-         longLineCount:(NSInteger *)longLineCount
-         ofStringArray:(NSArray<NSString *> *)stringArray
-       maxLengthOfLine:(CGFloat)maxLengthOfLine
-              language:(EZLanguage)language {
-    NSInteger _shortLineCount = 0;
-    NSInteger _longLineCount = 0;
-    for (NSString *string in stringArray) {
-        BOOL isShortLine = [self isShortLineOfString:string
-                                     maxLengthOfLine:maxLengthOfLine
-                                            language:language];
-        
-        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
-        if (isShortLine) {
-            _shortLineCount += 1;
-        }
-        if (isLongLine) {
-            _longLineCount += 1;
-        }
-    }
-    *shortLineCount = _shortLineCount;
-    *longLineCount = _longLineCount;
-}
-
-/// Check if string is a short line, if string frame width is less than max width - delta * 2
-/// !!!: This method can only be used to determine the consistency of the font layout, not for some PDF font spacing is not the same situation.
-- (BOOL)isShortLineOfString:(NSString *)string
-            maxLengthOfLine:(CGFloat)maxLengthOfLine
-                   language:(EZLanguage)language {
-    if (string.length == 0) {
-        return YES;
-    }
-    
-    CGFloat width = [self widthOfString:string];
-    CGFloat delta = kEnglishWordWidth;
-    if ([EZLanguageManager isChineseLanguage:language]) {
-        delta = kChineseWordWidth;
-    }
-    
-    // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
-    BOOL isShortLine = maxLengthOfLine - width >= delta * 2;
-    
-    return isShortLine;
-}
-
-/// Check if string is a long line, if string frame width is greater than max width - delta * 1.5
-- (BOOL)isLongLineOfString:(NSString *)string
-           maxLengthOfLine:(CGFloat)maxLengthOfLine
-                  language:(EZLanguage)language {
-    CGFloat width = [self widthOfString:string];
-    CGFloat delta = kEnglishWordWidth;
-    if ([EZLanguageManager isChineseLanguage:language]) {
-        delta = kChineseWordWidth;
-    }
-    BOOL isLongLine = maxLengthOfLine - width <= delta * 1.5;
-    
-    return isLongLine;
-}
-
-
-
-
-/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
-- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
-    NSArray *languages = @[
-        EZLanguageSimplifiedChinese,
-        EZLanguageTraditionalChinese,
-        EZLanguageJapanese,
-        EZLanguageKorean,
-    ];
-    return ![languages containsObject:language];
-}
-
-/// Use punctuationCharacterSet to check if it is a punctuation mark.
-- (BOOL)isPunctuationChar:(NSString *)charString {
-    return [self isPunctuationChar:charString excludeCharacters:nil];
-}
-
-- (BOOL)isPunctuationChar:(NSString *)charString excludeCharacters:(nullable NSArray *)charArray {
-    if (charString.length != 1) {
-        return NO;
-    }
-    
-    if ([charArray containsObject:charString]) {
-        return NO;
-    }
-    
-    NSCharacterSet *punctuationCharacterSet = [NSCharacterSet punctuationCharacterSet];
-    return [punctuationCharacterSet characterIsMember:[charString characterAtIndex:0]];
-}
-
-
-/// Use regex to check if it is a punctuation mark.
-- (BOOL)isPunctuationMark2:(NSString *)charString {
-    if (charString.length != 1) {
-        return NO;
-    }
-    
-    NSString *regex = @"[\\p{Punct}]";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    return [predicate evaluateWithObject:charString];
-}
-
-/// Check if char is a end punctuation mark.
-- (BOOL)isEndPunctuationChar:(NSString *)charString {
-    if (charString.length != 1) {
-        return NO;
-    }
-    
-    return [kEndPunctuationMarks containsObject:charString];
-}
-
-/// Check if char is a punctuation mark but not a end punctuation mark.
-- (BOOL)isNonEndPunctuationMark:(NSString *)charString {
-    if (charString.length != 1) {
-        return NO;
-    }
-    
-    NSArray *punctuationMarks = @[ @"，", @"、", @"；", @",", @";" ];
-    return [punctuationMarks containsObject:charString];
-}
 
 /// Itearte string array, get the max frame width of string.
 - (CGFloat)maxLengthOfStringArray:(NSArray<NSString *> *)stringArray {
@@ -1662,35 +1697,6 @@ static NSString *const kParagraphBreak = @"\n\n";
 - (CGFloat)widthOfString:(NSString *)string {
     CGSize size = [string sizeWithAttributes:@{NSFontAttributeName : [NSFont systemFontOfSize:NSFont.systemFontSize]}];
     return size.width;
-}
-
-/// Use NSCharacterSet to replace simlar dot sybmol with char "·", do not iterate.
-- (NSString *)replaceSimilarDotSymbolOfString:(NSString *)string {
-    // 《蝶恋花 • 阅尽天涯离别苦》
-    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"•‧∙"];
-    //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
-    
-    NSArray *strings = [string componentsSeparatedByCharactersInSet:charSet];
-    // Remove extra white space.
-    NSMutableArray *array = [NSMutableArray array];
-    for (NSString *string in strings) {
-        NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if (text.length > 0) {
-            [array addObject:text];
-        }
-    }
-    
-    // Add white space for better reading.
-    NSString *text = [array componentsJoinedByString:@" · "];
-    
-    return text;
-}
-
-/// Use regex to replace simlar dot sybmol with char "·", do not iterate.
-- (NSString *)replaceSimilarDotSymbolOfString2:(NSString *)string {
-    NSString *regex = @"[•‧∙]"; // [•‧∙・]
-    NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"·" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
-    return text;
 }
 
 @end
