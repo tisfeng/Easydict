@@ -481,9 +481,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
-- (void)playQueryTextSound {
-    // If audio is playing, stop it.
-    if (self.audioPlayer.isPlaying) {
+- (void)stopPlayingAudio {
+    [self playOrStopQueryTextAudio:NO];
+    [self stopAllResultAudio];
+}
+
+- (void)playOrStopQueryTextAudio {
+    BOOL isPlaying = self.audioPlayer.isPlaying;
+    [self playOrStopQueryTextAudio:!isPlaying];
+}
+
+- (void)playOrStopQueryTextAudio:(BOOL)playFlag {
+    if (!playFlag) {
         [self.audioPlayer stop];
         return;
     }
@@ -507,6 +516,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self detectQueryText:^{
             playBlock();
         }];
+    }
+}
+
+- (void)stopAllResultAudio {
+    for (EZQueryService *service in self.services) {
+        [service.audioPlayer stop];
     }
 }
 
@@ -1078,7 +1093,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self playQueryTextSound];
+        [self playOrStopQueryTextAudio];
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
