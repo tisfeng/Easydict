@@ -977,6 +977,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion {
+    [self cancelDelayDetectQueryText];
+    
     NSString *queryText = [self.queryText trim];
     if (queryText.length == 0) {
         if (completion) {
