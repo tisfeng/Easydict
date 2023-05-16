@@ -245,7 +245,7 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)playSoundAction:(NSMenuItem *)sender {
-    [EZWindowManager.shared playQueryTextSound];
+    [EZWindowManager.shared playOrStopQueryTextAudio];
 }
 
 - (IBAction)googleAction:(NSMenuItem *)sender {

@@ -771,8 +771,8 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController focusInputTextView];
 }
 
-- (void)playQueryTextSound {
-    [self.floatingWindow.queryViewController playQueryTextSound];
+- (void)playOrStopQueryTextAudio {
+    [self.floatingWindow.queryViewController playOrStopQueryTextAudio];
 }
 
 
@@ -782,6 +782,9 @@ static EZWindowManager *_instance;
 - (void)closeFloatingWindow {
     NSLog(@"close floating window: %@", self.floatingWindow);
     
+    // stop playing audio
+    [self.floatingWindow.queryViewController stopPlayingAudio];
+
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
     

@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearAll;
 - (void)focusInputTextView;
 - (void)copyQueryText;
-- (void)playQueryTextSound;
+- (void)playOrStopQueryTextAudio;
 - (void)rerty;
 - (void)toggleTranslationLanguages;
 
