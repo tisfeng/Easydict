@@ -14,12 +14,11 @@
 #import "EZTextWordUtils.h"
 #import "NSString+EZChineseText.h"
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
-static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—", @"-", @"–" ];
-
-
 static NSString *const kLineBreak = @"\n";
 static NSString *const kParagraphBreak = @"\n\n";
+
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
+static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—", @"-", @"–" ];
 
 @interface EZAppleService ()
 
@@ -55,7 +54,6 @@ static NSString *const kParagraphBreak = @"\n\n";
 - (NSString *)name {
     return NSLocalizedString(@"system_translate", nil);
 }
-
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
@@ -1120,6 +1118,18 @@ static NSString *const kParagraphBreak = @"\n\n";
     return isPoetry;
 }
 
+/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
+    NSArray *languages = @[
+        EZLanguageSimplifiedChinese,
+        EZLanguageTraditionalChinese,
+        EZLanguageJapanese,
+        EZLanguageKorean,
+    ];
+    return ![languages containsObject:language];
+}
+
+
 #pragma mark - Apple Speech Synthesizer
 
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
@@ -1199,15 +1209,6 @@ static NSString *const kParagraphBreak = @"\n\n";
     return EZLanguageAuto;
 }
 
-/// Check if text is Chinese.
-- (BOOL)isChineseText:(NSString *)text {
-    EZLanguage language = [self appleDetectTextLanguage:text];
-    if ([EZLanguageManager isChineseLanguage:language]) {
-        return YES;
-    }
-    return NO;
-}
-
 /// Count Chinese characters length in string.
 - (NSInteger)chineseCharactersLength:(NSString *)string {
     __block NSInteger length = 0;
@@ -1217,6 +1218,15 @@ static NSString *const kParagraphBreak = @"\n\n";
         }
     }];
     return length;
+}
+
+/// Check if text is Chinese.
+- (BOOL)isChineseText:(NSString *)text {
+    EZLanguage language = [self appleDetectTextLanguage:text];
+    if ([EZLanguageManager isChineseLanguage:language]) {
+        return YES;
+    }
+    return NO;
 }
 
 /// Check if it is a single letter of the alphabet.
@@ -1245,17 +1255,6 @@ static NSString *const kParagraphBreak = @"\n\n";
 
 
 #pragma mark - Check character punctuation
-
-/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
-- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
-    NSArray *languages = @[
-        EZLanguageSimplifiedChinese,
-        EZLanguageTraditionalChinese,
-        EZLanguageJapanese,
-        EZLanguageKorean,
-    ];
-    return ![languages containsObject:language];
-}
 
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
 - (BOOL)isPunctuationChar:(NSString *)charString {
@@ -1336,367 +1335,6 @@ static NSString *const kParagraphBreak = @"\n\n";
     NSString *regex = @"[•‧∙]"; // [•‧∙・]
     NSString *text = [string stringByReplacingOccurrencesOfString:regex withString:@"·" options:NSRegularExpressionSearch range:NSMakeRange(0, string.length)];
     return text;
-}
-
-
-#pragma mark - deprecated
-
-/// ⚠️ This method is not accurate, it is only used to detect Chinese language type.
-- (EZLanguage)chineseLanguageTypeOfText2:(NSString *)text {
-    //  月によく似た風景
-    
-    text = [EZTextWordUtils removeNonNormalCharacters:text];
-    
-    NSInteger traditionalChineseLength = [self chineseCharactersLength:text type:EZLanguageTraditionalChinese];
-    NSInteger simplifiedChineseLength = [self chineseCharactersLength:text type:EZLanguageSimplifiedChinese];
-    NSInteger englishLength = [self englishCharactersLength:text];
-    NSInteger chineseLength = traditionalChineseLength + simplifiedChineseLength;
-    NSInteger totalLength = chineseLength + englishLength;
-    
-    if (totalLength != text.length || traditionalChineseLength + simplifiedChineseLength == 0) {
-        return EZLanguageAuto;
-    }
-    
-    if (traditionalChineseLength >= chineseLength / 4.0) {
-        return EZLanguageTraditionalChinese;
-    } else {
-        return EZLanguageSimplifiedChinese;
-    }
-}
-
-/// Count English characters length in string.
-- (NSInteger)englishCharactersLength:(NSString *)string {
-    __block NSInteger length = 0;
-    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *_Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL *_Nonnull stop) {
-        if ([self isAlphabet:substring]) {
-            length++;
-        }
-    }];
-    return length;
-}
-
-/// Count Chinese characters length in string with specific language.
-- (NSInteger)chineseCharactersLength:(NSString *)string type:(EZLanguage)language {
-    __block NSInteger length = 0;
-    for (NSInteger i = 0; i < string.length; i++) {
-        NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-        if (language == EZLanguageTraditionalChinese) {
-            if ([self isTraditionalChineseChar:charString]) {
-                length++;
-            }
-        } else if (language == EZLanguageSimplifiedChinese) {
-            if ([self isSimplifiedChineseChar:charString]) {
-                length++;
-            }
-        }
-    }
-    return length;
-}
-
-/// Check if char is Simplified Chinese. test: 使用 OCR 123$
-- (BOOL)isSimplifiedChineseChar:(NSString *)charString {
-    // ???: Why 勿, 狗 is traditional Chinese?
-    EZLanguage language = [self appleDetectTextLanguage:charString];
-    if (language == EZLanguageSimplifiedChinese) {
-        return YES;
-    }
-    if (language == EZLanguageTraditionalChinese) {
-        NSString *simplifiedChinese = [charString toSimplifiedChineseText];
-        if ([simplifiedChinese isEqualToString:charString]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-/// Check if char is Traditional Chinese. test: 開門 open
-- (BOOL)isTraditionalChineseChar:(NSString *)charString {
-    EZLanguage language = [self appleDetectTextLanguage:charString];
-    if (language == EZLanguageTraditionalChinese) {
-        // Convert to simplified Chinese, check if simplified Chinese is same as traditional Chinese.
-        NSString *simplifiedChinese = [charString toSimplifiedChineseText];
-        if ([simplifiedChinese isEqualToString:charString]) {
-            return NO;
-        }
-        return YES;
-    }
-    return NO;
-}
-
-/// !!!: This method is not accurate. 権 --> zh
-- (BOOL)isChineseCharacter:(NSString *)string {
-    if (string.length != 1) {
-        return NO;
-    }
-    
-    // 権 should be Japanese, but this method will detect it as Chinese.
-    NSString *regex = @"[\u4e00-\u9fa5]";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    return [predicate evaluateWithObject:string];
-}
-
-
-#pragma mark - Handle OCR text, deprecated
-
-/**
- Hello world"
- 然后请你也谈谈你对习主席连任的看法？
- 最后输出以下内容的反义词："go up
- */
-//- (NSString *)joinOCRResults:(EZOCRResult *)ocrResult {
-//    NSArray<NSString *> *stringArray = ocrResult.texts;
-//    NSLog(@"ocr stringArray: %@", stringArray);
-//
-//    EZLanguage language = ocrResult.from;
-//
-//    NSMutableString *joinedString = [NSMutableString string];
-//    CGFloat maxLengthOfLine = 0;
-//    CGFloat minLengthOfLine = 0;
-//    NSInteger punctuationMarkCount = 0;
-//    CGFloat punctuationMarkRate = 0;
-//
-//    BOOL isPoetry = [self isPoetryOfOCRResults:ocrResult
-//                               maxLengthOfLine:&maxLengthOfLine
-//                               minLengthOfLine:&minLengthOfLine
-//                          punctuationMarkCount:&punctuationMarkCount
-//                           punctuationMarkRate:&punctuationMarkRate];
-//
-//    NSString *newLineString = @"\n";
-//    if (isPoetry) {
-//        NSLog(@"--> isPoetry");
-//        return [stringArray componentsJoinedByString:newLineString];
-//    }
-//
-//    for (NSInteger i = 0; i < stringArray.count; i++) {
-//        NSString *string = stringArray[i];
-//        [joinedString appendString:string];
-//
-//        /// Join string array, if string last char end with [ 。？!.?！],  join with "\n", else join with " ".
-//        NSString *lastChar = [string substringFromIndex:string.length - 1];
-//
-//        // Append \n for short line if string frame width is less than max width - delta.
-//        BOOL isShortLine = [self isShortLineOfString:string
-//                                     maxLengthOfLine:maxLengthOfLine
-//                                            language:language];
-//
-//        BOOL needAppendNewLine = isShortLine;
-//
-//        if (needAppendNewLine) {
-//            [joinedString appendString:newLineString];
-//        } else if ([self isPunctuationChar:lastChar]) {
-//            // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-//            [joinedString appendString:@" "];
-//        } else {
-//            // Like Chinese text, don't need space between words if it is not a punctuation mark.
-//            if ([self isLanguageWordsNeedSpace:language]) {
-//                [joinedString appendString:@" "];
-//            }
-//        }
-//    }
-//
-//    // Remove last \n.
-//    return [joinedString trim];
-//}
-//
-//
-///// Get joined string of text, according to its last char.
-//- (NSString *)joinedStringOfText:(NSString *)text
-//                 maxLengthOfLine:(CGFloat *)maxLengthOfLine
-//                        language:(EZLanguage)language {
-//    NSString *joinedString = @"";
-//    NSString *lastChar = [text substringFromIndex:text.length - 1];
-//    BOOL isShortLine = [self isShortLineOfString:text
-//                                 maxLengthOfLine:*maxLengthOfLine
-//                                        language:language];
-//    BOOL needLineBreak = isShortLine || [self isEndPunctuationChar:lastChar];
-//
-//    if (needLineBreak) {
-//        joinedString = @"\n";
-//    } else if ([self isPunctuationChar:lastChar]) {
-//        // if last char is a punctuation mark, then append a space, since ocr will remove white space.
-//        joinedString = @" ";
-//    } else {
-//        // Like Chinese text, don't need space between words if it is not a punctuation mark.
-//        if ([self isLanguageWordsNeedSpace:language]) {
-//            joinedString = @" ";
-//        }
-//    }
-//    return joinedString;
-//}
-//
-///// Check if string array is poetry, and get the max and min frame width of string, the punctuation count and the punctuation mark percent.
-//- (BOOL)isPoetryOfOCRResults:(EZOCRResult *)ocrResult
-//             maxLengthOfLine:(CGFloat *)maxLengthOfLine
-//             minLengthOfLine:(CGFloat *)minLengthOfLine
-//        punctuationMarkCount:(NSInteger *)punctuationMarkCount
-//         punctuationMarkRate:(CGFloat *)punctuationMarkRate {
-//    NSArray<NSString *> *stringArray = ocrResult.texts;
-//    EZLanguage language = ocrResult.from;
-//
-//    CGFloat _maxLengthOfLine = 0;
-//    CGFloat _minLengthOfLine = CGFLOAT_MAX;
-//    NSInteger _punctuationMarkCount = 0;
-//    CGFloat _punctuationMarkRate = 0;
-//
-//    NSInteger totalCharCount = 0;
-//    for (NSString *string in stringArray) {
-//        CGFloat width = [self widthOfString:string];
-//        if (width > _maxLengthOfLine) {
-//            _maxLengthOfLine = width;
-//        }
-//        if (width < _minLengthOfLine) {
-//            _minLengthOfLine = width;
-//        }
-//
-//        // iterate string to check if has punctuation mark.
-//        for (NSInteger i = 0; i < string.length; i++) {
-//            totalCharCount += 1;
-//            NSString *charString = [string substringWithRange:NSMakeRange(i, 1)];
-//            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
-//            if (isChar) {
-//                _punctuationMarkCount += 1;
-//            }
-//        }
-//    }
-//
-//    *maxLengthOfLine = _maxLengthOfLine;
-//    *minLengthOfLine = _minLengthOfLine;
-//    *punctuationMarkCount = _punctuationMarkCount;
-//
-//    _punctuationMarkRate = _punctuationMarkCount / (CGFloat)totalCharCount;
-//    *punctuationMarkRate = _punctuationMarkRate;
-//
-//    NSInteger lineCount = stringArray.count;
-//    CGFloat numberOfPunctuationMarksPerLine = (CGFloat)_punctuationMarkCount / lineCount;
-//
-//    /**
-//     曾经沧海难为水，
-//     除却巫山不是云。
-//     取次花丛懒回顾，
-//     半缘修道半缘君。
-//     */
-//    if (_maxLengthOfLine == _minLengthOfLine) {
-//        if ((numberOfPunctuationMarksPerLine <= 2) || lineCount >= 4) {
-//            return YES;
-//        }
-//    }
-//
-//    // If average number of punctuation marks per line is greater than 2, then it is not poetry.
-//    if (numberOfPunctuationMarksPerLine > 2) {
-//        return NO;
-//    }
-//
-//    if (_punctuationMarkCount == 0 && [EZLanguageManager isChineseLanguage:language]) {
-//        return YES;
-//    }
-//
-////    if (lineCount >= 4 && _punctuationMarkRate < 0.02) {
-////        return YES;
-////    }
-//
-//    if (lineCount >= 8 && (numberOfPunctuationMarksPerLine < 1 / 4) && (_punctuationMarkRate < 0.04)) {
-//        return YES;
-//    }
-//
-//    NSInteger shortLineCount = 0;
-//    NSInteger longLineCount = 0;
-//    [self shortLineCount:&shortLineCount
-//           longLineCount:&longLineCount
-//           ofStringArray:stringArray
-//         maxLengthOfLine:_maxLengthOfLine
-//                language:language];
-//
-//    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
-//    if (tooManyLongLine) {
-//        return NO;
-//    }
-//
-//    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
-//    if (tooManyShortLine) {
-//        return YES;
-//    }
-//
-//    return NO;
-//}
-//
-//
-///// Iterate string array, get the short line count and long line count.
-//- (void)shortLineCount:(NSInteger *)shortLineCount
-//         longLineCount:(NSInteger *)longLineCount
-//         ofStringArray:(NSArray<NSString *> *)stringArray
-//       maxLengthOfLine:(CGFloat)maxLengthOfLine
-//              language:(EZLanguage)language {
-//    NSInteger _shortLineCount = 0;
-//    NSInteger _longLineCount = 0;
-//    for (NSString *string in stringArray) {
-//        BOOL isShortLine = [self isShortLineOfString:string
-//                                     maxLengthOfLine:maxLengthOfLine
-//                                            language:language];
-//
-//        BOOL isLongLine = [self isLongLineOfString:string maxLengthOfLine:maxLengthOfLine language:language];
-//        if (isShortLine) {
-//            _shortLineCount += 1;
-//        }
-//        if (isLongLine) {
-//            _longLineCount += 1;
-//        }
-//    }
-//    *shortLineCount = _shortLineCount;
-//    *longLineCount = _longLineCount;
-//}
-//
-///// Check if string is a short line, if string frame width is less than max width - delta * 2
-///// !!!: This method can only be used to determine the consistency of the font layout, not for some PDF font spacing is not the same situation.
-//- (BOOL)isShortLineOfString:(NSString *)string
-//            maxLengthOfLine:(CGFloat)maxLengthOfLine
-//                   language:(EZLanguage)language {
-//    if (string.length == 0) {
-//        return YES;
-//    }
-//
-//    CGFloat width = [self widthOfString:string];
-//    CGFloat delta = kEnglishWordWidth;
-//    if ([EZLanguageManager isChineseLanguage:language]) {
-//        delta = kChineseWordWidth;
-//    }
-//
-//    // TODO: Since some articles has indent, generally 3 Chinese words enough for indent.
-//    BOOL isShortLine = maxLengthOfLine - width >= delta * 2;
-//
-//    return isShortLine;
-//}
-//
-///// Check if string is a long line, if string frame width is greater than max width - delta * 1.5
-//- (BOOL)isLongLineOfString:(NSString *)string
-//           maxLengthOfLine:(CGFloat)maxLengthOfLine
-//                  language:(EZLanguage)language {
-//    CGFloat width = [self widthOfString:string];
-//    CGFloat delta = kEnglishWordWidth;
-//    if ([EZLanguageManager isChineseLanguage:language]) {
-//        delta = kChineseWordWidth;
-//    }
-//    BOOL isLongLine = maxLengthOfLine - width <= delta * 1.5;
-//
-//    return isLongLine;
-//}
-
-
-/// Itearte string array, get the max frame width of string.
-- (CGFloat)maxLengthOfStringArray:(NSArray<NSString *> *)stringArray {
-    CGFloat maxLength = 0;
-    for (NSString *string in stringArray) {
-        CGFloat width = [self widthOfString:string];
-        if (width > maxLength) {
-            maxLength = width;
-        }
-    }
-    return maxLength;
-}
-
-/// Get string frame width.
-- (CGFloat)widthOfString:(NSString *)string {
-    CGSize size = [string sizeWithAttributes:@{NSFontAttributeName : [NSFont systemFontOfSize:NSFont.systemFontSize]}];
-    return size.width;
 }
 
 @end
