@@ -124,8 +124,8 @@
 "etymology" = "Etymology:";
 "tag" = "Tag:";
 "please_look" = "Please see👉";
-"us_phonetic" = "US";
-"uk_phonetic" = "UK";
+"us_phonetic" = "US:";
+"uk_phonetic" = "UK:";
 "chinese_phonetic" = "Pronunciation";
 
 "singular" = "Third person singular";
