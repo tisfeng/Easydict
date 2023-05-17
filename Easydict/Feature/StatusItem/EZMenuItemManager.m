@@ -14,7 +14,7 @@
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
 
-static CGFloat const kImageMenuItemHeightRatio = 1.3;
+static CGFloat const kImageMenuItemHeightRatio = 1.4;
 static CGFloat const kTitleMenuItemHeightRatio = 1.2;
 
 @interface EZMenuItemManager () <NSMenuDelegate>
@@ -62,7 +62,7 @@ static EZMenuItemManager *_instance;
 
 - (NSString *)versionTitle {
     if (!_versionTitle) {
-        _versionTitle = [NSString stringWithFormat:@"Easydict %@", self.appVersion];
+        _versionTitle = [NSString stringWithFormat:@"Easydict  %@", self.appVersion];
     }
     return _versionTitle;
 }
