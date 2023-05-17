@@ -1031,13 +1031,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-#pragma mark -
 
-// Get tableView bounds in real time.
-- (CGRect)tableViewContentBounds {
-    CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZHorizontalCellSpacing_12, self.scrollView.height);
-    return rect;
-}
+#pragma mark - Set up cell view
 
 - (EZQueryView *)createQueryView {
     EZQueryView *queryView = [self.tableView makeViewWithIdentifier:EZQueryViewId owner:self];
@@ -1142,50 +1137,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return resultCell;
 }
 
-- (NSInteger)resultCellOffset {
-    NSInteger offset;
-    switch (self.windowType) {
-        case EZWindowTypeMini: {
-            offset = 1;
-            break;
-        }
-        case EZWindowTypeMain:
-        case EZWindowTypeFixed: {
-            offset = 2;
-            break;
-        }
-        default: {
-            offset = 2;
-        }
-    }
-    
-    return offset;
-}
-
-- (EZQueryService *)serviceAtRow:(NSInteger)row {
-    NSInteger index = row - [self resultCellOffset];
-    EZQueryService *service = self.services[index];
-    return service;
-}
-
-- (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
-    NSInteger index = [self.serviceTypes indexOfObject:serviceType];
-    if (index != NSNotFound) {
-        return self.services[index];
-    }
-    return nil;
-}
-
 - (void)setupResultCell:(EZResultView *)resultView {
     EZQueryResult *result = resultView.result;
     EZQueryService *service = result.service;
 
     mm_weakify(self);
-
-    [resultView setCopyTextBlock:^(NSString *_Nonnull text) {
-        [text copyAndShowToast:YES];
-    }];
-
     [resultView setClickTextBlock:^(NSString *_Nonnull word) {
         mm_strongify(self);
         [self startQueryText:word];
@@ -1232,6 +1188,47 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
     }];
 }
+
+- (NSInteger)resultCellOffset {
+    NSInteger offset;
+    switch (self.windowType) {
+        case EZWindowTypeMini: {
+            offset = 1;
+            break;
+        }
+        case EZWindowTypeMain:
+        case EZWindowTypeFixed: {
+            offset = 2;
+            break;
+        }
+        default: {
+            offset = 2;
+        }
+    }
+    
+    return offset;
+}
+
+- (EZQueryService *)serviceAtRow:(NSInteger)row {
+    NSInteger index = row - [self resultCellOffset];
+    EZQueryService *service = self.services[index];
+    return service;
+}
+
+- (nullable EZQueryService *)serviceWithType:(EZServiceType)serviceType {
+    NSInteger index = [self.serviceTypes indexOfObject:serviceType];
+    if (index != NSNotFound) {
+        return self.services[index];
+    }
+    return nil;
+}
+
+// Get tableView bounds in real time.
+- (CGRect)tableViewContentBounds {
+    CGRect rect = CGRectMake(0, 0, self.scrollView.width - 2 * EZHorizontalCellSpacing_12, self.scrollView.height);
+    return rect;
+}
+
 
 #pragma mark - Update Window Height
 
