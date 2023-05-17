@@ -139,7 +139,7 @@
 "present_participle" = "现在分词";
 "root" = "词根";
 
-"toggle_languages" = "切换语言";
+"toggle_languages" = "交换翻译语言";
 "play_audio" = "播放音频";
 "stop_play_audio" = "停止播放音频";
 "copy_text" = "拷贝文本";
