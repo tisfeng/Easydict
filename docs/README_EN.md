@@ -324,7 +324,7 @@ If you find that the OCR result is incorrect, you can correct the OCR result by 
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114611359-1677469571.png" width="45%">
 </div>
 
-## Similar Projects
+## Similar Open Source Projects
 
 - [immersive-translate](https://github.com/immersive-translate/immersive-translate): A nice Immersive Dual Web Page Translation Extension.
 - [ext-saladict](https://github.com/crimx/ext-saladict): A browser extension for looking up words and translating.
@@ -346,6 +346,7 @@ Open source makes the world better.
 ## Acknowledgements
 
 - This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was made based on [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
+- Screenshot feature is based on [isee15](https://github.com/isee15) 's [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac), and optimized on this project.
 - Select text feature is referenced from [PopClip](https://pilotmoon.com/popclip/).
 
 ## Notice
