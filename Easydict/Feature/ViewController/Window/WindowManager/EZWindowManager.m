@@ -659,19 +659,31 @@ static EZWindowManager *_instance;
         return;
     }
     
+    EZWindowType windowType = EZWindowTypeFixed;
+    if (self.floatingWindowType == windowType) {
+        [self closeFloatingWindow];
+        return;
+    }
+    
     NSString *queryText = nil;
-    if (EZConfiguration.shared.clearInput) {
+    if ([EZConfiguration.shared clearInput]) {
         queryText = @"";
     }
     
     self.actionType = EZActionTypeInputQuery;
-    [self showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
+    [self showFloatingWindowType:windowType queryText:queryText];
 }
 
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
+    EZWindowType windowType = EZWindowTypeMini;
+    if (self.floatingWindowType == windowType) {
+        [self closeFloatingWindow];
+        return;
+    }
+    
     self.actionType = EZActionTypeInputQuery;
-    [self showFloatingWindowType:EZWindowTypeMini queryText:nil];
+    [self showFloatingWindowType:windowType queryText:nil];
 }
 
 - (void)screenshotOCR {
