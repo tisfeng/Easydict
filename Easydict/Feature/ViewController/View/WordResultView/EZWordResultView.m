@@ -852,7 +852,8 @@ static const CGFloat kVerticalPadding_8 = 8;
 }
 
 - (NSString *)copiedText {
-    return self.result.translatedText;
+    NSString *text = [self.result.normalResults componentsJoinedByString:@"\n\n"] ?: @"";
+    return text;
 }
 
 #pragma mark - NSTextViewDelegate
