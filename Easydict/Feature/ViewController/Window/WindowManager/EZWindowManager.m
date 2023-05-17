@@ -342,7 +342,6 @@ static EZWindowManager *_instance;
         [preferencesWindowController.window close];
     }
     
-    
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
     [window setFrameOrigin:safeLocation];
@@ -351,7 +350,7 @@ static EZWindowManager *_instance;
     [window.queryViewController focusInputTextView];
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
-    if (!EZConfiguration.shared.hideMainWindow) {
+    if (![EZConfiguration.shared hideMainWindow]) {
         [_mainWindow orderOut:nil];
     }
     
@@ -360,17 +359,13 @@ static EZWindowManager *_instance;
     
     /// ???: orderFrontRegardless will cause OCR show blank window when window has shown.
     //    [window orderFrontRegardless];
-
-        
-    // Avoid floating windows being closed immediately.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self updateFloatingWindowType:window.windowType];
     
-        // mainWindow has been ordered out before, so we need to order back.
-        if (!EZConfiguration.shared.hideMainWindow) {
-            [self->_mainWindow orderBack:nil];
-        }
-    });
+    [self updateFloatingWindowType:window.windowType];
+
+    // mainWindow has been ordered out before, so we need to order back.
+    if (![EZConfiguration.shared hideMainWindow]) {
+        [self->_mainWindow orderBack:nil];
+    }
 }
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
@@ -624,7 +619,22 @@ static EZWindowManager *_instance;
         return;
     }
     
+    // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
+    EZWindowType windowType = EZWindowTypeFixed;
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+    
+    /**
+     OCR will cause the window to lose focus and be closed.
+     If currently OCR window is showing, we need to pin it to avoid it being closed and show again.
+     */
+    BOOL isPin = window.pin;
+    if (self.floatingWindowType == windowType) {
+        window.pin = YES;
+    }
+    
     [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
+        window.pin = isPin;
+
         if (!image) {
             NSLog(@"not get screenshot");
             return;
@@ -641,10 +651,6 @@ static EZWindowManager *_instance;
         [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
         [image mm_writeToFileAsPNG:_imagePath];
         NSLog(@"已保存图片: %@", _imagePath);
-        
-        // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
-        EZWindowType windowType = EZWindowTypeFixed;
-        EZBaseQueryWindow *window = [self windowWithType:windowType];
         
         // Reset window height first, avoid being affected by previous window height.
         [window.queryViewController resetTableView:^{
