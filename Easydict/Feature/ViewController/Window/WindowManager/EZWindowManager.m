@@ -355,11 +355,12 @@ static EZWindowManager *_instance;
         [_mainWindow orderOut:nil];
     }
     
-    [window makeKeyWindow];
-    [window orderFrontRegardless];
-    
     // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
-//    [window makeKeyAndOrderFront:nil];
+    [window makeKeyAndOrderFront:nil];
+    
+    /// ???: orderFrontRegardless will cause OCR show blank window when window has shown.
+    //    [window orderFrontRegardless];
+
         
     // Avoid floating windows being closed immediately.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
