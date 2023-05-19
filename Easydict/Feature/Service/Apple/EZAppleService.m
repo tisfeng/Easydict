@@ -13,6 +13,7 @@
 #import "EZConfiguration.h"
 #import "EZTextWordUtils.h"
 #import "NSString+EZChineseText.h"
+#import <CoreImage/CoreImage.h>
 
 static NSString *const kLineBreak = @"\n";
 static NSString *const kParagraphBreak = @"\n\n";
@@ -206,13 +207,35 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     self.queryModel = queryModel;
     
+    NSImage *image = queryModel.OCRImage;
+    NSArray *qrCodeTexts = [self detectQRCodeImage:image];
+    if (qrCodeTexts.count) {
+        NSString *text = [qrCodeTexts componentsJoinedByString:@"\n"];
+        
+        EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+        ocrResult.texts = qrCodeTexts;
+        ocrResult.mergedText = text;
+        ocrResult.raw = qrCodeTexts;
+        
+        EZLanguage language = [self detectText:text];
+        queryModel.queryText = text;
+        queryModel.detectedLanguage = language;
+
+        ocrResult.from = language;
+        ocrResult.confidence = 1.0;
+        
+        completion(ocrResult, nil);
+        return;
+    }
+
+    
     BOOL automaticallyDetectsLanguage = YES;
     BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
     if (hasSpecifiedLanguage) {
         automaticallyDetectsLanguage = NO;
     }
     
-    [self ocrImage:queryModel.OCRImage
+    [self ocrImage:image
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
@@ -480,7 +503,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
       autoDetect:(BOOL)automaticallyDetectsLanguage
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     NSLog(@"ocr language: %@", preferredLanguage);
-    
+        
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert NSImage to CGImage
         CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
@@ -705,6 +728,42 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         }
     });
 }
+
+- (nullable NSArray<NSString *> *)detectQRCodeImage:(NSImage *)image {
+    NSLog(@"detect QRCode image");
+
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
+    CGImageRef cgImage = [image CGImageForProposedRect:nil context:nil hints:nil];
+    CIImage *ciImage = [CIImage imageWithCGImage:cgImage];
+    if (!ciImage) {
+        return nil;
+    }
+
+    CIContext *context = [CIContext context];
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:nil];
+    NSArray<CIFeature *> *features = [detector featuresInImage:ciImage];
+
+    NSMutableArray *result = [NSMutableArray array];
+    for (CIQRCodeFeature *feature in features) {
+        NSString *text = feature.messageString;
+        if (text.length) {
+            [result addObject:text];
+        }
+    }
+
+    if (result.count) {
+        NSLog(@"QR code results: %@", result);
+        
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~20ms
+
+        return result;
+    }
+
+    return nil;
+}
+
 
 
 #pragma mark - Join OCR text array
