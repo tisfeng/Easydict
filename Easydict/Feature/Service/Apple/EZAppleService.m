@@ -219,7 +219,6 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         ocrResult.raw = qrCodeTexts;
         
         EZLanguage language = [self detectText:text];
-        queryModel.queryText = text;
         queryModel.detectedLanguage = language;
         queryModel.autoQuery = NO;
 
