@@ -58,7 +58,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"auto",
+//                                        EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh_CN",
                                         EZLanguageTraditionalChinese, @"zh_TW",
                                         EZLanguageEnglish, @"en_US",
@@ -148,10 +148,6 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
                                         EZLanguageUkrainian, @"uk-UA",
                                         nil];
     return orderedDict;
-}
-
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioURL, NSError *_Nullable error))completion {
-    completion(nil, nil);
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
@@ -257,6 +253,11 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"Apple not support ocrAndTranslate");
 }
+
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable audioURL, NSError *_Nullable error))completion {
+    completion(nil, nil);
+}
+
 
 #pragma mark - Public Methods
 

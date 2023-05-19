@@ -224,7 +224,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
  */
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, @"auto",
+//                                        EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-CHS",
                                         EZLanguageTraditionalChinese, @"zh-CHT",
                                         EZLanguageEnglish, @"en",
