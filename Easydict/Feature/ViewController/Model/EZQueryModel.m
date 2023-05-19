@@ -60,6 +60,10 @@
         self.needDetectLanguage = YES;
     }
     
+    if (queryText.length == 0) {
+        _detectedLanguage = EZLanguageAuto;
+    }
+    
     _queryText = [queryText copy];
 }
 
@@ -77,14 +81,6 @@
     if (ocrImage) {
         _actionType = EZActionTypeOCRQuery;
     }
-}
-
-- (EZLanguage)detectedLanguage {
-    if (_queryText.length == 0) {
-        _detectedLanguage = EZLanguageAuto;
-    }
-    
-    return _detectedLanguage;
 }
 
 - (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
