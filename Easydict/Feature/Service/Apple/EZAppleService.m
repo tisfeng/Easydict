@@ -58,7 +58,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-//                                        EZLanguageAuto, @"auto",
+                                        //                                        EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh_CN",
                                         EZLanguageTraditionalChinese, @"zh_TW",
                                         EZLanguageEnglish, @"en_US",
@@ -203,7 +203,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     self.queryModel = queryModel;
     queryModel.autoQuery = YES;
-
+    
     NSImage *image = queryModel.OCRImage;
     NSArray *qrCodeTexts = [self detectQRCodeImage:image];
     if (qrCodeTexts.count) {
@@ -217,14 +217,14 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         EZLanguage language = [self detectText:text];
         queryModel.detectedLanguage = language;
         queryModel.autoQuery = NO;
-
+        
         ocrResult.from = language;
         ocrResult.confidence = 1.0;
         
         completion(ocrResult, nil);
         return;
     }
-
+    
     
     BOOL automaticallyDetectsLanguage = YES;
     BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
@@ -505,7 +505,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
       autoDetect:(BOOL)automaticallyDetectsLanguage
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     NSLog(@"ocr language: %@", preferredLanguage);
-        
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert NSImage to CGImage
         CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
@@ -736,19 +736,19 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 
 - (nullable NSArray<NSString *> *)detectQRCodeImage:(NSImage *)image {
     NSLog(@"detect QRCode image");
-
+    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
+    
     CGImageRef cgImage = [image CGImageForProposedRect:nil context:nil hints:nil];
     CIImage *ciImage = [CIImage imageWithCGImage:cgImage];
     if (!ciImage) {
         return nil;
     }
-
+    
     CIContext *context = [CIContext context];
     CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:context options:nil];
     NSArray<CIFeature *> *features = [detector featuresInImage:ciImage];
-
+    
     NSMutableArray *result = [NSMutableArray array];
     for (CIQRCodeFeature *feature in features) {
         NSString *text = feature.messageString;
@@ -756,16 +756,16 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
             [result addObject:text];
         }
     }
-
+    
     if (result.count) {
         NSLog(@"QR code results: %@", result);
         
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~20ms
-
+        
         return result;
     }
-
+    
     return nil;
 }
 

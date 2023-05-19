@@ -224,7 +224,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
  */
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-//                                        EZLanguageAuto, @"auto",
+                                        //                                        EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh-CHS",
                                         EZLanguageTraditionalChinese, @"zh-CHT",
                                         EZLanguageEnglish, @"en",
@@ -324,7 +324,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         return;
     }
     //    [super textToAudio:text fromLanguage:from completion:completion];
-
+    
     /**
      It seems that the Youdao TTS audio will auto trim to 600 chars.
      https://dict.youdao.com/dictvoice?audio=Ukraine%20may%20get%20another%20Patriot%20battery.&le=en
@@ -334,12 +334,12 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
      */
     
     NSString *language = [self getTTSLanguageCode:from];
-
-//    text = [text trimToMaxLength:1000];
+    
+    //    text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
     
     NSString *audioURL = [NSString stringWithFormat:@"%@/dictvoice?audio=%@&le=%@", kYoudaoDictURL, text, language];
-//    audioURL = [NSString stringWithFormat:@"https://fanyi.sogou.com/reventondc/synthesis?text=%@&speed=1&lang=%@&from=translateweb&speaker=6", text, language];
+    //    audioURL = [NSString stringWithFormat:@"https://fanyi.sogou.com/reventondc/synthesis?text=%@&speed=1&lang=%@&from=translateweb&speaker=6", text, language];
     
     completion(audioURL, nil);
 }
