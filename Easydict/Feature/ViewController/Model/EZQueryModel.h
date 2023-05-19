@@ -47,6 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) CGFloat queryViewHeight;
 
+@property (nonatomic, assign) BOOL autoQuery;
 
 #pragma mark - Stop Block
 

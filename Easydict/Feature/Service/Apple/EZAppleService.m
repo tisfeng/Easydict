@@ -206,7 +206,8 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 /// Apple System ocr. Use Vision to recognize text in the image. Cost ~0.4s
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     self.queryModel = queryModel;
-    
+    queryModel.autoQuery = YES;
+
     NSImage *image = queryModel.OCRImage;
     NSArray *qrCodeTexts = [self detectQRCodeImage:image];
     if (qrCodeTexts.count) {
@@ -220,6 +221,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         EZLanguage language = [self detectText:text];
         queryModel.queryText = text;
         queryModel.detectedLanguage = language;
+        queryModel.autoQuery = NO;
 
         ocrResult.from = language;
         ocrResult.confidence = 1.0;
