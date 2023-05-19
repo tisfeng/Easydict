@@ -179,7 +179,7 @@ userInfo:nil]
     NSString *toLanguage = [self languageCodeForLanguage:self.queryModel.queryTargetLanguage];
     
     BOOL unsupportedLanguage = NO;
-        
+    
     if (!fromLanguage || !toLanguage) {
         unsupportedLanguage = YES;
     }
