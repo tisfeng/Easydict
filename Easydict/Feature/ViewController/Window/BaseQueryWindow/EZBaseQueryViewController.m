@@ -402,6 +402,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self.queryView startLoadingAnimation:NO];
 
             self.queryText = queryText;
+            
+            // Show detected language, even auto
+            self.queryModel.showAutoLanguage = YES;
+            
             [self updateQueryTextAndParagraphStyle:queryText actionType:actionType];
             
             if (error) {

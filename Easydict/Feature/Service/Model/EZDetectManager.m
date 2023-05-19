@@ -80,9 +80,9 @@
         }
         
         self.queryModel.queryText = ocrResult.mergedText;
-        EZLanguage sourceLanguage = ocrResult.from;
-        if (![sourceLanguage isEqualToString:EZLanguageAuto]) {
-            self.queryModel.detectedLanguage = sourceLanguage;
+        EZLanguage ocrLanguage = ocrResult.from;
+        if (![ocrLanguage isEqualToString:EZLanguageAuto]) {
+            self.queryModel.detectedLanguage = ocrLanguage;
         }
 
         completion(self.queryModel, error);
@@ -231,7 +231,7 @@
         completion(ocrResult, nil);
         return;
     }
-    
+        
     [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
         if (!youdaoOCRError) {
             completion(youdaoOCRResult, nil);

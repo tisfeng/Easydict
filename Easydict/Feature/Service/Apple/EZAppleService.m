@@ -549,6 +549,9 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
                     return;
                 } else {
                     error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                    
+                    // We try to use Japanese before, but failed, so need to reset to auto.
+                    ocrResult.from = EZLanguageAuto;
                 }
             }
             dispatch_async(dispatch_get_main_queue(), ^{

@@ -62,6 +62,7 @@
     
     if (queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
+        _showAutoLanguage = NO;
     }
     
     _queryText = [queryText copy];
@@ -135,13 +136,6 @@
     return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
 }
 
-- (BOOL)showAutoLanguage {
-    if (self.queryText.length == 0) {
-        return NO;
-    }
-    
-    return _showAutoLanguage;
-}
 
 #pragma mark - Stop Block
 
