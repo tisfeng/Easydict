@@ -424,7 +424,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
 
             BOOL autoSnipTranslate = EZConfiguration.shared.autoQueryOCRText;
-            if (autoSnipTranslate) {
+            if (autoSnipTranslate && queryModel.autoQuery) {
                 [self startQueryText];
             }
         }

@@ -30,23 +30,25 @@
         self.needDetectLanguage = YES;
         self.showAutoLanguage = NO;
         self.specifiedTextLanguageDict = [NSMutableDictionary dictionary];
+        self.autoQuery = YES;
     }
     return self;
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     EZQueryModel *model = [[EZQueryModel allocWithZone:zone] init];
-    model.actionType = self.actionType;
-    model.queryText = self.queryText;
-    model.userSourceLanguage = self.userSourceLanguage;
-    model.userTargetLanguage = self.userTargetLanguage;
-    model.detectedLanguage = self.detectedLanguage;
-    model.OCRImage = self.OCRImage;
-    model.queryViewHeight = self.queryViewHeight;
-    model.audioURL = self.audioURL;
-    model.needDetectLanguage = self.needDetectLanguage;
-    model.showAutoLanguage = self.showAutoLanguage;
-    model.specifiedTextLanguageDict = [self.specifiedTextLanguageDict mutableCopy];
+    model.actionType = _actionType;
+    model.queryText = _queryText;
+    model.userSourceLanguage = _userSourceLanguage;
+    model.userTargetLanguage = _userTargetLanguage;
+    model.detectedLanguage = _detectedLanguage;
+    model.OCRImage = _OCRImage;
+    model.queryViewHeight = _queryViewHeight;
+    model.audioURL = _audioURL;
+    model.needDetectLanguage = _needDetectLanguage;
+    model.showAutoLanguage = _showAutoLanguage;
+    model.specifiedTextLanguageDict = [_specifiedTextLanguageDict mutableCopy];
+    model.autoQuery = _autoQuery;
     
     return model;
 }
