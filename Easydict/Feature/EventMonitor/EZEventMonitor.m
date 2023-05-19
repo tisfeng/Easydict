@@ -503,6 +503,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
             @"com.tencent.xinWeChat", // WeChat
             @"com.readdle.PDFExpert-Mac", //PDF Expert
+            @"org.zotero.zotero", //Zotero
             /**
              These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
 
