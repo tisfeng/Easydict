@@ -451,7 +451,7 @@
 // !!!: This delegate can be only invoked by user input automatically, Or call didChangeText manually.
 - (void)textDidChange:(NSNotification *)notification {
 //    NSString *text = [self copiedText];
-    //    NSLog(@"textDidChange: %@", text);
+//    NSLog(@"textDidChange: %@", text);
     
     self.queryModel.actionType = EZActionTypeInputQuery;
     self.queryModel.needDetectLanguage = YES;
