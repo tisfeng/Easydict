@@ -79,7 +79,7 @@
             return;
         }
         
-        self.queryModel.queryText = ocrResult.mergedText;
+        self.queryModel.inputText = ocrResult.mergedText;
         EZLanguage ocrLanguage = ocrResult.from;
         if (![ocrLanguage isEqualToString:EZLanguageAuto]) {
             self.queryModel.detectedLanguage = ocrLanguage;

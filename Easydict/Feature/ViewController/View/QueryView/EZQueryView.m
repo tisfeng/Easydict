@@ -204,7 +204,7 @@
 - (void)initializeAimatedButtonAlphaValue:(EZQueryModel *)queryModel {
     // !!!: Cannot setHidden to YES, otherwise button won't accept animation.
     
-    self.clearButton.alphaValue = queryModel.queryText.length ? 1.0 : 0;
+    self.clearButton.alphaValue = queryModel.inputText.length ? 1.0 : 0;
     self.detectButton.alphaValue = [queryModel.detectedLanguage isEqualToString:EZLanguageAuto] ? 0 : 1.0;
 }
 
@@ -274,7 +274,7 @@
 #pragma mark - Setter
 
 - (void)setQueryModel:(EZQueryModel *)model {
-    NSString *queryText = model.queryText;
+    NSString *queryText = model.inputText;
     _queryModel = model;
     
     // !!!: Set queryModel may trigger didChangeText.

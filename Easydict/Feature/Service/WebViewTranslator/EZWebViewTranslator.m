@@ -280,7 +280,7 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
     // Volcano translate sometimes returns ... first, this is invalid.
     NSString *invalidResult = @"...";
-    if ([translatedText isEqualToString:invalidResult] && ![self.queryModel.queryText.trim isEqualToString:invalidResult]) {
+    if ([translatedText isEqualToString:invalidResult] && ![self.queryModel.inputText.trim isEqualToString:invalidResult]) {
         return nil;
     }
 

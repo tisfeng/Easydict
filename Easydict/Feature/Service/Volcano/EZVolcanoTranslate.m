@@ -68,7 +68,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *text = [queryModel.inputText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@?category=&home_language=zh&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, text];
 }
@@ -147,10 +147,10 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     NSString *wordLink = [self wordLink:self.queryModel];
     
     // Since volcano web translation max query length is 800, so we have to truncate the text.
-    if (self.queryModel.queryText.length > 800) {
-        NSString *queryText = [self.queryModel.queryText substringToIndex:800];
+    if (self.queryModel.inputText.length > 800) {
+        NSString *queryText = [self.queryModel.inputText substringToIndex:800];
         EZQueryModel *queryModel = [self.queryModel copy];
-        queryModel.queryText = queryText;
+        queryModel.inputText = queryText;
         wordLink = [self wordLink:queryModel];
     }
     

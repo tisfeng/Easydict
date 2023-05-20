@@ -122,7 +122,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *maxText = [self maxTextLength:queryModel.queryText fromLanguage:queryModel.queryFromLanguage];
+    NSString *maxText = [self maxTextLength:queryModel.inputText fromLanguage:queryModel.queryFromLanguage];
     NSString *text = [maxText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     return [NSString stringWithFormat:@"%@/?sl=%@&tl=%@&text=%@&op=translate", kGoogleTranslateURL, from, to, text];

@@ -60,7 +60,7 @@ static NSString *const EZQueryKey = @"{Query}";
 
 - (void)openLink {
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
-    NSString *queryText = viewController.queryText;
+    NSString *queryText = viewController.inputText;
     [self openURLWithQueryText:queryText];
 }
 

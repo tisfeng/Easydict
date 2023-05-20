@@ -49,6 +49,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
 
+@property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
@@ -288,13 +289,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _audioPlayer;
 }
 
-- (void)setQueryText:(NSString *)queryText {
+- (void)setInputText:(NSString *)queryText {
     // !!!: Rewrite property copy setter. Avoid text being affected.
-    _queryText = [queryText copy];
+    _inputText = [queryText copy];
 
-    self.queryModel.queryText = _queryText;
+    self.queryModel.inputText = _inputText;
 
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
+}
+
+- (NSString *)queryText {
+    NSString *queryText = [_inputText trim];
+    return queryText;
 }
 
 #pragma mark - Public Methods
@@ -312,7 +318,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
-    self.queryText = text;
+    self.inputText = text;
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
@@ -325,7 +331,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
-        self.queryText = text;
+        self.inputText = text;
         [self queryCurrentModel];
     }];
 }
@@ -379,7 +385,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
-        NSString *queryText = queryModel.queryText;
+        NSString *queryText = queryModel.inputText;
         NSLog(@"ocr result: %@", queryText);
         
         NSDictionary *dict = @{
@@ -401,7 +407,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (actionType == EZActionTypeOCRQuery) {
             [self.queryView startLoadingAnimation:NO];
 
-            self.queryText = queryText;
+            self.inputText = queryText;
             
             // Show detected language, even auto
             self.queryModel.showAutoLanguage = YES;
@@ -420,9 +426,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             [self.queryView highlightAllLinks];
 
-            if ([self.queryText isURL]) {
+            if ([self.inputText isURL]) {
                 // Append a whitespace to beautify the link.
-                self.queryText = [self.queryText stringByAppendingString:@" "];
+                self.inputText = [self.inputText stringByAppendingString:@" "];
 
                 return;
             }
@@ -457,7 +463,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)clearInput {
     // Clear query text, detect language and clear button right now;
-    self.queryText = @"";
+    self.inputText = @"";
     self.queryModel.OCRImage = nil;
     [self.queryView setAlertTextHidden:YES];
     
@@ -476,7 +482,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)copyQueryText {
-    [self.queryText copyAndShowToast:YES];
+    [self.inputText copyAndShowToast:YES];
 }
 
 - (void)toggleTranslationLanguages {
@@ -504,7 +510,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSString *audioURL = self.queryModel.audioURL;
         EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
         EZQueryService *service = audioURL.length ? youdaoService : nil;
-        [self.audioPlayer playTextAudio:self.queryText
+        [self.audioPlayer playTextAudio:self.inputText
                                language:self.queryModel.queryFromLanguage
                                  accent:nil
                                audioURL:audioURL
@@ -540,12 +546,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Query Methods
 
 - (void)startQueryText {
-    [self startQueryText:self.queryText actionType:self.queryModel.actionType];
+    [self startQueryText:self.inputText actionType:self.queryModel.actionType];
 }
 
 /// Close all result view, then query.
 - (void)startQueryInputText {
-    [self startQueryText:self.queryModel.queryText];
+    [self startQueryText:self.queryModel.inputText];
 }
 
 - (void)startQueryWithType:(EZActionType)actionType {
@@ -553,18 +559,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (actionType == EZActionTypeOCRQuery && ocrImage) {
         [self startOCRImage:ocrImage actionType:actionType];
     } else {
-        [self startQueryText:self.queryText actionType:actionType];
+        [self startQueryText:self.inputText actionType:actionType];
     }
 }
 
 /// Directly query model.
 - (void)queryCurrentModel {
-    if (self.queryText.length == 0) {
+    if (self.inputText.length == 0) {
         NSLog(@"query text is empty");
         return;
     }
 
-    NSLog(@"query text: %@", self.queryText);
+    NSLog(@"query text: %@", self.inputText);
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -593,7 +599,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self queryWithModel:queryModel service:service autoPlay:autoPlayWord];
     }
 
-    [[EZLocalStorage shared] increaseQueryCount:self.queryText];
+    [[EZLocalStorage shared] increaseQueryCount:self.inputText];
     [EZLog logQuery:queryModel];
 
     
@@ -637,7 +643,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSLog(@"service disabled: %@", service.serviceType);
         return;
     }
-    if (queryModel.queryText.length == 0) {
+    if (queryModel.inputText.length == 0) {
         NSLog(@"queryText is empty");
         return;
     }
@@ -651,10 +657,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     result.isLoading = YES;
     
     [self updateResultLoadingAnimation:result];
-    
-    NSString *trimQueryText = [queryModel.queryText trim];
-    
-    [service translate:trimQueryText
+        
+    [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
                     to:queryModel.queryTargetLanguage
             completion:completion];
@@ -926,8 +930,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)resetQueryAndResults {
     [self resetAllResults];
 
-    if (self.queryText.length) {
-        self.queryText = @"";
+    if (self.inputText.length) {
+        self.inputText = @"";
     }
 }
 
@@ -981,17 +985,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion {
-    [self cancelDelayDetectQueryText];
-    
-    NSString *queryText = [self.queryText trim];
-    if (queryText.length == 0) {
+    if (self.queryText.length == 0) {
+        self.queryModel.showAutoLanguage = NO;
+        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
         if (completion) {
             completion();
         }
         return;
     }
-
-    [self.detectManager detectText:queryText completion:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
+    
+    [self cancelDelayDetectQueryText];
+    
+    [self.detectManager detectText:self.queryText completion:^(EZQueryModel *queryModel, NSError *error) {
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
 
         // Show detected language button, even detect auto.
@@ -1005,7 +1010,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)updateQueryViewModelAndDetectedLanguage:(EZQueryModel *)queryModel {
-    self.queryView.clearButtonHidden = (queryModel.queryText.length == 0) && ([self allShowingResults].count == 0);
+    self.queryView.clearButtonHidden = (queryModel.inputText.length == 0) && ([self allShowingResults].count == 0);
 
     self.queryView.queryModel = queryModel;
     [self updateQueryCell];
@@ -1064,11 +1069,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // But, since there are cases where the query text is set manually, such as query selected text, where the query text is set first and then the input text is modified, the query cell must be updated for such cases.
 
         // Reduce the update frequency, update only when the queryText or height changes.
-        if ([self.queryText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
+        if ([self.inputText isEqualToString:text] && self.queryModel.queryViewHeight == queryViewHeight) {
             return;
         }
 
-        self.queryText = text;
+        self.inputText = text;
 
         [self delayDetectQueryText];
 
@@ -1359,23 +1364,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         return;
     }
 
-    if ([self playYoudaoWordAudio:self.queryText]) {
+    if ([self playYoudaoWordAudio:self.inputText]) {
         return;
     }
 
-    BOOL tooLong = self.queryText.length > EZEnglishWordMaxLength;
+    BOOL tooLong = self.inputText.length > EZEnglishWordMaxLength;
     if (tooLong) {
         NSLog(@"query text is too long");
         return;
     }
 
     // count @" "
-    NSInteger spaceCount = [self.queryText componentsSeparatedByString:@" "].count - 1;
+    NSInteger spaceCount = [self.inputText componentsSeparatedByString:@" "].count - 1;
     if (spaceCount > 1) {
         return;
     }
 
-    [self.audioPlayer playTextAudio:self.queryText textLanguage:EZLanguageEnglish];
+    [self.audioPlayer playTextAudio:self.inputText textLanguage:EZLanguageEnglish];
 }
 
 - (BOOL)playYoudaoWordAudio:(NSString *)text {

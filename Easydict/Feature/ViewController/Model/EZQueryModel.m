@@ -38,7 +38,7 @@
 - (instancetype)copyWithZone:(NSZone *)zone {
     EZQueryModel *model = [[EZQueryModel allocWithZone:zone] init];
     model.actionType = _actionType;
-    model.queryText = _queryText;
+    model.inputText = _inputText;
     model.userSourceLanguage = _userSourceLanguage;
     model.userTargetLanguage = _userTargetLanguage;
     model.detectedLanguage = _detectedLanguage;
@@ -53,19 +53,24 @@
     return model;
 }
 
-- (void)setQueryText:(NSString *)queryText {
-    if (![queryText isEqualToString:_queryText]) {
+- (void)setInputText:(NSString *)inputText {
+    if (![inputText isEqualToString:_inputText]) {
         // TODO: need to optimize, like needDetectLanguage.
         self.audioURL = nil;
         self.needDetectLanguage = YES;
     }
     
-    if (queryText.length == 0) {
+    _inputText = [inputText copy];
+
+    if (self.queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
-    
-    _queryText = [queryText copy];
+}
+
+- (NSString *)queryText {
+    NSString *queryText = [_inputText trim];
+    return queryText;
 }
 
 - (void)setActionType:(EZActionType)actionType {
@@ -87,9 +92,8 @@
 - (void)setDetectedLanguage:(EZLanguage)detectedLanguage {
     _detectedLanguage = detectedLanguage;
     
-    NSString *text = [self.queryText trim];
     [self.specifiedTextLanguageDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, EZLanguage language, BOOL *stop) {
-        if ([key isEqualToString:text]) {
+        if ([key isEqualToString:self.queryText]) {
             _detectedLanguage = language;
             _needDetectLanguage = NO;
             *stop = YES;
