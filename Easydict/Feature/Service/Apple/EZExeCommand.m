@@ -8,6 +8,7 @@
 
 #import "EZExeCommand.h"
 #import "EZTranslateError.h"
+#import "EZToast.h"
 
 @implementation EZExeCommand
 
@@ -85,30 +86,39 @@
     return task;
 }
 
-/// Use NSAppleScript to run AppleScript.
+/// Use NSAppleScript to run AppleScript, faster than NSTask.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
 - (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSDictionary *errorInfo = nil;
-        NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
-        NSString *resultString = [result stringValue];
-        resultString = [resultString trim];
-        NSError *error;
-        if (errorInfo) {
-            NSLog(@"runAppleScript errorInfo: %@", errorInfo);
-            NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
-            error = [EZTranslateError errorWithString:errorString];
+        @try {
+            NSError *error = nil;
+            NSDictionary *errorInfo = nil;
+            // ???: Sometimes it will crash in this line
+            NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
+            NSString *resultString = [result stringValue];
+            resultString = [resultString trim];
+            if (errorInfo) {
+                NSLog(@"runAppleScript errorInfo: %@", errorInfo);
+                NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
+                error = [EZTranslateError errorWithString:errorString];
+            }
+            
+            CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+            NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(resultString, error);
+            });
+        } @catch (NSException *exception) {
+            MMLogInfo(@"exception: %@", exception);
+            [self runAppleScriptWithTask:script completionHandler:completionHandler];
+             
+#if Debug
+            [EZToast showToast:exception.reason];
+#endif
         }
-        
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"run AppleScript cost: %.1f ms", (endTime - startTime) * 1000);
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(resultString, error);
-        });
     });
 }
 
