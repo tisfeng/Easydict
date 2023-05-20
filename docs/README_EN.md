@@ -142,6 +142,10 @@ Currently, only the system OCR is supported, and third-party OCR services will b
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
+#### Slient Screenshot OCR
+
+Translation results will be copied directly to the clipboard without displaying the query window.
+
 ### Language Recognition
 
 Currently, only the system language recognition is supported, and Baidu and Google language recognition are supported, but considering the speed problem of online recognition and instability (Google also needs to be flipped), the other two recognition services are only used for auxiliary optimization.
