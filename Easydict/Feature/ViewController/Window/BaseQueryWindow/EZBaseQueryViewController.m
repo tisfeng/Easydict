@@ -1067,10 +1067,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             return;
         }
 
+        NSString *oldQueryText = self.queryText;
         self.inputText = text;
 
         // Only detect when query text is changed.
-        if ([self.queryText isEqualToString:self.inputText]) {
+        if (![self.queryText isEqualToString:oldQueryText]) {
             [self delayDetectQueryText];
         }
 
