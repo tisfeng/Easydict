@@ -123,6 +123,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                 | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                  | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
+| Slient Screenshot OCR       | Press the input translate shortcut key（default `⌥ + ⇧ + S`）to capture the area to be translated, translation results will be copied directly to the clipboard | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 
 #### Select text by Mouse
 
@@ -141,10 +142,6 @@ Currently, multiple mouse quick word selection methods are supported: double-cli
 Currently, only the system OCR is supported, and third-party OCR services will be introduced later.
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
-
-#### Slient Screenshot OCR
-
-Translation results will be copied directly to the clipboard without displaying the query window.
 
 ### Language Recognition
 
