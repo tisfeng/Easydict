@@ -36,7 +36,7 @@
     //        make.edges.equalTo(self);
     //    }];
     
-    EZLinkButton *pinButton = [[EZLinkButton alloc] init];
+    EZOpenLinkButton *pinButton = [[EZOpenLinkButton alloc] init];
     [self addSubview:pinButton];
     self.pinButton = pinButton;
     pinButton.contentTintColor = [NSColor clearColor];
@@ -89,12 +89,12 @@
     CGFloat quickLinkButtonRightOffset = 12;
     
     if (EZConfiguration.shared.showGoogleQuickLink) {
-        EZLinkButton *googleButton = [[EZLinkButton alloc] init];
+        EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
         [self addSubview:googleButton];
         self.googleButton = googleButton;
         self.favoriteButton = googleButton;
         
-        googleButton.link = @"https://www.google.com/search?q=%@";
+        googleButton.link = EZGoogleWebSearchURL;
         googleButton.image = [[NSImage imageNamed:@"google_icon"] resizeToSize:imageSize];
         googleButton.toolTip = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"open_in_google", nil), @" ⌘+⏎"]; 
         googleButton.contentTintColor = NSColor.clearColor;
@@ -112,7 +112,7 @@
     }
     
     if (EZConfiguration.shared.showEudicQuickLink) {
-        EZLinkButton *eudicButton = [[EZLinkButton alloc] init];
+        EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
         
         // !!!: Note that some applications have multiple channel versions. Ref: https://github.com/tisfeng/Raycast-Easydict/issues/16
         BOOL installedEudic = [self checkInstalledApp:@[@"com.eusoft.freeeudic", @"com.eusoft.eudic"]];
@@ -122,7 +122,7 @@
             self.eudicButton = eudicButton;
             self.favoriteButton = eudicButton;
             
-            eudicButton.link = @"eudic://dict/%@";
+            eudicButton.link = EZEudicAppURLSchema;
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
             eudicButton.toolTip = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];  
             eudicButton.contentTintColor = NSColor.clearColor;

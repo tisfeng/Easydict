@@ -6,16 +6,16 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZLinkButton.h"
+#import "EZOpenLinkButton.h"
 #import "EZWindowManager.h"
 
 static NSString *const EZQueryKey = @"{Query}";
 
-@interface EZLinkButton ()
+@interface EZOpenLinkButton ()
 
 @end
 
-@implementation EZLinkButton
+@implementation EZOpenLinkButton
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
@@ -76,8 +76,17 @@ static NSString *const EZQueryKey = @"{Query}";
     NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
 
     if ([url containsString:@"%@"]) {
+        // https://www.google.com/search?q=hello
         url = [NSString stringWithFormat:url, encodedText];
     }
+    
+    // If link is EZGoogleWebSearchURL and queryText is a URL, we should open URL directly.
+    if ([self.link isEqualToString:EZGoogleWebSearchURL]) {
+        if ([queryText isURL]) {
+            url = queryText;
+        }
+    }
+    
     NSLog(@"open url: %@", url);
 
     BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
