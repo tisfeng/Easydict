@@ -345,9 +345,7 @@ static EZWindowManager *_instance;
     // get safe window position
     CGPoint safeLocation = [EZCoordinateUtils getFrameSafePoint:window.frame moveToPoint:point inScreen:self.screen];
     [window setFrameOrigin:safeLocation];
-    
     window.level = EZFloatingWindowLevel;
-    [window.queryViewController focusInputTextView];
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     if (![EZConfiguration.shared hideMainWindow]) {
@@ -359,6 +357,9 @@ static EZWindowManager *_instance;
     
     /// ???: orderFrontRegardless will cause OCR show blank window when window has shown.
     //    [window orderFrontRegardless];
+    
+    // !!!: Focus input textView should behind makeKeyAndOrderFront:, otherwise it will not work in the first time.
+    [window.queryViewController focusInputTextView];
     
     [self updateFloatingWindowType:window.windowType];
 
