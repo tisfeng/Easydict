@@ -16,7 +16,7 @@
 #import "NSString+MM.h"
 #import "EZLayoutManager.h"
 #import "EZWindowManager.h"
-#import "EZLinkButton.h"
+#import "EZOpenLinkButton.h"
 #import "NSImage+EZResize.h"
 #import "EZQueryService.h"
 #import "EZBlueTextButton.h"
@@ -793,7 +793,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     
     
-    EZLinkButton *linkButton = [[EZLinkButton alloc] init];
+    EZOpenLinkButton *linkButton = [[EZOpenLinkButton alloc] init];
     [self addSubview:linkButton];
     
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];

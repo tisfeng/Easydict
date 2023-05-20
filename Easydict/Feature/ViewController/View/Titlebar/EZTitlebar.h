@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZHoverButton.h"
-#import "EZLinkButton.h"
+#import "EZOpenLinkButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,12 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL pin;
 
-@property (nonatomic, strong) EZLinkButton *pinButton;
+@property (nonatomic, strong) EZOpenLinkButton *pinButton;
 
-@property (nonatomic, strong) EZLinkButton *eudicButton;
-@property (nonatomic, strong) EZLinkButton *googleButton;
+@property (nonatomic, strong) EZOpenLinkButton *eudicButton;
+@property (nonatomic, strong) EZOpenLinkButton *googleButton;
 
-@property (nonatomic, strong) EZLinkButton *favoriteButton;
+@property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
 
 @end
 
