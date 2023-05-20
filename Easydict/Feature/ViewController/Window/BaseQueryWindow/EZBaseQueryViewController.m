@@ -973,10 +973,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)delayDetectQueryText {
-    if (self.queryModel.needDetectLanguage) {
-        [self cancelDelayDetectQueryText];
-        [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:EZDelayDetectTextLanguageInterval];
-    }
+    [self cancelDelayDetectQueryText];
+    [self performSelector:@selector(detectQueryText:) withObject:nil afterDelay:EZDelayDetectTextLanguageInterval];
 }
 
 - (void)cancelDelayDetectQueryText {
@@ -985,22 +983,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(void))completion {
-    if (self.queryText.length == 0) {
-        self.queryModel.showAutoLanguage = NO;
-        [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-        if (completion) {
-            completion();
-        }
-        return;
-    }
-    
     [self cancelDelayDetectQueryText];
     
     [self.detectManager detectText:self.queryText completion:^(EZQueryModel *queryModel, NSError *error) {
         // `self.queryModel.detectedLanguage` has already been updated inside the method.
 
-        // Show detected language button, even detect auto.
-        self.queryModel.showAutoLanguage = YES;
+        // Show detected language button if has queryText, even detect language is auto.
+        BOOL showAutoLanguage = YES;
+        if (self.queryText.length == 0) {
+            showAutoLanguage = NO;
+        }
+        self.queryModel.showAutoLanguage = showAutoLanguage;
+        
         [self updateQueryViewModelAndDetectedLanguage:queryModel];
 
         if (completion) {
@@ -1075,7 +1069,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         self.inputText = text;
 
-        [self delayDetectQueryText];
+        // Only detect when query text is changed.
+        if ([self.queryText isEqualToString:self.inputText]) {
+            [self delayDetectQueryText];
+        }
 
         self.queryModel.queryViewHeight = queryViewHeight;
         [self updateQueryCell];
