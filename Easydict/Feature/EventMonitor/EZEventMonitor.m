@@ -294,7 +294,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
     // If playing audio, we do not silence system volume.
     [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
-        BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying && ![self isSupportEmptyCopy];
+        BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying;
 
         // If app doesn't support empty copy, set volume to 0 to avoid system alert.
         if (shouldTurnOffSoundTemporarily) {
