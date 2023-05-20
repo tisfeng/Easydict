@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZQueryModel : NSObject <NSCopying>
 
+@property (nonatomic, copy) NSString *inputText;
+/// queryText = [inputText trim]
 @property (nonatomic, copy) NSString *queryText;
 
 @property (nonatomic, copy) EZActionType actionType;

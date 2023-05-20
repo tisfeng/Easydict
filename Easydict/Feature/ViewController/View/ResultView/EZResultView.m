@@ -112,7 +112,7 @@
     [arrowButton setClickBlock:^(EZButton *_Nonnull button) {
         mm_strongify(self);
 
-        if (!self.result.hasShowingResult && self.result.queryModel.queryText.length == 0) {
+        if (!self.result.hasShowingResult && self.result.queryModel.inputText.length == 0) {
             NSLog(@"query text is empty");
             return;
         }
