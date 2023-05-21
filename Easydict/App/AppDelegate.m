@@ -14,7 +14,6 @@
 #import "EZLanguageManager.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
-#import "FWEncryptorAES.h"
 
 @implementation AppDelegate
 
