@@ -12,8 +12,6 @@ static CGFloat const kMargin = 0;
 
 @interface EZScrollViewController ()
 
-@property (nonatomic, strong) NSScrollView *scrollView;
-
 @end
 
 @implementation EZScrollViewController
@@ -21,7 +19,7 @@ static CGFloat const kMargin = 0;
 - (instancetype)init {
     if (self = [super init]) {
         CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
-        self.maxViewSize = CGSizeMake(visibleFrameSize.width * 0.8, visibleFrameSize.height * 0.8);
+        self.maxViewSize = CGSizeMake(visibleFrameSize.width * 0.8, visibleFrameSize.height * 0.6);
 
         self.verticalPadding = 15;
         self.horizontalPadding = 8;
@@ -53,6 +51,10 @@ static CGFloat const kMargin = 0;
         viewSize.height = self.maxViewSize.height;
     }
     self.view.size = CGSizeMake(viewSize.width + 2 * kMargin, viewSize.height + 2 * kMargin);
+    
+    // scroll to top
+    [self.scrollView.contentView scrollToPoint:NSMakePoint(0, viewSize.height)];
+    [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
 }
 
 - (void)_setupUI {

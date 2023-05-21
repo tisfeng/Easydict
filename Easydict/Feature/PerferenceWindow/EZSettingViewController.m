@@ -60,7 +60,7 @@
 @property (nonatomic, strong) NSTextField *autoCopyTextLabel;
 @property (nonatomic, strong) NSButton *autoCopySelectedTextButton;
 @property (nonatomic, strong) NSButton *autoCopyOCRTextButton;
-
+@property (nonatomic, strong) NSButton *autoCopyFirstTranslatedTextButton;
 
 @property (nonatomic, strong) NSTextField *showQuickLinkLabel;
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
@@ -92,6 +92,14 @@
     self.rightMargin = 100;
     
     [self updateViewSize];
+    
+    // TODO: need to optimize. Scroll to top manually seems too stupid.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSPoint offset = self.scrollView.contentView.bounds.origin;
+        offset.y += self.topMargin; // Move up to top
+        [self.scrollView.contentView scrollToPoint:offset];
+        [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
+    });
 }
 
 - (void)setupUI {
@@ -277,6 +285,11 @@
     self.autoCopySelectedTextButton = [NSButton checkboxWithTitle:autoCopySelectedText target:self action:@selector(autoCopySelectedTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopySelectedTextButton];
     
+    NSString *autoCopyFirstTranslatedText = NSLocalizedString(@"auto_copy_first_translated_text", nil);
+    self.autoCopyFirstTranslatedTextButton = [NSButton checkboxWithTitle:autoCopyFirstTranslatedText target:self action:@selector(autoCopyFirstTranslatedTextButtonClicked:)];
+    [self.contentView addSubview:self.autoCopyFirstTranslatedTextButton];
+
+    
     NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
     showQuickLinkLabel.font = font;
     [self.contentView addSubview:showQuickLinkLabel];
@@ -345,6 +358,7 @@
     self.autoQueryPastedTextButton.mm_isOn = configuration.autoQueryPastedText;
     self.autoCopySelectedTextButton.mm_isOn = configuration.autoCopySelectedText;
     self.autoCopyOCRTextButton.mm_isOn = configuration.autoCopyOCRText;
+    self.autoCopyFirstTranslatedTextButton.mm_isOn = configuration.autoCopyFirstTranslatedText;
     self.showGoogleQuickLinkButton.mm_isOn = configuration.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = configuration.showEudicQuickLink;
     self.hideMenuBarIconButton.mm_isOn = configuration.hideMenuBarIcon;
@@ -514,10 +528,15 @@
         make.left.equalTo(self.autoCopyOCRTextButton);
         make.top.equalTo(self.autoCopyOCRTextButton.mas_bottom).offset(self.verticalPadding);
     }];
+    [self.autoCopyFirstTranslatedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.autoCopySelectedTextButton);
+        make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    
     
     [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.autoCopySelectedTextButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoCopyFirstTranslatedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.showQuickLinkLabel.mas_right).offset(self.horizontalPadding);
@@ -616,6 +635,10 @@
     EZConfiguration.shared.autoQuerySelectedText = sender.mm_isOn;
 }
 
+- (void)autoQueryPastedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoQueryPastedText = sender.mm_isOn;
+}
+
 - (void)autoPlayAudioButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.autoPlayAudio = sender.mm_isOn;
 }
@@ -632,8 +655,8 @@
     EZConfiguration.shared.autoCopyOCRText = sender.mm_isOn;
 }
 
-- (void)autoQueryPastedTextButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.autoQueryPastedText = sender.mm_isOn;
+- (void)autoCopyFirstTranslatedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.autoCopyFirstTranslatedText = sender.mm_isOn;
 }
 
 - (void)showGoogleQuickLinkButtonClicked:(NSButton *)sender {

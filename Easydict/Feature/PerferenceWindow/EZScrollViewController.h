@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZScrollViewController : NSViewController
 
+@property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSView *contentView;
 
 @property (nonatomic, strong) NSView *leftmostView;
