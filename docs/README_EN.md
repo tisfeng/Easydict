@@ -123,7 +123,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
 
-~~The shortcut key to select words can work normally in any application~~, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
+The shortcut key to select words can work normally in any application, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
 #### Notice ⚠️
 
