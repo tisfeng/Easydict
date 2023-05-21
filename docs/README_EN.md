@@ -350,3 +350,13 @@ Open source makes the world better.
 Easydict is a free and open-sourced project for study purpose only. Anyone can obtain a copy of Easydict free of charge. If you believe your legal rights have been violated please contact the [author](https://github.com/tisfeng) immediately.
 
 Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) open source license, you can use the source code freely, but you must attach the license and copyright notice.
+
+## Sponsor
+
+Easydict is a free and open source project, currently mainly developed and maintained by the author. If you find it helpful, you can consider sponsoring this project to support it, so that it can go further.
+
+### [爱发电](https://afdian.net/a/tisfeng)
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
+</div>
