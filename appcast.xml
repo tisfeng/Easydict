@@ -4,7 +4,7 @@
     <title>Easydict</title>
     <item>
       <title>1.3.1</title>
-      <pubDate>Sun, 21 May 2023 20:00:00 +0000</pubDate>
+      <pubDate>Sun, 21 May 2023 23:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.3.1/Easydict.zip"
         sparkle:version="16" sparkle:shortVersionString="1.3.1" type="application/octet-stream"
@@ -18,8 +18,8 @@
         <li>优化了 OCR 识别语言准确度。</li>
         <li>优化了快捷键取词，确保使用快捷键方式取词一定能成功 <a href="https://github.com/tisfeng/Easydict/issues/92">https://github.com/tisfeng/Easydict/issues/92</a></li>
         <li>优化了在浏览器 Safari 和 Chrome上的取词方式 <a href="https://github.com/tisfeng/Easydict/issues/85">https://github.com/tisfeng/Easydict/issues/85</a></li>
-        <li>允许自由选中查询结果内容，例如复制单词音标等 <a href="https://github.com/tisfeng/Easydict/issues/31">https://github.com/tisfeng/Easydict/issues/31</a></li>
-        <li>添加了单独的【静默截图  OCR】功能 <a href="https://github.com/tisfeng/Easydict/issues/52">https://github.com/tisfeng/Easydict/issues/52</a></li>
+        <li>允许自由选中单词查询结果，如复制单词音标等 <a href="https://github.com/tisfeng/Easydict/issues/31">https://github.com/tisfeng/Easydict/issues/31</a></li>
+        <li>将OCR独立出来，设置单独的【静默截图  OCR】 <a href="https://github.com/tisfeng/Easydict/issues/52">https://github.com/tisfeng/Easydict/issues/52</a></li>
         <li>添加了输入翻译时是否清空输入内容选项 <a href="https://github.com/tisfeng/Easydict/issues/19">https://github.com/tisfeng/Easydict/issues/19</a></li>
         <li>添加了自动复制第一个翻译结果选项 <a href="https://github.com/tisfeng/Easydict/issues/97">https://github.com/tisfeng/Easydict/issues/97</a></li>
         <li>许多其他优化。</li>
@@ -36,7 +36,7 @@
         <ul>
         <li><a href="https://github.com/Jerry23011"><strong>Jerry23011</strong></a></li>
         </ul>
-        <p>⚠️ 新版本修改了一些配置字段，因此可能导致不兼容问题。更新后如遇到此类问题，请重启应用，并重新进行相应的设置， 如切换翻译语言等。</p>
+        <p>⚠️ 新版本修改了一些配置字段，因此可能导致不兼容问题。更新后如果遇到设置失效，或显示不支持繁体中文提示，请重启应用，并重新进行相应的设置选择。</p>
       ]]>
       </description>
     </item>
