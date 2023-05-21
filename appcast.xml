@@ -3,6 +3,44 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>1.3.1</title>
+      <pubDate>Sun, 21 May 2023 20:00:00 +0000</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/1.3.1/Easydict.zip"
+        sparkle:version="16" sparkle:shortVersionString="1.3.1" type="application/octet-stream"
+        sparkle:edSignature="5h44qUW+tNUlRf/j779LIteZXKSMkC6Yw4g9qc5sqV0LGVmS31I6RPPLq4wgVA5FbCL3c3vSS3yGYXsTWAYeAg=="
+        length="8598557" />
+      <description><![CDATA[
+        <h2 id="-v1-3-1-2023-05-21">[v1.3.1] - 2023-05-21</h2>
+        <h3 id="-">💎 优化</h3>
+        <ul>
+        <li>优化了 OCR 文本换行处理。</li>
+        <li>优化了 OCR 识别语言准确度。</li>
+        <li>优化了快捷键取词，确保使用快捷键方式取词一定能成功 <a href="https://github.com/tisfeng/Easydict/issues/92">https://github.com/tisfeng/Easydict/issues/92</a></li>
+        <li>优化了在浏览器 Safari 和 Chrome上的取词方式 <a href="https://github.com/tisfeng/Easydict/issues/85">https://github.com/tisfeng/Easydict/issues/85</a></li>
+        <li>允许自由选中查询结果内容，例如复制单词音标等 <a href="https://github.com/tisfeng/Easydict/issues/31">https://github.com/tisfeng/Easydict/issues/31</a></li>
+        <li>添加了单独的【静默截图  OCR】功能 <a href="https://github.com/tisfeng/Easydict/issues/52">https://github.com/tisfeng/Easydict/issues/52</a></li>
+        <li>添加了输入翻译时是否清空输入内容选项 <a href="https://github.com/tisfeng/Easydict/issues/19">https://github.com/tisfeng/Easydict/issues/19</a></li>
+        <li>添加了自动复制第一个翻译结果选项 <a href="https://github.com/tisfeng/Easydict/issues/97">https://github.com/tisfeng/Easydict/issues/97</a></li>
+        <li>许多其他优化。</li>
+        </ul>
+        <h3 id="-">🐞 修复</h3>
+        <ul>
+        <li>修复了有道翻译结果显示不全问题 <a href="https://github.com/tisfeng/Easydict/issues/82">https://github.com/tisfeng/Easydict/issues/82</a></li>
+        <li>修复了 DeepL 不支持繁体中午问题 <a href="https://github.com/tisfeng/Easydict/issues/77">https://github.com/tisfeng/Easydict/issues/77</a></li>
+        <li>修复了取词可能导致正在播放的音乐静音问题 <a href="https://github.com/tisfeng/Easydict/issues/83">https://github.com/tisfeng/Easydict/issues/83</a></li>
+        <li>修复了空复制取词出现提示音问题  <a href="https://github.com/tisfeng/Easydict/issues/41">https://github.com/tisfeng/Easydict/issues/41</a></li>
+        <li>修复了许多其他已知问题。</li>
+        </ul>
+        <h3 id="-">新成员</h3>
+        <ul>
+        <li><a href="https://github.com/Jerry23011"><strong>Jerry23011</strong></a></li>
+        </ul>
+        <p>⚠️ 新版本修改了一些配置字段，因此可能导致不兼容问题。更新后如遇到此类问题，请重启应用，并重新进行相应的设置， 如切换翻译语言等。</p>
+      ]]>
+      </description>
+    </item>
+    <item>
       <title>1.3.0</title>
       <pubDate>Fri, 28 Apr 2023 20:00:00 +0000</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
