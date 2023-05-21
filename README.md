@@ -118,7 +118,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                                 | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译      | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 | 静默截图 OCR   | 按下输入翻译快捷键（默认 `⌥ + ⇧ + S`），截取需要翻译的区域，翻译结果将自动保存到剪贴板 | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
-|  |
+|                |
 
 #### 鼠标取词
 
@@ -351,3 +351,15 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 Easydict 作为一个自由免费的开源项目，仅供学习交流，任何人均可免费获取产品与源码。如果认为你的合法权益收到侵犯请马上联系[作者](https://github.com/tisfeng)。
 
 Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) 开源协议，你可以随意使用源码，但必须附带该许可与版权声明。
+
+## 赞助支持
+
+Easydict 作为一个免费开源的非盈利项目，目前主要是作者个人在开发和维护 如果你觉得对你有帮助，可以考虑赞助支持一下这个项目，用爱发电，让它能够走得更远。
+
+如果发电量足够，能够 Cover 苹果的 $99 年费，我会注册一个开发者账号，以解决应用签名问题，让更多人能够方便地使用。
+
+### [爱发电](https://afdian.net/a/tisfeng)
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
+</div>
