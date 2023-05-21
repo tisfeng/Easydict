@@ -348,9 +348,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 ## 声明
 
-Easydict 作为一个自由免费的开源项目，仅供学习交流，任何人均可免费获取产品与源码。如果认为你的合法权益收到侵犯请马上联系[作者](https://github.com/tisfeng)。
-
-Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) 开源协议，你可以随意使用源码，但必须附带该许可与版权声明。
+Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) 开源协议，仅供学习交流，任何人都可以免费获取该产品和源代码。如果你认为您的合法权益受到侵犯，请立即联系[作者](https://github.com/tisfeng)。你可以自由使用源代码，但必须附上相应的许可证和版权声明。
 
 ## 赞助支持
 

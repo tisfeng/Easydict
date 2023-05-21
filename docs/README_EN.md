@@ -345,11 +345,9 @@ Open source makes the world better.
 - Screenshot feature is based on [isee15](https://github.com/isee15) 's [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac), and optimized on this project.
 - Select text feature is referenced from [PopClip](https://pilotmoon.com/popclip/).
 
-## Notice
+## Statement
 
-Easydict is a free and open-sourced project for study purpose only. Anyone can obtain a copy of Easydict free of charge. If you believe your legal rights have been violated please contact the [author](https://github.com/tisfeng) immediately.
-
-Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) open source license, you can use the source code freely, but you must attach the license and copyright notice.
+Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) open source license, which is for learning and communication only. Anyone can get this product and source code for free. If you believe that your legal rights have been violated, please contact the [author](https://github.com/tisfeng) immediately. You can use the source code freely, but you must attach the corresponding license and copyright.
 
 ## Sponsor
 
