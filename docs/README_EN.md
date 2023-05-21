@@ -295,6 +295,7 @@ Unlike the translation shortcut keys that are globally effective, the following 
 - `Cmd + K`: Clear the input text.
 - `Cmd + Shift + K`: Clear the input box and query results, the same as clicking the clear button in the lower right corner of the input text.
 - `Cmd + I`: Focus the input text.
+- `Cmd + Shift + C`: Copy query text.
 - `Cmd + S`: Play the pronunciation of the query text.
 - `Cmd + R`: Query again.
 - `Cmd + T`: Toggle translation language.
