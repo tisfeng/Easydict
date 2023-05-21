@@ -107,9 +107,10 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 
 Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="50%" />
-</div> <br>
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/xb77fI-1684688321.png" width="50%" />
+</div>
+
 
 | 方式           | 描述                                                                                   | 预览                                                                                                                                           |
 | -------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -352,7 +353,7 @@ Easydict 为 [GPL-3.0](https://github.com/tisfeng/Easydict/blob/main/LICENSE) �
 
 ## 赞助支持
 
-Easydict 作为一个免费开源的非盈利项目，目前主要是作者个人在开发和维护 如果你觉得对你有帮助，可以考虑赞助支持一下这个项目，用爱发电，让它能够走得更远。
+Easydict 作为一个免费开源的非盈利项目，目前主要是作者个人在开发和维护，如果你觉得对你有帮助，可以考虑赞助支持一下这个项目，用爱发电，让它能够走得更远。
 
 如果发电量足够，能够 Cover 苹果的 $99 年费，我会注册一个开发者账号，以解决应用签名问题，让更多人能够方便地使用 Easydict。
 
