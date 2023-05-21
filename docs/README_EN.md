@@ -107,9 +107,9 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 
 Once Easydict is launched, in addition to the main window (hidden by default), there will be a menu icon, and clicking on the menu option will trigger the corresponding actions, as follows:
 
-<div style="display: flex; justify-content: space-between;">
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-04_17.01.56-1672847630.png" width="60%" />
-</div> <br>
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/xb77fI-1684688321.png" width="50%" />
+</div>
 
 | Ways                      | Description                                                                                                                                                     | Preview                                                                                                                                        |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
