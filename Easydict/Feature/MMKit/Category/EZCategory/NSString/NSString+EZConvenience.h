@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)encode;
 
 - (void)copyToPasteboard;
+- (void)copyToPasteboardSafely;
 
 - (void)copyAndShowToast:(BOOL)showToast;
 
