@@ -237,6 +237,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] init];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     NSURLSessionTask *task = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse *_Nonnull response, id _Nullable responseObject, NSError *_Nullable error) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
@@ -247,6 +250,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         }
         
         if (error) {
+            NSLog(@"deepLWebTranslate error: %@", error);
+            
             BOOL useOfficialAPI = (self.authKey.length > 0) && (self.apiType == EZDeepLTranslationAPIWebFirst);
             if (useOfficialAPI) {
                 [self deepLTranslate:text from:from to:to completion:completion];
@@ -277,6 +282,9 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             completion(self.result, error);
             return;
         }
+        
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"deepLWebTranslate cost: %.1f ms", (endTime - startTime) * 1000);
 
         EZDeepLTranslateResponse *deepLTranslateResponse = [EZDeepLTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = [deepLTranslateResponse.result.texts.firstObject.text trim];
@@ -337,7 +345,13 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"deepLTranslate cost: %.1f ms", (endTime - startTime) * 1000);
+        
         self.result.normalResults = [self parseOfficialResponseObject:responseObject];
         self.result.raw = responseObject;
         completion(self.result, nil);
@@ -349,6 +363,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         if (error.code == NSURLErrorCancelled) {
             return;
         }
+        
+        NSLog(@"deepLTranslate error: %@", error);
         
         if (self.apiType == EZDeepLTranslationAPIOfficialFirst) {
             [self deepLWebTranslate:text from:from to:to completion:completion];
