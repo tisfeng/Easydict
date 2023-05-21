@@ -396,7 +396,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         
         if (actionType == EZActionTypeScreenshotOCR) {
-            [queryText copyToPasteboard];
+            [queryText copyToPasteboardSafely];
             
             [EZToast showSuccessToast];
 
@@ -421,7 +421,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             if (EZConfiguration.shared.autoCopyOCRText) {
-                [queryText copyToPasteboard];
+                [queryText copyToPasteboardSafely];
             }
             
             [self.queryView highlightAllLinks];
