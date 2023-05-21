@@ -28,6 +28,7 @@ static NSString *const kAutoQueryPastedTextKey = @"EZConfiguration_kAutoQueryPas
 static NSString *const kAutoPlayAudioKey = @"EZConfiguration_kAutoPlayAudioKey";
 static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySelectedTextKey";
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
+static NSString *const kAutoCopyFirstTranslatedTextKey = @"EZConfiguration_kAutoCopyFirstTranslatedTextKey";
 static NSString *const kLanguageDetectOptimizeTypeKey = @"EZConfiguration_kLanguageDetectOptimizeTypeKey";
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
@@ -79,6 +80,7 @@ static EZConfiguration *_instance;
     self.autoQueryPastedText = [NSUserDefaults mm_readBool:kAutoQueryPastedTextKey defaultValue:NO];
     self.autoCopyOCRText = [NSUserDefaults mm_readBool:kAutoCopyOCRTextKey defaultValue:NO];
     self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
+    self.autoCopyFirstTranslatedText = [NSUserDefaults mm_readBool:kAutoCopyFirstTranslatedTextKey defaultValue:NO];
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:EZLanguageDetectOptimizeNone];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
@@ -126,7 +128,7 @@ static EZConfiguration *_instance;
     
     // Avoid redundant calls, run AppleScript will ask for permission, trigger notification.
     if (launchAtStartup != oldLaunchAtStartup) {
-        [self updateLoginItemWithLaunchAtStartup2:launchAtStartup];
+        [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
     }
 }
 
@@ -175,6 +177,11 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(autoQueryPastedText) forKey:kAutoQueryPastedTextKey];
 }
 
+- (void)setAutoCopyFirstTranslatedText:(BOOL)autoCopyFirstTranslatedText {
+    _autoCopyFirstTranslatedText = autoCopyFirstTranslatedText;
+
+    [NSUserDefaults mm_write:@(autoCopyFirstTranslatedText) forKey:kAutoCopyFirstTranslatedTextKey];
+}
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
     _autoPlayAudio = autoPlayAudio;
@@ -282,53 +289,10 @@ static EZConfiguration *_instance;
     return key;
 }
 
-#pragma mark -
-
-- (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
-    //    [self isLoginItemEnabled];
-
-    NSString *helperBundleId = [self helperBundleId];
-
-    NSError *error;
-    if (@available(macOS 13.0, *)) {
-        
-        /**
-         FIX: https://github.com/tisfeng/Easydict/issues/79
-         
-         Ref: https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/cross_development/Using/using.html#//apple_ref/doc/uid/20002000-1114741-CJADDEIB
-         */
-        
-#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1300
-    // code only compiled when targeting OS X and not iOS
-    // note use of 1050 instead of __MAC_10_5
-
-        // Ref: https://www.bilibili.com/read/cv19361413
-        // ???: Why does it not work?
-        SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
-        BOOL success;
-        if (launchAtStartup) {
-            success = [appService registerAndReturnError:&error];
-        } else {
-            success = [appService unregisterAndReturnError:&error];
-        }
-        if (error) {
-            MMLogInfo(@"SMAppService error: %@", error);
-        }
-        if (!success) {
-            MMLogInfo(@"SMAppService fail");
-        }
-#endif
-    } else {
-        // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
-        BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
-        if (!success) {
-            MMLogInfo(@"SMLoginItemSetEnabled fail");
-        }
-    }
-}
+#pragma mark - Lanuch at login
 
 /// Use apple script to implement launch at start up, or delete.
-- (void)updateLoginItemWithLaunchAtStartup2:(BOOL)launchAtStartup {
+- (void)updateLoginItemWithLaunchAtStartup:(BOOL)launchAtStartup {
     // ???: name is CFBundleExecutable, or CFBundleName ?
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
     NSString *appBundlePath = [[NSBundle mainBundle] bundlePath];
@@ -360,6 +324,49 @@ static EZConfiguration *_instance;
         }
     }];
 }
+
+//- (void)updateLoginItemWithLaunchAtStartup2:(BOOL)launchAtStartup {
+//    //    [self isLoginItemEnabled];
+//
+//    NSString *helperBundleId = [self helperBundleId];
+//
+//    NSError *error;
+//    if (@available(macOS 13.0, *)) {
+//
+//        /**
+//         FIX: https://github.com/tisfeng/Easydict/issues/79
+//
+//         Ref: https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/cross_development/Using/using.html#//apple_ref/doc/uid/20002000-1114741-CJADDEIB
+//         */
+//
+//#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1300
+//    // code only compiled when targeting OS X and not iOS
+//    // note use of 1050 instead of __MAC_10_5
+//
+//        // Ref: https://www.bilibili.com/read/cv19361413
+//        // ???: Why does it not work?
+//        SMAppService *appService = [SMAppService loginItemServiceWithIdentifier:helperBundleId];
+//        BOOL success;
+//        if (launchAtStartup) {
+//            success = [appService registerAndReturnError:&error];
+//        } else {
+//            success = [appService unregisterAndReturnError:&error];
+//        }
+//        if (error) {
+//            MMLogInfo(@"SMAppService error: %@", error);
+//        }
+//        if (!success) {
+//            MMLogInfo(@"SMAppService fail");
+//        }
+//#endif
+//    } else {
+//        // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
+//        BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);
+//        if (!success) {
+//            MMLogInfo(@"SMLoginItemSetEnabled fail");
+//        }
+//    }
+//}
 
 
 - (BOOL)isLoginItemEnabled {
@@ -394,6 +401,8 @@ static EZConfiguration *_instance;
     NSNotification *notification = [NSNotification notificationWithName:EZQuickLinkButtonUpdateNotification object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
+
+#pragma mark -
 
 // hide menu bar icon
 - (void)hideMenuBarIcon:(BOOL)hidden {

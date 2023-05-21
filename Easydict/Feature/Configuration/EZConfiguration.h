@@ -36,6 +36,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL autoPlayAudio;
 @property (nonatomic, assign) BOOL autoCopySelectedText;
 @property (nonatomic, assign) BOOL autoCopyOCRText;
+@property (nonatomic, assign) BOOL autoCopyFirstTranslatedText;
 @property (nonatomic, assign) EZLanguageDetectOptimize languageDetectOptimize;
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;

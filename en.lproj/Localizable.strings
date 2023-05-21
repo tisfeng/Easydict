@@ -53,6 +53,7 @@
 "auto_copy_text" = "Auto Copy:";
 "auto_copy_ocr_text" = "Auto copy OCR text after OCR";
 "auto_copy_selected_text" = "Auto copy selected text";
+"auto_copy_first_translated_text" = "Auto copy first translated text";
 
 "quick_link" = "Quick Link:";
 "show_google_quick_link" = "Show Google quick link icon";
