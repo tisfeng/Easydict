@@ -54,6 +54,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
 
+@property (nonatomic, strong) EZQueryService *firstService;
+
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemaParser *schemaParser;
@@ -587,6 +589,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)queryAllSerives:(EZQueryModel *)queryModel {
     NSLog(@"query: %@ --> %@", queryModel.queryFromLanguage, queryModel.queryTargetLanguage);
 
+    self.firstService = nil;
     for (EZQueryService *service in self.services) {
         BOOL enableAutoQuery = service.enabledQuery && (service.serviceUsageStatus != EZServiceUsageStatusAlwaysOff);
         if (!enableAutoQuery) {
@@ -597,6 +600,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // 1. If Youdao dict is enabled, prefer to play Youdao word audio.
         BOOL autoPlayWord = EZConfiguration.shared.autoPlayAudio && [service.serviceType isEqualToString:EZServiceTypeYoudao];
         [self queryWithModel:queryModel service:service autoPlay:autoPlayWord];
+        
+        if (!self.firstService) {
+            self.firstService = service;
+            [self autoCopyTranslatedTextOfService:service];
+        }
     }
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
@@ -631,6 +639,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         if (autoPlay) {
             [self autoPlayEnglishWordAudio];
+        }
+        
+        if (service.autoCopyTranslatedTextBlock) {
+            service.autoCopyTranslatedTextBlock(result, error);
         }
     }];
 }
@@ -815,6 +827,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Update cell row height, and reload cell data with animation.
+/// TODO: we need to optimize the way of updating row height.
 - (void)updateTableViewRowIndexes:(NSIndexSet *)rowIndexes
                        reloadData:(BOOL)reloadData
                           animate:(BOOL)animateFlag
@@ -1399,6 +1412,21 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     return NO;
+}
+
+#pragma mark -
+
+/// Auto copy translated text.
+- (void)autoCopyTranslatedTextOfService:(EZQueryService *)service {
+    if (![EZConfiguration.shared autoCopyFirstTranslatedText]) {
+        service.autoCopyTranslatedTextBlock = nil;
+        return;
+    }
+
+    [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
+        NSString *copyText = result.translatedText;
+        [copyText copyToPasteboard];
+    }];
 }
 
 @end
