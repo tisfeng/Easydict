@@ -10,9 +10,9 @@
 // setting
 "setting" = "Settings";
 
-"input_translate" = "Input Translation:";
-"snip_translate" = "Screenshot Translation:";
-"select_translate" = "Selecte Text Translation:";
+"input_translate" = "Input Translate:";
+"snip_translate" = "Screenshot Translate:";
+"select_translate" = "Selecte Text Translate:";
 "show_mini_window" = "Show Mini Window:";
 "silent_screenshot_ocr" = "Slient Screenshot OCR:";
 
@@ -96,7 +96,7 @@
 // privacy
 "privacy" = "Privacy";
 "privacy_statement" = "Privacy Statement";
-"privacy_statement_content" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is an open source software, you can check the code.";
+"privacy_statement_content" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is open source software, if you are interested, you can check the code.";
 "crash_log" = "Crash Log:";
 "allow_collect_crash_log" = "Allow collection of crash logs";
 "analytics" = "Analytics:";
