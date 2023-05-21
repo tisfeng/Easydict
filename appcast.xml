@@ -17,9 +17,9 @@
         <li>优化了 OCR 文本换行处理。</li>
         <li>优化了 OCR 识别语言准确度。</li>
         <li>优化了快捷键取词，确保使用快捷键方式取词一定能成功 <a href="https://github.com/tisfeng/Easydict/issues/92">https://github.com/tisfeng/Easydict/issues/92</a></li>
-        <li>优化了在浏览器 Safari 和 Chrome上的取词方式 <a href="https://github.com/tisfeng/Easydict/issues/85">https://github.com/tisfeng/Easydict/issues/85</a></li>
+        <li>优化了在浏览器 Safari 和 Chrome 上的取词方式 <a href="https://github.com/tisfeng/Easydict/issues/85">https://github.com/tisfeng/Easydict/issues/85</a></li>
         <li>允许自由选中单词查询结果，如复制单词音标等 <a href="https://github.com/tisfeng/Easydict/issues/31">https://github.com/tisfeng/Easydict/issues/31</a></li>
-        <li>将OCR独立出来，设置单独的【静默截图  OCR】 <a href="https://github.com/tisfeng/Easydict/issues/52">https://github.com/tisfeng/Easydict/issues/52</a></li>
+        <li>将 OCR 独立出来，设置单独的【静默截图 OCR】 <a href="https://github.com/tisfeng/Easydict/issues/52">https://github.com/tisfeng/Easydict/issues/52</a></li>
         <li>添加了输入翻译时是否清空输入内容选项 <a href="https://github.com/tisfeng/Easydict/issues/19">https://github.com/tisfeng/Easydict/issues/19</a></li>
         <li>添加了自动复制第一个翻译结果选项 <a href="https://github.com/tisfeng/Easydict/issues/97">https://github.com/tisfeng/Easydict/issues/97</a></li>
         <li>许多其他优化。</li>
@@ -27,9 +27,9 @@
         <h3 id="-">🐞 修复</h3>
         <ul>
         <li>修复了有道翻译结果显示不全问题 <a href="https://github.com/tisfeng/Easydict/issues/82">https://github.com/tisfeng/Easydict/issues/82</a></li>
-        <li>修复了 DeepL 不支持繁体中午问题 <a href="https://github.com/tisfeng/Easydict/issues/77">https://github.com/tisfeng/Easydict/issues/77</a></li>
+        <li>修复了 DeepL 不支持繁体中文问题 <a href="https://github.com/tisfeng/Easydict/issues/77">https://github.com/tisfeng/Easydict/issues/77</a></li>
         <li>修复了取词可能导致正在播放的音乐静音问题 <a href="https://github.com/tisfeng/Easydict/issues/83">https://github.com/tisfeng/Easydict/issues/83</a></li>
-        <li>修复了空复制取词出现提示音问题  <a href="https://github.com/tisfeng/Easydict/issues/41">https://github.com/tisfeng/Easydict/issues/41</a></li>
+        <li>修复了空复制取词出现提示音问题 <a href="https://github.com/tisfeng/Easydict/issues/41">https://github.com/tisfeng/Easydict/issues/41</a></li>
         <li>修复了许多其他已知问题。</li>
         </ul>
         <h3 id="-">新成员</h3>
