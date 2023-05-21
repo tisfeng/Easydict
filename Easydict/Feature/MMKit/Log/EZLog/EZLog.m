@@ -8,14 +8,18 @@
 
 #import "EZLog.h"
 #import "EZConfiguration.h"
+#import "FWEncryptorAES.h"
 
+@import FirebaseCore;
 @import FirebaseAnalytics;
+@import AppCenter;
 @import AppCenterAnalytics;
+@import AppCenterCrashes;
 
 @implementation EZLog
 
 + (void)setupCrashLogService {
-    if (!EZConfiguration.shared.allowCrashLog) {
+    if (![EZConfiguration.shared allowCrashLog]) {
         return;
     }
 
