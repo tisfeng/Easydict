@@ -353,6 +353,8 @@ Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blo
 
 Easydict is a free and open source project, currently mainly developed and maintained by the author. If you find it helpful, you can consider sponsoring this project to support it, so that it can go further.
 
+If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a developer account to solve the app signature problem and make Easydict more accessible to more people.
+
 ### [爱发电](https://afdian.net/a/tisfeng)
 
 <div>
