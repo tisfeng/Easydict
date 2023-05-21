@@ -298,6 +298,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 - `Cmd + K`: 清空输入框。
 - `Cmd + Shift + K`: 清空输入框和查询结果，等同于点击输入框右下角的清空按钮。
 - `Cmd + I`: 聚集输入框。(Focus Input)
+- `Cmd + Shift + C`: 复制查询内容。
 - `Cmd + S`: 播放查询文本的发音。(Play Sound)
 - `Cmd + R`: 再次查询。(Retry Query)
 - `Cmd + T`: 切换翻译语言。(Toggle Translate Language)
