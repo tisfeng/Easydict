@@ -107,7 +107,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     if (result.normalResults.count || errorDescription.length > 0) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
-        CGFloat explainTextFieldTopOffset = kVerticalMargin_12;
+        CGFloat explainTextFieldTopOffset = 9;
         if (lastView) {
             explainTextFieldTopOffset += 2;
         }
@@ -766,7 +766,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     textCopyButton.mas_key = @"result_copyButton";
     
     CGFloat leftOffset = EZAudioButtonLeftMargin_7;
-    CGFloat topOffset = 6;
+    CGFloat topOffset = EZAudioButtonInputViewTopPadding_5;
     CGFloat kRightMargin = EZAudioButtonRightPadding_0;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
