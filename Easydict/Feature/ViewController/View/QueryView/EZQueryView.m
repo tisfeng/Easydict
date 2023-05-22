@@ -257,7 +257,7 @@
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
-        make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_6);
+        make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_5);
         
         CGFloat textViewHeight = [self heightOfTextView];
         make.height.mas_greaterThanOrEqualTo(textViewHeight);
