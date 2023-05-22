@@ -219,7 +219,7 @@ DeepL 网页免费版有频率限制，很容易触发 429 报错，因此 1.3.0
 
 ##### 配置 AuthKey
 
-在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 enter
+在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 Enter
 
 ```
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
@@ -268,7 +268,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 #### 设置
 
-![image-20230429102509278](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230429102509278-1682735109.png)
+![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
 #### 服务
 
@@ -361,11 +361,11 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
+
 ### 赞助列表
 
 |  **日期**  | **用户** | **金额** | **留言** |
 | :--------: | :------: | :------: | :------: |
-| 2023-05-22 |    🍑     |    50    | 感谢开源 |
+| 2023-05-22 |    🍑    |    50    | 感谢开源 |
 | 2023-05-22 |    -     |   200    |          |
 | 2023-05-22 |    -     |   150    |          |
-

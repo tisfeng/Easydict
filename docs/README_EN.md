@@ -218,7 +218,7 @@ If you have a DeepL AuthKey, it is recommended to use a personal AuthKey, so tha
 
 ##### Configure AuthKey
 
-Enter the following code in the input box, xxx is your DeepL AuthKey, and then enter
+Enter the following code in the input box, xxx is your DeepL AuthKey, and then Enter
 
 ```
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
@@ -267,7 +267,7 @@ The settings page provides some preference setting modifications, such as automa
 
 #### Settting
 
-![image-20230429102509278](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230429102509278-1682735109.png)
+![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
 #### Services
 
