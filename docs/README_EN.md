@@ -351,11 +351,11 @@ Easydict is licensed under the [GPL-3.0](https://github.com/tisfeng/Easydict/blo
 
 ## Sponsor
 
-Easydict is a free and open source project, currently mainly developed and maintained by the author. If you find it helpful, you can consider sponsoring this project to support it, so that it can go further.
+Easydict is a free and open source project, currently mainly developed and maintained by the author. If you like this project, and find it helpful, you can consider sponsoring this project to support it, so that it can go further.
 
-If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a developer account to solve the app signature problem and make Easydict more accessible to more people.
+If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a developer account to solve the app [signature problem](https://github.com/tisfeng/Easydict/issues/2) and make Easydict more accessible to more people.
 
-### [爱发电](https://afdian.net/a/tisfeng)
+<a href="https://afdian.net/a/tisfeng"><img width="20%" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.jpg" alt=""></a>
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
