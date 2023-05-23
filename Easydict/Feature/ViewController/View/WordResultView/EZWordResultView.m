@@ -81,27 +81,28 @@ static const CGFloat kVerticalPadding_8 = 8;
     BOOL isWordLength = result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
     BOOL showBigWord = result.wordResult || result.showBigWord;
     if (isWordLength && showBigWord) {
-        EZLabel *label = [[EZLabel alloc] init];
-        [self addSubview:label];
-        label.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
-        label.text = result.queryText;
+        EZLabel *bigWordLabel = [[EZLabel alloc] init];
+        [self addSubview:bigWordLabel];
+        bigWordLabel.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
+        bigWordLabel.textContainer.lineFragmentPadding = 4;
+        bigWordLabel.text = result.queryText;
 
-        [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(kHorizontalMargin_8);
             CGFloat topOffset = 10;
-            height += (topOffset + label.height);
+            height += (topOffset + bigWordLabel.height);
             if (lastView) {
                 make.top.equalTo(lastView.mas_bottom).offset(topOffset);
             } else {
                 make.top.offset(topOffset);
             }
             
-            CGSize labelSize = [label oneLineSize];
+            CGSize labelSize = [bigWordLabel oneLineSize];
             make.size.mas_equalTo(labelSize).priorityHigh();
         }];
         
-        label.mas_key = @"wordTextField";
-        lastView = label;
+        bigWordLabel.mas_key = @"wordTextField";
+        lastView = bigWordLabel;
     }
     
     if (result.normalResults.count || errorDescription.length > 0) {
@@ -171,7 +172,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                         make.top.equalTo(self).offset(topOffset);
                     }
                     
-                    CGFloat leftPadding = 6;
+                    CGFloat leftPadding = kHorizontalMargin_8;
                     exceptedWidth += leftPadding;
                     make.left.equalTo(self).offset(leftPadding);
                 }
@@ -765,7 +766,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
-    CGFloat leftOffset = EZAudioButtonLeftMargin_7;
+    CGFloat leftOffset = EZAudioButtonLeftMargin_6;
     CGFloat topOffset = EZAudioButtonInputViewTopPadding_5;
     CGFloat kRightMargin = EZAudioButtonRightPadding_0;
     
