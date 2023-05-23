@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典 | [English](./docs/README_EN.md)
+# Easydict 易词典 | [English](./docs/README_EN.md)
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
@@ -26,6 +26,38 @@
 
 **翻译文本**
 ![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
+
+## 目录
+
+- [Easydict 易词典 | English](#easydict-易词典--english)
+  - [目录](#目录)
+  - [功能](#功能)
+  - [安装](#安装)
+    - [1. 手动下载安装](#1-手动下载安装)
+    - [2. Homebrew 安装 （感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
+    - [开发者构建](#开发者构建)
+    - [签名问题 ⚠️](#签名问题-️)
+  - [使用](#使用)
+    - [鼠标取词](#鼠标取词)
+    - [注意 ⚠️](#注意-️)
+  - [OCR](#ocr)
+  - [语种识别](#语种识别)
+  - [翻译服务](#翻译服务)
+    - [DeepL 翻译](#deepl-翻译)
+      - [配置 AuthKey](#配置-authkey)
+      - [配置 API 调用方式](#配置-api-调用方式)
+  - [配合 PopClip 使用](#配合-popclip-使用)
+  - [偏好设置](#偏好设置)
+    - [设置](#设置)
+    - [服务](#服务)
+  - [应用内快捷键](#应用内快捷键)
+  - [Tips](#tips)
+  - [类似开源项目](#类似开源项目)
+  - [动机](#动机)
+  - [致谢](#致谢)
+  - [声明](#声明)
+  - [赞助支持](#赞助支持)
+    - [赞助列表](#赞助列表)
 
 ## 功能
 
@@ -41,27 +73,27 @@
 
 下一步：
 
-- [ ] 支持翻译服务 API 调用。
+- [ ] 支持翻译服务用户 API 调用。
 - [ ] 支持更多查询服务。
 - [ ] 支持 macOS 系统词典。
 
 _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**_
 
-### 安装
+## 安装
 
 你可以使用下面两种方式之一安装。支持系统 macOS 11.0+
 
-#### 1. 手动下载安装
+### 1. 手动下载安装
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
-#### 2. Homebrew 安装 （感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 安装 （感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
 
 ```bash
 brew install easydict
 ```
 
-#### 开发者构建
+### 开发者构建
 
 如果你是一名开发者，或者对这个项目感兴趣，也可以尝试手动构建运行，整个过程非常简单，甚至不需懂 macOS 开发知识。
 
@@ -69,9 +101,9 @@ brew install easydict
 
 如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
 
-构建环境：Xcode 13 macOS, Big Sur 11.3。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
+构建环境：Xcode 13, macOS Big Sur 11.3。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
-#### 签名问题 ⚠️
+### 签名问题 ⚠️
 
 Easydict 是开源软件，本身是安全的，但由于苹果严格的检查机制，打开时可能会遇到警告拦截。
 
@@ -83,8 +115,8 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
 
 <div >
     <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png"  width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png"  width="30%">
+    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png" width="30%">
+    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png" width="30%">
 </div>
 
 <div style="display: flex; justify-content: space-between;">
@@ -103,7 +135,7 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 
 ---
 
-### 使用
+## 使用
 
 Easydict 启动之后，除了应用主界面（默认隐藏），还会有一个菜单图标，点击菜单选项即可触发相应的功能，如下所示：
 
@@ -120,25 +152,25 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 静默截图 OCR   | 按下输入翻译快捷键（默认 `⌥ + ⇧ + S`），截取需要翻译的区域，翻译结果将自动保存到剪贴板 | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 |                |
 
-#### 鼠标取词
+### 鼠标取词
 
 目前支持多种鼠标快捷取词方式：双击取词、鼠标滑动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标滑动取词】可能会失败，此时可换其他取词方式。
 
 快捷键取词在任意应用中都可以正常工作，如遇到不能取词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
 
-#### 注意 ⚠️
+### 注意 ⚠️
 
 1. 划词翻译，需要开启 `辅助功能` 权限，鼠标划词功能仅在第一次使用时会触发申请辅助功能权限，授权后才能正常使用自动划词翻译功能。
 
 2. 截图翻译，需要开启 `屏幕录制` 权限，应用仅会在第一次使用 **截图翻译** 时会自动弹出权限申请对话框，若授权失败，后续需自己去系统设置中开启。
 
-### OCR
+## OCR
 
 目前仅支持系统 OCR，稍后会引入第三方 OCR 服务。
 
 系统 OCR 支持语言：简体中文，繁体中文，英语，日语，韩语，法语，西班牙语，葡萄牙语，德语，意大利语，俄语，乌克兰语。
 
-### 语种识别
+## 语种识别
 
 目前支持系统语种识别，百度和 Google 语种识别三种，但考虑到在线识别的速度问题以及不稳定性（ Google 还需要翻墙），其他两种识别服务只用于辅助优化。
 
@@ -146,7 +178,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 如果在实际使用中还是觉得系统语种识别不准确，可在设置中开启百度语种识别或 Google 语种识别优化，但请注意，这可能会导致响应速度变慢，而且识别率也不会 100% 符合用户期望。如遇到识别有误情况，可手动指定语种类型。
 
-### 翻译服务
+## 翻译服务
 
 **目前支持有道词典，苹果系统翻译，DeepL，Google，百度和火山翻译服务。**
 
@@ -211,13 +243,13 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 </details>
 
-#### DeepL 翻译
+### DeepL 翻译
 
 DeepL 网页免费版有频率限制，很容易触发 429 报错，因此 1.3.0 版本增加了对 DeepL 官方 API 支持，暂时还没写界面，需通过命令方式启用。
 
 如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制， 用户体验会更好。
 
-##### 配置 AuthKey
+#### 配置 AuthKey
 
 在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 Enter
 
@@ -225,7 +257,7 @@ DeepL 网页免费版有频率限制，很容易触发 429 报错，因此 1.3.0
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
 
-##### 配置 API 调用方式
+#### 配置 API 调用方式
 
 1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey （如果有）
 
@@ -245,7 +277,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
 
-### 配合 PopClip 使用
+## 配合 PopClip 使用
 
 你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后为 `Easydict`设置一个快捷键，默认是 `Opt + D`，那么你就可以通过 `PopClip` 快速打开 `Easydict` 啦！
 
@@ -262,15 +294,15 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 > 参考: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-### 偏好设置
+## 偏好设置
 
 设置页提供了一些偏好设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
 
-#### 设置
+### 设置
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
-#### 服务
+### 服务
 
 Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
@@ -280,7 +312,7 @@ Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
 
-### 应用内快捷键
+## 应用内快捷键
 
 Easydict 有一些应用内快捷键，方便你在使用过程中更加高效。
 
@@ -289,8 +321,6 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 <div style="display: flex; justify-content: space-between;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
 </div>
-
-#### 应用内快捷键
 
 - `Enter`: 输入文本后，按下 Enter 开始查询。
 - `Shift + Enter`: 输入换行。
