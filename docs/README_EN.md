@@ -17,7 +17,7 @@
             alt="Downloads"></a>
 </p>
 
-## Easydict 易词典 | [中文简介](../README.md)
+# Easydict 易词典 | [中文简介](../README.md)
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
@@ -26,6 +26,35 @@
 
 **Translate text**
 ![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
+
+- [Easydict 易词典 | 中文简介](#easydict-易词典--中文简介)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [1. Manual](#1-manual)
+    - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
+    - [Developer Build](#developer-build)
+    - [Signature Problem ⚠️](#signature-problem-️)
+  - [Usage](#usage)
+    - [Select text by Mouse](#select-text-by-mouse)
+    - [Notice ⚠️](#notice-️)
+  - [OCR](#ocr)
+  - [Language Recognition](#language-recognition)
+  - [Translation Services](#translation-services)
+    - [DeepL Translate](#deepl-translate)
+      - [Configure AuthKey](#configure-authkey)
+      - [Configure API call method](#configure-api-call-method)
+  - [Use with PopClip](#use-with-popclip)
+  - [Preferences](#preferences)
+    - [Settting](#settting)
+    - [Services](#services)
+    - [In-App Shortcuts](#in-app-shortcuts)
+  - [Tips](#tips)
+  - [Similar Open Source Projects](#similar-open-source-projects)
+  - [Motivation](#motivation)
+  - [Acknowledgements](#acknowledgements)
+  - [Statement](#statement)
+  - [Sponsor](#sponsor)
+    - [Sponsor List](#sponsor-list)
 
 ## Features
 
@@ -41,27 +70,27 @@
 
 Next step.
 
-- [ ] Supports service API calls.
+- [ ] Supports service user's API calls.
 - [ ] Support more query services.
 - [ ] Support for macOS system dictionary.
 
 _**If you like this extension, please give it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks!**_
 
-### Installation
+## Installation
 
 You can install it using one of the following two methods. Support macOS 11.0+
 
-#### 1. Manual
+### 1. Manual
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
-#### 2. Homebrew (Thanks [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew (Thanks [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
 
 ```bash
 brew install easydict
 ```
 
-#### Developer Build
+### Developer Build
 
 If you are a developer, or are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
@@ -71,7 +100,7 @@ If a signature error occurs during compilation, please use your own developer ac
 
 Build environment: Xcode 13, macOS Big Sur 11.3. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
-#### Signature Problem ⚠️
+### Signature Problem ⚠️
 
 Easydict is open source software and is inherently secure, but due to Apple's strict checking mechanism, you may encounter warning blocks when opening it.
 
@@ -103,7 +132,7 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 
 ---
 
-### Usage
+## Usage
 
 Once Easydict is launched, in addition to the main window (hidden by default), there will be a menu icon, and clicking on the menu option will trigger the corresponding actions, as follows:
 
@@ -119,25 +148,25 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate                             | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 | Silent Screenshot OCR     | Press the input translate shortcut key（default `⌥ + ⇧ + S`）to capture the area to be translated, translation results will be copied directly to the clipboard | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 
-#### Select text by Mouse
+### Select text by Mouse
 
 Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
 
 The shortcut key to select words can work normally in any application, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
-#### Notice ⚠️
+### Notice ⚠️
 
 1. `Select Translate` requires the `Auxiliary Accessibility`.The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
 
 2. For screenshot Translate, you need to enable `Screen Recording` permission. The application will only automatically pop up a permission application dialog box when you use **Screenshot Translation** for the first time. If the authorization fails, you need to turn it on in the system settings manually.
 
-### OCR
+## OCR
 
 Currently, only the system OCR is supported, and third-party OCR services will be introduced later.
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
-### Language Recognition
+## Language Recognition
 
 Currently, only the system language recognition is supported, and Baidu and Google language recognition are supported, but considering the speed problem of online recognition and instability (Google also needs to be flipped), the other two recognition services are only used for auxiliary optimization.
 
@@ -145,7 +174,7 @@ The system language recognition is used by default, and after tuning, the accura
 
 If you still feel that the system language recognition is inaccurate in actual use, you can turn on Baidu language recognition or Google language recognition optimization in the settings, but please note that this may cause the response speed to slow down, and the recognition rate will not be 100% in line with user expectations. If there is a recognition error, you can manually specify the language type.
 
-### Translation Services
+## Translation Services
 
 **Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
 
@@ -210,13 +239,13 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 </details>
 
-#### DeepL Translate
+### DeepL Translate
 
 Since the DeepL web free version has a frequency limit, it is easy to trigger the 429 error, so version 1.3.0 adds support for the DeepL official API, but the interface has not been written yet and needs to be enabled through the command line.
 
 If you have a DeepL AuthKey, it is recommended to use a personal AuthKey, so that the frequency limit can be avoided, and the user experience will be better.
 
-##### Configure AuthKey
+#### Configure AuthKey
 
 Enter the following code in the input box, xxx is your DeepL AuthKey, and then Enter
 
@@ -224,7 +253,7 @@ Enter the following code in the input box, xxx is your DeepL AuthKey, and then E
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
 
-##### Configure API call method
+#### Configure API call method
 
 1. The web version API is used by default, and the personal AuthKey will be used when the web version API fails (if any)
 
@@ -244,7 +273,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
 
-### Use with PopClip
+## Use with PopClip
 
 You need to install [PopClip](https://pilotmoon.com/popclip/) first, then set a shortcut key for `Easydict`, default is `Opt + D`, then you can open `Easydict` quickly with `PopClip`!
 
@@ -261,15 +290,15 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 
 > Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-### Preferences
+## Preferences
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
 
-#### Settting
+### Settting
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
-#### Services
+### Services
 
 Easydict has 3 types of windows and you can set different services for each of them.
 
@@ -279,7 +308,7 @@ Easydict has 3 types of windows and you can set different services for each of t
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
 
-#### In-App Shortcuts
+### In-App Shortcuts
 
 Easydict has some in-app shortcuts to help you use it more efficiently.
 
@@ -310,7 +339,7 @@ As long as the query window is activated, you can open the settings page by shor
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
-  <img src="https://user-images.githubusercontent.com/25194972/221406302-1a5fd751-012d-42b5-9834-09d2d5913ad6.png" width="30%">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/ee377707-c021-43b2-b9e0-65272ad42c7e" width="30%">
 </div>
 
 If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xxx" button to specify the recognition language.
@@ -360,3 +389,11 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/IMG_4739-1684680971.JPG" width="30%">
 </div>
+
+### Sponsor List
+
+|  **日期**  | **用户** | **金额** | **留言** |
+| :--------: | :------: | :------: | :------: |
+| 2023-05-22 |    🍑    |    50    | 感谢开源 |
+| 2023-05-22 |    -     |   200    |          |
+| 2023-05-22 |    -     |   150    |          |
