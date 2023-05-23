@@ -305,10 +305,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             self.isMuting = YES;
         }
 
-        // Simulate keyboard event: Cmd + C
-        PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
-        PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
-
+        [self simulateCommandC];
+        
         if (shouldTurnOffSoundTemporarily) {
             [self cancelDelayRecoverVolume];
             [self delayRecoverVolume];
@@ -786,6 +784,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 #pragma mark - Simulate keyboard event
 
+/// Simulate Cmd+C
+- (void)simulateCommandC {
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, true);  // key down
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_C, false); // key up
+}
+
 /// Simulate key event.
 void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
     // Ref: http://www.enkichen.com/2018/09/12/osx-mouse-keyboard-event/
@@ -808,24 +812,6 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     CFRelease(source);
 }
 
-/// Use NSEvent keyEventWithType to post keyboard event Cmd + C. Why doesn't it work?
-- (void)postKeyboardEventCmdC {
-    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
-    [NSApp postEvent:event atStart:YES];
-
-    NSEvent *eventUp = [NSEvent keyEventWithType:NSEventTypeKeyUp location:NSZeroPoint modifierFlags:NSEventModifierFlagCommand timestamp:[[NSProcessInfo processInfo] systemUptime] windowNumber:0 context:nil characters:@"c" charactersIgnoringModifiers:@"c" isARepeat:NO keyCode:kVK_ANSI_C];
-    [NSApp postEvent:eventUp atStart:YES];
-}
-
-- (void)postKeyboardEvent:(NSEventModifierFlags)modifierFlags keyCode:(CGKeyCode)keyCode keyDown:(BOOL)keyDown {
-    NSString *key = [self stringFromKeyCode:keyCode];
-
-    [self getFrontmostWindowInfo:^(NSDictionary *dict) {
-        NSNumber *windowID = dict[@"kCGWindowNumber"];
-        NSEvent *event = [NSEvent keyEventWithType:keyDown ? NSEventTypeKeyDown : NSEventTypeKeyUp location:self.endPoint modifierFlags:modifierFlags timestamp:0 windowNumber:windowID.integerValue context:nil characters:key charactersIgnoringModifiers:key isARepeat:NO keyCode:keyCode];
-        [NSApp postEvent:event atStart:YES];
-    }];
-}
 
 /// Get nsstring from keycode
 - (NSString *)stringFromKeyCode:(CGKeyCode)keyCode {
