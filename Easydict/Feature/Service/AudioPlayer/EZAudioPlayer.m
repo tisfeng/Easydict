@@ -126,10 +126,15 @@
             EZServiceTypeYoudao,
         ];
         
-        EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:EZServiceTypeApple];
-
+        EZServiceType defaultTTS = EZServiceTypeApple;
+        BOOL isBeta = [[[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey] boolValue];
+        if (isBeta) {
+            defaultTTS = EZServiceTypeYoudao;
+        }
+        
+        EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:defaultTTS];
         if (![enabledTTSServiceTypes containsObject:ttsServiceType]) {
-            ttsServiceType = EZServiceTypeApple;
+            ttsServiceType = defaultTTS;
         }
         
         EZQueryService *ttsService = [EZServiceTypes serviceWithType:ttsServiceType];

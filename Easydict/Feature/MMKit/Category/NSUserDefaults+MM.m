@@ -8,7 +8,6 @@
 
 #import "NSUserDefaults+MM.h"
 
-
 @implementation NSUserDefaults (MM)
 
 /// Read string from user defaults, if not exist, return defaultValue and write it to user defaults.
