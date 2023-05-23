@@ -399,11 +399,11 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 - (NSDictionary<NLLanguage, NSNumber *> *)customLanguageHints {
     // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
-        NLLanguageEnglish : @(3.0),
+        NLLanguageEnglish : @(4.5),
         NLLanguageSimplifiedChinese : @(2.0),
         NLLanguageTraditionalChinese : @(0.4),
         NLLanguageJapanese : @(0.25),
-        NLLanguageFrench : @(0.25), // const, ex, delimiter, proposition
+        NLLanguageFrench : @(0.2), // const, ex, delimiter, proposition
         NLLanguageKorean : @(0.2),
         NLLanguageItalian : @(0.1),     // via
         NLLanguageSpanish : @(0.1),     // favor
