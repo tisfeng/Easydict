@@ -140,6 +140,8 @@ static NSString *const kEasydictSchema = @"easydict://";
      easydict://writeKeyValue?EZOpenAIDomainKey=api.openai.com
      easydict://readValueOfKey?EZOpenAIDomainKey
      easydict://writeKeyValue?EZOpenAIModelKey=gpt-3.5-turbo
+     easydict://writeKeyValue?EZOpenAIDictionaryKey=0
+     easydict://writeKeyValue?EZOpenAISentenceKey=0
      
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
      easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
