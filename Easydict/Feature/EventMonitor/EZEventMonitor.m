@@ -21,7 +21,7 @@ static CGFloat const kDismissPopButtonDelayTime = 0.5;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
 
 // The longest system alert audio is Crystal, named Glass.aiff, its effective playback time is less than 0.8s
-static NSTimeInterval const kDelayRecoverVolumeTime = 0.8;
+static NSTimeInterval const kDelayRecoverVolumeTime = 1.0;
 
 static NSInteger const kRecordEventCount = 3;
 

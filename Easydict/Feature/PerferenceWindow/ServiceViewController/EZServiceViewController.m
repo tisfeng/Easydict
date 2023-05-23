@@ -33,7 +33,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, assign) EZWindowType windowType;
 @property (nonatomic, copy) NSDictionary<NSNumber *, NSNumber *> *windowTypesDictionary;
 
-
 @end
 
 @implementation EZServiceViewController
