@@ -141,27 +141,38 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     EZQueryServiceType queryServiceType = EZQueryServiceTypeTranslation;
 
-    BOOL shouldQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
+    BOOL isQueryDictionary = NO;
+    if (enableDictionary) {
+        isQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
+    }
     
     BOOL enableSentence = self.queryServiceType & EZQueryServiceTypeSentence;
-    BOOL isEnglishSentence = [from isEqualToString:EZLanguageEnglish] && [EZTextWordUtils isSentence:text];
+    BOOL isQueryEnglishSentence = NO;
+    if (!isQueryDictionary && enableSentence) {
+        BOOL isEnglishText = [from isEqualToString:EZLanguageEnglish];
+        if (isEnglishText) {
+            isQueryEnglishSentence = [EZTextWordUtils shouldQuerySentence:text language:from];
+        }
+    }
     
     BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
     
     self.result.from = from;
     self.result.to = to;
     
-    if (shouldQueryDictionary && enableDictionary) {
+    NSArray<NSDictionary *> *messages = nil;
+    if (isQueryDictionary) {
         queryServiceType = EZQueryServiceTypeDictionary;
-        parameters[@"messages"] = [self dictMessages:text from:sourceLanguageType to:targetLanguageType];
-    } else if (isEnglishSentence && enableSentence) {
+        messages = [self dictMessages:text from:sourceLanguageType to:targetLanguageType];
+    } else if (isQueryEnglishSentence) {
         queryServiceType = EZQueryServiceTypeSentence;
-        parameters[@"messages"] = [self sentenceMessages:text from:sourceLanguageType to:targetLanguageType];
+        messages = [self sentenceMessages:text from:sourceLanguageType to:targetLanguageType];
     } else if (enableTranslation) {
         queryServiceType = EZQueryServiceTypeTranslation;
-        parameters[@"messages"] = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
+        messages = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
     }
+    parameters[@"messages"] = messages;
     
     if (queryServiceType != EZQueryServiceTypeNone) {
         [self startStreamChat:parameters queryServiceType:queryServiceType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
