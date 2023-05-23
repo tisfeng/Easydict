@@ -17,6 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// If text is a Chinese or English word or phrase, need query dict.
 + (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae;
 
+/// text should not a word, and then text is a sentence.
++ (BOOL)shouldQuerySentence:(NSString *)text language:(EZLanguage)langugae;
+
 /// Check if text is a English word. Note: B612 is not a word.
 + (BOOL)isEnglishWord:(NSString *)text;
 

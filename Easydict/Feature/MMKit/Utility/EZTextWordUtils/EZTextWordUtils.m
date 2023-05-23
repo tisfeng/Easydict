@@ -20,7 +20,6 @@ static NSDictionary *const kQuotesDict = @{
 #pragma mark - Check if text is a word, or phrase
 
 /// If text is a Chinese or English word or phrase, need query dict.
-/// Only `Word` have synonyms and antonyms, only `English Word` have parts of speech, tenses and How to remember.
 + (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae {
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
@@ -43,6 +42,33 @@ static NSDictionary *const kQuotesDict = @{
     return NO;
 }
 
+/// text should not a word, and then text is a sentence.
++ (BOOL)shouldQuerySentence:(NSString *)text language:(EZLanguage)langugae {
+    if ([self shouldQueryDictionary:text language:langugae]) {
+        return NO;
+    }
+    
+    return [self isSentence:text];
+}
+
+
+/// Check if text is a sentence, use NLTokenizer.
++ (BOOL)isSentence:(NSString *)text {
+    NSInteger count = [self sentenceCount:text];
+    return count == 1;
+}
+
+/// Sentence count of text.
++ (NSInteger)sentenceCount:(NSString *)text {
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitSentence];
+    tokenizer.string = text;
+    __block NSInteger count = 0;
+    [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
+//        NSLog(@"sentence: %@", [text substringWithRange:tokenRange]);
+        count++;
+    }];
+    return count;
+}
 
 /// Check if text is a English word. Note: B612 is not a word.
 + (BOOL)isEnglishWord:(NSString *)text {
@@ -100,7 +126,6 @@ static NSDictionary *const kQuotesDict = @{
     __block NSInteger count = 0;
     [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
         count++;
-
 //        NSString *charString = [text substringWithRange:tokenRange];
 //        NSLog(@"char: %@", charString);
     }];
@@ -210,24 +235,6 @@ static NSDictionary *const kQuotesDict = @{
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
     NSUInteger numberOfMatches = [regex numberOfMatchesInString:text options:0 range:NSMakeRange(0, [text length])];
     return numberOfMatches > 0;
-}
-
-/// Check if text is a sentence, use NLTokenizer.
-+ (BOOL)isSentence:(NSString *)text {
-    NSInteger count = [self sentenceCount:text];
-    return count == 1;
-}
-
-/// Sentence count of text.
-+ (NSInteger)sentenceCount:(NSString *)text {
-    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitSentence];
-    tokenizer.string = text;
-    __block NSInteger count = 0;
-    [tokenizer enumerateTokensInRange:NSMakeRange(0, text.length) usingBlock:^(NSRange tokenRange, NLTokenizerAttributes attributes, BOOL *stop) {
-//        NSLog(@"sentence: %@", [text substringWithRange:tokenRange]);
-        count++;
-    }];
-    return count;
 }
 
 /// Check if it is a single letter of the alphabet.
