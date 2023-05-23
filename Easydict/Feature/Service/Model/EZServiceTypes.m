@@ -32,8 +32,8 @@
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
     
-    NSString *betaFeatureKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey];
-    if ([betaFeatureKey isEqualToString:@"1"]) {
+    BOOL isBeta = [[[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey] boolValue];
+    if (isBeta) {
         [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
     }
     
