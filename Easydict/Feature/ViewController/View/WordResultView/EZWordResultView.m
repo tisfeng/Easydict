@@ -798,7 +798,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
     linkButton.image = linkImage;
-    linkButton.toolTip = @"Open Web Link";
+    linkButton.toolTip = NSLocalizedString(@"open_web_link", nil);
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {

@@ -144,9 +144,11 @@
 "play_audio" = "播放音频";
 "stop_play_audio" = "停止播放音频";
 "copy_text" = "拷贝文本";
+"open_web_link" = "在网页中打开";
 "clear_all" = "清空";
 "unpin" = "取消钉住";
 "pin" = "钉住窗口";
+"retry" = "重试";
 "hide" = "隐藏";
 "show"= "显示";
 "open_in_google" = "通过 Google 搜索";
