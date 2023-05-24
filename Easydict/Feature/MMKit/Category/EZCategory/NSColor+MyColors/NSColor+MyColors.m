@@ -55,7 +55,7 @@
     return [NSColor mm_colorWithHexString:@"#F1F1F1"];
 }
 + (NSColor *)ez_titleBarBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#2D2E2F"];
+    return [NSColor mm_colorWithHexString:@"#2C2D2E"];
 }
 
 // Result view background color
