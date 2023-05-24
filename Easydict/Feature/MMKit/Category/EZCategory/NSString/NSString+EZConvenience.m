@@ -65,7 +65,7 @@
 
 // ???: Since I found that some other Apps also read and clear NSPasteboard content, it maybe cause write to NSPasteboard failed, such as PopClip will be triggered strangely when I use Silent Screenshot OCR.
 - (void)copyToPasteboardSafely {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [NSPasteboard mm_generalPasteboardSetString:self];
     });
 }
