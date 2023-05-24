@@ -14,7 +14,7 @@
 #include <Carbon/Carbon.h>
 #import "NSView+EZAnimatedHidden.h"
 #import "EZDetectLanguageButton.h"
-#import "EZSchemaParser.h"
+#import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "EZConfiguration.h"
 
@@ -32,7 +32,7 @@
 @property (nonatomic, copy) NSString *lastRecordText;
 @property (nonatomic, assign) NSTimeInterval lastRecordTimestamp;
 
-@property (nonatomic, strong) EZSchemaParser *schemaParser;
+@property (nonatomic, strong) EZSchemeParser *schemeParser;
 
 @end
 
@@ -354,11 +354,11 @@
     return [self.textView.string copy];
 }
 
-- (EZSchemaParser *)schemaParser {
-    if (!_schemaParser) {
-        _schemaParser = [[EZSchemaParser alloc] init];
+- (EZSchemeParser *)schemeParser {
+    if (!_schemeParser) {
+        _schemeParser = [[EZSchemeParser alloc] init];
     }
-    return _schemaParser;
+    return _schemeParser;
 }
 
 #pragma mark - NSTextViewDelegate
@@ -553,7 +553,7 @@
 
 /// Highlight all links in textstorage
 - (void)highlightAllLinks {
-    BOOL isEasydictSchema = [self.schemaParser isEasydictSchema:self.textView.string];
+    BOOL isEasydictSchema = [self.schemeParser isEasydictScheme:self.textView.string];
     if (isEasydictSchema) {
         return;
     }

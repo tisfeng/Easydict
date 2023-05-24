@@ -21,7 +21,7 @@
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 #import "EZTableRowView.h"
-#import "EZSchemaParser.h"
+#import "EZSchemeParser.h"
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
 
@@ -58,7 +58,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
-@property (nonatomic, strong) EZSchemaParser *schemaParser;
+@property (nonatomic, strong) EZSchemeParser *schemeParser;
 
 @property (nonatomic, strong) FBKVOController *kvo;
 
@@ -277,11 +277,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _tableView;
 }
 
-- (EZSchemaParser *)schemaParser {
-    if (!_schemaParser) {
-        _schemaParser = [[EZSchemaParser alloc] init];
+- (EZSchemeParser *)schemeParser {
+    if (!_schemeParser) {
+        _schemeParser = [[EZSchemeParser alloc] init];
     }
-    return _schemaParser;
+    return _schemeParser;
 }
 
 - (EZAudioPlayer *)audioPlayer {
@@ -324,7 +324,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
-    if ([self handleEasydictSchema:text]) {
+    if ([self handleEasydictScheme:text]) {
         return;
     }
 
@@ -338,14 +338,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }];
 }
 
-/// Handle Easydict schema.
-- (BOOL)handleEasydictSchema:(NSString *)text {
-    BOOL isEasydictSchema = [self.schemaParser isEasydictSchema:text];
-    if (!isEasydictSchema) {
+/// Handle Easydict scheme.
+- (BOOL)handleEasydictScheme:(NSString *)text {
+    BOOL isEasydictScheme = [self.schemeParser isEasydictScheme:text];
+    if (!isEasydictScheme) {
         return NO;
     }
     
-    [self.schemaParser openURLSchema:text completion:^(BOOL isSuccess, NSString * _Nullable returnValue) {
+    [self.schemeParser openURLScheme:text completion:^(BOOL isSuccess, NSString * _Nullable returnValue, NSString *_Nullable actionKey) {
         NSString *message =  isSuccess ? @"Success" : @"Failed";
         if (returnValue.length > 0) {
             message = returnValue;
@@ -359,8 +359,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         [self clearInput];
         
-        // If no result, means write key-value, need to update.
-        if (!returnValue) {
+        // If write, need to update.
+        if ([self.schemeParser isWriteActionKey:actionKey]) {
             // Besides current window, other pages need to be notified, such as the settings service page.
             [self postUpdateServiceNotification];
         }

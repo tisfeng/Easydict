@@ -11,10 +11,18 @@
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
+//static NSString *const EZResetUserDefaultsDataKey = @"EZResetUserDefaultsDataKey";
+//static NSString *const EZSaveUserDefaultsDataToDownloadFolderKey = @"EZSaveUserDefaultsDataToDownloadFolderKey";
 
 @interface NSUserDefaults (EZConfig)
 
 @property (nonatomic, assign, readonly, getter=isBeta) BOOL beta;
+
+@property (nonatomic, assign, readonly) NSDictionary *userDefaultsData;
+
+- (void)saveUserDefaultsDataToDownloadFolder;
+
+- (void)resetUserDefaultsData;
 
 @end
 
