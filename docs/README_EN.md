@@ -36,7 +36,7 @@
     - [Signature Problem ⚠️](#signature-problem-️)
   - [Usage](#usage)
     - [Select text by Mouse](#select-text-by-mouse)
-    - [Notice ⚠️](#notice-️)
+    - [Notice](#notice)
   - [OCR](#ocr)
   - [Language Recognition](#language-recognition)
   - [Translation Services](#translation-services)
@@ -154,7 +154,7 @@ Currently, multiple mouse quick word selection methods are supported: double-cli
 
 The shortcut key to select words can work normally in any application, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
-### Notice ⚠️
+### Notice
 
 1. `Select Translate` requires the `Auxiliary Accessibility`.The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
 
@@ -392,9 +392,9 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 ### Sponsor List
 
-|  **日期**  | **用户** | **金额** | **留言** |
-| :--------: | :------: | :------: | :------: |
-| 2023-05-22 |    🍑    |    50    | 感谢开源 |
-| 2023-05-22 |    -     |   200    |          |
-| 2023-05-22 |    -     |   150    |          |
-| 2023-05-24 | 陈佩 | 50 | 加油 有没有可能有Linux版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
+|  **日期**  | **用户** | **金额** |                                                     **留言**                                                      |
+| :--------: | :------: | :------: | :---------------------------------------------------------------------------------------------------------------: |
+| 2023-05-22 |    🍑    |    50    |                                                     感谢开源                                                      |
+| 2023-05-22 |    -     |   200    |                                                                                                                   |
+| 2023-05-22 |    -     |   150    |                                                                                                                   |
+| 2023-05-24 |   陈佩   |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
