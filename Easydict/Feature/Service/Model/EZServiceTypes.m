@@ -14,6 +14,7 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
+#import "NSUserDefaults+EZConfig.h"
 
 @implementation EZServiceTypes
 
@@ -32,7 +33,7 @@
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
     
-    BOOL isBeta = [[[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey] boolValue];
+    BOOL isBeta = [[NSUserDefaults standardUserDefaults] isBeta];
     if (isBeta) {
         [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
     }

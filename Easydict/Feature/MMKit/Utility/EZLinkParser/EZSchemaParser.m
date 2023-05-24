@@ -11,6 +11,7 @@
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
+#import "NSUserDefaults+EZConfig.h"
 
 /// Easydict Schema: easydict://
 static NSString *const kEasydictSchema = @"easydict://";
