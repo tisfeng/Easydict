@@ -122,7 +122,7 @@
             self.eudicButton = eudicButton;
             self.favoriteButton = eudicButton;
             
-            eudicButton.link = EZEudicAppURLSchema;
+            eudicButton.link = EZEudicAppURLScheme;
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
             eudicButton.toolTip = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];  
             eudicButton.contentTintColor = NSColor.clearColor;
