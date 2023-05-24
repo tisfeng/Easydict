@@ -12,6 +12,8 @@
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
 #import "NSUserDefaults+EZConfig.h"
+#import "EZConfiguration.h"
+#import "EZLocalStorage.h"
 
 /// Easydict Scheme: easydict://
 static NSString *const kEasydictScheme = @"easydict";
@@ -120,10 +122,15 @@ static NSString *const kEasydictScheme = @"easydict";
 }
 
 - (void)resetUserDefaultsData {
+    // easydict://resetUserDefaultsData
     [[NSUserDefaults standardUserDefaults] resetUserDefaultsData];
+    
+    [EZLocalStorage destroySharedInstance];
+    [EZConfiguration destroySharedInstance];
 }
 
 - (void)saveUserDefaultsDataToDownloadFolder {
+    // easydict://saveUserDefaultsDataToDownloadFolder
     [[NSUserDefaults standardUserDefaults] saveUserDefaultsDataToDownloadFolder];
 }
 
@@ -184,6 +191,25 @@ static NSString *const kEasydictScheme = @"easydict";
     
     return actionKeys;;
 }
+
+- (void)restartApplication {
+    // 获取当前应用的 NSApplication 实例
+    NSApplication *application = [NSApplication sharedApplication];
+    
+    // 请求应用退出并重启
+    [application terminate:nil];
+    
+    // 使用 NSTask 执行重启命令
+    NSString *launchPath = @"/usr/bin/open";
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSArray *arguments = @[bundlePath];
+    
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:launchPath];
+    [task setArguments:arguments];
+    [task launch];
+}
+
 
 #pragma mark -
 

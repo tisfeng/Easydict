@@ -19,6 +19,9 @@ static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
 
 + (instancetype)shared;
 
++ (void)destroySharedInstance;
+
+
 - (NSArray<EZServiceType> *)allServiceTypes:(EZWindowType)windowType;
 - (void)setAllServiceTypes:(NSArray<EZServiceType> *)allServiceTypes windowType:(EZWindowType)windowType;
 

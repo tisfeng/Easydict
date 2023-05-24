@@ -48,22 +48,21 @@ static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 static EZConfiguration *_instance;
 
 + (instancetype)shared {
-    if (!_instance) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _instance = [[self alloc] init];
-        });
+    @synchronized (self) {
+        if (!_instance) {
+            _instance = [[super allocWithZone:NULL] init];
+            [_instance setup];
+        }
     }
     return _instance;
 }
 
++ (void)destroySharedInstance {
+    _instance = nil;
+}
+
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-        [_instance setup];
-    });
-    return _instance;
+    return [self shared];
 }
 
 - (void)setup {
