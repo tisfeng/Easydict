@@ -50,6 +50,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 
 + (instancetype)shared;
++ (void)destroySharedInstance;
 
 - (CGRect)windowFrameWithType:(EZWindowType)windowType;
 - (void)setWindowFrame:(CGRect)frame windowType:(EZWindowType)windowType;

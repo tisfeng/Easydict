@@ -24,29 +24,21 @@ static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 static EZLocalStorage *_instance;
 
 + (instancetype)shared {
-    if (!_instance) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _instance = [[self alloc] init];
-        });
+    @synchronized (self) {
+        if (!_instance) {
+            _instance = [[super allocWithZone:NULL] init];
+            [_instance setup];
+        }
     }
     return _instance;
+}
+
++ (void)destroySharedInstance {
+    _instance = nil;
 }
 
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _instance = [super allocWithZone:zone];
-    });
-    return _instance;
-}
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        [self setup];
-    }
-    return self;
+    return [self shared];
 }
 
 // init data, save all service info
