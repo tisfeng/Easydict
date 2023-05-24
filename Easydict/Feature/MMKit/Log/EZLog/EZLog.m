@@ -19,10 +19,6 @@
 @implementation EZLog
 
 + (void)setupCrashLogService {
-    if (![EZConfiguration.shared allowCrashLog]) {
-        return;
-    }
-
 #if !DEBUG
     NSString *key = NSBundle.mainBundle.bundleIdentifier;
     NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
@@ -36,6 +32,30 @@
     
     // Firebase
     [FIRApp configure];
+#endif
+}
+
++ (void)setCrashEnabled:(BOOL)enabled {
+    BOOL isEnabled = enabled;
+#if DEBUG
+    isEnabled = NO;
+#endif
+    [MSACCrashes setEnabled:isEnabled];
+}
+
+/// Log event.
+/// ⚠️ Event name must contain only letters, numbers, or underscores.
+/// ⚠️ parameters dict key and value both should be NSString.
++ (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
+    //    NSLog(@"log event: %@, %@", name, dict);
+    
+    if (![EZConfiguration.shared allowAnalytics]) {
+        return;
+    }
+    
+#if !DEBUG
+        [MSACAnalytics trackEvent:name withProperties:dict];
+        [FIRAnalytics logEventWithName:name parameters:dict];
 #endif
 }
 
@@ -89,22 +109,6 @@
     } else {
         return @"5000-∞";
     }
-}
-
-/// Log event.
-/// ⚠️ Event name must contain only letters, numbers, or underscores.
-/// ⚠️ parameters dict key and value both should be NSString.
-+ (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict {
-    //    NSLog(@"log event: %@, %@", name, dict);
-    
-    if (!EZConfiguration.shared.allowAnalytics) {
-        return;
-    }
-    
-#if !DEBUG
-        [MSACAnalytics trackEvent:name withProperties:dict];
-        [FIRAnalytics logEventWithName:name parameters:dict];
-#endif
 }
 
 @end

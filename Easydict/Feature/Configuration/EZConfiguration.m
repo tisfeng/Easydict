@@ -13,6 +13,7 @@
 #import "EZMenuItemManager.h"
 #import "EZWindowManager.h"
 #import "EZExeCommand.h"
+#import "EZLog.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -254,6 +255,7 @@ static EZConfiguration *_instance;
     _allowCrashLog = allowCrashLog;
 
     [NSUserDefaults mm_write:@(allowCrashLog) forKey:kAllowCrashLogKey];
+    [EZLog setCrashEnabled:allowCrashLog];
 }
 
 - (void)setAllowAnalytics:(BOOL)allowAnalytics {
