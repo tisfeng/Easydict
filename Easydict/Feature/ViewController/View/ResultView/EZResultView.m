@@ -161,7 +161,7 @@
     NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
-    retryButton.toolTip = @"Retry";
+    retryButton.toolTip = NSLocalizedString(@"retry", nil);
     retryButton.hidden = YES;
     [retryButton excuteLight:^(NSButton *button) {
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
