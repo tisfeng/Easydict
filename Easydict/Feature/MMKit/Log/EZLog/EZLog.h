@@ -15,11 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZLog : NSObject
 
 + (void)setupCrashLogService;
++ (void)setCrashEnabled:(BOOL)enabled;
++ (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict;
 
 + (void)logWindowAppear:(EZWindowType)windowType;
 + (void)logQueryService:(EZQueryService *)service;
 + (void)logQuery:(EZQueryModel *)model;
-+ (void)logEventWithName:(NSString *)name parameters:(nullable NSDictionary *)dict;
 
 + (NSString *)textLengthRange:(NSString *)text;
 
