@@ -153,9 +153,9 @@ static EZLayoutManager *_instance;
     CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
     CGPoint centerPoint = NSMakePoint(visibleFrameSize.width / 2, visibleFrameSize.height / 2);
     CGFloat rateableWidth = 1727.0 / NSScreen.mainScreen.frame.size.width;
-    CGFloat mainWindowWidth = 480 * rateableWidth;
-    CGFloat miniWindowWidth = 400 * rateableWidth; // My MacBook screen ratio
-    CGFloat fixedWindowWidth = 360 * rateableWidth;
+    CGFloat mainWindowWidth = 500 * rateableWidth;
+    CGFloat miniWindowWidth = 420 * rateableWidth; // My MacBook screen ratio
+    CGFloat fixedWindowWidth = 420 * rateableWidth;
     CGRect frame = CGRectZero;
     
     switch (type) {
