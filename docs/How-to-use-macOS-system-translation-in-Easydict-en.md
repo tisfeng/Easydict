@@ -4,6 +4,8 @@
 
 > Alternatively, if you have used [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict) before and have enabled mac0S system translation, you can enable the service directly from the settings page, as they share the same translation shortcut.
 
+> If you have problems using it, please see [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
+
 ![iShot_2023-01-08_10.07.00-1673143647](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.07.00-1673143647.png)
 
 
@@ -40,5 +42,4 @@ Next, in the preferences of `Easydict`, just turn on the System Translation opti
 ## Reference
 
 - [如何使用 macOS 系统翻译？](https://ripperhe.gitee.io/bob/#/faq/use-apple-translate?id=如何在-bob-中使用-macos-系统翻译？)
-- [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
 
