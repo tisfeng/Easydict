@@ -20,12 +20,9 @@
 
 + (void)setupCrashLogService {
 #if !DEBUG
-    NSString *key = NSBundle.mainBundle.bundleIdentifier;
     NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
-    NSString *appSecretKey = [FWEncryptorAES decryptText:encryptedAppSecretKey key:key];
-    
     // App Center
-    [MSACAppCenter start:appSecretKey withServices:@[
+    [MSACAppCenter start:[FWEncryptorAES decryptText:encryptedAppSecretKey key:NSBundle.mainBundle.bundleIdentifier] withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];
@@ -40,6 +37,7 @@
 #if DEBUG
     isEnabled = NO;
 #endif
+    // This method can only take effect after the service is started.
     [MSACCrashes setEnabled:isEnabled];
 }
 
