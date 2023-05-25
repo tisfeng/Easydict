@@ -20,6 +20,7 @@ static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
 @implementation EZLocalStorage
 
+// TODO: need to optimize, this code is so ugly.
 
 static EZLocalStorage *_instance;
 
@@ -102,25 +103,34 @@ static EZLocalStorage *_instance;
     NSArray *allServices = [EZServiceTypes servicesFromTypes:[self allServiceTypes:windowType]];
     for (EZQueryService *service in allServices) {
         EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
-        service.enabled = serviceInfo.enabled;
-        service.enabledQuery = serviceInfo.enabledQuery;
+        BOOL enabled = YES;
+        BOOL enabledQuery = YES;
+        if (serviceInfo) {
+            enabled = serviceInfo.enabled;
+            enabledQuery = serviceInfo.enabledQuery;
+        }
+        service.enabled = enabled;
+        service.enabledQuery = enabledQuery;
     }
     return allServices;
 }
 
 - (void)setServiceInfo:(EZServiceInfo *)serviceInfo windowType:(EZWindowType)windowType {
-    // ???: if save EZQueryService, mj_JSONData will Dead cycle.
+    // ???: if save EZQueryService, mj_JSONData will dead cycle.
     NSData *data = [serviceInfo mj_JSONData];
     NSString *serviceInfoKey = [self keyForServiceType:serviceInfo.type windowType:windowType];
     [[NSUserDefaults standardUserDefaults] setObject:data forKey:serviceInfoKey];
 }
-- (EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType {
+- (nullable EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType {
     NSString *serviceInfoKey = [self keyForServiceType:type windowType:windowType];
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:serviceInfoKey];
+    
+    EZServiceInfo *serviceInfo = nil;    
     if (data) {
-        return [EZServiceInfo mj_objectWithKeyValues:data];
+        serviceInfo = [EZServiceInfo mj_objectWithKeyValues:data];
     }
-    return nil;
+    
+    return serviceInfo;
 }
 
 - (void)setService:(EZQueryService *)service windowType:(EZWindowType)windowType {
