@@ -115,6 +115,17 @@
     }
 }
 
+- (void)windowDidResignKey:(NSNotification *)notification {
+    //    NSLog(@"window Did ResignKey: %@", self);
+    
+    EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
+
+    // Do not close main window
+    if (!floatingWindow.pin && floatingWindow.isVisible) {
+        [EZWindowManager.shared closeFloatingWindowExceptMain];
+    }
+}
+
 - (void)windowDidResize:(NSNotification *)aNotification {
     //   NSLog(@"MainWindow 窗口拉伸, (%.2f, %.2f)", self.width, self.height);
     
@@ -131,17 +142,6 @@
 
 - (void)windowDidMove:(NSNotification *)notification {
     [[EZLayoutManager shared] updateWindowFrame:self];
-}
-
-- (void)windowDidResignKey:(NSNotification *)notification {
-    //    NSLog(@"window Did ResignKey: %@", self);
-    
-    EZBaseQueryWindow *floatingWindow = [[EZWindowManager shared] floatingWindow];
-
-    // Do not close main window
-    if (!floatingWindow.pin && floatingWindow.isVisible) {
-        [EZWindowManager.shared closeFloatingWindowExceptMain];
-    }
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender {
