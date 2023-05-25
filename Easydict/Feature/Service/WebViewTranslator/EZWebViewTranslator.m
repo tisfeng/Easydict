@@ -148,7 +148,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
         self.retryCount = 0;
         self.completionHandler = ^(NSArray<NSString *> *texts, NSError *error) {
             mm_strongify(self);
-
             if (error) {
                 completionHandler(nil, error);
             } else {
@@ -156,7 +155,6 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
                 CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
                 NSLog(@"webView cost: %.1f ms, URL: %@", (endTime - startTime) * 1000, URL); // cost ~2s
             }
-
             [self resetWebView];
         };
     }
@@ -302,11 +300,19 @@ static NSTimeInterval const DELAY_SECONDS = 0.1; // Usually takes more than 0.1 
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailNavigation: %@", error);
+    
+    if (self.completionHandler) {
+        self.completionHandler(nil, error);
+    }
 }
 
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailProvisionalNavigation: %@", error);
+    
+    if (self.completionHandler) {
+        self.completionHandler(nil, error);
+    }
 }
 
 // 监听 JavaScript 代码是否执行
