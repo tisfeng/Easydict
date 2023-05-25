@@ -4,6 +4,8 @@
 
 > 另外，如果之前使用过 [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict)，并且已启用了 macOS 系统翻译，那可在设置页直接开启该服务，因为它们共用同一个翻译快捷指令。
 
+> 如果使用出现问题，请查看 [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
+
 ![iShot_2023-01-08_10.07.00-1673143647](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-08_10.07.00-1673143647.png)
 
 ## 系统要求
@@ -39,4 +41,5 @@ https://www.icloud.com/shortcuts/776f8a1d8e43471885e8a505eb9a9deb
 ## 参考
 
 - [如何使用 macOS 系统翻译？](https://bobtranslate.com/faq/use-apple-translate.html)
-- [macOS 系统翻译失败常见问题](https://bobtranslate.com/faq/apple-translate-error.html#%E9%97%AE%E9%A2%98-2)
+
+  
