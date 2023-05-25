@@ -83,7 +83,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)setup {
     _recordEvents = [NSMutableArray array];
     _commandKeyEvents = [NSMutableArray array];
-
+    
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAuxiliary;
 }
@@ -104,14 +104,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     self.type = type;
     self.mask = mask;
     self.handler = handler;
-
+    
     [self start];
 }
 
 - (void)start {
     [self stop];
     mm_weakify(self);
-
+    
     if (self.type == EZEventMonitorTypeLocal) {
         self.localMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:self.mask handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
             mm_strongify(self);
@@ -133,19 +133,19 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
-
+    
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == kVK_Escape) { // escape
             NSLog(@"escape");
         }
         return event;
     }];
-
+    
     mm_weakify(self);
     NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
-
+        
         [self handleMonitorEvent:event];
     }];
 }
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
-
+    
     // Use Auxiliary first
     [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             completion(nil);
             return;
         }
-
+        
         
         // 1. If use Auxiliary to get selected text success.
         if (text.length > 0) {
@@ -188,7 +188,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             completion(text);
             return;
         }
-
+        
         // If use Auxiliary for the first time, we need to request Accessibility permission.
         BOOL needRequestAccessibility = [self useAuxiliaryForFirstTime] && error == kAXErrorAPIDisabled;
         if (needRequestAccessibility) {
@@ -197,24 +197,24 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             completion(nil);
             return;
         }
-
+        
         void (^getSelectedTextByKeyBlock)(void) = ^{
             [self getSelectedTextByKey:^(NSString *_Nullable text) {
                 self.selectTextType = EZSelectTextTypeSimulatedKey;
                 completion(text);
             }];
         };
-
+        
         NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-
+        
         // 2. Use AppleScript to get Browser selected text.
         if ([self isKnownBrowser:bundleID]) {
             self.selectTextType = EZSelectTextTypeAppleScript;
-            [self getBrowserSelectedText:bundleID completion:^(NSString * _Nonnull selectedText, NSError * _Nonnull error) {
+            [self getBrowserSelectedText:bundleID completion:^(NSString *_Nonnull selectedText, NSError *_Nonnull error) {
                 /**
                  ???: Why the first time to get text may be nil, error
                  {
-                   "NSAppleScriptErrorNumber" : -1751
+                 "NSAppleScriptErrorNumber" : -1751
                  }
                  */
                 if (error) {
@@ -225,13 +225,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             }];
             return;
         }
-
+        
         // 3. Use simulate key to get selected text.
         if ([self shouldUseSimulatedKeyPress:text error:error]) {
             getSelectedTextByKeyBlock();
             return;
         }
-
+        
         self.selectTextType = EZSelectTextTypeAuxiliary;
         
         completion(nil);
@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         NSLog(@"user turn off enableAutoSelectText");
         return;
     }
-
+    
     self.movedY = 0;
     self.actionType = EZActionTypeAutoSelectQuery;
     [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
@@ -276,7 +276,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)handleSelectedText:(NSString *)text {
     [self cancelDismissPop];
-
+    
     NSString *trimText = [text trim];
     if (trimText.length > 0 && self.selectedTextBlock) {
         self.selectedTextBlock(trimText);
@@ -289,13 +289,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
-
+    
     NSString *lastText = [self getPasteboardText];
-
+    
     // If playing audio, we do not silence system volume.
     [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
         BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying;
-
+        
         // Set volume to 0 to avoid system alert.
         if (shouldTurnOffSoundTemporarily) {
             if (!self.isMuting) {
@@ -304,14 +304,14 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             [EZAudioUtils setSystemVolume:0];
             self.isMuting = YES;
         }
-
+        
         [self simulateCommandC];
         
         if (shouldTurnOffSoundTemporarily) {
             [self cancelDelayRecoverVolume];
             [self delayRecoverVolume];
         }
-
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayGetSelectedTextTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSInteger newChangeCount = [pasteboard changeCount];
             // If changeCount is equal to newChangeCount, it means that the copy value is nil.
@@ -319,13 +319,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 completion(nil);
                 return;
             }
-
+            
             NSString *selectedText = [[self getPasteboardText] removeInvisibleChar];
             self.selectedText = selectedText;
             MMLogInfo(@"--> Key getText: %@", selectedText);
-
+            
             [lastText copyToPasteboard];
-
+            
             completion(selectedText);
         });
     }];
@@ -357,26 +357,26 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
-
+ 
  But this method need allow auxiliary in setting first, no pop-up alerts.
-
+ 
  Cannot work in App: Safari
  */
 - (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
-
+    
     AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-
+    
     NSString *selectedText;
     AXError error = getFocusedUIElementError;
-
+    
     // !!!: This frame is left-top position
     CGRect selectedTextFrame = [self getSelectedTextFrame];
     //    NSLog(@"selected text: %@", @(selectedTextFrame));
-
+    
     self.selectedTextFrame = [EZCoordinateUtils convertRectToBottomLeft:selectedTextFrame];
-
+    
     if (getFocusedUIElementError == kAXErrorSuccess) {
         AXValueRef selectedTextValue = NULL;
         AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
@@ -395,12 +395,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         error = getSelectedTextError;
     }
-
+    
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
     CFRelease(systemWideElement);
-
+    
     completion(selectedText, error);
 }
 
@@ -409,7 +409,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     AXUIElementRef focusedElement = NULL;
     AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     CFRelease(systemWideElement);
-
+    
     return focusedElement;
 }
 
@@ -419,34 +419,34 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     AXUIElementRef focusedElement = [self focusedElement];
     CGRect selectionFrame = CGRectZero;
     AXValueRef selectionRangeValue;
-
+    
     // 1. get selected text range value
     AXError selectionRangeError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextRangeAttribute, (CFTypeRef *)&selectionRangeValue);
-
+    
     if (selectionRangeError == kAXErrorSuccess) {
         //  AXValueRef range --> CFRange
         //        CFRange selectionRange;
         //        AXValueGetValue(selectionRangeValue, kAXValueCFRangeType, &selectionRange);
         //        NSLog(@"Range: %lu, %lu", selectionRange.length, selectionRange.location); // {4, 7290}
-
+        
         // 2. get bounds from range
         AXValueRef selectionBoundsValue;
         AXError selectionBoundsError = AXUIElementCopyParameterizedAttributeValue(focusedElement, kAXBoundsForRangeParameterizedAttribute, selectionRangeValue, (CFTypeRef *)&selectionBoundsValue);
-
+        
         if (selectionBoundsError == kAXErrorSuccess) {
             // 3. AXValueRef bounds --> frame
             // ???: Sometimes, the text frame is incorrect { value = x:591 y:-16071 w:24 h:17 }
             AXValueGetValue(selectionBoundsValue, kAXValueCGRectType, &selectionFrame);
-
+            
             CFRelease(selectionRangeValue);
             CFRelease(selectionBoundsValue);
         }
     }
-
+    
     if (focusedElement != NULL) {
         CFRelease(focusedElement);
     }
-
+    
     return selectionFrame;
 }
 
@@ -454,7 +454,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (BOOL)isAccessibilityTrusted {
     BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
     NSLog(@"isTrusted: %d", isTrusted);
-
+    
     return isTrusted == YES;
 }
 
@@ -463,16 +463,16 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (text.length > 0) {
         return NO;
     }
-
-//    NSLog(@"Auxiliary error: %d", error);
-
+    
+    //    NSLog(@"Auxiliary error: %d", error);
+    
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
-
+    
     /**
      If Auxiliary get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
-
+     
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
@@ -480,31 +480,31 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         NSLog(@"unsupport Auxiliary App --> %@", bundleID);
         return YES;
     }
-
-
+    
+    
     NSDictionary *allowedAppErrorDict = @{
         /**
          Some Apps return kAXErrorSuccess 0 but text is empty, so we need to check bundleID.
-
+         
          VSCode: Only Terminal textView return kAXErrorSuccess but text is empty 😑
          IDEA: Javadoc rendered view will return empty text
          */
         @(kAXErrorSuccess) : @[
-            @"com.microsoft.VSCode", // VSCode
+            @"com.microsoft.VSCode",      // VSCode
             @"com.jetbrains.intellij.ce", // IDEA
         ],
-
+        
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
         @(kAXErrorAttributeUnsupported) : @[
             @"com.sublimetext.4",  // Sublime Text
             @"com.microsoft.Word", // Word
-
-            @"com.tencent.xinWeChat", // WeChat
-            @"com.readdle.PDFExpert-Mac", //PDF Expert
-            @"org.zotero.zotero", //Zotero
+            
+            @"com.tencent.xinWeChat",     // WeChat
+            @"com.readdle.PDFExpert-Mac", // PDF Expert
+            @"org.zotero.zotero",         // Zotero
             /**
              These are some special Apps, that work fine in my Mac, but cannot work in some users' Mac.
-
+             
              FIX: https://github.com/tisfeng/Easydict/issues/84#issuecomment-1535885832
              */
             @"com.apple.iWork.Pages",   // Pages
@@ -512,13 +512,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记
         ],
-
+        
         // kAXErrorFailure -25200
         @(kAXErrorFailure) : @[
             @"com.apple.dt.Xcode", // Xcode, error when All messages page
         ],
     };
-
+    
     // If allowedDict keys contains error, and values contain bundleID, then allow to use shortcut.
     for (NSNumber *errorCode in allowedAppErrorDict.allKeys) {
         if ([errorCode integerValue] == error) {
@@ -534,10 +534,10 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.actionType == EZActionTypeShortcutQuery) {
         MMLogInfo(@"Fallback, need to add it to allowed app error list dict");
         MMLogInfo(@"%d, %@, %@", error, bundleID, application.localizedName);
-
+        
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -546,7 +546,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 - (BOOL)isSupportEmptyCopy {
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
-
+    
     NSArray *unsupportEmptyCopyApps = @[
         @"com.apple.Safari",   // Safari
         @"com.apple.mail",     // Mail
@@ -554,7 +554,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @"com.apple.Terminal", // Terminal
         @"com.apple.finder",   // Finder
         @"com.apple.dt.Xcode", // Xcode
-
+        
         @"com.eusoft.freeeudic", // Eudic
         @"com.eusoft.eudic",
         @"com.reederapp.5.macOS",   // Reeder
@@ -564,12 +564,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         @"xyz.chatboxapp.app",      // chatbox
         @"com.wutian.weibo",        // Maipo，微博客户端
     ];
-
+    
     if ([unsupportEmptyCopyApps containsObject:bundleID]) {
         NSLog(@"unsupport emtpy copy: %@, %@", bundleID, application.localizedName);
         return NO;
     }
-
+    
     return YES;
 }
 
@@ -578,7 +578,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 - (void)handleMonitorEvent:(NSEvent *)event {
     //                    NSLog(@"type: %ld", event.type);
-
+    
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             //  NSLog(@"mouse up");
@@ -590,17 +590,17 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         case NSEventTypeLeftMouseDown: {
             //                NSLog(@"mouse down");
-
+            
             self.startPoint = NSEvent.mouseLocation;
-
+            
             if (self.mouseClickBlock) {
                 self.mouseClickBlock(self.startPoint);
             }
-
+            
             [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
-
+            
             // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
-
+            
             // Check if it is a double or triple click.
             if (event.clickCount == 2) {
                 // Delay more time, in case it is a triple click, we don't want to get selected text twice.
@@ -631,7 +631,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             CGFloat deltaY = event.scrollingDeltaY;
             self.movedY += deltaY;
             //            NSLog(@"movedY: %.1f", self.movedY);
-
+            
             CGFloat maxDeltaY = 80;
             if (fabs(self.movedY) > maxDeltaY) {
                 [self dismissPopButton];
@@ -647,19 +647,19 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         }
         case NSEventTypeFlagsChanged: {
             //            NSLog(@"NSEventTypeFlagsChanged: %ld, %ld", event.type, event.modifierFlags);
-
+            
             if (event.modifierFlags & NSEventModifierFlagShift) {
                 // Shift key is released.
                 //                NSLog(@"Shift key is typed.");
             }
-
+            
             // If not Shift key is released.
             if (!((event.keyCode == kVK_Shift || kVK_RightShift) && event.modifierFlags == 256)) {
                 [self dismissPopButton];
             }
-
+            
             //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
-
+            
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
                 if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
@@ -668,13 +668,13 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
             }
             break;
         }
-
+            
         default:
             //            NSLog(@"default type: %ld", event.type);
             [self dismissPopButton];
             break;
     }
-
+    
     [self updateRecoredEvents:event];
 }
 
@@ -716,7 +716,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.recordEvents.count < kRecordEventCount) {
         return NO;
     }
-
+    
     for (NSEvent *event in self.recordEvents) {
         if (event.type != NSEventTypeLeftMouseDragged) {
             return NO;
@@ -736,15 +736,15 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     if (self.commandKeyEvents.count < kCommandKeyEventCount) {
         return NO;
     }
-
+    
     NSEvent *firstEvent = self.commandKeyEvents.firstObject;
     NSEvent *lastEvent = self.commandKeyEvents.lastObject;
-
+    
     NSTimeInterval interval = lastEvent.timestamp - firstEvent.timestamp;
     if (interval < kDoublCommandInterval) {
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -852,7 +852,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 - (AXUIElementRef)focusedElement2 {
     pid_t pid = [self getFrontmostApp].processIdentifier;
     AXUIElementRef focusedApp = AXUIElementCreateApplication(pid);
-
+    
     AXUIElementRef focusedElement;
     AXError focusedElementError = AXUIElementCopyAttributeValue(focusedApp, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     if (focusedElementError == kAXErrorSuccess) {
@@ -864,9 +864,9 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 - (void)authorize {
     NSLog(@"AuthorizeButton clicked");
-
+    
     /// Open privacy prefpane
-
+    
     NSString *urlString = @"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility";
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:urlString]];
 }
@@ -883,40 +883,40 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     if (selectedTextFrame.size.width == 0 && selectedTextFrame.size.height == 0) {
         return YES;
     }
-
+    
     // Sometimes, selectedTextFrame may be smaller than start and end point, so we need to expand selectedTextFrame slightly.
     CGFloat expandValue = 40;
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - expandValue,
                                                   selectedTextFrame.origin.y - expandValue,
                                                   selectedTextFrame.size.width + expandValue * 2,
                                                   selectedTextFrame.size.height + expandValue * 2);
-
+    
     // !!!: Note: sometimes selectedTextFrame is not correct, such as when select text in VSCode, selectedTextFrame is not correct.
     if (CGRectContainsPoint(expandedSelectedTextFrame, self.startPoint) &&
         CGRectContainsPoint(expandedSelectedTextFrame, self.endPoint)) {
         return YES;
     }
-
+    
     NSLog(@"Invalid text frame: %@", @(expandedSelectedTextFrame));
     NSLog(@"start: %@, end: %@", @(self.startPoint), @(self.endPoint));
-
+    
     return NO;
 }
 
 - (BOOL)isMouseInPopButtonExpandedFrame {
     EZPopButtonWindow *popButtonWindow = EZWindowManager.shared.popButtonWindow;
     CGRect popButtonFrame = popButtonWindow.frame;
-
+    
     // popButtonFrame center point
     CGPoint centerPoint = CGPointMake(popButtonFrame.origin.x + popButtonFrame.size.width / 2,
                                       popButtonFrame.origin.y + popButtonFrame.size.height / 2);
-
+    
     CGPoint mouseLocation = NSEvent.mouseLocation;
     BOOL insideCircle = [self isPoint:mouseLocation insideCircleWithCenter:centerPoint radius:kExpandedRadiusValue];
     if (insideCircle) {
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -938,23 +938,23 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
             selectedTextFrame = popButtonWindow.frame;
         }
     }
-
+    
     CGRect expandedSelectedTextFrame = CGRectMake(selectedTextFrame.origin.x - kExpandedRadiusValue,
                                                   selectedTextFrame.origin.y - kExpandedRadiusValue,
                                                   selectedTextFrame.size.width + kExpandedRadiusValue * 2,
                                                   selectedTextFrame.size.height + kExpandedRadiusValue * 2);
-
+    
     CGPoint mouseLocation = NSEvent.mouseLocation;
     if (CGRectContainsPoint(expandedSelectedTextFrame, mouseLocation)) {
         return YES;
     }
-
+    
     // Since selectedTextFrame may be zere, so we need to check start point and end point
     CGRect startEndPointFrame = [self frameFromStartPoint:self.startPoint endPoint:self.endPoint];
     if (CGRectContainsPoint(startEndPointFrame, mouseLocation)) {
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -965,13 +965,13 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     if (x == endPoint.x) {
         x = endPoint.x - kExpandedRadiusValue;
     }
-
+    
     CGFloat y = MIN(startPoint.y, endPoint.y);
     // if endPoint.y == startPoint.y, y = endPoint.y - expandValue
     if (y == endPoint.y) {
         y = endPoint.y - kExpandedRadiusValue;
     }
-
+    
     CGFloat width = fabs(startPoint.x - endPoint.x);
     // if endPoint.x == startPoint.x, width = expandValue * 2
     if (width == 0) {
@@ -982,7 +982,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     if (height == 0) {
         height = kExpandedRadiusValue * 2;
     }
-
+    
     CGRect frame = CGRectMake(x, y, width, height);
     return frame;
 }
@@ -997,20 +997,20 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     if ([appLanguage isEqualToString:@"en"]) {
         appLanguage = EZLanguageEnglish;
     }
-
+    
     NSString *copy;
     NSString *edit;
-
+    
     if (!appLanguage) {
         appLanguage = [EZLanguageManager firstLanguage];
     }
-
+    
     if ([appLanguage isEqualToString:EZLanguageEnglish]) {
         copy = @"Copy";
         edit = @"Edit";
     }
     NSLog(@"--> App language: %@", appLanguage);
-
+    
     /**
      tell application "System Events"
      tell process "Xcode"
@@ -1036,80 +1036,80 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
      end tell
      end tell
      */
-
+    
     /**
      Since the Copy and Edit button title are different in different languages or apps, such as "复制" in Chrome, but "拷贝" in Safari, or "Copy" in English.
-
+     
      So we use the position of the menu item to determine whether the app supports the Copy action.
-
+     
      TODO: Sometimes this method isn't accurate, even some apps copy menu enabled, but cannot click.
-
+     
      */
     //    NSInteger editIndex = 4; // Few Apps eidt index is 3, such as Eudic, QQ Music 🙄
     NSInteger copyIndex = 5; // Note: separator is also a menu item, so the index of Copy is 5.
-
+    
     //    NSRunningApplication *app = [[NSRunningApplication runningApplicationsWithBundleIdentifier:appBundleID] firstObject];
     //    NSString *appName = app.localizedName;
-
+    
     NSString *script = [NSString stringWithFormat:
-                                     @"set appBundleID to \"%@\"\n"
-                                      "tell application \"System Events\"\n"
-                                      "try\n"
-                                      "    set foundProcess to process 1 whose bundle identifier is appBundleID\n"
-                                      "on error\n"
-                                      "    return false\n"
-                                      "end try\n"
-                                      "if foundProcess is not missing value then\n"
-                                      "    tell foundProcess\n"
-                                      "        set editMenu to missing value\n"
-                                      "        repeat with menuItem in menu bar 1's menu bar items\n"
-                                      "            if name of menuItem contains \"编辑\" or name of menuItem contains \"Edit\" then\n"
-                                      "                set editMenu to menuItem\n"
-                                      "                exit repeat\n"
-                                      "            end if\n"
-                                      "        end repeat\n"
-                                      "        if editMenu is missing value then\n"
-                                      "            return false\n"
-                                      "        end if\n"
-                                      "        try\n"
-                                      "            set copyMenuItem to menu item %@ of menu 1 of editMenu\n"
-                                      "            set menuItemName to name of copyMenuItem\n"
-                                      "            set menuItemEnabled to enabled of copyMenuItem\n"
-                                      "            # display dialog menuItemName\n"
-                                      "            if menuItemName is in {\"复制\", \"拷贝\", \"Copy\"} then\n"
-                                      "                return menuItemEnabled\n"
-                                      "            else\n"
-                                      "                return false\n"
-                                      "            end if\n"
-                                      "        on error\n"
-                                      "            return false\n"
-                                      "        end try\n"
-                                      "    end tell\n"
-                                      "else\n"
-                                      "    return false\n"
-                                      "end if\n"
-                                      "end tell",
-                                     appBundleID, @(copyIndex)];
-
+                        @"set appBundleID to \"%@\"\n"
+                        "tell application \"System Events\"\n"
+                        "try\n"
+                        "    set foundProcess to process 1 whose bundle identifier is appBundleID\n"
+                        "on error\n"
+                        "    return false\n"
+                        "end try\n"
+                        "if foundProcess is not missing value then\n"
+                        "    tell foundProcess\n"
+                        "        set editMenu to missing value\n"
+                        "        repeat with menuItem in menu bar 1's menu bar items\n"
+                        "            if name of menuItem contains \"编辑\" or name of menuItem contains \"Edit\" then\n"
+                        "                set editMenu to menuItem\n"
+                        "                exit repeat\n"
+                        "            end if\n"
+                        "        end repeat\n"
+                        "        if editMenu is missing value then\n"
+                        "            return false\n"
+                        "        end if\n"
+                        "        try\n"
+                        "            set copyMenuItem to menu item %@ of menu 1 of editMenu\n"
+                        "            set menuItemName to name of copyMenuItem\n"
+                        "            set menuItemEnabled to enabled of copyMenuItem\n"
+                        "            # display dialog menuItemName\n"
+                        "            if menuItemName is in {\"复制\", \"拷贝\", \"Copy\"} then\n"
+                        "                return menuItemEnabled\n"
+                        "            else\n"
+                        "                return false\n"
+                        "            end if\n"
+                        "        on error\n"
+                        "            return false\n"
+                        "        end try\n"
+                        "    end tell\n"
+                        "else\n"
+                        "    return false\n"
+                        "end if\n"
+                        "end tell",
+                        appBundleID, @(copyIndex)];
+    
     //    NSLog(@"checkFrontAppSupportCopyAction:\n%@", script);
-
+    
     NSDate *startTime = [NSDate date];
-
+    
     // NSTask cost 0.18s
     [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
         NSLog(@"NSTask cost: %f seconds", elapsedTime);
         NSLog(@"--> supportCopy: %@", @([result boolValue]));
     }];
-
+    
     // NSAppleScript cost 0.06 ~ 0.12s
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         BOOL supportCopy = [result boolValue];
-
+        
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
         NSLog(@"NSAppleScript cost: %f seconds", elapsedTime);
         NSLog(@"result: %@", result);
-
+        
         completion(supportCopy);
     }];
 }
@@ -1118,7 +1118,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 - (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     //    NSLog(@"get Browser selected text: %@", bundleID);
-        
+    
     if ([self isSafari:bundleID]) {
         [self getSafariSelectedText:completion];
     } else if ([self isChromeKernelBrowser:bundleID]) {
@@ -1156,35 +1156,35 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 - (void)getSafariSelectedText:(AppleScriptCompletionHandler)completion {
     NSString *bundleID = @"com.apple.Safari";
     NSString *script = [NSString stringWithFormat:
-                                     @"tell application id \"%@\"\n"
-                                      "   tell front document\n"
-                                      "       set selection_text to do JavaScript \"window.getSelection().toString();\"\n"
-                                      "   end tell\n"
-                                      "end tell\n",
-                                     bundleID];
-
+                        @"tell application id \"%@\"\n"
+                        "   tell front document\n"
+                        "       set selection_text to do JavaScript \"window.getSelection().toString();\"\n"
+                        "   end tell\n"
+                        "end tell\n",
+                        bundleID];
+    
     // runAppleScript is faster ~0.1s than runAppleScriptWithTask
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Safari selected text: %@", result);
         completion(result, error);
     }];
     
-//    [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
-//        NSLog(@"Task Safari selected text: %@", result);
-//        completion(result);
-//    }];
+    //    [self.exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    //        NSLog(@"Task Safari selected text: %@", result);
+    //        completion(result);
+    //    }];
 }
 
 /// Get Chrome kernel browser selected text by AppleScript, like Google Chrome, Microsoft Edge, etc. Cost ~100ms
 - (void)getChromeSelectedTextByAppleScript:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion {
     NSString *script = [NSString stringWithFormat:
-                                     @"tell application id \"%@\"\n"
-                                      "   tell active tab of front window\n"
-                                      "       set selection_text to execute javascript \"window.getSelection().toString();\"\n"
-                                      "   end tell\n"
-                                      "end tell\n",
-                                     bundleID];
-
+                        @"tell application id \"%@\"\n"
+                        "   tell active tab of front window\n"
+                        "       set selection_text to execute javascript \"window.getSelection().toString();\"\n"
+                        "   end tell\n"
+                        "end tell\n",
+                        bundleID];
+    
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Chrome Browser selected text: %@", result);
         completion(result, error);
@@ -1208,15 +1208,15 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 - (void)getChromeCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
     /**
      tell application "Google Chrome"
-         set theUrl to URL of active tab of front window
+     set theUrl to URL of active tab of front window
      end tell
      */
     NSString *script = [NSString stringWithFormat:
-                                     @"tell application id \"%@\"\n"
-                                      "   set theUrl to URL of active tab of front window\n"
-                                      "end tell\n",
-                                     bundleID];
-
+                        @"tell application id \"%@\"\n"
+                        "   set theUrl to URL of active tab of front window\n"
+                        "end tell\n",
+                        bundleID];
+    
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Chrome current tab URL: %@", result);
         completion(result);
@@ -1227,15 +1227,15 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 - (void)getSafariCurrentTabURL:(NSString *)bundleID completion:(void (^)(NSString *_Nullable tabURL))completion {
     /**
      tell application "Safari"
-         set theUrl to URL of front document
+     set theUrl to URL of front document
      end tell
      */
     NSString *script = [NSString stringWithFormat:
-                                     @"tell application id \"%@\"\n"
-                                      "   set theUrl to URL of front document\n"
-                                      "end tell\n",
-                                     bundleID];
-
+                        @"tell application id \"%@\"\n"
+                        "   set theUrl to URL of front document\n"
+                        "end tell\n",
+                        bundleID];
+    
     [self.exeCommand runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         NSLog(@"Safari current tab URL: %@", result);
         completion(result);
