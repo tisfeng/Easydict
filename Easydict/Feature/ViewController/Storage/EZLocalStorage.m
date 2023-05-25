@@ -41,20 +41,31 @@ static EZLocalStorage *_instance;
     return [self shared];
 }
 
-// init data, save all service info
+// Init data, save all service info
 - (void)setup {
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
 
     NSArray *allWindowTypes = @[ @(EZWindowTypeMini), @(EZWindowTypeFixed), @(EZWindowTypeMain) ];
     for (NSNumber *number in allWindowTypes) {
         EZWindowType windowType = [number integerValue];
-        for (EZServiceType type in allServiceTypes) {
-            EZServiceInfo *serviceInfo = [self serviceInfoWithType:type windowType:windowType];
+        for (EZServiceType serviceType in allServiceTypes) {
+            EZServiceInfo *serviceInfo = [self serviceInfoWithType:serviceType windowType:windowType];
             if (!serviceInfo) {
                 serviceInfo = [[EZServiceInfo alloc] init];
-                serviceInfo.type = type;
+                serviceInfo.type = serviceType;
                 serviceInfo.enabled = YES;
-                serviceInfo.enabledQuery = YES;
+                
+                // Mini should keep mini, concise
+                if (windowType == EZWindowTypeMini) {
+                    if (!(serviceType == EZServiceTypeDeepL || serviceType == EZServiceTypeYoudao)) {
+                        serviceInfo.enabled = NO;
+                    }
+                }
+                
+                // There is a very small probability that Volcano webView translator will crash.
+                if (serviceType != EZServiceTypeVolcano) {
+                    serviceInfo.enabledQuery = YES;
+                }
                 [self setServiceInfo:serviceInfo windowType:windowType];
             }
         }

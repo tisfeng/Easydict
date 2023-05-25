@@ -25,9 +25,9 @@
 + (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *orderDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                       //  EZServiceTypeOpenAI, [EZOpenAIService class],
-                                      EZServiceTypeApple, [EZAppleService class],
-                                      EZServiceTypeYoudao, [EZYoudaoTranslate class],
                                       EZServiceTypeDeepL, [EZDeepLTranslate class],
+                                      EZServiceTypeYoudao, [EZYoudaoTranslate class],
+                                      EZServiceTypeApple, [EZAppleService class],
                                       EZServiceTypeGoogle, [EZGoogleTranslate class],
                                       EZServiceTypeBaidu, [EZBaiduTranslate class],
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
