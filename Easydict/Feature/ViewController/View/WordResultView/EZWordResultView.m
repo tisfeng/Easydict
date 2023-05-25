@@ -84,7 +84,6 @@ static const CGFloat kVerticalPadding_8 = 8;
         EZLabel *bigWordLabel = [[EZLabel alloc] init];
         [self addSubview:bigWordLabel];
         bigWordLabel.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
-        bigWordLabel.textContainer.lineFragmentPadding = 4;
         bigWordLabel.text = result.queryText;
 
         [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
