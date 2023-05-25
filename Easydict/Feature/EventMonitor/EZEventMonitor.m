@@ -17,7 +17,7 @@
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
 
-static CGFloat const kDismissPopButtonDelayTime = 0.5;
+static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
 
 // The longest system alert audio is Crystal, named Glass.aiff, its effective playback time is less than 0.8s
@@ -66,9 +66,12 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @implementation EZEventMonitor
 
+static EZEventMonitor *_instance = nil;
+
 - (instancetype)init {
     if (self = [super init]) {
         [self setup];
+        _instance = self;
     }
     return self;
 }
@@ -86,7 +89,34 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAuxiliary;
+    
+    [self monitorCGEventTap];
 }
+
+/// Use CGEventTap to monitor key event.
+- (void)monitorCGEventTap {
+    // Since NSEvent cannot monitor shortcut event, like Cmd+E, we need to use CGEventTap
+    CGEventMask eventMask = CGEventMaskBit(kCGEventKeyDown);
+    CFMachPortRef eventTap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, eventMask, eventCallback, NULL);
+    CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+    CGEventTapEnable(eventTap, true);
+    CFRelease(eventTap);
+    CFRelease(runLoopSource);
+}
+
+CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+    if (type == kCGEventKeyDown) {
+//        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
+//        NSLog(@"nsEvent: %@", nsEvent);
+        
+        // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
+        [_instance delayDismissPopButton];
+    }
+    
+    return event;
+}
+
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
@@ -142,7 +172,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
     }];
     
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         
@@ -576,8 +606,9 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 #pragma mark - Handle Event
 
+
 - (void)handleMonitorEvent:(NSEvent *)event {
-    //                    NSLog(@"type: %ld", event.type);
+    //                        NSLog(@"type: %ld", event.type);
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
@@ -624,6 +655,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
             //            NSLog(@"key down");
+            
             [self dismissPopButton];
             break;
         }
@@ -653,17 +685,16 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
                 //                NSLog(@"Shift key is typed.");
             }
             
-            // If not Shift key is released.
-            if (!((event.keyCode == kVK_Shift || kVK_RightShift) && event.modifierFlags == 256)) {
-                [self dismissPopButton];
-            }
-            
             //            NSLog(@"keyCode: %d", event.keyCode); // one command key event contains key down and key up
             
             if (event.keyCode == kVK_Command || event.keyCode == kVK_RightCommand) {
                 [self updateCommandKeyEvents:event];
-                if ([self checkIfDoubleCommandEvents] && self.doubleCommandBlock) {
-                    self.doubleCommandBlock();
+                if ([self checkIfDoubleCommandEvents]) {
+                    [self dismissPopButton];
+                    
+                    if (self.doubleCommandBlock) {
+                        self.doubleCommandBlock();
+                    }
                 }
             }
             break;
@@ -766,6 +797,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
         self.dismissPopButtonBlock();
     }
 }
+
 
 #pragma mark - Delay get selected text
 
