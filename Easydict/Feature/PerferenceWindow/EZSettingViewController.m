@@ -177,7 +177,7 @@
     [self.contentView addSubview:disableEmptyCopyBeepLabel];
     self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
     
-    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_note", nil);
+    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_msg", nil);
     self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
     [self.contentView addSubview:self.disableEmptyCopyBeepButton];
     
@@ -619,7 +619,23 @@
 }
 
 - (void)forceGetSelectedTextButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.forceAutoGetSelectedText = sender.mm_isOn;
+    if (sender.mm_isOn) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
+        alert.messageText = NSLocalizedString(@"force_auto_get_selected_text_title", nil);
+        alert.informativeText = NSLocalizedString(@"force_auto_get_selected_text_msg", nil);
+        [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
+            if (returnCode == NSAlertFirstButtonReturn) {
+                sender.mm_isOn = YES;
+            } else {
+                sender.mm_isOn = NO;
+            }
+            EZConfiguration.shared.forceAutoGetSelectedText = sender.mm_isOn;
+        }];
+    } else {
+        EZConfiguration.shared.forceAutoGetSelectedText = NO;
+    }
 }
 
 - (void)clickQueryButtonClicked:(NSButton *)sender {
@@ -682,7 +698,7 @@
         [alert addButtonWithTitle:NSLocalizedString(@"ok", nil)];
         [alert addButtonWithTitle:NSLocalizedString(@"cancel", nil)];
         alert.messageText = NSLocalizedString(@"hide_menu_bar_icon", nil);
-        alert.informativeText = NSLocalizedString(@"hide_menu_bar_icon_info", nil);
+        alert.informativeText = NSLocalizedString(@"hide_menu_bar_icon_msg", nil);
         [alert beginSheetModalForWindow:[self window] completionHandler:^(NSModalResponse returnCode) {
             // ok, hide icon
             if (returnCode == NSAlertFirstButtonReturn) {

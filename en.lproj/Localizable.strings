@@ -19,9 +19,11 @@
 "auto_get_selected_text" = "Auto Get Selected Text:";
 "auto_show_query_icon" = "Auto show query icon after selecting text";
 "force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (experimental)";
+"force_auto_get_selected_text_title" = "Force Auto Get Selected Text";
+"force_auto_get_selected_text_msg" = "⚠️ Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc.";
 
 "disable_empty_copy_beep" = "Disable Empty Copy Beep:";
-"disable_empty_copy_beep_note" = "Activated when selected text is empty";
+"disable_empty_copy_beep_msg" = "Activated when selected text is empty";
 
 "click_icon_query" = "Click to Query:";
 "click_icon_query_info" = "Query only when clicking query icon (When main window hidden)";
@@ -69,7 +71,7 @@
 
 "menu_bar_icon" = "Menu bar icon:";
 "hide_menu_bar_icon" = "Hide Menu Bar Icon";
-"hide_menu_bar_icon_info" = "If you need to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option.";
+"hide_menu_bar_icon_msg" = "If you need to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option.";
 
 
 // service

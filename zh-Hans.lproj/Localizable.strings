@@ -19,9 +19,11 @@
 "auto_get_selected_text" = "鼠标自动取词:";
 "auto_show_query_icon" = "划词后自动显示查询图标";
 "force_auto_get_selected_text" = "自动取词失败时，强制取词（实验功能）";
+"force_auto_get_selected_text_title" = "强制取词";
+"force_auto_get_selected_text_msg" = "⚠️ 注意：在某些应用中，强制取词可能会导致空复制提示音，影响剪贴板内容等异常情况。";
 
 "disable_empty_copy_beep" = "禁用空复制提示音:";
-"disable_empty_copy_beep_note" = "取词内容为空时生效";
+"disable_empty_copy_beep_msg" = "取词内容为空时生效";
 
 "click_icon_query" = "点击查询:";
 "click_icon_query_info" = "点击图标时才查询（需隐藏主窗口）";
@@ -68,7 +70,7 @@
 
 "menu_bar_icon" = "状态栏图标:";
 "hide_menu_bar_icon" = "隐藏状态栏图标";
-"hide_menu_bar_icon_info" = "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏状态栏图标】选项即可。";
+"hide_menu_bar_icon_msg" = "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏状态栏图标】选项。";
 
 
 // service
