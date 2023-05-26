@@ -62,17 +62,17 @@
             self.pin = oldPin;
         }
     }];
-        
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConstraints) name:EZQuickLinkButtonUpdateNotification object:nil];
 }
 
 - (void)updateConstraints {
     CGFloat kButtonWidth_25 = 25;
-    CGFloat kImagenWidth_22 = 22;
+    CGFloat kImagenWidth_21 = 21;
     CGFloat kButtonPadding_4 = 4;
     
     CGSize buttonSize = CGSizeMake(kButtonWidth_25, kButtonWidth_25);
-    CGSize imageSize = CGSizeMake(kImagenWidth_22, kImagenWidth_22);
+    CGSize imageSize = CGSizeMake(kImagenWidth_21, kImagenWidth_21);
     
     [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         CGFloat pinButtonWidth = 25;
@@ -124,7 +124,7 @@
             
             eudicButton.link = EZEudicAppURLScheme;
             eudicButton.image = [[NSImage imageNamed:@"Eudic"] resizeToSize:imageSize];
-            eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];  
+            eudicButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_eudic", nil), @"⌘+⇧+⏎"];
             eudicButton.contentTintColor = NSColor.clearColor;
             
             [eudicButton mas_remakeConstraints:^(MASConstraintMaker *make) {
