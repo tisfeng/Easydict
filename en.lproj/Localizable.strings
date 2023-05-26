@@ -18,7 +18,7 @@
 
 "auto_get_selected_text" = "Auto Get Selected Text:";
 "auto_show_query_icon" = "Auto show query icon after selecting text";
-"force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (experimental)";
+"force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (Experimental)";
 "force_auto_get_selected_text_title" = "Force Auto Get Selected Text";
 "force_auto_get_selected_text_msg" = "⚠️ Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc.";
 

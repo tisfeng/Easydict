@@ -283,10 +283,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     self.endPoint = [NSEvent mouseLocation];
     self.frontmostApplication = [self getFrontmostApp];
     
-    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-    [self getBrowserCurrentTabURL:bundleID completion:^(NSString *URLString) {
-        self.browserTabURLString = URLString;
-    }];
+//    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+//    [self getBrowserCurrentTabURL:bundleID completion:^(NSString *URLString) {
+//        self.browserTabURLString = URLString;
+//    }];
 }
 
 
