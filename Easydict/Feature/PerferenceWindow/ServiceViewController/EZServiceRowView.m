@@ -15,11 +15,11 @@
     if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
         NSRect selectionRect = self.bounds;
         [self excuteLight:^(NSTextField *nameLabel) {
-            [[NSColor mm_colorWithHexString:@"#DDDDDD"] setFill];
+            [[NSColor mm_colorWithHexString:@"#E8E8E8"] setFill];
             NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
             [selectionPath fill];
         } dark:^(NSTextField *nameLabel) {
-            [[NSColor mm_colorWithHexString:@"#464646"] setFill];
+            [[NSColor mm_colorWithHexString:@"#404040"] setFill];
             NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
             [selectionPath fill];
         }];
