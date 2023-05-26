@@ -765,30 +765,30 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
-    CGFloat leftOffset = EZAudioButtonLeftMargin_6;
-    CGFloat topOffset = EZAudioButtonInputViewTopPadding_4;
-    CGFloat kRightMargin = EZAudioButtonRightPadding_0;
+    CGFloat audioButtonLeftOffset = EZAudioButtonLeftMargin_6;
+    CGFloat audioButtonTopOffset = 5;
+    CGFloat buttonPadding = EZAudioButtonRightPadding_1;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
         if (lastView) {
-            make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+            make.top.equalTo(lastView.mas_bottom).offset(audioButtonTopOffset);
         } else {
-            make.top.equalTo(self).offset(topOffset);
+            make.top.equalTo(self).offset(audioButtonTopOffset);
         }
         
-        make.left.offset(leftOffset);
+        make.left.offset(audioButtonLeftOffset);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
     lastView = audioButton;
     
-    height += (topOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_5);
+    height += (audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_5);
     
     _viewHeight = height;
     
     //    NSLog(@"word result view height: %.1f", height);
     
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(audioButton.mas_right).offset(kRightMargin);
+        make.left.equalTo(audioButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
     
@@ -809,7 +809,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     linkButton.mas_key = @"result_linkButton";
     
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(textCopyButton.mas_right).offset(kRightMargin);
+        make.left.equalTo(textCopyButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
 }

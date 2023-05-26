@@ -251,7 +251,7 @@
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightPadding_0);
+        make.left.equalTo(self.audioButton.mas_right).offset(EZAudioButtonRightPadding_1);
         make.width.height.bottom.equalTo(self.audioButton);
     }];
     
