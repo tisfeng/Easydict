@@ -19,6 +19,7 @@ static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
 static NSString *const kForceAutoGetSelectedText = @"EZConfiguration_kForceAutoGetSelectedText";
+static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
 static NSString *const kClickQueryKey = @"EZConfiguration_kClickQueryKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
@@ -39,7 +40,6 @@ static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixe
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
-static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
@@ -73,6 +73,7 @@ static EZConfiguration *_instance;
 
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
     self.forceAutoGetSelectedText = [NSUserDefaults mm_readBool:kForceAutoGetSelectedText defaultValue:NO];
+    self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:YES];
     self.clickQuery = [NSUserDefaults mm_readBool:kClickQueryKey defaultValue:NO];
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:YES];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
@@ -90,7 +91,6 @@ static EZConfiguration *_instance;
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:EZShowWindowPositionRight];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
-    self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:YES];
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
     self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
@@ -109,6 +109,18 @@ static EZConfiguration *_instance;
 
 #pragma mark - setter
 
+- (void)setFrom:(EZLanguage)from {
+    _from = from;
+
+    [NSUserDefaults mm_write:from forKey:kFromKey];
+}
+
+- (void)setTo:(EZLanguage)to {
+    _to = to;
+
+    [NSUserDefaults mm_write:to forKey:kToKey];
+}
+
 - (void)setAutoSelectText:(BOOL)autoSelectText {
     _autoSelectText = autoSelectText;
 
@@ -119,6 +131,12 @@ static EZConfiguration *_instance;
     _forceAutoGetSelectedText = forceGetSelectedText;
 
     [NSUserDefaults mm_write:@(forceGetSelectedText) forKey:kForceAutoGetSelectedText];
+}
+
+- (void)setDisableEmptyCopyBeep:(BOOL)disableEmptyCopyBeep {
+    _disableEmptyCopyBeep = disableEmptyCopyBeep;
+
+    [NSUserDefaults mm_write:@(disableEmptyCopyBeep) forKey:kDisableEmptyCopyBeepKey];
 }
 
 - (void)setClickQuery:(BOOL)clickQuery {
@@ -144,18 +162,6 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
 
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
-}
-
-- (void)setFrom:(EZLanguage)from {
-    _from = from;
-
-    [NSUserDefaults mm_write:from forKey:kFromKey];
-}
-
-- (void)setTo:(EZLanguage)to {
-    _to = to;
-
-    [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
 - (void)setHideMainWindow:(BOOL)hideMainWindow {
@@ -251,12 +257,6 @@ static EZConfiguration *_instance;
     _adjustPopButtomOrigin = adjustPopButtomOrigin;
 
     [NSUserDefaults mm_write:@(adjustPopButtomOrigin) forKey:kAdjustPopButtomOriginKey];
-}
-
-- (void)setDisableEmptyCopyBeep:(BOOL)disableEmptyCopyBeep {
-    _disableEmptyCopyBeep = disableEmptyCopyBeep;
-
-    [NSUserDefaults mm_write:@(disableEmptyCopyBeep) forKey:kDisableEmptyCopyBeepKey];
 }
 
 - (void)setAllowCrashLog:(BOOL)allowCrashLog {

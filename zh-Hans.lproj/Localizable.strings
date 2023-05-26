@@ -20,6 +20,9 @@
 "auto_show_query_icon" = "划词后自动显示查询图标";
 "force_auto_get_selected_text" = "自动取词失败时，强制取词（实验功能）";
 
+"disable_empty_copy_beep" = "禁用空复制提示音:";
+"disable_empty_copy_beep_note" = "取词内容为空时生效";
+
 "click_icon_query" = "点击查询:";
 "click_icon_query_info" = "点击图标时才查询（需隐藏主窗口）";
 
@@ -38,9 +41,6 @@
 
 "play_audio" = "播放单词发音:";
 "auto_play_audio" = "查询英语单词后自动播放发音";
-
-"disable_empty_copy_beep" = "禁用空复制提示音:";
-"disable_empty_copy_beep_info" = "取词内容为空时生效";
 
 "clear_input" = "清空查询内容:";
 "clear_input_when_translating" = "输入翻译时，清空查询内容";

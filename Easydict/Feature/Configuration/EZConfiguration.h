@@ -27,6 +27,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 @property (nonatomic, assign) BOOL autoSelectText;
 @property (nonatomic, assign) BOOL forceAutoGetSelectedText;
+@property (nonatomic, assign) BOOL disableEmptyCopyBeep; // Some apps will beep when empty copy.
 @property (nonatomic, assign) BOOL clickQuery;
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;
@@ -44,7 +45,6 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 @property (nonatomic, assign) BOOL adjustPopButtomOrigin;
-@property (nonatomic, assign) BOOL disableEmptyCopyBeep; // Some apps will beep when empty copy.
 @property (nonatomic, assign) BOOL allowCrashLog;
 @property (nonatomic, assign) BOOL allowAnalytics;
 @property (nonatomic, assign) BOOL clearInput;

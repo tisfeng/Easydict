@@ -20,6 +20,9 @@
 "auto_show_query_icon" = "Auto show query icon after selecting text";
 "force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (experimental)";
 
+"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
+"disable_empty_copy_beep_note" = "Activated when selected text is empty";
+
 "click_icon_query" = "Click to Query:";
 "click_icon_query_info" = "Query only when clicking query icon (When main window hidden)";
 
@@ -38,9 +41,6 @@
 
 "play_audio" = "Play Word Pronunciation:";
 "auto_play_audio" = "Auto play pronunciation after querying English words";
-
-"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
-"disable_empty_copy_beep_info" = "Activated when selected text is empty";
 
 "clear_input" = "Clear Input:";
 "clear_input_when_translating" = "Clear input when translating";
