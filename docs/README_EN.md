@@ -321,6 +321,7 @@ Unlike the translation shortcut keys that are globally effective, the following 
 - `Enter`: After entering text, press Enter to start the query.
 - `Shift + Enter`: Enter a newline.
 - `Cmd + ,`: Open the settings page.
+- `Cmd + Q`: Quit the app.
 - `Cmd + K`: Clear the input text.
 - `Cmd + Shift + K`: Clear the input box and query results, the same as clicking the clear button in the lower right corner of the input text.
 - `Cmd + I`: Focus the input text.
