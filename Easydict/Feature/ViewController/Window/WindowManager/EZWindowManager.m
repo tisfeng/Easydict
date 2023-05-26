@@ -873,7 +873,7 @@ static EZWindowManager *_instance;
     if (browserTabURLString.length) {
         NSURL *tabURL = [NSURL URLWithString:browserTabURLString];
         NSString *host = tabURL.host ?: browserTabURLString;
-        dict[@"browserTabURLHost"] = host;
+        dict[@"host"] = host;
     }
     
     [EZLog logEventWithName:@"getSelectedText" parameters:dict];
