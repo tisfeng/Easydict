@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSView *bottommostView;
 
 @property (nonatomic, assign) CGSize maxViewSize; // Max self.view size.
+@property (nonatomic, assign) CGFloat maxViewHeightRatio; // 0.7
+@property (nonatomic, assign) CGFloat maxViewWidthRatio; // 0.8
 
 @property (nonatomic, assign) CGFloat verticalPadding; // 15
 @property (nonatomic, assign) CGFloat horizontalPadding; // 8
