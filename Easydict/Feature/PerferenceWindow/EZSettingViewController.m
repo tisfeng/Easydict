@@ -94,14 +94,6 @@
     self.maxViewHeightRatio = 0.6;
     
     [self updateViewSize];
-    
-    // TODO: need to optimize. Scroll to top manually seems too stupid.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSPoint offset = self.scrollView.contentView.bounds.origin;
-        offset.y += self.topMargin; // Move up to top
-        [self.scrollView.contentView scrollToPoint:offset];
-        [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
-    });
 }
 
 - (void)setupUI {

@@ -67,8 +67,11 @@ static CGFloat const kMargin = 0;
     self.view.size = CGSizeMake(viewSize.width + 2 * kMargin, viewSize.height + 2 * kMargin);
     
     // scroll to top
-    [self.scrollView.contentView scrollToPoint:NSMakePoint(0, viewSize.height)];
-    [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CGFloat scrollDistance = self.scrollView.documentView.height - self.view.height;
+        [self.scrollView.contentView scrollToPoint:NSMakePoint(0, scrollDistance)];
+        [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
+    });
 }
 
 #pragma mark -
