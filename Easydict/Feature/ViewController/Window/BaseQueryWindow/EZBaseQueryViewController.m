@@ -1358,7 +1358,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (CGFloat)miniQueryViewHeight {
     CGFloat miniInputViewHeight = [[EZLayoutManager shared] inputViewMinHeight:self.windowType];
-    CGFloat queryViewHeight = miniInputViewHeight + EZExceptInputViewHeight;
+    CGFloat queryViewHeight = miniInputViewHeight + EZQueryViewExceptInputViewHeight;
     return queryViewHeight;
 }
 
