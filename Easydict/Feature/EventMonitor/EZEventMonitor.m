@@ -88,12 +88,12 @@ static EZEventMonitor *_instance = nil;
     _commandKeyEvents = [NSMutableArray array];
     
     self.actionType = EZActionTypeAutoSelectQuery;
-    self.selectTextType = EZSelectTextTypeAuxiliary;
+    self.selectTextType = EZSelectTextTypeAccessibility;
     
     [self monitorCGEventTap];
 }
 
-/// Use CGEventTap to monitor key event.
+/// Use CGEventTap to monitor key event, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)monitorCGEventTap {
     // Since NSEvent cannot monitor shortcut event, like Cmd+E, we need to use CGEventTap
     CGEventMask eventMask = CGEventMaskBit(kCGEventKeyDown);
@@ -197,39 +197,39 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self getSelectedText:NO completion:completion];
 }
 
-/// Use auxiliary to get selected text first, if failed, use shortcut.
+/// Use Accessibility to get selected text first, if failed, use Cmd+C.
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
     
-    // Use Auxiliary first
-    [self getSelectedTextByAuxiliary:^(NSString *_Nullable text, AXError error) {
+    // Use Accessibility first
+    [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
         if (checkTextFrame && ![self isValidSelectedFrame]) {
-            self.selectTextType = EZSelectTextTypeAuxiliary;
+            self.selectTextType = EZSelectTextTypeAccessibility;
             completion(nil);
             return;
         }
         
         
-        // 1. If use Auxiliary to get selected text success.
+        // 1. If use Accessibility to get selected text success.
         if (text.length > 0) {
-            self.selectTextType = EZSelectTextTypeAuxiliary;
+            self.selectTextType = EZSelectTextTypeAccessibility;
             completion(text);
             return;
         }
         
-        // If use Auxiliary for the first time, we need to request Accessibility permission.
-        BOOL needRequestAccessibility = [self useAuxiliaryForFirstTime] && error == kAXErrorAPIDisabled;
+        // If use Accessibility for the first time, we need to request Accessibility permission.
+        BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && error == kAXErrorAPIDisabled;
         if (needRequestAccessibility) {
             [self isAccessibilityTrusted];
-            self.selectTextType = EZSelectTextTypeAuxiliary;
+            self.selectTextType = EZSelectTextTypeAccessibility;
             completion(nil);
             return;
         }
         
         void (^getSelectedTextByKeyBlock)(void) = ^{
-            [self getSelectedTextByKey:^(NSString *_Nullable text) {
+            [self getSelectedTextBySimulatedKey:^(NSString *_Nullable text) {
                 self.selectTextType = EZSelectTextTypeSimulatedKey;
                 completion(text);
             }];
@@ -257,18 +257,18 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
         
         // 3. Use simulate key to get selected text.
-        if ([self shouldUseSimulatedKeyPress:text error:error]) {
+        if ([self shouldUseSimulatedKey:text error:error]) {
             getSelectedTextByKeyBlock();
             return;
         }
         
-        self.selectTextType = EZSelectTextTypeAuxiliary;
+        self.selectTextType = EZSelectTextTypeAccessibility;
         
         completion(nil);
     }];
 }
 
-- (BOOL)useAuxiliaryForFirstTime {
+- (BOOL)useAccessibilityForFirstTime {
     // When user first use auto select text, show request Accessibility permission alert.
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     BOOL hasUsedAutoSelectText = [userDefaults boolForKey:kHasUsedAutoSelectTextKey];
@@ -315,8 +315,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 
-/// Get selected text by shortcut: Cmd + C
-- (void)getSelectedTextByKey:(void (^)(NSString *_Nullable))completion {
+/// Get selected text by simulated key: Cmd + C
+- (void)getSelectedTextBySimulatedKey:(void (^)(NSString *_Nullable))completion {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     NSInteger changeCount = [pasteboard changeCount];
     
@@ -388,11 +388,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /**
  Get selected text, Ref: https://stackoverflow.com/questions/19980020/get-currently-selected-text-in-active-application-in-cocoa
  
- But this method need allow auxiliary in setting first, no pop-up alerts.
+ But this method need allow Accessibility in setting first, no pop-up alerts.
  
  Cannot work in App: Safari
  */
-- (void)getSelectedTextByAuxiliary:(void (^)(NSString *_Nullable text, AXError error))completion {
+- (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
     
@@ -415,12 +415,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             selectedText = (__bridge NSString *)(selectedTextValue);
             selectedText = [selectedText removeInvisibleChar];
             self.selectedText = selectedText;
-            MMLogInfo(@"--> Auxiliary getText: %@", selectedText);
+            MMLogInfo(@"--> Accessibility getText: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
                 MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
             } else {
-                MMLogInfo(@"Auxiliary error: %d", getSelectedTextError);
+                MMLogInfo(@"Accessibility error: %d", getSelectedTextError);
             }
         }
         error = getSelectedTextError;
@@ -489,25 +489,28 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check if should use simulation key to get selected text.
-- (BOOL)shouldUseSimulatedKeyPress:(NSString *)text error:(AXError)error {
-    if (text.length > 0) {
+- (BOOL)shouldUseSimulatedKey:(NSString *)text error:(AXError)error {
+    BOOL isAutoSelectQuery = self.actionType == EZActionTypeAutoSelectQuery;
+    BOOL allowedForceAutoGetSelectedText = [EZConfiguration.shared forceAutoGetSelectedText];
+    
+    if (isAutoSelectQuery && !allowedForceAutoGetSelectedText) {
         return NO;
     }
     
-    //    NSLog(@"Auxiliary error: %d", error);
+    //    NSLog(@"Accessibility error: %d", error);
     
     NSRunningApplication *application = [self getFrontmostApp];
     NSString *bundleID = application.bundleIdentifier;
     
     /**
-     If Auxiliary get text failed but actually has selected text, error may be kAXErrorNoValue -25212
+     If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212
      ???: Typora support Auxiliary, But [small probability] may return kAXErrorAPIDisabled when get selected text failed.
      
      kAXErrorNoValue: Safari, Mail, Telegram, Reeder
      kAXErrorAPIDisabled: Typora?
      */
     if (error == kAXErrorNoValue) {
-        NSLog(@"unsupport Auxiliary App --> %@", bundleID);
+        NSLog(@"unsupport Accessibility App --> %@", bundleID);
         return YES;
     }
     
@@ -630,7 +633,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             
             [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
             
-            // FIXME: Since use auxiliary to get selected text in Chrome immediately by double click may fail, so we delay a little.
+            // FIXME: Since use Accessibility to get selected text in Chrome immediately by double click may fail, so we delay a little.
             
             // Check if it is a double or triple click.
             if (event.clickCount == 2) {

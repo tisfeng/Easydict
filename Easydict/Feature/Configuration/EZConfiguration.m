@@ -18,6 +18,7 @@
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
+static NSString *const kForceAutoGetSelectedText = @"EZConfiguration_kForceAutoGetSelectedText";
 static NSString *const kClickQueryKey = @"EZConfiguration_kClickQueryKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
@@ -71,6 +72,7 @@ static EZConfiguration *_instance;
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
 
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
+    self.forceAutoGetSelectedText = [NSUserDefaults mm_readBool:kForceAutoGetSelectedText defaultValue:NO];
     self.clickQuery = [NSUserDefaults mm_readBool:kClickQueryKey defaultValue:NO];
     self.autoPlayAudio = [NSUserDefaults mm_readBool:kAutoPlayAudioKey defaultValue:YES];
     self.launchAtStartup = [NSUserDefaults mm_readBool:kLaunchAtStartupKey defaultValue:NO];
@@ -111,6 +113,12 @@ static EZConfiguration *_instance;
     _autoSelectText = autoSelectText;
 
     [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
+}
+
+- (void)setForceAutoGetSelectedText:(BOOL)forceGetSelectedText {
+    _forceAutoGetSelectedText = forceGetSelectedText;
+
+    [NSUserDefaults mm_write:@(forceGetSelectedText) forKey:kForceAutoGetSelectedText];
 }
 
 - (void)setClickQuery:(BOOL)clickQuery {

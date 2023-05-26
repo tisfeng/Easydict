@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   Easydict
 
@@ -12,13 +12,13 @@
 
 "input_translate" = "输入翻译:";
 "snip_translate" = "截图翻译:";
-"snip_ocr" = "截图翻译:";
 "select_translate" = "划词翻译:";
 "show_mini_window" = "显示迷你窗口:";
 "silent_screenshot_ocr" = "静默截图 OCR:";
 
-"show_query_icon" = "显示查询图标:";
-"auto_show_icon" = "划词后自动显示查询图标（实验功能）";
+"auto_get_selected_text" = "鼠标自动取词:";
+"auto_show_query_icon" = "划词后自动显示查询图标";
+"force_auto_get_selected_text" = "自动取词失败时，强制取词（实验功能）";
 
 "click_icon_query" = "点击查询:";
 "click_icon_query_info" = "点击图标时才查询（需隐藏主窗口）";
