@@ -113,9 +113,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return 54; // two line
         case EZWindowTypeMini:
-            return 33; // one line
+            return 36; // one line
         default:
-            return 33;
+            return 54;
     }
 }
 

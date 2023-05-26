@@ -196,7 +196,7 @@
 #pragma mark - Public Methods
 
 - (CGFloat)heightOfQueryView {
-    return [self heightOfTextView] + EZExceptInputViewHeight;
+    return [self heightOfTextView] + EZQueryViewExceptInputViewHeight;
 }
 
 - (void)setClearButtonHidden:(BOOL)hidden {
@@ -261,7 +261,7 @@
     [self.scrollView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(0);
         // Add a padding to audio button, avoid making users feel that there is still text below that has not been fully displayed.
-        make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_5);
+        make.bottom.equalTo(self.audioButton.mas_top).offset(-EZAudioButtonInputViewTopPadding_4);
         
         CGFloat textViewHeight = [self heightOfTextView];
         make.height.mas_greaterThanOrEqualTo(textViewHeight);
@@ -483,7 +483,7 @@
     
     if (self.updateQueryTextBlock) {
         CGFloat textViewHeight = [self heightOfTextView];
-        self.updateQueryTextBlock(text, textViewHeight + EZExceptInputViewHeight);
+        self.updateQueryTextBlock(text, textViewHeight + EZQueryViewExceptInputViewHeight);
     }
 }
 
