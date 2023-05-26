@@ -29,9 +29,8 @@
         button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
     }];
     
-    NSString *shortcut = @"⌘+⇧+C";
     NSString *action = NSLocalizedString(@"copy_text", nil);
-    self.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
+    self.toolTip = [NSString stringWithFormat:@"%@", action];
 }
 
 @end

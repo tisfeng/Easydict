@@ -121,6 +121,10 @@
     [self addSubview:textCopyButton];
     self.textCopyButton = textCopyButton;
     
+    NSString *copyAction = NSLocalizedString(@"copy_text", nil);
+    NSString *copyShortcut = @"⌘+⇧+C";
+    textCopyButton.toolTip = [NSString stringWithFormat:@"%@, %@",  copyAction, copyShortcut];
+    
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
         mm_strongify(self);
@@ -156,9 +160,9 @@
     clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
     
-    NSString *action = NSLocalizedString(@"clear_all", nil);
-    NSString *shortcut = @"⌘+⇧+K";
-    clearButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];
+    NSString *clearAction = NSLocalizedString(@"clear_all", nil);
+    NSString *clearShortcut = @"⌘+⇧+K";
+    clearButton.toolTip = [NSString stringWithFormat:@"%@, %@", clearAction, clearShortcut];
     
     [clearButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"clearButton");
