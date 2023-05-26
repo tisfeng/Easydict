@@ -11,13 +11,14 @@
 "setting" = "Settings";
 
 "input_translate" = "Input Translate:";
-"snip_translate" = "Screenshot Translate:";
-"select_translate" = "Selecte Text Translate:";
+"snip_translate" = "Sinp Translate:";
+"select_translate" = "Select Text Translate:";
 "show_mini_window" = "Show Mini Window:";
 "silent_screenshot_ocr" = "Slient Screenshot OCR:";
 
-"show_query_icon" = "Show Query Icon:";
-"auto_show_icon" = "Auto show query icon after selecting text (experimental)";
+"auto_get_selected_text" = "Auto Get Selected Text:";
+"auto_show_query_icon" = "Auto show query icon after selecting text";
+"force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (experimental)";
 
 "click_icon_query" = "Click to Query:";
 "click_icon_query_info" = "Query only when clicking query icon (When main window hidden)";

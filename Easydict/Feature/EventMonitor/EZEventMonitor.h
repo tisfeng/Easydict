@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^mouseClickBlock)(CGPoint clickPoint);
 
 
-/// Use auxiliary to get selected text first, if failed, use shortcut.
+/// Use Accessibility to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(void (^)(NSString *_Nullable text))completion;
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler;

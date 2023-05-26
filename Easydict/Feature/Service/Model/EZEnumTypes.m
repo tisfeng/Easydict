@@ -31,7 +31,7 @@ NSString *const EZActionTypeInputQuery = @"input_query";
 NSString *const EZActionTypeOCRQuery = @"ocr_query";
 NSString *const EZActionTypeScreenshotOCR = @"silent_screenshot_ocr";
 
-NSString *const EZSelectTextTypeAuxiliary = @"auxiliary_select_text";
+NSString *const EZSelectTextTypeAccessibility = @"accessibility_select_text";
 NSString *const EZSelectTextTypeSimulatedKey = @"simulate_key_select_text";
 NSString *const EZSelectTextTypeAppleScript = @"applescript_select_text";
 

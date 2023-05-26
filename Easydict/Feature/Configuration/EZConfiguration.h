@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, copy) EZLanguage to;
 
 @property (nonatomic, assign) BOOL autoSelectText;
+@property (nonatomic, assign) BOOL forceAutoGetSelectedText;
 @property (nonatomic, assign) BOOL clickQuery;
 @property (nonatomic, assign) BOOL launchAtStartup;
 @property (nonatomic, assign) BOOL automaticallyChecksForUpdates;

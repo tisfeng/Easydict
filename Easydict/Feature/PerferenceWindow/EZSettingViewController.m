@@ -28,8 +28,9 @@
 
 @property (nonatomic, strong) NSView *separatorView;
 
-@property (nonatomic, strong) NSTextField *showQueryIconLabel;
+@property (nonatomic, strong) NSTextField *autoGetSelectedTextLabel;
 @property (nonatomic, strong) NSButton *showQueryIconButton;
+@property (nonatomic, strong) NSButton *forceGetSelectedTextButton;
 
 @property (nonatomic, strong) NSTextField *clickQueryLabel;
 @property (nonatomic, strong) NSButton *clickQueryButton;
@@ -165,14 +166,19 @@
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
     
-    NSTextField *showQueryIconLabel = [NSTextField labelWithString:NSLocalizedString(@"show_query_icon", nil)];
+    NSTextField *showQueryIconLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_get_selected_text", nil)];
     showQueryIconLabel.font = font;
     [self.contentView addSubview:showQueryIconLabel];
-    self.showQueryIconLabel = showQueryIconLabel;
+    self.autoGetSelectedTextLabel = showQueryIconLabel;
     
-    NSString *showQueryIconTitle = NSLocalizedString(@"auto_show_icon", nil);
+    NSString *showQueryIconTitle = NSLocalizedString(@"auto_show_query_icon", nil);
     self.showQueryIconButton = [NSButton checkboxWithTitle:showQueryIconTitle target:self action:@selector(autoSelectTextButtonClicked:)];
     [self.contentView addSubview:self.showQueryIconButton];
+    
+    NSString *forceGetSelectedText = NSLocalizedString(@"force_auto_get_selected_text", nil);
+    self.forceGetSelectedTextButton = [NSButton checkboxWithTitle:forceGetSelectedText target:self action:@selector(forceGetSelectedTextButtonClicked:)];
+    [self.contentView addSubview:self.forceGetSelectedTextButton];
+    
     
     NSTextField *clickQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"click_icon_query", nil)];
     clickQueryLabel.font = font;
@@ -344,6 +350,7 @@
     
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
+    self.forceGetSelectedTextButton.mm_isOn = configuration.forceAutoGetSelectedText;
     self.clickQueryButton.mm_isOn = configuration.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = configuration.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
@@ -424,18 +431,23 @@
         make.height.mas_equalTo(1);
     }];
     
-    [self.showQueryIconLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.autoGetSelectedTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
     [self.showQueryIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.showQueryIconLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.showQueryIconLabel);
+        make.left.equalTo(self.autoGetSelectedTextLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.autoGetSelectedTextLabel);
+    }];
+    [self.forceGetSelectedTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showQueryIconButton);
+        make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
     }];
     
+    
     [self.clickQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
-        make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.forceGetSelectedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clickQueryButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.clickQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -453,7 +465,7 @@
     }];
     
     [self.languageDetectLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.adjustQueryIconPostionButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.languageDetectOptimizePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -462,7 +474,7 @@
     }];
     
     [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.languageDetectOptimizePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -471,7 +483,7 @@
     }];
     
     [self.playAudioLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.fixedWindowPositionPopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoPlayAudioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -480,7 +492,7 @@
     }];
     
     [self.disableEmptyCopyBeepLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.disableEmptyCopyBeepButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -489,7 +501,7 @@
     }];
     
     [self.clearInputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.disableEmptyCopyBeepButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clearInputButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -499,7 +511,7 @@
     
     
     [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -517,7 +529,7 @@
     
     
     [self.autoCopyTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.autoQueryPastedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoCopyOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -535,7 +547,7 @@
     
     
     [self.showQuickLinkLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.autoCopyFirstTranslatedTextButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.showGoogleQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -555,7 +567,7 @@
     }];
     
     [self.hideMainWindowLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.separatorView2.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
     [self.hideMainWindowButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -564,7 +576,7 @@
     }];
     
     [self.launchLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.hideMainWindowButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.launchAtStartupButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -573,7 +585,7 @@
     }];
     
     [self.menuBarIconLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.showQueryIconLabel);
+        make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.launchAtStartupButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.hideMenuBarIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -586,12 +598,12 @@
     
     if ([EZLanguageManager isChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
-        self.rightmostView = self.showQueryIconButton;
+        self.rightmostView = self.forceGetSelectedTextButton;
     }
     
     if ([EZLanguageManager isEnglishFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
-        self.rightmostView = self.showQueryIconButton;
+        self.rightmostView = self.forceGetSelectedTextButton;
     }
     
     [super updateViewConstraints];
@@ -612,6 +624,10 @@
     if (sender.mm_isOn) {
         [self checkAppIsTrusted];
     }
+}
+
+- (void)forceGetSelectedTextButtonClicked:(NSButton *)sender {
+    EZConfiguration.shared.forceAutoGetSelectedText = sender.mm_isOn;
 }
 
 - (void)clickQueryButtonClicked:(NSButton *)sender {
