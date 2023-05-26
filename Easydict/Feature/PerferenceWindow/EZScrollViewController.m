@@ -18,8 +18,7 @@ static CGFloat const kMargin = 0;
 
 - (instancetype)init {
     if (self = [super init]) {
-        CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
-        self.maxViewSize = CGSizeMake(visibleFrameSize.width * 0.8, visibleFrameSize.height * 0.7);
+        [self updateMaxViewSize];
 
         self.verticalPadding = 15;
         self.horizontalPadding = 8;
@@ -43,6 +42,21 @@ static CGFloat const kMargin = 0;
     [self _setupUI];
 }
 
+
+#pragma mark - Setter
+
+- (void)setMaxViewWidthRatio:(CGFloat)maxViewWidthRatio {
+    _maxViewWidthRatio = maxViewWidthRatio;
+    [self updateMaxViewSize];
+}
+
+- (void)setMaxViewHeightRatio:(CGFloat)maxViewHeightRatio {
+    _maxViewHeightRatio = maxViewHeightRatio;
+    [self updateMaxViewSize];
+}
+
+#pragma mark - Public
+
 - (void)updateViewSize {
     [self.view layoutSubtreeIfNeeded];
 
@@ -55,6 +69,20 @@ static CGFloat const kMargin = 0;
     // scroll to top
     [self.scrollView.contentView scrollToPoint:NSMakePoint(0, viewSize.height)];
     [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
+}
+
+#pragma mark -
+
+- (void)updateMaxViewSize {
+    [self updateMaxViewWidthRatio:self.maxViewWidthRatio heightRatio:self.maxViewHeightRatio];
+}
+
+- (void)updateMaxViewWidthRatio:(CGFloat)maxViewWidthRatio heightRatio:(CGFloat)maxViewHeightRatio {
+    CGSize visibleFrameSize = NSScreen.mainScreen.visibleFrame.size;
+    maxViewWidthRatio = maxViewWidthRatio ?: 0.8;
+    maxViewHeightRatio = maxViewHeightRatio ?: 0.7;
+    
+    self.maxViewSize = CGSizeMake(visibleFrameSize.width * maxViewWidthRatio, visibleFrameSize.height * maxViewHeightRatio);
 }
 
 - (void)_setupUI {
