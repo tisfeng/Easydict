@@ -32,6 +32,9 @@
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 @property (nonatomic, strong) NSButton *forceGetSelectedTextButton;
 
+@property (nonatomic, strong) NSTextField *disableEmptyCopyBeepLabel;
+@property (nonatomic, strong) NSButton *disableEmptyCopyBeepButton;
+
 @property (nonatomic, strong) NSTextField *clickQueryLabel;
 @property (nonatomic, strong) NSButton *clickQueryButton;
 
@@ -46,9 +49,6 @@
 
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
-
-@property (nonatomic, strong) NSTextField *disableEmptyCopyBeepLabel;
-@property (nonatomic, strong) NSButton *disableEmptyCopyBeepButton;
 
 @property (nonatomic, strong) NSTextField *clearInputLabel;
 @property (nonatomic, strong) NSButton *clearInputButton;
@@ -179,6 +179,14 @@
     self.forceGetSelectedTextButton = [NSButton checkboxWithTitle:forceGetSelectedText target:self action:@selector(forceGetSelectedTextButtonClicked:)];
     [self.contentView addSubview:self.forceGetSelectedTextButton];
     
+    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:NSLocalizedString(@"disable_empty_copy_beep", nil)];
+    disableEmptyCopyBeepLabel.font = font;
+    [self.contentView addSubview:disableEmptyCopyBeepLabel];
+    self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
+    
+    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_note", nil);
+    self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
+    [self.contentView addSubview:self.disableEmptyCopyBeepButton];
     
     NSTextField *clickQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"click_icon_query", nil)];
     clickQueryLabel.font = font;
@@ -241,15 +249,6 @@
     NSString *autoPlayAudioTitle = NSLocalizedString(@"auto_play_audio", nil);
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
-    
-    NSTextField *disableEmptyCopyBeepLabel = [NSTextField labelWithString:NSLocalizedString(@"disable_empty_copy_beep", nil)];
-    disableEmptyCopyBeepLabel.font = font;
-    [self.contentView addSubview:disableEmptyCopyBeepLabel];
-    self.disableEmptyCopyBeepLabel = disableEmptyCopyBeepLabel;
-    
-    NSString *disableEmptyCopyBeepTitle = NSLocalizedString(@"disable_empty_copy_beep_info", nil);
-    self.disableEmptyCopyBeepButton = [NSButton checkboxWithTitle:disableEmptyCopyBeepTitle target:self action:@selector(disableEmptyCopyBeepButtonClicked:)];
-    [self.contentView addSubview:self.disableEmptyCopyBeepButton];
     
     NSTextField *clearInputLabel = [NSTextField labelWithString:NSLocalizedString(@"clear_input", nil)];
     clearInputLabel.font = font;
@@ -351,12 +350,12 @@
     EZConfiguration *configuration = [EZConfiguration shared];
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
     self.forceGetSelectedTextButton.mm_isOn = configuration.forceAutoGetSelectedText;
+    self.disableEmptyCopyBeepButton.mm_isOn = configuration.disableEmptyCopyBeep;
     self.clickQueryButton.mm_isOn = configuration.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = configuration.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:configuration.languageDetectOptimize];
     [self.fixedWindowPositionPopUpButton selectItemAtIndex:configuration.fixedWindowPosition];
     self.autoPlayAudioButton.mm_isOn = configuration.autoPlayAudio;
-    self.disableEmptyCopyBeepButton.mm_isOn = configuration.disableEmptyCopyBeep;
     self.clearInputButton.mm_isOn = configuration.clearInput;
     self.launchAtStartupButton.mm_isOn = configuration.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = configuration.hideMainWindow;
@@ -444,10 +443,18 @@
         make.top.equalTo(self.showQueryIconButton.mas_bottom).offset(self.verticalPadding);
     }];
     
+    [self.disableEmptyCopyBeepLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.forceGetSelectedTextButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.disableEmptyCopyBeepButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.disableEmptyCopyBeepLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.disableEmptyCopyBeepLabel);
+    }];
     
     [self.clickQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.forceGetSelectedTextButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.disableEmptyCopyBeepButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clickQueryButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.clickQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -491,18 +498,10 @@
         make.centerY.equalTo(self.playAudioLabel);
     }];
     
-    [self.disableEmptyCopyBeepLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    [self.disableEmptyCopyBeepButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.disableEmptyCopyBeepLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.disableEmptyCopyBeepLabel);
-    }];
     
     [self.clearInputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.disableEmptyCopyBeepButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clearInputButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.clearInputLabel.mas_right).offset(self.horizontalPadding);
