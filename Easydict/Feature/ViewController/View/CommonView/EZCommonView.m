@@ -76,7 +76,7 @@
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.bottom.offset(-5);
         make.left.offset(8);
-        make.width.height.mas_equalTo(EZAudioButtonWidthHeight_25);
+        make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
     
     [self.textCopyButton mas_remakeConstraints:^(MASConstraintMaker *make) {

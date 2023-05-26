@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static CGFloat const EZExceptInputViewHeight = EZAudioButtonWidthHeight_25 + EZAudioButtonInputViewTopPadding_5 + EZAudioButtonBottomMargin_5; // 37;
+static CGFloat const EZExceptInputViewHeight = EZAudioButtonWidthHeight_24 + EZAudioButtonInputViewTopPadding_5 + EZAudioButtonBottomMargin_5; // 37;
 
 static NSTimeInterval const EZDelayDetectTextLanguageInterval = 1.0;
 
