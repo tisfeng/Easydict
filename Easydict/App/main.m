@@ -1,9 +1,9 @@
 //
 //  main.m
-//  Bob
+//  Easydict
 //
-//  Created by ripper on 2019/11/20.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/10/30.
+//  Copyright © 2023 izual. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

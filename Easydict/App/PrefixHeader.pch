@@ -1,9 +1,9 @@
 //
 //  PrefixHeader.pch
-//  Bob
+//  Easydict
 //
-//  Created by ripper on 2019/11/20.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/10/30.
+//  Copyright © 2023 izual. All rights reserved.
 //
 
 //#define NSLog(frmt, ...) MMLogVerbose(frmt, ##__VA_ARGS__)

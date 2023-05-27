@@ -1,9 +1,9 @@
 //
 //  AppDelegate.m
-//  Bob
+//  Easydict
 //
-//  Created by ripper on 2019/11/20.
-//  Copyright © 2019 ripperhe. All rights reserved.
+//  Created by tisfeng on 2022/10/30.
+//  Copyright © 2023 izual. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -35,23 +35,42 @@
 }
 
 
-///
+/// Auto set up app language.
 - (void)setupAppLanguage {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *AppleLanguagesKey = @"AppleLanguages";
-    NSMutableArray *userLanguages = [[defaults objectForKey:AppleLanguagesKey] mutableCopy];
-    
     NSString *systemLanguageCode = @"en-CN";
     if ([EZLanguageManager isChineseFirstLanguage]) {
         systemLanguageCode = @"zh-CN";
     }
+    
+    [self setupAppLanguage:systemLanguageCode];
+}
+
+/// Set up user app language, Chinese or English
+- (void)setupAppLanguage:(NSString *)languageCode {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *kAppleLanguagesKey = @"AppleLanguages";
+    NSMutableArray *userLanguages = [[defaults objectForKey:kAppleLanguagesKey] mutableCopy];
+    
     // Avoid two identical languages.
-    [userLanguages removeObject:systemLanguageCode];
-    [userLanguages insertObject:systemLanguageCode atIndex:0];
+    [userLanguages removeObject:languageCode];
+    [userLanguages insertObject:languageCode atIndex:0];
     
+    [defaults setObject:userLanguages forKey:kAppleLanguagesKey];
+}
+
+- (void)restartApplication {
+    NSApplication *application = [NSApplication sharedApplication];
+    [application terminate:nil];
     
-    // "en-CN", "zh-Hans", "zh-Hans-CN"
-    [defaults setObject:userLanguages forKey:AppleLanguagesKey];
+    // Relaunch app.
+    NSString *launchPath = @"/usr/bin/open";
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSArray *arguments = @[bundlePath];
+    
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:launchPath];
+    [task setArguments:arguments];
+    [task launch];
 }
 
 
