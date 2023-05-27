@@ -729,7 +729,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                                 if ([obj isKindOfClass:NSString.class]) {
                                     if ([obj containsString:@";"]) {
                                         // 拆分成多个
-                                        MMLogInfo(@"有道翻译手动拆词 %@", obj);
+                                        NSLog(@"有道翻译手动拆词 %@", obj);
                                         NSArray<NSString *> *words = [obj componentsSeparatedByString:@";"];
                                         [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
                                             EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];
@@ -749,7 +749,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                                     if ([text isKindOfClass:NSString.class] && text.length) {
                                         if ([text containsString:@";"]) {
                                             // 拆分成多个 测试中
-                                            MMLogInfo(@"有道翻译手动拆词 %@", text);
+                                            NSLog(@"有道翻译手动拆词 %@", text);
                                             NSArray<NSString *> *words = [text componentsSeparatedByString:@";"];
                                             [words enumerateObjectsUsingBlock:^(NSString *_Nonnull subObj, NSUInteger idx, BOOL *_Nonnull stop) {
                                                 EZTranslateSimpleWord *word = [EZTranslateSimpleWord new];

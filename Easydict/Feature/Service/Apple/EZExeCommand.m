@@ -100,7 +100,7 @@
             NSString *resultString = [result stringValue];
             resultString = [resultString trim];
             if (errorInfo) {
-                NSLog(@"runAppleScript errorInfo: %@", errorInfo);
+                MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
                 NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
                 error = [EZTranslateError errorWithString:errorString];
             }
