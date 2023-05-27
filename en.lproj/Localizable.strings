@@ -20,7 +20,7 @@
 "auto_show_query_icon" = "Auto show query icon after selecting text";
 "force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (Experimental)";
 "force_auto_get_selected_text_title" = "Force Auto Get Selected Text";
-"force_auto_get_selected_text_msg" = "⚠️ Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc.";
+"force_auto_get_selected_text_msg" = "Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc.";
 
 "disable_empty_copy_beep" = "Disable Empty Copy Beep:";
 "disable_empty_copy_beep_msg" = "Activated when selected text is empty";
