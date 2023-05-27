@@ -91,7 +91,7 @@
     
     self.leftMargin = 110;
     self.rightMargin = 100;
-    self.maxViewHeightRatio = 0.6;
+    self.maxViewHeightRatio = 0.7;
     
     [self updateViewSize];
 }
