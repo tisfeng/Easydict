@@ -222,11 +222,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     };
     
     if (!self.token || !self.gtk) {
-        MMLogInfo(@"get Baidu token and gtk");
+        NSLog(@"get Baidu token and gtk");
         mm_weakify(self);
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             mm_strongify(self)
-            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
+            NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
                 error = [EZTranslateError errorWithString:@"Get token failed."];
             }
@@ -763,7 +763,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         }
         
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
-            MMLogInfo(@"Baidu token: %@, gtk: %@", token, gtk);
+            NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
                 error = [EZTranslateError errorWithString:@"Get token failed."];
             }

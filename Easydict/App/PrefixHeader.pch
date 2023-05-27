@@ -6,7 +6,7 @@
 //  Copyright © 2019 ripperhe. All rights reserved.
 //
 
-#define NSLog(frmt, ...) MMLogVerbose(frmt, ##__VA_ARGS__)
+//#define NSLog(frmt, ...) MMLogVerbose(frmt, ##__VA_ARGS__)
 
 #import <Masonry/Masonry.h>
 #import <MJExtension/MJExtension.h>
