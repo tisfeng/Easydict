@@ -39,9 +39,17 @@
 
 // Get user system preferred languages
 + (NSArray<EZLanguage> *)systemPreferredLanguages {
-    // "en-CN", "zh-Hans", "zh-Hans-CN"
-    // ???: Why has changed to [ "zh-CN", "zh-Hans-CN", "en-CN" ]
-    NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
+    /**
+     "en-CN", "zh-Hans", "zh-Hans-CN"
+     ???: Why has changed to [ "zh-CN", "zh-Hans-CN", "en-CN" ]
+     
+     [NSLocale preferredLanguages] is device languages, and it is read only.
+     [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"] is the same with [NSLocale preferredLanguages] generally, but it can be modified.
+     */
+    
+//    NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
+    NSArray<NSString *> *preferredLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+
     NSMutableArray *languages = [NSMutableArray array];
     for (NSString *language in preferredLanguages) {
         NSMutableArray *array = [NSMutableArray arrayWithArray:[language componentsSeparatedByString:@"-"]];
@@ -51,16 +59,16 @@
         // Convert to EZLanguage
         EZAppleService *appleService = [[EZAppleService alloc] init];
         EZLanguage ezLanguage = [appleService languageEnumFromAppleLanguage:languageCode];
-        if (![ezLanguage isEqualToString:EZLanguageAuto]) {
+        
+        // handle "zh-CN"
+        if ([languageCode hasPrefix:@"zh"] && [ezLanguage isEqualToString:EZLanguageAuto]) {
+            ezLanguage = EZLanguageSimplifiedChinese;
+        }
+        
+        if (![ezLanguage isEqualToString:EZLanguageAuto] && ![languages containsObject:ezLanguage]) {
             [languages addObject:ezLanguage];
         }
     }
-    
-    // This method seems to be the same.
-    //        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //        NSArray *userLanguages = [defaults objectForKey:@"AppleLanguages"];
-    
-    //    NSLog(@"languages: %@", languages);
     
     return languages;
 }
