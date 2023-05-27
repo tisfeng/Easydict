@@ -8,10 +8,11 @@
 
 #import "EZQueryModel.h"
 #import "EZConfiguration.h"
+#import <KVOController/NSObject+FBKVOController.h>
 
 @interface EZQueryModel ()
 
-@property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType: block>
+@property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType : block>
 
 @end
 
@@ -22,8 +23,13 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.userSourceLanguage = EZConfiguration.shared.from;
-        self.userTargetLanguage = EZConfiguration.shared.to;
+        [self.KVOController observe:EZConfiguration.shared keyPath:@"from" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, EZConfiguration *config, NSDictionary<NSString *, id> *_Nonnull change) {
+            queryModel.userSourceLanguage = change[NSKeyValueChangeNewKey];
+        }];
+        [self.KVOController observe:EZConfiguration.shared keyPath:@"to" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, EZConfiguration *config, NSDictionary<NSString *, id> *_Nonnull change) {
+            queryModel.userTargetLanguage = change[NSKeyValueChangeNewKey];
+        }];
+        
         self.detectedLanguage = EZLanguageAuto;
         self.actionType = EZActionTypeInputQuery;
         self.stopBlockDictionary = [NSMutableDictionary dictionary];
@@ -61,7 +67,7 @@
     }
     
     _inputText = [inputText copy];
-
+    
     if (self.queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
