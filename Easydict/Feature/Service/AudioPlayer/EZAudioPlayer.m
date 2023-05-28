@@ -218,13 +218,12 @@
     
     // 3. get service text audio URL, and play.
     [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
-        EZAudioPlayer *audioPlayer = self.service.audioPlayer;
         if (!error && url.length) {
-            [audioPlayer playTextAudio:text
-                              language:language
-                                accent:nil
-                              audioURL:url
-                     designatedService:nil];
+            [self playTextAudio:text
+                       language:language
+                         accent:nil
+                       audioURL:url
+              designatedService:nil];
         } else {
             NSLog(@"get audio url error: %@", error);
             
