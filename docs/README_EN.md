@@ -17,44 +17,20 @@
             alt="Downloads"></a>
 </p>
 
-# Easydict 易词典 | [中文简介](../README.md)
+## [中文介绍](../README.md) | [English README](./docs/README_EN.md)
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
-**Look up word**
-![iShot_2023-01-28_17.40.28-1674901716](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.40.28-1674901716.png)
+<a>
+<img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.18.55_副本-1685262363.png">
+</a>
 
-**Translate text**
-![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.32.18-1685262784.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.32.26-1685262803.png">
+</table>
 
-- [Easydict 易词典 | 中文简介](#easydict-易词典--中文简介)
-  - [Features](#features)
-  - [Installation](#installation)
-    - [1. Manual](#1-manual)
-    - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
-    - [Developer Build](#developer-build)
-    - [Signature Problem ⚠️](#signature-problem-️)
-  - [Usage](#usage)
-    - [Select text by Mouse](#select-text-by-mouse)
-    - [Notice](#notice)
-  - [OCR](#ocr)
-  - [Language Recognition](#language-recognition)
-  - [Translation Services](#translation-services)
-    - [DeepL Translate](#deepl-translate)
-      - [Configure AuthKey](#configure-authkey)
-      - [Configure API call method](#configure-api-call-method)
-  - [Use with PopClip](#use-with-popclip)
-  - [Preferences](#preferences)
-    - [Settting](#settting)
-    - [Services](#services)
-    - [In-App Shortcuts](#in-app-shortcuts)
-  - [Tips](#tips)
-  - [Similar Open Source Projects](#similar-open-source-projects)
-  - [Motivation](#motivation)
-  - [Acknowledgements](#acknowledgements)
-  - [Statement](#statement)
-  - [Sponsor](#sponsor)
-    - [Sponsor List](#sponsor-list)
+![iShot_2023-05-28_11.47.11.gif](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_11.47.11-1685245745.gif)
 
 ## Features
 
@@ -62,7 +38,7 @@
 - [x] Automatic recognition of input language and automatic query of target preferred language.
 - [x] Auto select translate, automatically display the query icon after word search, mouse hover to query.
 - [x] Support for configuring different services for different window types.
-- [x] Support system OCR screenshot translation.
+- [x] Support system OCR screenshot translation, Silent Screenshot OCR.
 - [x] Support system TTS.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-en.md)_)
 - [x] Support Youdao Dictionary, DeepL, Google, Baidu and Volcano Translate.
@@ -75,6 +51,40 @@ Next step.
 - [ ] Support for macOS system dictionary.
 
 _**If you like this extension, please give it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks!**_
+
+---
+
+## Table of contents
+
+- [中文介绍 | English README](#中文介绍--english-readme)
+- [Features](#features)
+- [Table of contents](#table-of-contents)
+- [Installation](#installation)
+  - [1. Manual](#1-manual)
+  - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
+  - [Developer Build](#developer-build)
+  - [Signature Problem ⚠️](#signature-problem-️)
+- [Usage](#usage)
+  - [Select text by Mouse](#select-text-by-mouse)
+  - [Notice](#notice)
+- [OCR](#ocr)
+- [Language Recognition](#language-recognition)
+- [Translation Services](#translation-services)
+  - [DeepL Translate](#deepl-translate)
+    - [Configure AuthKey](#configure-authkey)
+    - [Configure API call method](#configure-api-call-method)
+- [Use with PopClip](#use-with-popclip)
+- [Preferences](#preferences)
+  - [Settting](#settting)
+  - [Services](#services)
+  - [In-App Shortcuts](#in-app-shortcuts)
+- [Tips](#tips)
+- [Similar Open Source Projects](#similar-open-source-projects)
+- [Motivation](#motivation)
+- [Acknowledgements](#acknowledgements)
+- [Statement](#statement)
+- [Sponsor](#sponsor)
+  - [Sponsor List](#sponsor-list)
 
 ## Installation
 
@@ -150,9 +160,9 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 
 ### Select text by Mouse
 
-Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, Shift word selection (multiple paragraphs) and triple-click word selection (paragraph). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
+Currently, multiple mouse quick word selection methods are supported: double-click word selection, mouse drag word selection, triple-click word selection (paragraph) and Shift word selection (multiple paragraphs). In some applications, **mouse drag word selection** and **Shift word selection** may fail, in which case you can switch to other word selection methods.
 
-The shortcut key to select words can work normally in any application, if you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
+The shortcut key to select words can work normally in any application. If you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
 ### Notice
 
@@ -399,4 +409,4 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 | 2023-05-22 |    -     |   200    |                                                                                                                   |
 | 2023-05-22 |    -     |   150    |                                                                                                                   |
 | 2023-05-24 |   陈佩   |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
-| 2023-05-27 | 自由。 | 100 | 感谢 |
+| 2023-05-27 |  自由。  |   100    |                                                       感谢                                                        |

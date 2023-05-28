@@ -16,48 +16,20 @@
         <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
             alt="Downloads"></a>
 </p>
-
-# Easydict 易词典 | [English](./docs/README_EN.md)
+## [中文介绍](../README.md) | [English README](./docs/README_EN.md)
 
 `Easydict` 是一个简洁易用的翻译词典 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
-**查单词**
-![iShot_2023-01-28_17.40.28-1674901716](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.40.28-1674901716.png)
+<a>
+<img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.18.55_副本-1685262363.png">
+</a>
 
-**翻译文本**
-![iShot_2023-01-28_17.49.53-1674901731](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-28_17.49.53-1674901731.png)
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.32.18-1685262784.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_16.32.26-1685262803.png">
+</table>
 
-## 目录
-
-- [Easydict 易词典 | English](#easydict-易词典--english)
-  - [目录](#目录)
-  - [功能](#功能)
-  - [安装](#安装)
-    - [1. 手动下载安装](#1-手动下载安装)
-    - [2. Homebrew 安装 （感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
-    - [开发者构建](#开发者构建)
-    - [签名问题 ⚠️](#签名问题-️)
-  - [使用](#使用)
-    - [鼠标取词](#鼠标取词)
-    - [注意事项](#注意事项)
-  - [OCR](#ocr)
-  - [语种识别](#语种识别)
-  - [翻译服务](#翻译服务)
-    - [DeepL 翻译](#deepl-翻译)
-      - [配置 AuthKey](#配置-authkey)
-      - [配置 API 调用方式](#配置-api-调用方式)
-  - [配合 PopClip 使用](#配合-popclip-使用)
-  - [偏好设置](#偏好设置)
-    - [设置](#设置)
-    - [服务](#服务)
-  - [应用内快捷键](#应用内快捷键)
-  - [Tips](#tips)
-  - [类似开源项目](#类似开源项目)
-  - [动机](#动机)
-  - [致谢](#致谢)
-  - [声明](#声明)
-  - [赞助支持](#赞助支持)
-    - [赞助列表](#赞助列表)
+![iShot_2023-05-28_11.47.11.gif](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-05-28_11.47.11-1685245745.gif)
 
 ## 功能
 
@@ -65,7 +37,7 @@
 - [x] 自动识别输入语言，自动查询目标偏好语言。
 - [x] 自动划词查询，划词后自动显示查询图标，鼠标悬浮即可查询。
 - [x] 支持为不同窗口配置不同的服务。
-- [x] 支持系统 OCR 截图翻译。
+- [x] 支持系统 OCR 截图翻译，静默截图 OCR。
 - [x] 支持系统 TTS。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，DeepL，Google，百度和火山翻译。
@@ -78,6 +50,40 @@
 - [ ] 支持 macOS 系统词典。
 
 _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**_
+
+---
+
+## 目录
+
+- [中文介绍 | English README](#中文介绍--english-readme)
+- [功能](#功能)
+- [目录](#目录)
+- [安装](#安装)
+  - [1. 手动下载安装](#1-手动下载安装)
+  - [2. Homebrew 安装 （感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
+  - [开发者构建](#开发者构建)
+  - [签名问题 ⚠️](#签名问题-️)
+- [使用](#使用)
+  - [鼠标取词](#鼠标取词)
+  - [注意事项](#注意事项)
+- [OCR](#ocr)
+- [语种识别](#语种识别)
+- [翻译服务](#翻译服务)
+  - [DeepL 翻译](#deepl-翻译)
+    - [配置 AuthKey](#配置-authkey)
+    - [配置 API 调用方式](#配置-api-调用方式)
+- [配合 PopClip 使用](#配合-popclip-使用)
+- [偏好设置](#偏好设置)
+  - [设置](#设置)
+  - [服务](#服务)
+- [应用内快捷键](#应用内快捷键)
+- [Tips](#tips)
+- [类似开源项目](#类似开源项目)
+- [初衷](#初衷)
+- [致谢](#致谢)
+- [声明](#声明)
+- [赞助支持](#赞助支持)
+  - [赞助列表](#赞助列表)
 
 ## 安装
 
@@ -154,9 +160,9 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ### 鼠标取词
 
-目前支持多种鼠标快捷取词方式：双击取词、鼠标滑动取词、Shift 取词（多段落）和三击取词（段落），在某些应用中【鼠标滑动取词】可能会失败，此时可换其他取词方式。
+目前支持多种鼠标快捷取词方式：双击取词、鼠标滑动取词、三击取词（段落）和 Shift 取词（多段落），在某些应用中【鼠标滑动取词】可能会失败，此时可换其他取词方式。
 
-快捷键取词在任意应用中都可以正常工作，如遇到不能取词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
+快捷键取词在任意应用中都可以正常工作。如遇到不能取词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
 
 ### 注意事项
 
@@ -363,7 +369,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 ![easydict-1-1671806758](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/easydict-1-1671806758.png)
 
-## 动机
+## 初衷
 
 查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架苹果商店后也不再免费提供应用更新。
 
@@ -401,4 +407,4 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2023-05-22 |    -     |   200    |                                                                                                                   |
 | 2023-05-22 |    -     |   150    |                                                                                                                   |
 | 2023-05-24 |   陈佩   |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
-| 2023-05-27 | 自由。 | 100 | 感谢 |
+| 2023-05-27 |  自由。  |   100    |                                                       感谢                                                        |
