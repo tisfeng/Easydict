@@ -16,12 +16,12 @@
     self.queryText = model.input;
     
     EZTranslateWordResult *wordResult = [[EZTranslateWordResult alloc] init];
-    
+    EZLanguage language = self.queryModel.queryFromLanguage;
+
     if (model.ec) {
         // 解析音频
         NSMutableArray *phoneticArray = [NSMutableArray array];
         EZEcWord *word = model.ec.word.firstObject;
-        EZLanguage language = self.queryModel.queryFromLanguage;
         
         // https://dict.youdao.com/dictvoice?audio=good&type=2
         NSString *aduioURL = @"https://dict.youdao.com/dictvoice?audio=";
@@ -103,6 +103,8 @@
         EZCeWord *word = model.ce.word.firstObject;
         if (word.phone) {
             EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
+            phonetic.word = self.queryText;
+            phonetic.language = language;
             phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
             phonetic.value = word.phone; // ɡʊd
             [phoneticArray addObject:phonetic];
