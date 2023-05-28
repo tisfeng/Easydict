@@ -19,15 +19,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZWordPhonetic : NSObject
 
 @property (nonatomic, copy) NSString *word;
+@property (nonatomic, copy) EZLanguage language;
+
 /// 此语种对应的音标值
 @property (nonatomic, copy, nullable) NSString *value;
 /// 此音标对应的语音地址
-@property (nonatomic, copy) NSString *speakURL;
+@property (nonatomic, copy, nullable) NSString *speakURL;
 
 /// 音标类型，美/英
-@property (nonatomic, copy) NSString *name;
-
-@property (nonatomic, copy) EZLanguage language;
+@property (nonatomic, copy, nullable) NSString *name;
 
 // 口音，us, uk
 @property (nonatomic, copy, nullable) NSString *accent;
