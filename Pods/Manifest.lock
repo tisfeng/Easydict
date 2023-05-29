@@ -91,6 +91,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.1):
     - GoogleUtilities/Logger
+  - JLRoutes (2.1)
   - KVOController (1.2.0)
   - Masonry (1.1.0)
   - MASPreferences (1.4.1)
@@ -111,6 +112,7 @@ DEPENDENCIES:
   - AppCenter
   - CocoaLumberjack/Swift (~> 3.6.0)
   - FirebaseAnalytics
+  - JLRoutes (~> 2.1)
   - KVOController
   - Masonry (~> 1.1.0)
   - MASPreferences (~> 1.4.1)
@@ -131,6 +133,7 @@ SPEC REPOS:
     - FirebaseInstallations
     - GoogleAppMeasurement
     - GoogleUtilities
+    - JLRoutes
     - KVOController
     - Masonry
     - MASPreferences
@@ -152,6 +155,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 59c0e4c7a816a0f76710d83f77e5369b3e45eb96
   GoogleAppMeasurement: fe17c92a32207dd5cdd4e8d742767f2da74857f6
   GoogleUtilities: 9aa0ad5a7bc171f8bae016300bfcfa3fb8425749
+  JLRoutes: d755245322b94227662ea3e43492fdca94e05c5b
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MASPreferences: 1ba2deb14086792857af44d22846fc4aae477fd9
@@ -163,6 +167,6 @@ SPEC CHECKSUMS:
   Sparkle: 270cd27377bf04e9c128af06e3a22d0f572d6ee3
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
 
-PODFILE CHECKSUM: 1d432df37032a5608f76cf2b5c14dd1794102f57
+PODFILE CHECKSUM: aa53398c79bfb6b28c80b3ab7da0cad54c20f951
 
 COCOAPODS: 1.12.0
