@@ -15,9 +15,6 @@
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 
-/// Easydict Scheme: easydict://
-static NSString *const kEasydictScheme = @"easydict";
-
 @implementation EZSchemeParser
 
 #pragma mark - Publick
@@ -75,7 +72,7 @@ static NSString *const kEasydictScheme = @"easydict";
     NSString *urlString = [text trim];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
     NSString *scheme = urlComponents.scheme;
-    return [scheme isEqualToString:kEasydictScheme];
+    return [scheme isEqualToString:EZEasydictScheme];
 }
 
 - (BOOL)isWriteActionKey:(NSString *)actionKey {
