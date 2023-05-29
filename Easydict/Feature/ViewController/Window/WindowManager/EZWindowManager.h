@@ -29,7 +29,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Right-bottom offset: (15, -12)
 @property (nonatomic, assign) CGPoint offsetPoint;
 
-
 + (instancetype)shared;
 
 
@@ -54,6 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Pin window, or cancel pin.
 - (void)pin;
 - (void)closeWindowOrExitSreenshot;
+
+
+#pragma mark - URL scheme
+
+/// Show floating window.
+- (void)showFloatingWindowType:(EZWindowType)type queryText:(nullable NSString *)text;
 
 
 #pragma mark -

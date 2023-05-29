@@ -17,7 +17,7 @@
 
 @implementation EZSchemeParser
 
-#pragma mark - Publick
+#pragma mark - Public
 
 /// Open Easydict URL Scheme.
 - (void)openURLScheme:(NSString *)URLScheme completion:(void (^)(BOOL isSuccess, NSString *_Nullable returnValue, NSString *_Nullable actionKey))completion {

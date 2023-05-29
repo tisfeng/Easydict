@@ -15,6 +15,8 @@
 #import "EZConfiguration.h"
 #import "EZLog.h"
 #import "EZSchemeParser.h"
+//#import <JLRoutes.h>
+#import "AppDelegate+EZURLScheme.h"
 
 @implementation AppDelegate
 
@@ -34,20 +36,8 @@
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
     
-    NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
-    [appleEventManager setEventHandler:self andSelector:@selector(handleURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-}
-
-#pragma mark -
-
-- (void)handleURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
-    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
     
-    // easydict://query?text=good
-    if ([url.scheme isEqualToString:EZEasydictScheme]) {
-        // 根据 URL Scheme 进行相应的处理
-        // ...
-    }
+    [self registerRouters];
 }
 
 /// Auto set up app language.
