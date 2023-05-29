@@ -22,7 +22,7 @@ body:
     id: description
     attributes:
       label: Problem description
-      description: Please describe the problem as clearly and detailed as possible. If it involves UI, please provide screenshots. If it's a complex problem, it would be best to provide a screencast to help developers troubleshoot.
+      description: Please describe the problem as clearly and detailed as possible. If it involves UI, please provide screenshots. If it's a complex problem, it would be best to provide a screencast to help developers troubleshoot. If it is an application crash issue, please provide the crash log, menu icon -> Help -> Export Log.
       placeholder: Problem description
     validations:
       required: true
@@ -32,7 +32,7 @@ body:
     attributes:
       label: Reproduction steps
       description: Please describe how to reproduce the problem.
-      placeholder: If the problem is easily reproducible, please fill in "None".
+      placeholder:
     validations:
       required: true
 
