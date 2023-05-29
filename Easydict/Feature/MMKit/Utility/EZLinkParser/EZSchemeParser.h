@@ -18,6 +18,8 @@ static NSString *const EZReadValueOfKeyKey = @"readValueOfKey";
 static NSString *const EZSaveUserDefaultsDataToDownloadFolderKey = @"saveUserDefaultsDataToDownloadFolder";
 static NSString *const EZResetUserDefaultsDataKey = @"resetUserDefaultsData";
 
+static NSString *const EZQueryKey = @"query";
+
 @interface EZSchemeParser : NSObject
 
 // Check if text started with easydict://
