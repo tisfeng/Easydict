@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Easydict Scheme: easydict://
+static NSString *const EZEasydictScheme = @"easydict";
+
 static NSString *const EZWriteKeyValueKey = @"writeKeyValue";
 static NSString *const EZReadValueOfKeyKey = @"readValueOfKey";
 static NSString *const EZSaveUserDefaultsDataToDownloadFolderKey = @"saveUserDefaultsDataToDownloadFolder";
