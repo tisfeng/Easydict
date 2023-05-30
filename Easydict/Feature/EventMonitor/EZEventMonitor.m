@@ -89,7 +89,8 @@ static EZEventMonitor *_instance = nil;
     
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAccessibility;
-    
+    self.frontmostApplication = [self getFrontmostApp];
+
     [self monitorCGEventTap];
 }
 
