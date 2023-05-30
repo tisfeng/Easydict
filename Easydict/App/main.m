@@ -8,25 +8,34 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZWindowManager.h"
+#import "Easydict-Swift.h"
+
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
         // Setup code that might create autoreleased objects goes here.
         
+        NSMutableArray<NSString *> *arguments = [NSMutableArray array];
+        
         // easydict good
         for (int i = 0; i < argc; i++) {
-//            printf("Argument %d: %s\n", i, argv[i]);
+            NSString *argument = [NSString stringWithUTF8String:argv[i]];
+            [arguments addObject:argument];
+            //            printf("Argument %d: %s\n", i, argv[i]);
+        }
+        
+        MyArgumentParser *argumentParser = [[MyArgumentParser alloc] init];
+        [argumentParser runAndReturnError:nil];
+        
+        if (argc > 1) {
+
+            // get the second arg, convert to nsstring
+            NSString *queryText = arguments[1];
+            printf("easydict query: %s\n", [queryText UTF8String]);
+//            EZBaseQueryViewController *viewController = window.queryViewController;
+//            [viewController startQueryText:queryText actionType:EZActionTypeInputQuery];
         }
     }
     
-    if (argc == 2) {
-        // get the second arg, convert to nsstring
-        NSString *queryText = [NSString stringWithUTF8String:argv[1]];
-        printf("easydict query: %s\n", argv[1]);
-        
-        EZBaseQueryViewController *viewController = EZWindowManager.shared.fixedWindow.queryViewController;
-        [viewController startQueryText:queryText actionType:EZActionTypeInputQuery];
-    }
-        
     return NSApplicationMain(argc, argv);
 }
