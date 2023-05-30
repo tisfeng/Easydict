@@ -26,6 +26,8 @@
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */; };
+		03515F852A25A87B00560697 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 03515F842A25A87B00560697 /* ArgumentParser */; };
+		03515F872A25A87B00560697 /* generate-manual in Frameworks */ = {isa = PBXBuildFile; productRef = 03515F862A25A87B00560697 /* generate-manual */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -65,6 +67,7 @@
 		03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8829D95044005B5A52 /* ToastWindowController.xib */; };
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
+		0389543B2A25AA5800EFFDC3 /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0398CCB82A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0398CCB72A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m */; };
@@ -304,6 +307,7 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
 		038D20392A09364B0005D000 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		038D203B2A09364D0005D000 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
@@ -530,7 +534,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03515F852A25A87B00560697 /* ArgumentParser in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
+				03515F872A25A87B00560697 /* generate-manual in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -811,6 +817,56 @@
 			path = CoolToast;
 			sourceTree = "<group>";
 		};
+		038954372A25A94E00EFFDC3 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				038954392A25A9EB00EFFDC3 /* Swift-Bridge */,
+				03F0DB352953424F00EBF9C1 /* EZLog */,
+				03D8B26A292DBC8800D5A811 /* EZCategory */,
+				03882F8129D95044005B5A52 /* CoolToast */,
+				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
+				0361966B2A000E7800806370 /* FWEncryptorAES */,
+				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
+				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
+				039D119629D5E21E00C93F46 /* EZAudioUtils */,
+				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
+				03D8B26B292DBD0300D5A811 /* EZCoordinateUtils */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		038954382A25A9C900EFFDC3 /* Kit */ = {
+			isa = PBXGroup;
+			children = (
+				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
+				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
+				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
+				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
+				03B022DB29231FA6001C7E63 /* MMMake.h */,
+				03B022D829231FA6001C7E63 /* MMMake.m */,
+				03B022DA29231FA6001C7E63 /* MMTool.h */,
+				03B022DE29231FA6001C7E63 /* MMTool.m */,
+				03B022DD29231FA6001C7E63 /* MMMacro.h */,
+			);
+			path = Kit;
+			sourceTree = "<group>";
+		};
+		038954392A25A9EB00EFFDC3 /* Swift-Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				0389543C2A25ABA500EFFDC3 /* ArgumentParser */,
+			);
+			path = "Swift-Bridge";
+			sourceTree = "<group>";
+		};
+		0389543C2A25ABA500EFFDC3 /* ArgumentParser */ = {
+			isa = PBXGroup;
+			children = (
+				0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */,
+			);
+			path = ArgumentParser;
+			sourceTree = "<group>";
+		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -879,6 +935,7 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				038954372A25A94E00EFFDC3 /* Utility */,
 				03B0224F29231FA6001C7E63 /* ViewController */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
@@ -1155,12 +1212,10 @@
 		03B022A529231FA6001C7E63 /* MMKit */ = {
 			isa = PBXGroup;
 			children = (
-				03882F8129D95044005B5A52 /* CoolToast */,
-				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
+				038954382A25A9C900EFFDC3 /* Kit */,
 				03B022A629231FA6001C7E63 /* Category */,
 				03B022C529231FA6001C7E63 /* Crash */,
 				03B022CE29231FA6001C7E63 /* Log */,
-				03B022D629231FA6001C7E63 /* Utility */,
 			);
 			path = MMKit;
 			sourceTree = "<group>";
@@ -1168,11 +1223,8 @@
 		03B022A629231FA6001C7E63 /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03B022B029231FA6001C7E63 /* NSView+MM.h */,
 				03B022C329231FA6001C7E63 /* NSView+MM.m */,
-				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
-				0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */,
 				03B022B929231FA6001C7E63 /* NSImage+MM.h */,
 				03B022AB29231FA6001C7E63 /* NSImage+MM.m */,
 				03B022A729231FA6001C7E63 /* NSAttributedString+MM.h */,
@@ -1195,8 +1247,6 @@
 				03B022C229231FA6001C7E63 /* NSMutableAttributedString+MM.m */,
 				03B022B229231FA6001C7E63 /* NSDictionary+MM.h */,
 				03B022BE29231FA6001C7E63 /* NSDictionary+MM.m */,
-				03262C2329EFE97B00EFECA0 /* NSViewController+EZWindow.h */,
-				03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1237,7 +1287,6 @@
 		03B022CE29231FA6001C7E63 /* Log */ = {
 			isa = PBXGroup;
 			children = (
-				03F0DB352953424F00EBF9C1 /* EZLog */,
 				03B022D229231FA6001C7E63 /* MMLog.swift */,
 				03B022CF29231FA6001C7E63 /* MMLog.h */,
 				03B022D329231FA6001C7E63 /* MMLog.m */,
@@ -1247,28 +1296,6 @@
 				03B022D429231FA6001C7E63 /* MMConsoleLogFormatter.m */,
 			);
 			path = Log;
-			sourceTree = "<group>";
-		};
-		03B022D629231FA6001C7E63 /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				0361966B2A000E7800806370 /* FWEncryptorAES */,
-				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
-				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
-				039D119629D5E21E00C93F46 /* EZAudioUtils */,
-				0399C6B529A9F49200B4AFCC /* EZLinkParser */,
-				03D8B26B292DBD0300D5A811 /* EZCoordinateUtils */,
-				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
-				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
-				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
-				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
-				03B022DB29231FA6001C7E63 /* MMMake.h */,
-				03B022D829231FA6001C7E63 /* MMMake.m */,
-				03B022DA29231FA6001C7E63 /* MMTool.h */,
-				03B022DE29231FA6001C7E63 /* MMTool.m */,
-				03B022DD29231FA6001C7E63 /* MMMacro.h */,
-			);
-			path = Utility;
 			sourceTree = "<group>";
 		};
 		03B3B8AF2925D57400168E8D /* PopButtonWindow */ = {
@@ -1467,6 +1494,10 @@
 				039CC90C292F664E0037B91E /* NSObject+EZWindowType.m */,
 				0333FDA12A035BEC00891515 /* NSArray+EZChineseText.h */,
 				0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */,
+				0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */,
+				0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */,
+				03262C2329EFE97B00EFECA0 /* NSViewController+EZWindow.h */,
+				03262C2429EFE97B00EFECA0 /* NSViewController+EZWindow.m */,
 			);
 			path = EZCategory;
 			sourceTree = "<group>";
@@ -1581,6 +1612,10 @@
 			dependencies = (
 			);
 			name = Easydict;
+			packageProductDependencies = (
+				03515F842A25A87B00560697 /* ArgumentParser */,
+				03515F862A25A87B00560697 /* generate-manual */,
+			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-Debug.app */;
 			productType = "com.apple.product-type.application";
@@ -1615,6 +1650,9 @@
 				"zh-Hans",
 			);
 			mainGroup = C99EEB0F2385796700FEE666;
+			packageReferences = (
+				03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1749,6 +1787,7 @@
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */,
+				0389543B2A25AA5800EFFDC3 /* ArgumentParser.swift in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
 				03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */,
@@ -2105,6 +2144,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
+				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "Easydict-Debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2143,6 +2183,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
+				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -2180,6 +2221,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		03515F842A25A87B00560697 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		03515F862A25A87B00560697 /* generate-manual */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = "generate-manual";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C99EEB102385796700FEE666 /* Project object */;
 }

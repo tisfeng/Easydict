@@ -75,7 +75,7 @@ static EZWindowManager *_instance;
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     
-    NSLog(@"%@", self.floatingWindowTypeArray);
+//    NSLog(@"%@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
