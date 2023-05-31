@@ -523,7 +523,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (self.queryModel.hasQueryFromLanguage) {
         playBlock();
     } else {
-        [self detectQueryText:^{
+        [self detectQueryText:^(NSString * _Nonnull language) {
             playBlock();
         }];
     }
@@ -578,7 +578,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self resetAllResults];
 
     if (self.queryModel.needDetectLanguage) {
-        [self detectQueryText:^{
+        [self detectQueryText:^(NSString * _Nonnull language) {
             [self queryAllSerives:self.queryModel];
         }];
     } else {
@@ -995,7 +995,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 /// Detect query text, and update select language cell.
-- (void)detectQueryText:(nullable void (^)(void))completion {
+- (void)detectQueryText:(nullable void (^)(NSString *language))completion {
     [self cancelDelayDetectQueryText];
     
     [self.detectManager detectText:self.queryText completion:^(EZQueryModel *queryModel, NSError *error) {
@@ -1011,7 +1011,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self updateQueryViewModelAndDetectedLanguage:queryModel];
 
         if (completion) {
-            completion();
+            completion(queryModel.detectedLanguage);
         }
     }];
 }
@@ -1099,7 +1099,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [queryView setPasteTextBlock:^(NSString * _Nonnull text) {
         mm_strongify(self);
-        [self detectQueryText:^{
+        [self detectQueryText:^(NSString * _Nonnull language) {
             if ([EZConfiguration.shared autoQueryPastedText]) {
                 [self startQueryWithType:EZActionTypeInputQuery];
             }
@@ -1192,7 +1192,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // If result is not empty, update cell and show.
         if (isShowing && !newResult.hasShowingResult) {
             if (self.queryModel.needDetectLanguage) {
-                [self detectQueryText:^{
+                [self detectQueryText:^(NSString * _Nonnull language) {
                     [self queryWithModel:self.queryModel service:service autoPlay:NO];
                 }];
             } else {

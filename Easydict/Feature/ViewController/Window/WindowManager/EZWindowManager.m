@@ -31,8 +31,6 @@
 
 @property (nonatomic, copy) EZActionType actionType;
 
-@property (nonatomic, strong) EZBaseQueryViewController *screenshotOCRController;
-
 @end
 
 
@@ -230,11 +228,11 @@ static EZWindowManager *_instance;
     return [self.floatingWindowTypeArray.firstObject integerValue];
 }
 
-- (EZBaseQueryViewController *)screenshotOCRController {
-    if (!_screenshotOCRController) {
-        _screenshotOCRController = [[EZBaseQueryViewController alloc] init];
+- (EZBaseQueryViewController *)backgroundQueryViewController {
+    if (!_backgroundQueryViewController) {
+        _backgroundQueryViewController = [[EZBaseQueryViewController alloc] init];
     }
-    return _screenshotOCRController;
+    return _backgroundQueryViewController;
 }
 
 
@@ -326,6 +324,12 @@ static EZWindowManager *_instance;
             [text copyToPasteboard];
         }
     }];
+}
+
+- (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion {
+    EZBaseQueryViewController *viewController = [EZWindowManager.shared backgroundQueryViewController];
+    viewController.inputText = text;
+    [viewController detectQueryText:completion];
 }
 
 - (void)showFloatingWindow:(EZBaseQueryWindow *)window atPoint:(CGPoint)point {
@@ -719,7 +723,7 @@ static EZWindowManager *_instance;
         [image mm_writeToFileAsPNG:_imagePath];
         NSLog(@"已保存图片: %@", _imagePath);
         
-        [self.screenshotOCRController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
+        [self.backgroundQueryViewController startOCRImage:image actionType:EZActionTypeScreenshotOCR];
     }];
 }
 

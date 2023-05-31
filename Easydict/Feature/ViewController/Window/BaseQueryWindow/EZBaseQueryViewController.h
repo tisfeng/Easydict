@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)playOrStopQueryTextAudio:(BOOL)playFlag;
 
 /// Detect query text, and update select language cell.
-- (void)detectQueryText:(nullable void (^)(void))completion;
+- (void)detectQueryText:(nullable void (^)(NSString *language))completion;
 
 /// Update query text, auto adjust ParagraphStyle.
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)actionType;

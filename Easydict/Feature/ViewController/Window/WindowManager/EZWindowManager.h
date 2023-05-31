@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) EZWindowType floatingWindowType;
 @property (nonatomic, strong, nullable) EZBaseQueryWindow *floatingWindow;
 
+@property (nonatomic, strong) EZBaseQueryViewController *backgroundQueryViewController;
+
 /// Right-bottom offset: (15, -12)
 @property (nonatomic, assign) CGPoint offsetPoint;
 
@@ -60,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Show floating window.
 - (void)showFloatingWindowType:(EZWindowType)type queryText:(nullable NSString *)text;
 
+- (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion;
 
 #pragma mark -
 
