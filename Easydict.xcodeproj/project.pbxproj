@@ -147,6 +147,19 @@
 		03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD281D29481C0400F5891A /* EZAudioPlayer.m */; };
 		03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD282129486CF200F5891A /* EZBlueTextButton.m */; };
 		03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BD2824294875AE00F5891A /* EZMyLabel.m */; };
+		03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA79F2A26DA280079D04F /* XPMValuedArgument.m */; };
+		03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A22A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m */; };
+		03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A32A26DA280079D04F /* XPMMutableAttributedArray.m */; };
+		03BDA7BB2A26DA280079D04F /* XPMArgsKonstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A62A26DA280079D04F /* XPMArgsKonstants.m */; };
+		03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A72A26DA280079D04F /* XPMArgumentSignature.m */; };
+		03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A82A26DA280079D04F /* XPMArguments_Coalescer_Internal.m */; };
+		03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7A92A26DA280079D04F /* XPMCountedArgument.m */; };
+		03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7AA2A26DA280079D04F /* NSScanner+EscapedScanning.m */; };
+		03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7AB2A26DA280079D04F /* XPMArgumentPackage.m */; };
+		03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7AD2A26DA280079D04F /* XPMArgumentParser.m */; };
+		03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7AE2A26DA280079D04F /* NSString+Indenter.m */; };
+		03BDA7C32A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7AF2A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m */; };
+		03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BDA7B12A26DA280079D04F /* NSDictionary+RubyDescription.m */; };
 		03BE26EB2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BE26EA2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m */; };
 		03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB632923998300C48725 /* black-white-icon@2x.png */; };
 		03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03BFBB642923998300C48725 /* black-white-icon@3x.png */; };
@@ -469,6 +482,36 @@
 		03BD282129486CF200F5891A /* EZBlueTextButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBlueTextButton.m; sourceTree = "<group>"; };
 		03BD2823294875AE00F5891A /* EZMyLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMyLabel.h; sourceTree = "<group>"; };
 		03BD2824294875AE00F5891A /* EZMyLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMyLabel.m; sourceTree = "<group>"; };
+		03BDA79A2A26DA280079D04F /* XPMArgumentPackage_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgumentPackage_Private.h; sourceTree = "<group>"; };
+		03BDA79B2A26DA280079D04F /* NSScanner+EscapedScanning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+EscapedScanning.h"; sourceTree = "<group>"; };
+		03BDA79C2A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+XPMArgumentsNormalizer.h"; sourceTree = "<group>"; };
+		03BDA79D2A26DA280079D04F /* NSString+Indenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Indenter.h"; sourceTree = "<group>"; };
+		03BDA79E2A26DA280079D04F /* XPMArgumentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgumentParser.h; sourceTree = "<group>"; };
+		03BDA79F2A26DA280079D04F /* XPMValuedArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMValuedArgument.m; sourceTree = "<group>"; };
+		03BDA7A02A26DA280079D04F /* XPMArgumentPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgumentPackage.h; sourceTree = "<group>"; };
+		03BDA7A12A26DA280079D04F /* ArgumentParser-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ArgumentParser-Prefix.pch"; sourceTree = "<group>"; };
+		03BDA7A22A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSProcessInfo+XPMArgumentParser.m"; sourceTree = "<group>"; };
+		03BDA7A32A26DA280079D04F /* XPMMutableAttributedArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMMutableAttributedArray.m; sourceTree = "<group>"; };
+		03BDA7A42A26DA280079D04F /* XPMArgumentSignature_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgumentSignature_Private.h; sourceTree = "<group>"; };
+		03BDA7A52A26DA280079D04F /* NSDictionary+RubyDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RubyDescription.h"; sourceTree = "<group>"; };
+		03BDA7A62A26DA280079D04F /* XPMArgsKonstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMArgsKonstants.m; sourceTree = "<group>"; };
+		03BDA7A72A26DA280079D04F /* XPMArgumentSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMArgumentSignature.m; sourceTree = "<group>"; };
+		03BDA7A82A26DA280079D04F /* XPMArguments_Coalescer_Internal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMArguments_Coalescer_Internal.m; sourceTree = "<group>"; };
+		03BDA7A92A26DA280079D04F /* XPMCountedArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMCountedArgument.m; sourceTree = "<group>"; };
+		03BDA7AA2A26DA280079D04F /* NSScanner+EscapedScanning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScanner+EscapedScanning.m"; sourceTree = "<group>"; };
+		03BDA7AB2A26DA280079D04F /* XPMArgumentPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMArgumentPackage.m; sourceTree = "<group>"; };
+		03BDA7AC2A26DA280079D04F /* XPMValuedArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMValuedArgument.h; sourceTree = "<group>"; };
+		03BDA7AD2A26DA280079D04F /* XPMArgumentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPMArgumentParser.m; sourceTree = "<group>"; };
+		03BDA7AE2A26DA280079D04F /* NSString+Indenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Indenter.m"; sourceTree = "<group>"; };
+		03BDA7AF2A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+XPMArgumentsNormalizer.m"; sourceTree = "<group>"; };
+		03BDA7B02A26DA280079D04F /* XPMArgsKonstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgsKonstants.h; sourceTree = "<group>"; };
+		03BDA7B12A26DA280079D04F /* NSDictionary+RubyDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RubyDescription.m"; sourceTree = "<group>"; };
+		03BDA7B22A26DA280079D04F /* XPMMutableAttributedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMMutableAttributedArray.h; sourceTree = "<group>"; };
+		03BDA7B32A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSProcessInfo+XPMArgumentParser.h"; sourceTree = "<group>"; };
+		03BDA7B42A26DA280079D04F /* XPMCountedArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMCountedArgument.h; sourceTree = "<group>"; };
+		03BDA7B52A26DA280079D04F /* XPMArguments_Coalescer_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArguments_Coalescer_Internal.h; sourceTree = "<group>"; };
+		03BDA7B62A26DA280079D04F /* XPMArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArguments.h; sourceTree = "<group>"; };
+		03BDA7B72A26DA280079D04F /* XPMArgumentSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPMArgumentSignature.h; sourceTree = "<group>"; };
 		03BE26E92A24B2AF00FB7117 /* AppDelegate+EZURLScheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+EZURLScheme.h"; sourceTree = "<group>"; };
 		03BE26EA2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+EZURLScheme.m"; sourceTree = "<group>"; };
 		03BFBB632923998300C48725 /* black-white-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-white-icon@2x.png"; sourceTree = "<group>"; };
@@ -823,9 +866,7 @@
 				038954392A25A9EB00EFFDC3 /* Swift-Bridge */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
-				03882F8129D95044005B5A52 /* CoolToast */,
 				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
-				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
 				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
 				039D119629D5E21E00C93F46 /* EZAudioUtils */,
@@ -838,15 +879,15 @@
 		038954382A25A9C900EFFDC3 /* Kit */ = {
 			isa = PBXGroup;
 			children = (
-				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
-				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
-				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
-				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
+				03B022DD29231FA6001C7E63 /* MMMacro.h */,
 				03B022DB29231FA6001C7E63 /* MMMake.h */,
 				03B022D829231FA6001C7E63 /* MMMake.m */,
 				03B022DA29231FA6001C7E63 /* MMTool.h */,
 				03B022DE29231FA6001C7E63 /* MMTool.m */,
-				03B022DD29231FA6001C7E63 /* MMMacro.h */,
+				03B022DC29231FA6001C7E63 /* MMEventMonitor.h */,
+				03B022D729231FA6001C7E63 /* MMEventMonitor.m */,
+				03B022DF29231FA6001C7E63 /* MMOrderedDictionary.h */,
+				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
 			);
 			path = Kit;
 			sourceTree = "<group>";
@@ -935,16 +976,17 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				038954372A25A94E00EFFDC3 /* Utility */,
 				03B0224F29231FA6001C7E63 /* ViewController */,
-				03E02A2329250CED00A10260 /* EventMonitor */,
-				03B0222529231FA6001C7E63 /* Shortcut */,
-				03B0222829231FA6001C7E63 /* Configuration */,
 				03B0222B29231FA6001C7E63 /* Service */,
-				03B0228629231FA6001C7E63 /* DarkMode */,
-				03B0228E29231FA6001C7E63 /* Snip */,
+				03E02A2329250CED00A10260 /* EventMonitor */,
 				03B0229929231FA6001C7E63 /* StatusItem */,
 				03B0229C29231FA6001C7E63 /* PerferenceWindow */,
+				03BDA7982A26DA000079D04F /* Libraries */,
+				038954372A25A94E00EFFDC3 /* Utility */,
+				03B0222529231FA6001C7E63 /* Shortcut */,
+				03B0222829231FA6001C7E63 /* Configuration */,
+				03B0228629231FA6001C7E63 /* DarkMode */,
+				03B0228E29231FA6001C7E63 /* Snip */,
 				03B022A529231FA6001C7E63 /* MMKit */,
 			);
 			path = Feature;
@@ -1272,14 +1314,14 @@
 		03B022C529231FA6001C7E63 /* Crash */ = {
 			isa = PBXGroup;
 			children = (
+				03B022CD29231FA6001C7E63 /* MMCrash.m */,
+				03B022C929231FA6001C7E63 /* MMCrash.h */,
 				03B022C629231FA6001C7E63 /* MMCrashFileTool.h */,
+				03B022CA29231FA6001C7E63 /* MMCrashFileTool.m */,
 				03B022C729231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.h */,
 				03B022C829231FA6001C7E63 /* MMCrashSignalExceptionHandler.m */,
-				03B022C929231FA6001C7E63 /* MMCrash.h */,
-				03B022CA29231FA6001C7E63 /* MMCrashFileTool.m */,
 				03B022CB29231FA6001C7E63 /* MMCrashSignalExceptionHandler.h */,
 				03B022CC29231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m */,
-				03B022CD29231FA6001C7E63 /* MMCrash.m */,
 			);
 			path = Crash;
 			sourceTree = "<group>";
@@ -1363,6 +1405,53 @@
 				03BD282129486CF200F5891A /* EZBlueTextButton.m */,
 			);
 			path = BlueTextButton;
+			sourceTree = "<group>";
+		};
+		03BDA7982A26DA000079D04F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0361966B2A000E7800806370 /* FWEncryptorAES */,
+				03BDA7992A26DA280079D04F /* ArgumentParser */,
+				03882F8129D95044005B5A52 /* CoolToast */,
+			);
+			path = Libraries;
+			sourceTree = "<group>";
+		};
+		03BDA7992A26DA280079D04F /* ArgumentParser */ = {
+			isa = PBXGroup;
+			children = (
+				03BDA79A2A26DA280079D04F /* XPMArgumentPackage_Private.h */,
+				03BDA79B2A26DA280079D04F /* NSScanner+EscapedScanning.h */,
+				03BDA79C2A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.h */,
+				03BDA79D2A26DA280079D04F /* NSString+Indenter.h */,
+				03BDA79E2A26DA280079D04F /* XPMArgumentParser.h */,
+				03BDA79F2A26DA280079D04F /* XPMValuedArgument.m */,
+				03BDA7A02A26DA280079D04F /* XPMArgumentPackage.h */,
+				03BDA7A12A26DA280079D04F /* ArgumentParser-Prefix.pch */,
+				03BDA7A22A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m */,
+				03BDA7A32A26DA280079D04F /* XPMMutableAttributedArray.m */,
+				03BDA7A42A26DA280079D04F /* XPMArgumentSignature_Private.h */,
+				03BDA7A52A26DA280079D04F /* NSDictionary+RubyDescription.h */,
+				03BDA7A62A26DA280079D04F /* XPMArgsKonstants.m */,
+				03BDA7A72A26DA280079D04F /* XPMArgumentSignature.m */,
+				03BDA7A82A26DA280079D04F /* XPMArguments_Coalescer_Internal.m */,
+				03BDA7A92A26DA280079D04F /* XPMCountedArgument.m */,
+				03BDA7AA2A26DA280079D04F /* NSScanner+EscapedScanning.m */,
+				03BDA7AB2A26DA280079D04F /* XPMArgumentPackage.m */,
+				03BDA7AC2A26DA280079D04F /* XPMValuedArgument.h */,
+				03BDA7AD2A26DA280079D04F /* XPMArgumentParser.m */,
+				03BDA7AE2A26DA280079D04F /* NSString+Indenter.m */,
+				03BDA7AF2A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m */,
+				03BDA7B02A26DA280079D04F /* XPMArgsKonstants.h */,
+				03BDA7B12A26DA280079D04F /* NSDictionary+RubyDescription.m */,
+				03BDA7B22A26DA280079D04F /* XPMMutableAttributedArray.h */,
+				03BDA7B32A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.h */,
+				03BDA7B42A26DA280079D04F /* XPMCountedArgument.h */,
+				03BDA7B52A26DA280079D04F /* XPMArguments_Coalescer_Internal.h */,
+				03BDA7B62A26DA280079D04F /* XPMArguments.h */,
+				03BDA7B72A26DA280079D04F /* XPMArgumentSignature.h */,
+			);
+			path = ArgumentParser;
 			sourceTree = "<group>";
 		};
 		03BFBB5429235C9400C48725 /* Icons */ = {
@@ -1763,12 +1852,15 @@
 			files = (
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
+				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
 				03B0232F29231FA6001C7E63 /* MMCrashFileTool.m in Sources */,
 				03B0233629231FA6001C7E63 /* MMEventMonitor.m in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
+				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
+				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
@@ -1780,6 +1872,7 @@
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
 				03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */,
+				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,
@@ -1787,6 +1880,7 @@
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */,
+				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				0389543B2A25AA5800EFFDC3 /* ArgumentParser.swift in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
@@ -1812,6 +1906,7 @@
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
+				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
@@ -1844,6 +1939,7 @@
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
+				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
@@ -1851,7 +1947,9 @@
 				03D747432A07FB150006CD77 /* EZError.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
+				03BDA7C32A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m in Sources */,
 				03BB2DF329F6350200447EDD /* EZCopyButton.m in Sources */,
+				03BDA7BB2A26DA280079D04F /* XPMArgsKonstants.m in Sources */,
 				03BE26EB2A24B2AF00FB7117 /* AppDelegate+EZURLScheme.m in Sources */,
 				03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */,
 				0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */,
@@ -1879,13 +1977,17 @@
 				03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */,
 				03B0232A29231FA6001C7E63 /* NSColor+MyColors.m in Sources */,
 				03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */,
+				03BDA7B92A26DA280079D04F /* NSProcessInfo+XPMArgumentParser.m in Sources */,
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
+				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
+				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				037852B629588EDE00D0E2CF /* EZServiceRowView.m in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
+				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				0398CCB82A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
