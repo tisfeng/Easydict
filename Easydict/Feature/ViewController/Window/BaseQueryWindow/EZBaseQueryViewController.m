@@ -1162,7 +1162,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     EZQueryService *service = result.service;
 
     mm_weakify(self);
-    [resultView setClickTextBlock:^(NSString *_Nonnull word) {
+    [resultView setQueryTextBlock:^(NSString *_Nonnull word) {
         mm_strongify(self);
         [self startQueryText:word];
     }];

@@ -263,14 +263,9 @@
     [self updateLoadingAnimation];
 }
 
-- (void)setCopyTextBlock:(void (^)(NSString *_Nonnull))copyTextBlock {
-    _copyTextBlock = copyTextBlock;
-    self.wordResultView.copyTextBlock = copyTextBlock;
-}
-
-- (void)setClickTextBlock:(void (^)(NSString *_Nonnull))clickTextBlock {
-    _clickTextBlock = clickTextBlock;
-    self.wordResultView.clickTextBlock = clickTextBlock;
+- (void)setQueryTextBlock:(void (^)(NSString *_Nonnull))clickTextBlock {
+    _queryTextBlock = clickTextBlock;
+    self.wordResultView.queryTextBlock = clickTextBlock;
 }
 
 
