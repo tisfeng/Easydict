@@ -13,9 +13,15 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 
+static void delay_block(dispatch_block_t block) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        block();
+    });
+}
+
 void queryText(NSString *text) {
     // ???: need to wait AppDelegate loaded.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    delay_block(^{
         [EZWindowManager.shared showFloatingWindowType:EZWindowTypeFixed queryText:text];
     });
 }
@@ -23,9 +29,10 @@ void queryText(NSString *text) {
 void parseArmguments(void) {
     XPMArgumentSignature
     *helpSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-h --help]"],
+    *detectTextSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-d --detectText]="],
     *queryTextSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-q --queryText]="];
     
-    NSArray *signatures = @[ helpSig, queryTextSig ];
+    NSArray *signatures = @[ helpSig, detectTextSig, queryTextSig ];
     
     XPMArgumentPackage *arguments = [[NSProcessInfo processInfo] xpmargs_parseArgumentsWithSignatures:signatures];
     
@@ -34,11 +41,21 @@ void parseArmguments(void) {
     if ([arguments booleanValueForSignature:helpSig]) {
         print_help = true;
     } else {
-        NSString *text = [[arguments firstObjectForSignature:queryTextSig] description];
-        NSLog(@"queryText: %@", text);
+        NSString *query_text = [[arguments firstObjectForSignature:queryTextSig] description];
+        NSLog(@"queryText: %@", query_text);
+        if (query_text) {
+            queryText(query_text);
+        }
         
-        if (text) {
-            queryText(text);
+        NSString *detect_text = [[arguments firstObjectForSignature:detectTextSig] description];
+        NSLog(@"detectText: %@", detect_text);
+        
+        if (detect_text) {
+            delay_block(^{
+                [EZWindowManager.shared detectQueryText:detect_text completion:^(NSString * _Nonnull language) {
+                    printf("%s\n", [language UTF8String]);
+                }];
+            });
         }
     }
     
