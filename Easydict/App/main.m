@@ -10,7 +10,6 @@
 #import "EZWindowManager.h"
 #import "Easydict-Swift.h"
 
-
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
         // Setup code that might create autoreleased objects goes here.
@@ -32,8 +31,10 @@ int main(int argc, const char *argv[]) {
             // get the second arg, convert to nsstring
             NSString *queryText = arguments[1];
             printf("easydict query: %s\n", [queryText UTF8String]);
-//            EZBaseQueryViewController *viewController = window.queryViewController;
-//            [viewController startQueryText:queryText actionType:EZActionTypeInputQuery];
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                 [EZWindowManager.shared showFloatingWindowType:EZWindowTypeFixed queryText:@"good"];
+            });
         }
     }
     
