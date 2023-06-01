@@ -1043,6 +1043,17 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
     
     BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
     if (isChinese) {
+        /**
+         独
+         坐
+         幽
+         篁
+         里
+         */
+        if (charCountPerLine == 1) {
+            return NO;
+        }
+        
         CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
         if (lineCount > 2) {
             maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
