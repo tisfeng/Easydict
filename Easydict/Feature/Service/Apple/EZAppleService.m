@@ -19,7 +19,8 @@ static NSString *const kLineBreak = @"\n";
 static NSString *const kParagraphBreak = @"\n\n";
 
 static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
-static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—", @"-", @"–" ];
+static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
+static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
 @interface EZAppleService ()
 
@@ -799,8 +800,9 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
+    NSInteger lineCount = observationResults.count;
     
-    for (int i = 0; i < observationResults.count; i++) {
+    for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *observation = observationResults[i];
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         NSString *recognizedString = recognizedText.string;
@@ -810,7 +812,8 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         for (NSInteger i = 0; i < recognizedString.length; i++) {
             totalCharCount += 1;
             NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:kAllowedCharactersInPoetryList];
+            NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:kDashCharacterList];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
             if (isChar) {
                 punctuationMarkCount += 1;
             }
@@ -890,7 +893,7 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
     NSMutableString *mergedText = [NSMutableString string];
     
     
-    for (int i = 0; i < observationResults.count; i++) {
+    for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *observation = observationResults[i];
         VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
         confidence += recognizedText.confidence;
@@ -967,11 +970,19 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
                 } else {
                     NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
                     CGFloat prevLineLength = prevBoundingBox.size.width;
-                    joinedString = [self joinedStringOfPrevText:prevString
+                    
+                    if ([self isLastJoinedDashCharactarInText:prevString nextText:recognizedString]) {
+                        // Remove last dash -
+                        mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
+                        joinedString = @"";
+                    } else {
+                        joinedString = [self joinedStringOfText:recognizedString
+                                                       prevText:prevString
                                                prevLengthOfLine:prevLineLength
                                                    lengthOfLine:lineLength
                                                 maxLengthOfLine:maxLengthOfLine
                                                        language:language];
+                    }
                 }
             } else {
                 joinedString = @" "; // if the same line, just join two texts
@@ -1013,8 +1024,21 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
     
-    for (NSString *text in textArray) {
+    /**
+     Egress bandwidth overconsump-
+     tion
+     */
+    for (int i = 0; i < lineCount; i++) {
+        NSString *text = textArray[i];
         totalCharCount += text.length;
+        
+        if (i < lineCount - 1) {
+            NSString *nextText = textArray[i+1];
+            BOOL isNextFirstCharLowercase = [self isLastJoinedDashCharactarInText:text nextText:nextText];
+            if (isNextFirstCharLowercase) {
+                punctuationMarkCount++;
+            }
+        }
     }
     
     charCountPerLine = totalCharCount / lineCount;
@@ -1099,7 +1123,8 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
 }
 
 /// Get joined string of text, according to its last char.
-- (NSString *)joinedStringOfPrevText:(NSString *)prevText
+- (NSString *)joinedStringOfText:(NSString *)text
+                        prevText:(NSString *)prevText
                     prevLengthOfLine:(CGFloat)prevLengthOfLine
                         lengthOfLine:(CGFloat)lengthOfLine
                      maxLengthOfLine:(CGFloat)maxLengthOfLine
@@ -1148,6 +1173,31 @@ static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"—"
         }
     }
     return joinedString;
+}
+
+/// Check if the last char ot text is a joined dash.
+- (BOOL)isLastJoinedDashCharactarInText:(NSString *)text nextText:(NSString *)nextText {
+    /**
+     // Not poetry
+     
+     Egress bandwidth overconsump-
+     tion
+     
+     // Is poetry
+     
+     Had I not seen the Sun
+     I could have borne the shade
+     But Light a newer Wilderness
+     My Wilderness has made —
+     */
+    NSString *lastChar = [text substringFromIndex:text.length - 1];
+    NSString *nextFirstChar = [nextText substringToIndex:1];
+    BOOL isNextFirstCharLowercase = [nextFirstChar isEqualToString:[nextFirstChar lowercaseString]];
+    
+    if ([kDashCharacterList containsObject:lastChar] && isNextFirstCharLowercase) {
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)isShortLineOfLength:(CGFloat)length
