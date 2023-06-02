@@ -983,9 +983,20 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                             /**
                              Egress bandwidth overconsump-
                              tion
+                             
+                             the low-
+                             latency
+                             
+                             lowlatency
                              */
-                            // Remove last dash '-' and join with ""
-                            mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
+                            NSString *removedDashMergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
+                            NSString *lastWord = [removedDashMergedText lastWord];
+                            NSString *firstWord = [recognizedString firstWord];
+                            NSString *newWord = [NSString stringWithFormat:@"%@%@", lastWord, firstWord];
+                            if ([EZTextWordUtils isSpelledCorrectly:newWord]) {
+                                // Remove last dash '-' and join with ""
+                                mergedText = removedDashMergedText.mutableCopy;
+                            }
                         } else {
                             /**
                              HTTP/2 responds to SBIs requirements which include a Request-
@@ -1044,10 +1055,25 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     /**
      Egress bandwidth overconsump-
      tion
+
+     not poetry
      */
     for (int i = 0; i < lineCount; i++) {
         NSString *text = textArray[i];
         totalCharCount += text.length;
+        
+        if (i < lineCount - 1) {
+            NSString *nextText = textArray[i + 1];
+            CGFloat lineLength = lineLengthArray[i].floatValue;
+            BOOL isLongLastDashChar = [self isLongLineLastJoinedDashCharactarInText:text
+                                                                           nextText:nextText
+                                                                         lineLength:lineLength
+                                                                    maxLengthOfLine:maxLengthOfLine];
+            if (isLongLastDashChar) {
+                punctuationMarkCount++;
+            }
+        }
+       
     }
     
     charCountPerLine = totalCharCount / lineCount;

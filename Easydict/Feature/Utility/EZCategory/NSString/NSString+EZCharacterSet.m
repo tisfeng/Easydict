@@ -42,4 +42,18 @@
     return [firstChar isLowercaseString];
 }
 
+/// Get first word of string
+- (NSString *)firstWord {
+    NSArray *words = [self componentsSeparatedByString:@" "];
+    NSString *firstWord = [words firstObject];
+    return firstWord;
+}
+
+/// Get last word of string
+- (NSString *)lastWord {
+    NSArray *words = [self componentsSeparatedByString:@" "];
+    NSString *lastWord = [words lastObject];
+    return lastWord;
+}
+
 @end

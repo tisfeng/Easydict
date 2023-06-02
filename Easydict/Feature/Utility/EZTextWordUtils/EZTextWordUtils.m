@@ -199,8 +199,18 @@ static NSDictionary *const kQuotesDict = @{
 /// Use NSSpellChecker to check word spell.
 + (BOOL)isSpelledCorrectly:(NSString *)word {
     NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
-    NSRange misspelledRange = [spellChecker checkSpellingOfString:word startingAt:0];
-    return misspelledRange.location == NSNotFound;
+    NSRange wordRange = [spellChecker checkSpellingOfString:word startingAt:0];
+    [word rangeOfString:word options:NSLiteralSearch];
+    BOOL isCorrect = wordRange.location == NSNotFound;
+    if (!isCorrect) {
+        NSString *language = [spellChecker language]; // en
+        //  lowlatency --> low latency
+//        NSString *correction = [spellChecker correctionForWordRange:wordRange inString:word language:language inSpellDocumentWithTag:0];
+        //  "low latency",  "low-latency"
+        NSArray *guessWords = [spellChecker guessesForWordRange:wordRange inString:word language:language inSpellDocumentWithTag:0];
+        NSLog(@"guessWords: %@", guessWords);
+    }
+    return isCorrect;
 }
 
 /// Check if text is a Chinese word, length <= 4, 倾国倾城
@@ -209,7 +219,6 @@ static NSDictionary *const kQuotesDict = @{
     if (text.length > 4) {
         return NO;
     }
-    
     return [self isChineseText:text];
 }
 
