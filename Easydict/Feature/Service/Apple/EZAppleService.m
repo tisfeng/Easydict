@@ -14,6 +14,7 @@
 #import "EZTextWordUtils.h"
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>
+#import "NSString+EZCharacterSet.h"
 
 static NSString *const kLineBreak = @"\n";
 static NSString *const kParagraphBreak = @"\n\n";
@@ -316,7 +317,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 - (EZLanguage)detectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
     EZLanguage mostConfidentLanguage = [self appleDetectTextLanguage:text printLog:logFlag];
     
-    if ([self isAlphabet:text] && ![mostConfidentLanguage isEqualToString:EZLanguageEnglish]) {
+    if ([text isAlphabet] && ![mostConfidentLanguage isEqualToString:EZLanguageEnglish]) {
         mostConfidentLanguage = EZLanguageEnglish;
     }
     
@@ -971,10 +972,26 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                     NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
                     CGFloat prevLineLength = prevBoundingBox.size.width;
                     
-                    if ([self isLastJoinedDashCharactarInText:prevString nextText:recognizedString]) {
-                        // Remove last dash -
-                        mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
+                    BOOL isLongLastDashChar = [self isLongLineLastJoinedDashCharactarInText:prevString
+                                                                                   nextText:recognizedString
+                                                                                 lineLength:lineLength
+                                                                            maxLengthOfLine:maxLengthOfLine];
+                    
+                    if (isLongLastDashChar) {
                         joinedString = @"";
+                        if ([recognizedString isLowercaseFirstChar]) {
+                            /**
+                             Egress bandwidth overconsump-
+                             tion
+                             */
+                            // Remove last dash '-' and join with ""
+                            mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
+                        } else {
+                            /**
+                             HTTP/2 responds to SBIs requirements which include a Request-
+                             Response
+                             */
+                        }
                     } else {
                         joinedString = [self joinedStringOfText:recognizedString
                                                        prevText:prevString
@@ -1031,14 +1048,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     for (int i = 0; i < lineCount; i++) {
         NSString *text = textArray[i];
         totalCharCount += text.length;
-        
-        if (i < lineCount - 1) {
-            NSString *nextText = textArray[i+1];
-            BOOL isNextFirstCharLowercase = [self isLastJoinedDashCharactarInText:text nextText:nextText];
-            if (isNextFirstCharLowercase) {
-                punctuationMarkCount++;
-            }
-        }
     }
     
     charCountPerLine = totalCharCount / lineCount;
@@ -1065,19 +1074,19 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
+    /**
+     独
+     坐
+     幽
+     篁
+     里
+     */
+    if (charCountPerLine < 2) {
+        return NO;
+    }
+    
     BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
     if (isChinese) {
-        /**
-         独
-         坐
-         幽
-         篁
-         里
-         */
-        if (charCountPerLine == 1) {
-            return NO;
-        }
-        
         CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
         if (lineCount > 2) {
             maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
@@ -1125,10 +1134,10 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 /// Get joined string of text, according to its last char.
 - (NSString *)joinedStringOfText:(NSString *)text
                         prevText:(NSString *)prevText
-                    prevLengthOfLine:(CGFloat)prevLengthOfLine
-                        lengthOfLine:(CGFloat)lengthOfLine
-                     maxLengthOfLine:(CGFloat)maxLengthOfLine
-                            language:(EZLanguage)language {
+                prevLengthOfLine:(CGFloat)prevLengthOfLine
+                    lengthOfLine:(CGFloat)lengthOfLine
+                 maxLengthOfLine:(CGFloat)maxLengthOfLine
+                        language:(EZLanguage)language {
     NSString *joinedString = @"";
     NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
     
@@ -1175,6 +1184,15 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return joinedString;
 }
 
+- (BOOL)isLongLineLastJoinedDashCharactarInText:(NSString *)text
+                                       nextText:(NSString *)nextText
+                                     lineLength:(CGFloat)lineLength
+                                maxLengthOfLine:(CGFloat)maxLengthOfLine {
+    BOOL isLongLine = [self isLongLineOfLength:lineLength maxLengthOfLine:maxLengthOfLine];
+    BOOL isLastDashChar = [self isLastJoinedDashCharactarInText:text nextText:nextText];
+    return isLongLine && isLastDashChar;
+}
+
 /// Check if the last char ot text is a joined dash.
 - (BOOL)isLastJoinedDashCharactarInText:(NSString *)text nextText:(NSString *)nextText {
     /**
@@ -1192,17 +1210,17 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      */
     NSString *lastChar = [text substringFromIndex:text.length - 1];
     NSString *nextFirstChar = [nextText substringToIndex:1];
-    BOOL isNextFirstCharLowercase = [nextFirstChar isEqualToString:[nextFirstChar lowercaseString]];
-    
-    if ([kDashCharacterList containsObject:lastChar] && isNextFirstCharLowercase) {
+    BOOL isDashChar = [kDashCharacterList containsObject:lastChar];
+    BOOL isNextFirstCharAlphabet = [nextFirstChar isAlphabet];
+    if (isDashChar && isNextFirstCharAlphabet) {
         return YES;
     }
     return NO;
 }
 
-- (BOOL)isShortLineOfLength:(CGFloat)length
+- (BOOL)isShortLineOfLength:(CGFloat)lineLength
             maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    return [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
+    return [self isShortLineOfLength:lineLength maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
 }
 
 - (BOOL)isShortLineOfLength:(CGFloat)length
@@ -1354,16 +1372,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return NO;
 }
 
-/// Check if it is a single letter of the alphabet.
-- (BOOL)isAlphabet:(NSString *)string {
-    if (string.length != 1) {
-        return NO;
-    }
-    
-    NSString *regex = @"[a-zA-Z]";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
-    return [predicate evaluateWithObject:string];
-}
 
 /// Check Chinese language type of text, traditional or simplified.
 /// - !!!: Make sure the text is Chinese.
