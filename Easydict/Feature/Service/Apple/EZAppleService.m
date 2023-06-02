@@ -1249,7 +1249,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isPoetryLineCharactersCount:(NSInteger)charactersCount language:(EZLanguage)language {
     BOOL isPoetry = NO;
-    NSInteger charCountPerLineOfPoetry = 60;
+    NSInteger charCountPerLineOfPoetry = 50;
     if ([EZLanguageManager isChineseLanguage:language]) {
         charCountPerLineOfPoetry = 40;
     }
