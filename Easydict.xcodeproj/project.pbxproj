@@ -187,6 +187,7 @@
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03E02A222924E77100A10260 /* EZMenuItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZMenuItemManager.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
+		03E2BF752A298F2B00E010F3 /* NSString+EZCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZCharacterSet.m */; };
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
@@ -552,6 +553,8 @@
 		03E02A212924E77100A10260 /* EZMenuItemManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMenuItemManager.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
 		03E02A2529250D1D00A10260 /* EZEventMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZEventMonitor.m; sourceTree = "<group>"; };
+		03E2BF732A298F2B00E010F3 /* NSString+EZCharacterSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZCharacterSet.h"; sourceTree = "<group>"; };
+		03E2BF742A298F2B00E010F3 /* NSString+EZCharacterSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZCharacterSet.m"; sourceTree = "<group>"; };
 		03F0DB362953428300EBF9C1 /* EZLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLog.h; sourceTree = "<group>"; };
 		03F0DB372953428300EBF9C1 /* EZLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLog.m; sourceTree = "<group>"; };
 		03F14A392956016B00CB7379 /* EZVolcanoTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZVolcanoTranslate.h; sourceTree = "<group>"; };
@@ -662,6 +665,8 @@
 				03BFFC7029612E10004E033E /* NSString+EZConvenience.m */,
 				0333FDA42A035D5700891515 /* NSString+EZChineseText.h */,
 				0333FDA52A035D5700891515 /* NSString+EZChineseText.m */,
+				03E2BF732A298F2B00E010F3 /* NSString+EZCharacterSet.h */,
+				03E2BF742A298F2B00E010F3 /* NSString+EZCharacterSet.m */,
 			);
 			path = NSString;
 			sourceTree = "<group>";
@@ -2003,6 +2008,7 @@
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
+				03E2BF752A298F2B00E010F3 /* NSString+EZCharacterSet.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
