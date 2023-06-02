@@ -23,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Check if first char is lowercaseString
 - (BOOL)isLowercaseFirstChar;
 
+/// Get first word of string
+- (NSString *)firstWord;
+
+/// Get last word of string
+- (NSString *)lastWord;
+
 @end
 
 NS_ASSUME_NONNULL_END
