@@ -26,8 +26,6 @@
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
 		034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */; };
-		03515F852A25A87B00560697 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 03515F842A25A87B00560697 /* ArgumentParser */; };
-		03515F872A25A87B00560697 /* generate-manual in Frameworks */ = {isa = PBXBuildFile; productRef = 03515F862A25A87B00560697 /* generate-manual */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
 		03542A3A2937AE6400C34C33 /* EZQueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A392937AE6400C34C33 /* EZQueryService.m */; };
@@ -67,7 +65,6 @@
 		03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8829D95044005B5A52 /* ToastWindowController.xib */; };
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
-		0389543B2A25AA5800EFFDC3 /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		0398CCB82A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0398CCB72A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m */; };
@@ -321,7 +318,6 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
 		038D20392A09364B0005D000 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		038D203B2A09364D0005D000 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
@@ -580,9 +576,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03515F852A25A87B00560697 /* ArgumentParser in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
-				03515F872A25A87B00560697 /* generate-manual in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,7 +862,6 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				038954392A25A9EB00EFFDC3 /* Swift-Bridge */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
@@ -895,22 +888,6 @@
 				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
 			);
 			path = Kit;
-			sourceTree = "<group>";
-		};
-		038954392A25A9EB00EFFDC3 /* Swift-Bridge */ = {
-			isa = PBXGroup;
-			children = (
-				0389543C2A25ABA500EFFDC3 /* ArgumentParser */,
-			);
-			path = "Swift-Bridge";
-			sourceTree = "<group>";
-		};
-		0389543C2A25ABA500EFFDC3 /* ArgumentParser */ = {
-			isa = PBXGroup;
-			children = (
-				0389543A2A25AA5800EFFDC3 /* ArgumentParser.swift */,
-			);
-			path = ArgumentParser;
 			sourceTree = "<group>";
 		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
@@ -1707,8 +1684,6 @@
 			);
 			name = Easydict;
 			packageProductDependencies = (
-				03515F842A25A87B00560697 /* ArgumentParser */,
-				03515F862A25A87B00560697 /* generate-manual */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-Debug.app */;
@@ -1745,7 +1720,6 @@
 			);
 			mainGroup = C99EEB0F2385796700FEE666;
 			packageReferences = (
-				03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -1886,7 +1860,6 @@
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
 				03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
-				0389543B2A25AA5800EFFDC3 /* ArgumentParser.swift in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
 				03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */,
@@ -2323,30 +2296,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		03515F842A25A87B00560697 /* ArgumentParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
-			productName = ArgumentParser;
-		};
-		03515F862A25A87B00560697 /* generate-manual */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 03515F832A25A87B00560697 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
-			productName = "generate-manual";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C99EEB102385796700FEE666 /* Project object */;
 }
