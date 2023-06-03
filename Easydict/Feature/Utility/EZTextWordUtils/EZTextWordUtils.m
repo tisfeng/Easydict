@@ -199,14 +199,24 @@ static NSDictionary *const kQuotesDict = @{
 /// Use NSSpellChecker to check word spell.
 + (BOOL)isSpelledCorrectly:(NSString *)word {
     NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
-    NSRange wordRange = [spellChecker checkSpellingOfString:word startingAt:0];
-    [word rangeOfString:word options:NSLiteralSearch];
-    BOOL isCorrect = wordRange.location == NSNotFound;
+    NSRange wordRange = NSMakeRange(0, [word length]);
+    NSString *language = [spellChecker language]; // en
+    /**
+     lowlatency --> low latency
+     slow-read --> slowed
+     */
+    NSString *correctedWord = [spellChecker correctionForWordRange:wordRange inString:word language:language inSpellDocumentWithTag:0];
+    BOOL isCorrect = correctedWord == nil;
     if (!isCorrect) {
-        NSString *language = [spellChecker language]; // en
-        //  lowlatency --> low latency
-//        NSString *correction = [spellChecker correctionForWordRange:wordRange inString:word language:language inSpellDocumentWithTag:0];
-        //  "low latency",  "low-latency"
+        /**
+         "low latency",  "low-latency"
+         
+         "slower",
+         "slowed",
+         "slobbered",
+         "slow-read",
+         "slow read"
+         */
         NSArray *guessWords = [spellChecker guessesForWordRange:wordRange inString:word language:language inSpellDocumentWithTag:0];
         NSLog(@"guessWords: %@", guessWords);
     }
