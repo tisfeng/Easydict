@@ -149,12 +149,12 @@
     _queryModel = queryModel;
     
     self.fromLanguageButton.selectedLanguage = queryModel.userSourceLanguage;
-    if ([queryModel.userSourceLanguage isEqualToString:EZLanguageAuto]) {
+    if (!queryModel.hasUserSourceLanguage) {
         self.fromLanguageButton.autoSelectedLanguage = queryModel.queryFromLanguage;
     }
     
     self.toLanguageButton.selectedLanguage = queryModel.userTargetLanguage;
-    if ([queryModel.userTargetLanguage isEqualToString:EZLanguageAuto]) {
+    if (!queryModel.hasUserTargetLanguage) {
         self.toLanguageButton.autoSelectedLanguage = queryModel.queryTargetLanguage;
     }
 }

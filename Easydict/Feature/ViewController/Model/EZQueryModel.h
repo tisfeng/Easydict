@@ -24,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) EZLanguage userSourceLanguage;
 @property (nonatomic, copy) EZLanguage userTargetLanguage;
 
+@property (nonatomic, assign, readonly) BOOL hasUserSourceLanguage;
+@property (nonatomic, assign, readonly) BOOL hasUserTargetLanguage;
+
 @property (nonatomic, copy) EZLanguage detectedLanguage;
 
 @property (nonatomic, assign) CGFloat ocrConfidence;
