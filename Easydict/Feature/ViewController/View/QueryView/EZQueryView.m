@@ -532,6 +532,10 @@
 }
 
 - (void)updateDetectButton {
+    // If user has designated source language, there is no meaning to detect language.
+    BOOL noUserSourceLanguage = [self.queryModel.userSourceLanguage isEqualToString:EZLanguageAuto];
+    self.detectButton.enabled = noUserSourceLanguage;
+    
     self.detectButton.showAutoLanguage = self.queryModel.showAutoLanguage;
     self.detectButton.detectedLanguage = self.queryModel.detectedLanguage;
     
