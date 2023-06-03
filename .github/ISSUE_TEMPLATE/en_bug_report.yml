@@ -1,6 +1,6 @@
 name: Bug report
 description: Report an issue
-title: "🐞 Bug Report: {{Please fill in the title}}"
+title: "🐞 Bug Report: Please fill in the title"
 labels: ["bug"]
 assignees:
   -
