@@ -107,13 +107,6 @@
     }];
 }
 
-- (BOOL)needDetectLanguage {
-    if (![self.userSourceLanguage isEqualToString:EZLanguageAuto]) {
-        return NO;
-    }
-    return _needDetectLanguage;
-}
-
 - (void)setNeedDetectLanguage:(BOOL)needDetectLanguage {
     _needDetectLanguage = needDetectLanguage;
     
@@ -126,17 +119,14 @@
 
 
 - (EZLanguage)queryFromLanguage {
-    EZLanguage fromLanguage = self.userSourceLanguage;
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
-        fromLanguage = self.detectedLanguage;
-    }
+    EZLanguage fromLanguage = self.hasUserSourceLanguage ? self.userSourceLanguage : self.detectedLanguage;
     return fromLanguage;
 }
 
 - (EZLanguage)queryTargetLanguage {
     EZLanguage fromLanguage = self.queryFromLanguage;
     EZLanguage targetLanguage = self.userTargetLanguage;
-    if ([targetLanguage isEqualToString:EZLanguageAuto]) {
+    if (!self.hasUserTargetLanguage) {
         targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
     }
     return targetLanguage;
@@ -144,6 +134,16 @@
 
 - (BOOL)hasQueryFromLanguage {
     return ![self.queryFromLanguage isEqualToString:EZLanguageAuto];
+}
+
+- (BOOL)hasUserSourceLanguage {
+    BOOL hasUserSourceLanguage = ![self.userSourceLanguage isEqualToString:EZLanguageAuto];
+    return hasUserSourceLanguage;
+}
+
+- (BOOL)hasUserTargetLanguage {
+    BOOL hasUserTargetLanguage = ![self.userTargetLanguage isEqualToString:EZLanguageAuto];
+    return hasUserTargetLanguage;
 }
 
 
