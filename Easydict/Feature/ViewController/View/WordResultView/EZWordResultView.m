@@ -738,6 +738,12 @@ static const CGFloat kVerticalPadding_8 = 8;
     audioButton.enabled = hasTranslatedText;
     
     audioButton.audioPlayer = self.result.service.audioPlayer;
+    
+    [audioButton setPlayStatus:^(BOOL isPlaying, EZAudioButton *audioButton) {
+        NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
+        audioButton.toolTip = [NSString stringWithFormat:@"%@", action];
+    }];
+    
     [audioButton setPlayAudioBlock:^{
         mm_strongify(self);
         EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];

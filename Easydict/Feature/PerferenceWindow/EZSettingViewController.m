@@ -234,12 +234,12 @@
     self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
     
     
-    NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_audio", nil)];
+    NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_word_audio", nil)];
     playAudioLabel.font = font;
     [self.contentView addSubview:playAudioLabel];
     self.playAudioLabel = playAudioLabel;
     
-    NSString *autoPlayAudioTitle = NSLocalizedString(@"auto_play_audio", nil);
+    NSString *autoPlayAudioTitle = NSLocalizedString(@"auto_play_word_audio", nil);
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
     

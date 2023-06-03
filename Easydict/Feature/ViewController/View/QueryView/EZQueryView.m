@@ -101,9 +101,7 @@
     [self addSubview:audioButton];
     self.audioButton = audioButton;
 
-    mm_weakify(audioButton);
-    [audioButton setPlayStatus:^(BOOL isPlaying) {
-        mm_strongify(audioButton);
+    [audioButton setPlayStatus:^(BOOL isPlaying, EZAudioButton *audioButton) {
         NSString *action = isPlaying ? NSLocalizedString(@"stop_play_audio", nil) : NSLocalizedString(@"play_audio", nil);
         NSString *shortcut = @"⌘+S";
         audioButton.toolTip = [NSString stringWithFormat:@"%@, %@", action, shortcut];

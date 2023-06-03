@@ -75,15 +75,17 @@
     }];
     
     if (self.playStatus) {
-        self.playStatus(isPlaying);
+        self.playStatus(isPlaying, self);
     }
 }
 
-- (void)setPlayStatus:(void (^)(BOOL))playStatus {
+- (void)setPlayStatus:(void (^)(BOOL, EZAudioButton * _Nonnull))playStatus {
     _playStatus = playStatus;
     
-    // init play status
-    playStatus(self.isPlaying);
+    if (playStatus) {
+        // init play status
+        playStatus(self.isPlaying, self);
+    }
 }
 
 
