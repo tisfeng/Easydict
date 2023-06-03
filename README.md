@@ -339,7 +339,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 - `Cmd + Shift + C`: 复制查询内容。
 - `Cmd + S`: 播放查询文本的发音。(Play Sound)
 - `Cmd + R`: 再次查询。(Retry Query)
-- `Cmd + T`: 切换翻译语言。(Toggle Translate Language)
+- `Cmd + T`: 交换翻译语言。(Toggle Translate Language)
 - `Cmd + P`: 钉住窗口。(Pin Window，再次按下取消钉住)
 - `Cmd + W`: 关闭窗口。
 - `Cmd + Enter`: 默认打开 Google 搜索引擎，搜索内容为输入文本，效果等同手动点击右上角的浏览器搜索图标。
