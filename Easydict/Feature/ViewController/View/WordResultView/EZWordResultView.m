@@ -772,7 +772,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     textCopyButton.mas_key = @"result_copyButton";
     
     CGFloat audioButtonLeftOffset = EZAudioButtonLeftMargin_6;
-    CGFloat audioButtonTopOffset = 5;
+    CGFloat audioButtonTopOffset = 6;
     CGFloat buttonPadding = EZAudioButtonRightPadding_1;
     
     [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
