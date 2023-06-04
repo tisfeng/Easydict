@@ -772,7 +772,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 }
 
 
-
 #pragma mark - Join OCR text array
 
 - (void)setupOCRResult:(EZOCRResult *)ocrResult
@@ -895,13 +894,12 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     
     for (int i = 0; i < lineCount; i++) {
-        VNRecognizedTextObservation *observation = observationResults[i];
-        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        VNRecognizedTextObservation *textObservation = observationResults[i];
+        VNRecognizedText *recognizedText = [[textObservation topCandidates:1] firstObject];
         confidence += recognizedText.confidence;
         
         NSString *recognizedString = recognizedText.string;
-        CGRect boundingBox = observation.boundingBox;
-        CGFloat lineLength = boundingBox.size.width;
+        CGRect boundingBox = textObservation.boundingBox;
         //        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
         /**
@@ -928,8 +926,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         // 如果 i 不是第一个元素，且前一个元素的 boundingBox 的 minY 值大于当前元素的 maxY 值，则认为中间有换行。
         
         if (i > 0) {
-            VNRecognizedTextObservation *prevObservation = observationResults[i - 1];
-            CGRect prevBoundingBox = prevObservation.boundingBox;
+            VNRecognizedTextObservation *prevTextObservation = observationResults[i - 1];
+            CGRect prevBoundingBox = prevTextObservation.boundingBox;
             
             // !!!: deltaY may be < 0
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
@@ -964,23 +962,18 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             
             NSString *joinedString;
             
-            NSString *prevString = [[prevObservation topCandidates:1] firstObject].string;
-            CGFloat prevLineLength = prevBoundingBox.size.width;
-            
-            BOOL isNeedHandleLastDashOfText = [self isNeedHandleLastDashOfText:prevString
-                                                                      nextText:recognizedString
-                                                                    lineLength:lineLength
-                                                               maxLengthOfLine:maxLengthOfLine];
+            BOOL isNeedHandleLastDashOfText = [self isNeedHandleLastDashOfTextObservation:textObservation
+                                                                      prevTextObservation:prevTextObservation
+                                                                            maxLineLength:maxLengthOfLine];
             
             if (isNewParagraph) {
                 joinedString = kParagraphBreak; // @"\n\n", Paragraph
             } else if (isNeedHandleLastDashOfText) {
                 joinedString = @"";
                 
-                BOOL isNeedRemoveLastDashOfText = [self isNeedRemoveLastDashOfText:prevString
-                                                                          nextText:recognizedString
-                                                                        lineLength:lineLength
-                                                                   maxLengthOfLine:maxLengthOfLine];
+                BOOL isNeedRemoveLastDashOfText = [self isNeedRemoveLastDashOfTextObservation:textObservation
+                                                                          prevTextObservation:prevTextObservation
+                                                                                maxLineLength:maxLengthOfLine];
                 if (isNeedRemoveLastDashOfText) {
                     mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
                 }
@@ -988,12 +981,10 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                 if (needLineBreak) {
                     joinedString = kLineBreak;
                 } else {
-                    joinedString = [self joinedStringOfText:recognizedString
-                                                   prevText:prevString
-                                           prevLengthOfLine:prevLineLength
-                                               lengthOfLine:lineLength
-                                            maxLengthOfLine:maxLengthOfLine
-                                                   language:language];
+                    joinedString = [self joinedStringOfTextObservation:textObservation
+                                                   prevTextObservation:prevTextObservation
+                                                       maxLengthOfLine:maxLengthOfLine
+                                                              language:language];
                 }
             } else {
                 joinedString = @" "; // if the same line, just join two texts
@@ -1069,12 +1060,12 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             minLengthOfLine = length;
         }
         
-        BOOL isShortLine = [self isShortLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        BOOL isShortLine = [self isShortLineLength:length maxLineLength:maxLengthOfLine];
         if (isShortLine) {
             shortLineCount += 1;
         }
         
-        BOOL isLongLine = [self isLongLineOfLength:length maxLengthOfLine:maxLengthOfLine];
+        BOOL isLongLine = [self isLongLineLength:length maxLineLength:maxLengthOfLine];
         if (isLongLine) {
             longLineCount += 1;
         }
@@ -1140,24 +1131,26 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 }
 
 /// Get joined string of text, according to its last char.
-- (NSString *)joinedStringOfText:(NSString *)text
-                        prevText:(NSString *)prevText
-                prevLengthOfLine:(CGFloat)prevLengthOfLine
-                    lengthOfLine:(CGFloat)lengthOfLine
-                 maxLengthOfLine:(CGFloat)maxLengthOfLine
-                        language:(EZLanguage)language {
+- (NSString *)joinedStringOfTextObservation:(VNRecognizedTextObservation *)textObservation
+                        prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
+                            maxLengthOfLine:(CGFloat)maxLengthOfLine
+                                   language:(EZLanguage)language {
     NSString *joinedString = @"";
+    CGFloat lengthOfLine = textObservation.boundingBox.size.width;
+    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
+    CGFloat prevLengthOfLine = prevTextObservation.boundingBox.size.width;
+    
     NSString *lastChar = [prevText substringFromIndex:prevText.length - 1];
     
     // Note: sometimes OCR is incorrect, so . may be recognized as ,
     BOOL endPunctuationChar = [self isEndPunctuationChar:lastChar];
     
     // Note that some short lines are caused by indentation.
-    BOOL isPrevShortLine = [self isShortLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.7];
+    BOOL isPrevShortLine = [self isShortLineLength:prevLengthOfLine maxLineLength:maxLengthOfLine lessRateOfMaxLength:0.7];
     
-    BOOL isPrevLongLine = [self isLongLineOfLength:prevLengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    BOOL isPrevLongLine = [self isLongLineLength:prevLengthOfLine maxLineLength:maxLengthOfLine greaterRateOfMaxLength:0.98];
     
-    BOOL isLongLine = [self isLongLineOfLength:lengthOfLine maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.98];
+    BOOL isLongLine = [self isLongLineLength:lengthOfLine maxLineLength:maxLengthOfLine greaterRateOfMaxLength:0.98];
     
     
     BOOL needLineBreak = NO;
@@ -1192,25 +1185,19 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return joinedString;
 }
 
-- (BOOL)isNeedHandleLastDashOfText:(NSString *)text
-                          nextText:(NSString *)nextText
-                        lineLength:(CGFloat)lineLength
-                   maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    // Text may has indent
-    BOOL isLongLine = [self isLongLineOfLength:lineLength maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.8];
-    BOOL isLastDashChar = [self isLastJoinedDashCharactarInText:text nextText:nextText];
-    return isLongLine && isLastDashChar;
-}
-
-- (BOOL)isNeedRemoveLastDashOfText:(NSString *)text
-                          nextText:(NSString *)nextText
-                        lineLength:(CGFloat)lineLength
-                   maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    BOOL isNeedHandleLastDashOfText = [self isNeedHandleLastDashOfText:text nextText:nextText lineLength:lineLength maxLengthOfLine:maxLengthOfLine];
+- (BOOL)isNeedRemoveLastDashOfTextObservation:(VNRecognizedTextObservation *)textObservation
+                          prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
+                                maxLineLength:(CGFloat)maxLineLength {
+    NSString *text = [[textObservation topCandidates:1] firstObject].string;
+    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
+    
+    BOOL isNeedHandleLastDashOfText = [self isNeedHandleLastDashOfTextObservation:textObservation
+                                                              prevTextObservation:prevTextObservation
+                                                                    maxLineLength:maxLineLength];
     if (isNeedHandleLastDashOfText) {
-        NSString *removedDashText = [text substringToIndex:text.length - 1].mutableCopy;
-        NSString *lastWord = [removedDashText lastWord];
-        NSString *firstWord = [nextText firstWord];
+        NSString *removedPrevDashText = [prevText substringToIndex:prevText.length - 1].mutableCopy;
+        NSString *lastWord = [removedPrevDashText lastWord];
+        NSString *firstWord = [text firstWord];
         NSString *newWord = [NSString stringWithFormat:@"%@%@", lastWord, firstWord];
         
         // Request-Response, Architec-ture
@@ -1223,9 +1210,21 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return NO;
 }
 
+- (BOOL)isNeedHandleLastDashOfTextObservation:(VNRecognizedTextObservation *)textObservation
+                          prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
+                                maxLineLength:(CGFloat)maxLineLength {
+    NSString *text = [[textObservation topCandidates:1] firstObject].string;
+    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
+    
+    CGFloat maxLineFrameX = CGRectGetMaxX(prevTextObservation.boundingBox);
+    BOOL isLongLine = [self isLongLineLength:maxLineFrameX maxLineLength:maxLineLength];
+    BOOL isLastDashChar = [self isLastJoinedDashCharactarInText:text prevText:prevText];
+    return isLongLine && isLastDashChar;
+}
+
 /// Check if the last char ot text is a joined dash.
-- (BOOL)isLastJoinedDashCharactarInText:(NSString *)text nextText:(NSString *)nextText {
-    if (nextText.length == 0) {
+- (BOOL)isLastJoinedDashCharactarInText:(NSString *)text prevText:(NSString *)prevText {
+    if (prevText.length == 0 || prevText.length == 0) {
         return NO;
     }
     
@@ -1249,16 +1248,15 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      My Wilderness has made —
      */
     
-    
-    NSString *lastChar = [text substringFromIndex:text.length - 1];
-    NSString *nextFirstChar = [nextText substringToIndex:1];
-    BOOL isLastDashChar = [kDashCharacterList containsObject:lastChar];
-    if (isLastDashChar) {
-        NSString *removedDashText = [text substringToIndex:text.length - 1].mutableCopy;
-        NSString *lastWord = [removedDashText lastWord];
+    NSString *firstChar = [text substringToIndex:1];
+    NSString *prevLastChar = [prevText substringFromIndex:prevText.length - 1];
+    BOOL isPrevLastDashChar = [kDashCharacterList containsObject:prevLastChar];
+    if (isPrevLastDashChar) {
+        NSString *removedPrevDashText = [prevText substringToIndex:prevText.length - 1].mutableCopy;
+        NSString *lastWord = [removedPrevDashText lastWord];
         
-        BOOL isNextFirstCharAlphabet = [nextFirstChar isAlphabet];
-        if (lastWord.length > 0 &&isNextFirstCharAlphabet ) {
+        BOOL isFirstCharAlphabet = [firstChar isAlphabet];
+        if (lastWord.length > 0 && isFirstCharAlphabet) {
             return YES;
         }
     }
@@ -1266,27 +1264,27 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return NO;
 }
 
-- (BOOL)isShortLineOfLength:(CGFloat)lineLength
-            maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    return [self isShortLineOfLength:lineLength maxLengthOfLine:maxLengthOfLine lessRateOfMaxLongLine:0.85];
+- (BOOL)isShortLineLength:(CGFloat)lineLength
+            maxLineLength:(CGFloat)maxLineLength {
+    return [self isShortLineLength:lineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.85];
 }
 
-- (BOOL)isShortLineOfLength:(CGFloat)length
-            maxLengthOfLine:(CGFloat)maxLengthOfLine
-      lessRateOfMaxLongLine:(CGFloat)lessRateOfMaxLongLine {
-    BOOL isShortLine = length < maxLengthOfLine * lessRateOfMaxLongLine;
+- (BOOL)isShortLineLength:(CGFloat)lineLength
+            maxLineLength:(CGFloat)maxLineLength
+      lessRateOfMaxLength:(CGFloat)lessRateOfMaxLength {
+    BOOL isShortLine = lineLength < maxLineLength * lessRateOfMaxLength;
     return isShortLine;
 }
 
-- (BOOL)isLongLineOfLength:(CGFloat)lineLength
-           maxLengthOfLine:(CGFloat)maxLengthOfLine {
-    return [self isLongLineOfLength:lineLength maxLengthOfLine:maxLengthOfLine greaterRateOfMaxLongLine:0.9];
+- (BOOL)isLongLineLength:(CGFloat)lineLength
+           maxLineLength:(CGFloat)maxLineLength {
+    return [self isLongLineLength:lineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.9];
 }
 
-- (BOOL)isLongLineOfLength:(CGFloat)lineLength
-           maxLengthOfLine:(CGFloat)maxLengthOfLine
-  greaterRateOfMaxLongLine:(CGFloat)greaterRateOfMaxLongLine {
-    BOOL isLongLine = lineLength >= maxLengthOfLine * greaterRateOfMaxLongLine;
+- (BOOL)isLongLineLength:(CGFloat)lineLength
+           maxLineLength:(CGFloat)maxLineLength
+  greaterRateOfMaxLength:(CGFloat)greaterRateOfMaxLength {
+    BOOL isLongLine = lineLength >= maxLineLength * greaterRateOfMaxLength;
     return isLongLine;
 }
 
