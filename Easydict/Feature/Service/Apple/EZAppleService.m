@@ -16,10 +16,11 @@
 #import <CoreImage/CoreImage.h>
 #import "NSString+EZCharacterSet.h"
 
-static NSString *const kLineBreak = @"\n";
-static NSString *const kParagraphBreak = @"\n\n";
+static NSString *const kLineBreakText = @"\n";
+static NSString *const kParagraphBreakText = @"\n\n";
+static NSString *const kIndentationText = @"";
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";" ];
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":" ];
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
 static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
@@ -1033,7 +1034,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                                                     isNewParagraph:isNewParagraph];
             }  else if (isNewLine) {
                 if (needLineBreak) {
-                    joinedString = kLineBreak;
+                    joinedString = kLineBreakText;
                 } else {
                     joinedString = [self joinedStringOfTextObservation:textObservation
                                                    prevTextObservation:prevTextObservation
@@ -1045,14 +1046,21 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             
             // 1. append joined string
             [mergedText appendString:joinedString];
+        } else {
+//            CGFloat x = textObservation.boundingBox.origin.x;
+//            BOOL isEqualX = [self isEqualPrevLineX:self.minX lineX:x];
+//            BOOL hasIndentation = !isEqualX;
+//            if (hasIndentation) {
+//                [mergedText appendString:kIndentationText];
+//            }
         }
         
         // 2. append line text
         [mergedText appendString:recognizedString];
     }
     
-    ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trim;
-    ocrResult.texts = [mergedText componentsSeparatedByString:kLineBreak];
+    ocrResult.mergedText = [self replaceSimilarDotSymbolOfString:mergedText].trimNewLine;
+    ocrResult.texts = [mergedText componentsSeparatedByString:kLineBreakText];
     ocrResult.raw = recognizedStrings;
     
     if (recognizedStrings.count > 0) {
@@ -1236,17 +1244,10 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         isNewParagraph = NO;
     }
     
-    // !!!: This way cannot handle indentation 😥
-    //    BOOL isEqualLength = fabs(lengthOfLine - prevLengthOfLine) < 0.02; // ~0.98
-    //    if (isEqualLength && endPunctuationChar) {
-    //        needLineBreak = NO;
-    //    }
-    
-    
-    if (isNewParagraph) {
-        joinedString = kParagraphBreak;
+    if (isNewParagraph || hasIndentation) {
+        joinedString = kParagraphBreakText;
     } else if (needLineBreak) {
-        joinedString = kLineBreak;
+        joinedString = kLineBreakText;
     } else if ([self isPunctuationChar:prevLastChar]) {
         // if last char is a punctuation mark, then append a space, since ocr will remove white space.
         joinedString = @" ";
@@ -1256,6 +1257,11 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             joinedString = @" ";
         }
     }
+    
+//    if (hasIndentation) {
+//        joinedString = [joinedString stringByAppendingString:kIndentationText];
+//    }
+    
     return joinedString;
 }
 
@@ -1304,7 +1310,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     CGFloat x = textObservation.boundingBox.origin.x;
     CGFloat prevX = prevTextObservation.boundingBox.origin.x;
-    BOOL isEqualX = [self isEqualOriginX:x comparedOriginX:prevX];
+    BOOL isEqualX = [self isEqualPrevLineX:prevX lineX:x];
     
     CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
     CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
@@ -1329,13 +1335,21 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSString *prevLastChar = [prevText substringFromIndex:prevText.length - 1];
     BOOL isPrevEndPunctuationChar = [self isEndPunctuationChar:prevLastChar];
     if (isPrevEndPunctuationChar) {
-        prevX = self.minX;
-        
         // When last text has end mark, the greaterRate should be smaller.
         greaterRate = 0.002;
     }
     
-    BOOL hasIndentation = textObservation.boundingBox.origin.x - prevX > greaterRate; // 0.06 - 0.025
+    /**
+     SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
+     
+        III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
+        HTTP/2 introduces multiple features that we explore here- after and discuss the security impact of their possible exploita- tion by attackers in 5G SBA.
+     */
+    BOOL hasIndentation = ![self isEqualPrevLineX:prevX lineX:x ratio:greaterRate]; // 0.06 - 0.025
+    
+    if (!hasIndentation && !isPrevEndPunctuationChar) {
+        hasIndentation = ![self isEqualPrevLineX:self.minX lineX:x];
+    }
     
     return hasIndentation;
 }
@@ -1351,14 +1365,22 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return (minValue / maxValue) > ratio;
 }
 
-- (BOOL)isEqualOriginX:(CGFloat)originX comparedOriginX:(CGFloat)comparedOriginX {
-    return [self isAbsoluteDifferenceLessThan:0.03 value1:originX value2:comparedOriginX];
+- (BOOL)isEqualPrevLineX:(CGFloat)prevLineX lineX:(CGFloat)lineX {
+    /**
+     technologies.
+        Index Terms—5G security, HTTP/2, Service Based Architec-
+     ture, Application programming interface, OAuth 2.0
+     */
+    return [self isEqualPrevLineX:prevLineX lineX:lineX ratio:0.03];
 }
 
-- (BOOL)isAbsoluteDifferenceLessThan:(CGFloat)difference value1:(CGFloat)value1 value2:(CGFloat)value2 {
-    // 0.06 - 0.025
-    NSInteger absoluteDifference = fabs(value1 - value2);
-    return absoluteDifference < difference;
+- (BOOL)isEqualPrevLineX:(CGFloat)prevLineX lineX:(CGFloat)lineX ratio:(CGFloat)ratio {
+    /**
+     technologies.
+        Index Terms—5G security, HTTP/2, Service Based Architec-
+     ture, Application programming interface, OAuth 2.0
+     */
+    return lineX - prevLineX < ratio;
 }
 
 /// Check if the last char ot text is a joined dash.
@@ -1632,18 +1654,22 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"•‧∙"];
     //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
     
+    NSString *text = string;
     NSArray *strings = [string componentsSeparatedByCharactersInSet:charSet];
-    // Remove extra white space.
-    NSMutableArray *array = [NSMutableArray array];
-    for (NSString *string in strings) {
-        NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if (text.length > 0) {
-            [array addObject:text];
-        }
-    }
     
-    // Add white space for better reading.
-    NSString *text = [array componentsJoinedByString:@" · "];
+    if (strings.count > 1) {
+        // Remove extra white space.
+        NSMutableArray *array = [NSMutableArray array];
+        for (NSString *string in strings) {
+            NSString *text = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            if (text.length > 0) {
+                [array addObject:text];
+            }
+        }
+        
+        // Add white space for better reading.
+        text = [array componentsJoinedByString:@" · "];
+    }
     
     return text;
 }

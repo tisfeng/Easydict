@@ -17,6 +17,11 @@
     return trimText;
 }
 
+- (NSString *)trimNewLine {
+    NSString *trimText = [self stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    return trimText;
+}
+
 - (NSString *)trimToMaxLength:(NSUInteger)maxLength {
     NSString *trimText = [self trim];
     if (trimText.length > maxLength) {
