@@ -53,8 +53,11 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
 @property (nonatomic, assign) CGFloat minX;
 @property (nonatomic, assign) CGFloat maxLineLength;
-@property (nonatomic, assign) CGFloat minLineLength;
 
+@property (nonatomic, strong) VNRecognizedTextObservation *maxLineTextObservation;
+@property (nonatomic, strong) VNRecognizedTextObservation *minXLineTextObservation;
+
+@property (nonatomic, assign) CGFloat minLineLength;
 @property (nonatomic, assign) CGFloat minLineHeight;
 @property (nonatomic, assign) CGFloat totalLineHeight;
 @property (nonatomic, assign) CGFloat averageLineHeight;
@@ -847,7 +850,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSInteger punctuationMarkCount = 0;
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
-    
+        
     NSMutableArray *lineLengthArray = [NSMutableArray array];
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
@@ -855,8 +858,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSInteger lineCount = observationResults.count;
     
     for (int i = 0; i < lineCount; i++) {
-        VNRecognizedTextObservation *observation = observationResults[i];
-        VNRecognizedText *recognizedText = [[observation topCandidates:1] firstObject];
+        VNRecognizedTextObservation *textObservation = observationResults[i];
+        VNRecognizedText *recognizedText = [[textObservation topCandidates:1] firstObject];
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
         
@@ -871,7 +874,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             }
         }
         
-        CGRect boundingBox = observation.boundingBox;
+        CGRect boundingBox = textObservation.boundingBox;
         NSLog(@"%@, %@", @(boundingBox), recognizedString);
         
         CGFloat lineLength = boundingBox.size.width;
@@ -903,11 +906,13 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         CGFloat x = boundingBox.origin.x;
         if (x < minX) {
             minX = x;
+            self.minXLineTextObservation = textObservation;
         }
         
         CGFloat lengthOfLine = boundingBox.size.width;
         if (lengthOfLine > maxLengthOfLine) {
             maxLengthOfLine = lengthOfLine;
+            self.maxLineTextObservation = textObservation;
         }
         
         if (lengthOfLine < minLengthOfLine) {
@@ -995,7 +1000,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             BOOL isNewParagraph = NO;
             if (deltaY > 0) {
                 // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
-                if (deltaY / averageLineSpacing > 2.2 || deltaY / averageLineHeight > 1.2) {
+                if (deltaY / averageLineSpacing > 2.0 || deltaY / averageLineHeight > 1.2) {
                     isNewParagraph = YES;
                 }
             }
@@ -1197,9 +1202,19 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                         prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
                              isNewParagraph:(BOOL)isNewParagraph {
     NSString *joinedString = @"";
-    CGFloat lineLength = CGRectGetMaxX(textObservation.boundingBox);
+    
+    NSString *text = [[textObservation topCandidates:1] firstObject].string;
+    NSString *lastChar = [text substringFromIndex:text.length - 1];
+    // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
+    BOOL isEndPunctuationChar = [self isEndPunctuationChar:lastChar];
+    
+    CGFloat lineLength = textObservation.boundingBox.size.width;
+    CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
+    
     NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
-    CGFloat prevLengthOfLine = CGRectGetMaxX(prevTextObservation.boundingBox);
+    CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
+    CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
+
     CGFloat maxLineLength = self.maxLineLength;
     EZLanguage language = self.language;
     
@@ -1208,43 +1223,93 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     BOOL isPrevEndPunctuationChar = [self isEndPunctuationChar:prevLastChar];
     
     // Note that some short lines are caused by indentation.
-    BOOL isPrevShortLine = [self isShortLineLength:prevLengthOfLine maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
-    BOOL isPrevLongLine = [self isLongLineLength:prevLengthOfLine maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
+    BOOL isPrevShortXLine = [self isShortLineLength:prevLineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
+    BOOL isPrevLongXLine = [self isLongLineLength:prevLineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
    
-    BOOL isShortLine = [self isShortLineLength:lineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
-    BOOL isLongLine = [self isLongLineLength:lineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
+    BOOL isShortXLine = [self isShortLineLength:lineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
+    BOOL isLongXLine = [self isLongLineLength:lineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
     
-    NSString *text = [[textObservation topCandidates:1] firstObject].string;
-    NSString *lastChar = [text substringFromIndex:text.length - 1];
-    
-    // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
-    BOOL isEndPunctuationChar = [self isEndPunctuationChar:lastChar];
-    
+ 
     BOOL needLineBreak = NO;
     
-    BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation prevTextObservation:prevTextObservation];
+    BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
+    BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
 
     /**
      we conclude with some security challenges and opportunities.
                 II. 5G SERVICE BASED ARCHITECTURE (SBA)
      A. Overview
      */
-    if (isPrevShortLine || hasIndentation || (isShortLine && !isEndPunctuationChar)) {
-        needLineBreak = YES;
-    }
+
     
 //    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
-    
-    if (needLineBreak && isPrevLongLine && isPrevEndPunctuationChar && isLongLine && !hasIndentation) {
-        needLineBreak = NO;
+
+    if (hasIndentation) {
+        /**
+         SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
+         
+         III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
+         
+         HTTP/2 introduces multiple features that we explore here- after and discuss the security impact of their possible exploita- tion by attackers in 5G SBA.
+         */
+        
+        if (hasPrevIndentation) {
+            /**
+             Bitcoin: A Peer-to-Peer Electronic Cash System
+                     Satoshi Nakamoto
+                     satoshin@gmx.com
+                     www.bitcoin.org
+             Abstract. A purely peer-to-peer version of electronic cash would allow online
+             payments to be sent directly from one party to another without going through a
+             
+             */
+            BOOL isLessHalfPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.5];
+
+            BOOL isPrevLongLine = [self isLongLineLength:prevLineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.95];
+            BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
+
+            BOOL equalInnerTwoLine = [self equalTextObservation:textObservation prevTextObservation:prevTextObservation];
+            if (equalInnerTwoLine) {
+                if (isLessHalfPrevShortLine) {
+                    needLineBreak = YES;
+                } else {
+                    needLineBreak = NO;
+                }
+            } else {
+                if (isPrevEndPunctuationChar) {
+                    if (isPrevLongLine) {
+                        needLineBreak = NO;
+                    } else {
+                        needLineBreak = YES;
+                    }
+                } else {
+                    if (isPrevShortLine) {
+                        needLineBreak = YES;
+                    } else {
+                        needLineBreak = NO;
+                    }
+                }
+            }
+        } else {
+            isNewParagraph = YES;
+        }
+    } else {
+        if (isPrevShortXLine || (isShortXLine && !isEndPunctuationChar)) {
+            needLineBreak = YES;
+        }
+        
+        
+        if (needLineBreak && isPrevLongXLine && isPrevEndPunctuationChar && isLongXLine) {
+            needLineBreak = NO;
+        }
+        
+        // 翻页, Page turn scenes without line feeds.
+        if (isNewParagraph && isPrevLongXLine && !isPrevEndPunctuationChar) {
+            isNewParagraph = NO;
+        }
     }
     
-    // 翻页, Page turn scenes without line feeds.
-    if (isNewParagraph && isPrevLongLine && !isPrevEndPunctuationChar && !hasIndentation) {
-        isNewParagraph = NO;
-    }
-    
-    if (isNewParagraph || hasIndentation) {
+    if (isNewParagraph) {
         joinedString = kParagraphBreakText;
     } else if (needLineBreak) {
         joinedString = kLineBreakText;
@@ -1298,19 +1363,16 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return NO;
 }
 
-- (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation
-                    prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
-    // 0.06 - 0.025
-    return [self hasIndentationOfTextObservation:textObservation prevTextObservation:prevTextObservation greaterRate:0.032];
+- (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation {
+    BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:self.minXLineTextObservation];
+    BOOL hasIndentation = !isEqualX;
+    return hasIndentation;
 }
 
-- (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation
-                    prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
-                            greaterRate:(CGFloat)greaterRate {
-    
-    CGFloat x = textObservation.boundingBox.origin.x;
-    CGFloat prevX = prevTextObservation.boundingBox.origin.x;
-    BOOL isEqualX = [self isEqualPrevLineX:prevX lineX:x];
+- (BOOL)equalTextObservation:(VNRecognizedTextObservation *)textObservation
+         prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
+    // 0.06 - 0.025
+    BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
     
     CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
     CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
@@ -1320,38 +1382,9 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
     BOOL isEqualLineLength = [self isEqualLength:lineLength comparedLength:prevLineLength];
     if (isEqualX && isEqualLineMaxX && isEqualLineLength) {
-        return NO;
+        return YES;
     }
-    
-    
-    /**
-     The problem with this solution is that the fate of the entire  money    system     depends on the
-     company running the mint, with every transaction having to go through them, just like a bank.
-        We need a way for the payee to know that the previous owners did not  sign    any    earlier
-     transactions. For our purposes, the earliest transaction is the one that counts, so we don't care
-     */
-    
-    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
-    NSString *prevLastChar = [prevText substringFromIndex:prevText.length - 1];
-    BOOL isPrevEndPunctuationChar = [self isEndPunctuationChar:prevLastChar];
-    if (isPrevEndPunctuationChar) {
-        // When last text has end mark, the greaterRate should be smaller.
-        greaterRate = 0.002;
-    }
-    
-    /**
-     SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
-     
-        III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
-        HTTP/2 introduces multiple features that we explore here- after and discuss the security impact of their possible exploita- tion by attackers in 5G SBA.
-     */
-    BOOL hasIndentation = ![self isEqualPrevLineX:prevX lineX:x ratio:greaterRate]; // 0.06 - 0.025
-    
-    if (!hasIndentation && !isPrevEndPunctuationChar) {
-        hasIndentation = ![self isEqualPrevLineX:self.minX lineX:x];
-    }
-    
-    return hasIndentation;
+    return NO;
 }
 
 - (BOOL)isEqualLength:(CGFloat)length comparedLength:(CGFloat)compareLength {
@@ -1365,22 +1398,30 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return (minValue / maxValue) > ratio;
 }
 
-- (BOOL)isEqualPrevLineX:(CGFloat)prevLineX lineX:(CGFloat)lineX {
+- (BOOL)isEqualXOfTextObservation:(VNRecognizedTextObservation *)textObservation
+              prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation  {
     /**
      technologies.
         Index Terms—5G security, HTTP/2, Service Based Architec-
      ture, Application programming interface, OAuth 2.0
      */
-    return [self isEqualPrevLineX:prevLineX lineX:lineX ratio:0.03];
+    
+    CGFloat difference = [self indentationDifferenceOTextObservation:self.maxLineTextObservation];
+    CGFloat lineX = textObservation.boundingBox.origin.x;
+    CGFloat prevLineX = prevTextObservation.boundingBox.origin.x;
+    
+    return lineX - prevLineX < difference;
 }
 
-- (BOOL)isEqualPrevLineX:(CGFloat)prevLineX lineX:(CGFloat)lineX ratio:(CGFloat)ratio {
+- (CGFloat)indentationDifferenceOTextObservation:(VNRecognizedTextObservation *)textObservation {
+    NSString *text = [[textObservation topCandidates:1] firstObject].string;
     /**
-     technologies.
-        Index Terms—5G security, HTTP/2, Service Based Architec-
-     ture, Application programming interface, OAuth 2.0
+     English text:  90 char, 0.012
+     
+     10 char, 0.12
      */
-    return lineX - prevLineX < ratio;
+    CGFloat ratio = (90.0 / text.length) * 0.012;
+    return ratio;
 }
 
 /// Check if the last char ot text is a joined dash.
