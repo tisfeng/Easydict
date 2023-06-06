@@ -38,8 +38,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Check if the string is a valid URL. eg. https://www.google.com
 - (BOOL)isURL;
 
-// Use NSDataDetector to check if the string is a link. eg. eudic://dict/good
-- (BOOL)containsLink;
+/// Check if the string is a valid link, www.google.com
+- (BOOL)isLink;
+
+// Use NSDataDetector to detect link. eg. eudic://dict/good
+- (nullable NSURL *)detectLink;
 
 - (NSString *)md5;
 

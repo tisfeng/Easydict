@@ -70,7 +70,7 @@ static NSString *const EZQueryKey = @"{Query}";
         return;
     }
 
-    NSString *queryText = text ?: @"";
+    NSString *queryText = text.trim ?: @"";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
     NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
@@ -80,16 +80,19 @@ static NSString *const EZQueryKey = @"{Query}";
         url = [NSString stringWithFormat:url, encodedText];
     }
     
+    NSURL *URL = [NSURL URLWithString:url];
     // If link is EZGoogleWebSearchURL and queryText is a URL, we should open URL directly.
     if ([self.link isEqualToString:EZGoogleWebSearchURL]) {
-        if ([queryText isURL]) {
-            url = queryText;
+        NSURL *detectURL = [queryText detectLink];
+        if (detectURL) {
+            URL = detectURL;
         }
     }
     
-    NSLog(@"open url: %@", url);
+    NSLog(@"open url: %@", URL);
 
-    BOOL success = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    // !!!: when using openURL, URL must has scheme, like https://
+    BOOL success = [[NSWorkspace sharedWorkspace] openURL:URL];
     if (success) {
         if (EZWindowManager.shared.floatingWindowType != EZWindowTypeMain) {
             [[EZWindowManager shared] closeFloatingWindow];

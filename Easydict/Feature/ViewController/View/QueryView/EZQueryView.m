@@ -571,7 +571,7 @@
                                options:0
                                  range:NSMakeRange(0, textStorage.length)
                             usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        [textStorage addAttributes:@{NSLinkAttributeName : result.URL}
+        [textStorage addAttributes:@{ NSLinkAttributeName : result.URL }
                              range:result.range];
     }];
 }
