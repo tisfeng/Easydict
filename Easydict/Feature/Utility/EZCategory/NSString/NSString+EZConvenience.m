@@ -70,7 +70,7 @@
 
 // ???: Since I found that some other Apps also read and clear NSPasteboard content, it maybe cause write to NSPasteboard failed, such as PopClip will be triggered strangely when I use Silent Screenshot OCR.
 - (void)copyToPasteboardSafely {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [NSPasteboard mm_generalPasteboardSetString:self];
     });
 }
@@ -82,8 +82,14 @@
     }
 }
 
-/// Check if the string is a valid URL. eg. https://www.google.com
+/// Check if the string is a valid URL, must has scheme, https://www.google.com
 - (BOOL)isURL {
+    NSURL *URL = [self detectLink];
+    return URL;
+}
+
+/// Check if the string is a valid URL, must has scheme, https://www.google.com
+- (BOOL)isValidURL {
     NSURL *url = [NSURL URLWithString:self];
     if (url && url.scheme && url.host) {
         // 有 scheme 和 host 表示是一个合法的 URL
@@ -93,18 +99,28 @@
     }
 }
 
-// Use NSDataDetector to check if the string contains a link. eg. eudic://dict/good
-- (BOOL)containsLink {
+/// Check if the string is a valid link, www.google.com
+- (BOOL)isLink {
+    NSString *urlString = self;
+    NSString *urlRegEx = @"(?:https?://)?(?:www\\.)?\\w+\\.[a-z]+(?:/[^\\s]*)?";
+    NSPredicate *urlPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
+    return [urlPredicate evaluateWithObject:urlString];
+}
+
+
+// Use NSDataDetector to detect link. eg. eudic://dict/good
+- (nullable NSURL *)detectLink {
+    NSURL *URL = nil;
+    // when detect "qrbtf.com", return "http://qrbtf.com"
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
     NSArray *matches = [detector matchesInString:self options:0 range:NSMakeRange(0, self.length)];
-    if (matches.count == 0) {
-        return NO;
+    if (matches.count > 0) {
+        NSTextCheckingResult *result = matches.firstObject;
+        if (result.resultType == NSTextCheckingTypeLink && result.URL && result.range.length == self.length) {
+            URL = result.URL;
+        }
     }
-    NSTextCheckingResult *result = matches.firstObject;
-    if (result.resultType == NSTextCheckingTypeLink && result.URL) {
-        return YES;
-    }
-    return NO;
+    return URL;
 }
 
 
