@@ -391,7 +391,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
  
  But this method need allow Accessibility in setting first, no pop-up alerts.
  
- Cannot work in App: Safari
+ Cannot work in Apps: Safari, Mail, etc.
  */
 - (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();

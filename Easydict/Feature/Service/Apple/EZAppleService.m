@@ -20,9 +20,26 @@ static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":" ];
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：" ];
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
 static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
+
+
+@interface VNRecognizedTextObservation (EZText)
+
+- (NSString *)firstText;
+
+@end
+
+@implementation VNRecognizedTextObservation (EZText)
+
+- (NSString *)firstText {
+    NSString *text = [[self topCandidates:1] firstObject].string;
+    return text;
+}
+
+@end
+
 
 @interface EZAppleService ()
 
@@ -54,8 +71,11 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 @property (nonatomic, assign) CGFloat minX;
 @property (nonatomic, assign) CGFloat maxLineLength;
 
-@property (nonatomic, strong) VNRecognizedTextObservation *maxLineTextObservation;
+@property (nonatomic, strong) VNRecognizedTextObservation *maxLongLineTextObservation;
 @property (nonatomic, strong) VNRecognizedTextObservation *minXLineTextObservation;
+@property (nonatomic, strong) VNRecognizedTextObservation *maxCharactarLineTextObservation;
+
+@property (nonatomic, strong) NSImage *ocrImage;
 
 @property (nonatomic, assign) CGFloat minLineLength;
 @property (nonatomic, assign) CGFloat minLineHeight;
@@ -563,6 +583,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
       completion:(void (^)(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error))completion {
     NSLog(@"ocr language: %@", preferredLanguage);
     
+    self.ocrImage = image;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Convert NSImage to CGImage
         CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
@@ -735,7 +757,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             // Since there are some languages that have the same confidence, we need to get all of them.
             NSMutableArray<NSDictionary *> *mostConfidentResults = [NSMutableArray array];
             CGFloat mostConfidence = firstOCRResult.confidence;
-            ;
             
             for (NSDictionary *result in sortedResults) {
                 EZOCRResult *ocrResult = result[@"ocrResult"];
@@ -850,12 +871,15 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSInteger punctuationMarkCount = 0;
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
-        
+    CGFloat maxCharCount = 0;
+    
     NSMutableArray *lineLengthArray = [NSMutableArray array];
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
     NSInteger lineCount = observationResults.count;
+    
+    NSInteger lineSpacingCount = 0;
     
     for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *textObservation = observationResults[i];
@@ -892,7 +916,12 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             
             // !!!: deltaY may be < 0, means the [OCR] line frame is overlapped.
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
-            totalLineSpacing += deltaY;
+            
+            // If deltaY too big, it is may paragraph, do not add it.
+            if (deltaY > 0 && deltaY < averageLineHeight * 1.2) {
+                totalLineSpacing += deltaY;
+                lineSpacingCount++;
+            }
             
             if (deltaY < minLineSpacing) {
                 minLineSpacing = deltaY;
@@ -901,6 +930,11 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             if (deltaY > 0 && deltaY < minPositiveLineSpacing) {
                 minPositiveLineSpacing = deltaY;
             }
+        }
+        
+        if (recognizedString.length > maxCharCount) {
+            maxCharCount = recognizedString.length;
+            self.maxCharactarLineTextObservation = textObservation;
         }
         
         CGFloat x = boundingBox.origin.x;
@@ -912,17 +946,30 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         CGFloat lengthOfLine = boundingBox.size.width;
         if (lengthOfLine > maxLengthOfLine) {
             maxLengthOfLine = lengthOfLine;
-            self.maxLineTextObservation = textObservation;
+            self.maxLongLineTextObservation = textObservation;
         }
         
         if (lengthOfLine < minLengthOfLine) {
             minLengthOfLine = lengthOfLine;
+        }
+        
+        averageLineHeight = totalLineHeight / (i + 1);
+        
+        if (lineSpacingCount > 0) {
+            averageLineSpacing = totalLineSpacing / lineSpacingCount;
         }
     }
     
     self.language = language;
     self.minX = minX;
     self.maxLineLength = maxLengthOfLine;
+    
+    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
+    charCountPerLine = totalCharCount / (CGFloat)lineCount;
+    
+    
+    self.averageLineHeight = averageLineHeight;
+    self.averageLineSpacing = averageLineSpacing;
     
     ocrResult.texts = recognizedStrings;
     ocrResult.mergedText = [recognizedStrings componentsJoinedByString:@"\n"];
@@ -935,12 +982,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     NSArray<NSString *> *stringArray = ocrResult.texts;
     NSLog(@"ocr stringArray (%@): %@", ocrResult.from, stringArray);
     
-    
-    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
-    charCountPerLine = totalCharCount / (CGFloat)stringArray.count;
-    
-    averageLineHeight = totalLineHeight / stringArray.count;
-    averageLineSpacing = totalLineSpacing / (stringArray.count - 1);
     
     BOOL isPoetry = [self isPoetryOfTextArray:recognizedStrings
                               lineLengthArray:lineLengthArray
@@ -1000,7 +1041,11 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             BOOL isNewParagraph = NO;
             if (deltaY > 0) {
                 // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
-                if (deltaY / averageLineSpacing > 2.0 || deltaY / averageLineHeight > 1.2) {
+                BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
+                                                            prevTextObservation:prevTextObservation
+                                                               lineSpacingRatio:2.2
+                                                                lineHeightRatio:1.2];
+                if (isBigLineSpacing) {
                     isNewParagraph = YES;
                 }
             }
@@ -1037,7 +1082,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                 joinedString = [self joinedStringOfTextObservation:textObservation
                                                prevTextObservation:prevTextObservation
                                                     isNewParagraph:isNewParagraph];
-            }  else if (isNewLine) {
+            } else if (isNewLine) {
                 if (needLineBreak) {
                     joinedString = kLineBreakText;
                 } else {
@@ -1052,12 +1097,12 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             // 1. append joined string
             [mergedText appendString:joinedString];
         } else {
-//            CGFloat x = textObservation.boundingBox.origin.x;
-//            BOOL isEqualX = [self isEqualPrevLineX:self.minX lineX:x];
-//            BOOL hasIndentation = !isEqualX;
-//            if (hasIndentation) {
-//                [mergedText appendString:kIndentationText];
-//            }
+            //            CGFloat x = textObservation.boundingBox.origin.x;
+            //            BOOL isEqualX = [self isEqualPrevLineX:self.minX lineX:x];
+            //            BOOL hasIndentation = !isEqualX;
+            //            if (hasIndentation) {
+            //                [mergedText appendString:kIndentationText];
+            //            }
         }
         
         // 2. append line text
@@ -1203,18 +1248,20 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                              isNewParagraph:(BOOL)isNewParagraph {
     NSString *joinedString = @"";
     
-    NSString *text = [[textObservation topCandidates:1] firstObject].string;
+    CGRect prevBoundingBox = prevTextObservation.boundingBox;
+    CGRect boundingBox = textObservation.boundingBox;
+    
+    NSString *text = [textObservation firstText];
     NSString *lastChar = [text substringFromIndex:text.length - 1];
     // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
     BOOL isEndPunctuationChar = [self isEndPunctuationChar:lastChar];
     
-    CGFloat lineLength = textObservation.boundingBox.size.width;
-    CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
+    CGFloat lineMaxX = CGRectGetMaxX(boundingBox);
     
-    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
-    CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
-    CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
-
+    NSString *prevText = [prevTextObservation firstText];
+    CGFloat prevLineMaxX = CGRectGetMaxX(prevBoundingBox);
+    CGFloat prevLineLength = prevBoundingBox.size.width;
+    
     CGFloat maxLineLength = self.maxLineLength;
     EZLanguage language = self.language;
     
@@ -1222,28 +1269,33 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
     BOOL isPrevEndPunctuationChar = [self isEndPunctuationChar:prevLastChar];
     
-    // Note that some short lines are caused by indentation.
-    BOOL isPrevShortXLine = [self isShortLineLength:prevLineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
+    BOOL isPrevShortXLine = [self isShortLineLength:prevLineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.8];
     BOOL isPrevLongXLine = [self isLongLineLength:prevLineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
-   
+    
     BOOL isShortXLine = [self isShortLineLength:lineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
     BOOL isLongXLine = [self isLongLineLength:lineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
     
- 
+    BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
+                                                prevTextObservation:prevTextObservation
+                                                   lineSpacingRatio:1.8
+                                                    lineHeightRatio:1.0];
+    
     BOOL needLineBreak = NO;
     
     BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
     BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
-
+    
     /**
      we conclude with some security challenges and opportunities.
-                II. 5G SERVICE BASED ARCHITECTURE (SBA)
+     II. 5G SERVICE BASED ARCHITECTURE (SBA)
      A. Overview
      */
-
     
-//    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
-
+    
+    //    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
+    
+    // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
+    
     if (hasIndentation) {
         /**
          SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
@@ -1254,21 +1306,27 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
          */
         
         if (hasPrevIndentation) {
+            if (isBigLineSpacing) {
+                isNewParagraph = YES;
+            }
+            
             /**
              Bitcoin: A Peer-to-Peer Electronic Cash System
-                     Satoshi Nakamoto
-                     satoshin@gmx.com
-                     www.bitcoin.org
+             Satoshi Nakamoto
+             satoshin@gmx.com
+             www.bitcoin.org
              Abstract. A purely peer-to-peer version of electronic cash would allow online
              payments to be sent directly from one party to another without going through a
              
              */
             BOOL isLessHalfPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.5];
-
+            
             BOOL isPrevLongLine = [self isLongLineLength:prevLineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.95];
-            BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
-
+            BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.85];
+            
             BOOL equalInnerTwoLine = [self equalTextObservation:textObservation prevTextObservation:prevTextObservation];
+            BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
+            
             if (equalInnerTwoLine) {
                 if (isLessHalfPrevShortLine) {
                     needLineBreak = YES;
@@ -1283,10 +1341,14 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                         needLineBreak = YES;
                     }
                 } else {
-                    if (isPrevShortLine) {
-                        needLineBreak = YES;
-                    } else {
+                    if (isEqualX && isEndPunctuationChar) {
                         needLineBreak = NO;
+                    } else {
+                        if (isPrevShortLine) {
+                            needLineBreak = YES;
+                        } else {
+                            needLineBreak = NO;
+                        }
                     }
                 }
             }
@@ -1294,13 +1356,22 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             isNewParagraph = YES;
         }
     } else {
-        if (isPrevShortXLine || (isShortXLine && !isEndPunctuationChar)) {
+        if (isPrevShortXLine || (!isPrevLongXLine && isShortXLine && !isEndPunctuationChar)) {
             needLineBreak = YES;
         }
         
-        
         if (needLineBreak && isPrevLongXLine && isPrevEndPunctuationChar && isLongXLine) {
             needLineBreak = NO;
+        }
+        
+        if (isPrevLongXLine && isPrevEndPunctuationChar) {
+            if (isBigLineSpacing) {
+                needLineBreak = YES;
+            }
+        }
+        
+        if (hasPrevIndentation && isBigLineSpacing) {
+            isNewParagraph = YES;
         }
         
         // 翻页, Page turn scenes without line feeds.
@@ -1323,21 +1394,42 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         }
     }
     
-//    if (hasIndentation) {
-//        joinedString = [joinedString stringByAppendingString:kIndentationText];
-//    }
+    //    if (hasIndentation) {
+    //        joinedString = [joinedString stringByAppendingString:kIndentationText];
+    //    }
     
     return joinedString;
 }
 
+- (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
+                      prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
+                         lineSpacingRatio:(CGFloat)lineSpacingRatio
+                          lineHeightRatio:(CGFloat)lineHeightRatio {
+    // lineSpacingRatio = 2.2, lineHeightRatio = 1.2
+    
+    BOOL isBigLineSpacing = NO;
+    CGRect prevBoundingBox = prevTextObservation.boundingBox;
+    CGRect boundingBox = textObservation.boundingBox;
+    CGFloat lineHeight = boundingBox.size.height;
+    
+    // !!!: deltaY may be < 0
+    CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
+    if (deltaY > lineHeight ||
+        deltaY / self.averageLineSpacing > lineSpacingRatio ||
+        deltaY / self.averageLineHeight > lineHeightRatio) {
+        isBigLineSpacing = YES;
+    }
+    return isBigLineSpacing;
+}
+
 - (BOOL)isNeedHandleLastDashOfTextObservation:(VNRecognizedTextObservation *)textObservation
                           prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
-    NSString *text = [[textObservation topCandidates:1] firstObject].string;
-    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
+    NSString *text = [textObservation firstText];
+    NSString *prevText = [prevTextObservation firstText];
     
     CGFloat maxLineFrameX = CGRectGetMaxX(prevTextObservation.boundingBox);
     BOOL isPrevLongLine = [self isLongLineLength:maxLineFrameX maxLineLength:self.maxLineLength];
-//    BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
+    //    BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
     
     BOOL isPrevLastDashChar = [self isLastJoinedDashCharactarInText:text prevText:prevText];
     return isPrevLongLine && isPrevLastDashChar;
@@ -1346,8 +1438,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 /// Called when isNeedHandleLastDashOfTextObservation is YES
 - (BOOL)isNeedRemoveLastDashOfTextObservation:(VNRecognizedTextObservation *)textObservation
                           prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
-    NSString *text = [[textObservation topCandidates:1] firstObject].string;
-    NSString *prevText = [[prevTextObservation topCandidates:1] firstObject].string;
+    NSString *text = [textObservation firstText];
+    NSString *prevText = [prevTextObservation firstText];
     
     NSString *removedPrevDashText = [prevText substringToIndex:prevText.length - 1].mutableCopy;
     NSString *lastWord = [removedPrevDashText lastWord];
@@ -1376,12 +1468,15 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
     CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
-    BOOL isEqualLineMaxX = [self isEqualLength:lineMaxX comparedLength:prevLineMaxX];
     
-    CGFloat lineLength = textObservation.boundingBox.size.width;
-    CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
-    BOOL isEqualLineLength = [self isEqualLength:lineLength comparedLength:prevLineLength];
-    if (isEqualX && isEqualLineMaxX && isEqualLineLength) {
+    CGFloat ratio = 0.95;
+    BOOL isEqualLineMaxX = [self isRatioGreaterThan:ratio value1:lineMaxX value2:prevLineMaxX];
+    
+    //    CGFloat lineLength = textObservation.boundingBox.size.width;
+    //    CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
+    //    BOOL isEqualLineLength = [self isEqualLength:lineLength comparedLength:prevLineLength];
+    
+    if (isEqualX && isEqualLineMaxX) {
         return YES;
     }
     return NO;
@@ -1399,30 +1494,69 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 }
 
 - (BOOL)isEqualXOfTextObservation:(VNRecognizedTextObservation *)textObservation
-              prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation  {
+              prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     /**
      technologies.
-        Index Terms—5G security, HTTP/2, Service Based Architec-
+     Index Terms—5G security, HTTP/2, Service Based Architec-
      ture, Application programming interface, OAuth 2.0
      */
     
-    CGFloat difference = [self indentationDifferenceOTextObservation:self.maxLineTextObservation];
+    CGFloat difference = 700 * 0.032; // 22.4;
+    
+    /**
+     test data:
+     
+     image width: 700, indentation: 4 white space, deltaX = 0.032
+     
+     difference = 700 * 0.032 = 22.4
+     
+     image_width * deltaX < difference
+     */
+    
     CGFloat lineX = textObservation.boundingBox.origin.x;
     CGFloat prevLineX = prevTextObservation.boundingBox.origin.x;
     
-    return lineX - prevLineX < difference;
+    // lineX > prevLineX
+    CGFloat dx = lineX - prevLineX;
+    if (dx * self.ocrImage.size.width < difference || fabs(dx) < 0.001) {
+        return YES;
+    }
+    return NO;
 }
 
 - (CGFloat)indentationDifferenceOTextObservation:(VNRecognizedTextObservation *)textObservation {
-    NSString *text = [[textObservation topCandidates:1] firstObject].string;
+    CGFloat lineX = textObservation.boundingBox.origin.x;
+    CGFloat deltaX = lineX - self.minX;
+    
     /**
-     English text:  90 char, 0.012
+     lineX = 0.055
+     deltaX = 0.054
+     maxLineLength = 0.968
      
-     10 char, 0.12
+     deltaX / self.maxLineLength = 0.054 / 0.968;
+     
      */
-    CGFloat ratio = (90.0 / text.length) * 0.012;
+    
+    // has indentation: 0.02, 0.84
+    CGFloat difference = deltaX / self.maxLineLength;
+    return difference;
+}
+
+- (CGFloat)indentationDifferenceOTextLength:(CGFloat)textLength {
+    /**
+     English text:  90 char, 0.015
+     Chinese text: 40 char, 0.025
+     
+     Since the text character spacing is not the same in PDF, so we need to use line width.
+     */
+    
+    CGFloat ratio = (90.0 / textLength) * 0.015;
+    if ([EZLanguageManager isChineseLanguage:self.language]) {
+        ratio = (40.0 / textLength) * 0.025;
+    }
     return ratio;
 }
+
 
 /// Check if the last char ot text is a joined dash.
 - (BOOL)isLastJoinedDashCharactarInText:(NSString *)text prevText:(NSString *)prevText {
