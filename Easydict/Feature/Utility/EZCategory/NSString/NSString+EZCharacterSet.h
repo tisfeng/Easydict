@@ -29,6 +29,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get last word of string
 - (NSString *)lastWord;
 
+
+/// Check if text is a end punctuation mark.
+- (BOOL)hasEndPunctuationSuffix;
+
+- (nullable NSString *)firstChar;
+
+- (nullable NSString *)lastChar;
+
 @end
 
 NS_ASSUME_NONNULL_END

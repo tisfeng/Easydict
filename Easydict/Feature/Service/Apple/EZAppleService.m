@@ -20,7 +20,6 @@ static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：" ];
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
 static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
@@ -1252,9 +1251,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     CGRect boundingBox = textObservation.boundingBox;
     
     NSString *text = [textObservation firstText];
-    NSString *lastChar = [text substringFromIndex:text.length - 1];
-    // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
-    BOOL isEndPunctuationChar = [self isEndPunctuationChar:lastChar];
+    BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
     
     CGFloat lineMaxX = CGRectGetMaxX(boundingBox);
     
@@ -1265,9 +1262,9 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     CGFloat maxLineLength = self.maxLineLength;
     EZLanguage language = self.language;
     
-    NSString *prevLastChar = [prevText substringFromIndex:prevText.length - 1];
+    NSString *prevLastChar = prevText.lastChar;
     // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
-    BOOL isPrevEndPunctuationChar = [self isEndPunctuationChar:prevLastChar];
+    BOOL isPrevEndPunctuationChar = [prevText hasEndPunctuationSuffix];
     
     BOOL isPrevShortXLine = [self isShortLineLength:prevLineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.8];
     BOOL isPrevLongXLine = [self isLongLineLength:prevLineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
@@ -1324,10 +1321,10 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             BOOL isPrevLongLine = [self isLongLineLength:prevLineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.95];
             BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.85];
             
-            BOOL equalInnerTwoLine = [self equalTextObservation:textObservation prevTextObservation:prevTextObservation];
+            BOOL isEqualInnerTwoLine = [self isEqualTextObservation:textObservation prevTextObservation:prevTextObservation];
             BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
             
-            if (equalInnerTwoLine) {
+            if (isEqualInnerTwoLine) {
                 if (isLessHalfPrevShortLine) {
                     needLineBreak = YES;
                 } else {
@@ -1374,6 +1371,13 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             isNewParagraph = YES;
         }
         
+        if (isPrevLongXLine) {
+            BOOL isEqualCharacterLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
+            if (isEqualCharacterLength) {
+                needLineBreak = YES;
+            }
+        }
+        
         // 翻页, Page turn scenes without line feeds.
         if (isNewParagraph && isPrevLongXLine && !isPrevEndPunctuationChar) {
             isNewParagraph = NO;
@@ -1399,6 +1403,25 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     //    }
     
     return joinedString;
+}
+
+- (BOOL)isEqualCharacterLengthTextObservation:(VNRecognizedTextObservation *)textObservation
+                          prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
+    /**
+     巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
+     花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
+     */
+    BOOL isEqual = [self isEqualTextObservation:textObservation prevTextObservation:prevTextObservation];
+    
+    NSString *text = [textObservation firstText];
+    NSString *prevText = [prevTextObservation firstText];
+    BOOL isEqualLength = text.length == prevText.length;
+    BOOL isEqualEndSuffix = text.hasEndPunctuationSuffix && prevText.hasEndPunctuationSuffix;
+    
+    if (isEqual && isEqualLength && isEqualEndSuffix) {
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
@@ -1461,8 +1484,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return hasIndentation;
 }
 
-- (BOOL)equalTextObservation:(VNRecognizedTextObservation *)textObservation
-         prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
+- (BOOL)isEqualTextObservation:(VNRecognizedTextObservation *)textObservation
+           prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     // 0.06 - 0.025
     BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
     
@@ -1584,14 +1607,13 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      My Wilderness has made —
      */
     
-    NSString *firstChar = [text substringToIndex:1];
-    NSString *prevLastChar = [prevText substringFromIndex:prevText.length - 1];
+    NSString *prevLastChar = prevText.lastChar;
     BOOL isPrevLastDashChar = [kDashCharacterList containsObject:prevLastChar];
     if (isPrevLastDashChar) {
         NSString *removedPrevDashText = [prevText substringToIndex:prevText.length - 1].mutableCopy;
         NSString *lastWord = [removedPrevDashText lastWord];
         
-        BOOL isFirstCharAlphabet = [firstChar isAlphabet];
+        BOOL isFirstCharAlphabet = [text.firstChar isAlphabet];
         if (lastWord.length > 0 && isFirstCharAlphabet) {
             return YES;
         }
@@ -1801,14 +1823,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return [predicate evaluateWithObject:charString];
 }
 
-/// Check if char is a end punctuation mark.
-- (BOOL)isEndPunctuationChar:(NSString *)charString {
-    if (charString.length != 1) {
-        return NO;
-    }
-    
-    return [kEndPunctuationMarks containsObject:charString];
-}
 
 /// Check if char is a punctuation mark but not a end punctuation mark.
 - (BOOL)isNonEndPunctuationMark:(NSString *)charString {
