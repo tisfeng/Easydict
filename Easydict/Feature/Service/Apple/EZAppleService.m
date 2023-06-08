@@ -75,6 +75,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 @property (nonatomic, strong) VNRecognizedTextObservation *maxCharactarLineTextObservation;
 
 @property (nonatomic, strong) NSImage *ocrImage;
+@property (nonatomic, assign) BOOL isPoetry;
 
 @property (nonatomic, assign) CGFloat minLineLength;
 @property (nonatomic, assign) CGFloat minLineHeight;
@@ -989,6 +990,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                           punctuationMarkRate:punctuationMarkRate
                                      language:language];
     NSLog(@"isPoetry: %d", isPoetry);
+    self.isPoetry = isPoetry;
     
     CGFloat confidence = 0;
     NSMutableString *mergedText = [NSMutableString string];
@@ -1379,7 +1381,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         }
         
         // 翻页, Page turn scenes without line feeds.
-        if (isNewParagraph && isPrevLongXLine && !isPrevEndPunctuationChar) {
+        if (isNewParagraph && !self.isPoetry && isPrevLongXLine && !isPrevEndPunctuationChar) {
             isNewParagraph = NO;
         }
     }
