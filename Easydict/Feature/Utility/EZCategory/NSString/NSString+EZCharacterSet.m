@@ -8,6 +8,8 @@
 
 #import "NSString+EZCharacterSet.h"
 
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：" ];
+
 @implementation NSString (EZCharacterSet)
 
 /// Check if it is a single letter of the alphabet, like 'a', 'A'
@@ -54,6 +56,30 @@
     NSArray *words = [self componentsSeparatedByString:@" "];
     NSString *lastWord = [words lastObject];
     return lastWord;
+}
+
+/// Check if text is a end punctuation mark.
+- (BOOL)hasEndPunctuationSuffix {
+    if (self.length == 0) {
+        return NO;
+    }
+    return [kEndPunctuationMarks containsObject:self.lastChar];
+}
+
+- (nullable NSString *)firstChar {
+    if (self.length == 0) {
+        return nil;
+    }
+    
+    return [self substringToIndex:1];
+}
+
+- (nullable NSString *)lastChar {
+    if (self.length == 0) {
+        return nil;
+    }
+    
+    return [self substringFromIndex:self.length - 1];
 }
 
 @end
