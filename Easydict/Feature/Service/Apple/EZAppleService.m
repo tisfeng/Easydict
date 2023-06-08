@@ -1439,7 +1439,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
-    if (deltaY > lineHeight ||
+    if (deltaY / lineHeight > 1.1 ||
         deltaY / self.averageLineSpacing > lineSpacingRatio ||
         deltaY / self.averageLineHeight > lineHeightRatio) {
         isBigLineSpacing = YES;
