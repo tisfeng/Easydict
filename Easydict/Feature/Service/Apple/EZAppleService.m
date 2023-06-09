@@ -1355,8 +1355,14 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             isNewParagraph = YES;
         }
     } else {
+        
         if (isPrevShortXLine || (!isPrevLongXLine && isShortXLine && !isEndPunctuationChar)) {
             needLineBreak = YES;
+        }
+        
+        BOOL isPrevLongTextObservation = [self isLongTextObservation:prevTextObservation];
+        if (isPrevLongTextObservation) {
+            needLineBreak = NO;
         }
         
         if (needLineBreak && isPrevLongXLine && isPrevEndPunctuationChar && isLongXLine) {
@@ -1526,14 +1532,14 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      ture, Application programming interface, OAuth 2.0
      */
     
-    CGFloat difference = 700 * 0.032; // 22.4;
+    CGFloat difference = 700 * 0.03; // 21;
     
     /**
      test data:
      
      image width: 700, indentation: 4 white space, deltaX = 0.032
      
-     difference = 700 * 0.032 = 22.4
+     difference = 700 * 0.03 = 21
      
      image_width * deltaX < difference
      */
@@ -1549,37 +1555,32 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     return NO;
 }
 
-- (CGFloat)indentationDifferenceOTextObservation:(VNRecognizedTextObservation *)textObservation {
-    CGFloat lineX = textObservation.boundingBox.origin.x;
-    CGFloat deltaX = lineX - self.minX;
-    
-    /**
-     lineX = 0.055
-     deltaX = 0.054
-     maxLineLength = 0.968
-     
-     deltaX / self.maxLineLength = 0.054 / 0.968;
-     
-     */
-    
-    // has indentation: 0.02, 0.84
-    CGFloat difference = deltaX / self.maxLineLength;
-    return difference;
+- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation {
+    return [self isLongTextObservation:textObservation comparedTextObservation:self.maxLongLineTextObservation];
 }
 
-- (CGFloat)indentationDifferenceOTextLength:(CGFloat)textLength {
+- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
+      comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
     /**
-     English text:  90 char, 0.015
-     Chinese text: 40 char, 0.025
+     test data:
      
-     Since the text character spacing is not the same in PDF, so we need to use line width.
+     What is needed is an electronic
+     payment system based on
+     cryptographic
+     
+     image width: 500, last white spaces deltaX: 0.3, cryptographic
+     
+     difference = 500 * 0.32 = 160
+     
+     image_width * (maxLineX - lineX) < difference
      */
     
-    CGFloat ratio = (90.0 / textLength) * 0.015;
-    if ([EZLanguageManager isChineseLanguage:self.language]) {
-        ratio = (40.0 / textLength) * 0.025;
+    CGFloat difference = 500 * 0.32; // 160;
+    CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
+    if (dx * self.ocrImage.size.width < difference) {
+        return YES;
     }
-    return ratio;
+    return NO;
 }
 
 
