@@ -1044,8 +1044,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                 // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
                 BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                             prevTextObservation:prevTextObservation
-                                                               lineSpacingRatio:2.2
-                                                                lineHeightRatio:1.2];
+                                                    greaterThanLineSpacingRatio:2.2
+                                                     greaterThanLineHeightRatio:1.2];
                 if (isBigLineSpacing) {
                     isNewParagraph = YES;
                 }
@@ -1276,8 +1276,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                 prevTextObservation:prevTextObservation
-                                                   lineSpacingRatio:1.8
-                                                    lineHeightRatio:1.0];
+                                        greaterThanLineSpacingRatio:1.8
+                                         greaterThanLineHeightRatio:1.0];
     
     BOOL needLineBreak = NO;
     
@@ -1436,23 +1436,26 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
                       prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
-                         lineSpacingRatio:(CGFloat)lineSpacingRatio
-                          lineHeightRatio:(CGFloat)lineHeightRatio {
+              greaterThanLineSpacingRatio:(CGFloat)greaterThanLineSpacingRatio
+               greaterThanLineHeightRatio:(CGFloat)greaterThanLineHeightRatio {
     // lineSpacingRatio = 2.2, 1.8, lineHeightRatio = 1.2, 1.0
     BOOL isBigLineSpacing = NO;
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGRect boundingBox = textObservation.boundingBox;
     CGFloat lineHeight = boundingBox.size.height;
     
+    CGFloat greaterThanDeltaYRatio = 1.1;
+    
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
-    CGFloat spacingRatio = deltaY / self.averageLineSpacing;
-    CGFloat heightRatio = deltaY / self.averageLineHeight;
+    CGFloat deltaYRatio = deltaY / lineHeight;
+    CGFloat lineSpacingRatio = deltaY / self.averageLineSpacing;
+    CGFloat lineHeightRatio = deltaY / self.averageLineHeight;
     
-    if (deltaY / lineHeight > 1.1 ||
-        spacingRatio > lineSpacingRatio ||
-        heightRatio > lineHeightRatio ||
-        (spacingRatio > lineSpacingRatio * 0.9 && heightRatio > lineHeightRatio * 0.8)) {
+    if (deltaYRatio > greaterThanDeltaYRatio ||
+        lineSpacingRatio > greaterThanLineSpacingRatio ||
+        lineHeightRatio > greaterThanLineHeightRatio ||
+        (deltaYRatio / greaterThanDeltaYRatio > 0.6 && lineSpacingRatio / greaterThanLineSpacingRatio > 0.9 && lineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
     }
     return isBigLineSpacing;
