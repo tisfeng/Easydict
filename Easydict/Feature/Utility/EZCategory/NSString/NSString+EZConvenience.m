@@ -52,10 +52,16 @@
     return string;
 }
 
-/// Convert joined string to paragraphs, remove extra line breaks.
+/// Just separate by "\n"
 - (NSArray<NSString *> *)toParagraphs {
+    NSArray *paragraphs = [self componentsSeparatedByString:@"\n"];
+    return paragraphs;
+}
+
+/// Remove extra line breaks, and separate by "\n"
+- (NSArray<NSString *> *)removeExtraLineBreaksAndToParagraphs {
     NSString *text = [self removeExtraLineBreaks];
-    NSArray *paragraphs = [text componentsSeparatedByString:@"\n"];
+    NSArray *paragraphs = [text toParagraphs];
     return paragraphs;
 }
 

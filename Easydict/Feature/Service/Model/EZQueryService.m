@@ -169,7 +169,7 @@ userInfo:nil]
             result = [text toTraditionalChineseText];
         }
         if (result) {
-            self.result.normalResults = @[ result ];
+            self.result.translatedResults = @[ result ];
             completion(self.result, nil);
             return YES;
         }

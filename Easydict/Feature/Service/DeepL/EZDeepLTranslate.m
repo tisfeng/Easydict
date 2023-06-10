@@ -139,11 +139,11 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     mm_weakify(self);
     [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
         mm_strongify(self);
-        NSArray *texts = result.normalResults;
+        NSArray *texts = result.translatedResults;
         if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             texts = [texts toTraditionalChineseTexts];
         }
-        result.normalResults = texts;
+        result.translatedResults = texts;
     }];
     
     void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
@@ -178,7 +178,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             return;
         }
 
-        self.result.normalResults = texts;
+        self.result.translatedResults = texts;
         completion(self.result, error);
     }];
 
@@ -289,9 +289,8 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         EZDeepLTranslateResponse *deepLTranslateResponse = [EZDeepLTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = [deepLTranslateResponse.result.texts.firstObject.text trim];
         if (translatedText) {
-            translatedText = [translatedText removeExtraLineBreaks];
-            NSArray *results = [translatedText componentsSeparatedByString:@"\n"];
-            self.result.normalResults = results;
+            NSArray *results = [translatedText toParagraphs];
+            self.result.translatedResults = results;
             self.result.raw = deepLTranslateResponse;
         }
         completion(self.result, nil);
@@ -352,7 +351,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
         NSLog(@"deepLTranslate cost: %.1f ms", (endTime - startTime) * 1000);
         
-        self.result.normalResults = [self parseOfficialResponseObject:responseObject];
+        self.result.translatedResults = [self parseOfficialResponseObject:responseObject];
         self.result.raw = responseObject;
         completion(self.result, nil);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
@@ -393,7 +392,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
      */
     NSString *translatedText = [responseObject[@"translations"] firstObject][@"text"];
     translatedText = [translatedText.trim removeExtraLineBreaks];
-    NSArray *translatedTextArray = [translatedText componentsSeparatedByString:@"\n"];
+    NSArray *translatedTextArray = [translatedText toParagraphs];
 
     return translatedTextArray;
 }

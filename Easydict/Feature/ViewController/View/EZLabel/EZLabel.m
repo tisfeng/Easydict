@@ -24,7 +24,7 @@
     [self setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     
     self.lineSpacing = 4;
-    self.paragraphSpacing = 15;
+    self.paragraphSpacing = 0;
     self.font = [NSFont systemFontOfSize:14];
     self.textContainer.lineFragmentPadding = 2; // Default value: 5.0
 }

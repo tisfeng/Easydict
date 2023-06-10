@@ -288,8 +288,8 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     }
     
     [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
-        NSArray *texts = result.normalResults;
-        result.normalResults = texts;
+        NSArray *texts = result.translatedResults;
+        result.translatedResults = texts;
     }];
     
     void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
@@ -426,7 +426,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                     result.queryText = EZOCRResult.mergedText;
                     result.from = EZOCRResult.from;
                     result.to = EZOCRResult.to;
-                    result.normalResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    result.translatedResults = [EZOCRResult.ocrTextArray mm_map:^id _Nullable(EZOCRText *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         return obj.translatedText;
                     }];
                     result.raw = EZOCRResult.raw;
@@ -616,7 +616,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             NSString *errorCode = dict[@"errorCode"];
             if (errorCode.integerValue == 0) {
                 NSArray *texts = [self parseTranslateResult:dict];
-                self.result.normalResults = texts;
+                self.result.translatedResults = texts;
                 completion(self.result, nil);
                 return;
             }
@@ -791,12 +791,12 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                     [response.translation enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         [normalResults addObject:obj];
                     }];
-                    result.normalResults = normalResults.count ? normalResults.copy : nil;
+                    result.translatedResults = normalResults.count ? normalResults.copy : nil;
                     
                     // 原始数据
                     result.raw = responseObject;
                     
-                    if (result.wordResult || result.normalResults) {
+                    if (result.wordResult || result.translatedResults) {
                         completion(result, nil);
                         return;
                     }
@@ -838,7 +838,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     }
     
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *texts, NSError *error) {
-        self.result.normalResults = texts;
+        self.result.translatedResults = texts;
         completion(self.result, error);
     }];
     
@@ -918,12 +918,11 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             NSDictionary *dict = [decodedString mj_JSONObject];
             NSArray *translatedTexts = [self parseTranslateResult:dict];
             if (translatedTexts.count) {
-                self.result.normalResults = translatedTexts;
+                self.result.translatedResults = translatedTexts;
                 completion(self.result, nil);
                 return;
             }
         }
-        
         [self webViewTranslate:completion];
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
@@ -931,7 +930,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         }
         
         [self requestYoudaoCookie];
-        
         completion(self.result, error);
     }];
     

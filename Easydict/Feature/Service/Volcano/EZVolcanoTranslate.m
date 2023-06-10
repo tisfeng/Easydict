@@ -159,7 +159,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
             return;
         }
        
-        self.result.normalResults = texts;
+        self.result.translatedResults = texts;
         completion(self.result, error);
     }];
     

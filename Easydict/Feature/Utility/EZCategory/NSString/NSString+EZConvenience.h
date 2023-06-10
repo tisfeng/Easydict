@@ -24,8 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Remove extra LineBreaks.
 - (NSString *)removeExtraLineBreaks;
 
-/// Convert joined string to paragraphs, remove extra line breaks.
+/// Just separate by "\n"
 - (NSArray<NSString *> *)toParagraphs;
+
+/// Remove extra line breaks, and separate by "\n"
+- (NSArray<NSString *> *)removeExtraLineBreaksAndToParagraphs;
 
 
 - (NSString *)encode;

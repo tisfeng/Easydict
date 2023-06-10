@@ -108,7 +108,7 @@ NSString *getPartName(NSString *part) {
 }
 
 - (NSString *)translatedText {
-    NSString *text = [self.normalResults componentsJoinedByString:@"\n"] ?: @"";
+    NSString *text = [self.translatedResults componentsJoinedByString:@"\n"] ?: @"";
     return text;
 }
 
@@ -128,7 +128,7 @@ NSString *getPartName(NSString *part) {
 
 - (void)reset {
     self.queryModel = [[EZQueryModel alloc] init];
-    self.normalResults = nil;
+    self.translatedResults = nil;
     self.wordResult = nil;
     self.error = nil;
     self.serviceType = EZServiceTypeYoudao;

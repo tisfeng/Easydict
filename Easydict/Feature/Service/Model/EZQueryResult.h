@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 中文查词或英文查词的情况下，翻译接口会返回这个单词（词组）的详细释义
 @property (nonatomic, strong, nullable) EZTranslateWordResult *wordResult;
 /// 普通翻译结果，可以有多条（一个段落对应一个翻译结果）
-@property (nonatomic, strong, nullable) NSArray<NSString *> *normalResults;
+@property (nonatomic, strong, nullable) NSArray<NSString *> *translatedResults;
 
 /// This is normalResults joined by @"\n"
 @property (nonatomic, copy) NSString *translatedText;
