@@ -1369,13 +1369,15 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             needLineBreak = NO;
         }
         
-        if (isPrevLongXLine && isPrevEndPunctuationChar) {
-            if (isBigLineSpacing) {
-                needLineBreak = YES;
-            }
+        if (isBigLineSpacing) {
+            needLineBreak = YES;
         }
         
-        if (hasPrevIndentation && isBigLineSpacing) {
+        if (isBigLineSpacing && isPrevEndPunctuationChar) {
+            isNewParagraph = YES;
+        }
+        
+        if (isBigLineSpacing && hasPrevIndentation) {
             isNewParagraph = YES;
         }
         
@@ -1436,8 +1438,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                       prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
                          lineSpacingRatio:(CGFloat)lineSpacingRatio
                           lineHeightRatio:(CGFloat)lineHeightRatio {
-    // lineSpacingRatio = 2.2, lineHeightRatio = 1.2
-    
+    // lineSpacingRatio = 2.2, 1.8, lineHeightRatio = 1.2, 1.0
     BOOL isBigLineSpacing = NO;
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGRect boundingBox = textObservation.boundingBox;
@@ -1445,9 +1446,13 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
+    CGFloat spacingRatio = deltaY / self.averageLineSpacing;
+    CGFloat heightRatio = deltaY / self.averageLineHeight;
+    
     if (deltaY / lineHeight > 1.1 ||
-        deltaY / self.averageLineSpacing > lineSpacingRatio ||
-        deltaY / self.averageLineHeight > lineHeightRatio) {
+        spacingRatio > lineSpacingRatio ||
+        heightRatio > lineHeightRatio ||
+        (spacingRatio > lineSpacingRatio * 0.9 && heightRatio > lineHeightRatio * 0.8)) {
         isBigLineSpacing = YES;
     }
     return isBigLineSpacing;
