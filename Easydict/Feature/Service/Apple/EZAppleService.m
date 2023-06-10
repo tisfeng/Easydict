@@ -1584,7 +1584,13 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      image_width * (maxLineX - lineX) < difference
      */
     
-    CGFloat difference = 500 * 0.32; // 160;
+    // Two Chinese words length
+    CGFloat difference = 60;
+     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
+    if (isEnglishTypeLanguage) {
+        difference = 500 * 0.32; // 160;
+    }
+    
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
     if (dx * self.ocrImage.size.width < difference) {
         return YES;
