@@ -186,12 +186,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         queryServiceType:(EZQueryServiceType)queryServiceType
               completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     
-    NSArray *normalResults = [[resultText trim] componentsSeparatedByString:@"\n"];
+    NSArray *normalResults = [[resultText trim] toParagraphs];
     
     switch (queryServiceType) {
         case EZQueryServiceTypeTranslation:
         case EZQueryServiceTypeSentence: {
-            self.result.normalResults = normalResults;
+            self.result.translatedResults = normalResults;
             completion(self.result, error);
             break;
         }
@@ -203,7 +203,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 return;
             }
             
-            self.result.normalResults = normalResults;
+            self.result.translatedResults = normalResults;
             self.result.showBigWord = YES;
             self.result.queryText = self.queryModel.inputText;
             self.result.translateResultsTopInset = 8;
@@ -1254,7 +1254,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Handle Definition And Etymology
 - (void)handleDefinition:(NSString *)definition etymology:(NSString *)etymology completion:(void (^)(EZQueryResult *, NSError *_Nullable error))completion {
     if (definition) {
-        self.result.normalResults = @[ definition ];
+        self.result.translatedResults = @[ definition ];
     }
     
     if (etymology.length) {

@@ -104,7 +104,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         lastView = bigWordLabel;
     }
     
-    if (result.normalResults.count || errorDescription.length > 0) {
+    if (result.translatedResults.count || errorDescription.length > 0) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = 9;
@@ -112,7 +112,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             explainTextFieldTopOffset += 2;
         }
         
-        if (result.wordResult && result.normalResults.count) {
+        if (result.wordResult && result.translatedResults.count) {
             explainLabel = [[EZLabel alloc] init];
             [self addSubview:explainLabel];
             explainLabel.font = typeTextFont;
@@ -858,7 +858,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 }
 
 - (NSString *)copiedText {
-    NSString *text = [self.result.normalResults componentsJoinedByString:@"\n\n"] ?: @"";
+    NSString *text = [self.result.translatedResults componentsJoinedByString:@"\n\n"] ?: @"";
     return text;
 }
 

@@ -438,7 +438,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         return nil;
                     }];
                     if (normalResults.count) {
-                        result.normalResults = normalResults.copy;
+                        result.translatedResults = normalResults.copy;
                         
                         NSString *mergeString = [NSString mm_stringByCombineComponents:normalResults separatedString:@"\n"];
                         NSString *signTo = [[self.signFunction callWithArguments:@[ mergeString ]] toString];
@@ -446,7 +446,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     }
                 }
                 
-                if (result.wordResult || result.normalResults) {
+                if (result.wordResult || result.translatedResults) {
                     completion(result, nil);
                     return;
                 }
@@ -710,7 +710,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                     }
 
                     NSString *transaltedText = [translationArray componentsJoinedByString:@""];
-                    result.normalResults = [transaltedText toParagraphs];
+                    result.translatedResults = [transaltedText toParagraphs];
                     
                     NSString *signTo = [[self.signFunction callWithArguments:@[ transaltedText ]] toString];
                     result.toSpeakURL = [self getAudioURLWithText:transaltedText
@@ -718,7 +718,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                                              sign:signTo];
                 }
                 
-                if (result.wordResult || result.normalResults) {
+                if (result.wordResult || result.translatedResults) {
                     completion(result, nil);
                     return;
                 }

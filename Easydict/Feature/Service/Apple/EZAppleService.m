@@ -254,7 +254,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
         }
         
         if (!error) {
-            self.result.normalResults = @[ [result.trim removeExtraLineBreaks] ];
+            // Apple Translation does not distinguish between newlines and paragraphs, and the results are all merged with \n\n
+            self.result.translatedResults = @[ result.trim ];
         } else {
             self.result.promptTitle = @"如何在 Easydict 中使用 🍎 macOS 系统翻译？";
             // https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md

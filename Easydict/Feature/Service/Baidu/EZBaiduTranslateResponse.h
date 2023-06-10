@@ -92,6 +92,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 查询结果
 @property (nonatomic, copy) NSString *dst;
 
+/// 是否有换行前缀 \n
+@property (nonatomic, assign) BOOL prefixWrap;
+
 @end
 
 

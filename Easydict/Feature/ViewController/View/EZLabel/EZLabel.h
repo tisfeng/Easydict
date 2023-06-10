@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) CGFloat lineSpacing; // default 4
 
-@property (nonatomic, assign) CGFloat paragraphSpacing; // default 15
+@property (nonatomic, assign) CGFloat paragraphSpacing; // default 0
 
 - (CGSize)oneLineSize;
 

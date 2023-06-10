@@ -13,7 +13,7 @@
 - (instancetype)setupWithDeepLTranslateResponse:(EZDeepLTranslateResponse *)deepLTranslateResponse {
     NSString *translatedText = deepLTranslateResponse.result.texts.firstObject.text;
     if (translatedText) {
-        self.normalResults = [translatedText.trim componentsSeparatedByString:@"\n"];
+        self.translatedResults = [translatedText.trim toParagraphs];
     }
     self.raw = deepLTranslateResponse;
 
