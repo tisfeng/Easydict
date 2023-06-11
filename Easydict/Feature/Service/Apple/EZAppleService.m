@@ -1512,10 +1512,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     CGFloat ratio = 0.95;
     BOOL isEqualLineMaxX = [self isRatioGreaterThan:ratio value1:lineMaxX value2:prevLineMaxX];
     
-    //    CGFloat lineLength = textObservation.boundingBox.size.width;
-    //    CGFloat prevLineLength = prevTextObservation.boundingBox.size.width;
-    //    BOOL isEqualLineLength = [self isEqualLength:lineLength comparedLength:prevLineLength];
-    
     if (isEqualX && isEqualLineMaxX) {
         return YES;
     }
@@ -1536,29 +1532,23 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 - (BOOL)isEqualXOfTextObservation:(VNRecognizedTextObservation *)textObservation
               prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     /**
-     technologies.
-     Index Terms—5G security, HTTP/2, Service Based Architec-
-     ture, Application programming interface, OAuth 2.0
+     test data
+     image width: 900, indentation: 3 white space, deltaX = 0.016,
+     threshold = 900 * 0.016 = 14.4
+     
+     But sometimes OCR frame is imprecise, so threshold should be bigger.
      */
-    
-    CGFloat difference = 700 * 0.03; // 21;
-    
-    /**
-     test data:
-     
-     image width: 700, indentation: 4 white space, deltaX = 0.032
-     
-     difference = 700 * 0.03 = 21
-     
-     image_width * deltaX < difference
-     */
-    
+    CGFloat threshold = 17;
+
+    // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
     CGFloat prevLineX = prevTextObservation.boundingBox.origin.x;
-    
-    // lineX > prevLineX
     CGFloat dx = lineX - prevLineX;
-    if (dx * self.ocrImage.size.width < difference || fabs(dx) < 0.001) {
+
+    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
+    CGFloat difference = maxLength * dx;
+    
+    if (difference < threshold || fabs(difference) < (threshold / 3)) {
         return YES;
     }
     return NO;
@@ -1604,26 +1594,6 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     if (prevText.length == 0 || prevText.length == 0) {
         return NO;
     }
-    
-    /** //
-     // Not poetry
-     
-     number of transactions per service and responding to low-
-     latency requirements
-     
-     HTTP/2 responds to SBIs requirements which include a Request-
-     Response
-     
-     Egress bandwidth overconsump-
-     tion
-     
-     // Is poetry
-     
-     Had I not seen the Sun
-     I could have borne the shade
-     But Light a newer Wilderness
-     My Wilderness has made —
-     */
     
     NSString *prevLastChar = prevText.lastChar;
     BOOL isPrevLastDashChar = [kDashCharacterList containsObject:prevLastChar];
