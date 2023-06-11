@@ -858,7 +858,8 @@ static const CGFloat kVerticalPadding_8 = 8;
 }
 
 - (NSString *)copiedText {
-    NSString *text = [self.result.translatedResults componentsJoinedByString:@"\n\n"] ?: @"";
+    // TODO: copy word dictionary text.
+    NSString *text = self.result.translatedText;
     return text;
 }
 
