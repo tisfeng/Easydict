@@ -23,6 +23,7 @@ static NSString *const kIndentationText = @"";
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
 static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
+static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 @interface VNRecognizedTextObservation (EZText)
 
@@ -919,7 +920,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
             
             // If deltaY too big, it is may paragraph, do not add it.
-            if (deltaY > 0 && deltaY < averageLineHeight * 1.2) {
+            if (deltaY > 0 && deltaY < averageLineHeight * kParagraphLineHeightRatio) {
                 totalLineSpacing += deltaY;
                 lineSpacingCount++;
             }
@@ -1045,8 +1046,8 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                 // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
                 BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                             prevTextObservation:prevTextObservation
-                                                    greaterThanLineSpacingRatio:2.2
-                                                     greaterThanLineHeightRatio:1.2];
+                                                    greaterThanLineSpacingRatio:2.4
+                                                     greaterThanLineHeightRatio:kParagraphLineHeightRatio];
                 if (isBigLineSpacing) {
                     isNewParagraph = YES;
                 }
@@ -1277,7 +1278,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     
     BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                 prevTextObservation:prevTextObservation
-                                        greaterThanLineSpacingRatio:1.8
+                                        greaterThanLineSpacingRatio:2.1
                                          greaterThanLineHeightRatio:1.0];
     
     BOOL needLineBreak = NO;
@@ -1339,6 +1340,9 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                         needLineBreak = NO;
                     } else {
                         needLineBreak = YES;
+                        if (!isEqualX) {
+                            isNewParagraph = YES;
+                        }
                     }
                 } else {
                     if (isEqualX && isEndPunctuationChar) {
@@ -1353,6 +1357,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                 }
             }
         } else {
+            // TODO: Sometimes has hasIndentation is a mistake if prev line is long.
             isNewParagraph = YES;
         }
     } else {
@@ -1439,25 +1444,27 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
                       prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
               greaterThanLineSpacingRatio:(CGFloat)greaterThanLineSpacingRatio
                greaterThanLineHeightRatio:(CGFloat)greaterThanLineHeightRatio {
-    // lineSpacingRatio = 2.2, 1.8, lineHeightRatio = 1.2, 1.0
+    //  lineHeightRatio = 1.2, 1.0
     BOOL isBigLineSpacing = NO;
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGRect boundingBox = textObservation.boundingBox;
     CGFloat lineHeight = boundingBox.size.height;
     
-    CGFloat greaterThanDeltaYRatio = 1.1;
+    CGFloat lineHeightRatioThreshold = 1.0;
     
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
-    CGFloat deltaYRatio = deltaY / lineHeight;
-    CGFloat lineSpacingRatio = deltaY / self.averageLineSpacing;
-    CGFloat lineHeightRatio = deltaY / self.averageLineHeight;
+    CGFloat lineHeightRatio = deltaY / lineHeight;
+    CGFloat averageLineSpacingRatio = deltaY / self.averageLineSpacing;
+    CGFloat averagerLineHeightRatio = deltaY / self.averageLineHeight;
     
-    if (deltaYRatio > greaterThanDeltaYRatio ||
-        lineSpacingRatio > greaterThanLineSpacingRatio ||
-        lineHeightRatio > greaterThanLineHeightRatio ||
-        (deltaYRatio / greaterThanDeltaYRatio > 0.6 && lineSpacingRatio / greaterThanLineSpacingRatio > 0.9 && lineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
+    // Since line spacing sometimes is too small and imprecise, we do not use it.
+    if (lineHeightRatio > lineHeightRatioThreshold ||
+        averageLineSpacingRatio > greaterThanLineSpacingRatio ||
+        averagerLineHeightRatio > greaterThanLineHeightRatio ||
+        (lineHeightRatio / lineHeightRatioThreshold > 0.65 && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
+        NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
     return isBigLineSpacing;
 }
@@ -1498,6 +1505,9 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 - (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:self.minXLineTextObservation];
     BOOL hasIndentation = !isEqualX;
+    if (hasIndentation) {
+        NSLog(@"has indentation: %@", textObservation.firstText);
+    }
     return hasIndentation;
 }
 
@@ -1523,7 +1533,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 }
 
 - (BOOL)isRatioGreaterThan:(CGFloat)ratio value1:(CGFloat)value1 value2:(CGFloat)value2 {
-    // 99 / 100 > 0.98
+    //  99 / 100 > 0.98
     CGFloat minValue = MIN(value1, value2);
     CGFloat maxValue = MAX(value1, value2);
     return (minValue / maxValue) > ratio;
@@ -1538,7 +1548,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      
      But sometimes OCR frame is imprecise, so threshold should be bigger.
      */
-    CGFloat threshold = 24;
+    CGFloat threshold = 21;
 
     // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
@@ -1548,9 +1558,10 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
     CGFloat difference = maxLength * dx;
     
-    if (difference < threshold || fabs(difference) < (threshold / 3)) {
+    if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 3)) {
         return YES;
     }
+    NSLog(@"not equal x difference: %.1f", difference);
     return NO;
 }
 
