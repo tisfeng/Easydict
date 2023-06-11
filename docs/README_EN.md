@@ -411,3 +411,5 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 | 2023-05-24 |   陈佩   |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
 | 2023-05-27 |  自由。  |   100    |                                                       感谢                                                        |
 | 2023-06-01 | 梦遇 | 10 | 感谢 |
+| 2023-06-05 | 挨揍的免子 | 1 | 谢谢🙏 |
+
