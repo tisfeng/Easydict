@@ -446,11 +446,20 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)retryQuery {
     NSLog(@"retry query");
     
+    [self.audioPlayer stop];
+
+    // Reset query view height.
+    if (self.queryModel.OCRImage) {
+        self.inputText = @"";
+    }
+    
     // Re-detect langauge when retry.
     self.queryModel.detectedLanguage = EZLanguageAuto;
     self.queryModel.needDetectLanguage = YES;
     
-    [self startQueryWithType:self.queryModel.actionType];
+    [self closeAllResultView:^{
+        [self startQueryWithType:self.queryModel.actionType];
+    }];
 }
 
 - (void)focusInputTextView {
