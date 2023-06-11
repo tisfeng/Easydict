@@ -1538,7 +1538,7 @@ static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
      
      But sometimes OCR frame is imprecise, so threshold should be bigger.
      */
-    CGFloat threshold = 17;
+    CGFloat threshold = 24;
 
     // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
