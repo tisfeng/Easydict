@@ -91,7 +91,8 @@
 /// Check if the string is a valid URL, must has scheme, https://www.google.com
 - (BOOL)isURL {
     NSURL *URL = [self detectLink];
-    return URL;
+    BOOL isURL = URL != nil;
+    return isURL;
 }
 
 /// Check if the string is a valid URL, must has scheme, https://www.google.com
