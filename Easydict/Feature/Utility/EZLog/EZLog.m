@@ -20,9 +20,9 @@
 
 + (void)setupCrashLogService {
 #if !DEBUG
-    NSString *encryptedAppSecretKey = @"OflP6xig/YV1XCtlLSk/cNXBJiLhBnXiLwaSAkdkUuUlVmWrXlmgCMiuvNzjPCFB";
+    NSString *encryptedAppSecretKey = @"w+WPowkxgDJ77BeUXJPEGZBcddvCLJyHTKjgWk3wOvB6tUMSDAYyx/DkuR4JCfA0";
     // App Center
-    [MSACAppCenter start:[FWEncryptorAES decryptText:encryptedAppSecretKey key:NSBundle.mainBundle.bundleIdentifier] withServices:@[
+    [MSACAppCenter start:[FWEncryptorAES decryptText:encryptedAppSecretKey key:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]] withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];
