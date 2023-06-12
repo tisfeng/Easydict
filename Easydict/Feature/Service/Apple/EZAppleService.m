@@ -1250,103 +1250,88 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                         prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
                              isNewParagraph:(BOOL)isNewParagraph {
     NSString *joinedString = @"";
+    BOOL needLineBreak = NO;
     
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
-    CGRect boundingBox = textObservation.boundingBox;
-    
-    NSString *text = [textObservation firstText];
-    BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
-    
-    CGFloat lineMaxX = CGRectGetMaxX(boundingBox);
-    
-    NSString *prevText = [prevTextObservation firstText];
-    CGFloat prevLineMaxX = CGRectGetMaxX(prevBoundingBox);
     CGFloat prevLineLength = prevBoundingBox.size.width;
-    
-    CGFloat maxLineLength = self.maxLineLength;
-    EZLanguage language = self.language;
-    
+    NSString *prevText = [prevTextObservation firstText];
     NSString *prevLastChar = prevText.lastChar;
     // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
     BOOL isPrevEndPunctuationChar = [prevText hasEndPunctuationSuffix];
-    
-    BOOL isPrevShortXLine = [self isShortLineLength:prevLineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.8];
-    BOOL isPrevLongXLine = [self isLongLineLength:prevLineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
-    
-    BOOL isShortXLine = [self isShortLineLength:lineMaxX maxLineLength:maxLineLength lessRateOfMaxLength:0.7];
-    BOOL isLongXLine = [self isLongLineLength:lineMaxX maxLineLength:maxLineLength greaterRateOfMaxLength:0.98];
     
     BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                 prevTextObservation:prevTextObservation
                                         greaterThanLineSpacingRatio:2.1
                                          greaterThanLineHeightRatio:1.0];
     
-    BOOL needLineBreak = NO;
-    
     BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
     BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
     
-    /**
-     we conclude with some security challenges and opportunities.
-     II. 5G SERVICE BASED ARCHITECTURE (SBA)
-     A. Overview
-     */
-    
-    
-    //    BOOL isPoertyLine = [self isPoetryCharactersOfLineText:prevText language:language];
+    BOOL isPrevLongText = [self isLongTextObservation:prevTextObservation];
     
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
     if (hasIndentation) {
-        /**
-         SEPP offers topology hiding capability along with prevention of bidding down attacks [4].
-         
-         III. IMPLICATIONS OF HTTP/2 FEATURES ON 5G SBA
-         
-         HTTP/2 introduces multiple features that we explore here- after and discuss the security impact of their possible exploita- tion by attackers in 5G SBA.
-         */
+        BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
+
+        CGFloat lineX = CGRectGetMinX(textObservation.boundingBox);
+        CGFloat prevLineX = CGRectGetMinX(prevTextObservation.boundingBox);
+        CGFloat dx = lineX - prevLineX;
         
         if (hasPrevIndentation) {
-            if (isBigLineSpacing) {
+            if (isBigLineSpacing && !isPrevLongText) {
                 isNewParagraph = YES;
             }
             
             /**
              Bitcoin: A Peer-to-Peer Electronic Cash System
+             
              Satoshi Nakamoto
              satoshin@gmx.com
              www.bitcoin.org
+             
              Abstract. A purely peer-to-peer version of electronic cash would allow online
              payments to be sent directly from one party to another without going through a
-             
              */
-            BOOL isLessHalfPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.5];
+            BOOL isPrevLessHalfShortLine = [self isShortLineLength:prevLineLength maxLineLength:self.maxLineLength lessRateOfMaxLength:0.5];
+            BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:self.maxLineLength lessRateOfMaxLength:0.85];
             
-            BOOL isPrevLongLine = [self isLongLineLength:prevLineLength maxLineLength:maxLineLength greaterRateOfMaxLength:0.95];
-            BOOL isPrevShortLine = [self isShortLineLength:prevLineLength maxLineLength:maxLineLength lessRateOfMaxLength:0.85];
             
-            BOOL isEqualInnerTwoLine = [self isEqualTextObservation:textObservation prevTextObservation:prevTextObservation];
-            BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
+            CGFloat lineMaxX = CGRectGetMaxX(textObservation.boundingBox);
+            CGFloat prevLineMaxX = CGRectGetMaxX(prevTextObservation.boundingBox);
+            BOOL isEqualLineMaxX = [self isRatioGreaterThan:0.95 value1:lineMaxX value2:prevLineMaxX];
             
+            BOOL isEqualInnerTwoLine = isEqualX && isEqualLineMaxX;
+
             if (isEqualInnerTwoLine) {
-                if (isLessHalfPrevShortLine) {
+                if (isPrevLessHalfShortLine) {
                     needLineBreak = YES;
                 } else {
                     needLineBreak = NO;
                 }
             } else {
-                if (isPrevEndPunctuationChar) {
-                    if (isPrevLongLine) {
-                        needLineBreak = NO;
-                    } else {
+                if (isPrevLongText) {
+                    if (isPrevEndPunctuationChar) {
                         needLineBreak = YES;
-                        if (!isEqualX) {
+                    } else {
+                        /**
+                                V. SECURITY CHALLENGES AND OPPORTUNITIES
+                            In the following, we discuss existing security challenges
+                         and shed light on possible security opportunities and research
+                         */
+                        if (!isEqualX && dx < 0) {
                             isNewParagraph = YES;
+                        } else {
+                            needLineBreak = NO;
                         }
                     }
                 } else {
-                    if (isEqualX && isEndPunctuationChar) {
-                        needLineBreak = NO;
+                    if (isPrevEndPunctuationChar) {
+                        if (!isEqualX) {
+                            isNewParagraph = YES;
+                        } else {
+                            needLineBreak = YES;
+                        }
                     } else {
                         if (isPrevShortLine) {
                             needLineBreak = YES;
@@ -1357,46 +1342,91 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 }
             }
         } else {
-            // TODO: Sometimes has hasIndentation is a mistake if prev line is long.
-            isNewParagraph = YES;
+            // Sometimes has hasIndentation is a mistake, when prev line is long.
+            /**
+             当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几
+             个原因：
+
+             1. 保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用
+                户和开发团队来说都是透明和易于管理的。
+             2. 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样，
+                用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
+             
+             The problem with this solution is that the fate of  the  entire  money  system depends  on  the
+             company running the mint, with every transaction having to go through them, just like a bank.
+                We need a way for the payee to know that the previous owners  did  not  sign   any   earlier
+             transactions.
+             */
+
+            if (isPrevLongText) {
+                if (isPrevEndPunctuationChar) {
+                    isNewParagraph = YES;
+                } else {
+                    if (!isEqualX && dx > 0) {
+                        needLineBreak = NO;
+                    } else {
+                        needLineBreak = YES;
+                    }
+                }
+            } else {
+                isNewParagraph = YES;
+            }
         }
     } else {
-        
-        if (isPrevShortXLine || (!isPrevLongXLine && isShortXLine && !isEndPunctuationChar)) {
+        if (hasPrevIndentation) {
             needLineBreak = YES;
-        }
-        
-        BOOL isPrevLongTextObservation = [self isLongTextObservation:prevTextObservation];
-        if (isPrevLongTextObservation) {
-            needLineBreak = NO;
-        }
-        
-        if (needLineBreak && isPrevLongXLine && isPrevEndPunctuationChar && isLongXLine) {
-            needLineBreak = NO;
         }
         
         if (isBigLineSpacing) {
-            needLineBreak = YES;
-        }
-        
-        if (isBigLineSpacing && isPrevEndPunctuationChar) {
-            isNewParagraph = YES;
-        }
-        
-        if (isBigLineSpacing && hasPrevIndentation) {
-            isNewParagraph = YES;
-        }
-        
-        if (isPrevLongXLine) {
-            BOOL isEqualCharacterLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
-            if (isEqualCharacterLength) {
+            if (isPrevLongText) {
+                if (self.isPoetry) {
+                    needLineBreak = YES;
+                } else {
+                    needLineBreak = NO;
+                    // 翻页, Page turn scenes without line feeds.
+                    if (!isPrevEndPunctuationChar) {
+                        isNewParagraph = NO;
+                    }
+                }
+            } else {
+                if (isPrevEndPunctuationChar || hasPrevIndentation) {
+                    isNewParagraph = YES;
+                } else {
+                    needLineBreak = YES;
+                }
+            }
+        } else {
+            if (isPrevLongText) {
+                if (hasPrevIndentation) {
+                    needLineBreak = NO;
+                }
+            } else {
                 needLineBreak = YES;
+                if (hasPrevIndentation && !isPrevEndPunctuationChar) {
+                    isNewParagraph = YES;
+                }
             }
         }
         
-        // 翻页, Page turn scenes without line feeds.
-        if (isNewParagraph && !self.isPoetry && isPrevLongXLine && !isPrevEndPunctuationChar) {
-            isNewParagraph = NO;
+        /**
+         Chinese poetry needs line break
+         
+         《鹧鸪天 · 正月十一日观灯》
+         
+         巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
+         花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
+         
+         —— 宋 · 姜夔
+         */
+        if ([EZLanguageManager isChineseLanguage:self.language]) {
+            BOOL isEqualLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
+            if (isPrevLongText && isEqualLength) {
+                needLineBreak = YES;
+                
+                if (isBigLineSpacing) {
+                    isNewParagraph = YES;
+                }
+            }
         }
     }
     
@@ -1409,7 +1439,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         joinedString = @" ";
     } else {
         // Like Chinese text, don't need space between words if it is not a punctuation mark.
-        if ([self isLanguageWordsNeedSpace:language]) {
+        if ([self isLanguageWordsNeedSpace:self.language]) {
             joinedString = @" ";
         }
     }
@@ -1421,6 +1451,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     return joinedString;
 }
 
+/// Equal character length && has end punctuation suffix
 - (BOOL)isEqualCharacterLengthTextObservation:(VNRecognizedTextObservation *)textObservation
                           prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     /**
@@ -1440,6 +1471,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     return NO;
 }
 
+// TODO: Some text has large line spacing, which can lead to misjudgments.
 - (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
                       prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
               greaterThanLineSpacingRatio:(CGFloat)greaterThanLineSpacingRatio
@@ -1452,17 +1484,29 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     CGFloat lineHeightRatioThreshold = 1.0;
     
+    
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
     CGFloat lineHeightRatio = deltaY / lineHeight;
     CGFloat averageLineSpacingRatio = deltaY / self.averageLineSpacing;
     CGFloat averagerLineHeightRatio = deltaY / self.averageLineHeight;
     
+    CGFloat minLineHeightRatio = 0.65;
+    /**
+     FIXME: https://github.com/tisfeng/Easydict/issues/16
+     
+     Since English text line height is smaller than Chinese, the ratio should be bigger, but if it is too large, it may affect the normal line break of the paragraph 😢
+     */
+    BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
+    if (isEnglishTypeLanguage) {
+        minLineHeightRatio = 0.8;
+    }
+    
     // Since line spacing sometimes is too small and imprecise, we do not use it.
     if (lineHeightRatio > lineHeightRatioThreshold ||
         averageLineSpacingRatio > greaterThanLineSpacingRatio ||
         averagerLineHeightRatio > greaterThanLineHeightRatio ||
-        (lineHeightRatio / lineHeightRatioThreshold > 0.65 && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
+        (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
         NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
@@ -1548,17 +1592,17 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
      
      But sometimes OCR frame is imprecise, so threshold should be bigger.
      */
-    CGFloat threshold = 21;
-
+    CGFloat threshold = 22;
+    
     // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
     CGFloat prevLineX = prevTextObservation.boundingBox.origin.x;
     CGFloat dx = lineX - prevLineX;
-
+    
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
     CGFloat difference = maxLength * dx;
     
-    if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 3)) {
+    if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 2)) {
         return YES;
     }
     NSLog(@"not equal x difference: %.1f", difference);
@@ -1586,14 +1630,17 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
      */
     
     // Two Chinese words length
-    CGFloat difference = 60;
-     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
+    CGFloat threshold = 60;
+    BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
-        difference = 500 * 0.32; // 160;
+        threshold = 500 * 0.32; // 160;
     }
     
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
-    if (dx * self.ocrImage.size.width < difference) {
+    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
+    CGFloat difference = maxLength * dx;
+
+    if (difference < threshold) {
         return YES;
     }
     return NO;
