@@ -15,7 +15,6 @@
 #import "EZConfiguration.h"
 #import "EZLog.h"
 #import "EZSchemeParser.h"
-//#import <JLRoutes.h>
 #import "AppDelegate+EZURLScheme.h"
 
 @implementation AppDelegate
@@ -23,10 +22,11 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     MMLogInfo(@"程序启动");
     
-    [self setupAppLanguage];
-    
+    // Capturing crash logs must be placed first.
     [MMCrash registerHandler];
     [EZLog setupCrashLogService];
+
+    [self setupAppLanguage];
 
     [EZMenuItemManager.shared setup];
     [EZShortcut setup];
