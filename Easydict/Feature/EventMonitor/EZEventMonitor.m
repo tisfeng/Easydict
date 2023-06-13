@@ -138,8 +138,6 @@ static EZEventMonitor *_instance = nil;
 
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
-    //    [self checkAppIsTrusted];
-    
     [self monitorCGEventTap];
 
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
@@ -153,12 +151,13 @@ static EZEventMonitor *_instance = nil;
     NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
-        
         [self handleMonitorEvent:event];
     }];
 }
 
 - (void)stop {
+    [self stopCGEventTap];
+
     if (self.localMonitor) {
         [NSEvent removeMonitor:self.localMonitor];
         self.localMonitor = nil;
@@ -188,12 +187,11 @@ static EZEventMonitor *_instance = nil;
     self.eventTap = eventTap;
         
     if (eventTap) {
+        // eventTap must not be NULL, otherwise it will crash.
         CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
         CGEventTapEnable(eventTap, true);
         CFRelease(runLoopSource);
-    } else {
-        MMLogInfo(@"Failed to create event tap, please check Accessibility permission");
     }
 }
 
@@ -256,7 +254,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         // If use Accessibility for the first time, we need to request Accessibility permission.
         BOOL needRequestAccessibility = [self useAccessibilityForFirstTime] && error == kAXErrorAPIDisabled;
         if (needRequestAccessibility) {
-            [self isAccessibilityTrusted];
+            [self isAccessibilityEnabled];
             self.selectTextType = EZSelectTextTypeAccessibility;
             completion(nil);
             return;
@@ -516,11 +514,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Check App is trusted, if no, it will prompt user to add it to trusted list.
-- (BOOL)isAccessibilityTrusted {
-    BOOL isTrusted = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef) @{(__bridge NSString *)kAXTrustedCheckOptionPrompt : @YES});
-    NSLog(@"isTrusted: %d", isTrusted);
-    
-    return isTrusted == YES;
+- (BOOL)isAccessibilityEnabled {
+    NSDictionary *options = @{ (__bridge NSString *)kAXTrustedCheckOptionPrompt: @(YES) };
+    BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options);
+    NSLog(@"accessibilityEnabled: %d", accessibilityEnabled);
+    return accessibilityEnabled == YES;
 }
 
 /// Check if should use simulation key to get selected text.

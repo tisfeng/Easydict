@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)start;
 - (void)stop;
 - (void)startMonitor;
-- (BOOL)isAccessibilityTrusted;
+- (BOOL)isAccessibilityEnabled;
 
 @end
 
