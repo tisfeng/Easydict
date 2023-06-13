@@ -1508,7 +1508,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         averagerLineHeightRatio > greaterThanLineHeightRatio ||
         (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
-        NSLog(@"is big line spacing: %@", textObservation.firstText);
+//        NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
     return isBigLineSpacing;
 }
@@ -1549,9 +1549,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)hasIndentationOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:self.minXLineTextObservation];
     BOOL hasIndentation = !isEqualX;
-    if (hasIndentation) {
-        NSLog(@"has indentation: %@", textObservation.firstText);
-    }
     return hasIndentation;
 }
 
@@ -1570,17 +1567,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return YES;
     }
     return NO;
-}
-
-- (BOOL)isEqualLength:(CGFloat)length comparedLength:(CGFloat)compareLength {
-    return [self isRatioGreaterThan:0.98 value1:length value2:compareLength];
-}
-
-- (BOOL)isRatioGreaterThan:(CGFloat)ratio value1:(CGFloat)value1 value2:(CGFloat)value2 {
-    //  99 / 100 > 0.98
-    CGFloat minValue = MIN(value1, value2);
-    CGFloat maxValue = MAX(value1, value2);
-    return (minValue / maxValue) > ratio;
 }
 
 - (BOOL)isEqualXOfTextObservation:(VNRecognizedTextObservation *)textObservation
@@ -1609,6 +1595,17 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     return NO;
 }
 
+- (BOOL)isEqualLength:(CGFloat)length comparedLength:(CGFloat)compareLength {
+    return [self isRatioGreaterThan:0.98 value1:length value2:compareLength];
+}
+
+- (BOOL)isRatioGreaterThan:(CGFloat)ratio value1:(CGFloat)value1 value2:(CGFloat)value2 {
+    //  99 / 100 > 0.98
+    CGFloat minValue = MIN(value1, value2);
+    CGFloat maxValue = MAX(value1, value2);
+    return (minValue / maxValue) > ratio;
+}
+
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation {
     return [self isLongTextObservation:textObservation comparedTextObservation:self.maxLongLineTextObservation];
 }
@@ -1633,7 +1630,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     CGFloat threshold = 60;
     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
-        threshold = 500 * 0.32; // 160;
+        threshold = 165; // should be a little bigger, add a white space width.
     }
     
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
