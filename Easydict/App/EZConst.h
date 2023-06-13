@@ -19,10 +19,10 @@ static CGFloat const EZTitlebarHeight_28 = 28;
 static CGFloat const EZAudioButtonWidthHeight_24 = 24;
 static CGFloat const EZAudioButtonImageWidth_16 = 16;
 
-static CGFloat const EZAudioButtonLeftMargin_6 = 6.5;
+static CGFloat const EZAudioButtonLeftMargin_6 = 6;
 static CGFloat const EZAudioButtonInputViewTopPadding_4 = 4;
 
-static CGFloat const EZAudioButtonBottomMargin_5 = 5;
+static CGFloat const EZAudioButtonBottomMargin_4 = 4;
 static CGFloat const EZAudioButtonRightPadding_1 = 1;
 
 

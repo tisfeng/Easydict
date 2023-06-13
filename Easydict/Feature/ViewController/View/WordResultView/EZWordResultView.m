@@ -787,7 +787,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     lastView = audioButton;
     
-    height += (audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_5);
+    height += (audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_4);
     
     _viewHeight = height;
     
