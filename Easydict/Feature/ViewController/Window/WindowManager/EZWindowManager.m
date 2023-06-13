@@ -594,7 +594,7 @@ static EZWindowManager *_instance;
 #pragma mark - Menu Actions, Global Shortcut
 
 - (void)selectTextTranslate {
-    if (![self.eventMonitor isAccessibilityTrusted]) {
+    if (![self.eventMonitor isAccessibilityEnabled]) {
         NSLog(@"App is not trusted");
         return;
     }
