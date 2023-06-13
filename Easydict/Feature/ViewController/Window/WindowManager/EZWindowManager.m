@@ -591,7 +591,7 @@ static EZWindowManager *_instance;
     }
 }
 
-#pragma mark - Menu Actions, Global Shorcut
+#pragma mark - Menu Actions, Global Shortcut
 
 - (void)selectTextTranslate {
     if (![self.eventMonitor isAccessibilityTrusted]) {

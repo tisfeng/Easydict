@@ -61,6 +61,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, strong) EZExeCommand *exeCommand;
 
+@property (nonatomic, assign) CFMachPortRef eventTap;
+
 @end
 
 
@@ -90,34 +92,7 @@ static EZEventMonitor *_instance = nil;
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
-
-    [self monitorCGEventTap];
 }
-
-/// Use CGEventTap to monitor key event, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
-- (void)monitorCGEventTap {
-    // Since NSEvent cannot monitor shortcut event, like Cmd+E, we need to use CGEventTap
-    CGEventMask eventMask = CGEventMaskBit(kCGEventKeyDown);
-    CFMachPortRef eventTap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, eventMask, eventCallback, NULL);
-    CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
-    CGEventTapEnable(eventTap, true);
-    CFRelease(eventTap);
-    CFRelease(runLoopSource);
-}
-
-CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
-    if (type == kCGEventKeyDown) {
-//        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-//        NSLog(@"nsEvent: %@", nsEvent);
-        
-        // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
-        [_instance delayDismissPopButton];
-    }
-    
-    return event;
-}
-
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
@@ -165,6 +140,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)startMonitor {
     //    [self checkAppIsTrusted];
     
+    [self monitorCGEventTap];
+
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == kVK_Escape) { // escape
             NSLog(@"escape");
@@ -192,6 +169,58 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     }
 }
 
+#pragma mark - Monitor CGEventTap
+
+/// Use CGEventTap to monitor key event, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
+- (void)monitorCGEventTap {
+    // Stop and release the previously created event tap
+    [self stopCGEventTap];
+
+    // Since NSEvent cannot monitor shortcut event, like Cmd + E, we need to use CGEventTap.
+    CGEventMask eventMask = CGEventMaskBit(kCGEventKeyDown);
+    
+    /**
+     !!!: CGEventTapCreate will return NULL if not root or has no accessibility permission.
+     
+     FIX: https://github.com/tisfeng/Easydict/issues/124#issuecomment-1587696395
+     */
+    CFMachPortRef eventTap = CGEventTapCreate(kCGHIDEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, eventMask, eventCallback, NULL);
+    self.eventTap = eventTap;
+        
+    if (eventTap) {
+        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+        CGEventTapEnable(eventTap, true);
+        CFRelease(runLoopSource);
+    } else {
+        MMLogInfo(@"Failed to create event tap, please check Accessibility permission");
+    }
+}
+
+CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+{
+    if (type == kCGEventKeyDown) {
+        //        NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
+        //        NSLog(@"nsEvent: %@", nsEvent);
+        
+        // Delay to dismiss, maybe the user wants to use a shortcut key to take a screenshot.
+        [_instance delayDismissPopButton];
+    }
+    return event;
+}
+
+- (void)stopCGEventTap {
+    // Stop and release the previously created event tap
+    if (self.eventTap) {
+        CGEventTapEnable(self.eventTap, false); // Disable the event tap
+        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, self.eventTap, 0);
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+        CFRelease(runLoopSource);
+        CFRelease(self.eventTap);
+        self.eventTap = NULL;
+    }
+}
+
 #pragma mark - Get selected text.
 
 - (void)getSelectedText:(void (^)(NSString *_Nullable))completion {
@@ -216,6 +245,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         // 1. If use Accessibility to get selected text success.
         if (text.length > 0) {
             self.selectTextType = EZSelectTextTypeAccessibility;
+            
+            // Monitor CGEventTap must be required after using Accessibility successfully.
+            [self monitorCGEventTap];
+            
             completion(text);
             return;
         }
@@ -243,10 +276,11 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             self.selectTextType = EZSelectTextTypeAppleScript;
             [self getBrowserSelectedText:bundleID completion:^(NSString *_Nonnull selectedText, NSError *_Nonnull error) {
                 /**
-                 ???: Why the first time to get text may be nil, error
-                 {
-                 "NSAppleScriptErrorNumber" : -1751
-                 }
+                 ???: Why the first time to get text may be nil
+                 
+                 error: {
+                            "NSAppleScriptErrorNumber" : -1751
+                        }
                  */
                 if (error) {
                     getSelectedTextByKeyBlock();
