@@ -243,7 +243,7 @@
     [self updateCustomLayout];
     
     [self.audioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.offset(-EZAudioButtonBottomMargin_5);
+        make.bottom.offset(-EZAudioButtonBottomMargin_4);
         make.left.offset(EZAudioButtonLeftMargin_6);
         make.width.height.mas_equalTo(EZAudioButtonWidthHeight_24);
     }];
@@ -539,7 +539,7 @@
     CGFloat height = 20;
     self.detectButton.cornerRadius = height / 2;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.textCopyButton.mas_right).offset(6);
+        make.left.equalTo(self.textCopyButton.mas_right).offset(6.5);
         make.centerY.equalTo(self.textCopyButton);
         make.height.mas_equalTo(height);
     }];
