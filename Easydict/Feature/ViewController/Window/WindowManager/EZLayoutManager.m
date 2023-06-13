@@ -113,7 +113,7 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return 54; // two line
         case EZWindowTypeMini:
-            return 36; // one line
+            return 33; // one line
         default:
             return 54;
     }
@@ -126,9 +126,9 @@ static EZLayoutManager *_instance;
         case EZWindowTypeFixed:
             return NSScreen.mainScreen.frame.size.height * 0.3;
         case EZWindowTypeMini:
-            return 54; // 2 line
+            return 75; // 3 line
         default:
-            return 54;
+            return 75;
     }
 }
 
