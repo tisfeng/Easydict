@@ -205,6 +205,12 @@ static EZMenuItemManager *_instance;
     }
 }
 
+- (IBAction)logLogDirectorAction:(NSMenuItem *)sender {
+    NSString *logPath = [MMManagerForLog rootLogDirectory];
+    NSURL *directoryURL = [NSURL fileURLWithPath:logPath];
+    [[NSWorkspace sharedWorkspace] openURL:directoryURL];
+}
+
 - (IBAction)quitAction:(NSMenuItem *)sender {
     NSLog(@"退出应用");
     [NSApplication.sharedApplication terminate:nil];

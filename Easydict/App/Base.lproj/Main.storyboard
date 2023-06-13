@@ -788,6 +788,12 @@ DQ
                                             <action selector="exportLogAction:" target="qM9-fT-Fym" id="bm3-88-xNM"/>
                                         </connections>
                                     </menuItem>
+                                    <menuItem title="日志目录" id="Dmt-kv-cPX" userLabel="日志目录">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="logLogDirectorAction:" target="qM9-fT-Fym" id="Zck-Yk-1VE"/>
+                                        </connections>
+                                    </menuItem>
                                 </items>
                             </menu>
                         </menuItem>

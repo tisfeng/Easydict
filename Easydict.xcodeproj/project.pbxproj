@@ -1296,8 +1296,8 @@
 		03B022C529231FA6001C7E63 /* Crash */ = {
 			isa = PBXGroup;
 			children = (
-				03B022CD29231FA6001C7E63 /* MMCrash.m */,
 				03B022C929231FA6001C7E63 /* MMCrash.h */,
+				03B022CD29231FA6001C7E63 /* MMCrash.m */,
 				03B022C629231FA6001C7E63 /* MMCrashFileTool.h */,
 				03B022CA29231FA6001C7E63 /* MMCrashFileTool.m */,
 				03B022C729231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.h */,
