@@ -54,7 +54,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ## Table of contents
 
-- [中文介绍 | English README](#中文介绍--english-readme)
+- [中文介绍 | English](#中文介绍--english)
 - [Features](#features)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
@@ -148,12 +148,12 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/xb77fI-1684688321.png" width="50%" />
 </div>
 
-| Ways                      | Description                                                                                                                               | Preview                                                                                                                                        |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mouse select translate    | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                               | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
-| Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                       | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
-| Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                        | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
-| Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate       | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
+| Ways                      | Description                                                                                                                                  | Preview                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mouse select translate    | The query icon is automatically displayed after the word is selected, and the mouse hovers over it to query                                  | ![iShot_2023-01-20_11.01.35-1674183779](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.01.35-1674183779.gif) |
+| Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                          | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
+| Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                           | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
+| Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate          | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
 | Silent Screenshot OCR     | Press the Silent Screenshot shortcut key（default `⌥ + ⇧ + S`）to capture the area, the OCR results will be copied directly to the clipboard | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 
 ### Select text by Mouse
@@ -249,9 +249,9 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 ### DeepL Translate
 
-Since the DeepL web free version has a frequency limit, it is easy to trigger the 429 error, so version 1.3.0 adds support for the DeepL official API, but the interface has not been written yet and needs to be enabled through the command line.
+DeepL free version web API has frequency limit for single IP, frequent use will trigger 429 too many requests error, so version 1.3.0 adds support for DeepL official API, but the interface has not been written yet, and needs to be enabled through command.
 
-If you have a DeepL AuthKey, it is recommended to use a personal AuthKey, so that the frequency limit can be avoided, and the user experience will be better.
+If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limit and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
 
 #### Configure AuthKey
 
@@ -401,13 +401,12 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 ### Sponsor List
 
-|  **日期**  | **用户** | **金额** |                                                     **留言**                                                      |
-| :--------: | :------: | :------: | :---------------------------------------------------------------------------------------------------------------: |
-| 2023-05-22 |    🍑    |    50    |                                                     感谢开源                                                      |
-| 2023-05-22 |    -     |   200    |                                                                                                                   |
-| 2023-05-22 |    -     |   150    |                                                                                                                   |
-| 2023-05-24 |   陈佩   |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
-| 2023-05-27 |  自由。  |   100    |                                                       感谢                                                        |
-| 2023-06-01 | 梦遇 | 10 | 感谢 |
-| 2023-06-05 | 挨揍的免子 | 1 | 谢谢🙏 |
-
+|  **日期**  |  **用户**  | **金额** |                                                     **留言**                                                      |
+| :--------: | :--------: | :------: | :---------------------------------------------------------------------------------------------------------------: |
+| 2023-05-22 |     🍑     |    50    |                                                     感谢开源                                                      |
+| 2023-05-22 |     -      |   200    |                                                                                                                   |
+| 2023-05-22 |     -      |   150    |                                                                                                                   |
+| 2023-05-24 |    陈佩    |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
+| 2023-05-27 |   自由。   |   100    |                                                       感谢                                                        |
+| 2023-06-01 |    梦遇    |    10    |                                                       感谢                                                        |
+| 2023-06-05 | 挨揍的免子 |    1     |                                                      谢谢 🙏                                                      |
