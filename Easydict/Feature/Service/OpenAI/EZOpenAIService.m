@@ -216,7 +216,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             self.result.translatedResults = normalResults;
             self.result.showBigWord = YES;
             self.result.queryText = self.queryModel.inputText;
-            self.result.translateResultsTopInset = 8;
+            self.result.translateResultsTopInset = 6;
             completion(self.result, error);
             break;
         }
