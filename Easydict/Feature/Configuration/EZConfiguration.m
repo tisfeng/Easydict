@@ -14,6 +14,8 @@
 #import "EZWindowManager.h"
 #import "EZExeCommand.h"
 #import "EZLog.h"
+#import "EZConstKey.h"
+#import "EZEnumTypes.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -421,6 +423,52 @@ static EZConfiguration *_instance;
     } else {
         [statusItem setup];
     }
+}
+
+
+#pragma mark - Intelligent Query Mode
+
+- (void)setIntelligentQueryMode:(BOOL)enabled windowType:(EZWindowType)windowType {
+    NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
+    NSString *stringValue = [NSString stringWithFormat:@"%d", enabled];
+    [NSUserDefaults mm_write:stringValue forKey:key];
+}
+- (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType {
+    NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
+    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"0"];
+    return [stringValue boolValue];
+}
+
+#pragma mark - Query Text Type of Service
+
+- (void)setQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType {
+    // easydict://writeKeyValue?IntelligentQueryMode-window1=1
+    NSString *key = [EZConstKey constkey:EZQueryTextTypeKey serviceType:serviceType];
+    [NSUserDefaults mm_write:@(queryTextType) forKey:key];
+}
+- (EZQueryTextType)queryTextTypeForServiceType:(EZServiceType)serviceType {
+    NSString *key = [EZConstKey constkey:EZQueryTextTypeKey serviceType:serviceType];
+    EZQueryTextType type = [NSUserDefaults mm_readInteger:key defaultValue:0];
+    return type;
+}
+
+#pragma mark - Intelligent Query Text Type of Service
+
+- (void)setIntelligentQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType {
+    NSString *key = [EZConstKey constkey:EZIntelligentQueryTextTypeKey serviceType:serviceType];
+    /**
+     easydict://writeKeyValue?Google-IntelligentQueryTextType=5
+     URL key value is string type, so we need to save vlue as string type.
+     */
+    NSString *typeString = [NSString stringWithFormat:@"%ld", queryTextType];
+    [NSUserDefaults mm_write:typeString forKey:key];
+}
+- (EZQueryTextType)intelligentQueryTextTypeForServiceType:(EZServiceType)serviceType {
+    NSString *key = [EZConstKey constkey:EZIntelligentQueryTextTypeKey serviceType:serviceType];
+    NSString *typeString = [NSUserDefaults mm_readString:key defaultValue:@"0"];
+    // Convert string to int
+    EZQueryTextType type = [typeString integerValue];
+    return type;
 }
 
 @end

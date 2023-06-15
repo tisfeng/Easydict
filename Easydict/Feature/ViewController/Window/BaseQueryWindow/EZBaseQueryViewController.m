@@ -600,7 +600,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     self.firstService = nil;
     for (EZQueryService *service in self.services) {
-        BOOL enableAutoQuery = service.enabledQuery && (service.serviceUsageStatus != EZServiceUsageStatusAlwaysOff);
+        BOOL enableAutoQuery = service.enabledQuery && service.enabledAutoQuery;
         if (!enableAutoQuery) {
             NSLog(@"service disabled: %@", service.serviceType);
             continue;;

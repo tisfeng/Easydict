@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
+static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
+
 typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
     EZLanguageDetectOptimizeNone = 0,
     EZLanguageDetectOptimizeBaidu = 1,
@@ -55,6 +57,22 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 - (CGRect)windowFrameWithType:(EZWindowType)windowType;
 - (void)setWindowFrame:(CGRect)frame windowType:(EZWindowType)windowType;
+
+
+#pragma mark - Intelligent Query Mode
+
+- (void)setIntelligentQueryMode:(BOOL)enabled windowType:(EZWindowType)windowType;
+- (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType;
+
+#pragma mark - Query Text Type of Service
+
+- (void)setQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType;
+- (EZQueryTextType)queryTextTypeForServiceType:(EZServiceType)serviceType;
+
+#pragma mark - Intelligent Query Text Type of Service
+
+- (void)setIntelligentQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType;
+- (EZQueryTextType)intelligentQueryTextTypeForServiceType:(EZServiceType)serviceType;
 
 @end
 

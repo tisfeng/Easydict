@@ -17,9 +17,27 @@ static NSDictionary *const kQuotesDict = @{
 
 @implementation EZTextWordUtils
 
+
 #pragma mark - Check if text is a word, or phrase
 
-/// If text is a Chinese or English word or phrase, need query dict.
+
+/// Get query type of text.
++ (EZQueryTextType)queryTypeOfText:(NSString *)text language:(EZLanguage)langugae {
+    BOOL isQueryDictionary = [self shouldQueryDictionary:text language:langugae];
+    if (isQueryDictionary) {
+        return EZQueryTextTypeDictionary;
+    }
+    
+    BOOL isEnglishText = [langugae isEqualToString:EZLanguageEnglish];
+    BOOL isQueryEnglishSentence = [self shouldQuerySentence:text language:langugae];
+    if (isQueryEnglishSentence && isEnglishText) {
+        return EZQueryTextTypeSentence;
+    }
+    
+    return EZQueryTextTypeTranslation;
+}
+
+/// If text is a Chinese or English word or phrase, need to query dict.
 + (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae {
     if (text.length > EZEnglishWordMaxLength) {
         return NO;

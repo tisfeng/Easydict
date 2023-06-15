@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZBetaFeatureKey = @"EZBetaFeatureKey";
-//static NSString *const EZResetUserDefaultsDataKey = @"EZResetUserDefaultsDataKey";
-//static NSString *const EZSaveUserDefaultsDataToDownloadFolderKey = @"EZSaveUserDefaultsDataToDownloadFolderKey";
 
 @interface NSUserDefaults (EZConfig)
 

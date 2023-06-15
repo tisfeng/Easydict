@@ -11,6 +11,7 @@
 #import "EZBaiduTranslateResponse.h"
 #import "EZWebViewTranslator.h"
 #import "EZNetworkManager.h"
+#import "EZConfiguration.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
@@ -115,6 +116,24 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (EZServiceType)serviceType {
     return EZServiceTypeBaidu;
+}
+
+- (EZQueryTextType)queryTextType {
+    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
+    EZQueryTextType type = [EZConfiguration.shared queryTextTypeForServiceType:self.serviceType];
+    if (type == 0) {
+        type = defaultType;
+    }
+    return type;
+}
+
+- (EZQueryTextType)intelligentQueryTextType {
+    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
+    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    if (type == 0) {
+        type = defaultType;
+    }
+    return type;
 }
 
 - (NSString *)name {

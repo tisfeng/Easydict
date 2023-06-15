@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageModel.h"
 #import <NaturalLanguage/NaturalLanguage.h>
+#import "EZEnumTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTextWordUtils : NSObject
+
+/// Get query type of text.
++ (EZQueryTextType)queryTypeOfText:(NSString *)text language:(EZLanguage)langugae;
 
 /// If text is a Chinese or English word or phrase, need query dict.
 + (BOOL)shouldQueryDictionary:(NSString *)text language:(EZLanguage)langugae;

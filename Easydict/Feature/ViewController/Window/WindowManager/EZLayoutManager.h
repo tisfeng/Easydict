@@ -7,25 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZEnumTypes.h"
 
 @class EZBaseQueryWindow;
 
 NS_ASSUME_NONNULL_BEGIN
-
-/// Window type
-typedef NS_ENUM(NSInteger, EZWindowType) {
-    EZWindowTypeNone = -1,
-    EZWindowTypeMain = 0,
-    EZWindowTypeMini = 1,
-    EZWindowTypeFixed = 2,
-};
-
-/// Show window position
-typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
-    EZShowWindowPositionRight = 0,
-    EZShowWindowPositionMouse = 1,
-    EZShowWindowPositionFormer = 2,
-};
 
 /// Avoid window manager and base window recycling retain.
 @interface EZLayoutManager : NSObject

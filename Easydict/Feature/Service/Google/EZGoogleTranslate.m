@@ -11,6 +11,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EZTextWordUtils.h"
 #import "NSArray+EZChineseText.h"
+#import "EZConfiguration.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
@@ -110,6 +111,19 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     return EZServiceTypeGoogle;
 }
 
+- (EZQueryTextType)queryTextType {
+    return EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
+}
+
+- (EZQueryTextType)intelligentQueryTextType {
+    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
+    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    if (type == 0) {
+        type = defaultType;
+    }
+    return type;
+}
+
 - (NSString *)name {
     return NSLocalizedString(@"google_translate", nil);
 }
@@ -187,8 +201,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)translate:(NSString *)text
              from:(EZLanguage)from
                to:(EZLanguage)to
-       completion:(nonnull void (^)(EZQueryResult *_Nullable,
-                                    NSError *_Nullable))completion {
+       completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
