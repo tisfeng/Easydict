@@ -10,6 +10,7 @@
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 #import "EZTextWordUtils.h"
+#import "EZConfiguration.h"
 
 static NSString *const kDefinitionDelimiter = @"{---Definition---}:";
 static NSString *const kEtymologyDelimiter = @"{---Etymology---}:";
@@ -61,24 +62,33 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return EZServiceTypeOpenAI;
 }
 
-- (EZQueryServiceType)queryServiceType {
-    EZQueryServiceType type = EZQueryServiceTypeNone;
+- (EZQueryTextType)queryTextType {
+    EZQueryTextType type = EZQueryTextTypeNone;
     BOOL enableTranslation= [[NSUserDefaults mm_readString:EZOpenAITranslationKey defaultValue:@"1"] boolValue];
     BOOL enableDictionary = [[NSUserDefaults mm_readString:EZOpenAIDictionaryKey defaultValue:@"1"] boolValue];
     BOOL enableSentence = [[NSUserDefaults mm_readString:EZOpenAISentenceKey defaultValue:@"1"] boolValue];
     if (enableTranslation) {
-        type = type | EZQueryServiceTypeTranslation;
+        type = type | EZQueryTextTypeTranslation;
     }
     if (enableDictionary) {
-        type = type | EZQueryServiceTypeDictionary;
+        type = type | EZQueryTextTypeDictionary;
     }
      if (enableSentence) {
-        type = type | EZQueryServiceTypeSentence;
+        type = type | EZQueryTextTypeSentence;
     }
-    if (type == EZQueryServiceTypeNone) {
-        type = EZQueryServiceTypeTranslation;
+    if (type == EZQueryTextTypeNone) {
+        type = EZQueryTextTypeTranslation;
     }
 
+    return type;
+}
+
+- (EZQueryTextType)intelligentQueryTextType {
+    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
+    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    if (type == 0) {
+        type = defaultType;
+    }
     return type;
 }
 
@@ -139,15 +149,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"stream" : @(YES),
     }.mutableCopy;
     
-    EZQueryServiceType queryServiceType = EZQueryServiceTypeTranslation;
+    EZQueryTextType queryServiceType = EZQueryTextTypeTranslation;
 
-    BOOL enableDictionary = self.queryServiceType & EZQueryServiceTypeDictionary;
+    BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
         isQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
     }
     
-    BOOL enableSentence = self.queryServiceType & EZQueryServiceTypeSentence;
+    BOOL enableSentence = self.queryTextType & EZQueryTextTypeSentence;
     BOOL isQueryEnglishSentence = NO;
     if (!isQueryDictionary && enableSentence) {
         BOOL isEnglishText = [from isEqualToString:EZLanguageEnglish];
@@ -156,25 +166,25 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }
     }
     
-    BOOL enableTranslation = self.queryServiceType & EZQueryServiceTypeTranslation;
+    BOOL enableTranslation = self.queryTextType & EZQueryTextTypeTranslation;
     
     self.result.from = from;
     self.result.to = to;
     
     NSArray<NSDictionary *> *messages = nil;
     if (isQueryDictionary) {
-        queryServiceType = EZQueryServiceTypeDictionary;
+        queryServiceType = EZQueryTextTypeDictionary;
         messages = [self dictMessages:text from:sourceLanguageType to:targetLanguageType];
     } else if (isQueryEnglishSentence) {
-        queryServiceType = EZQueryServiceTypeSentence;
+        queryServiceType = EZQueryTextTypeSentence;
         messages = [self sentenceMessages:text from:sourceLanguageType to:targetLanguageType];
     } else if (enableTranslation) {
-        queryServiceType = EZQueryServiceTypeTranslation;
+        queryServiceType = EZQueryTextTypeTranslation;
         messages = [self translatioMessages:text from:sourceLanguageType to:targetLanguageType];
     }
     parameters[@"messages"] = messages;
     
-    if (queryServiceType != EZQueryServiceTypeNone) {
+    if (queryServiceType != EZQueryTextTypeNone) {
         [self startStreamChat:parameters queryServiceType:queryServiceType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
         }];
@@ -183,19 +193,19 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 - (void)handleResultText:(NSString *)resultText
                    error:(NSError *)error
-        queryServiceType:(EZQueryServiceType)queryServiceType
+        queryServiceType:(EZQueryTextType)queryServiceType
               completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     
     NSArray *normalResults = [[resultText trim] toParagraphs];
     
     switch (queryServiceType) {
-        case EZQueryServiceTypeTranslation:
-        case EZQueryServiceTypeSentence: {
+        case EZQueryTextTypeTranslation:
+        case EZQueryTextTypeSentence: {
             self.result.translatedResults = normalResults;
             completion(self.result, error);
             break;
         }
-        case EZQueryServiceTypeDictionary: {
+        case EZQueryTextTypeDictionary: {
             if (error) {
                 self.result.showBigWord = NO;
                 self.result.translateResultsTopInset = 0;
@@ -217,7 +227,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 }
 
 - (void)startStreamChat:(NSDictionary *)parameters
-       queryServiceType:(EZQueryServiceType)queryServiceType
+       queryServiceType:(EZQueryTextType)queryServiceType
              completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     // Read openai key from NSUserDefaults
     NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
@@ -246,7 +256,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }];
     
     BOOL shouldHandleQuote = NO;
-    if (queryServiceType == EZQueryServiceTypeTranslation) {
+    if (queryServiceType == EZQueryTextTypeTranslation) {
         shouldHandleQuote = YES;
     }
     

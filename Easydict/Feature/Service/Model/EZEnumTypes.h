@@ -10,6 +10,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Window type
+typedef NS_ENUM(NSInteger, EZWindowType) {
+    EZWindowTypeNone = -1,
+    EZWindowTypeMain = 0,
+    EZWindowTypeMini = 1,
+    EZWindowTypeFixed = 2,
+};
+
+/// Show window position
+typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
+    EZShowWindowPositionRight = 0,
+    EZShowWindowPositionMouse = 1,
+    EZShowWindowPositionFormer = 2,
+};
+
 FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
 
 typedef NSString *EZServiceType NS_STRING_ENUM;
@@ -22,12 +37,14 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 
 
-FOUNDATION_EXPORT NSString *const EZQueryServiceTypeKey;
-typedef NS_OPTIONS(NSUInteger, EZQueryServiceType) {
-    EZQueryServiceTypeNone = 0,
-    EZQueryServiceTypeTranslation = 1 << 0,
-    EZQueryServiceTypeDictionary = 1 << 1,
-    EZQueryServiceTypeSentence = 1 << 2,
+FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
+FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
+
+typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
+    EZQueryTextTypeNone = 0,
+    EZQueryTextTypeTranslation = 1 << 0,
+    EZQueryTextTypeDictionary = 1 << 1,
+    EZQueryTextTypeSentence = 1 << 2,
 };
 
 

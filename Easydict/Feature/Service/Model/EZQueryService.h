@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// In the query page, whether to allow this service query.
 @property (nonatomic, assign) BOOL enabledQuery;
 
+@property (nonatomic, assign) BOOL enabledAutoQuery;
+
 @property (nonatomic, assign) EZWindowType windowType;
 
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
@@ -70,8 +72,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 当前翻译对象唯一标识符, OpenAI
 - (EZServiceType)serviceType;
 
-/// Query service type: translation, dict, sentence.
-- (EZQueryServiceType)queryServiceType;
+/// Query text type: dictionary ,translation, sentence.
+- (EZQueryTextType)queryTextType;
+
+- (EZQueryTextType)intelligentQueryTextType;
 
 /// Service usage status.
 - (EZServiceUsageStatus)serviceUsageStatus;

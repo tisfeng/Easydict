@@ -101,9 +101,25 @@
     BOOL handled = NO;
     for (NSString *key in keyValues) {
         NSString *value = keyValues[key];
+        BOOL isBeta = [[NSUserDefaults standardUserDefaults] isBeta];
         if ([self.allowedReadWriteKeys containsObject:key]) {
-            [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             handled = YES;
+        }
+        
+        if (isBeta) {
+            NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+            // easydict://writeKeyValue?Google-IntelligentQueryTextType=5
+            NSArray *arr = [key componentsSeparatedByString:@"-"];
+            if (arr.count) {
+                NSString *keyString = arr.firstObject;
+                if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
+                    handled = YES;
+                }
+            }
+        }
+        
+        if (handled) {
+            [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
         }
     }
     return handled;
@@ -150,6 +166,13 @@
      
      // Youdao TTS
      easydict://writeKeyValue?EZDefaultTTSServiceKey=Youdao
+     
+     // Intelligent Query Mode, enable mini window
+     easydict://writeKeyValue?IntelligentQueryMode-window1=1
+     
+     // Intelligent Query
+     easydict://writeKeyValue?Google-IntelligentQueryTextType=5  // transaltion | sentence
+     easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2  // dictionary
      */
     
     
@@ -170,6 +193,8 @@
         EZDeepLTranslationAPIKey,
         
         EZDefaultTTSServiceKey,
+        
+        EZIntelligentQueryModeKey,
     ];
     
     return readWriteKeys;
@@ -260,7 +285,7 @@
     
     NSArray *allowdKeyNames = @[
         EZServiceUsageStatusKey,
-        EZQueryServiceTypeKey,
+        EZQueryTextTypeKey,
     ];
     
     NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
