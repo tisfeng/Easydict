@@ -73,7 +73,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 @property (nonatomic, strong) VNRecognizedTextObservation *maxLongLineTextObservation;
 @property (nonatomic, strong) VNRecognizedTextObservation *minXLineTextObservation;
-@property (nonatomic, strong) VNRecognizedTextObservation *maxCharactarLineTextObservation;
 
 @property (nonatomic, strong) NSImage *ocrImage;
 @property (nonatomic, assign) BOOL isPoetry;
@@ -870,12 +869,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     CGFloat minX = MAXFLOAT;
     CGFloat maxLengthOfLine = 0;
     CGFloat minLengthOfLine = MAXFLOAT;
-    NSInteger punctuationMarkCount = 0;
-    NSInteger totalCharCount = 0;
-    CGFloat charCountPerLine = 0;
-    CGFloat maxCharCount = 0;
-    
-    NSMutableArray *lineLengthArray = [NSMutableArray array];
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *observationResults = request.results;
@@ -889,23 +882,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
         
-        // iterate string to check if has punctuation mark.
-        for (NSInteger i = 0; i < recognizedString.length; i++) {
-            totalCharCount += 1;
-            NSString *charString = [recognizedString substringWithRange:NSMakeRange(i, 1)];
-            NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:kDashCharacterList];
-            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
-            if (isChar) {
-                punctuationMarkCount += 1;
-            }
-        }
-        
         CGRect boundingBox = textObservation.boundingBox;
         NSLog(@"%@, %@", @(boundingBox), recognizedString);
-        
-        CGFloat lineLength = boundingBox.size.width;
-        [lineLengthArray addObject:@(lineLength)];
-        
+                
         CGFloat lineHeight = boundingBox.size.height;
         totalLineHeight += lineHeight;
         if (lineHeight < minLineHeight) {
@@ -934,11 +913,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             }
         }
         
-        if (recognizedString.length > maxCharCount) {
-            maxCharCount = recognizedString.length;
-            self.maxCharactarLineTextObservation = textObservation;
-        }
-        
         CGFloat x = boundingBox.origin.x;
         if (x < minX) {
             minX = x;
@@ -965,10 +939,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     self.language = language;
     self.minX = minX;
     self.maxLineLength = maxLengthOfLine;
-    
-    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
-    charCountPerLine = totalCharCount / (CGFloat)lineCount;
-    
+        
     
     self.averageLineHeight = averageLineHeight;
     self.averageLineSpacing = averageLineSpacing;
@@ -985,9 +956,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSLog(@"ocr stringArray (%@): %@", ocrResult.from, stringArray);
     
     
-    BOOL isPoetry = [self isPoetryOftextObservations:observationResults
-                                punctuationMarkCount:punctuationMarkCount
-                                 punctuationMarkRate:punctuationMarkRate];
+    BOOL isPoetry = [self isPoetryOftextObservations:observationResults];
     NSLog(@"isPoetry: %d", isPoetry);
     self.isPoetry = isPoetry;
     
@@ -1112,35 +1081,59 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
 }
 
-- (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations
-              punctuationMarkCount:(NSInteger)punctuationMarkCount
-               punctuationMarkRate:(CGFloat)punctuationMarkRate {
+- (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
     
-    NSInteger longLineCount = 0;
     CGFloat lineCount = textObservations.count;
-    
+    NSInteger longLineCount = 0;
+
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
-    
-    /**
-     Egress bandwidth overconsump-
-     tion
-     
-     not poetry
-     */
-    for (int i = 0; i < lineCount; i++) {
-        NSString *text = [textObservations[i] firstText];
-        totalCharCount += text.length;
-    }
-    
-    charCountPerLine = totalCharCount / lineCount;
+    NSInteger punctuationMarkCount = 0;
     
     for (VNRecognizedTextObservation *textObservation in textObservations) {
         BOOL isLongLine = [self isLongTextObservation:textObservation];
         if (isLongLine) {
             longLineCount += 1;
         }
+        
+        NSString *text = [textObservation firstText];
+        totalCharCount += text.length;
+        
+        NSInteger punctuationMarkCountOfLine = 0;
+
+        // iterate string to check if has punctuation mark.
+        for (NSInteger i = 0; i < text.length; i++) {
+            totalCharCount += 1;
+            
+            NSString *charString = [text substringWithRange:NSMakeRange(i, 1)];
+            NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:kDashCharacterList];
+            BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
+            if (isChar) {
+                punctuationMarkCountOfLine += 1;
+            }
+            
+            BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
+
+            /**
+             Not poetry, cannot join with '\n'
+             
+             　　 京洛风流绝代人，因何风絮落溪津。笼鞋浅出鸦头袜，知是凌波
+             　缥缈身。
+             　　 红乍笑，绿长颦，与谁同度可怜春。鸳鸯独宿何曾惯，化作西楼
+             　一缕云。
+             */
+            if (punctuationMarkCountOfLine > 2 && !isEndPunctuationChar) {
+                return NO;
+            }
+        }
+        
+        punctuationMarkCount += punctuationMarkCountOfLine;
     }
+    
+    charCountPerLine = totalCharCount / lineCount;
+
+    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
+    charCountPerLine = totalCharCount / (CGFloat)lineCount;
     
     CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
@@ -1330,11 +1323,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                     needLineBreak = YES;
                 }
             }
-            
-            if (isPrevEndPunctuationChar && self.isPoetry) {
-                isNewParagraph = YES;
-            }
-            
         } else {
             if (isPrevLongText) {
                 if (hasPrevIndentation) {
@@ -1355,7 +1343,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 }
             }
             
-            if (isPrevEndPunctuationChar && self.isPoetry) {
+            if (self.isPoetry) {
                 needLineBreak = YES;
             }
         }
