@@ -73,7 +73,7 @@ static EZWindowManager *_instance;
     self.eventMonitor = [[EZEventMonitor alloc] init];
     [self setupEventMonitor];
     
-//    NSLog(@"%@", self.floatingWindowTypeArray);
+    //    NSLog(@"%@", self.floatingWindowTypeArray);
 }
 
 - (void)setupEventMonitor {
@@ -102,7 +102,7 @@ static EZWindowManager *_instance;
         [self.popButtonWindow orderFrontRegardless];
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
         self.popButtonWindow.level = kCGScreenSaverWindowLevel;
-                
+        
         if (!EZConfiguration.shared.hideMainWindow) {
             [self->_mainWindow orderBack:nil];
         }
@@ -116,7 +116,7 @@ static EZWindowManager *_instance;
         self.screen = [EZCoordinateUtils screenOfPoint:clickPoint];
         EZLayoutManager.shared.screen = self.screen;
     }];
-
+    
     [self.eventMonitor setDismissPopButtonBlock:^{
         //        NSLog(@"dismiss pop button");
         mm_strongify(self);
@@ -366,7 +366,7 @@ static EZWindowManager *_instance;
     [window.queryViewController focusInputTextView];
     
     [self updateFloatingWindowType:window.windowType];
-
+    
     // mainWindow has been ordered out before, so we need to order back.
     if (![EZConfiguration.shared hideMainWindow]) {
         [self->_mainWindow orderBack:nil];
@@ -400,8 +400,8 @@ static EZWindowManager *_instance;
 /// TODO: need to optimize.
 - (CGPoint)getPopButtonWindowLocation {
     NSPoint location = [NSEvent mouseLocation];
-//    NSLog(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
-
+    //    NSLog(@"mouseLocation: (%.1f, %.1f)", location.x, location.y);
+    
     if (CGPointEqualToPoint(location, CGPointZero)) {
         return CGPointZero;
     }
@@ -435,14 +435,14 @@ static EZWindowManager *_instance;
     // TODO: This codo is too ugly, need to optimize.
     
     
-//    if (isDirectionDown) {
-//        x += self.offsetPoint.x;
-//        y += self.offsetPoint.y;
-//    } else {
-//        x += self.offsetPoint.x;
-//        // Direction up, show pop button window above the selected text.
-//        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
-//    }
+    //    if (isDirectionDown) {
+    //        x += self.offsetPoint.x;
+    //        y += self.offsetPoint.y;
+    //    } else {
+    //        x += self.offsetPoint.x;
+    //        // Direction up, show pop button window above the selected text.
+    //        y = location.y - self.offsetPoint.y + self.popButtonWindow.height + 5;
+    //    }
     
     //    CGRect selectedTextFrame = self.eventMonitor.selectedTextFrame;
     //    NSLog(@"selected text frame: %@", NSStringFromRect(selectedTextFrame));
@@ -475,13 +475,13 @@ static EZWindowManager *_instance;
         position.y = position.y - 8;
     }
     
-
+    
     // If not query text, just show mini window, then show window at last position.
     if (!self.selectedText) {
         CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeMini];
         position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
     }
-
+    
     return position;
 }
 
@@ -514,11 +514,6 @@ static EZWindowManager *_instance;
     EZShowWindowPosition windowPosition = EZConfiguration.shared.fixedWindowPosition;
     switch (windowPosition) {
         case EZShowWindowPositionRight: {
-            // TODO: need to check current screen
-//            CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
-//            CGFloat x = mainScreenSize.width - self.fixedWindow.width;
-//            CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
-//            position = CGPointMake(x, y);
             position = [self getFloatingWindowInRightSideOfScreenPoint:self.fixedWindow];
             break;
         }
@@ -542,11 +537,6 @@ static EZWindowManager *_instance;
     
     NSScreen *targetScreen = self.screen;
     NSRect screenRect = [targetScreen visibleFrame];
-
-//    CGSize mainScreenSize = NSScreen.mainScreen.frame.size;
-//    CGFloat x = mainScreenSize.width - self.fixedWindow.width;
-//    CGFloat y = NSScreen.mainScreen.visibleFrame.size.height;
-//    position = CGPointMake(x, y);
     
     CGFloat x = screenRect.origin.x + screenRect.size.width - floatingWindow.width;
     CGFloat y = screenRect.origin.y + screenRect.size.height;
@@ -580,7 +570,7 @@ static EZWindowManager *_instance;
     
     if (showFlag) {
         [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
-
+        
         EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
@@ -794,7 +784,7 @@ static EZWindowManager *_instance;
     
     // stop playing audio
     [self.floatingWindow.queryViewController stopPlayingAudio];
-
+    
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];
     
@@ -802,9 +792,9 @@ static EZWindowManager *_instance;
         // recover last app.
         [self activeLastFrontmostApplication];
     }
-
+    
     [_mainWindow orderBack:nil];
-        
+    
     // Move floating window type to second.
     
     NSNumber *windowType = @(self.floatingWindowType);
