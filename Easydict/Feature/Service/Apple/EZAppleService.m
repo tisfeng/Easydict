@@ -985,12 +985,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSLog(@"ocr stringArray (%@): %@", ocrResult.from, stringArray);
     
     
-    BOOL isPoetry = [self isPoetryOfTextArray:recognizedStrings
-                              lineLengthArray:lineLengthArray
-                              maxLengthOfLine:maxLengthOfLine
-                         punctuationMarkCount:punctuationMarkCount
-                          punctuationMarkRate:punctuationMarkRate
-                                     language:language];
+    BOOL isPoetry = [self isPoetryOftextObservations:observationResults
+                                punctuationMarkCount:punctuationMarkCount
+                                 punctuationMarkRate:punctuationMarkRate];
     NSLog(@"isPoetry: %d", isPoetry);
     self.isPoetry = isPoetry;
     
@@ -1038,8 +1035,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + boundingBox.size.height);
             CGFloat deltaX = boundingBox.origin.x - (prevBoundingBox.origin.x + prevBoundingBox.size.width);
             
-            BOOL needLineBreak = isPoetry;
-            
             // Note that line spacing is inaccurate, sometimes it's too small 😢
             BOOL isNewParagraph = NO;
             if (deltaY > 0) {
@@ -1081,18 +1076,10 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 if (isNeedRemoveLastDashOfText) {
                     mergedText = [mergedText substringToIndex:mergedText.length - 1].mutableCopy;
                 }
-            } else if (isNewParagraph) {
+            } else if (isNewParagraph || isNewLine) {
                 joinedString = [self joinedStringOfTextObservation:textObservation
                                                prevTextObservation:prevTextObservation
                                                     isNewParagraph:isNewParagraph];
-            } else if (isNewLine) {
-                if (needLineBreak) {
-                    joinedString = kLineBreakText;
-                } else {
-                    joinedString = [self joinedStringOfTextObservation:textObservation
-                                                   prevTextObservation:prevTextObservation
-                                                        isNewParagraph:isNewParagraph];
-                }
             } else {
                 joinedString = @" "; // if the same line, just join two texts
             }
@@ -1125,17 +1112,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSLog(@"ocr text: %@(%.2f): %@", ocrResult.from, ocrResult.confidence, showMergedText);
 }
 
-- (BOOL)isPoetryOfTextArray:(NSArray<NSString *> *)textArray
-            lineLengthArray:(NSArray<NSNumber *> *)lineLengthArray
-            maxLengthOfLine:(CGFloat)maxLengthOfLine
-       punctuationMarkCount:(NSInteger)punctuationMarkCount
-        punctuationMarkRate:(CGFloat)punctuationMarkRate
-                   language:(EZLanguage)language {
-    NSInteger shortLineCount = 0;
-    NSInteger longLineCount = 0;
-    CGFloat minLengthOfLine = CGFLOAT_MAX;
+- (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations
+              punctuationMarkCount:(NSInteger)punctuationMarkCount
+               punctuationMarkRate:(CGFloat)punctuationMarkRate {
     
-    CGFloat lineCount = lineLengthArray.count;
+    NSInteger longLineCount = 0;
+    CGFloat lineCount = textObservations.count;
     
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
@@ -1147,39 +1129,14 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
      not poetry
      */
     for (int i = 0; i < lineCount; i++) {
-        NSString *text = textArray[i];
+        NSString *text = [textObservations[i] firstText];
         totalCharCount += text.length;
-        
-        //        if (i < lineCount - 1) {
-        //            NSString *nextText = textArray[i + 1];
-        //            CGFloat lineLength = lineLengthArray[i].floatValue;
-        //            BOOL isLongLastDashChar = [self isNeedHandleLastDashOfText:text
-        //                                                              nextText:nextText
-        //                                                            lineLength:lineLength
-        //                                                       maxLengthOfLine:maxLengthOfLine];
-        //            if (isLongLastDashChar) {
-        //                punctuationMarkCount++;
-        //            }
-        //        }
     }
     
     charCountPerLine = totalCharCount / lineCount;
     
-    for (NSNumber *number in lineLengthArray) {
-        CGFloat length = number.floatValue;
-        if (length > maxLengthOfLine) {
-            maxLengthOfLine = length;
-        }
-        if (length < minLengthOfLine) {
-            minLengthOfLine = length;
-        }
-        
-        BOOL isShortLine = [self isShortLineLength:length maxLineLength:maxLengthOfLine];
-        if (isShortLine) {
-            shortLineCount += 1;
-        }
-        
-        BOOL isLongLine = [self isLongLineLength:length maxLineLength:maxLengthOfLine];
+    for (VNRecognizedTextObservation *textObservation in textObservations) {
+        BOOL isLongLine = [self isLongTextObservation:textObservation];
         if (isLongLine) {
             longLineCount += 1;
         }
@@ -1198,26 +1155,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return NO;
     }
     
-    BOOL isChinese = [EZLanguageManager isChineseLanguage:language];
-    if (isChinese) {
-        CGFloat maxCharCountPerLineOfPoetry = 40; // 碧云冉冉蘅皋暮，彩笔新题断肠句。试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。
-        if (lineCount > 2) {
-            maxCharCountPerLineOfPoetry = 16; // 永忆江湖归白发，欲回天地入扁舟。
-        }
-        
-        BOOL isAveragePoetryLength = charCountPerLine <= maxCharCountPerLineOfPoetry;
-        
-        
-        BOOL isEqualLength = [self isEqualLength:maxLengthOfLine comparedLength:minLengthOfLine];
-        if (isEqualLength && isAveragePoetryLength) {
-            return YES;
-        }
-        
-        if (isAveragePoetryLength && lineCount >= 4 && numberOfPunctuationMarksPerLine <= 2) {
-            return YES;
-        }
-    }
-    
     // If average number of punctuation marks per line is greater than 2, then it is not poetry.
     if (numberOfPunctuationMarksPerLine > 2) {
         return NO;
@@ -1232,17 +1169,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     
-    BOOL tooManyLongLine = longLineCount >= lineCount * 0.8;
+    BOOL tooManyLongLine = longLineCount / lineCount > 0.8;
     if (tooManyLongLine) {
         return NO;
-    }
-    
-    BOOL tooManyShortLine = shortLineCount >= lineCount * 0.8;
-    if (tooManyShortLine) {
+    } {
         return YES;
     }
-    
-    return NO;
 }
 
 /// Get joined string of text, according to its last char.
@@ -1259,6 +1191,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     // Note: sometimes OCR is incorrect, so [.] may be recognized as [,]
     BOOL isPrevEndPunctuationChar = [prevText hasEndPunctuationSuffix];
     
+    NSString *text = [textObservation firstText];
+    BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
+    
     BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                 prevTextObservation:prevTextObservation
                                         greaterThanLineSpacingRatio:2.1
@@ -1273,7 +1208,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     if (hasIndentation) {
         BOOL isEqualX = [self isEqualXOfTextObservation:textObservation prevTextObservation:prevTextObservation];
-
+        
         CGFloat lineX = CGRectGetMinX(textObservation.boundingBox);
         CGFloat prevLineX = CGRectGetMinX(prevTextObservation.boundingBox);
         CGFloat dx = lineX - prevLineX;
@@ -1302,7 +1237,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             BOOL isEqualLineMaxX = [self isRatioGreaterThan:0.95 value1:lineMaxX value2:prevLineMaxX];
             
             BOOL isEqualInnerTwoLine = isEqualX && isEqualLineMaxX;
-
+            
             if (isEqualInnerTwoLine) {
                 if (isPrevLessHalfShortLine) {
                     needLineBreak = YES;
@@ -1315,8 +1250,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                         needLineBreak = YES;
                     } else {
                         /**
-                                V. SECURITY CHALLENGES AND OPPORTUNITIES
-                            In the following, we discuss existing security challenges
+                         V. SECURITY CHALLENGES AND OPPORTUNITIES
+                         In the following, we discuss existing security challenges
                          and shed light on possible security opportunities and research
                          */
                         if (!isEqualX && dx < 0) {
@@ -1346,18 +1281,18 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             /**
              当您发现严重的崩溃问题后，通常推荐发布一个新的版本来修复该问题。这样做有以下几
              个原因：
-
+             
              1. 保持版本控制：通过发布一个新版本，您可以清晰地记录修复了哪些问题。这对于用
-                户和开发团队来说都是透明和易于管理的。
+             户和开发团队来说都是透明和易于管理的。
              2. 便于用户更新：通过发布新版本，您可以通知用户更新应用程序以修复问题。这样，
-                用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
+             用户可以轻松地通过应用商店或更新机制获取到修复后的版本。
              
              The problem with this solution is that the fate of  the  entire  money  system depends  on  the
              company running the mint, with every transaction having to go through them, just like a bank.
-                We need a way for the payee to know that the previous owners  did  not  sign   any   earlier
+             We need a way for the payee to know that the previous owners  did  not  sign   any   earlier
              transactions.
              */
-
+            
             if (isPrevLongText) {
                 if (isPrevEndPunctuationChar) {
                     isNewParagraph = YES;
@@ -1395,16 +1330,33 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                     needLineBreak = YES;
                 }
             }
+            
+            if (isPrevEndPunctuationChar && self.isPoetry) {
+                isNewParagraph = YES;
+            }
+            
         } else {
             if (isPrevLongText) {
                 if (hasPrevIndentation) {
                     needLineBreak = NO;
+                }
+                
+                /**
+                 人绕湘皋月坠时。斜横花树小，浸愁漪。一春幽事有谁知。东风冷、香远茜裙归。
+                 鸥去昔游非。遥怜花可可，梦依依。九疑云杳断魂啼。相思血，都沁绿筠枝。
+                 */
+                if (isPrevEndPunctuationChar && isEndPunctuationChar) {
+                    needLineBreak = YES;
                 }
             } else {
                 needLineBreak = YES;
                 if (hasPrevIndentation && !isPrevEndPunctuationChar) {
                     isNewParagraph = YES;
                 }
+            }
+            
+            if (isPrevEndPunctuationChar && self.isPoetry) {
+                needLineBreak = YES;
             }
         }
         
@@ -1508,7 +1460,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         averagerLineHeightRatio > greaterThanLineHeightRatio ||
         (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
-//        NSLog(@"is big line spacing: %@", textObservation.firstText);
+        //        NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
     return isBigLineSpacing;
 }
@@ -1636,7 +1588,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
     CGFloat difference = maxLength * dx;
-
+    
     if (difference < threshold) {
         return YES;
     }
