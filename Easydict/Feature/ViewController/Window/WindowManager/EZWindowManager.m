@@ -628,41 +628,38 @@ static EZWindowManager *_instance;
     EZWindowType windowType = EZWindowTypeFixed;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     
-    /**
-     OCR will cause the window to lose focus and be closed.
-     If currently OCR window is showing, we need to pin it to avoid it being closed and show again.
-     */
-    BOOL isPin = window.pin;
-    if (self.floatingWindowType == windowType) {
-        window.pin = YES;
+    // FIX https://github.com/tisfeng/Easydict/issues/126
+    if (!self.floatingWindow.pin) {
+        [self closeFloatingWindow];
     }
     
-    [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
-        window.pin = isPin;
-
-        if (!image) {
-            NSLog(@"not get screenshot");
-            return;
-        }
-        
-        NSLog(@"get screenshot: %@", image);
-        
-        // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
-        static NSString *_imagePath = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
-        });
-        [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
-        [image mm_writeToFileAsPNG:_imagePath];
-        NSLog(@"已保存图片: %@", _imagePath);
-        
-        // Reset window height first, avoid being affected by previous window height.
-        [window.queryViewController resetTableView:^{
-            [self showFloatingWindowType:windowType queryText:nil];
-            [window.queryViewController startOCRImage:image actionType:EZActionTypeOCRQuery];
+    // Wait to close floating window if need.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [Snip.shared startWithCompletion:^(NSImage *_Nullable image) {
+            if (!image) {
+                NSLog(@"not get screenshot");
+                return;
+            }
+            
+            NSLog(@"get screenshot: %@", image);
+            
+            // 缓存最后一张图片，统一放到 MMLogs 文件夹，方便管理
+            static NSString *_imagePath = nil;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                _imagePath = [[MMManagerForLog logDirectoryWithName:@"Image"] stringByAppendingPathComponent:@"snip_image.png"];
+            });
+            [[NSFileManager defaultManager] removeItemAtPath:_imagePath error:nil];
+            [image mm_writeToFileAsPNG:_imagePath];
+            NSLog(@"已保存图片: %@", _imagePath);
+            
+            // Reset window height first, avoid being affected by previous window height.
+            [window.queryViewController resetTableView:^{
+                [self showFloatingWindowType:windowType queryText:nil];
+                [window.queryViewController startOCRImage:image actionType:EZActionTypeOCRQuery];
+            }];
         }];
-    }];
+    });
 }
 
 - (void)inputTranslate {
