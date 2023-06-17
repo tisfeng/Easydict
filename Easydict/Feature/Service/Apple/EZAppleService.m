@@ -1095,7 +1095,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         if (isLongLine) {
             longLineCount += 1;
         }
-        
+
         NSString *text = [textObservation firstText];
         totalCharCount += text.length;
         
@@ -1103,8 +1103,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
         // iterate string to check if has punctuation mark.
         for (NSInteger i = 0; i < text.length; i++) {
-            totalCharCount += 1;
-            
             NSString *charString = [text substringWithRange:NSMakeRange(i, 1)];
             NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:kDashCharacterList];
             BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
