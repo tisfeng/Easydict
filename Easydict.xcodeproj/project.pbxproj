@@ -183,6 +183,9 @@
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */; };
+		03DC7C622A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C612A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m */; };
+		03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */; };
+		03DC7C6A2A3CA852000BF7C9 /* EZAppCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C692A3CA852000BF7C9 /* EZAppCell.m */; };
 		03E02A222924E77100A10260 /* EZMenuItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A212924E77100A10260 /* EZMenuItemManager.m */; };
 		03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E02A2529250D1D00A10260 /* EZEventMonitor.m */; };
 		03E2BF752A298F2B00E010F3 /* NSString+EZCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 03E2BF742A298F2B00E010F3 /* NSString+EZCharacterSet.m */; };
@@ -548,6 +551,12 @@
 		03DC38C0292CC97900922CB2 /* EZServiceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceInfo.m; sourceTree = "<group>"; };
 		03DC7C5C2A3ABE28000BF7C9 /* EZConstKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZConstKey.h; sourceTree = "<group>"; };
 		03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZConstKey.m; sourceTree = "<group>"; };
+		03DC7C602A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDisableAutoSelectTextViewController.h; sourceTree = "<group>"; };
+		03DC7C612A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDisableAutoSelectTextViewController.m; sourceTree = "<group>"; };
+		03DC7C642A3CA465000BF7C9 /* HWSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWSegmentedControl.h; sourceTree = "<group>"; };
+		03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWSegmentedControl.m; sourceTree = "<group>"; };
+		03DC7C682A3CA852000BF7C9 /* EZAppCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppCell.h; sourceTree = "<group>"; };
+		03DC7C692A3CA852000BF7C9 /* EZAppCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppCell.m; sourceTree = "<group>"; };
 		03E02A202924E77100A10260 /* EZMenuItemManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMenuItemManager.h; sourceTree = "<group>"; };
 		03E02A212924E77100A10260 /* EZMenuItemManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMenuItemManager.m; sourceTree = "<group>"; };
 		03E02A2429250D1D00A10260 /* EZEventMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEventMonitor.h; sourceTree = "<group>"; };
@@ -1097,6 +1106,7 @@
 		03B0225A29231FA6001C7E63 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				03DC7C632A3CA465000BF7C9 /* EZSegmentedControl */,
 				03247E37296AE8C800AFCD67 /* LoadingAnimationView */,
 				036E7D78293F4F61002675DF /* CustomButton */,
 				039CC911292FB2F80037B91E /* PopUpButton */,
@@ -1223,6 +1233,7 @@
 		03B0229C29231FA6001C7E63 /* PerferenceWindow */ = {
 			isa = PBXGroup;
 			children = (
+				03DC7C5F2A3C6F3B000BF7C9 /* DisableAutoSelectTextViewController */,
 				037852AD2957FE9B00D0E2CF /* ServiceViewController */,
 				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
 				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
@@ -1587,6 +1598,26 @@
 			path = EZCoordinateUtils;
 			sourceTree = "<group>";
 		};
+		03DC7C5F2A3C6F3B000BF7C9 /* DisableAutoSelectTextViewController */ = {
+			isa = PBXGroup;
+			children = (
+				03DC7C602A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.h */,
+				03DC7C612A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m */,
+				03DC7C682A3CA852000BF7C9 /* EZAppCell.h */,
+				03DC7C692A3CA852000BF7C9 /* EZAppCell.m */,
+			);
+			path = DisableAutoSelectTextViewController;
+			sourceTree = "<group>";
+		};
+		03DC7C632A3CA465000BF7C9 /* EZSegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				03DC7C642A3CA465000BF7C9 /* HWSegmentedControl.h */,
+				03DC7C652A3CA465000BF7C9 /* HWSegmentedControl.m */,
+			);
+			path = EZSegmentedControl;
+			sourceTree = "<group>";
+		};
 		03E02A2329250CED00A10260 /* EventMonitor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1872,6 +1903,7 @@
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,
 				034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */,
+				03DC7C622A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m in Sources */,
 				03B0232529231FA6001C7E63 /* NSButton+MM.m in Sources */,
 				03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */,
 				03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */,
@@ -1881,6 +1913,7 @@
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
+				03DC7C6A2A3CA852000BF7C9 /* EZAppCell.m in Sources */,
 				0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
 				03BB2DEB29F57DC000447EDD /* NSImage+EZSymbolmage.m in Sources */,
@@ -1955,6 +1988,7 @@
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
+				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,

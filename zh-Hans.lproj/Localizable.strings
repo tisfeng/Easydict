@@ -88,6 +88,9 @@
 "volcano_translate" = "火山翻译";
 "openai_translate" = "OpenAI 翻译";
 
+// disabled app list
+"disabled_app_list" = "禁止名单";
+"disabled_title" = "如果 App 在“禁止名单”中，则不会触发鼠标自动取词。";
 
 // about
 "about" = "关于";

@@ -89,6 +89,11 @@
 "volcano_translate" = "Volcano Translate";
 "openai_translate" = "OpenAI Translate";
 
+
+// disabled app list
+"disabled_app_list" = "Disabled";
+"disabled_title" = "If the App is in the \"Disabled App List\", the mouse will not trigger the automatic word retrieval.";
+
 // about
 "about" = "About";
 "current_version" = "Version";
