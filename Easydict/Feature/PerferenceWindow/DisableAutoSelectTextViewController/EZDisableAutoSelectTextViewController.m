@@ -12,7 +12,6 @@
 #import "EZServiceRowView.h"
 #import "EZLocalStorage.h"
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
-#import "HWSegmentedControl.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kPadding = 20;
@@ -21,25 +20,18 @@ static CGFloat const kRowHeight = 40;
 static NSString *const EZAppCellId = @"EZAppCellId";
 static NSString *const EZColumnId = @"EZColumnId";
 
-@interface EZDisableAutoSelectTextViewController () <NSTableViewDelegate, NSTableViewDataSource, HWSegmentedControlDelegate>
+@interface EZDisableAutoSelectTextViewController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) NSTextField *titleTextField;
-
-@property (nonatomic, strong) HWSegmentedControl *sege;
-@property (nonatomic, strong) NSStepper *stepper;
-
-@property (nonatomic, strong) NSMutableArray<NSString *> *disabledAppBundleIDList;
-
+@property (nonatomic, strong) NSSegmentedControl *segmentedControl;
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
 
-@property (nonatomic, strong) NSBundle *selectedAppBundle;
+@property (nonatomic, strong) NSMutableArray<NSString *> *disabledAppBundleIDList;
 @property (nonatomic, strong) NSMutableArray<NSBundle *> *appBundleList;
-
-@property (nonatomic, assign) EZWindowType windowType;
-@property (nonatomic, copy) NSDictionary<NSNumber *, NSNumber *> *windowTypesDictionary;
+@property (nonatomic, strong) NSBundle *selectedAppBundle;
 
 @end
 
@@ -80,10 +72,10 @@ static NSString *const EZColumnId = @"EZColumnId";
         make.height.mas_equalTo(tableViewHeight);
     }];
     
-    [self.sege mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.scrollView.mas_bottom).offset(12);
+    [self.segmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.scrollView.mas_bottom).offset(15);
         make.left.equalTo(self.scrollView);
-        make.size.mas_equalTo(CGSizeMake(60, 20));
+        make.size.mas_equalTo(CGSizeMake(80, 20));
         make.bottom.equalTo(self.view).offset(-kPadding);
     }];
 }
@@ -168,17 +160,20 @@ static NSString *const EZColumnId = @"EZColumnId";
     return _tableView;
 }
 
-- (HWSegmentedControl *)sege {
-    if (!_sege) {
-        HWSegmentedControl *sege = [[HWSegmentedControl alloc] init];
-        sege.titles = @[ @"+", @"—",];
-        sege.tintColor = [NSColor mm_colorWithHexString:@"#6A6969"];
-        sege.delegate = self;
-        sege.maginLeftTwo = 12;
-        [self.view addSubview:sege];
-        _sege = sege;
+- (NSSegmentedControl *)segmentedControl {
+    if (!_segmentedControl) {
+        NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] init];
+        [self.view addSubview:segmentedControl];
+        [segmentedControl setSegmentCount:2];
+        [segmentedControl setLabel:NSLocalizedString(@"+", nil) forSegment:0];
+        [segmentedControl setLabel:NSLocalizedString(@"−", nil) forSegment:1];
+        [segmentedControl setTarget:self];
+        [segmentedControl setAction:@selector(segmentedControlClicked:)];
+        segmentedControl.trackingMode = NSSegmentSwitchTrackingMomentary;
+        [segmentedControl setEnabled:NO forSegment:1];
+        _segmentedControl = segmentedControl;
     }
-    return _sege;
+    return _segmentedControl;
 }
 
 
@@ -215,24 +210,20 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSTableView *tableView = notification.object;
     NSInteger selectedRow = tableView.selectedRow;
     
-    self.selectedAppBundle = self.appBundleList[selectedRow];
+    BOOL enabledSelected = selectedRow >= 0;
+    
+    // selectedRow will be -1 when clicking the blank area of the tableview
+    if (enabledSelected) {
+        self.selectedAppBundle = self.appBundleList[selectedRow];
+    }
+    [self.segmentedControl setEnabled:enabledSelected forSegment:1];
 }
-
-
 
 #pragma mark - Actions
 
 - (void)segmentedControlClicked:(NSSegmentedControl *)sender {
     NSInteger index = [sender selectedSegment];
    
-    if (index == 2) {
-        [self selectApp];
-    }
-}
-
-- (void)selectTitleIndex:(NSInteger)index {
-    NSLog(@"selectTitleIndex: %ld", index);
-    
     if (index == 0) {
         [self selectApp];
     } else {
@@ -241,6 +232,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
 }
 
+#pragma mark -
 
 - (void)selectApp {
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
@@ -264,9 +256,6 @@ static NSString *const EZColumnId = @"EZColumnId";
             NSArray *appBundles = [self appBundlesFromBundleIDList:appBundleIDList];
             [self.appBundleList addObjectsFromArray:appBundles];
             [self.tableView reloadData];
-        } else {
-            // 用户取消选择
-            NSLog(@"用户取消选择");
         }
     }];
 }
