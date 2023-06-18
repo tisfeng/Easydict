@@ -9,7 +9,7 @@
 #import "EZDisableAutoSelectTextViewController.h"
 #import "EZAppCell.h"
 #import "EZServiceTypes.h"
-#import "EZServiceRowView.h"
+#import "EZCustomTableRowView.h"
 #import "EZLocalStorage.h"
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "EZConstKey.h"
@@ -134,9 +134,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         _tableView = tableView;
 
         [tableView excuteLight:^(NSTableView *view) {
-            view.backgroundColor = NSColor.whiteColor;
+            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
         } dark:^(NSTableView *view) {
-            view.backgroundColor = [NSColor mm_colorWithHexString:@"#28292A"];
+            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
         }];
 
         tableView.style = NSTableViewStylePlain;
@@ -200,7 +200,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-    EZServiceRowView *rowView = [[EZServiceRowView alloc] init];
+    EZCustomTableRowView *rowView = [[EZCustomTableRowView alloc] init];
     return rowView;
 }
 

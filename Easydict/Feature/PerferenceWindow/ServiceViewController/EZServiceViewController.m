@@ -9,7 +9,7 @@
 #import "EZServiceViewController.h"
 #import "EZServiceCell.h"
 #import "EZServiceTypes.h"
-#import "EZServiceRowView.h"
+#import "EZCustomTableRowView.h"
 #import "EZLocalStorage.h"
 
 static CGFloat const kMargin = 20;
@@ -150,9 +150,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         _tableView = tableView;
 
         [tableView excuteLight:^(NSTableView *view) {
-            view.backgroundColor = NSColor.whiteColor;
+            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
         } dark:^(NSTableView *view) {
-            view.backgroundColor = [NSColor mm_colorWithHexString:@"#28292A"];
+            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
         }];
 
         tableView.style = NSTableViewStylePlain;
@@ -185,10 +185,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    EZServiceCell *cell = [tableView makeViewWithIdentifier:@"EZServiceCell" owner:self];
+    EZServiceCell *cell = [tableView makeViewWithIdentifier:EZServiceCellId owner:self];
     if (!cell) {
         cell = [[EZServiceCell alloc] init];
-        cell.identifier = @"EZServiceCell";
+        cell.identifier = EZServiceCellId;
     }
 
     EZQueryService *service = self.services[row];
@@ -212,7 +212,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-    EZServiceRowView *rowView = [[EZServiceRowView alloc] init];
+    EZCustomTableRowView *rowView = [[EZCustomTableRowView alloc] init];
     return rowView;
 }
 

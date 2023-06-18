@@ -90,4 +90,11 @@
     return [NSColor mm_colorWithHexString:@"#007AFF"];
 }
 
++ (NSColor *)ez_tableRowViewBgLightColor {
+    return [NSColor mm_colorWithHexString:@"#FFFFFF"];
+}
++ (NSColor *)ez_tableRowViewBgDarkColor {
+    return [NSColor mm_colorWithHexString:@"#28292A"];
+}
+
 @end

@@ -52,6 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSColor *)ez_blueTitleColor;
 
++ (NSColor *)ez_tableRowViewBgLightColor;
++ (NSColor *)ez_tableRowViewBgDarkColor;
+
 @end
 
 NS_ASSUME_NONNULL_END
