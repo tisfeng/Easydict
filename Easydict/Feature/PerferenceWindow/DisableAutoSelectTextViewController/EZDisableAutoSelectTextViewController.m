@@ -32,7 +32,6 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 @property (nonatomic, strong) NSMutableArray<NSString *> *disabledAppBundleIDList;
 @property (nonatomic, strong) NSMutableArray<NSBundle *> *appBundleList;
-@property (nonatomic, strong) NSBundle *selectedAppBundle;
 
 @end
 
@@ -149,6 +148,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = kRowHeight;
+        tableView.allowsMultipleSelection = YES;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
 
@@ -164,6 +164,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 - (NSSegmentedControl *)segmentedControl {
     if (!_segmentedControl) {
         NSSegmentedControl *segmentedControl = [[NSSegmentedControl alloc] init];
+        _segmentedControl = segmentedControl;
         [self.view addSubview:segmentedControl];
         [segmentedControl setSegmentCount:2];
         [segmentedControl setLabel:NSLocalizedString(@"+", nil) forSegment:0];
@@ -171,8 +172,8 @@ static NSString *const EZColumnId = @"EZColumnId";
         [segmentedControl setTarget:self];
         [segmentedControl setAction:@selector(segmentedControlClicked:)];
         segmentedControl.trackingMode = NSSegmentSwitchTrackingMomentary;
-        [segmentedControl setEnabled:NO forSegment:1];
-        _segmentedControl = segmentedControl;
+        
+        [self disableDeleteAction];
     }
     return _segmentedControl;
 }
@@ -211,12 +212,8 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSTableView *tableView = notification.object;
     NSInteger selectedRow = tableView.selectedRow;
     
-    BOOL enabledSelected = selectedRow >= 0;
-    
     // selectedRow will be -1 when clicking the blank area of the tableview
-    if (enabledSelected) {
-        self.selectedAppBundle = self.appBundleList[selectedRow];
-    }
+    BOOL enabledSelected = selectedRow >= 0;
     [self.segmentedControl setEnabled:enabledSelected forSegment:1];
 }
 
@@ -228,10 +225,18 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (index == 0) {
         [self selectApp];
     } else {
-        [self.appBundleList removeObject:self.selectedAppBundle];
+        NSIndexSet *selectedRows = [self.tableView selectedRowIndexes];
+        NSMutableArray *selectedAppBundles = [NSMutableArray array];
+        [selectedRows enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+            [selectedAppBundles addObject:self.appBundleList[idx]];
+        }];
+
+        [self.appBundleList removeObjectsInArray:selectedAppBundles];
         [self updateDisabledAppBundleIDList];
         
         [self.tableView reloadData];
+        
+        [self disableDeleteAction];
     }
 }
 
@@ -295,6 +300,10 @@ static NSString *const EZColumnId = @"EZColumnId";
     self.disabledAppBundleIDList = disabledAppBundleIDList;
     
     [NSUserDefaults mm_write:self.disabledAppBundleIDList forKey:EZDisabledAppBundleIDListKey];
+}
+
+- (void)disableDeleteAction {
+    [self.segmentedControl setEnabled:NO forSegment:1];
 }
 
 
