@@ -57,10 +57,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    NSArray *disabledAppBundleIDList = [EZLocalStorage.shared disabledAppBundleIDList];
-    
-    self.disabledAppBundleIDList = [disabledAppBundleIDList mutableCopy];
-
+    self.disabledAppBundleIDList = [[EZLocalStorage.shared disabledAppBundleIDList] mutableCopy];
     self.appBundleList = [[self appBundlesFromBundleIDList:self.disabledAppBundleIDList] mutableCopy];
         
     [self.tableView reloadData];

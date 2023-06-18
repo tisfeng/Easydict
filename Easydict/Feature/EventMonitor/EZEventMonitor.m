@@ -16,6 +16,7 @@
 #import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
+#import "EZLocalStorage.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
@@ -323,11 +324,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 
+/// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
-    EZConfiguration *config = [EZConfiguration shared];
-    BOOL enableAutoSelectText = config.autoSelectText && !config.disabledAutoSelect;
-    if (!enableAutoSelectText) {
-        NSLog(@"user turn off enableAutoSelectText");
+    if (![self enabledAutoSelectText]) {
+        NSLog(@"disabled autoSelectText");
         return;
     }
     
@@ -336,6 +336,21 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
         [self handleSelectedText:text];
     }];
+}
+
+- (BOOL)enabledAutoSelectText {
+    EZConfiguration *config = [EZConfiguration shared];
+    BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
+    
+    NSArray *disabledList = [EZLocalStorage.shared disabledAppBundleIDList];
+    self.frontmostApplication = [self getFrontmostApp];
+    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
+    if ([disabledList containsObject:bundleID]) {
+        enabled = NO;
+        NSLog(@"disabled autoSelectText for bundleID: %@", bundleID);
+    }
+    
+    return enabled;
 }
 
 - (void)handleSelectedText:(NSString *)text {

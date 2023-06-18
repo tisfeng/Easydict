@@ -263,8 +263,10 @@ query count  | level | title
     [[NSUserDefaults standardUserDefaults] setObject:disabledAppBundleIDList forKey:kDisabledAppBundleIDListKey];
 }
 - (NSArray<NSString *> *)disabledAppBundleIDList {
-    NSArray *defaultsList = @[@"com.apple.freeform"];
-    return [NSUserDefaults mm_read:kDisabledAppBundleIDListKey defaultValue:defaultsList checkClass:[NSArray class]];
+    NSArray *defaultDisabledList = @[
+        @"com.tencent.xinWeChat", // WeChat, FIX https://github.com/tisfeng/Easydict/issues/123
+    ];
+    return [NSUserDefaults mm_read:kDisabledAppBundleIDListKey defaultValue:defaultDisabledList checkClass:[NSArray class]];
 }
 
 @end
