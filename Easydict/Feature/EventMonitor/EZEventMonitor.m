@@ -326,28 +326,29 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
-    if (![self enabledAutoSelectText]) {
-        NSLog(@"disabled autoSelectText");
-        return;
+    if ([self enabledAutoSelectText]) {
+        self.movedY = 0;
+        self.actionType = EZActionTypeAutoSelectQuery;
+        [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
+            [self handleSelectedText:text];
+        }];
     }
-    
-    self.movedY = 0;
-    self.actionType = EZActionTypeAutoSelectQuery;
-    [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
-        [self handleSelectedText:text];
-    }];
 }
 
 - (BOOL)enabledAutoSelectText {
     EZConfiguration *config = [EZConfiguration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
+    if (!enabled) {
+        NSLog(@"disabled autoSelectText");
+        return enabled;
+    }
     
     NSArray *disabledList = [EZLocalStorage.shared disabledAppBundleIDList];
     self.frontmostApplication = [self getFrontmostApp];
     NSString *bundleID = self.frontmostApplication.bundleIdentifier;
     if ([disabledList containsObject:bundleID]) {
         enabled = NO;
-        NSLog(@"disabled autoSelectText for bundleID: %@", bundleID);
+        NSLog(@"disabled autoSelectText for App bundleID: %@", bundleID);
     }
     
     return enabled;
