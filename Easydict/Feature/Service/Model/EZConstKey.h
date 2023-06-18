@@ -12,7 +12,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZDictionaryKey = @"Dictionary";
-static NSString *const EZDisabledAppBundleIDListKey = @"EZDisabledAppBundleIDListKey";
 
 @interface EZConstKey : NSObject
 

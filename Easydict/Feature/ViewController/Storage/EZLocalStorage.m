@@ -14,6 +14,8 @@ static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
 static NSString *const kQueryCountKey = @"kQueryCountKey";
 static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
+static NSString *const kDisabledAppBundleIDListKey = @"kDisabledAppBundleIDListKey";
+
 @interface EZLocalStorage ()
 
 @end
@@ -245,7 +247,7 @@ query count  | level | title
     return title;
 }
 
-#pragma mark -
+#pragma mark - Service type key
 
 - (NSString *)keyForServiceType:(EZServiceType)serviceType windowType:(EZWindowType)windowType {
     return [NSString stringWithFormat:@"%@-%@-%ld", kServiceInfoStorageKey, serviceType, windowType];
@@ -253,6 +255,16 @@ query count  | level | title
 
 - (NSString *)serviceTypesKeyOfWindowType:(EZWindowType)windowType {
     return [NSString stringWithFormat:@"%@-%ld", kAllServiceTypesKey, windowType];
+}
+
+#pragma mark - Disabled App BundleID List
+
+- (void)setDisabledAppBundleIDList:(NSArray<NSString *> *)disabledAppBundleIDList {
+    [[NSUserDefaults standardUserDefaults] setObject:disabledAppBundleIDList forKey:kDisabledAppBundleIDListKey];
+}
+- (NSArray<NSString *> *)disabledAppBundleIDList {
+    NSArray *defaultsList = @[@"com.apple.freeform"];
+    return [NSUserDefaults mm_read:kDisabledAppBundleIDListKey defaultValue:defaultsList checkClass:[NSArray class]];
 }
 
 @end
