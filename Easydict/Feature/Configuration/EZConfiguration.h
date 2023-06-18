@@ -52,6 +52,9 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL clearInput;
 
 
+@property (nonatomic, assign) BOOL disabledAutoSelect; // only use when showing NSOpenPanel to select disabled apps.
+
+
 + (instancetype)shared;
 + (void)destroySharedInstance;
 
