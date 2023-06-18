@@ -17,6 +17,8 @@ static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
 
 @interface EZLocalStorage : NSObject
 
+@property (nonatomic, copy) NSArray<NSString *> *disabledAppBundleIDList;
+
 + (instancetype)shared;
 
 + (void)destroySharedInstance;

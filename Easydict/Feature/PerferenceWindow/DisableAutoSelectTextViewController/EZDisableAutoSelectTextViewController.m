@@ -13,6 +13,7 @@
 #import "EZLocalStorage.h"
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "EZConstKey.h"
+#import "EZLocalStorage.h"
 #import "EZConfiguration.h"
 
 static CGFloat const kMargin = 20;
@@ -56,8 +57,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    NSArray *defaultsList = @[@"com.apple.freeform"];
-    NSArray *disabledAppBundleIDList = [NSUserDefaults mm_read:EZDisabledAppBundleIDListKey defaultValue:defaultsList checkClass:[NSArray class]];
+    NSArray *disabledAppBundleIDList = [EZLocalStorage.shared disabledAppBundleIDList];
     
     self.disabledAppBundleIDList = [disabledAppBundleIDList mutableCopy];
 
@@ -304,7 +304,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     }
     self.disabledAppBundleIDList = disabledAppBundleIDList;
     
-    [NSUserDefaults mm_write:self.disabledAppBundleIDList forKey:EZDisabledAppBundleIDListKey];
+    EZLocalStorage.shared.disabledAppBundleIDList = self.disabledAppBundleIDList;
 }
 
 - (void)disableDeleteAction {
