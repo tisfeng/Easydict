@@ -6,9 +6,19 @@
 //  Copyright © 2022 izual. All rights reserved.
 //
 
-#import "EZServiceRowView.h"
+#import "EZCustomTableRowView.h"
 
-@implementation EZServiceRowView
+@implementation EZCustomTableRowView
+
+- (void)drawBackgroundInRect:(NSRect)dirtyRect {
+    [self excuteLight:^(id _Nonnull x) {
+        [[NSColor ez_tableRowViewBgLightColor] setFill];
+        NSRectFill(dirtyRect);
+    } dark:^(id _Nonnull x) {
+        [[NSColor ez_tableRowViewBgDarkColor] setFill];
+        NSRectFill(dirtyRect);
+    }];
+}
 
 /// Rewirte select row view color.
 - (void)drawSelectionInRect:(NSRect)dirtyRect {
@@ -24,19 +34,6 @@
             [selectionPath fill];
         }];
     }
-}
-
-- (void)drawRect:(NSRect)dirtyRect {
-    [self excuteLight:^(id _Nonnull x) {
-        [[NSColor whiteColor] setFill];
-        NSRectFill(dirtyRect);
-    } dark:^(id _Nonnull x) {
-        [[NSColor ez_resultViewBgDarkColor] setFill];
-        NSRectFill(dirtyRect);
-    }];
-    
-    // The super method must be called only at the end, otherwise it will overwrite the selected background color.
-    [super drawRect:dirtyRect];
 }
 
 @end

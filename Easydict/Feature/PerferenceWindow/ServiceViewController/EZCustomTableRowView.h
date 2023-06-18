@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZServiceRowView : NSTableRowView
+@interface EZCustomTableRowView : NSTableRowView
 
 @end
 
