@@ -324,7 +324,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
-    BOOL enableAutoSelectText = EZConfiguration.shared.autoSelectText;
+    EZConfiguration *config = [EZConfiguration shared];
+    BOOL enableAutoSelectText = config.autoSelectText && !config.disabledAutoSelect;
     if (!enableAutoSelectText) {
         NSLog(@"user turn off enableAutoSelectText");
         return;
@@ -644,7 +645,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 
 - (void)handleMonitorEvent:(NSEvent *)event {
-    //                        NSLog(@"type: %ld", event.type);
+    //  NSLog(@"type: %ld", event.type);
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {

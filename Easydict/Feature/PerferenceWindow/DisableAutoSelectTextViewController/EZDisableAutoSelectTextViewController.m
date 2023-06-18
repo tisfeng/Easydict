@@ -13,6 +13,7 @@
 #import "EZLocalStorage.h"
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "EZConstKey.h"
+#import "EZConfiguration.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kPadding = 20;
@@ -250,18 +251,22 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSArray<UTType *> *allowedTypes = @[UTTypeApplication];
     [openPanel setAllowedContentTypes:allowedTypes];
 
-    [openPanel beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse result) {
-        if (result == NSModalResponseOK) {
-            NSLog(@"selected URLs: %@", openPanel.URLs);
-            
-            NSArray *appBundleIDList = [self appBundleIDListFromBundleURLs:openPanel.URLs];
-            NSArray *appBundles = [self appBundlesFromBundleIDList:appBundleIDList];
-            [self.appBundleList addObjectsFromArray:appBundles];
-            [self updateDisabledAppBundleIDList];
+    // ???: Since [auto select] will cause lag when dragging select apps, I don't know why 😰
+    EZConfiguration.shared.disabledAutoSelect = YES;
+    
+    NSModalResponse result = [openPanel runModal];
+    if (result == NSModalResponseOK) {
+        NSLog(@"selected URLs: %@", openPanel.URLs);
+        
+        NSArray *appBundleIDList = [self appBundleIDListFromBundleURLs:openPanel.URLs];
+        NSArray *appBundles = [self appBundlesFromBundleIDList:appBundleIDList];
+        [self.appBundleList addObjectsFromArray:appBundles];
+        [self updateDisabledAppBundleIDList];
 
-            [self.tableView reloadData];
-        }
-    }];
+        [self.tableView reloadData];
+    }
+    
+    EZConfiguration.shared.disabledAutoSelect = NO;
 }
 
 - (NSArray<NSBundle *> *)appBundlesFromBundleIDList:(NSArray<NSString *> *)appBundleIDList {
