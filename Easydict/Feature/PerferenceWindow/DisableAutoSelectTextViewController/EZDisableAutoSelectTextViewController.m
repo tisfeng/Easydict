@@ -12,6 +12,7 @@
 #import "EZServiceRowView.h"
 #import "EZLocalStorage.h"
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+#import "EZConstKey.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kPadding = 20;
@@ -55,10 +56,10 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    self.appBundleList = [NSMutableArray array];
-
-    self.disabledAppBundleIDList = [NSMutableArray array];
-    [self.disabledAppBundleIDList addObject:@"com.apple.freeform"];
+    NSArray *defaultsList = @[@"com.apple.freeform"];
+    NSArray *disabledAppBundleIDList = [NSUserDefaults mm_read:EZDisabledAppBundleIDListKey defaultValue:defaultsList checkClass:[NSArray class]];
+    
+    self.disabledAppBundleIDList = [disabledAppBundleIDList mutableCopy];
 
     self.appBundleList = [[self appBundlesFromBundleIDList:self.disabledAppBundleIDList] mutableCopy];
         
@@ -228,6 +229,8 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self selectApp];
     } else {
         [self.appBundleList removeObject:self.selectedAppBundle];
+        [self updateDisabledAppBundleIDList];
+        
         [self.tableView reloadData];
     }
 }
@@ -236,15 +239,9 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)selectApp {
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
-    [openPanel setCanChooseFiles:NO]; // 禁止选择文件
-    [openPanel setCanChooseDirectories:NO]; // 禁止选择目录
-    [openPanel setAllowsMultipleSelection:NO]; // 不允许多选
-    [openPanel setAllowedFileTypes:@[@"app"]]; // 限制文件类型为应用程序
-    
-    [openPanel setCanChooseFiles:YES]; // 允许选择文件
-    [openPanel setCanChooseDirectories:NO]; // 禁止选择目录
-    [openPanel setAllowsMultipleSelection:YES]; // 允许多选
-    // 限制文件类型为应用程序
+    [openPanel setCanChooseFiles:YES];
+    [openPanel setCanChooseDirectories:NO];
+    [openPanel setAllowsMultipleSelection:YES];
     NSArray<UTType *> *allowedTypes = @[UTTypeApplication];
     [openPanel setAllowedContentTypes:allowedTypes];
 
@@ -255,6 +252,8 @@ static NSString *const EZColumnId = @"EZColumnId";
             NSArray *appBundleIDList = [self appBundleIDListFromBundleURLs:openPanel.URLs];
             NSArray *appBundles = [self appBundlesFromBundleIDList:appBundleIDList];
             [self.appBundleList addObjectsFromArray:appBundles];
+            [self updateDisabledAppBundleIDList];
+
             [self.tableView reloadData];
         }
     }];
@@ -278,10 +277,24 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSBundle *appBundle = [[NSBundle alloc] initWithURL:appBundleURL];
         if (appBundle) {
             NSString *bundleID = appBundle.bundleIdentifier;
-            [appBundleIDList addObject:bundleID];
+            if (![self.disabledAppBundleIDList containsObject:bundleID]) {
+                [appBundleIDList addObject:bundleID];
+            }
         }
     }
     return appBundleIDList;
+}
+
+- (void)updateDisabledAppBundleIDList {
+    // generate disabledAppBundleIDList from self.appBundleList
+    NSMutableArray *disabledAppBundleIDList = [NSMutableArray array];
+    for (NSBundle *bundle in self.appBundleList) {
+        NSString *bundleID = bundle.bundleIdentifier;
+        [disabledAppBundleIDList addObject:bundleID];
+    }
+    self.disabledAppBundleIDList = disabledAppBundleIDList;
+    
+    [NSUserDefaults mm_write:self.disabledAppBundleIDList forKey:EZDisabledAppBundleIDListKey];
 }
 
 
