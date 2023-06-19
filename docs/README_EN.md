@@ -401,6 +401,8 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 ### Sponsor List
 
+If you don't want your username to be displayed in the list, please choose anonymous.
+
 |  **日期**  |  **用户**  | **金额** |                                                     **留言**                                                      |
 | :--------: | :--------: | :------: | :---------------------------------------------------------------------------------------------------------------: |
 | 2023-05-22 |     🍑     |    50    |                                                     感谢开源                                                      |
@@ -410,3 +412,4 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 | 2023-05-27 |   自由。   |   100    |                                                       感谢                                                        |
 | 2023-06-01 |    梦遇    |    10    |                                                       感谢                                                        |
 | 2023-06-05 | 挨揍的免子 |    1     |                                                      谢谢 🙏                                                      |
+| 2023-06-17 |    妙才    |    5     |                                                        ❤️                                                         |
