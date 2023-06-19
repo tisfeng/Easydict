@@ -41,18 +41,21 @@ jobs:
           echo "Number of downloads: $download_count"
           echo "download_count=$download_count" >> $GITHUB_ENV
 
-      - name: Check user conditions
+      - name: Get user information
         id: check_conditions
         run: |
           follower_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers')
-          star_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos" | jq '[.[] | .stargazers_count] | add')
+          earn_star_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}/repos" | jq '[.[] | .stargazers_count] | add')
+          commit_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/search/commits?q=author:${{ github.actor }}" | jq -r '.total_count')
 
+          echo "Star count: $earn_star_count"
+          echo "Commit count: $commit_count"
           echo "Follower count: $follower_count"
-          echo "Star count: $star_count"
+          echo "earn_star_count=$earn_star_count" >> $GITHUB_ENV
+          echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "follower_count=$follower_count" >> $GITHUB_ENV
-          echo "star_count=$star_count" >> $GITHUB_ENV
 
-          if [[ $follower_count -gt 3 && $star_count -gt 10 ]]; then
+          if [[ $earn_star_count -gt 3 && $commit_count -gt 10 ]]; then
             echo "user_conditions_met=true" >> $GITHUB_ENV
           else
             echo "user_conditions_met=false" >> $GITHUB_ENV
@@ -62,7 +65,7 @@ jobs:
         run: |
           html_body="<h1>${{ env.repo_name }}</h1><br>"
           html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br><br>"
-          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b> (followers: ${{ env.follower_count }}, stars: ${{ env.star_count }})<br><br>"
+          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b> (Earn stars: ${{ env.earn_star_count }}, Commits: ${{ env.commit_count }}, Followers: ${{ env.follower_count }} )<br><br>"
 
           html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
           html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
