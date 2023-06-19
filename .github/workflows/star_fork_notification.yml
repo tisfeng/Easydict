@@ -65,7 +65,7 @@ jobs:
         run: |
           html_body="<h1>${{ env.repo_name }}</h1><br>"
           html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br><br>"
-          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b>  (Earn stars: ${{ env.earn_star_count }}, Commits: ${{ env.commit_count }}, Followers: ${{ env.follower_count }})<br><br>"
+          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b> &nbsp;&nbsp; (Earn stars: ${{ env.earn_star_count }}, Commits: ${{ env.commit_count }}, Followers: ${{ env.follower_count }})<br><br>"
 
           html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
           html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
