@@ -15,11 +15,11 @@ jobs:
       - if: ${{ github.event_name == 'fork' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=forked 🍴" >> $GITHUB_ENV
+          echo "event_name=🍴 Forked" >> $GITHUB_ENV
       - if: ${{ github.event_name == 'watch' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=starred ✨" >> $GITHUB_ENV
+          echo "event_name=✨ Starred" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |
@@ -42,12 +42,13 @@ jobs:
 
       - name: Convert body to HTML
         run: |
-          html_body="<h1><a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a></h1><br>"
+          html_body="<h1>${{ env.repo_name }}</h1><br>"
           html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br>"
-          html_body+="<b>${{ env.event_name }}</b>: <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a><br>"
+          html_body+="<b>${{ env.event_name }}</b> by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a><br><br>"
           html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
           html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
           html_body+="Downloads: <b>${{ env.download_count }}</b><br><br>"
+          html_body+="Repo: <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a><br><br>"
           html_body+="Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
 
           echo "html_body=$html_body" >> $GITHUB_ENV
