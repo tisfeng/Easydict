@@ -40,11 +40,22 @@ jobs:
           echo "Number of downloads: $download_count"
           echo "download_count=$download_count" >> $GITHUB_ENV
 
+      - name: Check user conditions
+        id: check_conditions
+        run: |
+          follower_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '.followers')
+          star_count=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}" "https://api.github.com/users/${{ github.actor }}" | jq '[.[] | .stargazers_count] | add')
+          if [[ $follower_count -gt 10 && $star_count -gt 100 ]]; then
+            echo "user_conditions_met=true" >> $GITHUB_ENV
+          else
+            echo "user_conditions_met=false" >> $GITHUB_ENV
+          fi
+
       - name: Convert body to HTML
         run: |
           html_body="<h1>${{ env.repo_name }}</h1><br>"
-          html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br/><br/>"
-          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b><br><br>"
+          html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br><br>"
+          html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a><b><br><br>"
           html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
           html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
           html_body+="Downloads: <b>${{ env.download_count }}</b><br><br>"
@@ -55,6 +66,7 @@ jobs:
           echo "html body: ${{ env.html_body }}"
 
       - name: "Send mail"
+        if: env.user_conditions_met == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
