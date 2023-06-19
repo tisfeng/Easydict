@@ -279,7 +279,7 @@
 "b6H-cv-tjV.title" = "Show Substitutions";
 
 /* Class = "NSMenuItem"; title = "静默截图 OCR"; ObjectID = "bGs-JX-JVH"; Note = "slient screen ocr"; */
-"bGs-JX-JVH.title" = "Slient Screenshot OCR";
+"bGs-JX-JVH.title" = "Silent Screenshot OCR";
 
 /* Class = "NSMenuItem"; title = "Use Default"; ObjectID = "bMP-wz-pIO"; */
 "bMP-wz-pIO.title" = "Use Default";
