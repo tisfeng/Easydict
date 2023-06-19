@@ -26,7 +26,7 @@ jobs:
           result=$(curl -s -H "Authorization: token ${{ secrets.READ_REPO_STAR_TOKEN }}"  "https://api.github.com/repos/${{ github.repository }}")
           stars=$(echo $result | jq '.stargazers_count')
           forks=$(echo $result | jq '.forks_count')
-          repo_name=$(echo $result | jq '.name')
+          repo_name=$(echo $result | jq -r '.name')
           echo "Number of stars: $stars"
           echo "Number of forks: $forks"
 
@@ -63,8 +63,7 @@ jobs:
 
       - name: Convert body to HTML
         run: |
-          html_body="<h1>${{ env.repo_name }}</h1><br>"
-          html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br><br>"
+          html_body=""
           html_body+="Stargazer: <b><a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a></b>&nbsp;&nbsp;(Earn stars: ${{ env.earn_star_count }}, Commits: ${{ env.commit_count }}, Followers: ${{ env.follower_count }})<br><br>"
 
           html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
@@ -84,7 +83,7 @@ jobs:
           server_port: 465
           username: ${{ secrets.GMAIL_BOT_USERNAME }}
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
-          subject: ${{ env.event_name }} ${{ env.repo_name }}
+          subject: ${{ env.event_name }}  ${{ env.repo_name }}
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
           html_body: ${{ env.html_body }}
           to: ${{ secrets.RECEIVER_EMAIL }}
