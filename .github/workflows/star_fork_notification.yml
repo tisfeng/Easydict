@@ -12,14 +12,11 @@ jobs:
   bot:
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.event_name == 'fork' }}
+      - name: Check event type
+        if: ${{ github.event_name == 'fork' || github.event_name == 'watch' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=forked" >> $GITHUB_ENV
-      - if: ${{ github.event_name == 'watch' }}
-        run: |
-          echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=starred" >> $GITHUB_ENV
+          echo "event_name=${{ github.event_name }}" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |
@@ -42,7 +39,13 @@ jobs:
 
       - name: Convert body to HTML
         run: |
-          html_body="<h1>${{ env.repo_name }}</h1> <br><img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br> Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{ env.event_name }}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a>  <br><br>Stars: <b>${{ env.repo_stars }}</b>  <br><br>Forks: <b>${{ env.repo_forks }}</b>  <br><br>Downloads: <b>${{ env.download_count }}</b>   <br><br>Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
+          html_body="<h1>${{ env.repo_name }}</h1><br>"
+          html_body+="<img src='https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png' width='128'><br>"
+          html_body+="Your repo <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a> has <b>${{ env.event_name }}</b> ✨ by <a href='${{ github.server_url }}/${{ github.actor }}'>${{ github.actor }}</a><br><br>"
+          html_body+="Stars: <b>${{ env.repo_stars }}</b><br><br>"
+          html_body+="Forks: <b>${{ env.repo_forks }}</b><br><br>"
+          html_body+="Downloads: <b>${{ env.download_count }}</b><br><br>"
+          html_body+="Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a>"
 
           echo "html_body=$html_body" >> $GITHUB_ENV
           echo "html body: ${{ env.html_body }}"
