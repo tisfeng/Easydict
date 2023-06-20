@@ -1160,12 +1160,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     
-    BOOL tooManyLongLine = longLineCount / lineCount > 0.8;
+    BOOL tooManyLongLine = longLineCount / lineCount > 0.3;
     if (tooManyLongLine) {
         return NO;
-    } {
-        return YES;
     }
+    
+    return YES;
 }
 
 /// Get joined string of text, according to its last char.
