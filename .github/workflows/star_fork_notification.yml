@@ -55,7 +55,7 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "follower_count=$follower_count" >> $GITHUB_ENV
 
-          if [[ $commit_count -gt 1 ]]; then
+          if [[ $commit_count -ge 0 ]]; then
             echo "user_conditions_met=true" >> $GITHUB_ENV
           else
             echo "user_conditions_met=false" >> $GITHUB_ENV
