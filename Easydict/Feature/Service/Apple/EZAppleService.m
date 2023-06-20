@@ -1120,7 +1120,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
              　　 红乍笑，绿长颦，与谁同度可怜春。鸳鸯独宿何曾惯，化作西楼
              　一缕云。
              */
-            if (punctuationMarkCountOfLine > 2 && !isEndPunctuationChar) {
+            if (punctuationMarkCountOfLine >= 3 && !isEndPunctuationChar) {
                 return NO;
             }
         }
@@ -1160,7 +1160,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     
-    BOOL tooManyLongLine = longLineCount / lineCount > 0.3;
+    BOOL tooManyLongLine = longLineCount / lineCount > 0.4;
     if (tooManyLongLine) {
         return NO;
     }
