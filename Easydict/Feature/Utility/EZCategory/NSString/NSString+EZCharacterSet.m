@@ -8,7 +8,7 @@
 
 #import "NSString+EZCharacterSet.h"
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：" ];
+static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：", @"...", @"……" ];
 
 @implementation NSString (EZCharacterSet)
 
