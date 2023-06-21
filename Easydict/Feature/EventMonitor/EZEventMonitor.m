@@ -64,6 +64,8 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
+@property (nonatomic, assign) EZSelectTextActionType selectTextActionType;
+
 @end
 
 
@@ -93,6 +95,9 @@ static EZEventMonitor *_instance = nil;
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
+    
+    self.selectTextActionType = EZSelectTextActionTypeDoubleClick | EZSelectTextActionTypeTripleClick | EZSelectTextActionTypeDragged | EZSelectTextActionTypeShift;
+
 }
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
@@ -667,38 +672,16 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         case NSEventTypeLeftMouseUp: {
             //  NSLog(@"mouse up");
             if ([self checkIfLeftMouseDragged]) {
-                //   NSLog(@"Dragged selected");
-                [self autoGetSelectedText:YES];
+                if (self.selectTextActionType & EZSelectTextActionTypeDragged) {
+                    [self autoGetSelectedText:YES];
+                }
             }
             break;
         }
         case NSEventTypeLeftMouseDown: {
             //                NSLog(@"mouse down");
             
-            self.startPoint = NSEvent.mouseLocation;
-            
-            if (self.mouseClickBlock) {
-                self.mouseClickBlock(self.startPoint);
-            }
-            
-            [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
-            
-            // FIXME: Since use Accessibility to get selected text in Chrome immediately by double click may fail, so we delay a little.
-            
-            // Check if it is a double or triple click.
-            if (event.clickCount == 2) {
-                // Delay more time, in case it is a triple click, we don't want to get selected text twice.
-                [self delayGetSelectedText:0.2];
-            } else if (event.clickCount == 3) {
-                // Cancel former double click selected text.
-                [self cancelDelayGetSelectedText];
-                [self delayGetSelectedText];
-            } else if (event.modifierFlags & NSEventModifierFlagShift) {
-                // Shift + Left mouse button pressed.
-                [self delayGetSelectedText];
-            } else {
-                [self dismissPopButton];
-            }
+            [self handleLeftMouseDownEvent:event];
             break;
         }
         case NSEventTypeLeftMouseDragged: {
@@ -807,6 +790,39 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         }
     }
     return YES;
+}
+
+- (void)handleLeftMouseDownEvent:(NSEvent *)event {
+    self.startPoint = NSEvent.mouseLocation;
+    
+    if (self.mouseClickBlock) {
+        self.mouseClickBlock(self.startPoint);
+    }
+    
+    [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
+    
+    // FIXME: Since use Accessibility to get selected text in Chrome immediately by double click may fail, so we delay a little.
+    
+    // Check if it is a double or triple click.
+    if (event.clickCount == 2) {
+        if (self.selectTextActionType & EZSelectTextActionTypeDoubleClick) {
+            // Delay more time, in case it is a triple click, we don't want to get selected text twice.
+            [self delayGetSelectedText:0.2];
+        }
+    } else if (event.clickCount == 3) {
+        if (self.selectTextActionType & EZSelectTextActionTypeTripleClick) {
+            // Cancel former double click selected text.
+            [self cancelDelayGetSelectedText];
+            [self delayGetSelectedText];
+        }
+    } else if (event.modifierFlags & NSEventModifierFlagShift) {
+        if (self.selectTextActionType & EZSelectTextActionTypeShift) {
+            // Shift + Left mouse button pressed.
+            [self delayGetSelectedText];
+        }
+    } else {
+        [self dismissPopButton];
+    }
 }
 
 - (void)updateCommandKeyEvents:(NSEvent *)event {
