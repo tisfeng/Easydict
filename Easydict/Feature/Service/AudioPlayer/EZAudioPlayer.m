@@ -15,7 +15,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZTextWordUtils.h"
 #import "EZServiceTypes.h"
-#import "NSUserDefaults+EZConfig.h"
+#import "EZConfiguration.h"
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -128,8 +128,7 @@
         ];
         
         EZServiceType defaultTTS = EZServiceTypeApple;
-        BOOL isBeta = [NSUserDefaults.standardUserDefaults isBeta];
-        if (isBeta) {
+        if ([EZConfiguration.shared isBeta]) {
             defaultTTS = EZServiceTypeYoudao;
         }
         

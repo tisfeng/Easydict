@@ -14,7 +14,6 @@
 #import "EZWindowManager.h"
 #import "EZExeCommand.h"
 #import "EZLog.h"
-#import "EZConstKey.h"
 #import "EZEnumTypes.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
@@ -460,15 +459,25 @@ static EZConfiguration *_instance;
      easydict://writeKeyValue?Google-IntelligentQueryTextType=5
      URL key value is string type, so we need to save vlue as string type.
      */
-    NSString *typeString = [NSString stringWithFormat:@"%ld", queryTextType];
-    [NSUserDefaults mm_write:typeString forKey:key];
+    NSString *stringValue = [NSString stringWithFormat:@"%ld", queryTextType];
+    [NSUserDefaults mm_write:stringValue forKey:key];
 }
 - (EZQueryTextType)intelligentQueryTextTypeForServiceType:(EZServiceType)serviceType {
     NSString *key = [EZConstKey constkey:EZIntelligentQueryTextTypeKey serviceType:serviceType];
-    NSString *typeString = [NSUserDefaults mm_readString:key defaultValue:@"0"];
+    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"0"];
     // Convert string to int
-    EZQueryTextType type = [typeString integerValue];
+    EZQueryTextType type = [stringValue integerValue];
     return type;
+}
+
+#pragma mark - Beta
+- (void)setBeta:(BOOL)beta {
+    NSString *stringValue = beta ? @"1" : @"0";
+    [NSUserDefaults mm_write:stringValue forKey:EZBetaFeatureKey];
+}
+- (BOOL)isBeta {
+    NSString *stringValue = [NSUserDefaults mm_readString:EZBetaFeatureKey defaultValue:@"0"];
+    return [stringValue boolValue];
 }
 
 @end

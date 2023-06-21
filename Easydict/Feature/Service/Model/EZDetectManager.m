@@ -11,7 +11,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZConfiguration.h"
 #import "EZYoudaoTranslate.h"
-#import "NSUserDefaults+EZConfig.h"
+#import "EZConfiguration+EZUserData.h"
 
 @interface EZDetectManager ()
 
@@ -237,8 +237,7 @@
      Sometimes Apple OCR may fail, like Japanese text, but we have set Japanese as preferred language and OCR again when OCR result is empty, currently it seems work, but we do not guarantee it is always work in other languages.
      */
     
-    BOOL isBeta = [NSUserDefaults.standardUserDefaults isBeta];
-    if (isBeta) {
+    if ([EZConfiguration.shared isBeta]) {
         [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
             if (!youdaoOCRError) {
                 completion(youdaoOCRResult, nil);

@@ -11,7 +11,7 @@
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
-#import "NSUserDefaults+EZConfig.h"
+#import "EZConfiguration+EZUserData.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
 
@@ -101,12 +101,11 @@
     BOOL handled = NO;
     for (NSString *key in keyValues) {
         NSString *value = keyValues[key];
-        BOOL isBeta = [[NSUserDefaults standardUserDefaults] isBeta];
         if ([self.allowedReadWriteKeys containsObject:key]) {
             handled = YES;
         }
         
-        if (isBeta) {
+        if ([EZConfiguration.shared isBeta]) {
             NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
             // easydict://writeKeyValue?Google-IntelligentQueryTextType=5
             NSArray *arr = [key componentsSeparatedByString:@"-"];
@@ -136,7 +135,7 @@
 
 - (void)resetUserDefaultsData {
     // easydict://resetUserDefaultsData
-    [[NSUserDefaults standardUserDefaults] resetUserDefaultsData];
+    [EZConfiguration.shared resetUserDefaultsData];
     
     [EZLocalStorage destroySharedInstance];
     [EZConfiguration destroySharedInstance];
@@ -144,7 +143,7 @@
 
 - (void)saveUserDefaultsDataToDownloadFolder {
     // easydict://saveUserDefaultsDataToDownloadFolder
-    [[NSUserDefaults standardUserDefaults] saveUserDefaultsDataToDownloadFolder];
+    [EZConfiguration.shared saveUserDefaultsDataToDownloadFolder];
 }
 
 
