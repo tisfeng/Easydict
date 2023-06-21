@@ -88,6 +88,52 @@ static EZEventMonitor *_instance = nil;
     return _exeCommand;
 }
 
+- (EZSelectTextActionType)selectTextActionType {
+    NSArray<EZAppModel *> *defaultAppModelList = [self defaultAppModelList];
+    NSArray<EZAppModel *> *userAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
+    
+    self.frontmostApplication = [self getFrontmostApp];
+    NSString *appBundleID = self.frontmostApplication.bundleIdentifier;
+    
+    EZSelectTextActionType defaultType = EZSelectTextActionTypeDoubleClick | EZSelectTextActionTypeTripleClick | EZSelectTextActionTypeDragged | EZSelectTextActionTypeShift;
+    
+    EZSelectTextActionType type = [self getAppSelectTextActionType:appBundleID
+                                                      appModelList:defaultAppModelList
+                                                       defaultType:defaultType];
+    
+    type = [self getAppSelectTextActionType:appBundleID appModelList:userAppModelList defaultType:type];
+    
+    return type;
+}
+
+- (EZSelectTextActionType)getAppSelectTextActionType:(NSString *)appBundleID
+                                        appModelList:(NSArray<EZAppModel *> *)appModelList
+                                         defaultType:(EZSelectTextActionType)defaultType
+{
+    EZSelectTextActionType selectTextActionType = defaultType;
+    for (EZAppModel *appModel in appModelList) {
+        if ([appModel.appBundleID isEqualToString:appBundleID]) {
+            selectTextActionType = appModel.selectTextActionType;
+            NSLog(@"App bundleID: %@, %@", appBundleID, @(selectTextActionType));
+        }
+    }
+    return selectTextActionType;
+}
+
+- (NSArray<EZAppModel *> *)defaultAppModelList {
+    // FIX https://github.com/tisfeng/Easydict/issues/123
+    EZAppModel *wechat = [[EZAppModel alloc] init];
+    wechat.appBundleID = @"com.tencent.xinWeChat";
+    wechat.selectTextActionType = EZSelectTextActionTypeDoubleClick | EZSelectTextActionTypeTripleClick;
+    
+    NSArray *defaultAppModels = @[
+        wechat,
+    ];
+    
+    return defaultAppModels;
+}
+
+
 - (void)setup {
     _recordEvents = [NSMutableArray array];
     _commandKeyEvents = [NSMutableArray array];
@@ -95,9 +141,6 @@ static EZEventMonitor *_instance = nil;
     self.actionType = EZActionTypeAutoSelectQuery;
     self.selectTextType = EZSelectTextTypeAccessibility;
     self.frontmostApplication = [self getFrontmostApp];
-    
-    self.selectTextActionType = EZSelectTextActionTypeDoubleClick | EZSelectTextActionTypeTripleClick | EZSelectTextActionTypeDragged | EZSelectTextActionTypeShift;
-
 }
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
@@ -348,13 +391,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         return enabled;
     }
     
-    NSArray *disabledList = [EZLocalStorage.shared disabledAppBundleIDList];
-    self.frontmostApplication = [self getFrontmostApp];
-    NSString *bundleID = self.frontmostApplication.bundleIdentifier;
-    if ([disabledList containsObject:bundleID]) {
-        enabled = NO;
-        NSLog(@"disabled autoSelectText for App bundleID: %@", bundleID);
-    }
     
     return enabled;
 }
@@ -667,6 +703,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 
 - (void)handleMonitorEvent:(NSEvent *)event {
     //  NSLog(@"type: %ld", event.type);
+    
+
     
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {

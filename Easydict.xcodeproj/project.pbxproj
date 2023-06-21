@@ -180,6 +180,7 @@
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */; };
 		03D747432A07FB150006CD77 /* EZError.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D747422A07FB150006CD77 /* EZError.m */; };
+		03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8A6582A42A1A300D9A968 /* EZAppModel.m */; };
 		03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */; };
 		03DC38C1292CC97900922CB2 /* EZServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC38C0292CC97900922CB2 /* EZServiceInfo.m */; };
 		03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 03DC7C5D2A3ABE28000BF7C9 /* EZConstKey.m */; };
@@ -545,6 +546,8 @@
 		03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZNetworkManager.m; sourceTree = "<group>"; };
 		03D747412A07FB150006CD77 /* EZError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZError.h; sourceTree = "<group>"; };
 		03D747422A07FB150006CD77 /* EZError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZError.m; sourceTree = "<group>"; };
+		03D8A6572A42A1A300D9A968 /* EZAppModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppModel.h; sourceTree = "<group>"; };
+		03D8A6582A42A1A300D9A968 /* EZAppModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppModel.m; sourceTree = "<group>"; };
 		03D8B26C292DBD2000D5A811 /* EZCoordinateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCoordinateUtils.h; sourceTree = "<group>"; };
 		03D8B26D292DBD2000D5A811 /* EZCoordinateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCoordinateUtils.m; sourceTree = "<group>"; };
 		03DC38BF292CC97900922CB2 /* EZServiceInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceInfo.h; sourceTree = "<group>"; };
@@ -1605,6 +1608,8 @@
 				03DC7C612A3C7050000BF7C9 /* EZDisableAutoSelectTextViewController.m */,
 				03DC7C682A3CA852000BF7C9 /* EZAppCell.h */,
 				03DC7C692A3CA852000BF7C9 /* EZAppCell.m */,
+				03D8A6572A42A1A300D9A968 /* EZAppModel.h */,
+				03D8A6582A42A1A300D9A968 /* EZAppModel.m */,
 			);
 			path = DisableAutoSelectTextViewController;
 			sourceTree = "<group>";
@@ -2009,6 +2014,7 @@
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				0398CCB82A1D98D3000B10C1 /* NSUserDefaults+EZConfig.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
+				03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
