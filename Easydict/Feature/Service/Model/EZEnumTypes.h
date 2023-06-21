@@ -41,10 +41,10 @@ FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
 
 typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
-    EZQueryTextTypeNone = 0,
-    EZQueryTextTypeTranslation = 1 << 0,
-    EZQueryTextTypeDictionary = 1 << 1,
-    EZQueryTextTypeSentence = 1 << 2,
+    EZQueryTextTypeNone = 0, // 0
+    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
+    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
+    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
 };
 
 
@@ -78,6 +78,16 @@ FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
 
 
 FOUNDATION_EXPORT NSString *const EZDefaultTTSServiceKey;
+
+
+/// Select text action type
+typedef NS_OPTIONS(NSUInteger, EZSelectTextActionType) {
+    EZSelectTextActionTypeNone = 0,
+    EZSelectTextActionTypeDoubleClick = 1 << 0,
+    EZSelectTextActionTypeTripleClick = 1 << 1,
+    EZSelectTextActionTypeDragged = 1 << 2,
+    EZSelectTextActionTypeShift = 1 << 3,
+};
 
 
 NS_ASSUME_NONNULL_END
