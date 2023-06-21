@@ -38,9 +38,9 @@
         [self addSubview:self.nameLabel];
         
         [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self).offset(0);
+            make.left.equalTo(self).offset(5);
             make.centerY.equalTo(self);
-            make.width.height.mas_equalTo(22);
+            make.width.height.mas_equalTo(24);
         }];
         
         [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -51,8 +51,12 @@
     return self;
 }
 
-- (void)setAppBundle:(NSBundle *)appBundle {
-    _appBundle = appBundle;
+
+- (void)setModel:(EZAppModel *)model {
+    _model = model;
+    
+    NSURL *appURL = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:model.appBundleID];
+    NSBundle *appBundle = [[NSBundle alloc] initWithURL:appURL];
     
     NSString *iconFileName = appBundle.infoDictionary[@"CFBundleIconFile"];
     NSImage *appIcon = [appBundle imageForResource:iconFileName];

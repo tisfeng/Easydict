@@ -7,12 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZAppModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAppCell : NSView
 
-@property (nonatomic, strong) NSBundle *appBundle;
+@property (nonatomic, strong) EZAppModel *model;
 
 @end
 

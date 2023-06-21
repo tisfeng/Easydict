@@ -14,7 +14,7 @@ static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
 static NSString *const kQueryCountKey = @"kQueryCountKey";
 static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
-static NSString *const kDisabledAppBundleIDListKey = @"kDisabledAppBundleIDListKey";
+static NSString *const kSelectTextTypeAppModelListKey = @"kSelectTextTypeAppModelListKey";
 
 @interface EZLocalStorage ()
 
@@ -27,7 +27,7 @@ static NSString *const kDisabledAppBundleIDListKey = @"kDisabledAppBundleIDListK
 static EZLocalStorage *_instance;
 
 + (instancetype)shared {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_instance) {
             _instance = [[super allocWithZone:NULL] init];
             [_instance setup];
@@ -57,14 +57,14 @@ static EZLocalStorage *_instance;
                 serviceInfo = [[EZServiceInfo alloc] init];
                 serviceInfo.type = serviceType;
                 serviceInfo.enabled = YES;
-                
+
                 // Mini should keep mini, concise
                 if (windowType == EZWindowTypeMini) {
                     if (!(serviceType == EZServiceTypeDeepL || serviceType == EZServiceTypeYoudao)) {
                         serviceInfo.enabled = NO;
                     }
                 }
-                
+
                 // There is a very small probability that Volcano webView translator will crash.
                 if (serviceType != EZServiceTypeVolcano) {
                     serviceInfo.enabledQuery = YES;
@@ -126,12 +126,12 @@ static EZLocalStorage *_instance;
 - (nullable EZServiceInfo *)serviceInfoWithType:(EZServiceType)type windowType:(EZWindowType)windowType {
     NSString *serviceInfoKey = [self keyForServiceType:type windowType:windowType];
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:serviceInfoKey];
-    
-    EZServiceInfo *serviceInfo = nil;    
+
+    EZServiceInfo *serviceInfo = nil;
     if (data) {
         serviceInfo = [EZServiceInfo mj_objectWithKeyValues:data];
     }
-    
+
     return serviceInfo;
 }
 
@@ -257,16 +257,18 @@ query count  | level | title
     return [NSString stringWithFormat:@"%@-%ld", kAllServiceTypesKey, windowType];
 }
 
-#pragma mark - Disabled App BundleID List
+#pragma mark - Disabled AppModel
 
-- (void)setDisabledAppBundleIDList:(NSArray<NSString *> *)disabledAppBundleIDList {
-    [[NSUserDefaults standardUserDefaults] setObject:disabledAppBundleIDList forKey:kDisabledAppBundleIDListKey];
+- (void)setSelectTextTypeAppModelList:(NSArray<EZAppModel *> *)selectTextAppModelList {
+    NSArray *dictArray = [EZAppModel mj_keyValuesArrayWithObjectArray:selectTextAppModelList];
+    [[NSUserDefaults standardUserDefaults] setObject:dictArray forKey:kSelectTextTypeAppModelListKey];
 }
-- (NSArray<NSString *> *)disabledAppBundleIDList {
-    NSArray *defaultDisabledList = @[
-        @"com.tencent.xinWeChat", // WeChat, FIX https://github.com/tisfeng/Easydict/issues/123
-    ];
-    return [NSUserDefaults mm_read:kDisabledAppBundleIDListKey defaultValue:defaultDisabledList checkClass:[NSArray class]];
+
+- (NSArray<EZAppModel *> *)selectTextTypeAppModelList {
+    NSArray *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectTextTypeAppModelListKey];
+    NSArray *appModels = [EZAppModel mj_objectArrayWithKeyValuesArray:dictArray] ?: [NSArray array];
+    return appModels;
 }
+
 
 @end

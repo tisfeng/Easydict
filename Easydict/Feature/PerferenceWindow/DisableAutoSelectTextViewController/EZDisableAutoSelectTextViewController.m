@@ -17,8 +17,7 @@
 #import "EZConfiguration.h"
 
 static CGFloat const kMargin = 20;
-static CGFloat const kPadding = 20;
-static CGFloat const kRowHeight = 40;
+static CGFloat const kRowHeight = 45;
 
 static NSString *const EZAppCellId = @"EZAppCellId";
 static NSString *const EZColumnId = @"EZColumnId";
@@ -32,15 +31,14 @@ static NSString *const EZColumnId = @"EZColumnId";
 @property (nonatomic, strong) NSTableView *tableView;
 @property (nonatomic, strong) NSTableColumn *column;
 
-@property (nonatomic, strong) NSMutableArray<NSString *> *disabledAppBundleIDList;
-@property (nonatomic, strong) NSMutableArray<NSBundle *> *appBundleList;
+@property (nonatomic, strong) NSMutableArray<EZAppModel *> *appModelList;
 
 @end
 
 @implementation EZDisableAutoSelectTextViewController
 
 - (void)loadView {
-    CGRect frame = CGRectMake(0, 0, 400, 350);
+    CGRect frame = CGRectMake(0, 0, 450, 400);
     self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
     [self.view excuteLight:^(NSView *view) {
@@ -52,37 +50,30 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     [self setup];
 }
 
 - (void)setup {
-    self.disabledAppBundleIDList = [[EZLocalStorage.shared disabledAppBundleIDList] mutableCopy];
-    self.appBundleList = [[self appBundlesFromBundleIDList:self.disabledAppBundleIDList] mutableCopy];
-        
-    [self.tableView reloadData];
-    [self updateScrollViewHeight];
-}
-
-- (void)updateScrollViewHeight {
-    CGFloat tableViewHeight = [self getScrollViewContentHeight];
-    [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(tableViewHeight);
+    self.appModelList = [[EZLocalStorage.shared selectTextTypeAppModelList] mutableCopy];
+    
+    [self.titleTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.inset(kMargin + 5); // ???: Why is the actual inset is 18?
+    }];
+    
+    CGFloat scollviewHeight = kRowHeight * 8;
+    [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.titleTextField.mas_bottom).offset(kMargin);
+        make.left.right.inset(kMargin);
+        make.height.mas_equalTo(scollviewHeight);
     }];
     
     [self.segmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.scrollView.mas_bottom).offset(15);
         make.left.equalTo(self.scrollView);
         make.size.mas_equalTo(CGSizeMake(80, 20));
-        make.bottom.equalTo(self.view).offset(-kPadding);
+        make.bottom.equalTo(self.view).offset(-kMargin);
     }];
-}
-
-- (CGFloat)getScrollViewContentHeight {
-    self.scrollView.height = 0;
-    CGFloat documentViewHeight = self.scrollView.documentView.height; // actually is tableView height
-    CGFloat height = MAX(documentViewHeight, kRowHeight * 5);
-    return height;
 }
 
 
@@ -93,34 +84,33 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSTextField *titleTextField = [NSTextField wrappingLabelWithString:NSLocalizedString(@"disabled_title", nil)];
         [self.view addSubview:titleTextField];
         titleTextField.font = [NSFont systemFontOfSize:14];
-        [titleTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.right.inset(kMargin + 5); // ???: Why is the actual inset is 18?
-        }];
         _titleTextField = titleTextField;
     }
     return _titleTextField;
 }
-
 
 - (NSScrollView *)scrollView {
     if (!_scrollView) {
         NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
-
+        
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
-
-        [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.titleTextField.mas_bottom).offset(kPadding);
-            make.left.right.inset(kMargin);
+        
+        [scrollView excuteLight:^(NSTableView *view) {
+            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
+        } dark:^(NSTableView *view) {
+            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
         }];
-
+        
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
         [scrollView setAutomaticallyAdjustsContentInsets:NO];
-
+        
         scrollView.contentInsets = NSEdgeInsetsMake(0, 0, 0, 0);
+        
+        scrollView.documentView = self.tableView;
     }
     return _scrollView;
 }
@@ -129,27 +119,27 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-
+        
         [tableView excuteLight:^(NSTableView *view) {
             view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
         } dark:^(NSTableView *view) {
             view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
         }];
-
+        
         tableView.style = NSTableViewStylePlain;
-
+        
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;
         column.resizingMask = NSTableColumnUserResizingMask | NSTableColumnAutoresizingMask;
         [tableView addTableColumn:column];
-
+        
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.rowHeight = kRowHeight;
         tableView.allowsMultipleSelection = YES;
         [tableView setAutoresizesSubviews:YES];
         [tableView setColumnAutoresizingStyle:NSTableViewUniformColumnAutoresizingStyle];
-
+        
         tableView.headerView = nil;
         tableView.intercellSpacing = CGSizeMake(2 * 10, 0);
         tableView.gridColor = NSColor.clearColor;
@@ -180,7 +170,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return self.appBundleList.count;
+    return self.appModelList.count;
 }
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -189,10 +179,9 @@ static NSString *const EZColumnId = @"EZColumnId";
         cell = [[EZAppCell alloc] init];
         cell.identifier = EZAppCellId;
     }
-
-    NSBundle *bundle = self.appBundleList[row];
-    cell.appBundle = bundle;
-
+    
+    cell.model = self.appModelList[row];
+    
     return cell;
 }
 
@@ -219,18 +208,18 @@ static NSString *const EZColumnId = @"EZColumnId";
 
 - (void)segmentedControlClicked:(NSSegmentedControl *)sender {
     NSInteger index = [sender selectedSegment];
-   
+    
     if (index == 0) {
         [self selectApp];
     } else {
         NSIndexSet *selectedRows = [self.tableView selectedRowIndexes];
         NSMutableArray *selectedAppBundles = [NSMutableArray array];
-        [selectedRows enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
-            [selectedAppBundles addObject:self.appBundleList[idx]];
+        [selectedRows enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *_Nonnull stop) {
+            [selectedAppBundles addObject:self.appModelList[idx]];
         }];
-
-        [self.appBundleList removeObjectsInArray:selectedAppBundles];
-        [self updateDisabledAppBundleIDList];
+        
+        [self.appModelList removeObjectsInArray:selectedAppBundles];
+        [self updateLocalStoredAppModelList];
         
         [self.tableView reloadData];
         
@@ -245,9 +234,9 @@ static NSString *const EZColumnId = @"EZColumnId";
     [openPanel setCanChooseFiles:YES];
     [openPanel setCanChooseDirectories:NO];
     [openPanel setAllowsMultipleSelection:YES];
-    NSArray<UTType *> *allowedTypes = @[UTTypeApplication];
+    NSArray<UTType *> *allowedTypes = @[ UTTypeApplication ];
     [openPanel setAllowedContentTypes:allowedTypes];
-
+    
     // ???: Since [auto select] will cause lag when dragging select apps, I don't know why 😰
     EZConfiguration.shared.disabledAutoSelect = YES;
     
@@ -255,53 +244,46 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (result == NSModalResponseOK) {
         NSLog(@"selected URLs: %@", openPanel.URLs);
         
-        NSArray *appBundleIDList = [self appBundleIDListFromBundleURLs:openPanel.URLs];
-        NSArray *appBundles = [self appBundlesFromBundleIDList:appBundleIDList];
-        [self.appBundleList addObjectsFromArray:appBundles];
-        [self updateDisabledAppBundleIDList];
-
+        NSArray *appModels = [self appModelsFromBundleURLs:openPanel.URLs];
+        [self.appModelList addObjectsFromArray:appModels];
+        [self updateLocalStoredAppModelList];
+        
         [self.tableView reloadData];
     }
     
     EZConfiguration.shared.disabledAutoSelect = NO;
 }
 
-- (NSArray<NSBundle *> *)appBundlesFromBundleIDList:(NSArray<NSString *> *)appBundleIDList {
-    NSMutableArray *appBundles = [NSMutableArray array];
-    for (NSString *bundleID in appBundleIDList) {
-        NSURL *appURL = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:bundleID];
-        NSBundle *appBundle = [[NSBundle alloc] initWithURL:appURL];
-        if (appBundle) {
-            [appBundles addObject:appBundle];
-        }
+- (NSArray<EZAppModel *> *)appModelsFromBundleIDDict:(NSDictionary<NSString *, NSNumber *> *)appBundleIDDict {
+    NSMutableArray *appModels = [NSMutableArray array];
+    for (NSString *bundleID in appBundleIDDict.allKeys) {
+        NSNumber *type = appBundleIDDict[bundleID];
+        EZAppModel *appModel = [[EZAppModel alloc] init];
+        appModel.appBundleID = bundleID;
+        appModel.selectTextActionType = type.integerValue;
+        [appModels addObject:appModel];
     }
-    return appBundles;
+    return appModels;
 }
 
-- (NSArray<NSString *> *)appBundleIDListFromBundleURLs:(NSArray<NSURL *> *)appBundleURLs {
-    NSMutableArray *appBundleIDList = [NSMutableArray array];
+- (NSArray<EZAppModel *> *)appModelsFromBundleURLs:(NSArray<NSURL *> *)appBundleURLs {
+    NSMutableArray *appModels = [NSMutableArray array];
     for (NSURL *appBundleURL in appBundleURLs) {
         NSBundle *appBundle = [[NSBundle alloc] initWithURL:appBundleURL];
         if (appBundle) {
-            NSString *bundleID = appBundle.bundleIdentifier;
-            if (![self.disabledAppBundleIDList containsObject:bundleID]) {
-                [appBundleIDList addObject:bundleID];
+            EZAppModel *appModel = [[EZAppModel alloc] init];
+            appModel.appBundleID = appBundle.bundleIdentifier;
+            appModel.selectTextActionType = EZSelectTextActionTypeNone;
+            if (![self.appModelList containsObject:appModel]) {
+                [appModels addObject:appModel];
             }
         }
     }
-    return appBundleIDList;
+    return appModels;
 }
 
-- (void)updateDisabledAppBundleIDList {
-    // generate disabledAppBundleIDList from self.appBundleList
-    NSMutableArray *disabledAppBundleIDList = [NSMutableArray array];
-    for (NSBundle *bundle in self.appBundleList) {
-        NSString *bundleID = bundle.bundleIdentifier;
-        [disabledAppBundleIDList addObject:bundleID];
-    }
-    self.disabledAppBundleIDList = disabledAppBundleIDList;
-    
-    EZLocalStorage.shared.disabledAppBundleIDList = self.disabledAppBundleIDList;
+- (void)updateLocalStoredAppModelList {
+    EZLocalStorage.shared.selectTextTypeAppModelList = self.appModelList;
 }
 
 - (void)disableDeleteAction {
