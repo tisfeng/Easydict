@@ -10,16 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *EZOpenAIAPIKey = @"EZOpenAIAPIKey";
-static NSString *EZOpenAITranslationKey = @"EZOpenAITranslationKey";
-static NSString *EZOpenAIDictionaryKey = @"EZOpenAIDictionaryKey";
-static NSString *EZOpenAISentenceKey = @"EZOpenAISentenceKey";
-
-static NSString *EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
-
-static NSString *EZOpenAIDomainKey = @"EZOpenAIDomainKey";
-static NSString *EZOpenAIModelKey = @"EZOpenAIModelKey";
-
 @interface EZOpenAIService : EZQueryService
 
 @end

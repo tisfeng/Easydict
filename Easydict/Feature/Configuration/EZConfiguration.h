@@ -51,8 +51,8 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL allowAnalytics;
 @property (nonatomic, assign) BOOL clearInput;
 
-
-@property (nonatomic, assign) BOOL disabledAutoSelect; // only use when showing NSOpenPanel to select disabled apps.
+/// Only use when showing NSOpenPanel to select disabled apps.
+@property (nonatomic, assign) BOOL disabledAutoSelect;
 
 
 + (instancetype)shared;
@@ -63,19 +63,21 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 
 #pragma mark - Intelligent Query Mode
-
 - (void)setIntelligentQueryMode:(BOOL)enabled windowType:(EZWindowType)windowType;
 - (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType;
 
 #pragma mark - Query Text Type of Service
-
 - (void)setQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType;
 - (EZQueryTextType)queryTextTypeForServiceType:(EZServiceType)serviceType;
 
 #pragma mark - Intelligent Query Text Type of Service
-
 - (void)setIntelligentQueryTextType:(EZQueryTextType)queryTextType serviceType:(EZServiceType)serviceType;
 - (EZQueryTextType)intelligentQueryTextTypeForServiceType:(EZServiceType)serviceType;
+
+
+#pragma mark - Beta
+@property (nonatomic, assign, readonly, getter=isBeta) BOOL beta;
+
 
 @end
 

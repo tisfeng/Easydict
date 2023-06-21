@@ -1,19 +1,14 @@
 //
-//  NSUserDefaults+EZConfig.m
+//  EZConfiguration+EZUserData.m
 //  Easydict
 //
-//  Created by tisfeng on 2023/5/24.
+//  Created by tisfeng on 2023/6/21.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "NSUserDefaults+EZConfig.h"
+#import "EZConfiguration+EZUserData.h"
 
-@implementation NSUserDefaults (EZConfig)
-
-- (BOOL)isBeta {
-    BOOL isBeta = [[[NSUserDefaults standardUserDefaults] stringForKey:EZBetaFeatureKey] boolValue];
-    return isBeta;
-}
+@implementation EZConfiguration (EZUserData)
 
 - (NSDictionary *)userDefaultsData {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
