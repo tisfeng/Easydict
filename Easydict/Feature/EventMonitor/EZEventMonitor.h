@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *selectedText;
 @property (nonatomic, copy) EZActionType actionType;
 @property (nonatomic, copy) EZSelectTextType selectTextType;
+@property (nonatomic, assign) EZTriggerType triggerType;
+
 @property (nonatomic, strong) NSRunningApplication *frontmostApplication;
 @property (nonatomic, copy, nullable) NSString *browserTabURLString;
 

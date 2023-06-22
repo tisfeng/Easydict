@@ -25,7 +25,6 @@ NSString *const EZServiceUsageStatusKey = @"ServiceUsageStatus";
 
 NSString *const EZDeepLTranslationAPIKey = @"EZDeepLTranslationAPIKey";
 
-
 NSString *const EZActionTypeAutoSelectQuery = @"auto_select_query";
 NSString *const EZActionTypeShortcutQuery = @"shortcut_query";
 NSString *const EZActionTypeInputQuery = @"input_query";
@@ -37,3 +36,23 @@ NSString *const EZSelectTextTypeSimulatedKey = @"simulate_key_select_text";
 NSString *const EZSelectTextTypeAppleScript = @"applescript_select_text";
 
 NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
+
+
+@implementation EZEnumTypes
+
++ (NSString *)stringValueOfTriggerType:(EZTriggerType)triggerType {
+    switch (triggerType) {
+        case EZTriggerTypeNone:
+            return @"none";
+        case EZTriggerTypeDoubleClick:
+            return @"double_click";
+        case EZTriggerTypeTripleClick:
+            return @"triple_click";
+        case EZTriggerTypeDragged:
+            return @"dragged";
+        case EZTriggerTypeShift:
+            return @"shift";
+    }
+}
+
+@end

@@ -851,10 +851,12 @@ static EZWindowManager *_instance;
     NSString *appName = application.localizedName;
     NSString *bundleID = application.bundleIdentifier;
     NSString *textLength = [EZLog textLengthRange:text];
+    NSString *triggerType = [EZEnumTypes stringValueOfTriggerType:self.eventMonitor.triggerType];
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{
         @"actionType" : self.actionType,
         @"selectTextType" : self.eventMonitor.selectTextType,
+        @"triggerType" : triggerType,
         @"textLength" : textLength,
         @"appName" : appName,
         @"bundleID" : bundleID,

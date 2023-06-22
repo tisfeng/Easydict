@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZAppModel : NSObject
 
 @property (nonatomic, copy) NSString *appBundleID;
-@property (nonatomic, assign) EZSelectTextActionType selectTextActionType;
+@property (nonatomic, assign) EZTriggerType triggerType;
 
 @end
 

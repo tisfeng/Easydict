@@ -14,7 +14,7 @@ static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
 static NSString *const kQueryCountKey = @"kQueryCountKey";
 static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
-static NSString *const kSelectTextTypeAppModelListKey = @"kSelectTextTypeAppModelListKey";
+static NSString *const kAppModelTriggerListKey = @"kAppModelTriggerListKey";
 
 @interface EZLocalStorage ()
 
@@ -261,14 +261,13 @@ query count  | level | title
 
 - (void)setSelectTextTypeAppModelList:(NSArray<EZAppModel *> *)selectTextAppModelList {
     NSArray *dictArray = [EZAppModel mj_keyValuesArrayWithObjectArray:selectTextAppModelList];
-    [[NSUserDefaults standardUserDefaults] setObject:dictArray forKey:kSelectTextTypeAppModelListKey];
+    [[NSUserDefaults standardUserDefaults] setObject:dictArray forKey:kAppModelTriggerListKey];
 }
 
 - (NSArray<EZAppModel *> *)selectTextTypeAppModelList {
-    NSArray *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectTextTypeAppModelListKey];
+    NSArray *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kAppModelTriggerListKey];
     NSArray *appModels = [EZAppModel mj_objectArrayWithKeyValuesArray:dictArray] ?: [NSArray array];
     return appModels;
 }
-
 
 @end
