@@ -55,8 +55,8 @@ body:
   - type: input
     id: device
     attributes:
-      label: 设备信息 && 操作系统版本（可选）
-      description: 如果遇到比较奇怪的问题，可以提供设备信息和操作系统版本，方便开发者排查
+      label: 设备信息 && 操作系统版本
+      description: 如果遇到比较奇怪的问题，请提供设备信息和操作系统版本，方便开发者排查
       placeholder: Apple M1 Pro, macOS 11.2.3
 
   - type: checkboxes
