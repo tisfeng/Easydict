@@ -13,15 +13,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLanguageManager : NSObject
 
-+ (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
+/// From system languages, ["zh-Hans-CN", "en-CN"]
+@property (nonatomic, copy, class, readonly) NSArray<EZLanguage> *systemPreferredLanguages;
 
-- (nullable EZLanguageModel *)languageModelFromLocaleIdentifier:(NSString *)localeIdentifier;
++ (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
 
 /// Get target language with source language
 + (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
-
-/// User system languages, ["zh-Hans-CN", "en-CN"]
-+ (NSArray<EZLanguage> *)systemPreferredLanguages;
 
 + (NSArray<EZLanguage> *)preferredTwoLanguages;
 
