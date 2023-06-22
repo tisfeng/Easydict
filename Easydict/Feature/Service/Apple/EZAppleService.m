@@ -1082,7 +1082,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 }
 
 - (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
-    
     CGFloat lineCount = textObservations.count;
     NSInteger longLineCount = 0;
 
@@ -1160,7 +1159,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     
-    BOOL tooManyLongLine = longLineCount / lineCount > 0.4;
+    BOOL tooManyLongLine = longLineCount / lineCount >= 0.5;
     if (tooManyLongLine) {
         return NO;
     }
@@ -1194,6 +1193,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
     
     BOOL isPrevLongText = [self isLongTextObservation:prevTextObservation];
+    
+    BOOL isEqualChineseText = [self isEqualChineseTextObservation:textObservation prevTextObservation:prevTextObservation];
     
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
@@ -1233,7 +1234,11 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 if (isPrevLessHalfShortLine) {
                     needLineBreak = YES;
                 } else {
-                    needLineBreak = NO;
+                    if (isEqualChineseText) {
+                        needLineBreak = YES;
+                    } else {
+                        needLineBreak = NO;
+                    }
                 }
             } else {
                 if (isPrevLongText) {
@@ -1356,14 +1361,10 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
          
          —— 宋 · 姜夔
          */
-        if ([EZLanguageManager isChineseLanguage:self.language]) {
-            BOOL isEqualLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
-            if (isPrevLongText && isEqualLength) {
-                needLineBreak = YES;
-                
-                if (isBigLineSpacing) {
-                    isNewParagraph = YES;
-                }
+        if (isEqualChineseText) {
+            needLineBreak = YES;
+            if (isBigLineSpacing) {
+                isNewParagraph = YES;
             }
         }
     }
@@ -1408,6 +1409,16 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     return NO;
 }
+
+- (BOOL)isEqualChineseTextObservation:(VNRecognizedTextObservation *)textObservation
+                  prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
+    BOOL isEqualLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
+    if (isEqualLength && [EZLanguageManager isChineseLanguage:self.language]) {
+        return YES;
+    }
+    return NO;
+}
+
 
 // TODO: Some text has large line spacing, which can lead to misjudgments.
 - (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
