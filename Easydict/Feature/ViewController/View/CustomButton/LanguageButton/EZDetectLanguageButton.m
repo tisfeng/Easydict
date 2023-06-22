@@ -33,8 +33,8 @@
     
     [self excuteLight:^(EZButton *detectButton) {
         detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#E0E0E0"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#D1D1D1"];
+        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#DCDCDC"];
+        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#CCCCCC"];
     } dark:^(EZButton *detectButton) {
         detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#3D3E3F"];
         detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#47494A"];
