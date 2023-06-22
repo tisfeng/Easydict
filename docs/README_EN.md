@@ -64,7 +64,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
   - [Select text by Mouse](#select-text-by-mouse)
-  - [Notice](#notice)
+  - [About Permissions](#about-permissions)
 - [OCR](#ocr)
 - [Language Recognition](#language-recognition)
 - [Translation Services](#translation-services)
@@ -102,11 +102,25 @@ brew install easydict
 
 If you are a developer, or are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
+<details> <summary> Build Steps： </summary>
+
+<p>
+
 Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file(⚠️ Not `Easydict.xcodeproj`!), `Cmd + R` to compile and run.
 
 If a signature error occurs during compilation, please use your own developer account on the `Signing & Capabilities` page of the target. If you are not an Apple developer yet, just go to https://developer.apple.com/ and register for free.
 
+If you don't want to register as an Apple developer, you can also run with automatic signature, refer to the screenshot below, change `Team` to None and `Signing Certificate` to Sign to Run Locally, note that both targets should be changed.
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
+</div>
+
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
+
+</p>
+
+</details>
 
 ### Signature Problem ⚠️
 
@@ -162,7 +176,7 @@ Currently, multiple mouse quick word selection methods are supported: double-cli
 
 The shortcut key to select words can work normally in any application. If you encounter an application that cannot select words, you can open an issue to solve it https://github.com/tisfeng/Easydict/issues/84
 
-### Notice
+### About Permissions
 
 1. `Select Translate` requires the `Auxiliary Accessibility`.The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
 
@@ -403,17 +417,16 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 If you don't want your username to be displayed in the list, please choose anonymous.
 
-
-|  **日期**  |  **用户**  | **金额** |                                                     **留言**                                                      |
-| :--------: | :--------: | :------: | :---------------------------------------------------------------------------------------------------------------: |
-| 2023-05-22 |     🍑     |    50    |                                                     感谢开源                                                      |
-| 2023-05-22 |     -      |   200    |                                                                                                                   |
-| 2023-05-22 |     -      |   150    |                                                                                                                   |
-| 2023-05-24 |    陈佩    |    50    | 加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)） |
-| 2023-05-27 |   自由。   |   100    |                                                       感谢                                                        |
-| 2023-06-01 |    梦遇    |    10    |                                                       感谢                                                        |
-| 2023-06-05 | 挨揍的免子 |    1     |                                                      谢谢 🙏                                                      |
-| 2023-06-17 | 妙才 | 5 | ❤️ |
-| 2023-06-19 | 1 | 20 | 加油，有没有可能调用chatgpt来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
-| 2023-06-19 | 许冠英 | 6.6 | 感谢开发这么好用的软件，很喜欢。 |
-| 2023-06-20 | lidashuang | 10 | 感谢 |
+|  **日期**  |  **用户**  | **金额** |                                                          **留言**                                                           |
+| :--------: | :--------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
+| 2023-05-22 |     🍑     |    50    |                                                          感谢开源                                                           |
+| 2023-05-22 |     -      |   200    |                                                                                                                             |
+| 2023-05-22 |     -      |   150    |                                                                                                                             |
+| 2023-05-24 |    陈佩    |    50    |      加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)）      |
+| 2023-05-27 |   自由。   |   100    |                                                            感谢                                                             |
+| 2023-06-01 |    梦遇    |    10    |                                                            感谢                                                             |
+| 2023-06-05 | 挨揍的免子 |    1     |                                                           谢谢 🙏                                                           |
+| 2023-06-17 |    妙才    |    5     |                                                             ❤️                                                              |
+| 2023-06-19 |     1      |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
+| 2023-06-19 |   许冠英   |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
+| 2023-06-20 | lidashuang |    10    |                                                            感谢                                                             |
