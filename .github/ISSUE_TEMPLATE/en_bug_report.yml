@@ -55,7 +55,7 @@ body:
   - type: input
     id: device
     attributes:
-      label: Device information and OS version (optional)
+      label: Device information and OS version
       description: If you encounter an unusual problem, you can provide device information and OS versions to help developers troubleshoot.
       placeholder: Apple M1 Pro, macOS 11.2.3
 
