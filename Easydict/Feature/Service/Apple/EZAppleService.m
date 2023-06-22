@@ -1089,6 +1089,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     CGFloat charCountPerLine = 0;
     NSInteger punctuationMarkCount = 0;
     
+    BOOL isAllEndPunctuationChar = YES;
+    
     for (VNRecognizedTextObservation *textObservation in textObservations) {
         BOOL isLongLine = [self isLongTextObservation:textObservation];
         if (isLongLine) {
@@ -1110,6 +1112,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             }
             
             BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
+            if (!isEndPunctuationChar) {
+                isAllEndPunctuationChar = NO;
+            }
 
             /**
              Not poetry, cannot join with '\n'
@@ -1154,10 +1159,14 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return YES;
     }
     
-    if (lineCount >= 6 && (numberOfPunctuationMarksPerLine < 1 / 4) && (punctuationMarkRate < 0.04)) {
+    /**
+     Works smarter.
+      Plays harder.
+      Goes further.
+     */
+    if (isAllEndPunctuationChar) {
         return YES;
     }
-    
     
     BOOL tooManyLongLine = longLineCount / lineCount >= 0.5;
     if (tooManyLongLine) {
