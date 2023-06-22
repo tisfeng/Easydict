@@ -259,7 +259,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         NSNumber *type = appBundleIDDict[bundleID];
         EZAppModel *appModel = [[EZAppModel alloc] init];
         appModel.appBundleID = bundleID;
-        appModel.selectTextActionType = type.integerValue;
+        appModel.triggerType = type.integerValue;
         [appModels addObject:appModel];
     }
     return appModels;
@@ -272,7 +272,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         if (appBundle) {
             EZAppModel *appModel = [[EZAppModel alloc] init];
             appModel.appBundleID = appBundle.bundleIdentifier;
-            appModel.selectTextActionType = EZSelectTextActionTypeNone;
+            appModel.triggerType = EZTriggerTypeNone;
             if (![self.appModelList containsObject:appModel]) {
                 [appModels addObject:appModel];
             }
