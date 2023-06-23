@@ -113,7 +113,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor setMouseClickBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.startPoint = clickPoint;
-        self.screen = [EZCoordinateUtils screenOfPoint:clickPoint];
+        self.screen = [EZCoordinateUtils pointInScreen:clickPoint];
         EZLayoutManager.shared.screen = self.screen;
     }];
     
@@ -355,8 +355,11 @@ static EZWindowManager *_instance;
     if (![EZConfiguration.shared hideMainWindow]) {
         [_mainWindow orderOut:nil];
     }
-    
+            
+//    NSLog(@"window frame: %@", @(window.frame));
+
     // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
+    
     [window makeKeyAndOrderFront:nil];
     
     /// ???: orderFrontRegardless will cause OCR show blank window when window has shown.

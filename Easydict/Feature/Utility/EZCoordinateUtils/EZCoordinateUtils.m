@@ -59,11 +59,20 @@
     if (y < visibleFrame.origin.y && height <= visibleFrame.size.height) {
         y = visibleFrame.origin.y;
     }
-
+    
+    // !!!: If mouse position is not in screen that the "frame" located, we need to move frame to mouse position screen.
+    CGPoint mousePosition = [NSEvent mouseLocation];
+    NSScreen *mouseInScreen = [self pointInScreen:mousePosition];
+    NSScreen *frameInScreen = [self rectInScreen:frame];
+    if (mouseInScreen != frameInScreen) {
+        x = mousePosition.x;
+        y = mousePosition.y - height;
+    }
+    
     return CGRectMake(x, y, width, height);
 }
 
-+ (NSScreen *)screenOfPoint:(CGPoint)point {
++ (NSScreen *)pointInScreen:(CGPoint)point {
     NSScreen *mouseInScreen = NSScreen.mainScreen;
     for (NSScreen *screen in [NSScreen screens]) {
         NSRect screenFrame = [screen frame];
@@ -75,9 +84,22 @@
     return mouseInScreen;
 }
 
++ (NSScreen *)rectInScreen:(CGRect)rect {
+    NSScreen *mouseInScreen = NSScreen.mainScreen;
+    for (NSScreen *screen in [NSScreen screens]) {
+        NSRect screenFrame = [screen frame];
+        if (CGRectIntersectsRect(rect, screenFrame)) {
+            mouseInScreen = screen;
+            break;
+        }
+    }
+    return mouseInScreen;
+}
+
+
 + (NSScreen *)screenOfMousePosition {
     CGPoint mousePosition = [NSEvent mouseLocation];
-    return [self screenOfPoint:mousePosition];
+    return [self pointInScreen:mousePosition];
 }
 
 
@@ -142,8 +164,12 @@
             CGFloat externalWidth = NSWidth(externalFrame);
             
             // 如果 point 在该屏幕中，就需要对 point 进行转换
-            if (point.x >= externalFrame.origin.x && point.y >= externalFrame.origin.y && point.x <= externalFrame.origin.x + externalWidth && point.y <= externalFrame.origin.x + externalHeight) {
-                bottomLeftPoint = CGPointMake(point.x - externalFrame.origin.x, externalHeight - point.y + externalFrame.origin.y + mainHeight - externalHeight);
+            if (point.x >= externalFrame.origin.x
+                && point.y >= externalFrame.origin.y
+                && point.x <= externalFrame.origin.x + externalWidth
+                && point.y <= externalFrame.origin.x + externalHeight) {
+                bottomLeftPoint = CGPointMake(point.x - externalFrame.origin.x,
+                                              externalHeight - point.y + externalFrame.origin.y + mainHeight - externalHeight);
                 break;
             }
         }
