@@ -884,7 +884,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         
         CGRect boundingBox = textObservation.boundingBox;
         NSLog(@"%@, %@", @(boundingBox), recognizedString);
-                
+        
         CGFloat lineHeight = boundingBox.size.height;
         totalLineHeight += lineHeight;
         if (lineHeight < minLineHeight) {
@@ -939,7 +939,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     self.language = language;
     self.minX = minX;
     self.maxLineLength = maxLengthOfLine;
-        
+    
     
     self.averageLineHeight = averageLineHeight;
     self.averageLineSpacing = averageLineSpacing;
@@ -1084,7 +1084,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
     CGFloat lineCount = textObservations.count;
     NSInteger longLineCount = 0;
-
+    
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
     NSInteger punctuationMarkCount = 0;
@@ -1096,12 +1096,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         if (isLongLine) {
             longLineCount += 1;
         }
-
+        
         NSString *text = [textObservation firstText];
         totalCharCount += text.length;
         
         NSInteger punctuationMarkCountOfLine = 0;
-
+        
         // iterate string to check if has punctuation mark.
         for (NSInteger i = 0; i < text.length; i++) {
             NSString *charString = [text substringWithRange:NSMakeRange(i, 1)];
@@ -1115,9 +1115,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             if (!isEndPunctuationChar) {
                 isAllEndPunctuationChar = NO;
             }
-
+            
             /**
-             Not poetry, cannot join with '\n'
+             Cannot be treated as poetry, cannot join with '\n'
              
              　　 京洛风流绝代人，因何风絮落溪津。笼鞋浅出鸦头袜，知是凌波
              　缥缈身。
@@ -1133,10 +1133,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     charCountPerLine = totalCharCount / lineCount;
-
-    CGFloat punctuationMarkRate = punctuationMarkCount / (CGFloat)totalCharCount;
-    charCountPerLine = totalCharCount / (CGFloat)lineCount;
-    
     CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
     /**
@@ -1168,6 +1164,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return YES;
     }
     
+    /**
+     Should >= 0.5, especially two lines.
+     
+     这首诗以白描手法写江南农村初夏时节的田野风光和农忙景象，
+     前两句描绘自然景物
+     */
     BOOL tooManyLongLine = longLineCount / lineCount >= 0.5;
     if (tooManyLongLine) {
         return NO;
