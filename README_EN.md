@@ -6,7 +6,7 @@
 <a href="./README.md">
         <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
             alt="中文 README"></a>
-<a href="./docs/README_EN.md">
+<a href="./README_EN.md">
         <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
             alt="English README"></a>
 <a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
