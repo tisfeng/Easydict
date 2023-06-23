@@ -267,6 +267,16 @@ query count  | level | title
 - (NSArray<EZAppModel *> *)selectTextTypeAppModelList {
     NSArray *dictArray = [[NSUserDefaults standardUserDefaults] valueForKey:kAppModelTriggerListKey];
     NSArray *appModels = [EZAppModel mj_objectArrayWithKeyValuesArray:dictArray] ?: [NSArray array];
+    
+    if (!dictArray) {
+        EZAppModel *keyChainApp = [[EZAppModel alloc] init];
+        keyChainApp.appBundleID = @"com.apple.keychainaccess";
+        keyChainApp.triggerType = EZTriggerTypeNone;
+        appModels = @[
+            keyChainApp,
+        ];
+    }
+    
     return appModels;
 }
 
