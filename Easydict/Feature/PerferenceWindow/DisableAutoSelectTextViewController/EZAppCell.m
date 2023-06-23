@@ -38,7 +38,7 @@
         [self addSubview:self.nameLabel];
         
         [self.iconView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self).offset(5);
+            make.left.equalTo(self).offset(3);
             make.centerY.equalTo(self);
             make.width.height.mas_equalTo(24);
         }];
