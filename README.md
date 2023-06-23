@@ -3,23 +3,26 @@
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
-<a href="https://github.com/tisfeng/Easydict/blob/main/docs/README_EN.md">
-        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
-            alt="English README"></a>
-<a href="https://github.com/tisfeng/Easydict/blob/main/README.md">
+<a href="./README.md">
         <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
             alt="中文 README"></a>
+<a href="./docs/README_EN.md">
+        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
+            alt="English README"></a>
 <a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/tisfeng/easydict"
             alt="License"></a>
 <a href="https://github.com/tisfeng/Easydict/releases">
         <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
             alt="Downloads"></a>
+<a href="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white">
+        <img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white"
+            alt="macOS"></a>  
 </p>
 
-## [中文介绍](../README.md) | [English](./docs/README_EN.md)
+## Easydict | [English](./docs/README_EN.md)
 
-`Easydict` 是一个简洁易用的翻译词典 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1686534936.png)
 
@@ -384,7 +387,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 ## 初衷
 
-查询单词和翻译文本，是日常生活非常实用的功能，我用过很多翻译词典软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架苹果商店后也不再免费提供应用更新。
+查询单词和翻译文本，是日常生活非常实用的功能，我用过很多词典翻译软件，但都不满意，直到遇见了 Bob。[`Bob`](https://bobtranslate.com/) 是一款优秀的翻译软件，但它不是开源软件，自从上架苹果商店后也不再免费提供应用更新。
 
 作为一名开发者，也是众多开源软件的受益者，我觉得，这世界上应该存在一个免费开源版本的 [Bob](https://github.com/ripperhe/Bob)，于是我开发了 [Easydict](https://github.com/tisfeng/Easydict)。现在，我每天都在大量使用 Easydict，我很喜欢它，也希望能够让更多的人了解它、使用它。
 
