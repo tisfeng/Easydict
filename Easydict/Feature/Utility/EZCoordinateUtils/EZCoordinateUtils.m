@@ -65,7 +65,7 @@
     NSScreen *mouseInScreen = [self screenForPoint:mousePosition];
     NSScreen *frameInScreen = [self screenForRect:frame];
     if (mouseInScreen != frameInScreen) {
-        x = mousePosition.x;
+        x = mousePosition.x + 10;
         y = mousePosition.y - height;
     }
     
