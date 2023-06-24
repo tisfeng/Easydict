@@ -1,5 +1,5 @@
 //
-//  EZTool.m
+//  EZCoordinateUtils.m
 //  Easydict
 //
 //  Created by tisfeng on 2022/11/23.
@@ -62,8 +62,8 @@
     
     // !!!: If mouse position is not in screen that the "frame" located, we need to move frame to mouse position screen.
     CGPoint mousePosition = [NSEvent mouseLocation];
-    NSScreen *mouseInScreen = [self pointInScreen:mousePosition];
-    NSScreen *frameInScreen = [self rectInScreen:frame];
+    NSScreen *mouseInScreen = [self screenForPoint:mousePosition];
+    NSScreen *frameInScreen = [self screenForRect:frame];
     if (mouseInScreen != frameInScreen) {
         x = mousePosition.x;
         y = mousePosition.y - height;
@@ -72,7 +72,7 @@
     return CGRectMake(x, y, width, height);
 }
 
-+ (NSScreen *)pointInScreen:(CGPoint)point {
++ (NSScreen *)screenForPoint:(CGPoint)point {
     NSScreen *mouseInScreen = NSScreen.mainScreen;
     for (NSScreen *screen in [NSScreen screens]) {
         NSRect screenFrame = [screen frame];
@@ -84,7 +84,7 @@
     return mouseInScreen;
 }
 
-+ (NSScreen *)rectInScreen:(CGRect)rect {
++ (NSScreen *)screenForRect:(CGRect)rect {
     NSScreen *mouseInScreen = NSScreen.mainScreen;
     for (NSScreen *screen in [NSScreen screens]) {
         NSRect screenFrame = [screen frame];
@@ -99,7 +99,7 @@
 
 + (NSScreen *)screenOfMousePosition {
     CGPoint mousePosition = [NSEvent mouseLocation];
-    return [self pointInScreen:mousePosition];
+    return [self screenForPoint:mousePosition];
 }
 
 
