@@ -118,8 +118,8 @@ static EZWindowManager *_instance;
     }];
     
     [self.eventMonitor setDismissPopButtonBlock:^{
-        //        NSLog(@"dismiss pop button");
         mm_strongify(self);
+//        NSLog(@"dismiss pop button");
         [self.popButtonWindow close];
     }];
     
@@ -182,9 +182,9 @@ static EZWindowManager *_instance;
 }
 
 - (void)popButtonWindowClicked {
-    [self->_popButtonWindow close];
     self.actionType = EZActionTypeAutoSelectQuery;
     [self showFloatingWindowType:EZWindowTypeMini queryText:self.selectedText];
+    [self->_popButtonWindow close];
 }
 
 #pragma mark - Getter
@@ -489,23 +489,32 @@ static EZWindowManager *_instance;
 }
 
 - (CGPoint)getShowingMouseLocation {
+    BOOL offsetFlag = self.popButtonWindow.isVisible;
+    return [self getMouseLocation:offsetFlag];;
+}
+
+- (CGPoint)getMouseLocation:(BOOL)offsetFlag {
     NSPoint popButtonLocation = [self getPopButtonWindowLocation];
     if (CGPointEqualToPoint(popButtonLocation, CGPointZero)) {
         return CGPointZero;
     }
     
-    CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
-    
     CGPoint mouseLocation = NSEvent.mouseLocation;
+    CGPoint showingPosition = mouseLocation;
     
-    // if pop button is left to selected text, we need to move showing mouse location to a bit right, to show query window properly.
-    if (mouseLocation.x > popButtonLocation.x) {
-        x = NSEvent.mouseLocation.x + 5;
+    if (offsetFlag) {
+        CGFloat x = popButtonLocation.x + 5; // Move slightly to the right to avoid covering the cursor.
+        
+        
+        // if pop button is left to selected text, we need to move showing mouse location to a bit right, to show query window properly.
+        if (mouseLocation.x > popButtonLocation.x) {
+            x = NSEvent.mouseLocation.x + 5;
+        }
+        
+        CGFloat y = popButtonLocation.y + 0;
+        
+        showingPosition = CGPointMake(x, y);
     }
-    
-    CGFloat y = popButtonLocation.y + 10;
-    
-    CGPoint showingPosition = CGPointMake(x, y);
     
     return showingPosition;
 }
