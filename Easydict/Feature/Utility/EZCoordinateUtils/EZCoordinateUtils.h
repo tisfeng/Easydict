@@ -1,5 +1,5 @@
 //
-//  EZTool.h
+//  EZCoordinateUtils.h
 //  Easydict
 //
 //  Created by tisfeng on 2022/11/23.
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// !!!: Coordinate system is still Bottom-Left, not changed.
 + (CGPoint)getFrameTopLeftPoint:(CGRect)frame;
 
-+ (NSScreen *)pointInScreen:(CGPoint)point;
++ (NSScreen *)screenForPoint:(CGPoint)point;
 
 + (NSScreen *)screenOfMousePosition;
 

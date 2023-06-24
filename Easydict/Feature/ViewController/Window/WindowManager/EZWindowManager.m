@@ -113,7 +113,7 @@ static EZWindowManager *_instance;
     [self.eventMonitor setMouseClickBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.startPoint = clickPoint;
-        self.screen = [EZCoordinateUtils pointInScreen:clickPoint];
+        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
         EZLayoutManager.shared.screen = self.screen;
     }];
     
