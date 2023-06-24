@@ -528,7 +528,10 @@ static EZWindowManager *_instance;
             // !!!: origin postion is bottom-left point, we need to convert it to top-left point.
             CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeFixed];
             position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
-            
+            break;
+        }
+        case EZShowWindowPositionCenter: {
+            position = [self getFloatingWindowInCenterOfScreenPoint:self.fixedWindow];
             break;
         }
     }
@@ -547,6 +550,22 @@ static EZWindowManager *_instance;
     
     return position;
 }
+
+/// Get the position of floatingWindow that make sure floatingWindow show in the center of self.screen.
+- (CGPoint)getFloatingWindowInCenterOfScreenPoint:(NSWindow *)floatingWindow {
+    CGPoint position = CGPointZero;
+    
+    NSScreen *targetScreen = self.screen;
+    NSRect screenRect = [targetScreen visibleFrame];
+    
+    // top-left point
+    CGFloat x = screenRect.origin.x + (screenRect.size.width - floatingWindow.width) / 2;
+    CGFloat y = screenRect.origin.y + (screenRect.size.height - floatingWindow.height) / 2 + floatingWindow.height;
+    position = CGPointMake(x, y);
+    
+    return position;
+}
+
 
 - (void)saveFrontmostApplication {
     NSString *identifier = [[NSBundle mainBundle] bundleIdentifier];
