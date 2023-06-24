@@ -23,6 +23,7 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
     EZShowWindowPositionRight = 0,
     EZShowWindowPositionMouse = 1,
     EZShowWindowPositionFormer = 2,
+    EZShowWindowPositionCenter = 3,
 };
 
 FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
@@ -93,6 +94,10 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
 @interface  EZEnumTypes: NSObject
 
 + (NSString *)stringValueOfTriggerType:(EZTriggerType)triggerType;
+
++ (NSString *)windowName:(EZWindowType)type;
+
++ (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
 
 @end
 

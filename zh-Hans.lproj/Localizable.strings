@@ -40,6 +40,7 @@
 "fixed_window_position_right" = "屏幕右侧";
 "fixed_window_position_mouse" = "鼠标位置";
 "fixed_window_position_former" = "上次位置";
+"fixed_window_position_center" = "屏幕中间";
 
 "play_word_audio" = "播放单词发音:";
 "auto_play_word_audio" = "查询英语单词后自动播放发音";

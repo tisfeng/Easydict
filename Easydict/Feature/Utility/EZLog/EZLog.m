@@ -59,7 +59,7 @@
 
 
 + (void)logWindowAppear:(EZWindowType)windowType {
-    NSString *windowName = [EZLayoutManager.shared windowName:windowType];
+    NSString *windowName = [EZEnumTypes windowName:windowType];
     NSString *name = [NSString stringWithFormat:@"show_%@", windowName];
     [self logEventWithName:name parameters:nil];
 }

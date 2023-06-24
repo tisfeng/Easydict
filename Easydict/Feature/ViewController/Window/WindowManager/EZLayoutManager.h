@@ -35,9 +35,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGFloat)inputViewMaxHeight:(EZWindowType)type;
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
-- (NSString *)windowName:(EZWindowType)type;
 
-- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
+//- (NSString *)windowName:(EZWindowType)type;
+
+//- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
 
 @end
 

@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
 #import "EZMenuItemManager.h"
+#import "EZEnumTypes.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
@@ -226,7 +227,7 @@
     self.fixedWindowPositionLabel = fixedWindowPositionLabel;
     
     self.fixedWindowPositionPopUpButton = [[NSPopUpButton alloc] init];
-    MMOrderedDictionary *fixedWindowPostionDict = [EZLayoutManager.shared fixedWindowPositionDict];
+    MMOrderedDictionary *fixedWindowPostionDict = [EZEnumTypes fixedWindowPositionDict];
     NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
     [self.fixedWindowPositionPopUpButton addItemsWithTitles:fixedWindowPositionItems];
     [self.contentView addSubview:self.fixedWindowPositionPopUpButton];

@@ -40,6 +40,7 @@
 "fixed_window_position_right" = "Right Side of Screen";
 "fixed_window_position_mouse" = "Mouse Position";
 "fixed_window_position_former" = "Last position";
+"fixed_window_position_center" = "Center of Screen";
 
 "play_word_audio" = "Play Word Pronunciation:";
 "auto_play_word_audio" = "Auto play pronunciation after querying English words";
