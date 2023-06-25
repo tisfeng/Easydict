@@ -43,7 +43,7 @@ static NSDictionary *const kQuotesDict = @{
         return NO;
     }
     
-    if ([EZLanguageManager isChineseLanguage:langugae]) {
+    if ([EZLanguageManager.shared isChineseLanguage:langugae]) {
         return [self isChineseWord:text] || [self isChinesePhrase:text];
     }
     

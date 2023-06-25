@@ -370,7 +370,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         
                         EZWordPhonetic *phonetic = [[EZWordPhonetic alloc] init];
                         phonetic.name = NSLocalizedString(@"us_phonetic", nil);
-                        if ([EZLanguageManager isChineseLanguage:from]) {
+                        if ([EZLanguageManager.shared isChineseLanguage:from]) {
                             phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
                         }
                         
@@ -869,7 +869,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (NSString *)maxTextLength:(NSString *)text fromLanguage:(EZLanguage)from {
     // Chinese max text length 1800
     // English max text length 5000
-    if ([EZLanguageManager isChineseLanguage:from] && text.length > 1800) {
+    if ([EZLanguageManager.shared isChineseLanguage:from] && text.length > 1800) {
         text = [text substringToIndex:1800];
     } else {
         text = [text trimToMaxLength:5000];

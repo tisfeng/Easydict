@@ -109,14 +109,15 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
 #pragma mark -
 
 - (void)setupMenu {
-    NSArray *allLanguages = [EZLanguageManager allLanguages];
+    EZLanguageManager *languageManager =  [EZLanguageManager shared];
+    NSArray *allLanguages = [languageManager allLanguages];
     self.languageDict = [[MMOrderedDictionary alloc] init];
     for (EZLanguage language in allLanguages) {
-        NSString *languageName = [EZLanguageManager showingLanguageName:language];
-        NSString *languageFlag = [EZLanguageManager languageFlagEmoji:language];
+        NSString *languageName = [languageManager showingLanguageName:language];
+        NSString *languageFlag = [languageManager languageFlagEmoji:language];
         
         if ([language isEqualToString:EZLanguageAuto]) {
-            if ([EZLanguageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+            if ([languageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
                 languageName = self.autoChineseSelectedTitle;
             }
         }
@@ -161,19 +162,21 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     _selectedLanguage = selectedLanguage;
     
     if ([self.languageDict.allKeys containsObject:selectedLanguage]) {
-        NSString *languageName = [EZLanguageManager showingLanguageName:selectedLanguage];
-        NSString *languageFlag = [EZLanguageManager languageFlagEmoji:selectedLanguage];
+        EZLanguageManager *languageManager =  [EZLanguageManager shared];
+
+        NSString *languageName = [languageManager showingLanguageName:selectedLanguage];
+        NSString *languageFlag = [languageManager languageFlagEmoji:selectedLanguage];
         
         NSString *toolTip = nil;
         
         if ([selectedLanguage isEqualToString:EZLanguageAuto]) {
-            if ([EZLanguageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
+            if ([languageManager isChineseFirstLanguage] && self.autoChineseSelectedTitle.length) {
                 languageName = self.autoChineseSelectedTitle;
             }
-            languageFlag = [EZLanguageManager languageFlagEmoji:self.autoSelectedLanguage];
+            languageFlag = [languageManager languageFlagEmoji:self.autoSelectedLanguage];
             
             if (![self.autoSelectedLanguage isEqualToString:EZLanguageAuto]) {
-                toolTip = [EZLanguageManager showingLanguageName:self.autoSelectedLanguage];
+                toolTip = [languageManager showingLanguageName:self.autoSelectedLanguage];
             }
         }
         NSString *languageNameWithFlag = [NSString stringWithFormat:@"%@ %@", languageName, languageFlag];

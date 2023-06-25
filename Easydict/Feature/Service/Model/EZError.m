@@ -61,7 +61,7 @@
         unsupportLanguage = service.queryModel.queryTargetLanguage;
     }
     
-    NSString *showUnsupportLanguage = [EZLanguageManager showingLanguageName:unsupportLanguage];
+    NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
     
     EZError *error = [self errorWithType:EZErrorTypeUnsupportedLanguage message:showUnsupportLanguage];
     

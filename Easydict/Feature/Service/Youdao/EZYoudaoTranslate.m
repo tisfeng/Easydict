@@ -217,9 +217,9 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     }
     
     NSString *foreignLangauge = nil; // en,fr,
-    if ([EZLanguageManager isChineseLanguage:fromLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:fromLanguage]) {
         foreignLangauge = [self languageCodeForLanguage:toLanguage];
-    } else if ([EZLanguageManager isChineseLanguage:toLanguage]) {
+    } else if ([EZLanguageManager.shared isChineseLanguage:toLanguage]) {
         foreignLangauge = [self languageCodeForLanguage:fromLanguage];
     }
     

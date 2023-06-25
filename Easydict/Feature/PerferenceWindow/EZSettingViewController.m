@@ -128,7 +128,7 @@
     self.showMiniShortcutView = [[MASShortcutView alloc] init];
     [self.contentView addSubview:self.showMiniShortcutView];
     
-    if ([EZLanguageManager isEnglishFirstLanguage]) {
+    if ([EZLanguageManager.shared isEnglishFirstLanguage]) {
         self.leftmostView = self.showMiniLabel;
     }
     
@@ -589,12 +589,12 @@
     self.topmostView = self.inputLabel;
     self.bottommostView = self.hideMenuBarIconButton;
     
-    if ([EZLanguageManager isChineseFirstLanguage]) {
+    if ([EZLanguageManager.shared isChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.forceGetSelectedTextButton;
     }
     
-    if ([EZLanguageManager isEnglishFirstLanguage]) {
+    if ([EZLanguageManager.shared isEnglishFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.forceGetSelectedTextButton;
     }
