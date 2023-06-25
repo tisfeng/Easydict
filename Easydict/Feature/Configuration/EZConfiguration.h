@@ -24,6 +24,9 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 @interface EZConfiguration : NSObject
 
+@property (nonatomic, copy) EZLanguage firstLanguage;
+@property (nonatomic, copy) EZLanguage secondLanguage;
+
 @property (nonatomic, copy) EZLanguage from;
 @property (nonatomic, copy) EZLanguage to;
 

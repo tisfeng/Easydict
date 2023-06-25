@@ -13,57 +13,59 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZLanguageManager : NSObject
 
-/// From system languages, ["zh-Hans-CN", "en-CN"]
-@property (nonatomic, copy, class, readonly) NSArray<EZLanguage> *systemPreferredLanguages;
++ (instancetype)shared;
 
-+ (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
+/// System languages, ["zh-Hans-CN", "en-CN"]
+@property (nonatomic, copy, readonly) NSArray<EZLanguage> *systemPreferredLanguages;
+@property (nonatomic, copy, readonly) NSArray<EZLanguage> *preferredTwoLanguages;
+@property (nonatomic, copy, readonly) EZLanguage firstLanguage;
+@property (nonatomic, copy, readonly) EZLanguage secondLanguage;
+
+
+- (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
 
 /// Get target language with source language
-+ (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
+- (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
 
-+ (NSArray<EZLanguage> *)preferredTwoLanguages;
+//+ (NSArray<EZLanguage> *)preferredTwoLanguages;
 
-+ (BOOL)containsEnglishInPreferredTwoLanguages;
-+ (BOOL)containsChineseInPreferredTwoLanguages;
-
-/// User first preferred language.
-+ (EZLanguage)firstLanguage;
-+ (EZLanguage)secondLanguage;
+- (BOOL)containsEnglishInPreferredTwoLanguages;
+- (BOOL)containsChineseInPreferredTwoLanguages;
 
 /// First langauge is simplified Chinese or traditional Chinese.
-+ (BOOL)isChineseFirstLanguage;
-+ (BOOL)isEnglishFirstLanguage;
+- (BOOL)isChineseFirstLanguage;
+- (BOOL)isEnglishFirstLanguage;
 
 /// Is simplified Chinese or traditional Chinese.
-+ (BOOL)isChineseLanguage:(EZLanguage)language;
+- (BOOL)isChineseLanguage:(EZLanguage)language;
 
-+ (BOOL)isSimplifiedChinese:(EZLanguage)language;
-+ (BOOL)isTraditionalChinese:(EZLanguage)language;
-+ (BOOL)isEnglishLangauge:(EZLanguage)language;
+- (BOOL)isSimplifiedChinese:(EZLanguage)language;
+- (BOOL)isTraditionalChinese:(EZLanguage)language;
+- (BOOL)isEnglishLangauge:(EZLanguage)language;
 
-+ (BOOL)containsEnglishPreferredLanguage;
-+ (BOOL)containsChinesePreferredLanguage;
+- (BOOL)containsEnglishPreferredLanguage;
+- (BOOL)containsChinesePreferredLanguage;
 
 /// Check if language array only contains simplified Chinese or traditional Chinese two languages.
-+ (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
+- (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
 
 #pragma mark -
 
-+ (NSArray<EZLanguage> *)allLanguages;
+- (NSArray<EZLanguage> *)allLanguages;
 
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
-+ (NSString *)showingLanguageName:(EZLanguage)language;
+- (NSString *)showingLanguageName:(EZLanguage)language;
 
-+ (NSString *)showingLanguageNameWithFlag:(EZLanguage)language;
+- (NSString *)showingLanguageNameWithFlag:(EZLanguage)language;
 
 /// Get language Chinese name, Chinese -> 中文, English -> 英语.
-+ (NSString *)languageChineseName:(EZLanguage)language;
+- (NSString *)languageChineseName:(EZLanguage)language;
 
 /// Get language local name, Chinese -> 中文, English -> English.
-+ (NSString *)languageLocalName:(EZLanguage)language;
+- (NSString *)languageLocalName:(EZLanguage)language;
 
 /// Get language flag image, Chinese -> 🇨🇳, English -> 🇬🇧.
-+ (NSString *)languageFlagEmoji:(EZLanguage)language;
+- (NSString *)languageFlagEmoji:(EZLanguage)language;
 
 @end
 

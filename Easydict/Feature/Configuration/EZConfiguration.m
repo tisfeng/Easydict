@@ -18,13 +18,17 @@
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
+static NSString *const kFirstLanguageKey = @"EZConfiguration_kFirstLanguageKey";
+static NSString *const kSecondLanguageKey = @"EZConfiguration_kSecondLanguageKey";
+
+static NSString *const kFromKey = @"EZConfiguration_kFromKey";
+static NSString *const kToKey = @"EZConfiguration_kToKey";
+
 static NSString *const kAutoSelectTextKey = @"EZConfiguration_kAutoSelectTextKey";
 static NSString *const kForceAutoGetSelectedText = @"EZConfiguration_kForceAutoGetSelectedText";
 static NSString *const kDisableEmptyCopyBeepKey = @"EZConfiguration_kDisableEmptyCopyBeepKey";
 static NSString *const kClickQueryKey = @"EZConfiguration_kClickQueryKey";
 static NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
-static NSString *const kFromKey = @"EZConfiguration_kFromKey";
-static NSString *const kToKey = @"EZConfiguration_kToKey";
 static NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 static NSString *const kAutoQueryOCTTextKey = @"EZConfiguration_kAutoQueryOCTTextKey";
 static NSString *const kAutoQuerySelectedTextKey = @"EZConfiguration_kAutoQuerySelectedTextKey";

@@ -127,7 +127,7 @@
     EZLanguage fromLanguage = self.queryFromLanguage;
     EZLanguage targetLanguage = self.userTargetLanguage;
     if (!self.hasUserTargetLanguage) {
-        targetLanguage = [EZLanguageManager targetLanguageWithSourceLanguage:fromLanguage];
+        targetLanguage = [EZLanguageManager.shared targetLanguageWithSourceLanguage:fromLanguage];
     }
     return targetLanguage;
 }

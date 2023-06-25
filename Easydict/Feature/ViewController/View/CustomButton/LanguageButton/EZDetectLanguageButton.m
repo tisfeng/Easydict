@@ -62,7 +62,7 @@
     
     [self setAnimatedHidden:NO];
 
-    NSString *detectLanguageTitle = [EZLanguageManager showingLanguageName:detectedLanguage];
+    NSString *detectLanguageTitle = [EZLanguageManager.shared showingLanguageName:detectedLanguage];
     
     NSString *title = NSLocalizedString(@"detected", nil);
     NSMutableAttributedString *attrTitle = [[NSMutableAttributedString alloc] initWithString:title];
@@ -104,11 +104,11 @@
     }
     [self.customMenu removeAllItems];
     
-    NSArray *showingLanguages = [EZLanguageManager allLanguages];
+    NSArray *showingLanguages = [EZLanguageManager.shared allLanguages];
     self.languageDict = [[MMOrderedDictionary alloc] init];
     for (EZLanguage language in showingLanguages) {
         if (![language isEqualToString:EZLanguageAuto]) {
-            NSString *languageNameWithFlag = [EZLanguageManager showingLanguageNameWithFlag:language];
+            NSString *languageNameWithFlag = [EZLanguageManager.shared showingLanguageNameWithFlag:language];
             [self.languageDict setObject:languageNameWithFlag forKey:language];
         }
     }

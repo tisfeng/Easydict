@@ -182,7 +182,7 @@ userInfo:nil]
 - (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
     // If translated language is Chinese, use Chinese text convert directly.
     NSArray *languages = @[ from, to ];
-    if (isConvert && [EZLanguageManager onlyContainsChineseLanguages:languages]) {
+    if (isConvert && [EZLanguageManager.shared onlyContainsChineseLanguages:languages]) {
         NSString *result;
         if ([to isEqualToString:EZLanguageSimplifiedChinese]) {
             result = [text toSimplifiedChineseText];
@@ -232,7 +232,7 @@ userInfo:nil]
     
     // Youdao web TTS,
     if (self.serviceType == EZServiceTypeYoudao) {
-        if ([EZLanguageManager isChineseLanguage:language]) {
+        if ([EZLanguageManager.shared isChineseLanguage:language]) {
             languageCode = @"zh"; // Not zh-CHS
         }
     }

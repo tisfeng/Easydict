@@ -21,7 +21,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
         unsupportLanguage = service.queryModel.queryTargetLanguage;
     }
     
-    NSString *showUnsupportLanguage = [EZLanguageManager showingLanguageName:unsupportLanguage];
+    NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
     
     NSError *error = EZTranslateError(EZErrorTypeUnsupportedLanguage, showUnsupportLanguage, nil);
     return error;

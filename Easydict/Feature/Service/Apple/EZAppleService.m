@@ -397,13 +397,13 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         mostConfidentLanguage = EZLanguageEnglish;
     }
     
-    if ([EZLanguageManager isChineseLanguage:mostConfidentLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:mostConfidentLanguage]) {
         // Correct 勿 --> zh-Hant --> zh-Hans
         EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text];
         return chineseLanguage;
     } else {
         // Try to detect Chinese language.
-        if ([EZLanguageManager isChineseFirstLanguage]) {
+        if ([EZLanguageManager.shared isChineseFirstLanguage]) {
             // test: 開門 open, 使用1 OCR --> 英文, --> 中文
             EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text fromLanguage:mostConfidentLanguage];
             if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
@@ -446,7 +446,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        EZLanguage firstLanguage = [EZLanguageManager firstLanguage];
+        EZLanguage firstLanguage = [EZLanguageManager.shared firstLanguage];
         dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
         languageProbabilityDict = @{dominantLanguage : @(0)};
     }
@@ -503,7 +503,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 }
 
 - (NSDictionary<EZLanguage, NSNumber *> *)userPreferredLanguageProbabilities {
-    NSArray *preferredLanguages = [EZLanguageManager systemPreferredLanguages];
+    NSArray *preferredLanguages = [EZLanguageManager.shared systemPreferredLanguages];
     
     // TODO: need to test more data. Maybe need to write a unit test.
     
@@ -526,7 +526,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             weight = 0.1;
         }
         if ([language isEqualToString:EZLanguageEnglish]) {
-            if (![EZLanguageManager isEnglishFirstLanguage]) {
+            if (![EZLanguageManager.shared isEnglishFirstLanguage]) {
                 weight += 0.2;
             } else {
                 weight += 0.1;
@@ -597,7 +597,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
         NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
         NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
-                                                                     preferredLanguages:[EZLanguageManager systemPreferredLanguages]];
+                                                                     preferredLanguages:[EZLanguageManager.shared systemPreferredLanguages]];
         
         VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
@@ -691,8 +691,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
      */
     if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
         // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
-        for (EZLanguage language in [EZLanguageManager systemPreferredLanguages]) {
-            if ([EZLanguageManager isChineseLanguage:language]) {
+        for (EZLanguage language in [EZLanguageManager.shared systemPreferredLanguages]) {
+            if ([EZLanguageManager.shared isChineseLanguage:language]) {
                 [newRecognitionLanguages removeObject:language];
                 [newRecognitionLanguages insertObject:language atIndex:0];
                 break;
@@ -1424,7 +1424,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)isEqualChineseTextObservation:(VNRecognizedTextObservation *)textObservation
                   prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     BOOL isEqualLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
-    if (isEqualLength && [EZLanguageManager isChineseLanguage:self.language]) {
+    if (isEqualLength && [EZLanguageManager.shared isChineseLanguage:self.language]) {
         return YES;
     }
     return NO;
@@ -1657,7 +1657,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)isPoetryLineCharactersCount:(NSInteger)charactersCount language:(EZLanguage)language {
     BOOL isPoetry = NO;
     NSInteger charCountPerLineOfPoetry = 50;
-    if ([EZLanguageManager isChineseLanguage:language]) {
+    if ([EZLanguageManager.shared isChineseLanguage:language]) {
         charCountPerLineOfPoetry = 40;
     }
     
@@ -1684,7 +1684,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
     NSString *voiceIdentifier = nil;
-    EZLanguageModel *languageModel = [EZLanguageManager languageModelFromLanguage:language];
+    EZLanguageModel *languageModel = [EZLanguageManager.shared languageModelFromLanguage:language];
     NSString *localeIdentifier = languageModel.localeIdentifier;
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
@@ -1773,7 +1773,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 /// Check if text is Chinese.
 - (BOOL)isChineseText:(NSString *)text {
     EZLanguage language = [self appleDetectTextLanguage:text];
-    if ([EZLanguageManager isChineseLanguage:language]) {
+    if ([EZLanguageManager.shared isChineseLanguage:language]) {
         return YES;
     }
     return NO;

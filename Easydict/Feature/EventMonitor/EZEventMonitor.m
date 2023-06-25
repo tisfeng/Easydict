@@ -1143,7 +1143,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     NSString *edit;
     
     if (!appLanguage) {
-        appLanguage = [EZLanguageManager firstLanguage];
+        appLanguage = [EZLanguageManager.shared firstLanguage];
     }
     
     if ([appLanguage isEqualToString:EZLanguageEnglish]) {
