@@ -418,7 +418,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return chineseLanguage;
     } else {
         // Try to detect Chinese language.
-        if ([EZLanguageManager.shared isChineseFirstLanguage]) {
+        if ([EZLanguageManager.shared isUserChineseFirstLanguage]) {
             // test: 開門 open, 使用1 OCR --> 英文, --> 中文
             EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text fromLanguage:mostConfidentLanguage];
             if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
@@ -518,7 +518,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 }
 
 - (NSDictionary<EZLanguage, NSNumber *> *)userPreferredLanguageProbabilities {
-    NSArray *preferredLanguages = [EZLanguageManager.shared systemPreferredLanguages];
+    NSArray *preferredLanguages = [EZLanguageManager.shared preferredLanguages];
     
     // TODO: need to test more data. Maybe need to write a unit test.
     
@@ -541,7 +541,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
             weight = 0.1;
         }
         if ([language isEqualToString:EZLanguageEnglish]) {
-            if (![EZLanguageManager.shared isEnglishFirstLanguage]) {
+            if (![EZLanguageManager.shared isUserChineseFirstLanguage]) {
                 weight += 0.2;
             } else {
                 weight += 0.1;
@@ -612,7 +612,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
         NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
         NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
-                                                                     preferredLanguages:[EZLanguageManager.shared systemPreferredLanguages]];
+                                                                     preferredLanguages:[EZLanguageManager.shared preferredLanguages]];
         
         VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
@@ -706,7 +706,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
      */
     if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
         // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
-        for (EZLanguage language in [EZLanguageManager.shared systemPreferredLanguages]) {
+        for (EZLanguage language in [EZLanguageManager.shared preferredLanguages]) {
             if ([EZLanguageManager.shared isChineseLanguage:language]) {
                 [newRecognitionLanguages removeObject:language];
                 [newRecognitionLanguages insertObject:language atIndex:0];

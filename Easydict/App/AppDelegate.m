@@ -43,7 +43,7 @@
 /// Auto set up app language.
 - (void)setupAppLanguage {
     NSString *systemLanguageCode = @"en-CN";
-    if ([EZLanguageManager.shared isChineseFirstLanguage]) {
+    if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         systemLanguageCode = @"zh-CN";
     }
     

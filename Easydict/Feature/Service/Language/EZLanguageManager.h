@@ -17,6 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// System languages, ["zh-Hans-CN", "en-CN"]
 @property (nonatomic, copy, readonly) NSArray<EZLanguage> *systemPreferredLanguages;
+@property (nonatomic, copy, readonly) NSArray<EZLanguage> *userPreferredTwoLanguages;
+
+/// preferredLanguages = userPreferredTwoLanguages + systemPreferredLanguages, remove the same language
+@property (nonatomic, copy, readonly) NSArray<EZLanguage> *preferredLanguages;
+
 @property (nonatomic, copy, readonly) EZLanguage userFirstLanguage;
 @property (nonatomic, copy, readonly) EZLanguage userSecondLanguage;
 
@@ -35,8 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)containsChineseInPreferredTwoLanguages;
 
 /// First langauge is simplified Chinese or traditional Chinese.
-- (BOOL)isChineseFirstLanguage;
-- (BOOL)isEnglishFirstLanguage;
+- (BOOL)isSystemChineseFirstLanguage;
+- (BOOL)isSystemEnglishFirstLanguage;
+
+- (BOOL)isUserChineseFirstLanguage;
+- (BOOL)isUserEnglishFirstLanguage;
 
 /// Is simplified Chinese or traditional Chinese.
 - (BOOL)isChineseLanguage:(EZLanguage)language;
@@ -44,9 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isSimplifiedChinese:(EZLanguage)language;
 - (BOOL)isTraditionalChinese:(EZLanguage)language;
 - (BOOL)isEnglishLangauge:(EZLanguage)language;
-
-- (BOOL)containsEnglishPreferredLanguage;
-- (BOOL)containsChinesePreferredLanguage;
 
 /// Check if language array only contains simplified Chinese or traditional Chinese two languages.
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
