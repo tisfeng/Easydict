@@ -105,7 +105,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
     
-    NSArray<EZLanguage> *allLanguages = [EZLanguageManager allLanguages];
+    NSArray<EZLanguage> *allLanguages = [EZLanguageManager.shared allLanguages];
     for (EZLanguage language in allLanguages) {
         NSString *value = language;
         if ([language isEqualToString:EZLanguageClassicalChinese]) {
@@ -714,14 +714,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Sentence messages.
 - (NSArray<NSDictionary *> *)sentenceMessages:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
     self.result.to = answerLanguage;
     
     NSString *prompt = @"";
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parsing";
     NSString *inferenceTranslation = @"Inferential Translation";
-    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         keyWords = @"重点词汇";
         grammarParse = @"语法分析";
         inferenceTranslation = @"推理翻译";
@@ -864,7 +864,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     ];
     NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
     
-    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         [messages addObjectsFromArray:chineseFewShot];
     } else {
         [messages addObjectsFromArray:englishFewShot];
@@ -884,7 +884,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     // V5. prompt
     NSString *prompt = @"";
     
-    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
     self.result.to = answerLanguage;
     
     NSString *pronunciation = @"Pronunciation";
@@ -904,7 +904,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
     
     BOOL isChineseWord = NO;
-    if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:sourceLanguage]) {
         isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
     }
     
@@ -920,7 +920,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *queryWordPrompt = [NSString stringWithFormat:@"Here is a %@ word: \"\"\"%@\"\"\", ", sourceLanguage, word];
     prompt = [prompt stringByAppendingString:queryWordPrompt];
     
-    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         // ???: wtf, why 'Pronunciation' cannot be auto outputed as '发音'？ So we have to convert it manually 🥹
         pronunciation = @"发音";
         translationTitle = @"翻译";
@@ -1144,7 +1144,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     ];
     NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
     
-    if ([EZLanguageManager isChineseLanguage:answerLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         [messages addObjectsFromArray:chineseFewShot];
     } else {
         [messages addObjectsFromArray:englishFewShot];
@@ -1310,7 +1310,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSArray<NSDictionary *> *)jsonDictPromptMessages:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     NSString *prompt = @"";
     
-    NSString *answerLanguage = [EZLanguageManager firstLanguage];
+    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
     NSString *translationLanguageTitle = targetLanguage;
     
     BOOL isEnglishWord = NO;
@@ -1319,13 +1319,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
     
     BOOL isChineseWord = NO;
-    if ([EZLanguageManager isChineseLanguage:sourceLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:sourceLanguage]) {
         isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
     }
     
     BOOL isWord = isEnglishWord || isChineseWord;
     
-    if ([EZLanguageManager isChineseLanguage:targetLanguage]) {
+    if ([EZLanguageManager.shared isChineseLanguage:targetLanguage]) {
         translationLanguageTitle = @"中文";
     }
     

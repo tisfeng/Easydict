@@ -29,6 +29,13 @@
 
 @property (nonatomic, strong) NSView *separatorView;
 
+@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageDict;
+
+@property (nonatomic, strong) NSTextField *firstLanguageLabel;
+@property (nonatomic, strong) NSPopUpButton *firstLanguagePopUpButton;
+@property (nonatomic, strong) NSTextField *secondLanguageLabel;
+@property (nonatomic, strong) NSPopUpButton *secondLanguagePopUpButton;
+
 @property (nonatomic, strong) NSTextField *autoGetSelectedTextLabel;
 @property (nonatomic, strong) NSButton *showQueryIconButton;
 @property (nonatomic, strong) NSButton *forceGetSelectedTextButton;
@@ -83,6 +90,21 @@
 
 
 @implementation EZSettingViewController
+
+- (MMOrderedDictionary<EZLanguage, NSString *> *)allLanguageDict {
+    if (!_allLanguageDict) {
+        MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
+        for (EZLanguage language in EZLanguageManager.shared.allLanguages) {
+            if (![language isEqualToString:EZLanguageAuto]) {
+                NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageName:language];
+                [languageDict setObject:showingLanguageName forKey:language];
+            }
+        }
+        _allLanguageDict = languageDict;
+    }
+    return _allLanguageDict;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -160,6 +182,30 @@
         view.layer.backgroundColor = separatorDarkColor.CGColor;
     }];
     
+    
+    NSTextField *firstLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"first_language", nil)];
+    firstLanguageLabel.font = font;
+    [self.contentView addSubview:firstLanguageLabel];
+    self.firstLanguageLabel = firstLanguageLabel;
+    
+    self.firstLanguagePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.firstLanguagePopUpButton];
+    [self.firstLanguagePopUpButton addItemsWithTitles:[self.allLanguageDict sortedValues]];
+    self.firstLanguagePopUpButton.target = self;
+    self.firstLanguagePopUpButton.action = @selector(firstLangaugePopUpButtonClicked:);
+    
+    NSTextField *secondLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"second_language", nil)];
+    secondLanguageLabel.font = font;
+    [self.contentView addSubview:secondLanguageLabel];
+    self.secondLanguageLabel = secondLanguageLabel;
+    
+    self.secondLanguagePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.secondLanguagePopUpButton];
+    [self.secondLanguagePopUpButton addItemsWithTitles:[self.allLanguageDict sortedValues]];
+    self.secondLanguagePopUpButton.target = self;
+    self.secondLanguagePopUpButton.action = @selector(secondLangaugePopUpButtonClicked:);
+    
+    
     NSTextField *showQueryIconLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_get_selected_text", nil)];
     showQueryIconLabel.font = font;
     [self.contentView addSubview:showQueryIconLabel];
@@ -209,6 +255,7 @@
     
     
     self.languageDetectOptimizePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
     
     NSArray *languageDetectOptimizeItems = @[
         NSLocalizedString(@"language_detect_optimize_none", nil),
@@ -216,7 +263,6 @@
         NSLocalizedString(@"language_detect_optimize_google", nil),
     ];
     [self.languageDetectOptimizePopUpButton addItemsWithTitles:languageDetectOptimizeItems];
-    [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
     self.languageDetectOptimizePopUpButton.target = self;
     self.languageDetectOptimizePopUpButton.action = @selector(languageDetectOptimizePopUpButtonClicked:);
     
@@ -227,10 +273,10 @@
     self.fixedWindowPositionLabel = fixedWindowPositionLabel;
     
     self.fixedWindowPositionPopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.fixedWindowPositionPopUpButton];
     MMOrderedDictionary *fixedWindowPostionDict = [EZEnumTypes fixedWindowPositionDict];
     NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
     [self.fixedWindowPositionPopUpButton addItemsWithTitles:fixedWindowPositionItems];
-    [self.contentView addSubview:self.fixedWindowPositionPopUpButton];
     self.fixedWindowPositionPopUpButton.target = self;
     self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
     
@@ -287,7 +333,7 @@
     NSString *autoCopyFirstTranslatedText = NSLocalizedString(@"auto_copy_first_translated_text", nil);
     self.autoCopyFirstTranslatedTextButton = [NSButton checkboxWithTitle:autoCopyFirstTranslatedText target:self action:@selector(autoCopyFirstTranslatedTextButtonClicked:)];
     [self.contentView addSubview:self.autoCopyFirstTranslatedTextButton];
-
+    
     
     NSTextField *showQuickLinkLabel = [NSTextField labelWithString:NSLocalizedString(@"quick_link", nil)];
     showQuickLinkLabel.font = font;
@@ -342,6 +388,13 @@
     
     
     EZConfiguration *configuration = [EZConfiguration shared];
+    
+    
+    NSInteger firstLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:EZLanguageManager.shared.userFirstLanguage];
+    [self.firstLanguagePopUpButton selectItemAtIndex:firstLanguageIndex];
+    NSInteger secondLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:EZLanguageManager.shared.userSecondLanguage];
+    [self.secondLanguagePopUpButton selectItemAtIndex:secondLanguageIndex];
+    
     self.showQueryIconButton.mm_isOn = configuration.autoSelectText;
     self.forceGetSelectedTextButton.mm_isOn = configuration.forceAutoGetSelectedText;
     self.disableEmptyCopyBeepButton.mm_isOn = configuration.disableEmptyCopyBeep;
@@ -424,9 +477,27 @@
         make.height.mas_equalTo(1);
     }];
     
+    [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.selectLabel);
+        make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
+    }];
+    [self.firstLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.firstLanguageLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.firstLanguageLabel);
+    }];
+    
+    [self.secondLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.selectLabel);
+        make.top.equalTo(self.firstLanguagePopUpButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.secondLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.secondLanguageLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.secondLanguageLabel);
+    }];
+    
     [self.autoGetSelectedTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
-        make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.secondLanguagePopUpButton.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
     [self.showQueryIconButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoGetSelectedTextLabel.mas_right).offset(self.horizontalPadding);
@@ -649,7 +720,7 @@
 }
 
 - (void)hideMainWindowButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.hideMainWindow = sender.mm_isOn;    
+    EZConfiguration.shared.hideMainWindow = sender.mm_isOn;
 }
 
 - (void)autoQueryOCRTextButtonClicked:(NSButton *)sender {
@@ -730,6 +801,19 @@
 
 - (void)disableEmptyCopyBeepButtonClicked:(NSButton *)sender {
     EZConfiguration.shared.disableEmptyCopyBeep = sender.mm_isOn;
+}
+
+#pragma mark - Preferred Languages
+
+- (void)firstLangaugePopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    EZLanguage language = EZLanguageManager.shared.allLanguageFlagDict.sortedKeys[selectedIndex];
+    EZConfiguration.shared.firstLanguage = language;
+}
+- (void)secondLangaugePopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    EZLanguage language = EZLanguageManager.shared.allLanguageFlagDict.sortedKeys[selectedIndex];
+    EZConfiguration.shared.secondLanguage = language;
 }
 
 

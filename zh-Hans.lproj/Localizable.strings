@@ -16,6 +16,10 @@
 "show_mini_window" = "显示迷你窗口:";
 "silent_screenshot_ocr" = "静默截图 OCR:";
 
+"preferred_languages" = "偏好语言:";
+"first_language" = "第一语言:";
+"second_language" = "第二语言:";
+
 "auto_get_selected_text" = "鼠标自动划词:";
 "auto_show_query_icon" = "划词后自动显示查询图标";
 "force_auto_get_selected_text" = "自动划词失败时，强制划词（实验功能）";

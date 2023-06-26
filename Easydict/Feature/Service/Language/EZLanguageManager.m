@@ -8,11 +8,16 @@
 
 #import "EZLanguageManager.h"
 #import "EZAppleService.h"
+#import "EZConfiguration.h"
 
 @interface EZLanguageManager ()
 
 @property (nonatomic, copy) NSArray<EZLanguage> *systemPreferredLanguages;
-@property (nonatomic, copy) NSArray<EZLanguage> *preferredTwoLanguages;
+@property (nonatomic, copy) NSArray<EZLanguage> *systemPreferredTwoLanguages;
+
+@property (nonatomic, copy) NSArray<EZLanguage> *userPreferredTwoLanguages;
+
+@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
 
 @end
 
@@ -39,7 +44,14 @@ static EZLanguageManager *_instance;
 }
 
 - (void)setup {
-
+    NSArray *showingLanguages = [EZLanguageManager.shared allLanguages];
+    self.allLanguageFlagDict = [[MMOrderedDictionary alloc] init];
+    for (EZLanguage language in showingLanguages) {
+        if (![language isEqualToString:EZLanguageAuto]) {
+            NSString *languageNameWithFlag = [EZLanguageManager.shared showingLanguageNameWithFlag:language];
+            [self.allLanguageFlagDict setObject:languageNameWithFlag forKey:language];
+        }
+    }
 }
 
 - (NSArray<EZLanguage> *)systemPreferredLanguages {
@@ -47,15 +59,15 @@ static EZLanguageManager *_instance;
         /**
          "en-CN", "zh-Hans", "zh-Hans-CN"
          ???: Why has changed to [ "zh-CN", "zh-Hans-CN", "en-CN" ]
-
+         
          [NSLocale preferredLanguages] is device languages, and it is read only.
          [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"] is the same with [NSLocale preferredLanguages] generally, but it can be modified.
          */
-
+        
         //  NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
         NSArray<NSString *> *preferredLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
         MMLogInfo(@"AppleLanguages: %@", preferredLanguages);
-
+        
         NSMutableArray *languages = [NSMutableArray array];
         for (NSString *language in preferredLanguages) {
             NSMutableArray *array = [NSMutableArray arrayWithArray:[language componentsSeparatedByString:@"-"]];
@@ -65,37 +77,36 @@ static EZLanguageManager *_instance;
             // Convert to EZLanguage
             EZAppleService *appleService = [[EZAppleService alloc] init];
             EZLanguage ezLanguage = [appleService languageEnumFromAppleLanguage:languageCode];
-
+            
             // handle "zh-CN"
             if ([languageCode hasPrefix:@"zh"] && [ezLanguage isEqualToString:EZLanguageAuto]) {
                 ezLanguage = EZLanguageSimplifiedChinese;
             }
-
+            
             if (![ezLanguage isEqualToString:EZLanguageAuto] && ![languages containsObject:ezLanguage]) {
                 [languages addObject:ezLanguage];
             }
         }
-
+        
         _systemPreferredLanguages = languages;
-
+        
         MMLogInfo(@"system preferred languages: %@", languages);
     }
-
+    
     return _systemPreferredLanguages;
 }
 
-- (NSArray<EZLanguage> *)preferredTwoLanguages {
-    if (!_preferredTwoLanguages) {
-        
+- (NSArray<EZLanguage> *)systemPreferredTwoLanguages {
+    if (!_systemPreferredTwoLanguages) {
         NSMutableArray *twoLanguages = [NSMutableArray array];
         NSMutableArray<EZLanguage> *preferredlanguages = [self.systemPreferredLanguages mutableCopy];
-
+        
         EZLanguage firstLanguage = [self firstLanguageFromLanguages:preferredlanguages];
         [twoLanguages addObject:firstLanguage];
-
+        
         // Remove first language
         [preferredlanguages removeObject:firstLanguage];
-
+        
         EZLanguage secondLanguage = [self firstLanguageFromLanguages:preferredlanguages];
         if ([firstLanguage isEqualToString:secondLanguage]) {
             if ([firstLanguage isEqualToString:EZLanguageEnglish]) {
@@ -105,11 +116,48 @@ static EZLanguageManager *_instance;
             }
         }
         [twoLanguages addObject:secondLanguage];
-
-        _preferredTwoLanguages = twoLanguages;
+        
+        _systemPreferredTwoLanguages = twoLanguages;
     }
-    return _preferredTwoLanguages;
+    return _systemPreferredTwoLanguages;
 }
+
+
+- (NSArray<EZLanguage> *)userPreferredTwoLanguages {
+    NSArray *twoLanguages = @[self.userFirstLanguage, self.userSecondLanguage];
+    return twoLanguages;
+}
+
+- (EZLanguage)userFirstLanguage {
+    EZLanguage firstLanguage = EZConfiguration.shared.firstLanguage;
+    if (!firstLanguage) {
+        firstLanguage = [self systemPreferredTwoLanguages][0];
+    }
+    return firstLanguage;
+}
+
+- (EZLanguage)userSecondLanguage {
+    EZLanguage secondLanguage = EZConfiguration.shared.secondLanguage;
+    if (!secondLanguage) {
+        secondLanguage = [self systemPreferredTwoLanguages][1];
+    }
+    return secondLanguage;
+}
+
+- (MMOrderedDictionary<EZLanguage, NSString *> *)allLanguageFlagDict {
+    if (!_allLanguageFlagDict) {
+        MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
+        for (EZLanguage language in self.allLanguages) {
+            if (![language isEqualToString:EZLanguageAuto]) {
+                NSString *languageNameWithFlag = [self showingLanguageNameWithFlag:language];
+                [languageDict setObject:languageNameWithFlag forKey:language];
+            }
+        }
+        _allLanguageFlagDict = languageDict;
+    }
+    return _allLanguageFlagDict;
+}
+
 
 - (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language {
     return [[EZLanguageModel allLanguagesDict] objectForKey:language];
@@ -117,16 +165,14 @@ static EZLanguageManager *_instance;
 
 // Get target language with source language
 - (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
-    EZLanguage firstLanguage = [self firstLanguage];
-    EZLanguage secondLanguage = [self secondLanguage];
+    EZLanguage firstLanguage = [self userFirstLanguage];
+    EZLanguage secondLanguage = [self userSecondLanguage];
     EZLanguage targetLanguage = firstLanguage;
     if ([sourceLanguage isEqualToString:firstLanguage]) {
         targetLanguage = secondLanguage;
     }
     return targetLanguage;
 }
-
-
 
 // Get first language that is not auto, from languages
 - (EZLanguage)firstLanguageFromLanguages:(NSArray<EZLanguage> *)languages {
@@ -140,12 +186,12 @@ static EZLanguageManager *_instance;
 
 
 - (BOOL)containsEnglishInPreferredTwoLanguages {
-    NSArray<EZLanguage> *languages = [self preferredTwoLanguages];
+    NSArray<EZLanguage> *languages = [self userPreferredTwoLanguages];
     return [languages containsObject:EZLanguageEnglish];
 }
 
 - (BOOL)containsChineseInPreferredTwoLanguages {
-    NSArray<EZLanguage> *languages = [self preferredTwoLanguages];
+    NSArray<EZLanguage> *languages = [self userPreferredTwoLanguages];
     for (EZLanguage language in languages) {
         if ([self isChineseLanguage:language]) {
             return YES;
@@ -154,21 +200,13 @@ static EZLanguageManager *_instance;
     return NO;
 }
 
-
-- (EZLanguage)firstLanguage {
-    return [self preferredTwoLanguages][0];
-}
-- (EZLanguage)secondLanguage {
-    return [self preferredTwoLanguages][1];
-}
-
 - (BOOL)isEnglishFirstLanguage {
-    EZLanguage firstLanguage = [self firstLanguage];
+    EZLanguage firstLanguage = [self userFirstLanguage];
     return [firstLanguage isEqualToString:EZLanguageEnglish];
 }
 
 - (BOOL)isChineseFirstLanguage {
-    EZLanguage firstLanguage = [self firstLanguage];
+    EZLanguage firstLanguage = [self userFirstLanguage];
     return [self isChineseLanguage:firstLanguage];
 }
 
@@ -248,7 +286,7 @@ static EZLanguageManager *_instance;
 /// Showing language name according user first language, Chinese: English -> 英语, English: English -> English.
 - (NSString *)showingLanguageName:(EZLanguage)language {
     NSString *languageName = language ?: EZLanguageAuto;
-
+    
     if ([self isChineseFirstLanguage]) {
         languageName = [self languageChineseName:language];
     } else {

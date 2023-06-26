@@ -17,17 +17,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// System languages, ["zh-Hans-CN", "en-CN"]
 @property (nonatomic, copy, readonly) NSArray<EZLanguage> *systemPreferredLanguages;
-@property (nonatomic, copy, readonly) NSArray<EZLanguage> *preferredTwoLanguages;
-@property (nonatomic, copy, readonly) EZLanguage firstLanguage;
-@property (nonatomic, copy, readonly) EZLanguage secondLanguage;
+@property (nonatomic, copy, readonly) EZLanguage userFirstLanguage;
+@property (nonatomic, copy, readonly) EZLanguage userSecondLanguage;
+
+@property (nonatomic, copy, readonly) NSArray<EZLanguage> *allLanguages;
+
+/// <EZLanguageEnglish : 🇬🇧 英语>
+@property (nonatomic, strong, readonly) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageFlagDict;
 
 
 - (nullable EZLanguageModel *)languageModelFromLanguage:(EZLanguage)language;
 
 /// Get target language with source language
 - (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage;
-
-//+ (NSArray<EZLanguage> *)preferredTwoLanguages;
 
 - (BOOL)containsEnglishInPreferredTwoLanguages;
 - (BOOL)containsChineseInPreferredTwoLanguages;
@@ -50,8 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
 
 #pragma mark -
-
-- (NSArray<EZLanguage> *)allLanguages;
 
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.
 - (NSString *)showingLanguageName:(EZLanguage)language;

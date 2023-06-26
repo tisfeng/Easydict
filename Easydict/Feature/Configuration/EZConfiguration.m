@@ -73,6 +73,9 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
+    self.firstLanguage = [NSUserDefaults mm_read:kFirstLanguageKey];
+    self.secondLanguage = [NSUserDefaults mm_read:kSecondLanguageKey];
+    
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
 
@@ -113,6 +116,18 @@ static EZConfiguration *_instance;
 }
 
 #pragma mark - setter
+
+- (void)setFirstLanguage:(EZLanguage)firstLanguage {
+    _firstLanguage = firstLanguage;
+
+    [NSUserDefaults mm_write:firstLanguage forKey:kFirstLanguageKey];
+}
+
+- (void)setSecondLanguage:(EZLanguage)secondLanguage {
+    _secondLanguage = secondLanguage;
+
+    [NSUserDefaults mm_write:secondLanguage forKey:kSecondLanguageKey];
+}
 
 - (void)setFrom:(EZLanguage)from {
     _from = from;

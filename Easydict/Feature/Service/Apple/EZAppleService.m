@@ -461,7 +461,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        EZLanguage firstLanguage = [EZLanguageManager.shared firstLanguage];
+        EZLanguage firstLanguage = [EZLanguageManager.shared userFirstLanguage];
         dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
         languageProbabilityDict = @{dominantLanguage : @(0)};
     }
