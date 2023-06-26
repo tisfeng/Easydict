@@ -16,6 +16,10 @@
 "show_mini_window" = "Show Mini Window:";
 "silent_screenshot_ocr" = "Silent Screenshot OCR:";
 
+"preferred_languages" = "Preferred Languages:";
+"first_language" = "First Language:";
+"second_language" = "Second Language:";
+
 "auto_get_selected_text" = "Auto Get Selected Text:";
 "auto_show_query_icon" = "Auto show query icon after selecting text";
 "force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (Experimental)";
