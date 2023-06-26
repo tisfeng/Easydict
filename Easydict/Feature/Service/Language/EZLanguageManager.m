@@ -14,6 +14,8 @@
 
 @property (nonatomic, copy) NSArray<EZLanguage> *systemPreferredLanguages;
 @property (nonatomic, copy) NSArray<EZLanguage> *systemPreferredTwoLanguages;
+@property (nonatomic, copy) EZLanguage systemFirstLanguage;
+@property (nonatomic, copy) EZLanguage systemSecondLanguage;
 
 @property (nonatomic, copy) NSArray<EZLanguage> *userPreferredTwoLanguages;
 
@@ -122,6 +124,31 @@ static EZLanguageManager *_instance;
     return _systemPreferredTwoLanguages;
 }
 
+/// preferredLanguages = userPreferredTwoLanguages + systemPreferredLanguages, remove the same language
+- (NSArray<EZLanguage> *)preferredLanguages {
+    NSMutableArray *preferredLanguages = [NSMutableArray array];
+    [preferredLanguages addObjectsFromArray:self.userPreferredTwoLanguages];
+    [preferredLanguages addObjectsFromArray:self.systemPreferredLanguages];
+
+    NSMutableArray *languages = [NSMutableArray array];
+    for (EZLanguage language in preferredLanguages) {
+        if (![languages containsObject:language]) {
+            [languages addObject:language];
+        }
+    }
+    return languages;
+}
+
+
+- (EZLanguage)systemFirstLanguage {
+    EZLanguage firstLanguage = [self.systemPreferredTwoLanguages firstObject];
+    return firstLanguage;
+}
+- (EZLanguage)systemSecondLanguage {
+    EZLanguage secondLanguage = [self.systemPreferredTwoLanguages lastObject];
+    return secondLanguage;
+}
+
 
 - (NSArray<EZLanguage> *)userPreferredTwoLanguages {
     NSArray *twoLanguages = @[self.userFirstLanguage, self.userSecondLanguage];
@@ -200,15 +227,20 @@ static EZLanguageManager *_instance;
     return NO;
 }
 
-- (BOOL)isEnglishFirstLanguage {
-    EZLanguage firstLanguage = [self userFirstLanguage];
-    return [firstLanguage isEqualToString:EZLanguageEnglish];
+- (BOOL)isSystemEnglishFirstLanguage {
+    return [self.systemFirstLanguage isEqualToString:EZLanguageEnglish];
+}
+- (BOOL)isSystemChineseFirstLanguage {
+    return [self isChineseLanguage:self.systemFirstLanguage];
 }
 
-- (BOOL)isChineseFirstLanguage {
-    EZLanguage firstLanguage = [self userFirstLanguage];
-    return [self isChineseLanguage:firstLanguage];
+- (BOOL)isUserChineseFirstLanguage {
+    return [self isChineseLanguage:self.userFirstLanguage];
 }
+- (BOOL)isUserEnglishFirstLanguage {
+    return [self.userFirstLanguage isEqualToString:EZLanguageEnglish];
+}
+
 
 - (BOOL)isChineseLanguage:(EZLanguage)language {
     if ([language isEqualToString:EZLanguageSimplifiedChinese] || [language isEqualToString:EZLanguageTraditionalChinese]) {
@@ -227,27 +259,6 @@ static EZLanguageManager *_instance;
 
 - (BOOL)isEnglishLangauge:(EZLanguage)language {
     return [language isEqualToString:EZLanguageEnglish];
-}
-
-
-- (BOOL)containsEnglishPreferredLanguage {
-    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
-    for (EZLanguage language in languages) {
-        if ([language isEqualToString:EZLanguageEnglish]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-- (BOOL)containsChinesePreferredLanguage {
-    NSArray<EZLanguage> *languages = [self systemPreferredLanguages];
-    for (EZLanguage language in languages) {
-        if ([self isChineseLanguage:language]) {
-            return YES;
-        }
-    }
-    return NO;
 }
 
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages {
@@ -287,7 +298,7 @@ static EZLanguageManager *_instance;
 - (NSString *)showingLanguageName:(EZLanguage)language {
     NSString *languageName = language ?: EZLanguageAuto;
     
-    if ([self isChineseFirstLanguage]) {
+    if ([self isSystemChineseFirstLanguage]) {
         languageName = [self languageChineseName:language];
     } else {
         if ([language isEqualToString:EZLanguageAuto]) {
