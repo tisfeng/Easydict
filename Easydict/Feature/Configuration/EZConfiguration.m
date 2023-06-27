@@ -483,7 +483,7 @@ static EZConfiguration *_instance;
 }
 - (EZQueryTextType)intelligentQueryTextTypeForServiceType:(EZServiceType)serviceType {
     NSString *key = [EZConstKey constkey:EZIntelligentQueryTextTypeKey serviceType:serviceType];
-    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"0"];
+    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"111"];
     // Convert string to int
     EZQueryTextType type = [stringValue integerValue];
     return type;

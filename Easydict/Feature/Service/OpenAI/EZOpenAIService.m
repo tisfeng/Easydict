@@ -84,11 +84,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
     EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
-    if (type == 0) {
-        type = defaultType;
-    }
     return type;
 }
 

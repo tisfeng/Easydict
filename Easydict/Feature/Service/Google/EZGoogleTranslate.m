@@ -116,11 +116,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType defaultType = EZQueryTextTypeDictionary | EZQueryTextTypeSentence | EZQueryTextTypeTranslation;
     EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
-    if (type == 0) {
-        type = defaultType;
-    }
     return type;
 }
 
