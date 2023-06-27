@@ -7,6 +7,7 @@
 //
 
 #import "NSString+EZChineseText.h"
+#import "EZTextWordUtils.h"
 
 @implementation NSString (EZChineseText)
 
@@ -23,20 +24,16 @@
 }
 
 /// Is simplified Chinese.
-/// !!!: Characters in the text must be all simplified Chinese, otherwise it will return NO.
+/// !!!: Characters in the text must be all simplified Chinese word, otherwise it will return NO.
 - (BOOL)isSimplifiedChinese {
-    NSString *simplifiedChinese = [self toSimplifiedChineseText];
-    if ([simplifiedChinese isEqualToString:self]) {
-        return YES;
-    }
-    return NO;
-}
-
-/// Is traditional Chinese.
-/// !!!: Characters in the text must be all traditional Chinese, otherwise it will return NO.
-- (BOOL)isTraditionalChinese {
-    NSString *traditionalChinese = [self toTraditionalChineseText];
-    if ([traditionalChinese isEqualToString:self]) {
+    /**
+     We need to remove symbol characters, otherwise the result will be incorrect.
+     
+     「真个别离难，不似相逢好」--> “真个别离难，不似相逢好”
+     */
+    NSString *pureText = [EZTextWordUtils removeNonNormalCharacters:self];
+    NSString *simplifiedChinese = [pureText toSimplifiedChineseText];
+    if ([simplifiedChinese isEqualToString:pureText]) {
         return YES;
     }
     return NO;
