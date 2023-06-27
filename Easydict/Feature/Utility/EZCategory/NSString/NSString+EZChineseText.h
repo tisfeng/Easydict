@@ -23,10 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// !!!: Characters in the text must be all simplified Chinese, otherwise it will return NO.
 - (BOOL)isSimplifiedChinese;
 
-/// Is traditional Chinese.
-/// !!!: Characters in the text must be all traditional Chinese, otherwise it will return NO.
-- (BOOL)isTraditionalChinese;
-
 @end
 
 NS_ASSUME_NONNULL_END
