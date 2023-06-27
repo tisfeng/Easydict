@@ -15,11 +15,11 @@ jobs:
       - if: ${{ github.event_name == 'fork' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=🍴 Forked" >> $GITHUB_ENV
+          echo "event_name=Forked 🍴" >> $GITHUB_ENV
       - if: ${{ github.event_name == 'watch' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=✨ Starred" >> $GITHUB_ENV
+          echo "event_name=Starred ✨" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |
@@ -83,7 +83,7 @@ jobs:
           server_port: 465
           username: ${{ secrets.GMAIL_BOT_USERNAME }}
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
-          subject: ${{ env.event_name }}  ${{ env.repo_name }}
+          subject: ${{ github.actor }} ${{ env.event_name }}  ${{ env.repo_name }}
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
           html_body: ${{ env.html_body }}
           to: ${{ secrets.RECEIVER_EMAIL }}
