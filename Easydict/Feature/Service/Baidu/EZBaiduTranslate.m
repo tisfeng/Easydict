@@ -342,7 +342,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     NSString *fromLang = ([from isEqualToString:EZLanguageAuto]) ? [self languageCodeForLanguage:EZLanguageEnglish] : [self languageCodeForLanguage:from];
     NSString *toLang = nil;
     if ([to isEqualToString:EZLanguageAuto]) {
-        toLang = [EZLanguageManager.shared targetLanguageWithSourceLanguage:from];
+        toLang = [EZLanguageManager.shared userTargetLanguageWithSourceLanguage:from];
     } else {
         toLang = [self languageCodeForLanguage:to];
     }

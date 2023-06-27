@@ -64,6 +64,8 @@ static EZLanguageManager *_instance;
          
          [NSLocale preferredLanguages] is device languages, and it is read only.
          [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"] is the same with [NSLocale preferredLanguages] generally, but it can be modified.
+         
+         Changing the system language does not seem to take effect immediately and may require a reboot of the computer.
          */
         
         //  NSArray<NSString *> *preferredLanguages = [NSLocale preferredLanguages];
@@ -111,11 +113,7 @@ static EZLanguageManager *_instance;
         
         EZLanguage secondLanguage = [self firstLanguageFromLanguages:preferredlanguages];
         if ([firstLanguage isEqualToString:secondLanguage]) {
-            if ([firstLanguage isEqualToString:EZLanguageEnglish]) {
-                secondLanguage = EZLanguageSimplifiedChinese;
-            } else {
-                secondLanguage = EZLanguageEnglish;
-            }
+            secondLanguage = [self autoTargetLanguageWithSourceLanguage:firstLanguage];
         }
         [twoLanguages addObject:secondLanguage];
         
@@ -191,12 +189,26 @@ static EZLanguageManager *_instance;
 }
 
 // Get target language with source language
-- (EZLanguage)targetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
+- (EZLanguage)userTargetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
     EZLanguage firstLanguage = [self userFirstLanguage];
     EZLanguage secondLanguage = [self userSecondLanguage];
     EZLanguage targetLanguage = firstLanguage;
     if ([sourceLanguage isEqualToString:firstLanguage]) {
         targetLanguage = secondLanguage;
+    }
+    
+    if ([targetLanguage isEqualToString:sourceLanguage]) {
+        targetLanguage = [self autoTargetLanguageWithSourceLanguage:sourceLanguage];
+    }
+    
+    return targetLanguage;
+}
+
+/// If sourceLanguage is English, return Chinese, else return English.
+- (EZLanguage)autoTargetLanguageWithSourceLanguage:(EZLanguage)sourceLanguage {
+    EZLanguage targetLanguage = EZLanguageEnglish;
+    if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
+        targetLanguage = EZLanguageSimplifiedChinese;
     }
     return targetLanguage;
 }
