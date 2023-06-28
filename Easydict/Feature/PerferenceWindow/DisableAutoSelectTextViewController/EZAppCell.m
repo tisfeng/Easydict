@@ -55,17 +55,25 @@
 - (void)setModel:(EZAppModel *)model {
     _model = model;
     
-    NSURL *appURL = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:model.appBundleID];
-    NSBundle *appBundle = [[NSBundle alloc] initWithURL:appURL];
+    NSString *bundleID = model.appBundleID;
     
-    NSString *iconFileName = appBundle.infoDictionary[@"CFBundleIconFile"];
-    NSImage *appIcon = [appBundle imageForResource:iconFileName];
+    NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+    NSURL *appURL = [workspace URLForApplicationWithBundleIdentifier:bundleID];
+    NSImage *appIcon = [workspace iconForFile:appURL.path];
     self.iconView.image = appIcon;
     
+    NSBundle *appBundle = [[NSBundle alloc] initWithURL:appURL];
     NSString *appName = [appBundle objectForInfoDictionaryKey:@"CFBundleDisplayName"];
     if (!appName) {
         appName = [appBundle objectForInfoDictionaryKey:@"CFBundleName"];
     }
+    
+    if (!appName) {
+        // Inpaint
+        NSURL *executableURL = appBundle.executableURL;
+        appName = executableURL.lastPathComponent.stringByDeletingPathExtension ?: @"";
+    }
+    
     self.nameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:appName font:[NSFont systemFontOfSize:13]];
 }
 
