@@ -101,22 +101,7 @@
     BOOL handled = NO;
     for (NSString *key in keyValues) {
         NSString *value = keyValues[key];
-        if ([self.allowedReadWriteKeys containsObject:key]) {
-            handled = YES;
-        }
-        
-        if ([EZConfiguration.shared isBeta]) {
-            NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
-            // easydict://writeKeyValue?Google-IntelligentQueryTextType=5
-            NSArray *arr = [key componentsSeparatedByString:@"-"];
-            if (arr.count) {
-                NSString *keyString = arr.firstObject;
-                if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
-                    handled = YES;
-                }
-            }
-        }
-        
+        handled = [self enabledReadWriteKey:key];
         if (handled) {
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
         }
@@ -126,11 +111,31 @@
 
 /// Read value of key from NSUserDefaults. easydict://readValueOfKey?EZOpenAIAPIKey
 - (nullable NSString *)readValueOfKey:(NSString *)key {
-    if ([self.allowedReadWriteKeys containsObject:key]) {
+    if ([self enabledReadWriteKey:key]) {
         return [[NSUserDefaults standardUserDefaults] objectForKey:key];
     } else {
         return nil;
     }
+}
+
+- (BOOL)enabledReadWriteKey:(NSString *)key {
+    BOOL handled = NO;
+    if ([self.allowedReadWriteKeys containsObject:key]) {
+        handled = YES;
+    }
+    
+    if ([EZConfiguration.shared isBeta]) {
+        NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+        // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
+        NSArray *arr = [key componentsSeparatedByString:@"-"];
+        if (arr.count) {
+            NSString *keyString = arr.firstObject;
+            if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
+                handled = YES;
+            }
+        }
+    }
+    return handled;
 }
 
 - (void)resetUserDefaultsData {
@@ -173,7 +178,6 @@
      easydict://writeKeyValue?Google-IntelligentQueryTextType=5  // transaltion | sentence
      easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2  // dictionary
      */
-    
     
     NSArray *readWriteKeys = @[
         EZBetaFeatureKey,
