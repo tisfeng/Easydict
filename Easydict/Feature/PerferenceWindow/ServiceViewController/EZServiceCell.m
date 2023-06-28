@@ -9,7 +9,6 @@
 #import "EZServiceCell.h"
 #import "NSImage+EZResize.h"
 
-
 @interface EZServiceCell ()
 
 @property (nonatomic, strong) NSImageView *iconView;
