@@ -321,6 +321,8 @@ static const CGFloat kVerticalPadding_8 = 8;
         tagLabel.textForegroundColor = typeTextColor;
         tagLabel.text = NSLocalizedString(@"tag", nil);
         
+        CGSize labelSize = [tagLabel oneLineSize];
+        
         [tagLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(kHorizontalMargin_8);
             CGFloat topOffset = kVerticalMargin_12 + 3;
@@ -331,7 +333,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
             height += topOffset;
             
-            CGSize labelSize = [tagLabel oneLineSize];
             make.size.mas_equalTo(labelSize).priorityHigh();
             height += labelSize.height;
         }];
@@ -404,7 +405,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         tagContentView.width = tagContentViewWidth;
         
-        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + tagLabel.width + padding * 2);
+        CGFloat maxTagScrollViewWidth = self.width - (kHorizontalMargin_8 + labelSize.width + padding * 2);
         CGFloat tagScrollViewWidth = MIN(tagContentViewWidth, maxTagScrollViewWidth);
         [tagScrollView mas_updateConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(tagScrollViewWidth);
