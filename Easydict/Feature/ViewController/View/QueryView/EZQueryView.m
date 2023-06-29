@@ -540,7 +540,7 @@
     self.detectButton.cornerRadius = height / 2;
     [self.detectButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.textCopyButton.mas_right).offset(6.5);
-        make.centerY.equalTo(self.textCopyButton);
+        make.centerY.equalTo(self.textCopyButton).offset(-0.5);
         make.height.mas_equalTo(height);
     }];
 }
