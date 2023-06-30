@@ -1133,6 +1133,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
     NSInteger punctuationMarkCount = 0;
+    NSInteger totalWordCount = 0;
+    NSInteger wordCountPerLine = 0;
     
     BOOL isAllEndPunctuationChar = YES;
     
@@ -1144,6 +1146,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         
         NSString *text = [textObservation firstText];
         totalCharCount += text.length;
+        totalWordCount += [EZTextWordUtils wordCount:text];
         
         NSInteger punctuationMarkCountOfLine = 0;
         
@@ -1178,6 +1181,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     charCountPerLine = totalCharCount / lineCount;
+    wordCountPerLine = totalWordCount / lineCount;
+    
     CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
     /**
@@ -1197,7 +1202,15 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     if (punctuationMarkCount == 0) {
-        return YES;
+        /**
+         Introducing English as the
+         New Programming Language
+         for Apache Spark
+         */
+        
+        if (wordCountPerLine >= 5) {
+            return YES;
+        }
     }
     
     /**
