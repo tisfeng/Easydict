@@ -83,7 +83,7 @@ jobs:
           server_port: 465
           username: ${{ secrets.GMAIL_BOT_USERNAME }}
           password: ${{ secrets.GMAIL_BOT_PASSWORD }}
-          subject: ${{ github.actor }} ${{ env.event_name }}  ${{ env.repo_name }}
+          subject: ${{ github.actor }} ${{ env.event_name }} ${{ env.repo_name }}
           # List stargazers  https://github.com/tisfeng/Easydict/stargazers
           html_body: ${{ env.html_body }}
           to: ${{ secrets.RECEIVER_EMAIL }}
