@@ -57,7 +57,7 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 ## 目录
 
-- [中文介绍 | English](#中文介绍--english)
+- [Easydict | English](#easydict--english)
 - [功能](#功能)
 - [目录](#目录)
 - [安装](#安装)

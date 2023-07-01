@@ -57,7 +57,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ## Table of contents
 
-- [中文介绍 | English](#中文介绍--english)
+- [Easydict | 中文](#easydict--中文)
 - [Features](#features)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
