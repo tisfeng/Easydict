@@ -18,16 +18,17 @@
 
 @implementation DarkModeManager
 
-singleton_m(DarkModeManager)
+singleton_m(DarkModeManager);
 
-    + (void)load {
-    [[self manager] fetch];
++ (void)load {
+    [[self manager] setup];
     [[self manager] monitor];
 }
 
 + (instancetype)manager {
     return [self shared];
 }
+
 
 - (void)excuteLight:(void (^)(void))light dark:(void (^)(void))dark {
     [RACObserve([DarkModeManager manager], systemDarkMode) subscribeNext:^(id _Nullable x) {
@@ -39,11 +40,10 @@ singleton_m(DarkModeManager)
     }];
 }
 
-- (void)fetch {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:NSGlobalDomain];
-    id style = [dict objectForKey:@"AppleInterfaceStyle"];
-    self.systemDarkMode = (style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"]);
+- (void)setup {
+    [self updateDarkMode];
 }
+
 
 - (void)monitor {
     NSString *const darkModeNotificationName = @"AppleInterfaceThemeChangedNotification";
@@ -51,15 +51,16 @@ singleton_m(DarkModeManager)
 }
 
 - (void)updateDarkMode {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:NSGlobalDomain];
-    id style = [dict objectForKey:@"AppleInterfaceStyle"];
-    BOOL isDarkMode = (style && [style isKindOfClass:[NSString class]] && NSOrderedSame == [style caseInsensitiveCompare:@"dark"]);
-    if (isDarkMode) {
-        NSLog(@"黑夜模式");
-    } else {
-        NSLog(@"正常模式");
-    }
+    BOOL isDarkMode = [self isDarkMode];
+    MMLogInfo(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     self.systemDarkMode = isDarkMode;
+}
+
+- (BOOL)isDarkMode {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:NSGlobalDomain];
+    NSString *appleInterfaceStyle = [dict objectForKey:@"AppleInterfaceStyle"];
+    BOOL isDarkMode = [appleInterfaceStyle isEqualToString:@"Dark"];
+    return isDarkMode;
 }
 
 @end
