@@ -7,6 +7,7 @@
 //
 
 #import "NSString+EZCharacterSet.h"
+#import "EZTextWordUtils.h"
 
 static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：", @"...", @"……" ];
 
@@ -80,6 +81,35 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
     }
     
     return [self substringFromIndex:self.length - 1];
+}
+
+/// Check if the first word of text is a element of EZPointCharacterList.
+- (BOOL)isPointFirstWord {
+    NSString *firstWord = [self firstWord];
+    return [EZPointCharacterList containsObject:firstWord];
+}
+
+- (BOOL)isDashFirstWord {
+    NSString *firstWord = [self firstWord];
+    return [EZDashCharacterList containsObject:firstWord];
+}
+
+- (BOOL)isNumberFirstWord {
+    NSString *firstWord = [self firstWord];
+    
+    NSString *dot = @".";
+    if ([firstWord containsString:dot]) {
+        NSString *number = [firstWord componentsSeparatedByString:dot].firstObject;
+        if (number) {
+            return [EZTextWordUtils isNumbers:number];
+        }
+    }
+    return NO;
+}
+
+- (BOOL)isListTypeFirstWord {
+    BOOL isList = [self isPointFirstWord] || [self isDashFirstWord] || [self isNumberFirstWord];
+    return isList;
 }
 
 @end

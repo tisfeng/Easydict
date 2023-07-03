@@ -10,6 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSArray *const EZPointCharacterList = @[ @"•", @"‧", @"∙"];
+static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
+
 @interface NSString (EZCharacterSet)
 
 /// Check if it is a single letter of the alphabet, like 'a', 'A'
@@ -36,6 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)firstChar;
 
 - (nullable NSString *)lastChar;
+
+- (BOOL)isListTypeFirstWord;
 
 @end
 
