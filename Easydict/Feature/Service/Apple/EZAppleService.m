@@ -21,7 +21,6 @@ static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
 
 static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
-static NSArray *const kDashCharacterList = @[ @"—", @"-", @"–" ];
 
 static CGFloat const kParagraphLineHeightRatio = 1.2;
 
@@ -1153,7 +1152,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         // iterate string to check if has punctuation mark.
         for (NSInteger i = 0; i < text.length; i++) {
             NSString *charString = [text substringWithRange:NSMakeRange(i, 1)];
-            NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:kDashCharacterList];
+            NSArray *allowedCharArray = [kAllowedCharactersInPoetryList arrayByAddingObjectsFromArray:EZDashCharacterList];
             BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
             if (isChar) {
                 punctuationMarkCountOfLine += 1;
@@ -1265,6 +1264,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     BOOL isEqualChineseText = [self isEqualChineseTextObservation:textObservation prevTextObservation:prevTextObservation];
     
+    BOOL isPrevList = [prevText isListTypeFirstWord];
+    BOOL isList = [text isListTypeFirstWord];
+
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
     if (hasIndentation) {
@@ -1275,7 +1277,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         CGFloat dx = lineX - prevLineX;
         
         if (hasPrevIndentation) {
-            if (isBigLineSpacing && !isPrevLongText) {
+            if (isBigLineSpacing && !isPrevLongText && !isPrevList && !isList) {
                 isNewParagraph = YES;
             }
             
@@ -1327,7 +1329,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                     }
                 } else {
                     if (isPrevEndPunctuationChar) {
-                        if (!isEqualX) {
+                        if (!isEqualX && !isList) {
                             isNewParagraph = YES;
                         } else {
                             needLineBreak = YES;
@@ -1436,6 +1438,12 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 isNewParagraph = YES;
             }
         }
+    }
+    
+    if (isPrevList && isList) {
+        needLineBreak = YES;
+
+        isNewParagraph = isBigLineSpacing;
     }
     
     if (isNewParagraph) {
@@ -1669,7 +1677,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     }
     
     NSString *prevLastChar = prevText.lastChar;
-    BOOL isPrevLastDashChar = [kDashCharacterList containsObject:prevLastChar];
+    BOOL isPrevLastDashChar = [EZDashCharacterList containsObject:prevLastChar];
     if (isPrevLastDashChar) {
         NSString *removedPrevDashText = [prevText substringToIndex:prevText.length - 1].mutableCopy;
         NSString *lastWord = [removedPrevDashText lastWord];
