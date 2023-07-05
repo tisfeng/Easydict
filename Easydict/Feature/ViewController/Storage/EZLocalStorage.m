@@ -60,7 +60,7 @@ static EZLocalStorage *_instance;
 
                 // Mini should keep mini, concise
                 if (windowType == EZWindowTypeMini) {
-                    if (!(serviceType == EZServiceTypeDeepL || serviceType == EZServiceTypeYoudao)) {
+                    if (!(serviceType == EZServiceTypeDeepL || serviceType == EZServiceTypeYoudao || serviceType == EZServiceTypeGoogle)) {
                         serviceInfo.enabled = NO;
                     }
                 }
