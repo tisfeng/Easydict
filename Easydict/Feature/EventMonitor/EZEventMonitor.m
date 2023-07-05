@@ -986,7 +986,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 
 // Get the frontmost app
 - (NSRunningApplication *)getFrontmostApp {
-    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
+    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication ?: NSRunningApplication.currentApplication;
     return app;
 }
 
