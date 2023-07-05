@@ -35,7 +35,7 @@
                                       nil];
     
     if ([EZConfiguration.shared isBeta]) {
-        [orderDict setObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI];
+        [orderDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
     }
     
     return orderDict;

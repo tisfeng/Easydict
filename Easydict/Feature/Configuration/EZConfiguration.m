@@ -496,7 +496,13 @@ static EZConfiguration *_instance;
 }
 - (BOOL)isBeta {
     NSString *stringValue = [NSUserDefaults mm_readString:EZBetaFeatureKey defaultValue:@"0"];
-    return [stringValue boolValue];
+    BOOL isBeta = [stringValue boolValue];
+    
+    if (isBeta) {
+        [self setIntelligentQueryMode:YES windowType:EZWindowTypeMini];
+    }
+    
+    return isBeta;
 }
 
 @end
