@@ -58,11 +58,15 @@ static EZLocalStorage *_instance;
                 serviceInfo.type = serviceType;
                 serviceInfo.enabled = YES;
 
-                // Mini should keep mini, concise
+                // Mini type should keep concise.
                 if (windowType == EZWindowTypeMini) {
-                    if (!(serviceType == EZServiceTypeDeepL || serviceType == EZServiceTypeYoudao || serviceType == EZServiceTypeGoogle)) {
-                        serviceInfo.enabled = NO;
-                    }
+                    NSArray *defaultEnabledServices = @[
+                        EZServiceTypeOpenAI,
+                        EZServiceTypeDeepL,
+                        EZServiceTypeYoudao,
+                        EZServiceTypeGoogle,
+                    ];
+                    serviceInfo.enabled = [defaultEnabledServices containsObject:serviceType];
                 }
 
                 // There is a very small probability that Volcano webView translator will crash.

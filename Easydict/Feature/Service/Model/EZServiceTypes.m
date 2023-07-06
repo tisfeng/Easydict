@@ -14,8 +14,6 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
-#import "EZConfiguration+EZUserData.h"
-#import "EZConfiguration.h"
 
 @implementation EZServiceTypes
 
@@ -26,17 +24,13 @@
 + (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *orderDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                       //  EZServiceTypeOpenAI, [EZOpenAIService class],
-                                      EZServiceTypeDeepL, [EZDeepLTranslate class],
                                       EZServiceTypeYoudao, [EZYoudaoTranslate class],
-                                      EZServiceTypeApple, [EZAppleService class],
+                                      EZServiceTypeDeepL, [EZDeepLTranslate class],
                                       EZServiceTypeGoogle, [EZGoogleTranslate class],
+                                      EZServiceTypeApple, [EZAppleService class],
                                       EZServiceTypeBaidu, [EZBaiduTranslate class],
                                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                       nil];
-    
-    if ([EZConfiguration.shared isBeta]) {
-        [orderDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
-    }
     
     return orderDict;
 }
