@@ -127,11 +127,7 @@
             EZServiceTypeYoudao,
         ];
         
-        EZServiceType defaultTTS = EZServiceTypeApple;
-        if ([EZConfiguration.shared isBeta]) {
-            defaultTTS = EZServiceTypeYoudao;
-        }
-        
+        EZServiceType defaultTTS = EZConfiguration.shared.isBeta ? EZServiceTypeYoudao : EZServiceTypeApple;
         EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:defaultTTS];
         if (![enabledTTSServiceTypes containsObject:ttsServiceType]) {
             ttsServiceType = defaultTTS;

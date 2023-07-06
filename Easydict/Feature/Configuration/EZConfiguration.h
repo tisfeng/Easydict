@@ -81,6 +81,10 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 #pragma mark - Beta
 @property (nonatomic, assign, readonly, getter=isBeta) BOOL beta;
 
+#pragma mark - Default TTS
+@property (nonatomic, copy, readonly) EZServiceType defaultTTSServiceType;
+
+- (void)enableBetaFeaturesIfNeeded;
 
 @end
 

@@ -15,6 +15,8 @@
 #import "EZExeCommand.h"
 #import "EZLog.h"
 #import "EZEnumTypes.h"
+#import "EZServiceTypes.h"
+#import "EZOpenAIService.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -497,12 +499,28 @@ static EZConfiguration *_instance;
 - (BOOL)isBeta {
     NSString *stringValue = [NSUserDefaults mm_readString:EZBetaFeatureKey defaultValue:@"0"];
     BOOL isBeta = [stringValue boolValue];
-    
-    if (isBeta) {
-        [self setIntelligentQueryMode:YES windowType:EZWindowTypeMini];
-    }
-    
     return isBeta;
+}
+
+#pragma mark - Default TTS
+- (void)setDefaultTTSServiceType:(EZServiceType _Nonnull)defaultTTSServiceType {
+    [NSUserDefaults mm_write:defaultTTSServiceType forKey:EZDefaultTTSServiceKey];
+}
+- (EZServiceType)defaultTTSServiceType {
+    return [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:EZServiceTypeApple];
+}
+
+
+#pragma mark -
+
+- (void)enableBetaFeaturesIfNeeded {
+    if ([self isBeta]) {
+        [self setIntelligentQueryMode:YES windowType:EZWindowTypeMini];
+        [self setDefaultTTSServiceType:EZServiceTypeYoudao];
+        
+        MMOrderedDictionary *allServiceDict = [EZServiceTypes allServiceDict];
+        [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
+    }
 }
 
 @end

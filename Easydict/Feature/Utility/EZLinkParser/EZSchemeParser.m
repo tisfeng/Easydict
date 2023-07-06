@@ -103,7 +103,15 @@
         NSString *value = keyValues[key];
         handled = [self enabledReadWriteKey:key];
         if (handled) {
+            EZConfiguration *config = [EZConfiguration shared];
+            BOOL isBeta = config.isBeta;
+            
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
+            
+            // If enabling beta feature, setup beta features.
+            if (!isBeta && config.isBeta) {
+                [EZConfiguration.shared enableBetaFeaturesIfNeeded];
+            }
         }
     }
     return handled;
@@ -175,7 +183,7 @@
      easydict://writeKeyValue?IntelligentQueryMode-window1=1
      
      // Intelligent Query
-     easydict://writeKeyValue?Google-IntelligentQueryTextType=5  // transaltion | sentence
+     easydict://writeKeyValue?Google-IntelligentQueryTextType=5  // translation | sentence
      easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2  // dictionary
      */
     
