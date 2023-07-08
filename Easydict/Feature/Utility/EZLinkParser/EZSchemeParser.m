@@ -133,7 +133,7 @@
     }
     
     if ([EZConfiguration.shared isBeta]) {
-        NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+        NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
         // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
         NSArray *arr = [key componentsSeparatedByString:@"-"];
         if (arr.count) {
@@ -299,7 +299,7 @@
         EZQueryTextTypeKey,
     ];
     
-    NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+    NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
     
     BOOL validKey = [allServiceTypes containsObject:serviceType] && [allowdKeyNames containsObject:key];
     

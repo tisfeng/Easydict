@@ -46,7 +46,7 @@ static EZLocalStorage *_instance;
 
 // Init data, save all service info
 - (void)setup {
-    NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
+    NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
 
     NSArray *allWindowTypes = @[ @(EZWindowTypeMini), @(EZWindowTypeFixed), @(EZWindowTypeMain) ];
     for (NSNumber *number in allWindowTypes) {
@@ -81,13 +81,14 @@ static EZLocalStorage *_instance;
 
 - (NSArray<EZServiceType> *)allServiceTypes:(EZWindowType)windowType {
     NSString *allServiceTypesKey = [self serviceTypesKeyOfWindowType:windowType];
+    NSArray *allServiceTypes = EZServiceTypes.shared.allServiceTypes;
+    
     NSArray *allStoredServiceTypes = [[NSUserDefaults standardUserDefaults] objectForKey:allServiceTypesKey];
     if (!allStoredServiceTypes) {
-        allStoredServiceTypes = [EZServiceTypes allServiceTypes];
+        allStoredServiceTypes = allServiceTypes;
         [[NSUserDefaults standardUserDefaults] setObject:allStoredServiceTypes forKey:allServiceTypesKey];
     } else {
         NSMutableArray *array = [NSMutableArray arrayWithArray:allStoredServiceTypes];
-        NSArray *allServiceTypes = [EZServiceTypes allServiceTypes];
         if (allStoredServiceTypes.count != allServiceTypes.count) {
             for (EZServiceType type in allServiceTypes) {
                 if ([allStoredServiceTypes indexOfObject:type] == NSNotFound) {
@@ -106,7 +107,7 @@ static EZLocalStorage *_instance;
 }
 
 - (NSArray<EZQueryService *> *)allServices:(EZWindowType)windowType {
-    NSArray *allServices = [EZServiceTypes servicesFromTypes:[self allServiceTypes:windowType]];
+    NSArray *allServices = [EZServiceTypes.shared servicesFromTypes:[self allServiceTypes:windowType]];
     for (EZQueryService *service in allServices) {
         EZServiceInfo *serviceInfo = [self serviceInfoWithType:service.serviceType windowType:windowType];
         BOOL enabled = YES;
