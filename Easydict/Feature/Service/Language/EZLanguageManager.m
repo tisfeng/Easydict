@@ -37,12 +37,12 @@ static EZLanguageManager *_instance;
     return _instance;
 }
 
-+ (void)destroySharedInstance {
-    _instance = nil;
-}
-
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
     return [self shared];
+}
+
++ (void)destroySharedInstance {
+    _instance = nil;
 }
 
 - (void)setup {

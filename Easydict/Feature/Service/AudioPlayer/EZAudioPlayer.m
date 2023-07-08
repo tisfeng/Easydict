@@ -133,7 +133,7 @@
             ttsServiceType = defaultTTS;
         }
         
-        EZQueryService *ttsService = [EZServiceTypes serviceWithType:ttsServiceType];
+        EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:ttsServiceType];
         _defaultTTSService = ttsService;
         _defaultTTSService.audioPlayer = self;
         

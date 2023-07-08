@@ -14,9 +14,6 @@
 #import "EZWindowManager.h"
 #import "EZExeCommand.h"
 #import "EZLog.h"
-#import "EZEnumTypes.h"
-#import "EZServiceTypes.h"
-#import "EZOpenAIService.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -517,9 +514,6 @@ static EZConfiguration *_instance;
     if ([self isBeta]) {
         [self setIntelligentQueryMode:YES windowType:EZWindowTypeMini];
         [self setDefaultTTSServiceType:EZServiceTypeYoudao];
-        
-        MMOrderedDictionary *allServiceDict = [EZServiceTypes allServiceDict];
-        [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
     }
 }
 
