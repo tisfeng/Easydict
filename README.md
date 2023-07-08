@@ -66,7 +66,7 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
   - [开发者构建](#开发者构建)
   - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
-  - [鼠标取词](#鼠标取词)
+  - [鼠标划词](#鼠标划词)
   - [关于权限](#关于权限)
 - [OCR](#ocr)
 - [语种识别](#语种识别)
@@ -135,7 +135,7 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
 
 > 无法打开“Easydict.dmg”，因为它来自身份不明的开发者。
 
-<div >
+<div>
     <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
     <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png" width="30%">
     <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png" width="30%">
@@ -174,11 +174,20 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 静默截图 OCR   | 按下静默截图快捷键（默认 `⌥ + ⇧ + S`），截取需要 OCR 的区域，截图 OCR 结果将自动保存到剪贴板 | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 |                |
 
-### 鼠标取词
+### 鼠标划词
 
-目前支持多种鼠标快捷取词方式：双击取词、鼠标滑动取词、三击取词（段落）和 Shift 取词（多段落），在某些应用中【鼠标滑动取词】可能会失败，此时可换其他取词方式。
+目前支持多种鼠标快捷划词方式：双击划词、鼠标滑动划词、三击划词（段落）和 Shift 划词（多段落），在某些应用中【鼠标滑动划词】可能会失败，此时可换其他划词方式。
 
-快捷键取词在任意应用中都可以正常工作。如遇到不能取词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
+快捷键划词在任意应用中都可以正常工作。如遇到不能鼠标划词的应用，可提 issue 解决 https://github.com/tisfeng/Easydict/issues/84
+
+划词功能流程：Accessibility > AppleScript > 模拟快捷键，优先使用辅助功能 Accessibility 取词，在 Accessibility 取词失败（未授权或应用不支持）时，如果是浏览器应用（如 Safari, Chrome），会尝试使用 AppleScript 取词。若 AppleScript 取词还是失败，最后则进行强制取词——模拟快捷键 Cmd+C 取词。
+
+因此，建议开启浏览器中的 `允许 Apple 事件中的 JavaScript` 选项，这样可以避免某些网页的事件拦截，例如这种网页强制 [附带版权信息](https://github.com/tisfeng/Easydict/issues/85) 问题，优化取词体验。对于 Safari 用户，强烈建议开启该选项，因为 Safari 不支持 Accessibility 取词，而 AppleScript 取词体验远优于模拟快捷键取词。
+
+<div>
+    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115811617-1688788691.png" width="45%">
+    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115827839-1688788707.png" width="45%">
+</div>
 
 ### 关于权限
 
@@ -194,7 +203,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ## 语种识别
 
-目前支持系统语种识别，百度和 Google 语种识别三种，但考虑到在线识别的速度问题以及不稳定性（ Google 还需要翻墙），其他两种识别服务只用于辅助优化。
+目前支持系统语种识别，百度和 Google 语种识别三种，但考虑到在线识别的速度问题以及不稳定性（Google 还需要翻墙），其他两种识别服务只用于辅助优化。
 
 默认使用系统语种识别，经调教后，系统语种识别的准确率已经很高了，能够满足大部分用户的需求。
 
@@ -328,8 +337,8 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 Easydict 有 3 种窗口类型，可以分别为它们设置不同的服务。
 
-- 迷你窗口：鼠标自动取词时显示。
-- 侧悬浮窗口：快捷键取词和截图翻译时显示。
+- 迷你窗口：鼠标自动划词时显示。
+- 侧悬浮窗口：快捷键划词和截图翻译时显示。
 - 主窗口：默认关闭，可在设置中开启，程序启动时显示。（稍后会增强主窗口功能）
 
 ![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
@@ -397,7 +406,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 - 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
 - 截图功能是基于 [isee15](https://github.com/isee15) 的 [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac)，并在此基础上进行了优化。
-- 鼠标取词功能参考了 [PopClip](https://pilotmoon.com/popclip/)。
+- 鼠标划词功能参考了 [PopClip](https://pilotmoon.com/popclip/)。
 
 ## 声明
 
