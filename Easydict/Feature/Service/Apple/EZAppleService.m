@@ -1638,25 +1638,11 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
-    /**
-     test data:
-     
-     What is needed is an electronic
-     payment system based on
-     cryptographic
-     
-     image width: 500, last white spaces deltaX: 0.3, cryptographic
-     
-     difference = 500 * 0.32 = 160
-     
-     image_width * (maxLineX - lineX) < difference
-     */
-    
     // Two Chinese words length
     CGFloat threshold = 60;
     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
-        threshold = 165; // should be a little bigger, add a white space width.
+        threshold = 210; // This value is related to the font size, take the average.
     }
     
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
