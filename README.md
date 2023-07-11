@@ -182,7 +182,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 划词功能流程：Accessibility > AppleScript > 模拟快捷键，优先使用辅助功能 Accessibility 取词，在 Accessibility 取词失败（未授权或应用不支持）时，如果是浏览器应用（如 Safari, Chrome），会尝试使用 AppleScript 取词。若 AppleScript 取词还是失败，最后则进行强制取词——模拟快捷键 Cmd+C 取词。
 
-因此，建议开启浏览器中的 `允许 Apple 事件中的 JavaScript` 选项，这样可以避免某些网页的事件拦截，例如这种网页强制 [附带版权信息](https://github.com/tisfeng/Easydict/issues/85) 问题，优化取词体验。对于 Safari 用户，强烈建议开启该选项，因为 Safari 不支持 Accessibility 取词，而 AppleScript 取词体验远优于模拟快捷键取词。
+因此，建议开启浏览器中的 `允许 Apple 事件中的 JavaScript` 选项，这样可以避免某些网页的事件拦截，例如这种 [网页强制附带版权信息](https://github.com/tisfeng/Easydict/issues/85) 问题，优化取词体验。对于 Safari 用户，强烈建议开启该选项，因为 Safari 不支持 Accessibility 取词，而 AppleScript 取词体验远优于模拟快捷键取词。
 
 <div>
     <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115811617-1688788691.png" width="45%">
