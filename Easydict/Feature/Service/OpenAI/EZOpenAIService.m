@@ -55,6 +55,31 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return model;
 }
 
+- (NSString *)requestUrlWithDefaultFormatUrl:(nullable NSString *)defaultFormatUrl {
+    NSString *url = [NSUserDefaults mm_readString:EZOpenAIFullRequestUrlKey defaultValue:@""];
+    if (url.length == 0) {
+        if (defaultFormatUrl == nil || defaultFormatUrl.length == 0) {
+            defaultFormatUrl = @"https://%@/v1/chat/completions";
+        }
+        url = [NSString stringWithFormat:defaultFormatUrl, self.domain];
+    }
+    return url;
+}
+
+- (NSDictionary *)requestHeader {
+    // Docs: https://platform.openai.com/docs/guides/chat/chat-vs-completions
+    
+    // Read openai key from NSUserDefaults
+    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
+    NSDictionary *header = @{
+        @"Content-Type" : @"application/json",
+        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
+        // support azure open ai
+        @"api-key": openaiKey,
+    };
+    return header;
+}
+
 
 #pragma mark - 重写父类方法
 
@@ -225,14 +250,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (void)startStreamChat:(NSDictionary *)parameters
        queryServiceType:(EZQueryTextType)queryServiceType
              completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
     
-    // Docs: https://platform.openai.com/docs/guides/chat/chat-vs-completions
-    NSDictionary *header = @{
-        @"Content-Type" : @"application/json",
-        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
-    };
+    NSDictionary *header = [self requestHeader];
     //    NSLog(@"messages: %@", messages);
     
     BOOL stream = YES;
@@ -331,7 +350,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }];
     }
     
-    NSString *url = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
+    NSString *url = [self requestUrlWithDefaultFormatUrl:nil];
     NSURLSessionTask *task = [manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
@@ -466,15 +485,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Chat using gpt-3.5, response so quickly, generally less than 3s.
 - (void)startChat:(NSArray<NSDictionary *> *)messages completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
-    
-    NSDictionary *header = @{
-        @"Content-Type" : @"application/json",
-        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
+    NSMutableDictionary *header = [self requestHeader].mutableCopy;
+    [header addEntriesFromDictionary:@{
         @"Accept" : @"text/event-stream",
         @"Cache-Control" : @"no-cache",
-    };
+    }];
+    header = header.copy;
     
     BOOL stream = YES;
     
@@ -490,8 +506,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"stream" : @(stream),
     };
     
-    NSString *url = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
-
+    NSString *url = [self requestUrlWithDefaultFormatUrl:nil];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
     request.allHTTPHeaderFields = header;
@@ -570,13 +585,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Completion, Ref: https://github.com/yetone/bob-plugin-openai-translator/blob/main/src/main.js and https://github.com/scosman/voicebox/blob/9f65744ef9182f5bfad6ed29ddcd811bd8b1f71e/ios/voicebox/Util/OpenApiRequest.m
 - (void)startCompletion:(NSString *)prompt completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
-    
-    NSDictionary *header = @{
-        @"Content-Type" : @"application/json",
-        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
-    };
+    NSDictionary *header = [self requestHeader];
     // Docs: https://platform.openai.com/docs/api-reference/completions
     NSDictionary *body = @{
         @"model" : @"text-davinci-003",
@@ -588,7 +597,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         //        @"presence_penalty" : @(1),
     };
     
-    NSString *url = [NSString stringWithFormat:@"https://%@/v1/completions", self.domain];
+    
+    NSString *url = [self requestUrlWithDefaultFormatUrl:@"https://%@/v1/completions"];
 
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
