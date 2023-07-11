@@ -103,8 +103,8 @@ static EZWindowManager *_instance;
         // Set a high level to make sure it's always on top of other windows, such as PopClip.
         self.popButtonWindow.level = kCGScreenSaverWindowLevel;
         
-        if (!EZConfiguration.shared.hideMainWindow) {
-            [self->_mainWindow orderBack:nil];
+        if ([EZMainQueryWindow isAlive]) {
+            [self.mainWindow orderBack:nil];
         }
     }];
     
@@ -192,7 +192,7 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
-        _mainWindow.releasedWhenClosed = NO;
+        _mainWindow.releasedWhenClosed = YES;
     }
     return _mainWindow;
 }
@@ -352,7 +352,7 @@ static EZWindowManager *_instance;
     window.level = EZFloatingWindowLevel;
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
-    if (![EZConfiguration.shared hideMainWindow]) {
+    if ([EZMainQueryWindow isAlive]) {
         [_mainWindow orderOut:nil];
     }
             
@@ -371,8 +371,8 @@ static EZWindowManager *_instance;
     [self updateFloatingWindowType:window.windowType];
     
     // mainWindow has been ordered out before, so we need to order back.
-    if (![EZConfiguration.shared hideMainWindow]) {
-        [self->_mainWindow orderBack:nil];
+    if ([EZMainQueryWindow isAlive]) {
+        [_mainWindow orderBack:nil];
     }
 }
 
@@ -588,7 +588,6 @@ static EZWindowManager *_instance;
 
 - (void)showOrHideDockAppAndMainWindow {
     BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
-    _mainWindow.releasedWhenClosed = !showFlag;
     [self showMainWindow:showFlag];
     
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
@@ -606,8 +605,7 @@ static EZWindowManager *_instance;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
     } else {
-        // TODO: may be need to release main window to reduce memory, if user do need main window anymore.
-        [_mainWindow close];
+        [EZMainQueryWindow destroySharedInstance];
         [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
     }
 }
@@ -824,7 +822,9 @@ static EZWindowManager *_instance;
         [self activeLastFrontmostApplication];
     }
     
-    [_mainWindow orderBack:nil];
+    if ([EZMainQueryWindow isAlive]) {
+        [_mainWindow orderBack:nil];
+    }
     
     // Move floating window type to second.
     
