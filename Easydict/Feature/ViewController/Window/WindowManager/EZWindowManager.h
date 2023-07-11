@@ -75,8 +75,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)activeLastFrontmostApplication;
 
-- (void)showOrHideDockAppAndMainWindow;
-- (void)showMainWindow:(BOOL)showFlag;
+- (void)showMainWindowIfNedded;
+- (void)closeMainWindowIfNeeded;
 
 - (void)updatePopButtonQueryAction;
 

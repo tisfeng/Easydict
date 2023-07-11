@@ -192,7 +192,6 @@ static EZWindowManager *_instance;
 - (EZMainQueryWindow *)mainWindow {
     if (!_mainWindow) {
         _mainWindow = [EZMainQueryWindow shared];
-        _mainWindow.releasedWhenClosed = YES;
     }
     return _mainWindow;
 }
@@ -353,13 +352,12 @@ static EZWindowManager *_instance;
     
     // FIXME: need to optimize. we have to remove it temporary, and orderBack: when close floating window.
     if ([EZMainQueryWindow isAlive]) {
-        [_mainWindow orderOut:nil];
+        [self.mainWindow orderOut:nil];
     }
             
 //    NSLog(@"window frame: %@", @(window.frame));
 
     // ???: This code will cause warning: [Window] Warning: Window EZFixedQueryWindow 0x107f04db0 ordered front from a non-active application and may order beneath the active application's windows.
-    
     [window makeKeyAndOrderFront:nil];
     
     /// ???: orderFrontRegardless will cause OCR show blank window when window has shown.
@@ -372,7 +370,7 @@ static EZWindowManager *_instance;
     
     // mainWindow has been ordered out before, so we need to order back.
     if ([EZMainQueryWindow isAlive]) {
-        [_mainWindow orderBack:nil];
+        [self.mainWindow orderBack:nil];
     }
 }
 
@@ -586,27 +584,27 @@ static EZWindowManager *_instance;
     self.lastFrontmostApplication = frontmostApplication;
 }
 
-- (void)showOrHideDockAppAndMainWindow {
+- (void)showMainWindowIfNedded {
     BOOL showFlag = !EZConfiguration.shared.hideMainWindow;
-    [self showMainWindow:showFlag];
-    
     NSApplicationActivationPolicy activationPolicy = showFlag ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
     [NSApp setActivationPolicy:activationPolicy];
-}
-
-- (void)showMainWindow:(BOOL)showFlag {
-    NSNumber *windowType = @(EZWindowTypeMain);
-    [self.floatingWindowTypeArray removeObject:windowType];
     
     if (showFlag) {
-        [self.floatingWindowTypeArray insertObject:windowType atIndex:0];
-        
+        [self.floatingWindowTypeArray insertObject:@(EZWindowTypeMain) atIndex:0];
+
         EZMainQueryWindow *mainWindow = [EZWindowManager shared].mainWindow;
         [mainWindow center];
         [mainWindow makeKeyAndOrderFront:nil];
-    } else {
+    }
+}
+
+- (void)closeMainWindowIfNeeded {
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+    
+    [self.floatingWindowTypeArray removeObject:@(EZWindowTypeMain)];
+
+    if ([EZMainQueryWindow isAlive]) {
         [EZMainQueryWindow destroySharedInstance];
-        [self.floatingWindowTypeArray insertObject:windowType atIndex:1];
     }
 }
 
@@ -823,7 +821,7 @@ static EZWindowManager *_instance;
     }
     
     if ([EZMainQueryWindow isAlive]) {
-        [_mainWindow orderBack:nil];
+        [self.mainWindow orderBack:nil];
     }
     
     // Move floating window type to second.

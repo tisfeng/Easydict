@@ -188,7 +188,6 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
     
-    [EZWindowManager.shared showOrHideDockAppAndMainWindow];
     [EZWindowManager.shared updatePopButtonQueryAction];
 }
 
