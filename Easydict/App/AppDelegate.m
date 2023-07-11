@@ -85,17 +85,15 @@
     [[EZMenuItemManager shared] remove];
 }
 
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
-    [EZWindowManager.shared showMainWindow:YES];
-    
-    [EZLog logWindowAppear:EZWindowTypeMain];
-    
-    return YES;
-}
-
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
-    // Hide dock app, not exit.
-    //    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
+    // Hide dock app
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
+    
+    if ([EZMainQueryWindow isAlive]) {
+        EZWindowManager.shared.mainWindow = nil;
+        [EZWindowManager.shared.mainWindow close];
+        [EZMainQueryWindow destroySharedInstance];
+    }
     
     return NO;
 }

@@ -13,7 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZMainQueryWindow : EZBaseQueryWindow
 
+@property (class, assign, readonly) BOOL isAlive;
+
 + (instancetype)shared;
++ (void)destroySharedInstance;
 
 @end
 
