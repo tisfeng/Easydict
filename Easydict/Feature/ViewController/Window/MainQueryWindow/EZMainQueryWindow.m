@@ -25,6 +25,7 @@ static BOOL _alive = NO;
 }
 
 + (void)destroySharedInstance {
+    [_instance close];
     _instance = nil;
     _alive = NO;
 }
