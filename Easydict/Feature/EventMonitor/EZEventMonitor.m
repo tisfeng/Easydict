@@ -508,7 +508,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             selectedText = (__bridge NSString *)(selectedTextValue);
             selectedText = [selectedText removeInvisibleChar];
             self.selectedText = selectedText;
-            MMLogInfo(@"--> Accessibility getText: %@", selectedText);
+            MMLogInfo(@"--> Accessibility success, getText: %@", selectedText);
         } else {
             if (getSelectedTextError == kAXErrorNoValue) {
                 MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
@@ -618,6 +618,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         @(kAXErrorSuccess) : @[
             @"com.microsoft.VSCode",      // VSCode
             @"com.jetbrains.intellij.ce", // IDEA
+            @"com.foxitsoftware.FoxitReaderLite", // Foxit PDF Reader
         ],
         
         // Some Apps return kAXErrorAttributeUnsupported -25205, but actually has selected text.
