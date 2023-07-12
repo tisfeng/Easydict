@@ -188,7 +188,11 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
     
-    [EZWindowManager.shared updatePopButtonQueryAction];
+    EZWindowManager *windowManager = EZWindowManager.shared;
+    [windowManager updatePopButtonQueryAction];
+    if (hideMainWindow) {
+        [windowManager closeMainWindowIfNeeded];
+    }
 }
 
 - (void)setAutoQueryOCRText:(BOOL)autoSnipTranslate {
