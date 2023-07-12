@@ -52,7 +52,7 @@ singleton_m(DarkModeManager);
 
 - (void)updateDarkMode {
     BOOL isDarkMode = [self isDarkMode];
-    MMLogInfo(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
+    NSLog(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     self.systemDarkMode = isDarkMode;
 }
 

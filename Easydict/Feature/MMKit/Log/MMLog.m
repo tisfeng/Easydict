@@ -9,6 +9,7 @@
 #import "MMLog.h"
 #import "MMConsoleLogFormatter.h"
 #import "MMFileLogFormatter.h"
+#import "EZDeviceSystemInfo.h"
 
 #if DEBUG
 DDLogLevel MMDefaultLogLevel = DDLogLevelAll;
@@ -67,26 +68,26 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     static DDLog *_sharedLog = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedLog = [[DDLog alloc] init];
-        [self configDDLog:_sharedLog name:kDefaultLogName];
-        NSString *identifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-        NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-        NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-        MMDDLogInfo(_sharedLog, @"\n=========>\n🚀 %@(%@)[%@] 启动 MMLog(Defalut)...\n\n日志文件夹:\n%@\n<=========", identifier, version, build, [self defaultLogDirectory]);
+        _sharedLog = [self createADDLogWithName:kDefaultLogName];
     });
     return _sharedLog;
 }
 
 + (DDLog *)createADDLogWithName:(NSString *)name {
     NSAssert(name.length, @"MMLog: DDLog名字不能为空");
-    if (!name.length) return nil;
-    if ([name isEqualToString:kDefaultLogName]) return [self sharedDDLog];
+    if (!name.length) {
+        return nil;
+    }
+    
     DDLog *log = [[DDLog alloc] init];
     [self configDDLog:log name:name];
-    NSString *identifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    MMDDLogInfo(log, @"\n=========>\n🚀 %@(%@)[%@] 启动 MMLog(%@)...\n\n日志文件夹:\n%@\n<=========", identifier, version, build, name, [self logDirectoryWithName:name]);
+    NSString *identifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    
+    NSDictionary *deviceSystemInfo = [EZDeviceSystemInfo getDeviceSystemInfo];
+
+    MMDDLogInfo(log, @"\n=========>\n🚀 %@(%@)[%@] 启动 MMLog(%@)...\n\n%@\n\n日志文件夹:\n%@\n<=========\n", identifier, version, build, name, deviceSystemInfo, [self logDirectoryWithName:name]);
     return log;
 }
 
