@@ -611,6 +611,8 @@ static EZWindowManager *_instance;
 #pragma mark - Menu Actions, Global Shortcut
 
 - (void)selectTextTranslate {
+    MMLogInfo(@"selectTextTranslate");
+
     if (![self.eventMonitor isAccessibilityEnabled]) {
         NSLog(@"App is not trusted");
         return;
@@ -631,6 +633,8 @@ static EZWindowManager *_instance;
 }
 
 - (void)snipTranslate {
+    MMLogInfo(@"snipTranslate");
+
     //    if ([self hasEasydictRunningInDebugMode]) {
     //        return;
     //    }
@@ -680,6 +684,8 @@ static EZWindowManager *_instance;
 }
 
 - (void)inputTranslate {
+    MMLogInfo(@"inputTranslate");
+    
     [self saveFrontmostApplication];
     if (Snip.shared.isSnapshotting) {
         return;
@@ -702,6 +708,8 @@ static EZWindowManager *_instance;
 
 /// Show mini window at last positon.
 - (void)showMiniFloatingWindow {
+    MMLogInfo(@"showMiniFloatingWindow");
+
     EZWindowType windowType = EZWindowTypeMini;
     if (self.floatingWindowType == windowType) {
         [self closeFloatingWindow];
@@ -713,6 +721,8 @@ static EZWindowManager *_instance;
 }
 
 - (void)screenshotOCR {
+    MMLogInfo(@"screenshotOCR");
+
     [self saveFrontmostApplication];
     
     if (Snip.shared.isSnapshotting) {
