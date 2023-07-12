@@ -42,13 +42,15 @@ void parseArmguments(void) {
         print_help = true;
     } else {
         NSString *query_text = [[arguments firstObjectForSignature:queryTextSig] description];
-        NSLog(@"queryText: %@", query_text);
         if (query_text) {
+            NSLog(@"queryText: %@", query_text);
             queryText(query_text);
         }
         
         NSString *detect_text = [[arguments firstObjectForSignature:detectTextSig] description];
-        NSLog(@"detectText: %@", detect_text);
+        if (detect_text) {
+            NSLog(@"detectText: %@", detect_text);
+        }
         
         if (detect_text) {
             delay_block(^{
