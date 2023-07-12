@@ -6,12 +6,10 @@
 //
 
 #import "MMCrashUncaughtExceptionHandler.h"
-
 #import "MMCrashFileTool.h"
 
 // 记录之前的崩溃回调函数
 static NSUncaughtExceptionHandler *previousUncaughtExceptionHandler = NULL;
-
 
 @implementation MMCrashUncaughtExceptionHandler
 
