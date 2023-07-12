@@ -819,6 +819,10 @@ static EZWindowManager *_instance;
 - (void)closeFloatingWindow {
     NSLog(@"close floating window: %@", self.floatingWindow);
     
+    if (!self.floatingWindow) {
+        return;
+    }
+    
     // stop playing audio
     [self.floatingWindow.queryViewController stopPlayingAudio];
     
