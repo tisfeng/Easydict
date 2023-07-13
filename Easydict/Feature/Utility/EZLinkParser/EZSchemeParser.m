@@ -196,6 +196,7 @@
         EZOpenAIServiceUsageStatusKey,
         EZOpenAIDomainKey,
         EZOpenAIModelKey,
+        EZOpenAIFullRequestUrlKey,
         
         EZYoudaoTranslationKey,
         EZYoudaoDictionaryKey,
