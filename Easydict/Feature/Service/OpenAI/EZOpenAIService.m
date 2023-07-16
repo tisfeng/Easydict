@@ -74,7 +74,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSDictionary *header = @{
         @"Content-Type" : @"application/json",
         @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
-        // support azure open ai
+        // support azure open ai, Ref: https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/chatgpt-quickstart?tabs=bash&pivots=rest-api
         @"api-key": openaiKey,
     };
     return header;
@@ -755,7 +755,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
@@ -901,6 +901,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *cognate = @"Cognate";
     NSString *synonym = @"Synonym";
     NSString *antonym = @"Antonym";
+    NSString *commonPhrases = @"common Phrases";
+    NSString *exampleSentence = @"Example sentence";
     
     BOOL isEnglishWord = NO;
     BOOL isEnglishPhrase = NO;
@@ -936,6 +938,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         cognate = @"同根词";
         synonym = @"近义词";
         antonym = @"反义词";
+        commonPhrases = @"常用短语";
+        exampleSentence = @"例句";
     }
     
     NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired format: \"%@: / xxx /\" \n", pronunciation];
@@ -982,7 +986,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, If it has antonyms, show format: \"%@: xxx \" \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
+        
+        NSString *phrasePrompt = [NSString stringWithFormat:@"\nLook up its main <%@> phrases, no more than 5, If it has phrases, show format: \"%@: xxx \" \n", sourceLanguage, commonPhrases];
+        prompt = [prompt stringByAppendingString:phrasePrompt];
     }
+    
+    NSString *exampleSentencePrompt = [NSString stringWithFormat:@"\nLook up its main <%@> example sentences, no more than 3, If it has example sentences, use * to mark its specific meaning in the translated sentence of the example sentence, show format: \"%@: xxx \" \n", sourceLanguage, exampleSentence];
+    prompt = [prompt stringByAppendingString:exampleSentencePrompt];
     
     NSString *bracketsPrompt = [NSString stringWithFormat:@"Note that the text between angle brackets <xxx> should not be outputed, it is used to describe and explain. \n"];
     prompt = [prompt stringByAppendingString:bracketsPrompt];
@@ -1019,7 +1029,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" :
                 @"Using Simplified-Chinese: \n"
                 @"Here is a English word: \"album\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1033,14 +1043,23 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "n. almanac 年历，历书 \n"
             "n. anthology 选集，文选 \n\n"
             "近义词：record, collection, compilation \n"
-            "反义词：dispersal, disarray, disorder",
+            "反义词：dispersal, disarray, disorder\n\n"
+            "常用短语：\n"
+            "1. White Album: 白色相簿\n"
+            "2. photo album: 写真集；相册；相簿\n"
+            "3. debut album: 首张专辑\n"
+            "4. album cover: 专辑封面\n\n"
+            "例句：\n"
+            "1. Their new album is dynamite.\n（他们的*新唱*引起轰动。）\n"
+            "2. I stuck the photos into an album.\n（我把照片贴到*相册*上。）\n"
+            "3. Their new album is their doomiest.\n（他们的新*专辑*是他们最失败的作品。）\n"
         },
         @{
             @"role" : @"user", // raven
             @"content" :
                 @"Using Simplified-Chinese: \n"
                 @"Here is a English word: \"raven\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1063,14 +1082,21 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "vi. ravage 毁坏；掠夺 \n"
             "vt. ravage 毁坏；破坏；掠夺 \n\n"
             "近义词: seize, blackbird \n"
-            "反义词：protect, guard, defend"
+            "反义词：protect, guard, defend \n\n"
+            "常用短语：\n"
+            "1. Raven paradox: 乌鸦悖论\n"
+            "2. raven hair: 乌黑的头发\n"
+            "3. The Raven: 乌鸦；魔鸟\n\n"
+            "例句：\n"
+            "1. She has long raven hair.\n（她有一头*乌黑的*长头发。）\n"
+            "2. The raven is often associated with death and the supernatural.\n（*乌鸦*常常与死亡和超自然现象联系在一起。）\n"
         },
         @{  //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
             @"role" : @"user", // js
             @"content" :
                 @"Using Simplified-Chinese: \n"
                 @"Here is a English word: \"js\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1080,6 +1106,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 @"Explanation: xxx \n\n"
                 @"Etymology: xxx \n\n"
                 @"Synonym: xxx \n\n"
+                @"Phrases: xxx \n\n"
+                @"Example Sentences: xxx \n\n"
         },
         //        @{
         //            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
@@ -1105,7 +1133,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" :
                 @"Using English: \n"
                 @"Here is a English word: \"raven\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1120,14 +1148,16 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "How to remember: xxx \n\n"
             "Cognates: xxx \n\n"
             "Synonyms: xxx \n"
-            "Antonyms: xxx",
+            "Antonyms: xxx \n\n"
+            "Phrases: xxx \n\n"
+            "Example Sentences: xxx \n\n"
         },
         @{
             @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
             @"content" :
                 @"Using English: \n"
                 @"Here is a English word abbreviation: \"acg\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms."
+                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1138,7 +1168,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "How to remember: xxx \n\n"
             "Cognates: xxx \n\n"
             "Synonyms: xxx \n"
-            "Antonyms: xxx",
+            "Antonyms: xxx \n\n"
+            "Phrases: xxx \n\n"
+            "Example Sentences: xxx \n\n"
         },
     ];
     
