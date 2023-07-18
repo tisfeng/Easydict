@@ -80,6 +80,20 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return header;
 }
 
+- (nullable NSString *)getJsonErrorMessageWithJson:(NSDictionary *)json {
+    if (![json isKindOfClass:[NSDictionary class]]) return nil;
+    
+    NSDictionary *error = json[@"error"];
+    // if the domain is incorrect, then json.error is not a dictionary.
+    if ([error isKindOfClass:[NSDictionary class]]) {
+        NSString *errorMessage = error[@"message"];
+        // in theory, message is a string. The code ensures its robustness here.
+        if ([errorMessage isKindOfClass:[NSString class]] && errorMessage.length) {
+            return errorMessage;
+        }
+    }
+    return nil;
+}
 
 #pragma mark - 重写父类方法
 
@@ -400,10 +414,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             NSError *jsonError;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
             if (!jsonError) {
-                NSString *errorMessage = json[@"error"][@"message"];
-                if (errorMessage.length) {
-                    self.result.errorMessage = errorMessage;
-                }
+                self.result.errorMessage = [self getJsonErrorMessageWithJson:json];
+                
             }
         }
         completion(nil, error);
@@ -428,11 +440,16 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      data: [DONE]
      */
     
+    /// sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
+    /// so join the next json together with previous json, then perform json serialization
+    static NSString *unterminatedJson = @"";
+    
     // Convert data to string
-    NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
     // split string to array
     NSString *dataKey = @"data:";
-    NSArray *jsonArray = [jsonString componentsSeparatedByString:dataKey];
+    NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
     //    NSLog(@"jsonArray: %@", jsonArray);
     
     NSMutableString *mutableString = [NSMutableString string];
@@ -458,7 +475,27 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             NSError *jsonError;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData options:kNilOptions error:&jsonError];
             if (jsonError) {
-                *error = jsonError;
+                // the error is a unterminated json error
+                if (jsonError.domain == NSCocoaErrorDomain && jsonError.code == 3840) {
+                    if (unterminatedJson.length == 0) {
+                        unterminatedJson = jsonDataString;
+                        *error = jsonError;
+                    } else {
+                        // join previous json, then serialization
+                        NSString *joinString = [NSString stringWithFormat:@"%@%@", unterminatedJson, jsonDataString];
+                        unterminatedJson = @"";
+                        NSError *err;
+                        NSString *content = [self parseContentFromStreamData:[joinString dataUsingEncoding:NSUTF8StringEncoding] error:&err isFinished:nil];
+                        if (err == nil) {
+                            return content;
+                        } else {
+                            *error = err;
+                        }
+                    }
+                } else {
+                    *error = jsonError;
+                }
+                
                 NSLog(@"error, dataString: %@", dataString);
                 break;
             }
@@ -571,8 +608,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
          }
          }
          */
+        
         if (json[@"error"]) {
-            error = [EZTranslateError errorWithString:json[@"error"][@"message"]];
+            error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
         }
         
         return nil;
@@ -635,7 +673,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
              }
              */
             if (json[@"error"]) {
-                error = [EZTranslateError errorWithString:json[@"error"][@"message"]];
+                error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
             }
             
             completion(nil, error);
