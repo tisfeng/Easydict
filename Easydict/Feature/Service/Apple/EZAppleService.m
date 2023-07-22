@@ -297,26 +297,6 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     queryModel.autoQuery = YES;
     
     NSImage *image = queryModel.OCRImage;
-    NSArray *qrCodeTexts = [self detectQRCodeImage:image];
-    if (qrCodeTexts.count) {
-        NSString *text = [qrCodeTexts componentsJoinedByString:@"\n"];
-        
-        EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
-        ocrResult.texts = qrCodeTexts;
-        ocrResult.mergedText = text;
-        ocrResult.raw = qrCodeTexts;
-        
-        EZLanguage language = [self detectText:text];
-        queryModel.detectedLanguage = language;
-        queryModel.autoQuery = NO;
-        
-        ocrResult.from = language;
-        ocrResult.confidence = 1.0;
-        
-        completion(ocrResult, nil);
-        return;
-    }
-    
     
     BOOL automaticallyDetectsLanguage = YES;
     BOOL hasSpecifiedLanguage = ![queryModel.queryFromLanguage isEqualToString:EZLanguageAuto];
@@ -328,7 +308,19 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
           language:queryModel.queryFromLanguage
         autoDetect:automaticallyDetectsLanguage
         completion:^(EZOCRResult *_Nullable ocrResult, NSError *_Nullable error) {
-        if (hasSpecifiedLanguage || error || ocrResult.confidence == 1.0) {
+        if (hasSpecifiedLanguage || ocrResult.confidence == 1.0 || error) {
+            /**
+             If there is only a QR code in the image, OCR will return error, then try to detect QRCode image.
+             If there is both text and a QR code in the image, the text is recognized first.
+             */
+            if (error) {
+                EZOCRResult *ocrResult = [self getOCRResultFromQRCodeImage:image];
+                if (ocrResult) {
+                    completion(ocrResult, nil);
+                    return;
+                }
+            }
+            
             queryModel.ocrConfidence = ocrResult.confidence;
             completion(ocrResult, error);
             return;
@@ -859,6 +851,28 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return result;
     }
     
+    return nil;
+}
+
+- (nullable EZOCRResult *)getOCRResultFromQRCodeImage:(NSImage *)image {
+    NSArray *qrCodeTexts = [self detectQRCodeImage:image];
+    if (qrCodeTexts.count) {
+        NSString *text = [qrCodeTexts componentsJoinedByString:@"\n"];
+
+        EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
+        ocrResult.texts = qrCodeTexts;
+        ocrResult.mergedText = text;
+        ocrResult.raw = qrCodeTexts;
+
+        EZLanguage language = [self detectText:text];
+        self.queryModel.detectedLanguage = language;
+        self.queryModel.autoQuery = NO;
+
+        ocrResult.from = language;
+        ocrResult.confidence = 1.0;
+
+        return ocrResult;
+    }
     return nil;
 }
 
