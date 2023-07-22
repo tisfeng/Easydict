@@ -325,7 +325,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 } else {
                     // [DONE], end of string.
                     if (![EZTextWordUtils hasSuffixQuote:self.queryModel.inputText]) {
-                        appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:content];
+                        appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:appendContent];
                     } else if (appendSuffixQuote) {
                         appendContent = [content stringByAppendingString:appendSuffixQuote];
                     }
@@ -346,7 +346,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 completion(mutableString, nil);
             }
             
-            //  NSLog(@"mutableString: %@", mutableString);
+//              NSLog(@"mutableString: %@", mutableString);
         }];
     }
     
