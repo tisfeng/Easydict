@@ -25,6 +25,8 @@
 		0333FDA32A035BEC00891515 /* NSArray+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA22A035BEC00891515 /* NSArray+EZChineseText.m */; };
 		0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */ = {isa = PBXBuildFile; fileRef = 0333FDA52A035D5700891515 /* NSString+EZChineseText.m */; };
 		033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033B7133293CE2430096E2DF /* EZWebViewTranslator.m */; };
+		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
+		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		034B077329DEBC5800E7FD6B /* EZTextWordUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
 		03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A332936F70F00C34C33 /* EZLanguageManager.m */; };
@@ -248,6 +250,11 @@
 		0333FDA52A035D5700891515 /* NSString+EZChineseText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZChineseText.m"; sourceTree = "<group>"; };
 		033B7132293CE2430096E2DF /* EZWebViewTranslator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZWebViewTranslator.h; sourceTree = "<group>"; };
 		033B7133293CE2430096E2DF /* EZWebViewTranslator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWebViewTranslator.m; sourceTree = "<group>"; };
+		033C30F92A7409C40095926A /* DictionaryKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictionaryKit.h; sourceTree = "<group>"; };
+		033C30FA2A7409C40095926A /* TTTDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTDictionary.h; sourceTree = "<group>"; };
+		033C30FB2A7409C40095926A /* TTTDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTDictionary.m; sourceTree = "<group>"; };
+		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
+		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
 		034B077129DEBC5800E7FD6B /* EZTextWordUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextWordUtils.h; sourceTree = "<group>"; };
 		034B077229DEBC5800E7FD6B /* EZTextWordUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextWordUtils.m; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
@@ -703,6 +710,25 @@
 			path = WebViewTranslator;
 			sourceTree = "<group>";
 		};
+		033C30F82A7409C40095926A /* DictionaryKit */ = {
+			isa = PBXGroup;
+			children = (
+				033C30F92A7409C40095926A /* DictionaryKit.h */,
+				033C30FA2A7409C40095926A /* TTTDictionary.h */,
+				033C30FB2A7409C40095926A /* TTTDictionary.m */,
+			);
+			path = DictionaryKit;
+			sourceTree = "<group>";
+		};
+		033C30FD2A74CEB10095926A /* AppleDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				033C30FE2A74CECE0095926A /* EZAppleDictionary.h */,
+				033C30FF2A74CECE0095926A /* EZAppleDictionary.m */,
+			);
+			path = AppleDictionary;
+			sourceTree = "<group>";
+		};
 		034B077029DEBBFF00E7FD6B /* EZTextWordUtils */ = {
 			isa = PBXGroup;
 			children = (
@@ -715,6 +741,7 @@
 		03542A2D293645B800C34C33 /* Apple */ = {
 			isa = PBXGroup;
 			children = (
+				033C30FD2A74CEB10095926A /* AppleDictionary */,
 				03542A2E293645DF00C34C33 /* EZAppleService.h */,
 				03542A2F293645DF00C34C33 /* EZAppleService.m */,
 				03247E342968158B00AFCD67 /* EZExeCommand.h */,
@@ -1415,6 +1442,7 @@
 		03BDA7982A26DA000079D04F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				033C30F82A7409C40095926A /* DictionaryKit */,
 				0361966B2A000E7800806370 /* FWEncryptorAES */,
 				03BDA7992A26DA280079D04F /* ArgumentParser */,
 				03882F8129D95044005B5A52 /* CoolToast */,
@@ -1971,6 +1999,7 @@
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
 				0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */,
 				0329CD6F29EE924500963F78 /* EZRightClickDetector.m in Sources */,
+				033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */,
 				03B0232D29231FA6001C7E63 /* NSArray+MM.m in Sources */,
 				039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */,
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
@@ -2041,6 +2070,7 @@
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
+				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZCharacterSet.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,
 			);

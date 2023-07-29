@@ -113,14 +113,14 @@ NSString *getPartName(NSString *part) {
 }
 
 - (BOOL)hasShowingResult {
-    if (self.hasTranslatedResult || self.error || self.errorMessage.length) {
+    if (self.hasTranslatedResult || self.error || self.errorMessage.length || self.HTMLString.length) {
         return YES;
     }
     return NO;
 }
 
 - (BOOL)hasTranslatedResult {
-    if (self.wordResult || self.translatedText.length) {
+    if (self.wordResult || self.translatedText.length || self.HTMLString.length) {
         return YES;
     }
     return NO;
@@ -151,6 +151,7 @@ NSString *getPartName(NSString *part) {
     self.errorType = EZErrorTypeAPI;
     self.isFinished = YES;
     self.manulShow = NO;
+    self.HTMLString = nil;
 }
 
 @end

@@ -59,4 +59,11 @@
     return [self colorWithRed:r / 255.0 green:g / 255.0 blue:b / 255.0 alpha:alpha];
 }
 
+// 将 NSColor 转换为字符串表示的颜色值（十六进制）
++ (NSString *)mm_hexStringFromColor:(NSColor *)color {
+    CGFloat red, green, blue, alpha;
+    [color getRed:&red green:&green blue:&blue alpha:&alpha];
+    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(red * 255), (int)(green * 255), (int)(blue * 255)];
+}
+
 @end

@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^queryTextBlock)(NSString *word);
 
+@property (nonatomic, copy) void (^updateViewHeightBlock)(CGFloat viewHeight);
+
 - (void)refreshWithResult:(EZQueryResult *)result;
 
 @end

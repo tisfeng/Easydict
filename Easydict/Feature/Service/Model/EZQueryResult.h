@@ -148,6 +148,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL showBigWord;
 @property (nonatomic, assign) CGFloat translateResultsTopInset;
 
+@property (nonatomic, copy, nullable) NSString *HTMLString;
+
 - (void)reset;
 
 @end

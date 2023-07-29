@@ -240,6 +240,12 @@
 
     [self.wordResultView refreshWithResult:result];
     
+    mm_weakify(self);
+    [self.wordResultView setUpdateViewHeightBlock:^(CGFloat viewHeight) {
+        mm_strongify(self);
+        [self updateViewHeight:viewHeight];
+    }];
+    
     [self updateAllButtonStatus];
 
     CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
@@ -268,6 +274,21 @@
     self.wordResultView.queryTextBlock = clickTextBlock;
 }
 
+#pragma mark -
+
+- (void)updateViewHeight:(CGFloat)wordResultViewHeight {
+    [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(wordResultViewHeight);
+    }];
+
+    CGFloat viewHeight = EZResultViewMiniHeight;
+    if (self.result.hasShowingResult && self.result.isShowing) {
+        viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
+        //        NSLog(@"show result view height: %@", @(self.height));
+    }
+    self.result.viewHeight = viewHeight;
+    //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
+}
 
 #pragma mark - Public Methods
 
