@@ -18,6 +18,8 @@ NSString *const EZServiceTypeDeepL = @"DeepL";
 NSString *const EZServiceTypeVolcano = @"Volcano";
 NSString *const EZServiceTypeOpenAI = @"OpenAI";
 
+NSString *const EZServiceTypeAppleDictionary = @"SystemDictionary";
+
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";
 

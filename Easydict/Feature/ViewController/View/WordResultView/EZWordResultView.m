@@ -24,14 +24,22 @@
 #import "EZAudioButton.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
+#import <WebKit/WebKit.h>
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
 static const CGFloat kVerticalPadding_8 = 8;
 
-@interface EZWordResultView () <NSTextViewDelegate>
+@interface EZWordResultView () <NSTextViewDelegate, WKNavigationDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
+
+@property (nonatomic, strong) WKWebView *webView;
+
+@property (nonatomic, assign) CGFloat bottomViewHeigt;
+
+@property (nonatomic, copy) NSString *copiedText;
+
 
 @end
 
@@ -240,6 +248,28 @@ static const CGFloat kVerticalPadding_8 = 8;
             promptButton.mas_key = @"promptButton";
             lastView = promptButton;
         }
+    }
+    
+    if (result.HTMLString.length) {
+        NSLog(@"load webView");
+        WKWebView *webView = [[WKWebView alloc] init];
+        [self addSubview:webView];
+        [webView loadHTMLString:result.HTMLString baseURL:nil];
+        webView.navigationDelegate = self;
+        self.webView = webView;
+        
+        [webView mas_makeConstraints:^(MASConstraintMaker *make) {
+            if (lastView) {
+                make.top.equalTo(lastView.mas_bottom).offset(kHorizontalMargin_8);
+                height += kHorizontalMargin_8;
+            } else {
+                make.top.offset(kVerticalMargin_12);
+                height += kVerticalMargin_12;
+            }
+            make.left.right.inset(kHorizontalMargin_8);
+        }];
+        
+        lastView = webView;
     }
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZWordPhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -763,7 +793,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
     [self addSubview:textCopyButton];
-    textCopyButton.enabled = hasTranslatedText;
+    textCopyButton.enabled = hasTranslatedText | result.HTMLString.length;
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
@@ -788,9 +818,15 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     lastView = audioButton;
     
-    height += (audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_4);
+    self.bottomViewHeigt = audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_4;
     
+    height += self.bottomViewHeigt;
     _viewHeight = height;
+    
+    // webView height need time to calculate, and the value will be called back later.
+    if (result.serviceType == EZServiceTypeAppleDictionary) {
+        _viewHeight = 0;
+    }
     
     //    NSLog(@"word result view height: %.1f", height);
     
@@ -859,9 +895,15 @@ static const CGFloat kVerticalPadding_8 = 8;
 }
 
 - (NSString *)copiedText {
-    // TODO: copy word dictionary text.
-    NSString *text = self.result.translatedText;
-    return text;
+    if (!_copiedText) {
+        // TODO: copy word dictionary text.
+        _copiedText = self.result.translatedText;
+        
+        if (!_copiedText.length && self.result.HTMLString.length) {
+            [self fetchAllWebViewText];
+        }
+    }
+    return _copiedText;
 }
 
 #pragma mark - NSTextViewDelegate
@@ -874,6 +916,82 @@ static const CGFloat kVerticalPadding_8 = 8;
         return NO;
     }
     return NO;
+}
+
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSString *script = @"Math.max(document.body.scrollHeight, document.body.offsetHeight);";
+    [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (!error) {
+            CGFloat contentHeight = [result doubleValue];
+            NSLog(@"Content Height: %f", contentHeight); // Cost ~0.4s
+            
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height / 2;
+            CGFloat webViewHeight = MIN(maxHeight, contentHeight);
+            CGFloat viewHeight = kVerticalMargin_12 + self.bottomViewHeigt + webViewHeight;
+            
+            if (webViewHeight == contentHeight) {
+                [self disableWebViewScrolling];
+            }
+                        
+            [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(webViewHeight);
+            }];
+            
+            // !!!: Must update view height, then update cell height.
+            if (self.updateViewHeightBlock) {
+                self.updateViewHeightBlock(viewHeight);
+            }
+            
+            [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
+
+        } else {
+            NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
+        }
+    }];
+    
+    [webView.layer excuteLight:^(CALayer *layer) {
+        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.webkitTextFillColor='%@';", backgroundColorString, titleColorString];
+        [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+
+    } dark:^(CALayer *layer) {
+        // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
+        // [webView evaluateJavaScript:@"document.body.style.webkitTextFillColor=\"#FF0000\"" completionHandler:nil];
+        
+        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.webkitTextFillColor='%@';", backgroundColorString, titleColorString];
+        [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+    }];
+}
+
+
+/// 禁用 webView 滚动
+- (void)disableWebViewScrolling {
+    NSString *jsCode = @"document.body.style.height = '0px';";
+    [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+
+    [self disableBounceForWebView:self.webView];
+}
+
+- (void)disableBounceForWebView:(WKWebView *)webView {
+   
+}
+
+- (void)fetchAllWebViewText {
+    NSString *jsCode = @"document.body.innerText;";
+    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (!error && [result isKindOfClass:[NSString class]]) {
+            NSString *webViewText = (NSString *)result;
+            NSLog(@"WKWebView的所有文本：%@", webViewText);
+            
+            self.copiedText = webViewText;
+            
+            [webViewText copyAndShowToast:YES];
+        }
+    }];
 }
 
 #pragma mark -
