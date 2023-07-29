@@ -289,9 +289,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         shouldHandleQuote = YES;
     }
     
+    __block NSMutableString *streamResult = [NSMutableString string];
     // TODO: need to optimize.
     if (stream) {
-        __block NSMutableString *mutableString = [NSMutableString string];
         __block BOOL isFirst = YES;
         __block BOOL isFinished = NO;
         __block NSString *appendSuffixQuote = nil;
@@ -326,7 +326,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     if (!isFirst) {
                         // Append last delayed suffix quote.
                         if (appendSuffixQuote) {
-                            [mutableString appendString:appendSuffixQuote];
+                            [streamResult appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
                         
@@ -352,12 +352,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             }
             
             if (appendContent) {
-                [mutableString appendString:appendContent];
+                [streamResult appendString:appendContent];
             }
             
             // Do not callback when mutableString length is 0 when isFinished is NO, to avoid auto hide reuslt view.
-            if (isFinished || mutableString.length) {
-                completion(mutableString, nil);
+            if (isFinished || streamResult.length) {
+                completion(streamResult, nil);
             }
             
             //  NSLog(@"mutableString: %@", mutableString);
@@ -382,16 +382,32 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.inputText;
             
-            NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
+            NSError *error;
+            NSString *content = [self parseContentFromStreamData:responseObject error:&error isFinished:nil];
             NSLog(@"success content: %@", content);
             
-            // Count quote may cost much time, so only count when query text is short.
-            if (shouldHandleQuote && queryText.length < 100) {
+            /**
+             Because a streaming callback may encounter an error in a certain segment of the callback, resulting in incomplete results, here we remove the interference caused by removing quotation marks and compare it with the content. If the length of the content is longer, it may indicate that the stream result is incomplete.
+             */
+            void (^compareStreamResultAndContent)(void) = ^{
+                if (content.length <= streamResult.length) return;
+                NSInteger streamResultQuoteCount = [EZTextWordUtils countQuoteNumberInText:streamResult];
+                NSInteger contentQuoteCount = [EZTextWordUtils countQuoteNumberInText:content];
+                if ((content.length - contentQuoteCount) > (streamResult.length - streamResultQuoteCount)) {
+                    completion(content, nil);
+                }
+            };
+            
+            if (shouldHandleQuote) {
                 NSInteger queryTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:queryText];
                 NSInteger translatedTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:self.result.translatedText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
                     completion(content, nil);
+                } else {
+                    compareStreamResultAndContent();
                 }
+            } else {
+                compareStreamResultAndContent();
             }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
