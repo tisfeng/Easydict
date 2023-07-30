@@ -24,23 +24,40 @@
 
 #import <CoreServices/CoreServices.h>
 
-NSString * const DCSAppleDictionaryName = @"Apple Dictionary";
+// Simplified Chinese
+NSString * const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典"; // 简体中文-英文
+NSString * const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
+NSString * const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
+NSString * const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典"; // 简体中文同义词词典
+NSString * const DCSSimplifiedChinese_JapaneseDictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
+
+// Traditional Chinese
+NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
+NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
+NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
+NSString * const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
+
+// English
+NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
+NSString * const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer’s Thesaurus"; // 美式英文同义词词典
+NSString * const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English"; // 英式英文
+NSString * const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English"; // 英式英文同义词词典
+
+// Japanese
+NSString * const DCSJapaneseSupaDaijirinDictionaryName = @"スーパー大辞林"; // 日文
+NSString * const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典"; // 日文-英文
+
+NSString * const DCSWikipediaDictionaryName = @"维基百科";
+NSString * const DCSAppleDictionaryName = @"Apple 词典";
+
 NSString * const DCSDutchDictionaryName = @"Prisma woordenboek Nederlands";
 NSString * const DCSFrenchDictionaryName = @"Multidictionnaire de la langue française";
 NSString * const DCSGermanDictionaryName = @"Duden-Wissensnetz deutsche Sprache";
 NSString * const DCSItalianDictionaryName = @"Dizionario italiano da un affiliato di Oxford University Press";
-NSString * const DCSJapaneseSupaDaijirinDictionaryName = @"スーパー大辞林";
-NSString * const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典";
 NSString * const DCSKoreanDictionaryName = @"New Ace Korean Language Dictionary";
-NSString * const DCSKorean_EnglishDictionaryName = @"New Ace English-Korean Dictionary and New Ace Korean-English Dictionary";
-NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary";
-NSString * const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer's Thesaurus";
-NSString * const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English";
-NSString * const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English";
-NSString * const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典";
-NSString * const DCSSimplifiedChinese_EnglishDictionaryName = @"Oxford Chinese Dictionary";
+NSString * const DCSKorean_EnglishDictionaryName = @"뉴에이스 영한사전 / 뉴에이스 한영사전";
 NSString * const DCSSpanishDictionaryName = @"Diccionario General de la Lengua Española Vox";
-NSString * const DCSWikipediaDictionaryName = @"Wikipedia";
+
 
 typedef NS_ENUM(NSInteger, TTTDictionaryRecordVersion) {
     TTTDictionaryVersionHTML = 0,
@@ -75,6 +92,8 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 @property (readwrite, nonatomic, copy) NSString *headword;
 @property (readwrite, nonatomic, copy) NSString *text;
 @property (readwrite, nonatomic, copy) NSString *HTML;
+@property (readwrite, nonatomic, copy) NSString *HTMLWithAppCSS;
+
 @end
 
 @implementation TTTDictionaryEntry
@@ -93,7 +112,8 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     }
     
     self.HTML = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithPopoverCSS);
-
+    self.HTMLWithAppCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithAppCSS);
+    
     return self;
 }
 
