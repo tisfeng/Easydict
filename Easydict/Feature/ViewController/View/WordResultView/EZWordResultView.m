@@ -259,13 +259,15 @@ static const CGFloat kVerticalPadding_8 = 8;
         self.webView = webView;
         
         [webView mas_makeConstraints:^(MASConstraintMaker *make) {
+            CGFloat topOffset = 0;
             if (lastView) {
-                make.top.equalTo(lastView.mas_bottom).offset(kHorizontalMargin_8);
-                height += kHorizontalMargin_8;
+                topOffset = kHorizontalMargin_8;
+                make.top.equalTo(lastView.mas_bottom).offset(topOffset);
+                height += topOffset;
             } else {
-                make.top.offset(kVerticalMargin_12);
-                height += kVerticalMargin_12;
+                make.top.offset(topOffset);
             }
+            height += topOffset;
             make.left.right.inset(kHorizontalMargin_8);
         }];
         
@@ -929,7 +931,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
-            CGFloat viewHeight = kVerticalMargin_12 + self.bottomViewHeigt + webViewHeight;
+            CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
                         
             [self disableWebViewScrolling];
                         
