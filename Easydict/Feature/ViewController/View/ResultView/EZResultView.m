@@ -315,16 +315,14 @@
 
 - (void)updateErrorImage {
     BOOL hideWarningImage = YES;
-    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorMessage.length)) {
+    if (!self.result.hasTranslatedResult && (self.result.errorType || self.result.errorMessage.length)) {
         hideWarningImage = NO;
     }
     self.errorImageView.hidden = hideWarningImage;
-    
-    BOOL unsupportLanguageError = self.result.errorType == EZErrorTypeUnsupportedLanguage;
-    
+        
     NSString *errorImageName = @"disabled";
     NSString *toolTip = @"Unsupported Language";
-    if (!unsupportLanguageError) {
+    if (!self.result.isWarningErrorType) {
         errorImageName = @"error";
     }
     NSImage *errorImage = [NSImage imageNamed:errorImageName];
@@ -334,7 +332,7 @@
 }
 
 - (void)updateRetryButton {
-    BOOL showRetryButton = self.result.error && (self.result.errorType != EZErrorTypeUnsupportedLanguage);
+    BOOL showRetryButton = self.result.errorType && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
 }
 

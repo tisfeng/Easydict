@@ -112,7 +112,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         lastView = bigWordLabel;
     }
     
-    if (result.translatedResults.count || errorDescription.length > 0) {
+    if (result.translatedResults.count || errorDescription.length > 0 || result.noResultsFound) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = 9;
@@ -150,7 +150,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         } else if (!result.wordResult && errorDescription.length) {
             text = errorDescription;
         } else if (!result.hasTranslatedResult) {
-            text = @"No Result.";
+            text = NSLocalizedString(@"no_results_found", nil);
         }
         
         if (text.length) {
@@ -826,7 +826,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     _viewHeight = height;
     
     // webView height need time to calculate, and the value will be called back later.
-    if (result.serviceType == EZServiceTypeAppleDictionary) {
+    if (result.serviceType == EZServiceTypeAppleDictionary && result.HTMLString.length) {
         _viewHeight = 0;
     }
     

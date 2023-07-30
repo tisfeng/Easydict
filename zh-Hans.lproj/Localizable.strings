@@ -126,7 +126,7 @@
 "error_unknown" = "未知错误";
 "query_failed" = "查询失败";
 "ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。";
-"query_has_no_result" = "⚠️ 查询没有结果";
+"no_results_found" = "⚠ 未查询到结果";
 
 "placeholder" = "输入内容，Enter 查询，Shift + Enter 换行";
 

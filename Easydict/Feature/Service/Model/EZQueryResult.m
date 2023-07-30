@@ -113,7 +113,7 @@ NSString *getPartName(NSString *part) {
 }
 
 - (BOOL)hasShowingResult {
-    if (self.hasTranslatedResult || self.error || self.errorMessage.length || self.HTMLString.length) {
+    if (self.hasTranslatedResult || self.error || self.errorMessage.length || self.HTMLString.length || self.noResultsFound) {
         return YES;
     }
     return NO;
@@ -124,6 +124,11 @@ NSString *getPartName(NSString *part) {
         return YES;
     }
     return NO;
+}
+
+- (BOOL)isWarningErrorType {
+    BOOL warningType = (self.errorType == EZErrorTypeUnsupportedLanguage) || (self.errorType == EZErrorTypeNoResultsFound);
+    return warningType;
 }
 
 - (void)reset {
@@ -150,8 +155,10 @@ NSString *getPartName(NSString *part) {
     self.errorMessage = nil;
     self.errorType = EZErrorTypeAPI;
     self.isFinished = YES;
+    self.errorType = EZErrorTypeNone;
     self.manulShow = NO;
     self.HTMLString = nil;
+    self.noResultsFound = NO;
 }
 
 @end
