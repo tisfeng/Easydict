@@ -90,11 +90,11 @@ extern NSString * const DCSSimplifiedChineseIdiomDictionaryName;
 extern NSString * const DCSSimplifiedChineseThesaurusDictionaryName;
 extern NSString * const DCSSimplifiedChinese_JapaneseDictionaryName;
 
-//// Traditional Chinese
-extern NSString * const DCSTraditionalChinese_EnglishDictionaryName;
-extern NSString * const DCSTraditionalChineseHongkongDictionaryName;
-extern NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName;
+// Traditional Chinese
 extern NSString * const DCSTraditionalChineseDictionaryName;
+extern NSString * const DCSTraditionalChineseHongkongDictionaryName;
+extern NSString * const DCSTraditionalChinese_EnglishDictionaryName;
+extern NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName;
 
 //// English
 extern NSString * const DCSNewOxfordAmericanDictionaryName;

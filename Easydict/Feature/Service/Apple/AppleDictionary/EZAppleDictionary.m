@@ -42,11 +42,11 @@
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
     
-    NSString *htmlString = [self getHTMLOfText:text];
+    NSString *htmlString = [self getHTMLOfText:text languages:@[from, to]];
     self.result.HTMLString = htmlString;
     
     if (htmlString.length == 0) {
@@ -63,7 +63,7 @@
 
 #pragma mark -
 
-- (NSString *)getHTMLOfText:(NSString *)text {
+- (NSString *)getHTMLOfText:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
     NSMutableString *htmlString = [NSMutableString string];;
     
     NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
@@ -80,10 +80,10 @@
      NSString * const DCSSimplifiedChinese_DictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
 
      // Traditional Chinese
-     NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
-     NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
-     NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
      NSString * const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
+     NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
+     NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
+     NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
 
      // English
      NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
@@ -104,12 +104,22 @@
         DCSSimplifiedChineseIdiomDictionaryName, // 汉语成语词典
         DCSSimplifiedChineseThesaurusDictionaryName, // 现代汉语同义词典
         
+        DCSTraditionalChineseDictionaryName,
+        DCSTraditionalChineseHongkongDictionaryName,
+        
         DCSNewOxfordAmericanDictionaryName,
         DCSOxfordAmericanWritersThesaurus,
         
         DCSWikipediaDictionaryName,
         DCSAppleDictionaryName,
     ].mutableCopy;
+    
+    if ([languages containsObject:EZLanguageTraditionalChinese]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSTraditionalChinese_EnglishDictionaryName,
+            DCSTraditionalChinese_EnglishIdiomDictionaryName,
+        ]];
+    }
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
     for (NSString *name in queryDictNames) {

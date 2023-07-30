@@ -32,10 +32,10 @@ NSString * const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同
 NSString * const DCSSimplifiedChinese_JapaneseDictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
 
 // Traditional Chinese
-NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
-NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
-NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
 NSString * const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
+NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
+NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
+NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
 
 // English
 NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
@@ -72,7 +72,6 @@ extern CFArrayRef DCSCopyAvailableDictionaries(void);
 extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef dictionary);
 extern CFStringRef DCSDictionaryGetShortName(DCSDictionaryRef dictionary);
 extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef url);
-extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef dictionary);
 extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef dictionary, CFStringRef string, void *, void *);
 
 extern CFDictionaryRef DCSCopyDefinitionMarkup(DCSDictionaryRef dictionary, CFStringRef record);
