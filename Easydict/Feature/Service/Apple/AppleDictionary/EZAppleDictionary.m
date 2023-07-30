@@ -49,6 +49,11 @@
     NSString *htmlString = [self getHTMLOfText:text];
     self.result.HTMLString = htmlString;
     
+    if (htmlString.length == 0) {
+        self.result.noResultsFound = YES;
+        self.result.errorType = EZErrorTypeNoResultsFound;
+    }
+    
     completion(self.result, nil);
 }
 
@@ -138,7 +143,12 @@
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
             NSString *html = entry.HTMLWithAppCSS;
-            if (html.length) {
+            NSString *headword = entry.headword;
+            
+            // LOG --> log,  根据 genju--> 根据  gēnjù
+            BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
+            
+            if (html.length && isTheSameHeadword) {
                 // Add cssStyle and titleHtml when there is a html result, and only add once.
 
                 [htmlString appendString:cssStyle];
@@ -153,6 +163,18 @@
     }
         
     return htmlString;
+}
+
+- (BOOL)containsSubstring:(NSString *)substring inString:(NSString *)string {
+    NSStringCompareOptions options = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+    
+    // 将文本和子字符串转换为不区分大小写和重音的标准化字符串
+    NSString *normalizedString = [string stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+    NSString *normalizedSubstring = [substring stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+    
+    // 使用范围搜索方法检查标准化后的字符串是否包含标准化后的子字符串
+    NSRange range = [normalizedString rangeOfString:normalizedSubstring options:NSLiteralSearch];
+    return range.location != NSNotFound;
 }
 
 @end

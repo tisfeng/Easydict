@@ -127,7 +127,7 @@
 "error_unknown" = "Unknown Error";
 "query_failed" = "Query failed";
 "ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select language and try again.";
-"query_has_no_result" = "⚠️ No results for query";
+"no_results_found" = "⚠ No results found";
 
 "placeholder" = "`Enter` to query, `Shift + Enter` to newline";
 
@@ -137,7 +137,7 @@
 "explain" = "Explanation:";
 "etymology" = "Etymology:";
 "tag" = "Tag:";
-"please_look" = "Please see👉";
+"please_look" = "Please see 👉";
 "us_phonetic" = "US:";
 "uk_phonetic" = "UK:";
 "chinese_phonetic" = "Pronunciation";

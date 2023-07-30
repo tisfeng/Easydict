@@ -643,8 +643,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         result.error = error;
         
-        BOOL unsupportLanguageError = (result.errorType == EZErrorTypeUnsupportedLanguage && error);
-        BOOL hideResult = !result.manulShow && !result.hasTranslatedResult && unsupportLanguageError;
+        BOOL hideResult = !result.manulShow && !result.hasTranslatedResult && result.isWarningErrorType;
         if (hideResult) {
             result.isShowing = NO;
         }

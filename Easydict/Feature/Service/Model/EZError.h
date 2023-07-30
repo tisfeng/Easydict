@@ -13,11 +13,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, EZErrorType) {
+    EZErrorTypeNone,
     EZErrorTypeAPI, // 接口异常
     EZErrorTypeParam, // 参数异常
     EZErrorTypeNetwork, // 网络异常
     EZErrorTypeTimeout, // 超时
     EZErrorTypeUnsupportedLanguage, // 不支持的语言
+    EZErrorTypeNoResultsFound, // 未查询到结果
 };
 
 
