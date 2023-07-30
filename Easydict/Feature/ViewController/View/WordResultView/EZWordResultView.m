@@ -920,19 +920,18 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    NSString *script = @"Math.max(document.body.scrollHeight, document.body.offsetHeight);";
+    NSString *script = @"document.body.scrollHeight;";
     [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         if (!error) {
+            // Cost ~0.4s
             CGFloat contentHeight = [result doubleValue];
-            NSLog(@"Content Height: %f", contentHeight); // Cost ~0.4s
-            
             CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height / 2;
-            CGFloat webViewHeight = MIN(maxHeight, contentHeight);
-            CGFloat viewHeight = kVerticalMargin_12 + self.bottomViewHeigt + webViewHeight;
             
-            if (webViewHeight == contentHeight) {
-                [self disableWebViewScrolling];
-            }
+            // Fix strange white line
+            CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
+            CGFloat viewHeight = kVerticalMargin_12 + self.bottomViewHeigt + webViewHeight;
+                        
+            [self disableWebViewScrolling];
                         
             [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(webViewHeight);
@@ -967,17 +966,13 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
 }
 
-
-/// 禁用 webView 滚动
 - (void)disableWebViewScrolling {
-    NSString *jsCode = @"document.body.style.height = '0px';";
-    [self.webView evaluateJavaScript:jsCode completionHandler:nil];
-
-    [self disableBounceForWebView:self.webView];
+    [self updateStyleHeight:0];
 }
 
-- (void)disableBounceForWebView:(WKWebView *)webView {
-   
+- (void)updateStyleHeight:(CGFloat)height {
+    NSString *jsCode = [NSString stringWithFormat:@"document.body.style.height='%fpx';", height];
+    [self.webView evaluateJavaScript:jsCode completionHandler:nil];
 }
 
 - (void)fetchAllWebViewText {
@@ -985,10 +980,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         if (!error && [result isKindOfClass:[NSString class]]) {
             NSString *webViewText = (NSString *)result;
-            NSLog(@"WKWebView的所有文本：%@", webViewText);
-            
             self.copiedText = webViewText;
-            
             [webViewText copyAndShowToast:YES];
         }
     }];
