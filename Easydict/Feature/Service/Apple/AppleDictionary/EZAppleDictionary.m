@@ -113,33 +113,40 @@
             [dicts addObject:dict];
         }
     }
-        
-    // 添加 CSS 样式
-    NSString *cssStyle = @"<style>"
+    
+    NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+
+    NSString *cssStyle = [NSString stringWithFormat:@"<style>"
                          @"h1 { font-weight: 500; font-size: 22px; margin: 0; text-align: center; }"
                          @"h1::before, h1::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                          @".separator { display: flex; align-items: center; }"
-                         @".separator::before { content: ''; flex: 1; border-top: 1px solid black; margin-right: 2px; }"
-                         @".separator::after { content: ''; flex: 1; border-top: 1px solid black; margin-left: 2px; }"
+                         @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
+                         @".separator::before { margin-right: 2px; }"
+                         @".separator::after { margin-left: 2px; }"
                          @"p { margin-bottom: 40px; }"
-                         @"</style>";
+                         @"@media (prefers-color-scheme: dark) {"
+                         @".separator::before, .separator::after { border-top-color: %@; }"
+                         @"}"
+                         @"</style>", lightSeparatorColorString, darkSeparatorColorString];
 
-    [htmlString appendString:cssStyle];
     
-    // use for int i to rewrite former code
-    for (int i = 0; i < dicts.count; i++) {
-        TTTDictionary *dictionary = dicts[i];
+    for (TTTDictionary *dictionary in dicts) {
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName ?: dictionary.name];
         // 使用 <div> 标签包装标题和分割线的内容
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h1>%@</h1></div>", dictName];
-
+        
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
             NSString *html = entry.HTMLWithAppCSS;
             if (html.length) {
-                // Add titleHtml when there is a html, and only add once.
+                // Add cssStyle and titleHtml when there is a html result, and only add once.
+
+                [htmlString appendString:cssStyle];
+                cssStyle = @"";
+                
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
-                
+
                 [htmlString appendFormat:@"<p>%@</p>", html];
             }
         }
