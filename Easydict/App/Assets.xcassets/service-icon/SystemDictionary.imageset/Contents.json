@@ -5,28 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "base_512x512_Normal.png",
+      "filename" : "510a9fda2f51de7416af54a20772b6cd_MzvUX28YSg.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "universal",
-      "locale" : "zh-Hans",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "zh-Hans_512x512_Normal@2x.png",
-      "idiom" : "universal",
-      "locale" : "zh-Hans",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "locale" : "zh-Hans",
       "scale" : "3x"
     }
   ],
