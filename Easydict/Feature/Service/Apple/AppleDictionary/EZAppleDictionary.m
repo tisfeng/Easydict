@@ -197,14 +197,14 @@
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
     
     NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @"h1 { font-weight: 700; font-size: 25px; margin-top: 25px; margin-bottom: 25px; }"
-                                @"h2 { font-weight: 500; font-size: 20px; margin: 0; text-align: center; }"
+                                @"h1 { font-weight: 700; font-size: 25px; margin-top: 25px; margin-bottom: 20px; }"
+                                @"h2 { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
                                 @"h2::before, h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                                 @".separator { display: flex; align-items: center; }"
                                 @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
                                 @".separator::before { margin-right: 2px; }"
                                 @".separator::after { margin-left: 2px; }"
-                                @"p { margin-bottom: 30px; }"
+                                @"p { margin-top: 5px; margin-bottom: 30px; }"
                                 
                                 @"span.x_xo0>span.x_xoLblBlk {"
                                 @"display: block;"
@@ -224,6 +224,7 @@
                                 @"border-bottom-color: %@;"
                                 @"}"
                                 @"</style>",
+                                
                                 lightSeparatorColorString, liteLightSeparatorColorString,
                                 darkSeparatorColorString, liteDarkSeparatorColorString];
     
