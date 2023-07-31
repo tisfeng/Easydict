@@ -112,6 +112,7 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 @property (readwrite, nonatomic, copy) NSString *text;
 @property (readwrite, nonatomic, copy) NSString *HTML;
 @property (readwrite, nonatomic, copy) NSString *HTMLWithAppCSS;
+@property (readwrite, nonatomic, copy) NSString *HTMLWithPopoverCSS;
 
 @end
 
@@ -130,8 +131,9 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
         self.text = (__bridge_transfer NSString*)DCSRecordCopyData(record, TTTDictionaryVersionText);
     }
     
-    self.HTML = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithPopoverCSS);
+    self.HTML = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTML);
     self.HTMLWithAppCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithAppCSS);
+    self.HTMLWithPopoverCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithPopoverCSS);
     
     return self;
 }

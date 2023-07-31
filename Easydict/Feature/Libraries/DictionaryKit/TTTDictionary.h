@@ -41,9 +41,8 @@
  
  */
 @property (readonly, nonatomic, copy) NSString *HTML;
-
 @property (readonly, nonatomic, copy) NSString *HTMLWithAppCSS;
-
+@property (readonly, nonatomic, copy) NSString *HTMLWithPopoverCSS;
 
 @end
 
