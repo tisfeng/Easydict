@@ -922,11 +922,15 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    // Cost ~0.15s
+    NSLog(@"loaded webView");
     NSString *script = @"document.body.scrollHeight;";
     [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         if (!error) {
-            // Cost ~0.4s
+            // Cost ~0.2s
             CGFloat contentHeight = [result doubleValue];
+            NSLog(@"contentHeight: %.1f", contentHeight);
+            
             CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height / 2;
             
             // Fix strange white line
@@ -934,6 +938,10 @@ static const CGFloat kVerticalPadding_8 = 8;
             CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
                         
             [self disableWebViewScrolling];
+            
+            if (contentHeight > maxHeight) {
+                [self appendBlankLine];
+            }
                         
             [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(webViewHeight);
@@ -955,7 +963,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
         NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
         NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.webkitTextFillColor='%@';", backgroundColorString, titleColorString];
-        [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+        [self evaluateJavaScript:jsCode];
 
     } dark:^(CALayer *layer) {
         // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
@@ -964,17 +972,43 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
         NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
         NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.webkitTextFillColor='%@';", backgroundColorString, titleColorString];
-        [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+        [self evaluateJavaScript:jsCode];
     }];
 }
 
-- (void)disableWebViewScrolling {
-    [self updateStyleHeight:0];
+- (void)updateStyleHeight:(CGFloat)height {
+    NSString *jsCode = [NSString stringWithFormat:@"document.body.style.height = '%fpx';", height];
+    [self evaluateJavaScript:jsCode];
+}
+ 
+- (void)appendBlankLine {
+    NSString *jsCode = @"var div = document.createElement('div');"
+                       @"div.style.height = '1px';"
+                       @"document.body.appendChild(div);"
+                       @"0;";
+    
+    [self evaluateJavaScript:jsCode];
 }
 
-- (void)updateStyleHeight:(CGFloat)height {
-    NSString *jsCode = [NSString stringWithFormat:@"document.body.style.height='%fpx';", height];
-    [self.webView evaluateJavaScript:jsCode completionHandler:nil];
+- (void)disableWebViewScrolling {
+    [self updateStyleHeight:10];
+}
+
+- (void)evaluateJavaScript:(NSString *)jsCode {
+    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            NSLog(@"jsCode: %@", jsCode);
+        }
+        
+        if (result) {
+            NSLog(@"result: %@", result);
+        }
+    }];
+}
+
+- (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
+    [self.webView evaluateJavaScript:jsCode completionHandler:completionHandler];
 }
 
 - (void)fetchAllWebViewText {
