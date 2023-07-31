@@ -40,7 +40,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 @property (nonatomic, copy) NSString *copiedText;
 
-
 @end
 
 
@@ -824,19 +823,13 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     height += self.bottomViewHeigt;
     _viewHeight = height;
-    
-    // webView height need time to calculate, and the value will be called back later.
-    if (result.serviceType == EZServiceTypeAppleDictionary && result.HTMLString.length) {
-        _viewHeight = 0;
-    }
-    
     //    NSLog(@"word result view height: %.1f", height);
     
+
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(audioButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
-    
     
     EZOpenLinkButton *linkButton = [[EZOpenLinkButton alloc] init];
     [self addSubview:linkButton];
@@ -857,6 +850,16 @@ static const CGFloat kVerticalPadding_8 = 8;
         make.left.equalTo(textCopyButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
+    
+    // webView height need time to calculate, and the value will be called back later.
+    if (result.serviceType == EZServiceTypeAppleDictionary) {
+        BOOL hasHTML = result.HTMLString.length > 0;
+        linkButton.enabled = hasHTML;
+
+        if (hasHTML) {
+            _viewHeight = 0;
+        }
+    }
 }
 
 - (void)updateTagButton:(NSButton *)tagButton tagColor:(NSColor *)tagColor {

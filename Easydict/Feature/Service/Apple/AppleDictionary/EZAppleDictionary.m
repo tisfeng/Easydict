@@ -27,6 +27,10 @@
     return type;
 }
 
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    return [NSString stringWithFormat:@"dict://%@", self.queryModel.queryText];
+}
+
 - (NSString *)name {
     return NSLocalizedString(@"system_dictionary", nil);
 }
