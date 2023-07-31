@@ -93,6 +93,8 @@
     // Traditional Chinese
     if ([languages containsObject:EZLanguageTraditionalChinese]) {
         [queryDictNames addObjectsFromArray:@[
+            DCSTraditionalChineseDictionaryName, // 繁体中文
+            DCSTraditionalChineseHongkongDictionaryName, // 繁体中文（香港）
             DCSTraditionalChinese_EnglishDictionaryName, // 繁体中文-英文
             DCSTraditionalChinese_EnglishIdiomDictionaryName, // 繁体中文-英文习语
         ]];
@@ -169,9 +171,6 @@
         DCSSimplifiedChineseIdiomDictionaryName, // 简体中文成语
         DCSSimplifiedChineseThesaurusDictionaryName, // 简体中文同义词词典
         
-        DCSTraditionalChineseDictionaryName, // 繁体中文
-        DCSTraditionalChineseHongkongDictionaryName, // 繁体中文（香港）
-        
         DCSNewOxfordAmericanDictionaryName, // 美式英文
         DCSOxfordAmericanWritersThesaurus, // 美式英文同义词词典
         
@@ -191,24 +190,29 @@
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     
     NSString *cssStyle = [NSString stringWithFormat:@"<style>"
-                          @"h1 { font-weight: 500; font-size: 22px; margin: 0; text-align: center; }"
-                          @"h1::before, h1::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
+                          @"h1 { font-weight: 700; font-size: 25px; margin-bottom: 20px; }"
+                          @"h2 { font-weight: 500; font-size: 20px; margin: 0; text-align: center; }"
+                          @"h2::before, h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                           @".separator { display: flex; align-items: center; }"
                           @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
                           @".separator::before { margin-right: 2px; }"
                           @".separator::after { margin-left: 2px; }"
-                          @"p { margin-bottom: 40px; }"
+                          @"p { margin-bottom: 30px; }"
                           @"@media (prefers-color-scheme: dark) {"
                           @".separator::before, .separator::after { border-top-color: %@; }"
                           @"}"
                           @"</style>", lightSeparatorColorString, darkSeparatorColorString];
     
+    
     NSMutableString *htmlString = [NSMutableString string];
     
+    NSString *bigWordHtml = [NSString stringWithFormat:@"<h1>%@</h1>", text];
+
     for (TTTDictionary *dictionary in dicts) {
+        
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName ?: dictionary.name];
         // 使用 <div> 标签包装标题和分割线的内容
-        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h1>%@</h1></div>", dictName];
+        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2>%@</h2></div>", dictName];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -222,6 +226,9 @@
                 
                 [htmlString appendString:cssStyle];
                 cssStyle = @"";
+                
+                [htmlString appendString:bigWordHtml];
+                bigWordHtml = @"";
                 
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
