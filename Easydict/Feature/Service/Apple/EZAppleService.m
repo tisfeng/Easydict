@@ -460,7 +460,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     
     if (logFlag) {
-        NSLog(@"system probabilities:: %@", languageProbabilityDict);
+        NSLog(@"system probabilities: %@", languageProbabilityDict);
         NSLog(@"dominant Language: %@", dominantLanguage);
         NSLog(@"detect cost: %.1f ms", (endTime - startTime) * 1000); // ~4ms
     }
@@ -485,7 +485,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSDictionary *customHints = @{
         NLLanguageEnglish : @(4.5),
         NLLanguageSimplifiedChinese : @(2.0),
-        NLLanguageTraditionalChinese : @(0.4),
+        NLLanguageTraditionalChinese : @(0.6), // 電池
         NLLanguageJapanese : @(0.25),
         NLLanguageFrench : @(0.2), // const, ex, delimiter, proposition
         NLLanguageKorean : @(0.2),
