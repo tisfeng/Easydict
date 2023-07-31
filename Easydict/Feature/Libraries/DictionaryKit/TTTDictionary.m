@@ -25,39 +25,59 @@
 #import <CoreServices/CoreServices.h>
 
 // Simplified Chinese
-NSString * const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典"; // 简体中文-英文
-NSString * const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
-NSString * const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
-NSString * const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典"; // 简体中文同义词词典
-NSString * const DCSSimplifiedChinese_JapaneseDictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
+NSString *const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
+NSString *const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
+NSString *const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典"; // 简体中文同义词词典
+NSString *const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典"; // 简体中文-英文
+NSString *const DCSSimplifiedChinese_JapaneseDictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
 
 // Traditional Chinese
-NSString * const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
-NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
-NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
-NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
+NSString *const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
+NSString *const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
+NSString *const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
+NSString *const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
 
 // English
-NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
-NSString * const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer’s Thesaurus"; // 美式英文同义词词典
-NSString * const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English"; // 英式英文
-NSString * const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English"; // 英式英文同义词词典
+NSString *const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
+NSString *const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer’s Thesaurus"; // 美式英文同义词词典
+NSString *const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English"; // 英式英文
+NSString *const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English"; // 英式英文同义词词典
 
 // Japanese
-NSString * const DCSJapaneseSupaDaijirinDictionaryName = @"スーパー大辞林"; // 日文
-NSString * const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典"; // 日文-英文
+NSString *const DCSJapaneseDictionaryName = @"スーパー大辞林"; // 日文
+NSString *const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典"; // 日文-英文
 
-NSString * const DCSWikipediaDictionaryName = @"维基百科";
-NSString * const DCSAppleDictionaryName = @"Apple 词典";
+// French
+NSString *const DCSFrenchDictionaryName = @"Multidictionnaire de la langue française"; // 法文
+NSString *const DCSFrench_EnglishDictionaryName = @"Oxford-Hachette French Dictionary"; // 法文-英文
+NSString *const DCSFrench_GermanDictionaryName = @"ONS Großwörterbuch Französisch Deutsch"; // 法文-德文
 
-NSString * const DCSDutchDictionaryName = @"Prisma woordenboek Nederlands";
-NSString * const DCSFrenchDictionaryName = @"Multidictionnaire de la langue française";
-NSString * const DCSGermanDictionaryName = @"Duden-Wissensnetz deutsche Sprache";
-NSString * const DCSItalianDictionaryName = @"Dizionario italiano da un affiliato di Oxford University Press";
-NSString * const DCSKoreanDictionaryName = @"New Ace Korean Language Dictionary";
-NSString * const DCSKorean_EnglishDictionaryName = @"뉴에이스 영한사전 / 뉴에이스 한영사전";
-NSString * const DCSSpanishDictionaryName = @"Diccionario General de la Lengua Española Vox";
+// German
+NSString *const DCSGermanDictionaryName = @"Duden-Wissensnetz deutsche Sprache"; // 德文
+NSString *const DCSGerman_EnglishDictionaryName = @"Oxford German Dictionary"; // 德文-英文
 
+// Italian
+NSString *const DCSItalianDictionaryName = @"Dizionario italiano da un affiliato di Oxford University Press"; // 意大利文
+NSString *const DCSItalian_EnglishDictionaryName = @"Oxford Paravia Il Dizionario inglese - italiano/italiano - inglese"; // 意大利文-英文
+
+// Spanish
+NSString *const DCSSpanishDictionaryName = @"Diccionario General de la Lengua Española Vox"; // 西班牙文
+NSString *const DCSSpanish_EnglishDictionaryName = @"Gran Diccionario Oxford - Español-Inglés • Inglés-Español"; // 西班牙文-英文
+
+// Portugues
+NSString *const DCSPortugueseDictionaryName = @"Dicionário de Português licenciado para Oxford University Press";// 葡萄牙文
+NSString *const DCSPortuguese_EnglishDictionaryName = @"Oxford Portuguese Dictionary - Português-Inglês • Inglês-Português"; // 葡萄牙文-英文
+
+// Dutch
+NSString *const DCSDutchDictionaryName = @"Prisma woordenboek Nederlands"; // 荷兰文
+NSString *const DCSDutch_EnglishDictionaryName = @"Prisma Handwoordenboek Engels"; // 荷兰文-英文
+
+// Korean
+NSString *const DCSKoreanDictionaryName = @"New Ace Korean Language Dictionary"; // 韩文
+NSString *const DCSKorean_EnglishDictionaryName = @"뉴에이스 영한사전 / 뉴에이스 한영사전"; // 韩文-英文
+
+NSString *const DCSWikipediaDictionaryName = @"维基百科";
+NSString *const DCSAppleDictionaryName = @"Apple 词典";
 
 typedef NS_ENUM(NSInteger, TTTDictionaryRecordVersion) {
     TTTDictionaryVersionHTML = 0,
@@ -190,6 +210,10 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     }
 
     return [NSArray arrayWithArray:mutableEntries];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@>", NSStringFromClass([self class]), self, self.name, self.shortName];
 }
 
 #pragma mark - NSObject
