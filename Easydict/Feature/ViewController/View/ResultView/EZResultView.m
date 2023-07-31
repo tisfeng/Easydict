@@ -315,7 +315,7 @@
 
 - (void)updateErrorImage {
     BOOL hideWarningImage = YES;
-    if (!self.result.hasTranslatedResult && (self.result.errorType || self.result.errorMessage.length)) {
+    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorType || self.result.errorMessage.length)) {
         hideWarningImage = NO;
     }
     self.errorImageView.hidden = hideWarningImage;
@@ -332,7 +332,7 @@
 }
 
 - (void)updateRetryButton {
-    BOOL showRetryButton = self.result.errorType && (!self.result.isWarningErrorType);
+    BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
 }
 
