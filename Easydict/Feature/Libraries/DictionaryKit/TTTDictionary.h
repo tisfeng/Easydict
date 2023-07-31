@@ -84,10 +84,10 @@
 /// @name Constants
 
 // Simplified Chinese
-extern NSString * const DCSSimplifiedChinese_EnglishDictionaryName;
 extern NSString * const DCSSimplifiedChineseDictionaryName;
 extern NSString * const DCSSimplifiedChineseIdiomDictionaryName;
 extern NSString * const DCSSimplifiedChineseThesaurusDictionaryName;
+extern NSString * const DCSSimplifiedChinese_EnglishDictionaryName;
 extern NSString * const DCSSimplifiedChinese_JapaneseDictionaryName;
 
 // Traditional Chinese
@@ -96,26 +96,44 @@ extern NSString * const DCSTraditionalChineseHongkongDictionaryName;
 extern NSString * const DCSTraditionalChinese_EnglishDictionaryName;
 extern NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName;
 
-//// English
+// English
 extern NSString * const DCSNewOxfordAmericanDictionaryName;
 extern NSString * const DCSOxfordAmericanWritersThesaurus;
 extern NSString * const DCSOxfordDictionaryOfEnglish;
 extern NSString * const DCSOxfordThesaurusOfEnglish;
 
-//// Japanese
+// Japanese
 extern NSString * const DCSJapaneseDictionaryName;
 extern NSString * const DCSJapanese_EnglishDictionaryName;
 
-extern NSString * const DCSWikipediaDictionaryName;
-extern NSString * const DCSAppleDictionaryName;
-
-
-extern NSString * const DCSDutchDictionaryName;
+// French
 extern NSString * const DCSFrenchDictionaryName;
+extern NSString * const DCSFrench_EnglishDictionaryName;
+
+// German
 extern NSString * const DCSGermanDictionaryName;
+extern NSString * const DCSGerman_EnglishDictionaryName;
+
+// Italian
 extern NSString * const DCSItalianDictionaryName;
-extern NSString * const DCSJapaneseSupaDaijirinDictionaryName;
+extern NSString * const DCSItalian_EnglishDictionaryName;
+
+// Spanish
+extern NSString * const DCSSpanishDictionaryName;
+extern NSString * const DCSSpanish_EnglishDictionaryName;
+
+// Portuguese
+extern NSString * const DCSPortugueseDictionaryName;
+extern NSString * const DCSPortuguese_EnglishDictionaryName;
+
+// Dutch
+extern NSString * const DCSDutchDictionaryName;
+extern NSString * const DCSDutch_EnglishDictionaryName;
+
+// Korean
 extern NSString * const DCSKoreanDictionaryName;
 extern NSString * const DCSKorean_EnglishDictionaryName;
-extern NSString * const DCSSpanishDictionaryName;
+
+
 extern NSString * const DCSWikipediaDictionaryName;
+extern NSString * const DCSAppleDictionaryName;

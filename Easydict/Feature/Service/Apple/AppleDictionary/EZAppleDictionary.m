@@ -33,11 +33,19 @@
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                        EZLanguageAuto, @"auto",
-                                                                        EZLanguageSimplifiedChinese, @"zh",
-                                                                        EZLanguageTraditionalChinese, @"zh",
-                                                                        EZLanguageEnglish, @"en",
-                                                                        nil];
+                                        EZLanguageAuto, EZLanguageAuto,
+                                        EZLanguageSimplifiedChinese, EZLanguageSimplifiedChinese,
+                                        EZLanguageTraditionalChinese, EZLanguageTraditionalChinese,
+                                        EZLanguageEnglish, EZLanguageEnglish,
+                                        EZLanguageJapanese, EZLanguageJapanese,
+                                        EZLanguageKorean, EZLanguageKorean,
+                                        EZLanguageFrench, EZLanguageFrench,
+                                        EZLanguageGerman, EZLanguageGerman,
+                                        EZLanguageSpanish, EZLanguageSpanish,
+                                        EZLanguageItalian, EZLanguageItalian,
+                                        EZLanguagePortuguese, EZLanguagePortuguese,
+                                        EZLanguageDutch, EZLanguageDutch,
+                                        nil];
     return orderedDict;
 }
 
@@ -64,62 +72,112 @@
 #pragma mark -
 
 - (NSString *)getHTMLOfText:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSMutableString *htmlString = [NSMutableString string];;
+//    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
+//    NSLog(@"availableDictionaries: %@", availableDictionaries);
     
-    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
-    for (TTTDictionary *dictionary in availableDictionaries) {
-        NSLog(@"dictionary: %@ (%@)", dictionary.name, dictionary.shortName);
+    NSMutableArray *queryDictNames = [NSMutableArray array];
+    
+    // Simplified Chinese
+    if ([languages containsObject:EZLanguageSimplifiedChinese]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSSimplifiedChinese_EnglishDictionaryName, // 简体中文-英文
+        ]];
+        
+        if ([languages containsObject:EZLanguageJapanese]) {
+            [queryDictNames addObjectsFromArray:@[
+                DCSSimplifiedChinese_JapaneseDictionaryName, // 简体中文-日文
+            ]];
+        }
     }
     
-    /**
-     // Simplified Chinese
-     NSString * const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典"; // 简体中文-英文
-     NSString * const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
-     NSString * const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
-     NSString * const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典"; // 简体中文同义词词典
-     NSString * const DCSSimplifiedChinese_DictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
-
-     // Traditional Chinese
-     NSString * const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
-     NSString * const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
-     NSString * const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
-     NSString * const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
-
-     // English
-     NSString * const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
-     NSString * const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer’s Thesaurus"; // 美式英文同义词词典
-     NSString * const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English"; // 英式英文
-     NSString * const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English"; // 英式英文同义词词典
-
-     // Japanese
-     NSString * const DCSJapaneseSupaDaijirinDictionaryName = @"スーパー大辞林"; // 日文
-     NSString * const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典"; // 日文-英文
-
-     NSString * const DCSWikipediaDictionaryName = @"维基百科";
-     NSString * const DCSAppleDictionaryName = @"Apple 词典";
-     */
-    NSMutableArray *queryDictNames = @[
-        DCSSimplifiedChinese_EnglishDictionaryName, // 牛津英汉汉英词典
-        DCSSimplifiedChineseDictionaryName, // 现代汉语规范词典
-        DCSSimplifiedChineseIdiomDictionaryName, // 汉语成语词典
-        DCSSimplifiedChineseThesaurusDictionaryName, // 现代汉语同义词典
-        
-        DCSTraditionalChineseDictionaryName,
-        DCSTraditionalChineseHongkongDictionaryName,
-        
-        DCSNewOxfordAmericanDictionaryName,
-        DCSOxfordAmericanWritersThesaurus,
-        
-        DCSWikipediaDictionaryName,
-        DCSAppleDictionaryName,
-    ].mutableCopy;
-    
+    // Traditional Chinese
     if ([languages containsObject:EZLanguageTraditionalChinese]) {
         [queryDictNames addObjectsFromArray:@[
-            DCSTraditionalChinese_EnglishDictionaryName,
-            DCSTraditionalChinese_EnglishIdiomDictionaryName,
+            DCSTraditionalChinese_EnglishDictionaryName, // 繁体中文-英文
+            DCSTraditionalChinese_EnglishIdiomDictionaryName, // 繁体中文-英文习语
         ]];
     }
+    
+    // Japanese
+    if ([languages containsObject:EZLanguageJapanese]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSJapanese_EnglishDictionaryName,// 日文-英文
+            DCSJapaneseDictionaryName, // 日文
+        ]];
+    }
+    
+    // French
+    if ([languages containsObject:EZLanguageFrench]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSFrench_EnglishDictionaryName, // 法文-英文
+            DCSFrenchDictionaryName, // 法文
+        ]];
+    }
+    
+    // German
+    if ([languages containsObject:EZLanguageGerman]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSGerman_EnglishDictionaryName, // 德文-英文
+            DCSGermanDictionaryName, // 德文
+        ]];
+    }
+    
+    // Italian
+    if ([languages containsObject:EZLanguageItalian]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSItalian_EnglishDictionaryName, // 意大利文-英文
+            DCSItalianDictionaryName, // 意大利文
+        ]];
+    }
+    
+    // Spanish
+    if ([languages containsObject:EZLanguageSpanish]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSSpanish_EnglishDictionaryName, // 西班牙文-英文
+            DCSSpanishDictionaryName, // 西班牙文
+        ]];
+    }
+    
+    // Portuguese
+    if ([languages containsObject:EZLanguagePortuguese]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSPortuguese_EnglishDictionaryName, // 葡萄牙文-英文
+            DCSPortugueseDictionaryName, // 葡萄牙文
+        ]];
+    }
+    
+    // Dutch
+    if ([languages containsObject:EZLanguageDutch]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSDutch_EnglishDictionaryName, // 荷兰文-英文
+            DCSDutchDictionaryName, // 荷兰文
+        ]];
+    }
+    
+    // Korean
+    if ([languages containsObject:EZLanguageKorean]) {
+        [queryDictNames addObjectsFromArray:@[
+            DCSKorean_EnglishDictionaryName, // 韩文-英文
+            DCSKoreanDictionaryName, // 韩文
+        ]];
+    }
+    
+    
+    // Default dicts
+    [queryDictNames addObjectsFromArray:@[
+        DCSSimplifiedChineseDictionaryName, // 简体中文
+        DCSSimplifiedChineseIdiomDictionaryName, // 简体中文成语
+        DCSSimplifiedChineseThesaurusDictionaryName, // 简体中文同义词词典
+        
+        DCSTraditionalChineseDictionaryName, // 繁体中文
+        DCSTraditionalChineseHongkongDictionaryName, // 繁体中文（香港）
+        
+        DCSNewOxfordAmericanDictionaryName, // 美式英文
+        DCSOxfordAmericanWritersThesaurus, // 美式英文同义词词典
+        
+        DCSWikipediaDictionaryName, // 维基百科
+        DCSAppleDictionaryName, // Apple 词典
+    ]];
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
     for (NSString *name in queryDictNames) {
@@ -131,20 +189,21 @@
     
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-
+    
     NSString *cssStyle = [NSString stringWithFormat:@"<style>"
-                         @"h1 { font-weight: 500; font-size: 22px; margin: 0; text-align: center; }"
-                         @"h1::before, h1::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
-                         @".separator { display: flex; align-items: center; }"
-                         @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
-                         @".separator::before { margin-right: 2px; }"
-                         @".separator::after { margin-left: 2px; }"
-                         @"p { margin-bottom: 40px; }"
-                         @"@media (prefers-color-scheme: dark) {"
-                         @".separator::before, .separator::after { border-top-color: %@; }"
-                         @"}"
-                         @"</style>", lightSeparatorColorString, darkSeparatorColorString];
-
+                          @"h1 { font-weight: 500; font-size: 22px; margin: 0; text-align: center; }"
+                          @"h1::before, h1::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
+                          @".separator { display: flex; align-items: center; }"
+                          @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
+                          @".separator::before { margin-right: 2px; }"
+                          @".separator::after { margin-left: 2px; }"
+                          @"p { margin-bottom: 40px; }"
+                          @"@media (prefers-color-scheme: dark) {"
+                          @".separator::before, .separator::after { border-top-color: %@; }"
+                          @"}"
+                          @"</style>", lightSeparatorColorString, darkSeparatorColorString];
+    
+    NSMutableString *htmlString = [NSMutableString string];
     
     for (TTTDictionary *dictionary in dicts) {
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName ?: dictionary.name];
@@ -160,18 +219,18 @@
             
             if (html.length && isTheSameHeadword) {
                 // Add cssStyle and titleHtml when there is a html result, and only add once.
-
+                
                 [htmlString appendString:cssStyle];
                 cssStyle = @"";
                 
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
-
+                
                 [htmlString appendFormat:@"<p>%@</p>", html];
             }
         }
     }
-        
+    
     return htmlString;
 }
 
