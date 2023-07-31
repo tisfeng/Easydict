@@ -73,14 +73,16 @@ static NSString *const EZQueryKey = @"{Query}";
     NSString *queryText = text.trim ?: @"";
     NSString *encodedText = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
-    NSString *url = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
+    NSString *urlString = [self.link stringByReplacingOccurrencesOfString:EZQueryKey withString:@"%@"];
 
-    if ([url containsString:@"%@"]) {
+    if ([urlString containsString:@"%@"]) {
         // https://www.google.com/search?q=hello
-        url = [NSString stringWithFormat:url, encodedText];
+        urlString = [NSString stringWithFormat:urlString, encodedText];
     }
     
-    NSURL *URL = [NSURL URLWithString:url];
+    // dict://美丽
+    NSURL *URL = [urlString detectLink];;
+    
     // If link is EZGoogleWebSearchURL and queryText is a URL, we should open URL directly.
     if ([self.link isEqualToString:EZGoogleWebSearchURL]) {
         NSURL *detectURL = [queryText detectLink];
