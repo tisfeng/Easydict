@@ -193,7 +193,10 @@
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     
-    NSString *cssStyle = [NSString stringWithFormat:@"<style>"
+    NSString *liteLightSeparatorColorString = @"#BDBDBD";
+    NSString *liteDarkSeparatorColorString = @"#5B5A5A";
+    
+    NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
                           @"h1 { font-weight: 700; font-size: 25px; margin-bottom: 20px; }"
                           @"h2 { font-weight: 500; font-size: 20px; margin: 0; text-align: center; }"
                           @"h2::before, h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
@@ -205,7 +208,23 @@
                           @"@media (prefers-color-scheme: dark) {"
                           @".separator::before, .separator::after { border-top-color: %@; }"
                           @"}"
-                          @"</style>", lightSeparatorColorString, darkSeparatorColorString];
+                          @"span.x_xo0>span.x_xoLblBlk {"
+                          @"display: block;"
+                          @"font-variant: small-caps;"
+                          @"font-size: 90%%;"
+                          @"display: block;"
+                          @"padding-bottom: 0.3em;"
+                          @"border-bottom: solid thin %@;"
+                          @"color: -apple-system-secondary-label;"
+                          @"margin-top: 2em;"
+                          @"margin-bottom: 0.5em;"
+                          @"}"
+                          @"@media (prefers-color-scheme: dark) {"
+                          @"span.x_xo0>span.x_xoLblBlk {"
+                          @"border-bottom-color: %@;"
+                          @"}"
+                          @"</style>"
+                                , lightSeparatorColorString, darkSeparatorColorString, liteLightSeparatorColorString, liteDarkSeparatorColorString];
     
     
     NSMutableString *htmlString = [NSMutableString string];
@@ -227,9 +246,9 @@
             
             if (html.length && isTheSameHeadword) {
                 // Add cssStyle and titleHtml when there is a html result, and only add once.
-                
-                [htmlString appendString:cssStyle];
-                cssStyle = @"";
+                                
+//                [htmlString appendString:cssStyle];
+//                cssStyle = @"";
                 
                 [htmlString appendString:bigWordHtml];
                 bigWordHtml = @"";
@@ -242,7 +261,29 @@
         }
     }
     
+    if (htmlString.length) {
+        [self removeOriginBorderBottomCssStyle:htmlString];
+
+        // 找到第一个 <body> 元素
+        NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
+
+        // 在元素前面插入 CSS 样式
+        [htmlString insertString:customCssStyle atIndex:bodyRange.location];
+    }
+    
     return htmlString;
+}
+
+- (void)removeOriginBorderBottomCssStyle:(NSMutableString *)htmlString {
+    // 使用正则表达式匹配 span.x_xo0>span.x_xoLblBlk 和其后的花括号中的所有内容
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?s)span\\.x_xo0 > span\\.x_xoLblBlk\\s*\\{[^}]*border-bottom:[^}]*\\}" options:0 error:&error];
+    
+    if (!error) {
+        [regex replaceMatchesInString:htmlString options:0 range:NSMakeRange(0, [htmlString length]) withTemplate:@""];
+    } else {
+        NSLog(@"Error in creating regex: %@", [error localizedDescription]);
+    }
 }
 
 - (BOOL)containsSubstring:(NSString *)substring inString:(NSString *)string {
