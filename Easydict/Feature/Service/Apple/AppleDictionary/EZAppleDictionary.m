@@ -58,7 +58,7 @@
         return;
     }
     
-    NSString *htmlString = [self getHTMLOfText:text languages:@[from, to]];
+    NSString *htmlString = [self getHTMLOfText:text languages:@[ from, to ]];
     self.result.HTMLString = htmlString;
     
     if (htmlString.length == 0) {
@@ -76,8 +76,8 @@
 #pragma mark -
 
 - (NSString *)getHTMLOfText:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-//    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
-//    NSLog(@"availableDictionaries: %@", availableDictionaries);
+    //    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
+    //    NSLog(@"availableDictionaries: %@", availableDictionaries);
     
     NSMutableArray *queryDictNames = [NSMutableArray array];
     
@@ -97,9 +97,9 @@
     // Traditional Chinese
     if ([languages containsObject:EZLanguageTraditionalChinese]) {
         [queryDictNames addObjectsFromArray:@[
-            DCSTraditionalChineseDictionaryName, // 繁体中文
-            DCSTraditionalChineseHongkongDictionaryName, // 繁体中文（香港）
-            DCSTraditionalChinese_EnglishDictionaryName, // 繁体中文-英文
+            DCSTraditionalChineseDictionaryName,              // 繁体中文
+            DCSTraditionalChineseHongkongDictionaryName,      // 繁体中文（香港）
+            DCSTraditionalChinese_EnglishDictionaryName,      // 繁体中文-英文
             DCSTraditionalChinese_EnglishIdiomDictionaryName, // 繁体中文-英文习语
         ]];
     }
@@ -107,8 +107,8 @@
     // Japanese
     if ([languages containsObject:EZLanguageJapanese]) {
         [queryDictNames addObjectsFromArray:@[
-            DCSJapanese_EnglishDictionaryName,// 日文-英文
-            DCSJapaneseDictionaryName, // 日文
+            DCSJapanese_EnglishDictionaryName, // 日文-英文
+            DCSJapaneseDictionaryName,         // 日文
         ]];
     }
     
@@ -116,7 +116,7 @@
     if ([languages containsObject:EZLanguageFrench]) {
         [queryDictNames addObjectsFromArray:@[
             DCSFrench_EnglishDictionaryName, // 法文-英文
-            DCSFrenchDictionaryName, // 法文
+            DCSFrenchDictionaryName,         // 法文
         ]];
     }
     
@@ -124,7 +124,7 @@
     if ([languages containsObject:EZLanguageGerman]) {
         [queryDictNames addObjectsFromArray:@[
             DCSGerman_EnglishDictionaryName, // 德文-英文
-            DCSGermanDictionaryName, // 德文
+            DCSGermanDictionaryName,         // 德文
         ]];
     }
     
@@ -132,7 +132,7 @@
     if ([languages containsObject:EZLanguageItalian]) {
         [queryDictNames addObjectsFromArray:@[
             DCSItalian_EnglishDictionaryName, // 意大利文-英文
-            DCSItalianDictionaryName, // 意大利文
+            DCSItalianDictionaryName,         // 意大利文
         ]];
     }
     
@@ -140,7 +140,7 @@
     if ([languages containsObject:EZLanguageSpanish]) {
         [queryDictNames addObjectsFromArray:@[
             DCSSpanish_EnglishDictionaryName, // 西班牙文-英文
-            DCSSpanishDictionaryName, // 西班牙文
+            DCSSpanishDictionaryName,         // 西班牙文
         ]];
     }
     
@@ -148,7 +148,7 @@
     if ([languages containsObject:EZLanguagePortuguese]) {
         [queryDictNames addObjectsFromArray:@[
             DCSPortuguese_EnglishDictionaryName, // 葡萄牙文-英文
-            DCSPortugueseDictionaryName, // 葡萄牙文
+            DCSPortugueseDictionaryName,         // 葡萄牙文
         ]];
     }
     
@@ -156,7 +156,7 @@
     if ([languages containsObject:EZLanguageDutch]) {
         [queryDictNames addObjectsFromArray:@[
             DCSDutch_EnglishDictionaryName, // 荷兰文-英文
-            DCSDutchDictionaryName, // 荷兰文
+            DCSDutchDictionaryName,         // 荷兰文
         ]];
     }
     
@@ -164,22 +164,22 @@
     if ([languages containsObject:EZLanguageKorean]) {
         [queryDictNames addObjectsFromArray:@[
             DCSKorean_EnglishDictionaryName, // 韩文-英文
-            DCSKoreanDictionaryName, // 韩文
+            DCSKoreanDictionaryName,         // 韩文
         ]];
     }
     
     
     // Default dicts
     [queryDictNames addObjectsFromArray:@[
-        DCSSimplifiedChineseDictionaryName, // 简体中文
-        DCSSimplifiedChineseIdiomDictionaryName, // 简体中文成语
+        DCSSimplifiedChineseDictionaryName,          // 简体中文
+        DCSSimplifiedChineseIdiomDictionaryName,     // 简体中文成语
         DCSSimplifiedChineseThesaurusDictionaryName, // 简体中文同义词词典
         
         DCSNewOxfordAmericanDictionaryName, // 美式英文
-        DCSOxfordAmericanWritersThesaurus, // 美式英文同义词词典
+        DCSOxfordAmericanWritersThesaurus,  // 美式英文同义词词典
         
         DCSWikipediaDictionaryName, // 维基百科
-        DCSAppleDictionaryName, // Apple 词典
+        DCSAppleDictionaryName,     // Apple 词典
     ]];
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
@@ -197,42 +197,42 @@
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
     
     NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                          @"h1 { font-weight: 700; font-size: 25px; margin-bottom: 20px; }"
-                          @"h2 { font-weight: 500; font-size: 20px; margin: 0; text-align: center; }"
-                          @"h2::before, h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
-                          @".separator { display: flex; align-items: center; }"
-                          @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
-                          @".separator::before { margin-right: 2px; }"
-                          @".separator::after { margin-left: 2px; }"
-                          @"p { margin-bottom: 30px; }"
-                          @"@media (prefers-color-scheme: dark) {"
-                          @".separator::before, .separator::after { border-top-color: %@; }"
-                          @"}"
-                          @"span.x_xo0>span.x_xoLblBlk {"
-                          @"display: block;"
-                          @"font-variant: small-caps;"
-                          @"font-size: 90%%;"
-                          @"display: block;"
-                          @"padding-bottom: 0.3em;"
-                          @"border-bottom: solid thin %@;"
-                          @"color: -apple-system-secondary-label;"
-                          @"margin-top: 2em;"
-                          @"margin-bottom: 0.5em;"
-                          @"}"
-                          @"@media (prefers-color-scheme: dark) {"
-                          @"span.x_xo0>span.x_xoLblBlk {"
-                          @"border-bottom-color: %@;"
-                          @"}"
-                          @"</style>"
-                                , lightSeparatorColorString, darkSeparatorColorString, liteLightSeparatorColorString, liteDarkSeparatorColorString];
+                                @"h1 { font-weight: 700; font-size: 25px; margin-top: 25px; margin-bottom: 25px; }"
+                                @"h2 { font-weight: 500; font-size: 20px; margin: 0; text-align: center; }"
+                                @"h2::before, h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
+                                @".separator { display: flex; align-items: center; }"
+                                @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
+                                @".separator::before { margin-right: 2px; }"
+                                @".separator::after { margin-left: 2px; }"
+                                @"p { margin-bottom: 30px; }"
+                                
+                                @"span.x_xo0>span.x_xoLblBlk {"
+                                @"display: block;"
+                                @"font-variant: small-caps;"
+                                @"font-size: 90%%;"
+                                @"display: block;"
+                                @"padding-bottom: 0.3em;"
+                                @"border-bottom: solid thin %@;"
+                                @"color: -apple-system-secondary-label;"
+                                @"margin-top: 2em;"
+                                @"margin-bottom: 0.5em;"
+                                @"}"
+                                
+                                @"@media (prefers-color-scheme: dark) {"
+                                @".separator::before, .separator::after { border-top-color: %@; }"
+                                @"span.x_xo0>span.x_xoLblBlk {"
+                                @"border-bottom-color: %@;"
+                                @"}"
+                                @"</style>",
+                                lightSeparatorColorString, liteLightSeparatorColorString,
+                                darkSeparatorColorString, liteDarkSeparatorColorString];
     
     
     NSMutableString *htmlString = [NSMutableString string];
     
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h1>%@</h1>", text];
-
+    
     for (TTTDictionary *dictionary in dicts) {
-        
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName ?: dictionary.name];
         // 使用 <div> 标签包装标题和分割线的内容
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2>%@</h2></div>", dictName];
@@ -245,10 +245,7 @@
             BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
             
             if (html.length && isTheSameHeadword) {
-                // Add cssStyle and titleHtml when there is a html result, and only add once.
-                                
-//                [htmlString appendString:cssStyle];
-//                cssStyle = @"";
+                // Add titleHtml when there is a html result, and only add once.
                 
                 [htmlString appendString:bigWordHtml];
                 bigWordHtml = @"";
@@ -263,10 +260,10 @@
     
     if (htmlString.length) {
         [self removeOriginBorderBottomCssStyle:htmlString];
-
+        
         // 找到第一个 <body> 元素
         NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
-
+        
         // 在元素前面插入 CSS 样式
         [htmlString insertString:customCssStyle atIndex:bodyRange.location];
     }
