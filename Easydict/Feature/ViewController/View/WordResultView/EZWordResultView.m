@@ -957,6 +957,10 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
 
+            if (self.didFinishLoadingHTMLBlock) {
+                self.didFinishLoadingHTMLBlock();
+            }
+            
         } else {
             NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
         }

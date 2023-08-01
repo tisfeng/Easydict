@@ -101,6 +101,11 @@
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
+    
+    [wordResultView setDidFinishLoadingHTMLBlock:^{
+        mm_strongify(self);
+        [self.loadingView startLoading:NO];
+    }];
 
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
