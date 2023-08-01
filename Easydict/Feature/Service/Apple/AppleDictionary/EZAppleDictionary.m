@@ -58,7 +58,7 @@
         return;
     }
     
-    NSString *htmlString = [self getHTMLOfText:text languages:@[ from, to ]];
+    NSString *htmlString = [self getHTMLResultOfWord:text languages:@[ from, to ]];
     self.result.HTMLString = htmlString;
     
     if (htmlString.length == 0) {
@@ -75,11 +75,14 @@
 
 #pragma mark -
 
-- (NSString *)getHTMLOfText:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
+/// Get HTML result of word, cost ~0.2s
+- (NSString *)getHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
     //    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
     //    NSLog(@"availableDictionaries: %@", availableDictionaries);
     
-    NSMutableArray *queryDictNames = [NSMutableArray array];
+    NSMutableArray *queryDictNames = [NSMutableArray arrayWithArray:@[
+        
+    ]];
     
     // Simplified Chinese
     if ([languages containsObject:EZLanguageSimplifiedChinese]) {
@@ -171,15 +174,15 @@
     
     // Default dicts
     [queryDictNames addObjectsFromArray:@[
+        DCSAppleDictionaryName,     // Apple 词典
+        DCSWikipediaDictionaryName, // 维基百科
+        
         DCSSimplifiedChineseDictionaryName,          // 简体中文
         DCSSimplifiedChineseIdiomDictionaryName,     // 简体中文成语
         DCSSimplifiedChineseThesaurusDictionaryName, // 简体中文同义词词典
         
         DCSNewOxfordAmericanDictionaryName, // 美式英文
         DCSOxfordAmericanWritersThesaurus,  // 美式英文同义词词典
-        
-        DCSWikipediaDictionaryName, // 维基百科
-        DCSAppleDictionaryName,     // Apple 词典
     ]];
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
