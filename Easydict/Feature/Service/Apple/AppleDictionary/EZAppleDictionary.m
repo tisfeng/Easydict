@@ -32,7 +32,7 @@
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"system_dictionary", nil);
+    return NSLocalizedString(@"apple_dictionary", nil);
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
