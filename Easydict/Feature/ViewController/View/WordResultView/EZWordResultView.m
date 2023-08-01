@@ -939,12 +939,13 @@ static const CGFloat kVerticalPadding_8 = 8;
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
             CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
-                        
-            [self disableWebViewScrolling];
             
+            // Fix scrollable height.
+            NSMutableString *jsCode = [self jsCodeOfUpdateStyleHeight:webViewHeight].mutableCopy;
             if (contentHeight > maxHeight) {
-                [self appendBlankLine];
+                [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];;
             }
+            [self evaluateJavaScript:jsCode];
                         
             [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(webViewHeight);
@@ -983,32 +984,31 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
 }
 
-- (void)updateStyleHeight:(CGFloat)height {
+- (NSString *)jsCodeOfUpdateStyleHeight:(CGFloat)height {
     NSString *jsCode = [NSString stringWithFormat:@"document.body.style.height = '%fpx';", height];
-    [self evaluateJavaScript:jsCode];
-}
- 
-- (void)appendBlankLine {
-    NSString *jsCode = @"var div = document.createElement('div');"
-                       @"div.style.height = '1px';"
-                       @"document.body.appendChild(div);"
-                       @"0;";
-    
-    [self evaluateJavaScript:jsCode];
+    return jsCode;;
 }
 
-- (void)disableWebViewScrolling {
-    [self updateStyleHeight:10];
+- (NSString *)jsCodeOfOptimizeScrollableWebView {
+    NSString *appendBlankLine = @"var div = document.createElement('div');"
+                                @"div.style.height = '1px';"
+                                @"document.body.appendChild(div);"
+                                @"0;";
+    
+    NSString *showScrollbarBriefly = @"window.scrollTo(0, 1);"
+                                     @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
+    
+    NSString *jsCode = [NSString stringWithFormat:@"%@ %@", appendBlankLine, showScrollbarBriefly];
+    return jsCode;
 }
+
 
 - (void)evaluateJavaScript:(NSString *)jsCode {
     [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         if (error) {
             NSLog(@"error: %@", error);
             NSLog(@"jsCode: %@", jsCode);
-        }
-        
-        if (result) {
+        } else {
             NSLog(@"result: %@", result);
         }
     }];
