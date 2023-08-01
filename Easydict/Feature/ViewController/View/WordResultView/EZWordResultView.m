@@ -85,7 +85,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     mm_weakify(self);
     __block CGFloat ezLabelTopOffset = 0;
     
-    BOOL isWordLength = result.queryText.length && result.queryText.length < EZEnglishWordMaxLength;
+    BOOL isWordLength = result.queryText.length && result.queryText.length <= EZEnglishWordMaxLength;
     BOOL showBigWord = result.wordResult || result.showBigWord;
     if (isWordLength && showBigWord) {
         EZLabel *bigWordLabel = [[EZLabel alloc] init];
@@ -95,7 +95,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(kHorizontalMargin_8);
-            CGFloat topOffset = 8;
+            CGFloat topOffset = 10;
             height += (topOffset + bigWordLabel.height);
             if (lastView) {
                 make.top.equalTo(lastView.mas_bottom).offset(topOffset);
@@ -267,7 +267,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 make.top.offset(topOffset);
             }
             height += topOffset;
-            make.left.right.inset(kHorizontalMargin_8);
+            make.left.right.inset(2);
         }];
         
         lastView = webView;
