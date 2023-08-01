@@ -144,7 +144,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"system_translate", nil);
+    return NSLocalizedString(@"apple_translate", nil);
 }
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {

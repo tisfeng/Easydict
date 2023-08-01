@@ -89,10 +89,10 @@
 "baidu_translate" = "百度翻译";
 "youdao_dict" = "有道词典";
 "deepL_translate" = "DeepL 翻译";
-"system_translate" = "系统翻译";
+"apple_translate" = "苹果翻译";
 "volcano_translate" = "火山翻译";
 "openai_translate" = "OpenAI 翻译";
-"system_dictionary" = "系统词典";
+"apple_dictionary" = "苹果词典";
 
 // disabled app list
 "disabled_app_list" = "禁止名单";
