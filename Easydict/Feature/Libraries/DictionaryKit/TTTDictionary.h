@@ -54,12 +54,12 @@
 @interface TTTDictionary : NSObject
 
 /**
- 
+ CFBundleDisplayName in dict's info.plist
  */
 @property (readonly, nonatomic, copy) NSString *name;
 
 /**
- 
+ CFBundleName in dict's info.plist
  */
 @property (readonly, nonatomic, copy) NSString *shortName;
 
@@ -69,7 +69,7 @@
 + (NSSet<TTTDictionary *> *)availableDictionaries;
 
 /**
- 
+ Get dict with CFBundleDisplayName
  */
 + (instancetype)dictionaryNamed:(NSString *)name;
 
