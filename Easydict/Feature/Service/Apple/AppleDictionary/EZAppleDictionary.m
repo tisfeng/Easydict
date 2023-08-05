@@ -88,8 +88,6 @@
     if ([languages containsObject:EZLanguageSimplifiedChinese]) {
         [queryDictNames addObjectsFromArray:@[
             DCSSimplifiedChinese_EnglishDictionaryName, // 简体中文-英文
-            @"新世纪英汉大词典",
-            @"柯林斯高阶英汉双解学习词典",
         ]];
         
         if ([languages containsObject:EZLanguageJapanese]) {
@@ -188,13 +186,21 @@
     ]];
     
     // test a dict html
-//    queryDictNames = [NSMutableArray arrayWithArray:@[
-////        @"新世纪英汉大词典",
-////        @"有道词语辨析",
-////        @"牛津高阶英汉双解词典(第8版)",
-////        @"牛津高阶英汉双解词典（第9版）",
-////        @"牛津高阶英汉双解词典(第10版)",
-//    ]];
+    BOOL test = NO;
+    if (test) {
+        queryDictNames = [NSMutableArray arrayWithArray:@[
+            //        @"新世纪英汉大词典",
+            //        @"柯林斯高阶英汉双解学习词典",
+            //        @"新世纪英汉大词典",
+            //        @"有道词语辨析",
+            //        @"牛津高阶英汉双解词典(第8版)",
+            //        @"牛津高阶英汉双解词典（第9版）",
+            //        @"牛津高阶英汉双解词典(第10版)",
+            
+            DCSSimplifiedChinese_EnglishDictionaryName,
+        ]];
+    }
+
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
     for (NSString *name in queryDictNames) {
@@ -210,52 +216,63 @@
 
     NSString *liteLightSeparatorColorString = @"#BDBDBD";
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
+    NSString *bigWordTitle = @"big-word-title";
+    NSString *dictName = @"dict-name";
+    NSString *customParagraph = @"custom-paragraph";
 
-    NSString *customH1 = @"isfeng-custom-h1";
-    NSString *customH2 = @"isfeng-custom-h2";
-    NSString *customParagraph = @"custom-p";
-    
+    // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @"isfeng-custom-h1 { font-weight: 600; font-size: 24px; margin-top: 10px; margin-bottom: 18px; }"
-                                @"isfeng-custom-h2 { font-weight: 450; font-size: 18px; margin: 0; text-align: center; }"
-                                @"isfeng-custom-h2::before, custom-h2::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
+                                @".%@ { font-weight: 600; font-size: 24px; margin-top: -5px; margin-bottom: -10px; }"
+                                @".%@ { font-weight: 450; font-size: 18px; margin: 0; text-align: center; }"
+                                @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                                 @".separator { display: flex; align-items: center; }"
                                 @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
                                 @".separator::before { margin-right: 2px; }"
                                 @".separator::after { margin-left: 2px; }"
-                                @"isfeng-custom-p { margin-top: 10px; margin-bottom: 25px; }"
-
-                                @"span.x_xo0>span.x_xoLblBlk {"
-                                @"display: block;"
-                                @"font-variant: small-caps;"
-                                @"font-size: 90%%;"
-                                @"display: block;"
-                                @"padding-bottom: 0.3em;"
-                                @"border-bottom: solid thin %@;"
-                                @"color: -apple-system-secondary-label;"
-                                @"margin-top: 2em;"
-                                @"margin-bottom: 0.5em;"
-                                @"}"
-
-                                @"@media (prefers-color-scheme: dark) {"
-                                @".separator::before, .separator::after { border-top-color: %@; }"
-                                @"span.x_xo0>span.x_xoLblBlk {"
-                                @"border-bottom-color: %@;"
-                                @"}"
+                                
+                                @".%@ { margin-top: -10px; margin-bottom: -10px; }"
                                 @"</style>",
+                                
+                                bigWordTitle, dictName, dictName, dictName, lightSeparatorColorString, customParagraph];
 
-                                lightSeparatorColorString, liteLightSeparatorColorString,
-                                darkSeparatorColorString, liteDarkSeparatorColorString];
-
+    // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
+    NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
+                                 @".x_xo0 .x_xoLblBlk {"
+                                 @"display: block;"
+                                 @"font-variant: small-caps;"
+                                 @"font-size: 90%%;"
+                                 @"display: block;"
+                                 @"padding-bottom: 0.3em;"
+                                 @"border-bottom: solid thin %@;"
+                                 @"color: -apple-system-secondary-label;"
+                                 @"margin-top: 2em;"
+                                 @"margin-bottom: 0.5em;"
+                                 @"}"
+                                 @".separator::before, .separator::after {"
+                                 @"border-top-color: %@;"
+                                 @"}"
+                                 @".x_xo0 .x_xoLblBlk {"
+                                 @"border-bottom-color: %@;"
+                                 @"}"
+                                 @"@media (prefers-color-scheme: dark) {"
+                                 @".separator::before, .separator::after { border-top-color: %@; }"
+                                 @".x_xo0 .x_xoLblBlk {"
+                                 @"border-bottom-color: %@;"
+                                 @"}"
+                                 @"}"
+                                 @"</style>",
+                                 
+                                 liteLightSeparatorColorString, lightSeparatorColorString, liteDarkSeparatorColorString,
+                                 darkSeparatorColorString, liteDarkSeparatorColorString];
 
     NSMutableString *htmlString = [NSMutableString string];
 
-    NSString *bigWordHtml = [NSString stringWithFormat:@"<%@>%@</%@>", customH1, text, customH1];
+    NSString *bigWordHtml = [NSString stringWithFormat:@"<h1 class=\"%@\">%@</h1>", bigWordTitle, text];
 
     for (TTTDictionary *dictionary in dicts) {
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
         // Use <div> tag to wrap the title and separator content
-        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><%@>%@</%@></div>", customH2, dictName, customH2];
+        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictName, dictName];
 
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -267,26 +284,29 @@
             if (html.length && isTheSameHeadword) {
                 // Add titleHtml when there is a html result, and only add once.
 
+                [htmlString appendString:customCssStyle];
+                customCssStyle = @"";
+                
                 [htmlString appendString:bigWordHtml];
                 bigWordHtml = @"";
 
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
 
-                [htmlString appendFormat:@"<%@>%@</%@>", customParagraph, html, customParagraph];
+                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraph, html];
             }
         }
     }
-    
+
     if (htmlString.length) {
         // TODO:
         [self removeOriginBorderBottomCssStyle:htmlString];
         
-        // 找到第一个 <body> 元素
+        // Find the first <body> element
         NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
         
-        // 在元素前面插入 CSS 样式
-        [htmlString insertString:customCssStyle atIndex:bodyRange.location];
+        // Replace the system's span.x_xo0>span.x_xoLblBlk style to fix the separator color issue in dark mode.
+        [htmlString insertString:replaceCssStyle atIndex:bodyRange.location];
     }
     
     return htmlString;
