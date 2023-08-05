@@ -780,6 +780,10 @@ static EZWindowManager *_instance;
     [self.floatingWindow.queryViewController copyQueryText];
 }
 
+- (void)copyFirstTranslatedText {
+    [self.floatingWindow.queryViewController copyFirstTranslatedText];
+}
+
 - (void)pin {
     NSLog(@"Pin");
     
