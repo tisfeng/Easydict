@@ -496,6 +496,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.inputText copyAndShowToast:YES];
 }
 
+- (void)copyFirstTranslatedText {
+    if (self.firstService) {
+        [self.firstService.result.translatedText copyAndShowToast:YES];
+    }
+}
+
 - (void)toggleTranslationLanguages {
     [self.selectLanguageCell toggleTranslationLanguages];
 }

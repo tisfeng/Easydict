@@ -230,6 +230,10 @@ static EZMenuItemManager *_instance;
     [EZWindowManager.shared copyQueryText];
 }
 
+- (IBAction)copyFirstTranslatedTextAction:(NSMenuItem *)sender {
+    [EZWindowManager.shared copyFirstTranslatedText];
+}
+
 - (IBAction)pinAction:(NSMenuItem *)sender {
     [EZWindowManager.shared pin];
 }
