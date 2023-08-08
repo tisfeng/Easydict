@@ -95,7 +95,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
         [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(kHorizontalMargin_8);
-            CGFloat topOffset = 10;
+            CGFloat topOffset = 8;
             height += (topOffset + bigWordLabel.height);
             if (lastView) {
                 make.top.equalTo(lastView.mas_bottom).offset(topOffset);
