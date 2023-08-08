@@ -186,18 +186,20 @@
     ]];
     
     // test a dict html
-    BOOL test = NO;
+    BOOL test = YES;
     if (test) {
-        queryDictNames = [NSMutableArray arrayWithArray:@[
+//        [queryDictNames removeAllObjects];
+        
+        [queryDictNames addObjectsFromArray:@[
             //        @"新世纪英汉大词典",
             //        @"柯林斯高阶英汉双解学习词典",
             //        @"新世纪英汉大词典",
             //        @"有道词语辨析",
-            //        @"牛津高阶英汉双解词典(第8版)",
+//                    @"牛津高阶英汉双解词典（第8版）",
             //        @"牛津高阶英汉双解词典（第9版）",
             //        @"牛津高阶英汉双解词典(第10版)",
             
-            DCSSimplifiedChinese_EnglishDictionaryName,
+//            DCSSimplifiedChinese_EnglishDictionaryName,
         ]];
     }
 
@@ -216,27 +218,28 @@
 
     NSString *liteLightSeparatorColorString = @"#BDBDBD";
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
-    NSString *bigWordTitle = @"big-word-title";
-    NSString *dictName = @"dict-name";
-    NSString *customParagraph = @"custom-paragraph";
+    NSString *bigWordTitleH1Class = @"big-word-title";
+    NSString *dictNameClassH2Class = @"dict-name";
+    NSString *customParagraphClass = @"custom-paragraph";
 
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @".%@ { font-weight: 600; font-size: 24px; margin-top: -5px; margin-bottom: -10px; }"
-                                @".%@ { font-weight: 450; font-size: 18px; margin: 0; text-align: center; }"
+                                @".%@ { font-weight: 600; font-size: 24px; margin-top: -5px; margin-bottom: 10px; }"
+                                @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
                                 @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                                 @".separator { display: flex; align-items: center; }"
                                 @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
                                 @".separator::before { margin-right: 2px; }"
                                 @".separator::after { margin-left: 2px; }"
                                 
-                                @".%@ { margin-top: -10px; margin-bottom: -10px; }"
+                                @".%@ { margin-top: 5px; margin-bottom: 15px; }"
                                 @"</style>",
                                 
-                                bigWordTitle, dictName, dictName, dictName, lightSeparatorColorString, customParagraph];
+                                bigWordTitleH1Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customParagraphClass];
 
     // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
     NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
+                                 @"body { margin: 10px;  }"
                                  @".x_xo0 .x_xoLblBlk {"
                                  @"display: block;"
                                  @"font-variant: small-caps;"
@@ -267,12 +270,12 @@
 
     NSMutableString *htmlString = [NSMutableString string];
 
-    NSString *bigWordHtml = [NSString stringWithFormat:@"<h1 class=\"%@\">%@</h1>", bigWordTitle, text];
+    NSString *bigWordHtml = [NSString stringWithFormat:@"<h1 class=\"%@\">%@</h1>", bigWordTitleH1Class, text];
 
     for (TTTDictionary *dictionary in dicts) {
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
         // Use <div> tag to wrap the title and separator content
-        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictName, dictName];
+        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
 
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -293,7 +296,7 @@
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
 
-                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraph, html];
+                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraphClass, html];
             }
         }
     }
