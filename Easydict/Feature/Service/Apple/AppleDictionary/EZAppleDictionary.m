@@ -191,6 +191,7 @@
         [queryDictNames removeAllObjects];
         
         [queryDictNames addObjectsFromArray:@[
+//            @"简明英汉字典",
             @"柯林斯高阶英汉双解词典",
             //        @"新世纪英汉大词典",
             //        @"柯林斯高阶英汉双解学习词典",
@@ -214,6 +215,13 @@
     }
     NSLog(@"query dicts: %@", [dicts debugDescription]);
     
+    NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+    NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    
+    NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+    NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    
+    
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
 
@@ -221,11 +229,18 @@
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *dictNameClassH2Class = @"dict-name";
-    NSString *customParagraphClass = @"custom-paragraph";
+    NSString *customIframeContainerClass = @"custom-iframe-container";
 
+    
+    NSString *iframeCSS = [NSString stringWithFormat:@"<style>"
+                                @".%@ { margin-top: 5px; margin-bottom: 15px; width: 100%%; }"
+                                @"</style>",
+                                 customIframeContainerClass];
+    
     // Custom CSS styles for headings, separator, and paragraphs
-    NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @".%@ { font-weight: 600; font-size: 25px; margin-top: -5px; margin-bottom: 10px; }"
+    NSString *customCSS = [NSString stringWithFormat:@"<style>"
+
+                                @".%@ { font-weight: 600; font-size: 25px; margin-top: 0px; margin-bottom: 10px; }"
                                 @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
                                 @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                                 @".separator { display: flex; align-items: center; }"
@@ -233,14 +248,20 @@
                                 @".separator::before { margin-right: 2px; }"
                                 @".separator::after { margin-left: 2px; }"
                                 
-                                @".%@ { margin-top: 5px; margin-bottom: 15px; }"
+                                @".%@ { margin-top: 5px; margin-bottom: 15px; width: 100%%; }"
+                           
+                                @"body { color: %@; background-color: %@; }"
+
+                                @"@media (prefers-color-scheme: dark) {"
+                                @"body { color: %@; background-color: %@; }"
+                                @"}"
                                 @"</style>",
                                 
-                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customParagraphClass];
+                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString];
 
     // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
-    NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
-                                 @"body { margin: 10px 10px;  }"
+    NSString *replaceCSS = [NSString stringWithFormat:@"<style>"
+//                                 @"body { margin: 10px 10px;  }"
                                  @".x_xo0 .x_xoLblBlk {"
                                  @"display: block;"
                                  @"font-variant: small-caps;"
@@ -269,12 +290,39 @@
                                  liteLightSeparatorColorString, lightSeparatorColorString, liteDarkSeparatorColorString,
                                  darkSeparatorColorString, liteDarkSeparatorColorString];
 
-    NSMutableString *htmlString = [NSMutableString string];
+
+    
+    NSString *adjustIframeHeight = @""
+    @"function adjustIframeHeight(iframeId) {"
+    @"  const iframe = document.getElementById(iframeId);"
+    @"  if (iframe) {"
+    @"    const contentHeight = iframe.contentWindow.document.documentElement.scrollHeight;"
+    @"    const borderHeight = parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
+    @"    const paddingHeight = parseInt(getComputedStyle(iframe).paddingTop) * 2;"
+    @"    iframe.style.height = contentHeight + borderHeight + paddingHeight + \"px\";"
+    @"  }"
+    @"}";
+    
+//    NSString *adjustIframeHeight = @""
+//      "function adjustIframeHeight(iframeId) {"
+//      "    var iframe = document.getElementById(iframeId);"
+//      "    if (iframe) {"
+//      "        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';"
+//      "    }"
+//      "}";
+    
+    NSMutableString *jsCode = [ NSMutableString stringWithFormat:@"<script>"
+                               @"%@"
+                               @"</script>", adjustIframeHeight];
+    
+    NSMutableString *iframeHtmlString = [NSMutableString string];
 
     /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, text];
 
     for (TTTDictionary *dictionary in dicts) {
+        NSMutableString *htmlString = [NSMutableString string];
+
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
         // Use <div> tag to wrap the title and separator content
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
@@ -288,33 +336,54 @@
 
             if (html.length && isTheSameHeadword) {
                 // Add titleHtml when there is a html result, and only add once.
-
-                [htmlString appendString:customCssStyle];
-                customCssStyle = @"";
                 
                 [htmlString appendString:bigWordHtml];
                 bigWordHtml = @"";
 
                 [htmlString appendString:titleHtml];
                 titleHtml = @"";
-
-                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraphClass, html];
+                
+                [htmlString appendFormat:@"%@", html];
+                
+                // Adapt dark mode
+                [self removeOriginBorderBottomCssStyle:htmlString];
+                // Find the first <body> element
+                NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
+                // Replace the system's span.x_xo0>span.x_xoLblBlk style to fix the separator color issue in dark mode.
+                [htmlString insertString:replaceCSS atIndex:bodyRange.location];
             }
         }
-    }
+        
+        if (htmlString.length) {
+            NSString *iframeID = dictionary.ID;
+            
+            // Create an iframe for each HTML content
+            NSString *iframeContent = [NSString stringWithFormat:@"<iframe id=\"%@\" class=\"%@\" srcdoc=\"%@%@\" onload=\"adjustIframeHeight('%@')\"></iframe>", iframeID, customIframeContainerClass, [customCSS escapedHTMLString], [htmlString escapedHTMLString], iframeID];
 
-    if (htmlString.length) {
-        // TODO:
-        [self removeOriginBorderBottomCssStyle:htmlString];
-        
-        // Find the first <body> element
-        NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
-        
-        // Replace the system's span.x_xo0>span.x_xoLblBlk style to fix the separator color issue in dark mode.
-        [htmlString insertString:replaceCssStyle atIndex:bodyRange.location];
+            [iframeHtmlString appendString:iframeContent];
+        }
+
     }
     
-    return htmlString;
+    NSString *iframePage = nil;
+    
+    if (iframeHtmlString.length) {
+        iframePage = [NSString stringWithFormat:@"<html><head>%@%@%@</head><body>%@</body></html>", customCSS, iframeCSS, jsCode, iframeHtmlString];
+    }
+
+
+//    if (htmlString.length) {
+//        // TODO:
+//        [self removeOriginBorderBottomCssStyle:htmlString];
+//
+//        // Find the first <body> element
+//        NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
+//
+//        // Replace the system's span.x_xo0>span.x_xoLblBlk style to fix the separator color issue in dark mode.
+//        [htmlString insertString:replaceCssStyle atIndex:bodyRange.location];
+//    }
+    
+    return iframePage;
 }
 
 - (void)removeOriginBorderBottomCssStyle:(NSMutableString *)htmlString {

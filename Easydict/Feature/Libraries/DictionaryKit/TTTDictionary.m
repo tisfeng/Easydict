@@ -188,6 +188,8 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     self.dictionary = dictionary;
     self.name = (__bridge NSString *)DCSDictionaryGetName(self.dictionary);
     self.shortName = (__bridge NSString *)DCSDictionaryGetShortName(self.dictionary);
+    
+    _ID = [NSUUID UUID].UUIDString;
 
     return self;
 }
