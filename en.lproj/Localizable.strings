@@ -94,6 +94,8 @@
 "volcano_translate" = "Volcano Translate";
 "openai_translate" = "OpenAI Translate";
 "apple_dictionary" = "System Dictionary";
+"microsoft_translate" = "Microsoft Translate";
+
 
 // disabled app list
 "disabled_app_list" = "Disabled";

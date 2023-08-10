@@ -17,6 +17,8 @@ NSString *const EZServiceTypeApple = @"Apple";
 NSString *const EZServiceTypeDeepL = @"DeepL";
 NSString *const EZServiceTypeVolcano = @"Volcano";
 NSString *const EZServiceTypeOpenAI = @"OpenAI";
+NSString *const EZServiceTypeMicrosoft = @"Microsoft";
+
 
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 

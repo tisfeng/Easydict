@@ -197,6 +197,10 @@
 		03F0DB382953428300EBF9C1 /* EZLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F0DB372953428300EBF9C1 /* EZLog.m */; };
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
+		6220AD5B2A82812300BBFB52 /* EZMicrosoftService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZMicrosoftService.m */; };
+		6295DE312A84D82E006145F4 /* EZMicrosoftTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZMicrosoftTranslateModel.m */; };
+		6295DE342A84EF76006145F4 /* EZMicrosoftLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZMicrosoftLookupModel.m */; };
+		62A2D03F2A82967F007EEB01 /* EZMicrosoftRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZMicrosoftRequest.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -585,6 +589,14 @@
 		03F25CB129327BC200E66A12 /* EZShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZShortcut.h; sourceTree = "<group>"; };
 		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
+		6220AD592A82812300BBFB52 /* EZMicrosoftService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMicrosoftService.h; sourceTree = "<group>"; };
+		6220AD5A2A82812300BBFB52 /* EZMicrosoftService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMicrosoftService.m; sourceTree = "<group>"; };
+		6295DE2F2A84D82E006145F4 /* EZMicrosoftTranslateModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMicrosoftTranslateModel.h; sourceTree = "<group>"; };
+		6295DE302A84D82E006145F4 /* EZMicrosoftTranslateModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMicrosoftTranslateModel.m; sourceTree = "<group>"; };
+		6295DE322A84EF76006145F4 /* EZMicrosoftLookupModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMicrosoftLookupModel.h; sourceTree = "<group>"; };
+		6295DE332A84EF76006145F4 /* EZMicrosoftLookupModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMicrosoftLookupModel.m; sourceTree = "<group>"; };
+		62A2D03D2A82967F007EEB01 /* EZMicrosoftRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMicrosoftRequest.h; sourceTree = "<group>"; };
+		62A2D03E2A82967F007EEB01 /* EZMicrosoftRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMicrosoftRequest.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1048,6 +1060,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				6220AD582A8280E800BBFB52 /* Microsoft */,
 				0399C6A929A8608000B4AFCC /* OpenAI */,
 				03F14A382956011400CB7379 /* Volcano */,
 				03BD281B29481BE100F5891A /* AudioPlayer */,
@@ -1694,6 +1707,21 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
+		6220AD582A8280E800BBFB52 /* Microsoft */ = {
+			isa = PBXGroup;
+			children = (
+				6220AD592A82812300BBFB52 /* EZMicrosoftService.h */,
+				6220AD5A2A82812300BBFB52 /* EZMicrosoftService.m */,
+				62A2D03D2A82967F007EEB01 /* EZMicrosoftRequest.h */,
+				62A2D03E2A82967F007EEB01 /* EZMicrosoftRequest.m */,
+				6295DE2F2A84D82E006145F4 /* EZMicrosoftTranslateModel.h */,
+				6295DE302A84D82E006145F4 /* EZMicrosoftTranslateModel.m */,
+				6295DE322A84EF76006145F4 /* EZMicrosoftLookupModel.h */,
+				6295DE332A84EF76006145F4 /* EZMicrosoftLookupModel.m */,
+			);
+			path = Microsoft;
+			sourceTree = "<group>";
+		};
 		713A345D86B5BC86D158B68F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1934,6 +1962,7 @@
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
+				6295DE342A84EF76006145F4 /* EZMicrosoftLookupModel.m in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
@@ -1998,6 +2027,7 @@
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
+				6295DE312A84D82E006145F4 /* EZMicrosoftTranslateModel.m in Sources */,
 				0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */,
 				03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */,
 				03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */,
@@ -2009,6 +2039,7 @@
 				039CC90D292F664E0037B91E /* NSObject+EZWindowType.m in Sources */,
 				03B0232229231FA6001C7E63 /* NSImage+MM.m in Sources */,
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
+				62A2D03F2A82967F007EEB01 /* EZMicrosoftRequest.m in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
@@ -2060,6 +2091,7 @@
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
+				6220AD5B2A82812300BBFB52 /* EZMicrosoftService.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
@@ -2133,7 +2165,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = Q37CNASBM2;
 				INFOPLIST_FILE = EasydictHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2158,7 +2190,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = Q37CNASBM2;
 				INFOPLIST_FILE = EasydictHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2304,7 +2336,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = Q37CNASBM2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";
@@ -2340,7 +2372,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = Q37CNASBM2;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(TARGET_NAME)/App/Info.plist";

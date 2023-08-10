@@ -37,6 +37,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeDeepL;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeMicrosoft;
 
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;

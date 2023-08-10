@@ -14,6 +14,7 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
+#import "EZMicrosoftService.h"
 #import "EZConfiguration.h"
 #import "EZAppleDictionary.h"
 
@@ -29,7 +30,7 @@
 static EZServiceTypes *_instance;
 
 + (instancetype)shared {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_instance) {
             _instance = [[super allocWithZone:NULL] init];
         }
@@ -47,15 +48,16 @@ static EZServiceTypes *_instance;
 
 - (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                       //  EZServiceTypeOpenAI, [EZOpenAIService class],
-                       EZServiceTypeYoudao, [EZYoudaoTranslate class],
-                       EZServiceTypeAppleDictionary,  [EZAppleDictionary class],
-                       EZServiceTypeDeepL, [EZDeepLTranslate class],
-                       EZServiceTypeGoogle, [EZGoogleTranslate class],
-                       EZServiceTypeApple, [EZAppleService class],
-                       EZServiceTypeBaidu, [EZBaiduTranslate class],
-                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
-                       nil];
+                                           //  EZServiceTypeOpenAI, [EZOpenAIService class],
+                                           EZServiceTypeYoudao, [EZYoudaoTranslate class],
+                                           EZServiceTypeAppleDictionary, [EZAppleDictionary class],
+                                           EZServiceTypeDeepL, [EZDeepLTranslate class],
+                                           EZServiceTypeGoogle, [EZGoogleTranslate class],
+                                           EZServiceTypeApple, [EZAppleService class],
+                                           EZServiceTypeBaidu, [EZBaiduTranslate class],
+                                           EZServiceTypeVolcano, [EZVolcanoTranslate class],
+                                           EZServiceTypeMicrosoft, [EZMicrosoftService class],
+                                           nil];
     if ([EZConfiguration.shared isBeta]) {
         [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
     }
@@ -72,7 +74,7 @@ static EZServiceTypes *_instance;
     NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in types) {
         EZQueryService *service = [self serviceWithType:type];
-        // May be OpenAI has been disabled.
+        // Maybe OpenAI has been disabled.
         if (service) {
             [services addObject:service];
         }
