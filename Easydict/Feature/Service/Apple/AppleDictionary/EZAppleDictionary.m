@@ -188,9 +188,10 @@
     // test a dict html
     BOOL test = YES;
     if (test) {
-//        [queryDictNames removeAllObjects];
+        [queryDictNames removeAllObjects];
         
         [queryDictNames addObjectsFromArray:@[
+            @"柯林斯高阶英汉双解词典",
             //        @"新世纪英汉大词典",
             //        @"柯林斯高阶英汉双解学习词典",
             //        @"新世纪英汉大词典",
@@ -218,13 +219,13 @@
 
     NSString *liteLightSeparatorColorString = @"#BDBDBD";
     NSString *liteDarkSeparatorColorString = @"#5B5A5A";
-    NSString *bigWordTitleH1Class = @"big-word-title";
+    NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *dictNameClassH2Class = @"dict-name";
     NSString *customParagraphClass = @"custom-paragraph";
 
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @".%@ { font-weight: 600; font-size: 24px; margin-top: -5px; margin-bottom: 10px; }"
+                                @".%@ { font-weight: 600; font-size: 25px; margin-top: -5px; margin-bottom: 10px; }"
                                 @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
                                 @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
                                 @".separator { display: flex; align-items: center; }"
@@ -235,11 +236,11 @@
                                 @".%@ { margin-top: 5px; margin-bottom: 15px; }"
                                 @"</style>",
                                 
-                                bigWordTitleH1Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customParagraphClass];
+                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customParagraphClass];
 
     // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
     NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
-                                 @"body { margin: 10px;  }"
+                                 @"body { margin: 10px 10px;  }"
                                  @".x_xo0 .x_xoLblBlk {"
                                  @"display: block;"
                                  @"font-variant: small-caps;"
@@ -270,7 +271,8 @@
 
     NSMutableString *htmlString = [NSMutableString string];
 
-    NSString *bigWordHtml = [NSString stringWithFormat:@"<h1 class=\"%@\">%@</h1>", bigWordTitleH1Class, text];
+    /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
+    NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, text];
 
     for (TTTDictionary *dictionary in dicts) {
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
