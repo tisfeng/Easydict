@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^MicrosoftTranslateCompletion)(NSData * _Nullable result, NSData * _Nullable lookup, NSError * _Nullable error);
+static NSString * const kTranslatorHost = @"https://www.bing.com/translator";
+
+typedef void(^MicrosoftTranslateCompletion)(NSData * _Nullable translateData, NSData * _Nullable lookupData, NSError * _Nullable translateError, NSError * _Nullable lookupError);
 
 @interface EZMicrosoftRequest : NSObject
 
