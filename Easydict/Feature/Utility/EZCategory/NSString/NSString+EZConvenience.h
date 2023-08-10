@@ -33,6 +33,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)encode;
 
+/// Replace \" with &quot;
+- (NSString *)escapedHTMLString;
+
+
 - (void)copyToPasteboard;
 - (void)copyToPasteboardSafely;
 
