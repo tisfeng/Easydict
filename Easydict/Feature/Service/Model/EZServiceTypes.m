@@ -14,11 +14,12 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
+#import "EZMicrosoftService.h"
 #import "EZConfiguration.h"
 
 @interface EZServiceTypes ()
 
-@property (nonatomic, strong) MMOrderedDictionary<EZServiceType, Class> *allServiceDict;
+@property(nonatomic, strong) MMOrderedDictionary<EZServiceType, Class> *allServiceDict;
 
 @end
 
@@ -46,14 +47,15 @@ static EZServiceTypes *_instance;
 
 - (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                       //  EZServiceTypeOpenAI, [EZOpenAIService class],
-                       EZServiceTypeYoudao, [EZYoudaoTranslate class],
-                       EZServiceTypeDeepL, [EZDeepLTranslate class],
-                       EZServiceTypeGoogle, [EZGoogleTranslate class],
-                       EZServiceTypeApple, [EZAppleService class],
-                       EZServiceTypeBaidu, [EZBaiduTranslate class],
-                       EZServiceTypeVolcano, [EZVolcanoTranslate class],
-                       nil];
+            //  EZServiceTypeOpenAI, [EZOpenAIService class],
+            EZServiceTypeYoudao, [EZYoudaoTranslate class],
+            EZServiceTypeDeepL, [EZDeepLTranslate class],
+            EZServiceTypeGoogle, [EZGoogleTranslate class],
+            EZServiceTypeApple, [EZAppleService class],
+            EZServiceTypeBaidu, [EZBaiduTranslate class],
+            EZServiceTypeVolcano, [EZVolcanoTranslate class],
+            EZServiceTypeMicrosoft, [EZMicrosoftService class],
+                    nil];
     if ([EZConfiguration.shared isBeta]) {
         [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
     }
@@ -70,7 +72,7 @@ static EZServiceTypes *_instance;
     NSMutableArray *services = [NSMutableArray array];
     for (EZServiceType type in types) {
         EZQueryService *service = [self serviceWithType:type];
-        // May be OpenAI has been disabled.
+        // Maybe OpenAI has been disabled.
         if (service) {
             [services addObject:service];
         }

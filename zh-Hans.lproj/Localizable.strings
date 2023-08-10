@@ -92,6 +92,7 @@
 "system_translate" = "系统翻译";
 "volcano_translate" = "火山翻译";
 "openai_translate" = "OpenAI 翻译";
+"microsoft_translate" = "微软翻译";
 
 // disabled app list
 "disabled_app_list" = "禁止名单";

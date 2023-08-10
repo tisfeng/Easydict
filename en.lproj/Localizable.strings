@@ -93,6 +93,7 @@
 "system_translate" = "System Translation";
 "volcano_translate" = "Volcano Translate";
 "openai_translate" = "OpenAI Translate";
+"microsoft_translate" = "Microsoft Translate";
 
 
 // disabled app list
