@@ -1653,10 +1653,10 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
     // Two Chinese words length
-    CGFloat threshold = 60;
+    CGFloat threshold = 80;
     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
-        threshold = 210; // This value is related to the font size, take the average.
+        threshold = 230; // This value is related to the font size, take the average, and a bit larger.
     }
     
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
