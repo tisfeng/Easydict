@@ -179,6 +179,48 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     return _availableDictionariesKeyedByName[name];
 }
 
++ (NSArray<NSString *> *)allBuildInDictNames {
+    static NSArray *_allBuildInDictNames = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _allBuildInDictNames = @[
+                                 DCSSimplifiedChineseDictionaryName,
+                                 DCSSimplifiedChineseIdiomDictionaryName,
+                                 DCSSimplifiedChineseThesaurusDictionaryName,
+                                 DCSSimplifiedChinese_EnglishDictionaryName,
+                                 DCSSimplifiedChinese_JapaneseDictionaryName,
+                                 DCSTraditionalChineseDictionaryName,
+                                 DCSTraditionalChineseHongkongDictionaryName,
+                                 DCSTraditionalChinese_EnglishDictionaryName,
+                                 DCSTraditionalChinese_EnglishIdiomDictionaryName,
+                                 DCSNewOxfordAmericanDictionaryName,
+                                 DCSOxfordAmericanWritersThesaurus,
+                                 DCSOxfordDictionaryOfEnglish,
+                                 DCSOxfordThesaurusOfEnglish,
+                                 DCSJapaneseDictionaryName,
+                                 DCSJapanese_EnglishDictionaryName,
+                                 DCSFrenchDictionaryName,
+                                 DCSFrench_EnglishDictionaryName,
+                                 DCSGermanDictionaryName,
+                                 DCSGerman_EnglishDictionaryName,
+                                 DCSItalianDictionaryName,
+                                 DCSItalian_EnglishDictionaryName,
+                                 DCSSpanishDictionaryName,
+                                 DCSSpanish_EnglishDictionaryName,
+                                 DCSPortugueseDictionaryName,
+                                 DCSPortuguese_EnglishDictionaryName,
+                                 DCSDutchDictionaryName,
+                                 DCSDutch_EnglishDictionaryName,
+                                 DCSKoreanDictionaryName,
+                                 DCSKorean_EnglishDictionaryName,
+                                 DCSWikipediaDictionaryName,
+                                 DCSAppleDictionaryName,
+                                 ];
+    });
+    
+    return _allBuildInDictNames;
+}
+
 - (instancetype)initWithDictionaryRef:(DCSDictionaryRef)dictionary {
     self = [self init];
     if (!self || !dictionary) {
@@ -188,6 +230,8 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     self.dictionary = dictionary;
     self.name = (__bridge NSString *)DCSDictionaryGetName(self.dictionary);
     self.shortName = (__bridge NSString *)DCSDictionaryGetShortName(self.dictionary);
+    
+    _isBuildIn = [[[self class] allBuildInDictNames] containsObject:self.name];
     
     _ID = [NSUUID UUID].UUIDString;
 
@@ -217,7 +261,7 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@>", NSStringFromClass([self class]), self, self.name, self.shortName];
+    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@, isBuildIn: %d, ID: %@>", NSStringFromClass([self class]), self, self.name, self.shortName, _isBuildIn, _ID];
 }
 
 #pragma mark - NSObject
