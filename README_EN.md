@@ -3,24 +3,20 @@
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
-<a href="./README.md">
-        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
-            alt="中文 README"></a>
-<a href="./README_EN.md">
-        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
-            alt="English README"></a>
 <a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
-        <img src="https://img.shields.io/github/license/tisfeng/easydict"
+<img src="https://img.shields.io/github/license/tisfeng/easydict"
             alt="License"></a>
 <a href="https://github.com/tisfeng/Easydict/releases">
-        <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
+<img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
             alt="Downloads"></a>
 <a href="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white">
-        <img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white"
+<img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white"
             alt="macOS"></a>  
 </p>
 
-## Easydict | [中文](./README.md)
+<div align="center">
+<a href="./README.md">中文</a> | <a href="./README_EN.md">English</a>
+</div>
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
