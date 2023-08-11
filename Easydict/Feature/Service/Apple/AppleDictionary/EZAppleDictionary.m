@@ -29,7 +29,7 @@
 }
 
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    return [NSString stringWithFormat:@"dict://%@", self.queryModel.queryText];
+    return [NSString stringWithFormat:@"dict://%@", self.queryModel.queryText.encode];
 }
 
 - (NSString *)name {
