@@ -67,6 +67,8 @@
 /// ID is a uuid
 @property (readonly, nonatomic, copy) NSString *ID;
 
+@property (readonly, nonatomic, assign) BOOL isBuildIn;
+
 /**
  
  */

@@ -929,48 +929,93 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSLog(@"loaded webView");
     NSString *script = @"document.body.scrollHeight;";
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-            if (!error) {
-                // Cost ~0.2s
-                CGFloat contentHeight = [result doubleValue];
-                NSLog(@"contentHeight: %.1f", contentHeight);
-                
-                CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.45;
-                
-                // Fix strange white line
-                CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
-                CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
-                
-                // Fix scrollable height.
-                NSMutableString *jsCode = [self jsCodeOfUpdateStyleHeight:webViewHeight].mutableCopy;
-                if (contentHeight > maxHeight) {
-                    [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];;
-                }
-                [self evaluateJavaScript:jsCode];
-                            
-                [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
-                    make.height.mas_equalTo(webViewHeight);
-                }];
-                
-                // !!!: Must update view height, then update cell height.
-                if (self.updateViewHeightBlock) {
-                    self.updateViewHeightBlock(viewHeight);
-                }
-                
-                [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
-
-                if (self.didFinishLoadingHTMLBlock) {
-                    self.didFinishLoadingHTMLBlock();
-                }
-                
-            } else {
-                NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
-            }
-        }];
-
-    });
+    mm_weakify(self);
     
+    [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (!error) {
+            mm_strongify(self);
+            
+            // Cost ~0.2s
+            CGFloat contentHeight = [result doubleValue];
+            NSLog(@"contentHeight: %.1f", contentHeight);
+            
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.45;
+            
+            // Fix strange white line
+            CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
+            CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
+            
+            // Fix scrollable height.
+            NSMutableString *jsCode = [self jsCodeOfUpdateStyleHeight:webViewHeight].mutableCopy;
+            if (contentHeight > maxHeight) {
+                [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];;
+            }
+            [self evaluateJavaScript:jsCode];
+                        
+            [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(webViewHeight);
+            }];
+            
+            // !!!: Must update view height, then update cell height.
+            if (self.updateViewHeightBlock) {
+                self.updateViewHeightBlock(viewHeight);
+            }
+            
+            [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
+
+            if (self.didFinishLoadingHTMLBlock) {
+                self.didFinishLoadingHTMLBlock();
+            }
+            
+        } else {
+            NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
+        }
+    }];
+    
+
+    NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+
+    NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+
+        [webView.layer excuteLight:^(CALayer *layer) {
+            mm_strongify(self);
+
+            NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+            NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+
+            NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+            [self evaluateJavaScript:updateColorJSCode];
+            
+            
+            NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
+            [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+                if (!error) {
+                    NSArray *iframeIds = (NSArray *)result;
+                    NSLog(@"Found iframe ids: %@", iframeIds);
+                    [self updateIframes:iframeIds color:lightColorString backgroundColor:lightBackgroundColorString];
+                }
+                
+            }];
+        } dark:^(CALayer *layer) {
+            mm_strongify(self);
+
+            NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+            NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+
+            NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+            [self evaluateJavaScript:updateColorJSCode];
+            
+            NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
+            [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+                if (!error) {
+                    NSArray *iframeIds = (NSArray *)result;
+                    NSLog(@"Found iframe ids: %@", iframeIds);
+                    [self updateIframes:iframeIds color:darkColorString backgroundColor:darkBackgroundColorString];
+                }
+            }];
+        }];
         
 //    [webView.layer excuteLight:^(CALayer *layer) {
 //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
@@ -981,12 +1026,30 @@ static const CGFloat kVerticalPadding_8 = 8;
 //    } dark:^(CALayer *layer) {
 //        // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
 //        // [webView evaluateJavaScript:@"document.body.style.webkitTextFillColor=\"#FF0000\"" completionHandler:nil];
-//        
+//
 //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
 //        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
 //        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
 //        [self evaluateJavaScript:jsCode];
 //    }];
+}
+
+- (void)updateIframes:(NSArray<NSString *> *)iframeIds color:(NSString *)color backgroundColor:(NSString *)backgroundColor  {
+    for (NSString *iframeId in iframeIds) {
+        [self updateIframeColorWithID:iframeId color:color backgroundColor:backgroundColor];
+    }
+}
+
+
+- (void)updateIframeColorWithID:(NSString *)iframeId color:(NSString *)color backgroundColor:(NSString *)backgroundColor  {
+    NSString *jsCode = [NSString stringWithFormat:@"\
+                        var iframe = document.getElementById('%@');\
+                        if (iframe) {\
+                            var style = iframe.contentWindow.document.body.style;\
+                            style.color = '%@';\
+                            style.backgroundColor = '%@';\
+                        }", iframeId,  color, backgroundColor];
+    [self evaluateJavaScript:jsCode];
 }
 
 - (NSString *)jsCodeOfUpdateStyleHeight:(CGFloat)height {
