@@ -18,6 +18,8 @@
 <a href="./README.md">中文</a> | <a href="./README_EN.md">English</a>
 </div>
 
+## Easydict
+
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
@@ -53,6 +55,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ## Table of contents
 
+- [Easydict](#easydict)
 - [Features](#features)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
