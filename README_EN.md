@@ -53,7 +53,6 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 ## Table of contents
 
-- [Easydict | 中文](#easydict--中文)
 - [Features](#features)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
@@ -177,7 +176,7 @@ The shortcut key to select words can work normally in any application. If you en
 
 The flow of the crossword function: Accessibility > AppleScript > simulated shortcuts, giving priority to the secondary function Accessibility fetching, and if Accessibility fetching fails (unauthorized or not supported by the application), if it is a browser application (e.g. Safari, Chrome), it will try to use AppleScript fetching. If the AppleScript fetching still fails, then the final forced fetching is done - simulating the shortcut Cmd+C to fetch the word.
 
-Therefore, it is recommended to turn on the Allow JavaScript in Apple events option in your browser to avoid event blocking on certain web pages, such as those with [forced copyright information]((https://github.com/tisfeng/Easydict/issues/85)), and to optimize the word fetching experience. For Safari users, it is highly recommended that this option be turned on, as Safari does not support Accessibility fetching, and AppleScript fetching is far superior to simulating shortcuts.
+Therefore, it is recommended to turn on the Allow JavaScript in Apple events option in your browser to avoid event blocking on certain web pages, such as those with [forced copyright information](<(https://github.com/tisfeng/Easydict/issues/85)>), and to optimize the word fetching experience. For Safari users, it is highly recommended that this option be turned on, as Safari does not support Accessibility fetching, and AppleScript fetching is far superior to simulating shortcuts.
 
 <div>
     <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115811617-1688788691.png" width="45%">
@@ -425,22 +424,22 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 If you don't want your username to be displayed in the list, please choose anonymous.
 
-|  **日期**  |  **用户**  | **金额** |                                                          **留言**                                                           |
-| :--------: | :--------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
-| 2023-05-22 |     🍑     |    50    |                                                          感谢开源                                                           |
-| 2023-05-22 |     -      |   200    |                                                                                                                             |
-| 2023-05-22 |     -      |   150    |                                                                                                                             |
-| 2023-05-24 |    陈佩    |    50    |      加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)）      |
-| 2023-05-27 |   自由。   |   100    |                                                            感谢                                                             |
-| 2023-06-01 |    梦遇    |    10    |                                                            感谢                                                             |
-| 2023-06-05 | 挨揍的免子 |    1     |                                                           谢谢 🙏                                                           |
-| 2023-06-17 |    妙才    |    5     |                                                             ❤️                                                              |
-| 2023-06-19 |     1      |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
-| 2023-06-19 |   许冠英   |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
-| 2023-06-20 | lidashuang |    10    |                                                            感谢                                                             |
-| 2023-07-03 | 小阳 | 2 |  |
-| 2023-07-06 |  | 30 | 谢谢 |
-| 2023-07-11 | 清清🎵在努力✨ | 20 |  |
-| 2023-07-21 |  | 50 | ty |
-| 2023-07-25 |  | 10 | 感谢开源  |
-| 2023-08-07 | guanyuan | 58 | 开源万岁  |
+|  **日期**  |     **用户**      | **金额** |                                                          **留言**                                                           |
+| :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
+| 2023-05-22 |        🍑         |    50    |                                                          感谢开源                                                           |
+| 2023-05-22 |         -         |   200    |                                                                                                                             |
+| 2023-05-22 |         -         |   150    |                                                                                                                             |
+| 2023-05-24 |       陈佩        |    50    |      加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)）      |
+| 2023-05-27 |      自由。       |   100    |                                                            感谢                                                             |
+| 2023-06-01 |       梦遇        |    10    |                                                            感谢                                                             |
+| 2023-06-05 |    挨揍的免子     |    1     |                                                           谢谢 🙏                                                           |
+| 2023-06-17 |       妙才        |    5     |                                                             ❤️                                                              |
+| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
+| 2023-06-19 |      许冠英       |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
+| 2023-06-20 |    lidashuang     |    10    |                                                            感谢                                                             |
+| 2023-07-03 |       小阳        |    2     |                                                                                                                             |
+| 2023-07-06 |                   |    30    |                                                            谢谢                                                             |
+| 2023-07-11 | 清清 🎵 在努力 ✨ |    20    |                                                                                                                             |
+| 2023-07-21 |                   |    50    |                                                             ty                                                              |
+| 2023-07-25 |                   |    10    |                                                          感谢开源                                                           |
+| 2023-08-07 |     guanyuan      |    58    |                                                          开源万岁                                                           |
