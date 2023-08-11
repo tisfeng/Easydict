@@ -92,7 +92,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         [self addSubview:bigWordLabel];
         bigWordLabel.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
         bigWordLabel.text = result.queryText;
-
+        
         [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(kHorizontalMargin_8);
             CGFloat topOffset = 8;
@@ -127,7 +127,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             explainLabel.text = NSLocalizedString(@"explain", nil);
             
             CGSize labelSize = [explainLabel oneLineSize];
-
+            
             [explainLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 if (lastView) {
                     make.top.equalTo(lastView.mas_bottom).offset(explainTextFieldTopOffset);
@@ -136,7 +136,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
                 make.left.mas_equalTo(kHorizontalMargin_8);
                 exceptedWidth += kHorizontalMargin_8;
-
+                
                 make.size.mas_equalTo(labelSize).priorityHigh();
                 exceptedWidth += ceil(labelSize.width);
             }];
@@ -188,7 +188,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 
                 // ???: This means the label text has more than 2 lines, so we need to adjust the top offset.
                 if (labelSize.height > explainLabel.height * 2) {
-//                    ezLabelTopOffset = -1;
+                    //                    ezLabelTopOffset = -1;
                 }
                 
                 if (explainLabel) {
@@ -199,7 +199,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                     }
                     make.left.equalTo(explainLabel.mas_right);
                 }
-
+                
                 height += (topOffset + labelSize.height);
                 // NSLog(@"height = %1.f", height);
             }];
@@ -301,7 +301,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         }];
         phoneticTagLabel.mas_key = @"phoneticsLabel";
         lastView = phoneticTagLabel;
-
+        
         // 部分没有音标文本
         EZLabel *phoneticLabel = nil;
         if (obj.value.length) {
@@ -326,7 +326,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         
         EZAudioButton *audioButton = [[EZAudioButton alloc] init];
         [self addSubview:audioButton];
-
+        
         EZAudioPlayer *audioPlayer = [[EZAudioPlayer alloc] init];
         audioPlayer.service = result.service;
         audioButton.audioPlayer = audioPlayer;
@@ -723,7 +723,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             make.size.mas_equalTo(labelSize).priorityHigh();
             height += labelSize.height;
             exceptedWidth += ceil(labelSize.width);
-
         }];
         etymologyLabel.mas_key = @"etymologyLabel";
         lastView = etymologyLabel;
@@ -789,7 +788,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         wordPhonetic.language = language;
         [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:result.serviceType];
     }];
-
+    
     audioButton.mas_key = @"result_audioButton";
     
     EZCopyButton *textCopyButton = [[EZCopyButton alloc] init];
@@ -825,7 +824,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     _viewHeight = height;
     //    NSLog(@"word result view height: %.1f", height);
     
-
+    
     [textCopyButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(audioButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
@@ -855,7 +854,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     if (result.serviceType == EZServiceTypeAppleDictionary) {
         BOOL hasHTML = result.HTMLString.length > 0;
         linkButton.enabled = hasHTML;
-
+        
         if (hasHTML) {
             _viewHeight = 0;
         }
@@ -931,7 +930,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     mm_weakify(self);
     
-    [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+    [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error) {
             mm_strongify(self);
             
@@ -948,10 +947,11 @@ static const CGFloat kVerticalPadding_8 = 8;
             // Fix scrollable height.
             NSMutableString *jsCode = [self jsCodeOfUpdateStyleHeight:webViewHeight].mutableCopy;
             if (contentHeight > maxHeight) {
-                [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];;
+                [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];
+                ;
             }
             [self evaluateJavaScript:jsCode];
-                        
+            
             [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
                 make.height.mas_equalTo(webViewHeight);
             }];
@@ -962,7 +962,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             }
             
             [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
-
+            
             if (self.didFinishLoadingHTMLBlock) {
                 self.didFinishLoadingHTMLBlock();
             }
@@ -972,99 +972,98 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
     
-
+    
     NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-
+    
     NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-
-        [webView.layer excuteLight:^(CALayer *layer) {
-            mm_strongify(self);
-
-            NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-            NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-
-            NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-            [self evaluateJavaScript:updateColorJSCode];
-            
-            
-            NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
-            [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
-                if (!error) {
-                    NSArray *iframeIds = (NSArray *)result;
-                    NSLog(@"Found iframe ids: %@", iframeIds);
-                    [self updateIframes:iframeIds color:lightColorString backgroundColor:lightBackgroundColorString];
-                }
-                
-            }];
-        } dark:^(CALayer *layer) {
-            mm_strongify(self);
-
-            NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-            NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-
-            NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-            [self evaluateJavaScript:updateColorJSCode];
-            
-            NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
-            [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
-                if (!error) {
-                    NSArray *iframeIds = (NSArray *)result;
-                    NSLog(@"Found iframe ids: %@", iframeIds);
-                    [self updateIframes:iframeIds color:darkColorString backgroundColor:darkBackgroundColorString];
-                }
-            }];
-        }];
+    
+    [webView.layer excuteLight:^(CALayer *layer) {
+        mm_strongify(self);
         
-//    [webView.layer excuteLight:^(CALayer *layer) {
-//        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-//        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-//        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-//        [self evaluateJavaScript:jsCode];
-//
-//    } dark:^(CALayer *layer) {
-//        // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
-//        // [webView evaluateJavaScript:@"document.body.style.webkitTextFillColor=\"#FF0000\"" completionHandler:nil];
-//
-//        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-//        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-//        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-//        [self evaluateJavaScript:jsCode];
-//    }];
+        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+        
+        NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+        [self evaluateJavaScript:updateColorJSCode];
+        
+        
+        NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
+        [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+            if (!error) {
+                NSArray *iframeIds = (NSArray *)result;
+                NSLog(@"Found iframe ids: %@", iframeIds);
+                [self updateIframes:iframeIds color:lightColorString backgroundColor:lightBackgroundColorString];
+            }
+        }];
+    } dark:^(CALayer *layer) {
+        mm_strongify(self);
+        
+        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+        
+        NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+        [self evaluateJavaScript:updateColorJSCode];
+        
+        NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
+        [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+            if (!error) {
+                NSArray *iframeIds = (NSArray *)result;
+                NSLog(@"Found iframe ids: %@", iframeIds);
+                [self updateIframes:iframeIds color:darkColorString backgroundColor:darkBackgroundColorString];
+            }
+        }];
+    }];
+    
+    //    [webView.layer excuteLight:^(CALayer *layer) {
+    //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+    //        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    //        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+    //        [self evaluateJavaScript:jsCode];
+    //
+    //    } dark:^(CALayer *layer) {
+    //        // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
+    //        // [webView evaluateJavaScript:@"document.body.style.webkitTextFillColor=\"#FF0000\"" completionHandler:nil];
+    //
+    //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+    //        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    //        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
+    //        [self evaluateJavaScript:jsCode];
+    //    }];
 }
 
-- (void)updateIframes:(NSArray<NSString *> *)iframeIds color:(NSString *)color backgroundColor:(NSString *)backgroundColor  {
+- (void)updateIframes:(NSArray<NSString *> *)iframeIds color:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     for (NSString *iframeId in iframeIds) {
         [self updateIframeColorWithID:iframeId color:color backgroundColor:backgroundColor];
     }
 }
 
 
-- (void)updateIframeColorWithID:(NSString *)iframeId color:(NSString *)color backgroundColor:(NSString *)backgroundColor  {
+- (void)updateIframeColorWithID:(NSString *)iframeId color:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@"\
                         var iframe = document.getElementById('%@');\
                         if (iframe) {\
                             var style = iframe.contentWindow.document.body.style;\
                             style.color = '%@';\
                             style.backgroundColor = '%@';\
-                        }", iframeId,  color, backgroundColor];
+                        }", iframeId, color, backgroundColor];
     [self evaluateJavaScript:jsCode];
 }
 
 - (NSString *)jsCodeOfUpdateStyleHeight:(CGFloat)height {
     NSString *jsCode = [NSString stringWithFormat:@"document.body.style.height = '%fpx';", height];
-    return jsCode;;
+    return jsCode;
 }
 
 - (NSString *)jsCodeOfOptimizeScrollableWebView {
     NSString *appendBlankLine = @"var div = document.createElement('div');"
-                                @"div.style.height = '1px';"
-                                @"document.body.appendChild(div);"
-                                @"0;";
+    @"div.style.height = '1px';"
+    @"document.body.appendChild(div);"
+    @"0;";
     
     NSString *showScrollbarBriefly = @"window.scrollTo(0, 1);"
-                                     @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
+    @"setTimeout(function () { window.scrollTo(0, 0); }, 0);";
     
     NSString *jsCode = [NSString stringWithFormat:@"%@ %@", appendBlankLine, showScrollbarBriefly];
     return jsCode;
@@ -1072,7 +1071,7 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 
 - (void)evaluateJavaScript:(NSString *)jsCode {
-    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (error) {
             NSLog(@"error: %@", error);
             NSLog(@"jsCode: %@", jsCode);
@@ -1082,13 +1081,13 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
 }
 
-- (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
+- (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^_Nullable)(_Nullable id, NSError *_Nullable error))completionHandler {
     [self.webView evaluateJavaScript:jsCode completionHandler:completionHandler];
 }
 
 - (void)fetchAllWebViewText {
     NSString *jsCode = @"document.body.innerText;";
-    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error && [result isKindOfClass:[NSString class]]) {
             NSString *webViewText = (NSString *)result;
             self.copiedText = webViewText;
