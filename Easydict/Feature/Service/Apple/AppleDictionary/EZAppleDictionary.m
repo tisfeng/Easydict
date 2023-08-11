@@ -109,8 +109,6 @@
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
 
-    NSString *liteLightSeparatorColorString = @"#BDBDBD";
-    NSString *liteDarkSeparatorColorString = @"#5B5A5A";
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *dictNameClassH2Class = @"dict-name";
     NSString *customIframeContainerClass = @"custom-iframe-container";
@@ -123,8 +121,11 @@
     
     NSString *iframeCSS = [NSString stringWithFormat:@"<style>"
                                 @".%@ { margin 0px; padding: 0px; width: %fpx; border: 1px solid black; }"
+                           @"@media (prefers-color-scheme: dark) {"
+                           @".%@ { border: 1px solid white; }"
+                           @"}"
                                 @"</style>",
-                                 customIframeContainerClass, iframeWidth];
+                                 customIframeContainerClass, iframeWidth, customIframeContainerClass];
     
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
@@ -143,10 +144,11 @@
 
                                 @"@media (prefers-color-scheme: dark) {"
                                 @"body { color: %@; background-color: %@; }"
+                                @".separator::before, .separator::after { border-top-color: %@; }"
                                 @"}"
                                 @"</style>",
                                 
-                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString];
+                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString, darkSeparatorColorString];
     
     NSString *adjustIframeHeight = @""
     @"function adjustIframeHeight(iframeId) {"
