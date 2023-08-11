@@ -101,22 +101,20 @@
             NSLog(@"microsoft lookup error %@", lookupError);
         }
         
-        BOOL success = [self processTranslateResult:translateData failedCallback:^(NSError *error) {
-            self.result.error = error;
+        NSError * error = [self processTranslateResult:translateData];
+        if (error) {
             completion(nil, error);
-        }];
-        if (!success) return;
-        
+            return;
+        }
         [self processWordPart:lookupData];
         completion(self.result ,translateError);
     }];
 }
 
-- (BOOL)processTranslateResult:(NSData *)translateData failedCallback:(void(^)(NSError *))failedCallback {
+- (nullable NSError *)processTranslateResult:(NSData *)translateData {
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
-        failedCallback(EZTranslateError(EZErrorTypeAPI, @"microsoft json parse failed", nil));
-        return NO;
+        return EZTranslateError(EZErrorTypeAPI, @"microsoft json parse failed", nil);
     }
     EZMicrosoftTranslateModel *translateModel = [EZMicrosoftTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
     self.result.from = [self languageEnumFromCode:translateModel.detectedLanguage.language];
@@ -125,7 +123,7 @@
     self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZMicrosoftTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return obj.text;
     }];
-    return YES;
+    return nil;
 }
 
 - (void)processWordPart:(NSData *)lookupData {
