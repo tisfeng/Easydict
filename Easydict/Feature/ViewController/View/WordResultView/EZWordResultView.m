@@ -972,83 +972,52 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
     
-    
-    NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    [webView excuteLight:^(WKWebView *webView) {
+        mm_strongify(self);
+        [self updateWebViewBackgroundColorWithDarkMode:NO];
+    } dark:^(WKWebView *webView) {
+        mm_strongify(self);
+        [self updateWebViewBackgroundColorWithDarkMode:YES];
+    }];
+}
+
+- (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
+    NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     
-    NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
     
-    [webView.layer excuteLight:^(CALayer *layer) {
-        mm_strongify(self);
-        
-        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-        
-        NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-        [self evaluateJavaScript:updateColorJSCode];
-        
-        
-        NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
-        [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
-            if (!error) {
-                NSArray *iframeIds = (NSArray *)result;
-                NSLog(@"Found iframe ids: %@", iframeIds);
-                [self updateIframes:iframeIds color:lightColorString backgroundColor:lightBackgroundColorString];
-            }
-        }];
-    } dark:^(CALayer *layer) {
-        mm_strongify(self);
-        
-        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-        
-        NSString *updateColorJSCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-        [self evaluateJavaScript:updateColorJSCode];
-        
-        NSString *jsCode = @"Array.from(document.querySelectorAll('iframe')).map(iframe => iframe.id);";
-        [webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
-            if (!error) {
-                NSArray *iframeIds = (NSArray *)result;
-                NSLog(@"Found iframe ids: %@", iframeIds);
-                [self updateIframes:iframeIds color:darkColorString backgroundColor:darkBackgroundColorString];
-            }
-        }];
-    }];
+    NSString *textColorString = isDark ? darkTextColorString : lightTextColorString;
+    NSString *backgroundColorString = isDark ? darkBackgroundColorString : lightBackgroundColorString;
     
-    //    [webView.layer excuteLight:^(CALayer *layer) {
-    //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-    //        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-    //        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-    //        [self evaluateJavaScript:jsCode];
-    //
-    //    } dark:^(CALayer *layer) {
-    //        // [webView evaluateJavaScript:@"document.body.style.backgroundColor=\"#303132\"" completionHandler:nil];
-    //        // [webView evaluateJavaScript:@"document.body.style.webkitTextFillColor=\"#FF0000\"" completionHandler:nil];
-    //
-    //        NSString *backgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-    //        NSString *titleColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-    //        NSString *jsCode = [NSString stringWithFormat:@"document.body.style.backgroundColor='%@'; document.body.style.color='%@';", backgroundColorString, titleColorString];
-    //        [self evaluateJavaScript:jsCode];
-    //    }];
-}
-
-- (void)updateIframes:(NSArray<NSString *> *)iframeIds color:(NSString *)color backgroundColor:(NSString *)backgroundColor {
-    for (NSString *iframeId in iframeIds) {
-        [self updateIframeColorWithID:iframeId color:color backgroundColor:backgroundColor];
-    }
-}
-
-
-- (void)updateIframeColorWithID:(NSString *)iframeId color:(NSString *)color backgroundColor:(NSString *)backgroundColor {
-    NSString *jsCode = [NSString stringWithFormat:@"\
-                        var iframe = document.getElementById('%@');\
-                        if (iframe) {\
-                            var style = iframe.contentWindow.document.body.style;\
-                            style.color = '%@';\
-                            style.backgroundColor = '%@';\
-                        }", iframeId, color, backgroundColor];
+    NSString *updateBodyColorJSCode = [self jsCodeOfUpdateBodyTextColor:textColorString backgroundColor:backgroundColorString];
+   NSString *updateIframeColorJSCode = [self jsCodeOfUpdateAllIframeTextColor:textColorString backgroundColor:backgroundColorString];
+    
+    NSString *jsCode = [NSString stringWithFormat:@"%@ %@", updateBodyColorJSCode, updateIframeColorJSCode];
+    
     [self evaluateJavaScript:jsCode];
+}
+
+
+- (NSString *)jsCodeOfUpdateAllIframeTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
+    NSString *jsCode = [NSString stringWithFormat:@""
+    "var iframes = document.querySelectorAll('iframe');"
+    "for (var i = 0; i < iframes.length; i++) {"
+    "   iframes[i].style.webkitTextFillColor = '%@';"
+    "   iframes[i].style.backgroundColor = '%@';"
+    "};", color, backgroundColor];
+    
+    return jsCode;;
+}
+
+- (NSString *)jsCodeOfUpdateBodyTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
+    NSString *jsCode = [NSString stringWithFormat:@""
+                        @"document.body.style.webkitTextFillColor='%@';"
+                        @"document.body.style.backgroundColor='%@';"
+                        , color, backgroundColor];
+    
+    return jsCode;;
 }
 
 - (NSString *)jsCodeOfUpdateStyleHeight:(CGFloat)height {
