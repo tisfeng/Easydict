@@ -15,7 +15,7 @@
 </p>
 
 <div align="center">
-<a href="./README.md">中文</a> | <a href="./README_EN.md">English</a>
+<a href="./README.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_EN.md">English</a>
 </div>
 
 ## Easydict
