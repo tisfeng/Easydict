@@ -469,7 +469,7 @@
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
     for (NSString *name in queryDictNames) {
         TTTDictionary *dict = [TTTDictionary dictionaryNamed:name];
-        if (dict) {
+        if (dict && ![dicts containsObject:dict]) {
             [dicts addObject:dict];
         }
     }
