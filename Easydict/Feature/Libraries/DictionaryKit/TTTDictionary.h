@@ -22,8 +22,12 @@
 
 #import <Foundation/Foundation.h>
 
+#import <Cocoa/Cocoa.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- 
+    TTTDictionaryEntry
  */
 @interface TTTDictionaryEntry : NSObject
 
@@ -46,10 +50,15 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
+
 #pragma mark -
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- 
+    TTTDictionary
  */
 @interface TTTDictionary : NSObject
 
@@ -67,12 +76,18 @@
 /// ID is a uuid
 @property (readonly, nonatomic, copy) NSString *ID;
 
-@property (readonly, nonatomic, assign) BOOL isBuildIn;
+@property (readonly, nonatomic, assign) BOOL isUserDictionary;
+
+@property (readonly, nonatomic, copy, nullable) NSString *identifier;
+@property (readonly, nonatomic, strong) NSURL *dictionaryURL;
 
 /**
  
  */
 + (NSSet<TTTDictionary *> *)availableDictionaries;
+
++ (NSArray<TTTDictionary *> *)activeDictionaries;
+
 
 /**
  Get dict with CFBundleDisplayName
@@ -142,3 +157,5 @@ extern NSString * const DCSKorean_EnglishDictionaryName;
 
 extern NSString * const DCSWikipediaDictionaryName;
 extern NSString * const DCSAppleDictionaryName;
+
+NS_ASSUME_NONNULL_END

@@ -24,6 +24,17 @@
 
 #import <CoreServices/CoreServices.h>
 
+// User dictionary directory.
+NSString *const DCSUserDictionaryDirectoryPath = @"~/Library/Dictionaries/";
+
+// Just a soft link to /System/Library/Assets/com_apple_MobileAsset_DictionaryServices_dictionaryOSX/AssetData
+NSString *const DCSUserContainerDictionaryDirectoryPath = @"~/Library/Containers/com.apple.Dictionary/Data/Library/Dictionaries/";
+
+/// System dictionary directory.
+NSString *const DCSSystemDictionayDirectoryPath = @"/System/Library/";
+// /System/Library/AssetsV2/com_apple_MobileAsset_DictionaryServices_dictionaryOSX/a6f0aae08e94e25f6f35a0bd6d06cbf525157b2e.asset/AssetData/Apple%20Dictionary.dictionary
+
+
 // Simplified Chinese
 NSString *const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
 NSString *const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
@@ -92,7 +103,7 @@ extern CFArrayRef DCSCopyAvailableDictionaries(void);
 extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef dictionary);
 extern CFStringRef DCSDictionaryGetShortName(DCSDictionaryRef dictionary);
 extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef url);
-extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef dictionary, CFStringRef string, void *, void *);
+//extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef dictionary, CFStringRef string, void *, void *);
 
 extern CFDictionaryRef DCSCopyDefinitionMarkup(DCSDictionaryRef dictionary, CFStringRef record);
 extern CFStringRef DCSRecordCopyData(CFTypeRef record, long version);
@@ -104,6 +115,32 @@ extern CFStringRef DCSRecordGetRawHeadword(CFTypeRef record);
 extern CFStringRef DCSRecordGetString(CFTypeRef record);
 extern DCSDictionaryRef DCSRecordGetSubDictionary(CFTypeRef record);
 extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
+
+
+// Ref: https://discussions.apple.com/thread/6616776?answerId=26923349022#26923349022 and https://github.com/lipidity/CLIMac/blob/master/src/dictctl.c#L12
+extern CFArrayRef DCSGetActiveDictionaries(void);
+//extern CFSetRef DCSCopyAvailableDictionaries(void);
+extern DCSDictionaryRef DCSGetDefaultDictionary(void);
+extern DCSDictionaryRef DCSGetDefaultThesaurus(void);
+extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef);
+extern CFURLRef DCSDictionaryGetURL(DCSDictionaryRef);
+extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef);
+extern CFStringRef DCSDictionaryGetIdentifier(DCSDictionaryRef);
+
+
+/**
+ #   extern CFArrayRef DCSCopyRecordsForSearchString (DCSDictionaryRef, CFStringRef, unsigned long long, long long)
+ #       unsigned long long method
+ #           0   = exact match
+ #           1   = forward match (prefix match)
+ #           2   = partial query match (matching (leading) part of query; including ignoring diacritics, four tones in Chinese, etc)
+ #           >=3 = ? (exact match?)
+ #
+ #       long long max_record_count
+ */
+
+extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, unsigned long long, long long);
+
 
 #pragma mark -
 
@@ -141,14 +178,22 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 @end
 
 @interface TTTDictionary ()
+
 @property (readwrite, nonatomic, assign) DCSDictionaryRef dictionary;
 @property (readwrite, nonatomic, copy) NSString *name;
 @property (readwrite, nonatomic, copy) NSString *shortName;
+
+/// CFBundleIdentifier
+@property (readwrite, nonatomic, copy, nullable) NSString *identifier;
+@property (readwrite, nonatomic, strong) NSURL *dictionaryURL;
+
 @end
 
 @implementation TTTDictionary
 
 + (NSSet<TTTDictionary *> *)availableDictionaries {
+    NSLog(@"start");
+
     static NSSet *_availableDictionaries = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -159,9 +204,32 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 
         _availableDictionaries = [NSSet setWithSet:mutableDictionaries];
     });
+    
+    NSLog(@"end");
+
 
     return _availableDictionaries;
 }
+
+/// Active dictionaries are dictionaries that are currently enabled in Dictionary.app
++ (NSArray<TTTDictionary *> *)activeDictionaries {
+    
+    // !!!: DCSGetActiveDictionaries() can only invoke once, otherwise it will crash. So we must use static variable to cache the result.
+    
+    static NSArray *_activeDictionaries = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableArray *mutableActiveDictionaries = [NSMutableArray array];
+        for (id dictionary in (__bridge_transfer NSArray *)DCSGetActiveDictionaries()) {
+            [mutableActiveDictionaries addObject:[[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary]];
+        }
+
+        _activeDictionaries = [NSArray arrayWithArray:mutableActiveDictionaries];
+    });
+
+    return _activeDictionaries;
+}
+
 
 + (instancetype)dictionaryNamed:(NSString *)name {
     static NSDictionary *_availableDictionariesKeyedByName = nil;
@@ -179,7 +247,7 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     return _availableDictionariesKeyedByName[name];
 }
 
-+ (NSArray<NSString *> *)allBuildInDictNames {
++ (NSArray<NSString *> *)supportedSystemDictionaryNames {
     static NSArray *_allBuildInDictNames = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -230,13 +298,23 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
     self.dictionary = dictionary;
     self.name = (__bridge NSString *)DCSDictionaryGetName(self.dictionary);
     self.shortName = (__bridge NSString *)DCSDictionaryGetShortName(self.dictionary);
-    
-    _isBuildIn = [[[self class] allBuildInDictNames] containsObject:self.name];
-    
+        
     _ID = [NSUUID UUID].UUIDString;
+    
+    self.identifier = (__bridge NSString *)(DCSDictionaryGetIdentifier(dictionary));
+
+    self.dictionaryURL = (__bridge_transfer NSURL *)DCSDictionaryGetURL(dictionary);
 
     return self;
 }
+
+/// User custom dictionary
+- (BOOL)isUserDictionary {
+    BOOL isSystemDictionary = [[self.dictionaryURL URLByDeletingLastPathComponent].path hasPrefix:DCSSystemDictionayDirectoryPath];
+    
+    return !isSystemDictionary;
+}
+
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term {
     CFRange termRange = DCSGetTermRangeInString(self.dictionary, (__bridge CFStringRef)term, 0);
@@ -246,7 +324,7 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 
     term = [term substringWithRange:NSMakeRange(termRange.location, termRange.length)];
 
-    NSArray *records = (__bridge_transfer NSArray *)DCSCopyRecordsForSearchString(self.dictionary, (__bridge CFStringRef)term, NULL, NULL);
+    NSArray *records = (__bridge_transfer NSArray *)DCSCopyRecordsForSearchString(self.dictionary, (__bridge CFStringRef)term, 0, 0);
     NSMutableArray *mutableEntries = [NSMutableArray arrayWithCapacity:[records count]];
     if (records) {
         for (id record in records) {
@@ -261,7 +339,7 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@, isBuildIn: %d, ID: %@>", NSStringFromClass([self class]), self, self.name, self.shortName, _isBuildIn, _ID];
+    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@, isCustomDictionary: %d>", NSStringFromClass([self class]), self, self.name, self.shortName, self.isUserDictionary];
 }
 
 #pragma mark - NSObject

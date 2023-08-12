@@ -78,8 +78,8 @@
 
 /// Get HTML result of word, cost ~0.2s
 - (NSString *)getHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSString *buildInDictsHtmlString = [self getBuildInDictsHTMLResultOfWord:text languages:languages];
-    NSMutableString *customDictsHtmlString = [self getCustomDictsHTMLResultOfWord:text languages:languages].mutableCopy;
+    NSString *buildInDictsHtmlString = [self getSystemDictionariesHTMLResultOfWord:text languages:languages];
+    NSMutableString *customDictsHtmlString = [self getUserDictionariesHTMLResultOfWord:text languages:languages].mutableCopy;
     
     if (!customDictsHtmlString.length) {
         return buildInDictsHtmlString;
@@ -97,8 +97,8 @@
 }
 
 /// Get HTML result of word from cutom dictionaries.
-- (NSString *)getCustomDictsHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSArray<TTTDictionary *> *dicts = [self getEnabledDictionariesOfLanguages:languages];
+- (NSString *)getUserDictionariesHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
+    NSArray<TTTDictionary *> *dicts = [self getUserActiveDictionaries];
     
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
@@ -187,7 +187,7 @@
         // Use <div> tag to wrap the title and separator content
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
         
-        if (!dictionary.isBuildIn) {
+        if (dictionary.isUserDictionary) {
             for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
                 NSString *html = entry.HTMLWithAppCSS;
                 NSString *headword = entry.headword;
@@ -230,8 +230,8 @@
 
 
 /// Get the HTML result of the built-in dictionaries.
-- (NSString *)getBuildInDictsHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSArray<TTTDictionary *> *dicts = [self getEnabledDictionariesOfLanguages:languages];
+- (NSString *)getSystemDictionariesHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
+    NSArray<TTTDictionary *> *dicts = [self getSystemActiveDictionaries];
     
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
@@ -297,7 +297,7 @@
         // Use <div> tag to wrap the title and separator content
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
         
-        if (dictionary.isBuildIn) {
+        if (!dictionary.isUserDictionary) {
             for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
                 NSString *html = entry.HTMLWithAppCSS;
                 NSString *headword = entry.headword;
@@ -337,13 +337,52 @@
     return htmlString;
 }
 
+- (NSArray<TTTDictionary *> *)getUserActiveDictionaries {
+    NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
+    
+    NSMutableArray *customDicts = [NSMutableArray array];
+    
+    // Add all custom dicts
+    for (TTTDictionary *dictionary in availableDictionaries) {
+        if (dictionary.isUserDictionary) {
+            [customDicts addObject:dictionary];
+        }
+    }
+    
+    return customDicts;
+}
+
+- (NSArray<TTTDictionary *> *)getSystemActiveDictionaries {
+    NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
+    
+    NSMutableArray *systemDicts = [NSMutableArray array];
+    
+    // Add all system dicts
+    for (TTTDictionary *dictionary in availableDictionaries) {
+        if (!dictionary.isUserDictionary) {
+            [systemDicts addObject:dictionary];
+        }
+    }
+    
+    return systemDicts;
+}
+
+
 - (NSArray<TTTDictionary *> *)getEnabledDictionariesOfLanguages:(NSArray<EZLanguage> *)languages {
-    //    NSSet *availableDictionaries =  [TTTDictionary availableDictionaries];
-    //    NSLog(@"availableDictionaries: %@", availableDictionaries);
+        NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
+        NSLog(@"availableDictionaries: %@", availableDictionaries);
     
     NSMutableArray *queryDictNames = [NSMutableArray arrayWithArray:@[
         
     ]];
+    
+    // Add all custom dicts
+    for (TTTDictionary *dictionary in availableDictionaries) {
+        if (dictionary.isUserDictionary) {
+            [queryDictNames addObject:dictionary];
+        }
+    }
+
     
     // Simplified Chinese
     if ([languages containsObject:EZLanguageSimplifiedChinese]) {
