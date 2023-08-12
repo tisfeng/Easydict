@@ -73,9 +73,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic, copy) NSString *shortName;
 
 
-/// ID is a uuid
-@property (readonly, nonatomic, copy) NSString *ID;
-
 @property (readonly, nonatomic, assign) BOOL isUserDictionary;
 
 @property (readonly, nonatomic, copy, nullable) NSString *identifier;
