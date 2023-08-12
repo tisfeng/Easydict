@@ -78,28 +78,6 @@
 
 /// Get HTML result of word, cost ~0.2s
 - (NSString *)getHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSString *buildInDictsHtmlString = [self getSystemDictionariesHTMLResultOfWord:text languages:languages];
-    NSMutableString *customDictsHtmlString = [self getUserDictionariesHTMLResultOfWord:text languages:languages].mutableCopy;
-    
-    if (!customDictsHtmlString.length) {
-        return buildInDictsHtmlString;
-    }
-    
-    if (buildInDictsHtmlString.length) {
-        // html = [NSString stringWithFormat:@"<html>><body>%@%@</body></html>", buildInDictsHtmlString, iframeHtmlString];
-        
-        NSRange bodyRange = [customDictsHtmlString rangeOfString:@"<body>"];
-        [customDictsHtmlString insertString:buildInDictsHtmlString atIndex:bodyRange.location + bodyRange.length];
-        return customDictsHtmlString;
-    }
-    
-    return customDictsHtmlString;
-}
-
-/// Get HTML result of word from cutom dictionaries.
-- (NSString *)getUserDictionariesHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSArray<TTTDictionary *> *dicts = [self getUserActiveDictionaries];
-    
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     
@@ -117,15 +95,15 @@
     // TODO: We should update this width when resizing window frame.
     
     // FIXME: This width needs to be adjusted.
-    CGFloat iframeWidth = EZWindowManager.shared.floatingWindow.width - EZHorizontalCellSpacing_12 * 2 - 2 * 2 - 25;
+    //    CGFloat iframeWidth = EZWindowManager.shared.floatingWindow.width - EZHorizontalCellSpacing_12 * 2 - 2 * 2 - 25;
     
     NSString *iframeCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { margin 0px; padding: 0px; width: %fpx; border: 1px solid black; }"
+                           @".%@ { margin 0px; padding: 0px; width: 100%%; border: 1px solid black; }"
                            @"@media (prefers-color-scheme: dark) {"
                            @".%@ { border: 1px solid white; }"
                            @"}"
                            @"</style>",
-                           customIframeContainerClass, iframeWidth, customIframeContainerClass];
+                           customIframeContainerClass, customIframeContainerClass];
     
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
@@ -150,32 +128,82 @@
                            
                            bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString, darkSeparatorColorString];
     
-    NSString *adjustIframeHeight = @""
-    @"function adjustIframeHeight(iframeId) {"
-    @"  const iframe = document.getElementById(iframeId);"
-    @"  if (iframe) {"
-    @"    const contentHeight = iframe.contentWindow.document.documentElement.scrollHeight;"
-    @"    const borderHeight = parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
-    @"    const paddingHeight = parseInt(getComputedStyle(iframe).paddingTop) * 2;"
-    @"    iframe.style.height = contentHeight + borderHeight + paddingHeight + \"px\";"
-    @"  }"
-    @"}";
+    NSMutableString *jsCode = [NSMutableString stringWithFormat:
+                               @"<script>"
+                               @"    function updateAllIframeHeight() {"
+                               @"      var iframes = document.querySelectorAll('iframe');"
+                               @"      for (var i = 0; i < iframes.length; i++) {"
+                               @"        var iframe = iframes[i];"
+                               @"        const contentHeight = iframe.contentWindow.document.documentElement.scrollHeight;"
+                               @"        const borderHeight = parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
+                               @"        const paddingHeight = parseInt(getComputedStyle(iframe).paddingTop) * 2;"
+                               @"        iframe.style.height = contentHeight + borderHeight + paddingHeight + \"px\";"
+                               @"      }"
+                               @"    }"
+                               @"    window.onload = function() {"
+                               @"      updateAllIframeHeight();"
+                               @"    };"
+                               @"  </script>"];
     
-    //    NSString *adjustIframeHeight = @""
-    //      "function adjustIframeHeight(iframeId) {"
-    //      "    var iframe = document.getElementById(iframeId);"
-    //      "    if (iframe) {"
-    //      "        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';"
-    //      "    }"
-    //      "}";
+    NSString *systemDictsHtmlString = [self getSystemDictionariesHTMLResultOfWord:text languages:languages];
+    NSString *customDictsHtmlString = [self getUserDictionariesHTMLResultOfWord:text languages:languages].mutableCopy;
     
-    NSMutableString *jsCode = [NSMutableString stringWithFormat:@"<script>"
-                               @"%@"
-                               @"</script>",
-                               adjustIframeHeight];
+    if (!customDictsHtmlString.length) {
+        return systemDictsHtmlString;
+    }
+    
+    NSMutableString *htmlString = [NSMutableString stringWithFormat:@"<html><head>%@ %@ %@</head><body> %@ </body></html>", customCSS, iframeCSS, jsCode, customDictsHtmlString];
+    
+    if (systemDictsHtmlString.length) {
+        NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
+        [htmlString insertString:systemDictsHtmlString atIndex:bodyRange.location + bodyRange.length];
+        return htmlString;
+    }
+    
+    return htmlString;
+}
+
+/// Get HTML result of word from cutom dictionaries.
+- (NSString *)getUserDictionariesHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
+    NSArray<TTTDictionary *> *dicts = [self getUserActiveDictionaries];
+    
+    NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
+    NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    
+    NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
+    NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    
+    NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
+    NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    
+    NSString *bigWordTitleH2Class = @"big-word-title";
+    NSString *dictNameClassH2Class = @"dict-name";
+    NSString *customIframeContainerClass = @"custom-iframe-container";
+    
+    // Custom CSS styles for headings, separator, and paragraphs
+    NSString *customCSS = [NSString stringWithFormat:@"<style>"
+                           @"iframe { margin: 0px; }"
+                           @".%@ { font-weight: 600; font-size: 25px; margin-top: 0px; margin-bottom: 10px; }"
+                           @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
+                           @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
+                           @".separator { display: flex; align-items: center; }"
+                           @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
+                           @".separator::before { margin-right: 2px; }"
+                           @".separator::after { margin-left: 2px; }"
+                           
+                           @".%@ { margin-top: 5px; margin-bottom: 15px; width: 100%%; }"
+                           
+                           @"body { color: %@; background-color: %@; }"
+                           
+                           @"@media (prefers-color-scheme: dark) {"
+                           @"body { color: %@; background-color: %@; }"
+                           @".separator::before, .separator::after { border-top-color: %@; }"
+                           @"}"
+                           @"</style>",
+                           
+                           bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString, darkSeparatorColorString];
     
     NSMutableString *iframeHtmlString = [NSMutableString string];
-    
     
     /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, text];
@@ -210,22 +238,14 @@
         }
         
         if (htmlString.length) {
-            NSString *iframeID = dictionary.ID;
-            
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe id=\"%@\" class=\"%@\" srcdoc=\"%@%@\" onload=\"adjustIframeHeight('%@')\"></iframe>", iframeID, customIframeContainerClass, [customCSS escapedHTMLString], [htmlString escapedHTMLString], iframeID];
+            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\"%@%@\" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [htmlString escapedHTMLString]];
             
             [iframeHtmlString appendString:iframeContent];
         }
     }
     
-    NSString *iframePage = nil;
-    
-    if (iframeHtmlString.length) {
-        iframePage = [NSString stringWithFormat:@"<html><head>%@%@%@</head><body>%@</body></html>", customCSS, iframeCSS, jsCode, iframeHtmlString];
-    }
-    
-    return iframePage;
+    return iframeHtmlString;
 }
 
 
@@ -338,7 +358,7 @@
 }
 
 - (NSArray<TTTDictionary *> *)getUserActiveDictionaries {
-    NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
+    NSArray *availableDictionaries = [TTTDictionary activeDictionaries];
     
     NSMutableArray *customDicts = [NSMutableArray array];
     
@@ -353,7 +373,7 @@
 }
 
 - (NSArray<TTTDictionary *> *)getSystemActiveDictionaries {
-    NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
+    NSArray *availableDictionaries = [TTTDictionary activeDictionaries];
     
     NSMutableArray *systemDicts = [NSMutableArray array];
     
@@ -369,8 +389,8 @@
 
 
 - (NSArray<TTTDictionary *> *)getEnabledDictionariesOfLanguages:(NSArray<EZLanguage> *)languages {
-        NSArray *availableDictionaries =  [TTTDictionary activeDictionaries];
-        NSLog(@"availableDictionaries: %@", availableDictionaries);
+    NSArray *availableDictionaries = [TTTDictionary activeDictionaries];
+    NSLog(@"availableDictionaries: %@", availableDictionaries);
     
     NSMutableArray *queryDictNames = [NSMutableArray arrayWithArray:@[
         
@@ -382,7 +402,7 @@
             [queryDictNames addObject:dictionary];
         }
     }
-
+    
     
     // Simplified Chinese
     if ([languages containsObject:EZLanguageSimplifiedChinese]) {
