@@ -98,9 +98,9 @@
     //    CGFloat iframeWidth = EZWindowManager.shared.floatingWindow.width - EZHorizontalCellSpacing_12 * 2 - 2 * 2 - 25;
     
     NSString *iframeCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { margin 0px; padding: 0px; width: 100%%; border: 1px solid black; }"
+                           @".%@ { margin 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
                            @"@media (prefers-color-scheme: dark) {"
-                           @".%@ { border: 1px solid white; }"
+                           @".%@ { border: 0px solid white; }"
                            @"}"
                            @"</style>",
                            customIframeContainerClass, customIframeContainerClass];
@@ -118,7 +118,7 @@
                            
                            @".%@ { margin-top: 5px; margin-bottom: 15px; width: 100%%; }"
                            
-                           @"body { color: %@; background-color: %@; }"
+                           @"body { margin: 0px; color: %@; background-color: %@; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
                            @"body { color: %@; background-color: %@; }"
@@ -146,18 +146,20 @@
                                @"  </script>"];
     
     NSString *systemDictsHtmlString = [self getSystemDictionariesHTMLResultOfWord:text languages:languages];
-    NSString *customDictsHtmlString = [self getUserDictionariesHTMLResultOfWord:text languages:languages].mutableCopy;
+    systemDictsHtmlString = @"";
     
-    if (!customDictsHtmlString.length) {
+    NSString *userDictsHtmlString = [self getUserDictionariesHTMLResultOfWord:text languages:languages].mutableCopy;
+//    userDictsHtmlString = @"<iframe srcdoc=\"<h1>hello</h1>\" width='300' height='200'></iframe>";
+
+    if (!userDictsHtmlString.length) {
         return systemDictsHtmlString;
     }
     
-    NSMutableString *htmlString = [NSMutableString stringWithFormat:@"<html><head>%@ %@ %@</head><body> %@ </body></html>", customCSS, iframeCSS, jsCode, customDictsHtmlString];
+    NSMutableString *htmlString = [NSMutableString stringWithFormat:@"<html><head>%@ %@ %@</head><body> %@ </body></html>", customCSS, iframeCSS, jsCode, userDictsHtmlString];
     
     if (systemDictsHtmlString.length) {
         NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
         [htmlString insertString:systemDictsHtmlString atIndex:bodyRange.location + bodyRange.length];
-        return htmlString;
     }
     
     return htmlString;
@@ -167,12 +169,12 @@
 - (NSString *)getUserDictionariesHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
     NSArray<TTTDictionary *> *dicts = [self getUserActiveDictionaries];
     
+    NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-    NSString *lightColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-    
+
+    NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-    NSString *darkColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-    
+
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     
@@ -193,15 +195,15 @@
                            
                            @".%@ { margin-top: 5px; margin-bottom: 15px; width: 100%%; }"
                            
-                           @"body { color: %@; background-color: %@; }"
-                           
+                           @"body { margin: 10px; color: %@; background-color: %@; }"
+
                            @"@media (prefers-color-scheme: dark) {"
                            @"body { color: %@; background-color: %@; }"
                            @".separator::before, .separator::after { border-top-color: %@; }"
                            @"}"
                            @"</style>",
                            
-                           bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightColorString, lightBackgroundColorString, darkColorString, darkBackgroundColorString, darkSeparatorColorString];
+                           bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customIframeContainerClass, lightTextColorString, lightBackgroundColorString, darkTextColorString, darkBackgroundColorString, darkSeparatorColorString];
     
     NSMutableString *iframeHtmlString = [NSMutableString string];
     
@@ -215,31 +217,45 @@
         // Use <div> tag to wrap the title and separator content
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
         
-        if (dictionary.isUserDictionary) {
-            for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
-                NSString *html = entry.HTMLWithAppCSS;
-                NSString *headword = entry.headword;
+        for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
+            NSString *html = entry.HTMLWithAppCSS;
+            NSString *headword = entry.headword;
+            
+            // LOG --> log,  根据 genju--> 根据  gēnjù
+            BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
+            
+            if (html.length && isTheSameHeadword) {
+                // Add titleHtml when there is a html result, and only add once.
                 
-                // LOG --> log,  根据 genju--> 根据  gēnjù
-                BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
+               
                 
-                if (html.length && isTheSameHeadword) {
-                    // Add titleHtml when there is a html result, and only add once.
-                    
-                    [htmlString appendString:bigWordHtml];
-                    bigWordHtml = @"";
-                    
-                    [htmlString appendString:titleHtml];
-                    titleHtml = @"";
-                    
-                    [htmlString appendFormat:@"%@", html];
-                }
+                [htmlString appendString:bigWordHtml];
+                bigWordHtml = @"";
+                
+                [htmlString appendString:titleHtml];
+                titleHtml = @"";
+                
+                [htmlString appendFormat:@"%@", html];
             }
         }
         
         if (htmlString.length) {
+            // Use -webkit-text-fill-color to render system dict.
+            NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
+            
+            // Update background color for dark mode
+            NSString *dictBackgroundColorCSS = [NSString stringWithFormat:@"<style>"
+                                   @"body { background-color: %@; }"
+
+                                   @"@media (prefers-color-scheme: dark) {"
+                                   @"body { %@: %@; background-color: %@; }"
+                                   @"}"
+                                   @"</style>",
+                                   
+                                    lightBackgroundColorString, textColor, darkTextColorString, darkBackgroundColorString];
+            
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\"%@%@\" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [htmlString escapedHTMLString]];
+            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\"%@ %@ %@\" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], dictBackgroundColorCSS, [htmlString escapedHTMLString]];
             
             [iframeHtmlString appendString:iframeContent];
         }
@@ -279,7 +295,7 @@
     
     // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
     NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
-                                 @"body { margin: 10px 10px;  }"
+                                 @"body { margin: 10px;  }"
                                  @".x_xo0 .x_xoLblBlk {"
                                  @"display: block;"
                                  @"font-variant: small-caps;"
@@ -317,28 +333,26 @@
         // Use <div> tag to wrap the title and separator content
         NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
         
-        if (!dictionary.isUserDictionary) {
-            for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
-                NSString *html = entry.HTMLWithAppCSS;
-                NSString *headword = entry.headword;
+        for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
+            NSString *html = entry.HTMLWithAppCSS;
+            NSString *headword = entry.headword;
+            
+            // LOG --> log,  根据 genju--> 根据  gēnjù
+            BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
+            
+            if (html.length && isTheSameHeadword) {
+                // Add titleHtml when there is a html result, and only add once.
                 
-                // LOG --> log,  根据 genju--> 根据  gēnjù
-                BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
+                [htmlString appendString:customCssStyle];
+                customCssStyle = @"";
                 
-                if (html.length && isTheSameHeadword) {
-                    // Add titleHtml when there is a html result, and only add once.
-                    
-                    [htmlString appendString:customCssStyle];
-                    customCssStyle = @"";
-                    
-                    [htmlString appendString:bigWordHtml];
-                    bigWordHtml = @"";
-                    
-                    [htmlString appendString:titleHtml];
-                    titleHtml = @"";
-                    
-                    [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraphClass, html];
-                }
+                [htmlString appendString:bigWordHtml];
+                bigWordHtml = @"";
+                
+                [htmlString appendString:titleHtml];
+                titleHtml = @"";
+                
+                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraphClass, html];
             }
         }
     }
@@ -369,16 +383,18 @@
         }
     }
     
-    return customDicts;
+    return availableDictionaries;
 }
 
 - (NSArray<TTTDictionary *> *)getSystemActiveDictionaries {
-    NSArray *availableDictionaries = [TTTDictionary activeDictionaries];
+    NSArray *activeDictionaries = [TTTDictionary activeDictionaries];
+//    activeDictionaries = [self getEnabledDictionariesOfLanguages:nil];
+    
     
     NSMutableArray *systemDicts = [NSMutableArray array];
     
     // Add all system dicts
-    for (TTTDictionary *dictionary in availableDictionaries) {
+    for (TTTDictionary *dictionary in activeDictionaries) {
         if (!dictionary.isUserDictionary) {
             [systemDicts addObject:dictionary];
         }
@@ -508,11 +524,11 @@
     // test a dict html
     BOOL test = YES;
     if (test) {
-        //        [queryDictNames removeAllObjects];
+                [queryDictNames removeAllObjects];
         
         [queryDictNames addObjectsFromArray:@[
-            @"简明英汉字典",
-            @"柯林斯高阶英汉双解词典",
+//            @"简明英汉字典",
+//            @"柯林斯高阶英汉双解词典",
             //        @"新世纪英汉大词典",
             //        @"柯林斯高阶英汉双解学习词典",
             //        @"新世纪英汉大词典",

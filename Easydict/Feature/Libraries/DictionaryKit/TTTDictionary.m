@@ -192,8 +192,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 @implementation TTTDictionary
 
 + (NSSet<TTTDictionary *> *)availableDictionaries {
-    NSLog(@"start");
-
+    // Cost < 0.1s
     static NSSet *_availableDictionaries = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -204,10 +203,6 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
         _availableDictionaries = [NSSet setWithSet:mutableDictionaries];
     });
-    
-    NSLog(@"end");
-
-
     return _availableDictionaries;
 }
 
@@ -336,7 +331,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@, isCustomDictionary: %d>", NSStringFromClass([self class]), self, self.name, self.shortName, self.isUserDictionary];
+    return [NSString stringWithFormat:@"<%@: %p, name: %@, shortName: %@, isUserDictionary: %d>", NSStringFromClass([self class]), self, self.name, self.shortName, self.isUserDictionary];
 }
 
 #pragma mark - NSObject
