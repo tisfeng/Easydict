@@ -972,13 +972,13 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
     
-    [webView excuteLight:^(WKWebView *webView) {
-        mm_strongify(self);
-        [self updateWebViewBackgroundColorWithDarkMode:NO];
-    } dark:^(WKWebView *webView) {
-        mm_strongify(self);
-        [self updateWebViewBackgroundColorWithDarkMode:YES];
-    }];
+//    [webView excuteLight:^(WKWebView *webView) {
+//        mm_strongify(self);
+//        [self updateWebViewBackgroundColorWithDarkMode:NO];
+//    } dark:^(WKWebView *webView) {
+//        mm_strongify(self);
+//        [self updateWebViewBackgroundColorWithDarkMode:YES];
+//    }];
 }
 
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
@@ -1004,8 +1004,8 @@ static const CGFloat kVerticalPadding_8 = 8;
     NSString *jsCode = [NSString stringWithFormat:@""
     "var iframes = document.querySelectorAll('iframe');"
     "for (var i = 0; i < iframes.length; i++) {"
-    "   iframes[i].style.webkitTextFillColor = '%@';"
-    "   iframes[i].style.backgroundColor = '%@';"
+    "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
+    "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
     "};", color, backgroundColor];
     
     return jsCode;;
