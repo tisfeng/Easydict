@@ -32,6 +32,7 @@ NSString *getPartName(NSString *part) {
         @"preposition" : @"prep.",
         @"conjunction" : @"conj.",
         @"interjection" : @"interj.",
+        @"det": @"det.", // determinative 限定词
     };
     
     NSString *partName = dict[part];
