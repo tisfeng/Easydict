@@ -904,7 +904,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         _copiedText = self.result.translatedText;
         
         if (!_copiedText.length && self.result.HTMLString.length) {
-            [self fetchAllWebViewText];
+            [self fetchWebViewAllIframeText];
         }
     }
     return _copiedText;
@@ -1064,6 +1064,26 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
 }
+
+- (void)fetchWebViewAllIframeText {
+    NSString *jsCode = @""
+    "var iframes = document.querySelectorAll('iframe');"
+    "var text = '';"
+    "for (var i = 0; i < iframes.length; i++) {"
+    "   text += iframes[i].contentDocument.body.innerText;"
+    "   text += '\\n\\n';"
+    "};"
+    "text;";
+    
+    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (!error && [result isKindOfClass:[NSString class]]) {
+            NSString *webViewText = (NSString *)result;
+            self.copiedText = webViewText;
+            [webViewText copyAndShowToast:YES];
+        }
+    }];
+}
+
 
 #pragma mark -
 
