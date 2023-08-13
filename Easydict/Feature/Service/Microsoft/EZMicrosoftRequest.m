@@ -10,7 +10,6 @@ NSString * const kTTranslateV3Host = @"https://www.bing.com/ttranslatev3";
 NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
 
 #import "EZMicrosoftRequest.h"
-#import "AFNetworking.h"
 #import "EZTranslateError.h"
 
 @interface EZMicrosoftRequest ()
@@ -39,13 +38,12 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
 }
 
 - (void)fetchTranslateParam:(void (^)(NSString * IG, NSString * IID, NSString * token, NSString * key))paramCallback failure:(nonnull void (^)(NSError * _Nonnull))failure {
-    
+    // memory cache
     static NSString *kIG;
     static NSString *kIID;
     static NSString *kToken;
     static NSString *kKey;
-    
-    
+
     if (kIG.length > 0 && kIID.length > 0 && kToken.length > 0 && kKey.length > 0) {
         paramCallback(kIG, kIID, kToken, kKey);
         return;
@@ -125,7 +123,6 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
             [self executeCallback];
         }];
         
-        
         NSString *lookupUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", kTLookupV3Host, IG, IID];
         [self.translateSession POST:lookupUrlString parameters:@{
             @"from": from,
@@ -200,9 +197,7 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
-        @"10_15_0) AppleWebKit/537.36 (KHTML, like "
-        @"Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:self.userAgent forHTTPHeaderField:@"User-Agent"];
         htmlSession.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
@@ -216,14 +211,19 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
     if (!_translateSession) {
         AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X "
-        @"10_15_0) AppleWebKit/537.36 (KHTML, like "
-        @"Gecko) Chrome/77.0.3865.120 Safari/537.36" forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:self.userAgent forHTTPHeaderField:@"User-Agent"];
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         session.responseSerializer = responseSerializer;
         _translateSession = session;
     }
     return _translateSession;
+}
+
+- (NSString *)userAgent {
+    return @"Mozilla/5.0 "
+           "AppleWebKit/537.36 (KHTML, like Gecko) "
+           "Chrome/77.0.3865.120 "
+           "Safari/537.36";
 }
 @end
