@@ -839,7 +839,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
         BOOL isFinished = YES;
-        if (result.HTMLString.length) {
+        if (result.isShowing && result.HTMLString.length) {
             isFinished = NO;
         }
         result.isLoading = !isFinished;
