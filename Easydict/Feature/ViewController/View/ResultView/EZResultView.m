@@ -242,9 +242,9 @@
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
 
     self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
-
-    [self.wordResultView refreshWithResult:result];
     
+    [self.wordResultView refreshWithResult:result];
+        
     mm_weakify(self);
     [self.wordResultView setUpdateViewHeightBlock:^(CGFloat viewHeight) {
         mm_strongify(self);

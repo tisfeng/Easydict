@@ -130,13 +130,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL manulShow;
 
 /// If (self.hasTranslatedResult || self.error || self.errorMessage.length), then hasShowingResult = YES, that means will show result view.
-@property (nonatomic, assign, readonly) BOOL hasShowingResult;
+@property (readonly, nonatomic, assign) BOOL hasShowingResult;
 
 /// If (self.wordResult && self.translatedText.length), YES
-@property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
+@property (readonly, nonatomic, assign) BOOL hasTranslatedResult;
 
 /// EZErrorTypeUnsupportedLanguage || EZErrorTypeNoResultsFound
-@property (nonatomic, assign, readonly) BOOL isWarningErrorType;
+@property (readonly, nonatomic, assign) BOOL isWarningErrorType;
 
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;
@@ -155,6 +155,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 未查询到结果，如系统词典查单词时，查询了句子
 @property (nonatomic, assign) BOOL noResultsFound;
+
+/// copiedText is translatedText, or webView innerText if has HTMLString
+@property (nonatomic, copy, nullable) NSString *copiedText;
+
+@property (nonatomic, copy, nullable) void (^didFinishLoadingHTMLBlock)(void);
 
 - (void)reset;
 

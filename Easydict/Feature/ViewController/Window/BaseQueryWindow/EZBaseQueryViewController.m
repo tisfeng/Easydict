@@ -1457,10 +1457,18 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         service.autoCopyTranslatedTextBlock = nil;
         return;
     }
-
+    
     [service setAutoCopyTranslatedTextBlock:^(EZQueryResult *result, NSError *error) {
-        NSString *copyText = result.translatedText;
-        [copyText copyToPasteboard];
+        if (!result.HTMLString.length) {
+            [result.copiedText copyToPasteboard];
+            return;
+        }
+        
+        mm_weakify(result);
+        [result setDidFinishLoadingHTMLBlock:^{
+            mm_strongify(result);
+            [result.copiedText copyToPasteboard];
+        }];
     }];
 }
 

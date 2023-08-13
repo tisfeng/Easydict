@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZWordResultView : NSView
 
-@property (nonatomic, copy, readonly) NSString *copiedText;
-
 @property (nonatomic, assign, readonly) CGFloat viewHeight;
 
 @property (nonatomic, copy) void (^queryTextBlock)(NSString *word);

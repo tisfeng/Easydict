@@ -38,8 +38,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 @property (nonatomic, assign) CGFloat bottomViewHeigt;
 
-@property (nonatomic, copy) NSString *copiedText;
-
 @end
 
 
@@ -565,7 +563,7 @@ static const CGFloat kVerticalPadding_8 = 8;
                 }
                 make.centerY.equalTo(exchangeLabel);
             }];
-            mm_weakify(self);
+            
             [wordButton setClickBlock:^(EZButton *_Nonnull button) {
                 mm_strongify(self);
                 if (self.queryTextBlock) {
@@ -776,9 +774,8 @@ static const CGFloat kVerticalPadding_8 = 8;
     }];
     
     [audioButton setPlayAudioBlock:^{
-        mm_strongify(self);
         EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
-        wordPhonetic.word = self.copiedText;
+        wordPhonetic.word = result.copiedText;
         
         EZLanguage language = result.queryModel.queryTargetLanguage;
         if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
@@ -797,8 +794,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     [textCopyButton setClickBlock:^(EZButton *_Nonnull button) {
         NSLog(@"copyActionBlock");
-        mm_strongify(self);
-        [self.copiedText copyAndShowToast:YES];
+        [result.copiedText copyAndShowToast:YES];
     }];
     textCopyButton.mas_key = @"result_copyButton";
     
@@ -898,17 +894,6 @@ static const CGFloat kVerticalPadding_8 = 8;
     return nil;
 }
 
-- (NSString *)copiedText {
-    if (!_copiedText) {
-        // TODO: copy word dictionary text.
-        _copiedText = self.result.translatedText;
-        
-        if (!_copiedText.length && self.result.HTMLString.length) {
-            [self fetchWebViewAllIframeText];
-        }
-    }
-    return _copiedText;
-}
 
 #pragma mark - NSTextViewDelegate
 
@@ -930,6 +915,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     
     mm_weakify(self);
     
+    
     [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error) {
             mm_strongify(self);
@@ -948,7 +934,6 @@ static const CGFloat kVerticalPadding_8 = 8;
             NSMutableString *jsCode = [self jsCodeOfUpdateStyleHeight:webViewHeight].mutableCopy;
             if (contentHeight > maxHeight) {
                 [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];
-                ;
             }
             [self evaluateJavaScript:jsCode];
             
@@ -963,22 +948,22 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
             
-            if (self.didFinishLoadingHTMLBlock) {
-                self.didFinishLoadingHTMLBlock();
-            }
-            
+            [self fetchWebViewAllIframeText:^(NSString *text) {
+                self.result.copiedText = text;
+                
+                if (self.didFinishLoadingHTMLBlock) {
+                    self.didFinishLoadingHTMLBlock();
+                }
+                
+                if (self.result.didFinishLoadingHTMLBlock) {
+                    self.result.didFinishLoadingHTMLBlock();
+                }
+            }];
+ 
         } else {
             NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
         }
     }];
-    
-//    [webView excuteLight:^(WKWebView *webView) {
-//        mm_strongify(self);
-//        [self updateWebViewBackgroundColorWithDarkMode:NO];
-//    } dark:^(WKWebView *webView) {
-//        mm_strongify(self);
-//        [self updateWebViewBackgroundColorWithDarkMode:YES];
-//    }];
 }
 
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
@@ -1054,18 +1039,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     [self.webView evaluateJavaScript:jsCode completionHandler:completionHandler];
 }
 
-- (void)fetchAllWebViewText {
-    NSString *jsCode = @"document.body.innerText;";
-    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-        if (!error && [result isKindOfClass:[NSString class]]) {
-            NSString *webViewText = (NSString *)result;
-            self.copiedText = webViewText;
-            [webViewText copyAndShowToast:YES];
-        }
-    }];
-}
-
-- (void)fetchWebViewAllIframeText {
+- (void)fetchWebViewAllIframeText:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = @""
     "var iframes = document.querySelectorAll('iframe');"
     "var text = '';"
@@ -1075,15 +1049,14 @@ static const CGFloat kVerticalPadding_8 = 8;
     "};"
     "text;";
     
-    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error && [result isKindOfClass:[NSString class]]) {
-            NSString *webViewText = (NSString *)result;
-            self.copiedText = webViewText;
-            [webViewText copyAndShowToast:YES];
+            if (completionHandler) {
+                completionHandler(result);
+            }
         }
     }];
 }
-
 
 #pragma mark -
 
