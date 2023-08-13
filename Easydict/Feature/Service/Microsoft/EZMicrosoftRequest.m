@@ -102,6 +102,24 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
     self.completion = completion;
     [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
         NSString *translateUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", kTTranslateV3Host, IG, IID];
+        
+        /*
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:translateUrlString]];
+        request.HTTPMethod = @"POST";
+        request.HTTPBody = [[NSString stringWithFormat:@"tryFetchingGenderDebiasedTranslations=true&fromLang=%@&to=%@&text=%@&token=%@&key=%@", from, to, text, token, key] dataUsingEncoding:NSUTF8StringEncoding];
+        NSURLSessionDataTask *task = [self.translateSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+            if (![responseObject isKindOfClass:[NSData class]]) {
+                self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
+                NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
+                [self executeCallback];
+                return;
+            }
+            self.translateData = responseObject;
+            self.translateError = error;
+            [self executeCallback];
+        }];
+        [task resume];
+        */
         [self.translateSession POST:translateUrlString parameters:@{
             @"tryFetchingGenderDebiasedTranslations": @"true",
             @"text": text,
@@ -119,7 +137,15 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
             self.translateData = responseObject;
             [self executeCallback];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            self.translateError = error;
+            NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+            // if this problem occurs, you can try switching networks
+            // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
+            // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
+            if (response.statusCode == 429) {
+                self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate too many requests", nil);
+            } else {
+                self.translateError = error;
+            }
             [self executeCallback];
         }];
         
