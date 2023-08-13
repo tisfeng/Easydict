@@ -938,7 +938,7 @@ static const CGFloat kVerticalPadding_8 = 8;
             CGFloat contentHeight = [result doubleValue];
             NSLog(@"contentHeight: %.1f", contentHeight);
             
-            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.45;
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.5;
             
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
