@@ -101,16 +101,16 @@
                 NSLog(@"microsoft lookup error %@", lookupError);
             }
             
-            NSError * error = [self processTranslateResult:translateData];
+            NSError * error = [self processTranslateResult:translateData text:text from:from to:to];
             if (error) {
-                completion(nil, error);
+                completion(self.result, error);
                 return;
             }
-            [self processWordPart:lookupData];
+            [self processWordSimpleWordAndPart:lookupData];
             completion(self.result ,translateError);
         } @catch (NSException *exception) {
             MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
-            completion(nil, EZTranslateError(EZErrorTypeAPI, @"microsoft translate data parse failed", exception));
+            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"microsoft translate data parse failed", exception));
         }
     }];
 }
@@ -138,17 +138,38 @@
     return text;
 }
 
-- (nullable NSError *)processTranslateResult:(NSData *)translateData {
+- (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to {
     if (translateData.length == 0) {
         return EZTranslateError(EZErrorTypeAPI, @"microsoft translate data is empty", nil);
     }
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
-        return EZTranslateError(EZErrorTypeAPI, @"microsoft json parse failed", nil);
+        NSString *msg = [NSString stringWithFormat:@"microsoft json parse failed\n%@", json];
+        return EZTranslateError(EZErrorTypeAPI, msg, nil);
     }
     EZMicrosoftTranslateModel *translateModel = [EZMicrosoftTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
-    self.result.from = [self languageEnumFromCode:translateModel.detectedLanguage.language];
-    self.result.to = [self languageEnumFromCode:translateModel.translations.firstObject.to];
+    self.result.from = translateModel.detectedLanguage.language ? [self languageEnumFromCode:translateModel.detectedLanguage.language] : from;
+    self.result.to = translateModel.translations.firstObject.to ? [self languageEnumFromCode:translateModel.translations.firstObject.to] : to;
+    
+    /// phonetic
+    if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
+        NSString *inputTransliteration = json[1][@"inputTransliteration"];
+        if (!self.result.wordResult) {
+            self.result.wordResult = [EZTranslateWordResult new];
+        }
+        EZWordPhonetic *phonetic = [EZWordPhonetic new];
+        phonetic.name = NSLocalizedString(@"us_phonetic", nil);
+        if ([EZLanguageManager.shared isChineseLanguage:self.result.from]) {
+            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
+        }
+        phonetic.value = inputTransliteration;
+        // https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages
+//        phonetic.speakURL = result.fromSpeakURL;
+        phonetic.language = self.result.queryModel.queryFromLanguage;
+        phonetic.word = text;
+        
+        self.result.wordResult.phonetics = @[phonetic];
+    }
     self.result.raw = translateData;
     self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZMicrosoftTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return obj.text;
@@ -156,7 +177,7 @@
     return nil;
 }
 
-- (void)processWordPart:(NSData *)lookupData {
+- (void)processWordSimpleWordAndPart:(NSData *)lookupData {
     if (!lookupData) return;
     NSArray *lookupJson = [NSJSONSerialization JSONObjectWithData:lookupData options:0 error:nil];
     if ([lookupJson isKindOfClass:[NSArray class]]) {
