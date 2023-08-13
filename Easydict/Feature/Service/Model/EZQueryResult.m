@@ -21,9 +21,11 @@
  interjection -> interj.
  */
 NSString *getPartName(NSString *part) {
-    NSDictionary *dict = @{
+    static NSDictionary *dict = @{
         @"adjective" : @"adj.",
+        @"adj" : @"adj.",
         @"adverb" : @"adv.",
+        @"adv": @"adv.",
         @"verb" : @"v.",
         @"noun" : @"n.",
         @"pronoun" : @"pron.",
