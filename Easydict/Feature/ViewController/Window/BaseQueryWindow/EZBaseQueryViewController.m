@@ -31,6 +31,8 @@ static NSString *const EZResultViewId = @"EZResultViewId";
 
 static NSString *const EZColumnId = @"EZColumnId";
 
+static NSString *const kDCSActiveDictionariesChangedDistributedNotification = @"kDCSActiveDictionariesChangedDistributedNotification";
+
 /// Execute block on main thread safely.
 static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([NSThread isMainThread]) {
@@ -158,6 +160,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                       selector:@selector(boundsDidChangeNotification:)
                           name:NSViewBoundsDidChangeNotification
                         object:[self.scrollView contentView]];
+    
+    
+//    ???: FIX [dcs_error] kDCSActiveDictionariesChangedDistributedNotification catched, but it seems does not work.
+    [defaultCenter addObserver:self
+                      selector:@selector(activeDictionariesChanged:)
+                          name:kDCSActiveDictionariesChangedDistributedNotification
+                        object:nil];
 }
 
 
@@ -180,10 +189,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.audioPlayer = [[EZAudioPlayer alloc] init];
 }
 
+// 通知触发时会调用的方法
+- (void)activeDictionariesChanged:(NSNotification *)notification {
+    NSLog(@"Active dictionaries changed: %@", notification);
+}
+
 - (void)dealloc {
     NSLog(@"dealloc: %@", self);
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:EZServiceHasUpdatedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - NSNotificationCenter
