@@ -1,4 +1,4 @@
-<img width="779" alt="Safari" src="https://github.com/Jerry23011/Easydict/assets/89069957/44f32a4d-c79a-43ef-8988-7e6b72a84c52"><p align="center">
+<p align="center"><p align="center">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
