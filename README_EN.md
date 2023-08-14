@@ -1,4 +1,4 @@
-<p align="center"><p align="center">
+<p align="center">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
