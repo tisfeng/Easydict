@@ -20,6 +20,8 @@ NSString *const EZServiceTypeOpenAI = @"OpenAI";
 NSString *const EZServiceTypeMicrosoft = @"Microsoft";
 
 
+NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
+
 NSString *const EZQueryTextTypeKey = @"QueryTextType";
 NSString *const EZIntelligentQueryTextTypeKey = @"IntelligentQueryTextType";
 

@@ -18,8 +18,8 @@
 @interface EZResultView ()
 
 @property (nonatomic, strong) NSView *topBarView;
-@property (nonatomic, strong) NSImageView *typeImageView;
-@property (nonatomic, strong) NSTextField *typeLabel;
+@property (nonatomic, strong) NSImageView *serviceIcon;
+@property (nonatomic, strong) NSTextField *serviceNameLabel;
 @property (nonatomic, strong) NSImageView *errorImageView;
 @property (nonatomic, strong) EZLoadingAnimationView *loadingView;
 @property (nonatomic, strong) EZHoverButton *arrowButton;
@@ -63,14 +63,14 @@
     }];
     self.topBarView.mas_key = @"topBarView";
 
-    self.typeImageView = [NSImageView mm_make:^(NSImageView *imageView) {
+    self.serviceIcon = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
         [self addSubview:imageView];
         [imageView setImage:[NSImage imageNamed:@"Apple Translate"]];
     }];
-    self.typeImageView.mas_key = @"typeImageView";
+    self.serviceIcon.mas_key = @"typeImageView";
 
-    self.typeLabel = [NSTextField mm_make:^(NSTextField *label) {
+    self.serviceNameLabel = [NSTextField mm_make:^(NSTextField *label) {
         mm_strongify(self);
         [self addSubview:label];
         label.editable = NO;
@@ -83,7 +83,7 @@
             label.textColor = [NSColor ez_resultTextDarkColor];
         }];
     }];
-    self.typeLabel.mas_key = @"typeLabel";
+    self.serviceNameLabel.mas_key = @"typeLabel";
 
     self.errorImageView = [NSImageView mm_make:^(NSImageView *imageView) {
         mm_strongify(self);
@@ -101,6 +101,11 @@
     EZWordResultView *wordResultView = [[EZWordResultView alloc] initWithFrame:self.bounds];
     [self addSubview:wordResultView];
     self.wordResultView = wordResultView;
+    
+    [wordResultView setDidFinishLoadingHTMLBlock:^{
+        mm_strongify(self);
+        [self.loadingView startLoading:NO];
+    }];
 
     EZHoverButton *arrowButton = [[EZHoverButton alloc] init];
     self.arrowButton = arrowButton;
@@ -185,25 +190,25 @@
         make.height.mas_equalTo(EZResultViewMiniHeight);
     }];
 
-    [self.typeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.serviceIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.topBarView).offset(9);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
 
-    [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.typeImageView.mas_right).offset(4);
+    [self.serviceNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.serviceIcon.mas_right).offset(4);
         make.centerY.equalTo(self.topBarView).offset(0);
     }];
 
     [self.errorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.typeLabel.mas_right).offset(8);
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(8);
         make.centerY.equalTo(self.topBarView);
         make.size.mas_equalTo(iconSize);
     }];
 
     [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.typeLabel.mas_right).offset(5);
+        make.left.equalTo(self.serviceNameLabel.mas_right).offset(5);
         make.centerY.equalTo(self.topBarView);
         make.height.equalTo(self.topBarView);
     }];
@@ -234,11 +239,17 @@
     _result = result;
 
     EZServiceType serviceType = result.serviceType;
-    self.typeImageView.image = [NSImage imageNamed:serviceType];
+    self.serviceIcon.image = [NSImage imageNamed:serviceType];
 
-    self.typeLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
+    self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13]];
 
     [self.wordResultView refreshWithResult:result];
+    
+    mm_weakify(self);
+    [self.wordResultView setUpdateViewHeightBlock:^(CGFloat viewHeight) {
+        mm_strongify(self);
+        [self updateViewHeight:viewHeight];
+    }];
     
     [self updateAllButtonStatus];
 
@@ -268,6 +279,21 @@
     self.wordResultView.queryTextBlock = clickTextBlock;
 }
 
+#pragma mark -
+
+- (void)updateViewHeight:(CGFloat)wordResultViewHeight {
+    [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(wordResultViewHeight);
+    }];
+
+    CGFloat viewHeight = EZResultViewMiniHeight;
+    if (self.result.hasShowingResult && self.result.isShowing) {
+        viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
+        //        NSLog(@"show result view height: %@", @(self.height));
+    }
+    self.result.viewHeight = viewHeight;
+    //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
+}
 
 #pragma mark - Public Methods
 
@@ -294,16 +320,14 @@
 
 - (void)updateErrorImage {
     BOOL hideWarningImage = YES;
-    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorMessage.length)) {
+    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorType || self.result.errorMessage.length)) {
         hideWarningImage = NO;
     }
     self.errorImageView.hidden = hideWarningImage;
-    
-    BOOL unsupportLanguageError = self.result.errorType == EZErrorTypeUnsupportedLanguage;
-    
+        
     NSString *errorImageName = @"disabled";
     NSString *toolTip = @"Unsupported Language";
-    if (!unsupportLanguageError) {
+    if (!self.result.isWarningErrorType) {
         errorImageName = @"error";
     }
     NSImage *errorImage = [NSImage imageNamed:errorImageName];
@@ -313,7 +337,7 @@
 }
 
 - (void)updateRetryButton {
-    BOOL showRetryButton = self.result.error && (self.result.errorType != EZErrorTypeUnsupportedLanguage);
+    BOOL showRetryButton = self.result.error && (!self.result.isWarningErrorType);
     self.retryButton.hidden = !showRetryButton;
 }
 

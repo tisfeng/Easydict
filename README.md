@@ -3,24 +3,22 @@
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
 <p align="center"> 
-<a href="./README.md">
-        <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-Chinese-green"
-            alt="中文 README"></a>
-<a href="./README_EN.md">
-        <img src="https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-green"
-            alt="English README"></a>
 <a href="https://github.com/tisfeng/easydict/blob/main/LICENSE">
-        <img src="https://img.shields.io/github/license/tisfeng/easydict"
+<img src="https://img.shields.io/github/license/tisfeng/easydict"
             alt="License"></a>
 <a href="https://github.com/tisfeng/Easydict/releases">
-        <img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
+<img src="https://img.shields.io/github/downloads/tisfeng/easydict/total.svg"
             alt="Downloads"></a>
 <a href="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white">
-        <img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white"
+<img src="https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white"
             alt="macOS"></a>  
 </p>
 
-## Easydict | [English](./README_EN.md)
+<div align="center">
+<a href="./README.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_EN.md">English</a>
+</div>
+
+## Easydict
 
 `Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)和[火山翻译](https://translate.volcengine.com/translate)。
 
@@ -57,7 +55,7 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
 
 ## 目录
 
-- [Easydict | English](#easydict--english)
+- [Easydict](#easydict)
 - [功能](#功能)
 - [目录](#目录)
 - [安装](#安装)
@@ -428,20 +426,22 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 
 如果不希望用户名显示在列表中，请选择匿名方式。
 
-|  **日期**  |  **用户**  | **金额** |                                                          **留言**                                                           |
-| :--------: | :--------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
-| 2023-05-22 |     🍑     |    50    |                                                          感谢开源                                                           |
-| 2023-05-22 |     -      |   200    |                                                                                                                             |
-| 2023-05-22 |     -      |   150    |                                                                                                                             |
-| 2023-05-24 |    陈佩    |    50    |      加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)）      |
-| 2023-05-27 |   自由。   |   100    |                                                            感谢                                                             |
-| 2023-06-01 |    梦遇    |    10    |                                                            感谢                                                             |
-| 2023-06-05 | 挨揍的免子 |    1     |                                                           谢谢 🙏                                                           |
-| 2023-06-17 |    妙才    |    5     |                                                             ❤️                                                              |
-| 2023-06-19 |     1      |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
-| 2023-06-19 |   许冠英   |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
-| 2023-06-20 | lidashuang |    10    |                                                            感谢                                                             |
-| 2023-07-03 | 小阳 | 2 |  |
-| 2023-07-06 |  | 30 | 谢谢 |
-| 2023-07-11 | 清清🎵在努力✨ | 20 |  |
-| 2023-07-21 |  | 50 | ty |
+|  **日期**  |     **用户**      | **金额** |                                                          **留言**                                                           |
+| :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
+| 2023-05-22 |        🍑         |    50    |                                                          感谢开源                                                           |
+| 2023-05-22 |         -         |   200    |                                                                                                                             |
+| 2023-05-22 |         -         |   150    |                                                                                                                             |
+| 2023-05-24 |       陈佩        |    50    |      加油 有没有可能有 Linux 版？（[暂时没有](https://github.com/tisfeng/Easydict/issues/57#issuecomment-1555913845)）      |
+| 2023-05-27 |      自由。       |   100    |                                                            感谢                                                             |
+| 2023-06-01 |       梦遇        |    10    |                                                            感谢                                                             |
+| 2023-06-05 |    挨揍的免子     |    1     |                                                           谢谢 🙏                                                           |
+| 2023-06-17 |       妙才        |    5     |                                                             ❤️                                                              |
+| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
+| 2023-06-19 |      许冠英       |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
+| 2023-06-20 |    lidashuang     |    10    |                                                            感谢                                                             |
+| 2023-07-03 |       小阳        |    2     |                                                                                                                             |
+| 2023-07-06 |                   |    30    |                                                            谢谢                                                             |
+| 2023-07-11 | 清清 🎵 在努力 ✨ |    20    |                                                                                                                             |
+| 2023-07-21 |                   |    50    |                                                             ty                                                              |
+| 2023-07-25 |                   |    10    |                                                          感谢开源                                                           |
+| 2023-08-07 |     guanyuan      |    58    |                                                          开源万岁                                                           |

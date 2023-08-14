@@ -135,6 +135,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// If (self.wordResult && self.translatedText.length), YES
 @property (nonatomic, assign, readonly) BOOL hasTranslatedResult;
 
+/// EZErrorTypeUnsupportedLanguage || EZErrorTypeNoResultsFound
+@property (nonatomic, assign, readonly) BOOL isWarningErrorType;
+
 /// 查询文本的发音地址
 @property (nonatomic, copy, nullable) NSString *fromSpeakURL;
 /// 翻译后的发音地址
@@ -147,6 +150,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL showBigWord;
 @property (nonatomic, assign) CGFloat translateResultsTopInset;
+
+@property (nonatomic, copy, nullable) NSString *HTMLString;
+
+/// 未查询到结果，如系统词典查单词时，查询了句子
+@property (nonatomic, assign) BOOL noResultsFound;
 
 - (void)reset;
 

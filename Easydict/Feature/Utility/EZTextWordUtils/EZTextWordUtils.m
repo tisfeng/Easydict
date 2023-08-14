@@ -334,8 +334,10 @@ static NSDictionary *const kQuotesDict = @{
 
 /// Remove Prefix quotes
 + (NSString *)tryToRemovePrefixQuote:(NSString *)text {
-    if ([self prefixQuoteOfText:text]) {
-        return [text substringFromIndex:1];
+    NSString *prefixQuote = [self prefixQuoteOfText:text];
+    if (prefixQuote) {
+        NSString *newText = [text substringFromIndex:prefixQuote.length];
+        return newText;
     }
     
     return text;
@@ -343,8 +345,10 @@ static NSDictionary *const kQuotesDict = @{
 
 /// Remove Suffix quotes
 + (NSString *)tryToRemoveSuffixQuote:(NSString *)text {
-    if ([self suffixQuoteOfText:text]) {
-        return [text substringToIndex:text.length - 1];
+    NSString *suffixQuote = [self suffixQuoteOfText:text];
+    if (suffixQuote) {
+        NSString *newText = [text substringToIndex:text.length - suffixQuote.length];
+        return newText;
     }
     
     return text;

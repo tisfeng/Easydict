@@ -70,6 +70,12 @@
     return encodedText;
 }
 
+/// Replace \" with &quot;
+- (NSString *)escapedHTMLString {
+    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
+    return escapedHTMLContent;
+}
+
 - (void)copyToPasteboard {
     [NSPasteboard mm_generalPasteboardSetString:self];
 }

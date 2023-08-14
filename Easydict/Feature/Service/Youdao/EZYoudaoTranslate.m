@@ -459,7 +459,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     }
     
     if (self.queryTextType == EZQueryTextTypeNone) {
-        self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
+        self.result.errorMessage = NSLocalizedString(@"no_results_found", nil);
         completion(self.result, nil);
         return;
     }
@@ -515,7 +515,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     // If Youdao Dictionary does not support the language, try querying translate API.
     if (!enableDictionary || !supportQueryDictionaryLanguage || !shouldQueryDictionary) {
-        self.result.errorMessage = NSLocalizedString(@"query_has_no_result", nil);
+        self.result.errorMessage = NSLocalizedString(@"no_results_found", nil);
         completion(self.result, nil);
         return;
     }

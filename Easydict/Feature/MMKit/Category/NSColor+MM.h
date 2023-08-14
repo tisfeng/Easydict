@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSColor *)mm_colorWithIntR:(int)r g:(int)g b:(int)b;
 + (NSColor *)mm_colorWithIntR:(int)r g:(int)g b:(int)b alhpa:(CGFloat)alpha;
 
+// 将 NSColor 转换为字符串表示的颜色值（十六进制）
++ (NSString *)mm_hexStringFromColor:(NSColor *)color;
+
 @end
 
 NS_ASSUME_NONNULL_END

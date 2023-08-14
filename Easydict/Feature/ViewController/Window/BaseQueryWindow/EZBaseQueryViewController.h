@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "EZLayoutManager.h"
 #import "EZQueryModel.h"
+#import "EZQueryResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateQueryTextAndParagraphStyle:(NSString *)text actionType:(EZActionType)actionType;
 
 - (void)scrollToEndOfTextView;
+
+- (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData;
 
 @end
 

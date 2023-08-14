@@ -5,7 +5,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "Baidu_Translate.png",
+      "filename" : "510a9fda2f51de7416af54a20772b6cd_MzvUX28YSg.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -17,5 +17,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "localizable" : true
   }
 }
