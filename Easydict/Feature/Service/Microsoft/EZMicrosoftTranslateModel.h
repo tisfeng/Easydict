@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// 检测出的from语言
 @interface EZMicrosoftDetectedLanguageModel : NSObject
+/// example：en、zh-Hans...
 @property (nonatomic, copy) NSString *language;
 @property (nonatomic, assign) double score;
 @end
@@ -25,9 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray<NSNumber *> *transSentLen;
 @end
 
+/// 翻译结果
 @interface EZMicrosoftTranslationsModel : NSObject
+/// 翻译结果
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, strong) EZMicrosoftTransliterationModel *transliteration;
+/// 翻译源语言
+/// example：en、zh-Hans...
 @property (nonatomic, copy) NSString *to;
 @property (nonatomic, strong) EZMicrosoftSentLenModel *sentLen;
 @end

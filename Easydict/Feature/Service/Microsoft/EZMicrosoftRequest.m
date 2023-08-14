@@ -9,6 +9,12 @@
 NSString * const kTTranslateV3Host = @"https://www.bing.com/ttranslatev3";
 NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
 
+// memory cache
+static NSString *kIG;
+static NSString *kIID;
+static NSString *kToken;
+static NSString *kKey;
+
 #import "EZMicrosoftRequest.h"
 #import "EZTranslateError.h"
 
@@ -38,12 +44,6 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
 }
 
 - (void)fetchTranslateParam:(void (^)(NSString * IG, NSString * IID, NSString * token, NSString * key))paramCallback failure:(nonnull void (^)(NSError * _Nonnull))failure {
-    // memory cache
-    static NSString *kIG;
-    static NSString *kIID;
-    static NSString *kToken;
-    static NSString *kKey;
-
     if (kIG.length > 0 && kIID.length > 0 && kToken.length > 0 && kKey.length > 0) {
         paramCallback(kIG, kIID, kToken, kKey);
         return;
@@ -166,6 +166,7 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
             self.lookupData = responseObject;
             [self executeCallback];
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"microsoft lookup error: %@", error);
             self.lookupError = error;
             [self executeCallback];
         }];
@@ -173,6 +174,13 @@ NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
     } failure:^(NSError * error) {
         completion(nil, nil, error, nil);
     }];
+}
+
+- (void)resetToken {
+    kIG = nil;
+    kIID = nil;
+    kToken = nil;
+    kKey = nil;
 }
 
 - (NSString *)getIGValueFromHTML:(NSString *)htmlString {

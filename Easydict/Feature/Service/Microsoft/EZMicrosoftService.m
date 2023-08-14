@@ -96,17 +96,18 @@
             if (translateError) {
                 self.result.error = translateError;
                 NSLog(@"microsoft translate error %@", translateError);
+            } else {
+                NSError * error = [self processTranslateResult:translateData text:text from:from to:to completion:completion];
+                if (error) {
+                    completion(self.result, error);
+                    return;
+                }
+                if (lookupError) {
+                    NSLog(@"microsoft lookup error %@", lookupError);
+                } else {
+                    [self processWordSimpleWordAndPart:lookupData];
+                }
             }
-            if (lookupError) {
-                NSLog(@"microsoft lookup error %@", lookupError);
-            }
-            
-            NSError * error = [self processTranslateResult:translateData text:text from:from to:to];
-            if (error) {
-                completion(self.result, error);
-                return;
-            }
-            [self processWordSimpleWordAndPart:lookupData];
             completion(self.result ,translateError);
         } @catch (NSException *exception) {
             MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
@@ -138,13 +139,20 @@
     return text;
 }
 
-- (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to {
+- (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult * _Nullable, NSError * _Nullable))completion {
     if (translateData.length == 0) {
         return EZTranslateError(EZErrorTypeAPI, @"microsoft translate data is empty", nil);
     }
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
         NSString *msg = [NSString stringWithFormat:@"microsoft json parse failed\n%@", json];
+        if ([json isKindOfClass:[NSDictionary class]]) {
+            // 通过测试发现205应该是token失效，需要重新获取token
+            if ([((NSDictionary *)json)[@"statusCode"] intValue] == 205) {
+                msg = @"token invalid, please try again or restart the app.";
+                [self.request resetToken];
+            }
+        }
         return EZTranslateError(EZErrorTypeAPI, msg, nil);
     }
     EZMicrosoftTranslateModel *translateModel = [EZMicrosoftTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
