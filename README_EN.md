@@ -160,7 +160,7 @@ sudo xattr -rd com.apple.quarantine /Applications/Easydict.app
 Once Easydict is launched, in addition to the main window (hidden by default), there will be a menu icon, and clicking on the menu option will trigger the corresponding actions, as follows:
 
 <div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/xb77fI-1684688321.png" width="50%" />
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/f0c7da85-b9e0-4003-b673-e93f6477a75b" width="50%" />
 </div>
 
 | Ways                      | Description                                                                                                                                  | Preview                                                                                                                                        |
@@ -328,7 +328,7 @@ The settings page provides some preference setting modifications, such as automa
 
 ### Settings
 
-![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
+<img width="1036" alt="Prefences" src="https://github.com/Jerry23011/Easydict/assets/89069957/7d63ad8e-927f-44e2-bc14-9d2199a927e4">
 
 ### Services
 
@@ -338,7 +338,7 @@ Easydict has 3 types of windows and you can set different services for each of t
 - Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
 - Main window: hidden by default, you can turn it on in the settings and show it when the program starts. (The main window function will be enhanced later)
 
-![iShot_2023-01-20_11.47.34-1674186506](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.47.34-1674186506.png)
+<img width="1330" alt="Services" src="https://github.com/Jerry23011/Easydict/assets/89069957/b3185b45-c593-4a23-a1be-0601bf347c30">
 
 ### In-App Shortcuts
 
@@ -370,9 +370,9 @@ Unlike the translation shortcut keys that are globally effective, the following 
 
 As long as the query window is activated, you can open the settings page by shortcut key `Cmd + ,`. If you hide the menu bar icon, you can reopen it in this way.
 
-<div style="display:flex;align-items:flex-start;">
-  <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/ee377707-c021-43b2-b9e0-65272ad42c7e" width="30%">
+<div style="display:flex;align-items:center;">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/584bb1b3-6ddd-4af8-a8b5-fc491a21605c" style="margin-right:50px;" width="40%">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/dfdda624-68eb-4534-968a-b7327201d880" width="30%">
 </div>
 
 If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xxx" button to specify the recognition language.
