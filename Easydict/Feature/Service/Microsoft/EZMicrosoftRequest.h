@@ -17,6 +17,8 @@ typedef void(^MicrosoftTranslateCompletion)(NSData * _Nullable translateData, NS
 @interface EZMicrosoftRequest : NSObject
 
 - (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(MicrosoftTranslateCompletion)completion;
+
+- (void)resetToken;
 @end
 
 NS_ASSUME_NONNULL_END
