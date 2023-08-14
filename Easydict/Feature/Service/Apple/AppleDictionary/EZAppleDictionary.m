@@ -96,35 +96,65 @@
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     
     NSString *bigWordTitleH2Class = @"big-word-title";
-    NSString *dictNameClassH2Class = @"dict-name";
     NSString *customIframeContainerClass = @"custom-iframe-container";
     
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
                            @".%@ { font-weight: bold; font-size: 24px; margin-top: 15px; margin-bottom: 15px; }"
-                           @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
-                           @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
-                           @".separator { display: flex; align-items: center; }"
-                           @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
-                           @".separator::before { margin-right: 2px; }"
-                           @".separator::after { margin-left: 2px; }"
                            
                            @".%@ { margin-top: 0px; margin-bottom: 0px; width: 100%%; }"
                            
                            @"body { margin: 10px; color: %@; background-color: %@; }"
                            
-                           @"@media (prefers-color-scheme: dark) {"
+                           @"@media (prefers-color-scheme: dark) { "
                            @"body { color: %@; background-color: %@; }"
-                           @".separator::before, .separator::after { border-top-color: %@; }"
                            @"}"
                            @"</style>",
                            
-                           bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString,
+                           bigWordTitleH2Class,
                            
                            customIframeContainerClass,
                            
                            lightTextColorString, lightBackgroundColorString,
-                           darkTextColorString, darkBackgroundColorString, darkSeparatorColorString];
+                           darkTextColorString, darkBackgroundColorString];
+    
+    
+    NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
+                                   @"<style>"
+                                   @"  details summary { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
+                                   @"  details summary::before, "
+                                   @"  details summary::after { "
+                                   @"    content: \"\"; "
+                                   @"    display: inline-block; "
+                                   @"    width: 20%%; "
+                                   @"    height: 1px; "
+                                   @"    background: %@; "
+                                   @"    vertical-align: middle; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details[open] summary::before { "
+                                   @"    margin-right: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details[open] summary::after { "
+                                   @"    margin-left: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details:not([open]) summary::before { "
+                                   @"    margin-right: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details:not([open]) summary::after { "
+                                   @"    margin-left: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  @media (prefers-color-scheme: dark) { "
+                                   @"    details summary::before, "
+                                   @"    details summary::after { "
+                                   @"      background: %@; "
+                                   @"    } "
+                                   @"  } "
+                                   @"</style>", lightSeparatorColorString, darkSeparatorColorString];
     
     NSMutableString *iframeHtmlString = [NSMutableString string];
     
@@ -136,7 +166,7 @@
         
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
         // Use <div> tag to wrap the title and separator content
-        NSString *dictTitleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
+        NSString *dictTitleHtml = [NSString stringWithFormat:@"<details open><summary> %@ </summary>", dictName];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -157,7 +187,7 @@
                     // Add top margin
                     [htmlString appendString:@"<div style=\"height: 5px;\"></div>"];
                 }
-                [htmlString appendFormat:@"%@", html];
+                [htmlString appendFormat:@"%@</details>", html];
                 
                 dictTitleHtml = @"";
             }
@@ -179,7 +209,7 @@
                                                 lightBackgroundColorString, textColor, darkTextColorString, darkBackgroundColorString];
             
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], dictBackgroundColorCSS, [htmlString escapedHTMLString]];
+            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [detailsSummaryCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [htmlString escapedHTMLString]];
             
             [iframeHtmlString appendString:iframeContent];
         }
@@ -187,7 +217,7 @@
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
                            @"body { margin: 0px; background-color: %@; }"
-                           @".%@ { margin 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
+                           @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
                            @"body { background-color: %@; }"
@@ -195,6 +225,7 @@
                            @"</style>",
                            
                            lightBackgroundColorString, customIframeContainerClass, darkBackgroundColorString];
+    
     
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
                                @"<script>"
@@ -209,7 +240,7 @@
                                @"      }"
                                @"    }"
                                @"    window.onload = function() {"
-                               @"      updateAllIframeHeight();"
+                               @"       updateAllIframeHeight();"
                                @"    };"
                                @"</script>"];
     
