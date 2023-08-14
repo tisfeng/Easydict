@@ -1,4 +1,4 @@
-<p align="center">
+<img width="779" alt="Safari" src="https://github.com/Jerry23011/Easydict/assets/89069957/44f32a4d-c79a-43ef-8988-7e6b72a84c52"><p align="center">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/icon_512x512-1671278252.png" height="256">
   <h1 align="center">Easydict</h1>
   <h4 align="center"> Easy to look up words or translate text</h4>
@@ -182,8 +182,8 @@ The flow of the crossword function: Accessibility > AppleScript > simulated shor
 Therefore, it is recommended to turn on the Allow JavaScript in Apple events option in your browser to avoid event blocking on certain web pages, such as those with [forced copyright information](<(https://github.com/tisfeng/Easydict/issues/85)>), and to optimize the word fetching experience. For Safari users, it is highly recommended that this option be turned on, as Safari does not support Accessibility fetching, and AppleScript fetching is far superior to simulating shortcuts.
 
 <div>
-    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115811617-1688788691.png" width="45%">
-    <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230708115827839-1688788707.png" width="45%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/a1d8aa6b-69d7-459a-ac83-a6f090d04cae" width="45%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/4dbf038b-d939-454f-9205-648636f46ca8" width="45%">
 </div>
 
 ### About Permissions
