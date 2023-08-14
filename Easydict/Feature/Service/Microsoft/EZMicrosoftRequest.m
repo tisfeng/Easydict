@@ -33,13 +33,11 @@ static NSString *kKey;
 
 - (void)executeCallback {
     self.responseCount += 1;
-    if (self.responseCount == 2) {
-        self.completion([self.translateData copy], [self.lookupData copy], [self.translateError copy], [self.lookupError copy]);
-        self.translateData = nil;
-        self.lookupData = nil;
-        self.translateError = nil;
-        self.responseCount = 0;
-        self.completion = nil;
+    if (self.responseCount >= 2) {
+        if (self.completion != nil) {
+            self.completion([self.translateData copy], [self.lookupData copy], [self.translateError copy], [self.lookupError copy]);
+        }
+        [self resetData];
     }
 }
 
@@ -176,11 +174,23 @@ static NSString *kKey;
     }];
 }
 
+- (void)reset {
+    [self resetToken];
+    [self resetData];
+}
+
 - (void)resetToken {
     kIG = nil;
     kIID = nil;
     kToken = nil;
     kKey = nil;
+}
+
+- (void)resetData {
+    self.translateData = nil;
+    self.lookupData = nil;
+    self.translateError = nil;
+    self.responseCount = 0;
 }
 
 - (NSString *)getIGValueFromHTML:(NSString *)htmlString {
