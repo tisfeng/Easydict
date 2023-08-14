@@ -100,7 +100,6 @@
     
     // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { font-weight: bold; font-size: 24px; margin-top: 15px; margin-bottom: 15px; }"
                            
                            @".%@ { margin-top: 0px; margin-bottom: 0px; width: 100%%; }"
                            
@@ -111,7 +110,6 @@
                            @"}"
                            @"</style>",
                            
-                           bigWordTitleH2Class,
                            
                            customIframeContainerClass,
                            
@@ -126,7 +124,7 @@
                                    @"  details summary::after { "
                                    @"    content: \"\"; "
                                    @"    display: inline-block; "
-                                   @"    width: 20%%; "
+                                   @"    width: 25%%; "
                                    @"    height: 1px; "
                                    @"    background: %@; "
                                    @"    vertical-align: middle; "
@@ -166,7 +164,7 @@
         
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
         // Use <div> tag to wrap the title and separator content
-        NSString *dictTitleHtml = [NSString stringWithFormat:@"<details open><summary> %@ </summary>", dictName];
+//        NSString *dictTitleHtml = [NSString stringWithFormat:@"<details open><summary> %@ </summary>", dictName];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -178,18 +176,20 @@
             if (html.length && isTheSameHeadword) {
                 // Add titleHtml when there is a html result, and only add once.
                 
-                [htmlString appendString:bigWordHtml];
-                bigWordHtml = @"";
+//                [htmlString appendString:bigWordHtml];
+//                bigWordHtml = @"";
                 
-                [htmlString appendString:dictTitleHtml];
+                [htmlString appendString:html];
                 
-                if (dictTitleHtml.length) {
-                    // Add top margin
-                    [htmlString appendString:@"<div style=\"height: 5px;\"></div>"];
-                }
-                [htmlString appendFormat:@"%@</details>", html];
-                
-                dictTitleHtml = @"";
+//                [htmlString appendString:dictTitleHtml];
+//
+//                if (dictTitleHtml.length) {
+//                    // Add top margin
+//                    [htmlString appendString:@"<div style=\"height: 5px;\"></div>"];
+//                }
+//                [htmlString appendFormat:@"%@</details>", html];
+//
+//                dictTitleHtml = @"";
             }
         }
         
@@ -208,23 +208,36 @@
                                                 
                                                 lightBackgroundColorString, textColor, darkTextColorString, darkBackgroundColorString];
             
+                                
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [detailsSummaryCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [htmlString escapedHTMLString]];
+            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [htmlString escapedHTMLString]];
+
             
-            [iframeHtmlString appendString:iframeContent];
+
+            
+            NSString *detailsHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeContent];
+            
+            
+                            bigWordHtml = @"";
+            
+            [iframeHtmlString appendString:detailsHtml];
         }
     }
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
+                           @".%@ { font-weight: bold; font-size: 24px; margin: 15px; }"
+
                            @"body { margin: 0px; background-color: %@; }"
                            @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
-                           @"body { background-color: %@; }"
+                           @"body { background-color: %@; color: %@;}"
                            @"}"
                            @"</style>",
                            
-                           lightBackgroundColorString, customIframeContainerClass, darkBackgroundColorString];
+                           bigWordTitleH2Class,
+                           
+                           lightBackgroundColorString, customIframeContainerClass, darkBackgroundColorString, darkTextColorString];
     
     
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
@@ -247,8 +260,8 @@
     NSString *htmlString = nil;
     
     if (iframeHtmlString.length) {
-        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ </head> <body> %@ </body></html>",
-                      globalCSS, jsCode, iframeHtmlString];
+        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ </head> <body> %@ </body></html>",
+                      globalCSS, detailsSummaryCSS, jsCode, iframeHtmlString];
     }
     
     return htmlString;
