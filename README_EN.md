@@ -74,7 +74,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
     - [Configure API call method](#configure-api-call-method)
 - [Use with PopClip](#use-with-popclip)
 - [Preferences](#preferences)
-  - [Setting](#setting)
+  - [Settings](#settings)
   - [Services](#services)
   - [In-App Shortcuts](#in-app-shortcuts)
 - [Tips](#tips)
@@ -326,7 +326,7 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on a query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
 
-### Setting
+### Settings
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
