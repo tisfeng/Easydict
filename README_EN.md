@@ -35,7 +35,7 @@
 
 - [x] Out of the box, easily look up words or translate text.
 - [x] Automatic recognition of input language and automatic query of target preferred language.
-- [x] Auto select translate, automatically display the query icon after word search, mouse hover to query.
+- [x] Auto select translate, automatically display the query icon after word search, and mouse hover to query.
 - [x] Support for configuring different services for different window types.
 - [x] Support system OCR screenshot translation, Silent Screenshot OCR.
 - [x] Support system TTS.
@@ -74,7 +74,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
     - [Configure API call method](#configure-api-call-method)
 - [Use with PopClip](#use-with-popclip)
 - [Preferences](#preferences)
-  - [Settting](#settting)
+  - [Setting](#setting)
   - [Services](#services)
   - [In-App Shortcuts](#in-app-shortcuts)
 - [Tips](#tips)
@@ -101,7 +101,7 @@ brew install easydict
 
 ### Developer Build
 
-If you are a developer, or are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
+If you are a developer, or you are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
 <details> <summary> Build Steps： </summary>
 
@@ -188,7 +188,7 @@ Therefore, it is recommended to turn on the Allow JavaScript in Apple events opt
 
 ### About Permissions
 
-1. `Select Translate` requires the `Auxiliary Accessibility`.The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
+1. `Select Translate` requires the `Auxiliary Accessibility`. The mouse stroke function only triggers the application of auxiliary accessibility permission when it is used for the first time, and the automatic stroke translation function can only be used normally after authorization.
 
 2. For screenshot Translate, you need to enable `Screen Recording` permission. The application will only automatically pop up a permission application dialog box when you use **Screenshot Translation** for the first time. If the authorization fails, you need to turn it on in the system settings manually.
 
@@ -208,7 +208,7 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 ## Translation Services
 
-**Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, total 6 translation services.**
+**Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Baidu and Volcano translation, a total of 6 translation services.**
 
 > Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
@@ -273,9 +273,9 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 ### DeepL Translate
 
-DeepL free version web API has frequency limit for single IP, frequent use will trigger 429 too many requests error, so version 1.3.0 adds support for DeepL official API, but the interface has not been written yet, and needs to be enabled through command.
+DeepL free version web API has a frequency limit for single IP, frequent use will trigger 429 too many requests error, so version 1.3.0 adds support for DeepL official API, but the interface has not been written yet, and needs to be enabled through command.
 
-If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limit and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
+If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
 
 #### Configure AuthKey
 
@@ -324,9 +324,9 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 
 ## Preferences
 
-The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
+The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on a query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
 
-### Settting
+### Setting
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
@@ -350,13 +350,13 @@ Unlike the translation shortcut keys that are globally effective, the following 
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Mlw8ty-1681955887.png" width="50%">
 </div>
 
-- `Enter`: After entering text, press Enter to start the query.
-- `Shift + Enter`: Enter a newline.
+- `Enter`: After entering the text, press Enter to start the query.
+- `Shift + Enter`: Enter a new line.
 - `Cmd + ,`: Open the settings page.
 - `Cmd + Q`: Quit the app.
 - `Cmd + K`: Clear the input text.
 - `Cmd + Shift + K`: Clear the input box and query results, the same as clicking the clear button in the lower right corner of the input text.
-- `Cmd + I`: Focus the input text.
+- `Cmd + I`: Focus on the input text.
 - `Cmd + Shift + C`: Copy query text.
 - `Cmd + S`: Play the pronunciation of the query text.
 - `Cmd + R`: Query again.
