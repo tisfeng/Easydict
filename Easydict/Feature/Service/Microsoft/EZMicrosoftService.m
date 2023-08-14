@@ -176,9 +176,6 @@
     // phonetic
     if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
         NSString *inputTransliteration = json[1][@"inputTransliteration"];
-        if (!self.result.wordResult) {
-            self.result.wordResult = [EZTranslateWordResult new];
-        }
         EZWordPhonetic *phonetic = [EZWordPhonetic new];
         phonetic.name = NSLocalizedString(@"us_phonetic", nil);
         if ([EZLanguageManager.shared isChineseLanguage:self.result.from]) {
@@ -194,6 +191,9 @@
         phonetic.language = self.result.queryModel.queryFromLanguage;
         phonetic.word = text;
         
+        if (!self.result.wordResult) {
+            self.result.wordResult = [EZTranslateWordResult new];
+        }
         self.result.wordResult.phonetics = @[phonetic];
     }
 outer:
@@ -209,10 +209,7 @@ outer:
     NSArray *lookupJson = [NSJSONSerialization JSONObjectWithData:lookupData options:0 error:nil];
     if ([lookupJson isKindOfClass:[NSArray class]]) {
         EZMicrosoftLookupModel *lookupModel = [EZMicrosoftLookupModel mj_objectArrayWithKeyValuesArray:lookupJson].firstObject;
-        if (!self.result.wordResult) {
-            self.result.wordResult = [EZTranslateWordResult new];
-        }
-        
+        EZTranslateWordResult *wordResult = self.result.wordResult ?: [EZTranslateWordResult new];
         NSMutableDictionary<NSString *, NSMutableArray<EZMicrosoftLookupTranslationsModel *> *> *tags = [NSMutableDictionary dictionary];
         for (EZMicrosoftLookupTranslationsModel *translation in lookupModel.translations) {
             NSMutableArray<EZMicrosoftLookupTranslationsModel *> *array = tags[translation.posTag];
@@ -238,7 +235,7 @@ outer:
                 }
             }];
             if (simpleWords.count) {
-                self.result.wordResult.simpleWords = simpleWords;
+                wordResult.simpleWords = simpleWords;
             }
         } else {
             NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
@@ -251,8 +248,12 @@ outer:
                 [parts addObject:part];
             }];
             if (parts.count) {
-                self.result.wordResult.parts = [parts copy];
+                wordResult.parts = [parts copy];
             }
+        }
+        
+        if (wordResult.parts.count || wordResult.simpleWords.count) {
+            self.result.wordResult = wordResult;
         }
     }
 }
