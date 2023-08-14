@@ -14,12 +14,14 @@
 
 @interface EZMicrosoftService()
 @property (nonatomic, strong) EZMicrosoftRequest *request;
+@property (nonatomic, assign) BOOL canRetry;
 @end
 
 @implementation EZMicrosoftService
 
 - (instancetype)init {
     if (self = [super init]) {
+        _canRetry = YES;
         _request = [[EZMicrosoftRequest alloc] init];
     }
     return self;
@@ -97,8 +99,17 @@
                 self.result.error = translateError;
                 NSLog(@"microsoft translate error %@", translateError);
             } else {
-                NSError * error = [self processTranslateResult:translateData text:text from:from to:to completion:completion];
+                BOOL needRetry;
+                NSError * error = [self processTranslateResult:translateData text:text from:from to:to needRetry: &needRetry];
+                // canRetry用来避免递归调用，code205只主动重试一次。
+                if (self.canRetry && needRetry) {
+                    self.canRetry = NO;
+                    [self translate:text from:from to:to completion:completion];
+                    return;
+                }
+                self.canRetry = YES;
                 if (error) {
+                    self.result.error = error;
                     completion(self.result, error);
                     return;
                 }
@@ -139,7 +150,7 @@
     return text;
 }
 
-- (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult * _Nullable, NSError * _Nullable))completion {
+- (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to needRetry:(BOOL *)needRetry {
     if (translateData.length == 0) {
         return EZTranslateError(EZErrorTypeAPI, @"microsoft translate data is empty", nil);
     }
@@ -150,7 +161,10 @@
             // 通过测试发现205应该是token失效，需要重新获取token
             if ([((NSDictionary *)json)[@"statusCode"] intValue] == 205) {
                 msg = @"token invalid, please try again or restart the app.";
-                [self.request resetToken];
+                [self.request reset];
+                if (needRetry) {
+                    *needRetry = YES;
+                }
             }
         }
         return EZTranslateError(EZErrorTypeAPI, msg, nil);

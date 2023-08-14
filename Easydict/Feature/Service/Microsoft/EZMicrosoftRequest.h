@@ -18,7 +18,7 @@ typedef void(^MicrosoftTranslateCompletion)(NSData * _Nullable translateData, NS
 
 - (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(MicrosoftTranslateCompletion)completion;
 
-- (void)resetToken;
+- (void)reset;
 @end
 
 NS_ASSUME_NONNULL_END
