@@ -11,6 +11,9 @@
 #import "DictionaryKit.h"
 #import "EZWindowManager.h"
 
+static NSString * const kDictNameFont = @"PingFangSC-Regular";
+static CGFloat const kDictNameFontSize = 18;
+
 @implementation EZAppleDictionary
 
 #pragma mark - 重写父类方法
@@ -119,12 +122,12 @@
     
     NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
                                    @"<style>"
-                                   @"  details summary { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
+                                   @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: %fpx; margin: 0; text-align: center; }"
                                    @"  details summary::before, "
                                    @"  details summary::after { "
                                    @"    content: \"\"; "
                                    @"    display: inline-block; "
-                                   @"    width: 25%%; "
+                                   @"    width: var(--before-after-summary-width, 0px); "
                                    @"    height: 1px; "
                                    @"    background: %@; "
                                    @"    vertical-align: middle; "
@@ -152,7 +155,10 @@
                                    @"      background: %@; "
                                    @"    } "
                                    @"  } "
-                                   @"</style>", lightSeparatorColorString, darkSeparatorColorString];
+                                   @"</style>",
+                                   
+                                   kDictNameFontSize,
+                                   lightSeparatorColorString, darkSeparatorColorString];
     
     NSMutableString *iframeHtmlString = [NSMutableString string];
     
@@ -163,6 +169,7 @@
         NSMutableString *htmlString = [NSMutableString string];
         
         NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
+        
         // Use <div> tag to wrap the title and separator content
 //        NSString *dictTitleHtml = [NSString stringWithFormat:@"<details open><summary> %@ </summary>", dictName];
         
@@ -194,6 +201,8 @@
         }
         
         if (htmlString.length) {
+//            CGFloat dictNameWidth = [self getDictNameWidth:dictName];
+
             // Use -webkit-text-fill-color to render system dict.
             NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
@@ -225,7 +234,7 @@
     }
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: PingFang SC; }"
+                           @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
 
                            @"body { margin: 0px; background-color: %@; }"
                            @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
@@ -242,6 +251,48 @@
     
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
                                @"<script>"
+                               @"function calculateSummaryTextWidth(summary) {"
+                                   @"    const range = document.createRange();"
+                                   @"    range.selectNodeContents(summary);"
+                                   @"    const textWidth = range.getBoundingClientRect().width;"
+                                   @"    return textWidth;"
+                                   @"}"
+                                   @""
+                                   @"function updateDetailsSummaryLineWidth() {"
+                                   @"    const detailsSummaryList = document.querySelectorAll('details summary');"
+                                   @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
+                                   @"        const summary = detailsSummaryList[i];"
+                                   @"        const summaryText = summary.innerText;"
+                                   @"        const computedStyle = getComputedStyle(summary);"
+                                   @"        const font = {"
+                                   @"            fontSize: computedStyle.fontSize,"
+                                   @"            fontWeight: computedStyle.fontWeight,"
+                                   @"            fontFamily: computedStyle.fontFamily,"
+                                   @"        };"
+                                   @""
+                                   @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
+                                   @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
+                                   @""
+                                   @"        const detailsMargin = 20;"
+                                   @"        const detailsSummaryTriangleWidth = 20;"
+                                   @"        const detailsPadding = 10;"
+                                   @"        let summaryLineWidth ="
+                                   @"            (document.documentElement.clientWidth -"
+                                   @"            detailsMargin -"
+                                   @"            summaryTextWidth -"
+                                   @"            detailsSummaryTriangleWidth -"
+                                   @"            detailsPadding) /"
+                                   @"            2;"
+                                   @""
+                                   @"        console.log(`summaryLineWidth: ${summaryLineWidth}`);"
+                                   @""
+                                   @"        summary.style.setProperty("
+                                   @"            '--before-after-summary-width',"
+                                   @"            `${summaryLineWidth}px`"
+                                   @"        );"
+                                   @"    }"
+                                   @"}"
+
                                @"    function updateAllIframeHeight() {"
                                @"      var iframes = document.querySelectorAll('iframe');"
                                @"      for (var i = 0; i < iframes.length; i++) {"
@@ -253,6 +304,7 @@
                                @"      }"
                                @"    }"
                                @"    window.onload = function() {"
+                               @"       updateDetailsSummaryLineWidth(); "
                                @"       updateAllIframeHeight();"
                                @"    };"
                                @"</script>"];
@@ -266,6 +318,23 @@
     
     return htmlString;
 }
+
+/// Get dict name width
+- (CGFloat)getDictNameWidth:(NSString *)dictName {
+    
+    NSFont *boldPingFangFont = [NSFont  fontWithName:kDictNameFont size:kDictNameFontSize];
+    
+
+    NSDictionary *attributes = @{NSFontAttributeName: boldPingFangFont};
+    CGFloat width = [dictName sizeWithAttributes:attributes].width;
+    
+    width = [dictName mm_widthWithFont:boldPingFangFont];
+    
+    NSLog(@"%@ width: %.1f", dictName, width);
+    
+    return width;
+}
+
 
 
 - (NSString *)getParagraphHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
