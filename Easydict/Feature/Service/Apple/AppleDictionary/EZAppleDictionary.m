@@ -11,9 +11,6 @@
 #import "DictionaryKit.h"
 #import "EZWindowManager.h"
 
-static NSString * const kDictNameFont = @"PingFangSC-Regular";
-static CGFloat const kDictNameFontSize = 18;
-
 @implementation EZAppleDictionary
 
 #pragma mark - 重写父类方法
@@ -101,11 +98,8 @@ static CGFloat const kDictNameFontSize = 18;
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *customIframeContainerClass = @"custom-iframe-container";
     
-    // Custom CSS styles for headings, separator, and paragraphs
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
-                           
                            @".%@ { margin-top: 0px; margin-bottom: 0px; width: 100%%; }"
-                           
                            @"body { margin: 10px; color: %@; background-color: %@; }"
                            
                            @"@media (prefers-color-scheme: dark) { "
@@ -113,16 +107,13 @@ static CGFloat const kDictNameFontSize = 18;
                            @"}"
                            @"</style>",
                            
-                           
                            customIframeContainerClass,
-                           
                            lightTextColorString, lightBackgroundColorString,
                            darkTextColorString, darkBackgroundColorString];
     
-    
     NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
                                    @"<style>"
-                                   @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: %fpx; margin: 0; text-align: center; }"
+                                   @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: 18px; margin: 0; text-align: center; }"
                                    @"  details summary::before, "
                                    @"  details summary::after { "
                                    @"    content: \"\"; "
@@ -157,7 +148,6 @@ static CGFloat const kDictNameFontSize = 18;
                                    @"  } "
                                    @"</style>",
                                    
-                                   kDictNameFontSize,
                                    lightSeparatorColorString, darkSeparatorColorString];
     
     NSMutableString *iframeHtmlString = [NSMutableString string];
@@ -168,11 +158,6 @@ static CGFloat const kDictNameFontSize = 18;
     for (TTTDictionary *dictionary in dicts) {
         NSMutableString *htmlString = [NSMutableString string];
         
-        NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
-        
-        // Use <div> tag to wrap the title and separator content
-//        NSString *dictTitleHtml = [NSString stringWithFormat:@"<details open><summary> %@ </summary>", dictName];
-        
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
             NSString *headword = entry.headword;
@@ -181,28 +166,11 @@ static CGFloat const kDictNameFontSize = 18;
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
             if (html.length && isTheSameHeadword) {
-                // Add titleHtml when there is a html result, and only add once.
-                
-//                [htmlString appendString:bigWordHtml];
-//                bigWordHtml = @"";
-                
                 [htmlString appendString:html];
-                
-//                [htmlString appendString:dictTitleHtml];
-//
-//                if (dictTitleHtml.length) {
-//                    // Add top margin
-//                    [htmlString appendString:@"<div style=\"height: 5px;\"></div>"];
-//                }
-//                [htmlString appendFormat:@"%@</details>", html];
-//
-//                dictTitleHtml = @"";
             }
         }
         
         if (htmlString.length) {
-//            CGFloat dictNameWidth = [self getDictNameWidth:dictName];
-
             // Use -webkit-text-fill-color to render system dict.
             NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
@@ -215,19 +183,16 @@ static CGFloat const kDictNameFontSize = 18;
                                                 @"}"
                                                 @"</style>",
                                                 
-                                                lightBackgroundColorString, textColor, darkTextColorString, darkBackgroundColorString];
+                                                lightBackgroundColorString,
+                                                textColor, darkTextColorString, darkBackgroundColorString];
             
-                                
             // Create an iframe for each HTML content
             NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [htmlString escapedHTMLString]];
-
             
-
-            
+            NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
             NSString *detailsHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeContent];
             
-            
-                            bigWordHtml = @"";
+            bigWordHtml = @"";
             
             [iframeHtmlString appendString:detailsHtml];
         }
@@ -235,7 +200,7 @@ static CGFloat const kDictNameFontSize = 18;
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
                            @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
-
+                           
                            @"body { margin: 0px; background-color: %@; }"
                            @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
                            
@@ -245,54 +210,53 @@ static CGFloat const kDictNameFontSize = 18;
                            @"</style>",
                            
                            bigWordTitleH2Class,
-                           
-                           lightBackgroundColorString, customIframeContainerClass, darkBackgroundColorString, darkTextColorString];
-    
+                           lightBackgroundColorString, customIframeContainerClass,
+                           darkBackgroundColorString, darkTextColorString];
     
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
                                @"<script>"
                                @"function calculateSummaryTextWidth(summary) {"
-                                   @"    const range = document.createRange();"
-                                   @"    range.selectNodeContents(summary);"
-                                   @"    const textWidth = range.getBoundingClientRect().width;"
-                                   @"    return textWidth;"
-                                   @"}"
-                                   @""
-                                   @"function updateDetailsSummaryLineWidth() {"
-                                   @"    const detailsSummaryList = document.querySelectorAll('details summary');"
-                                   @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
-                                   @"        const summary = detailsSummaryList[i];"
-                                   @"        const summaryText = summary.innerText;"
-                                   @"        const computedStyle = getComputedStyle(summary);"
-                                   @"        const font = {"
-                                   @"            fontSize: computedStyle.fontSize,"
-                                   @"            fontWeight: computedStyle.fontWeight,"
-                                   @"            fontFamily: computedStyle.fontFamily,"
-                                   @"        };"
-                                   @""
-                                   @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
-                                   @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
-                                   @""
-                                   @"        const detailsMargin = 20;"
-                                   @"        const detailsSummaryTriangleWidth = 20;"
-                                   @"        const detailsPadding = 10;"
-                                   @"        let summaryLineWidth ="
-                                   @"            (document.documentElement.clientWidth -"
-                                   @"            detailsMargin -"
-                                   @"            summaryTextWidth -"
-                                   @"            detailsSummaryTriangleWidth -"
-                                   @"            detailsPadding) /"
-                                   @"            2;"
-                                   @""
-                                   @"        console.log(`summaryLineWidth: ${summaryLineWidth}`);"
-                                   @""
-                                   @"        summary.style.setProperty("
-                                   @"            '--before-after-summary-width',"
-                                   @"            `${summaryLineWidth}px`"
-                                   @"        );"
-                                   @"    }"
-                                   @"}"
-
+                               @"    const range = document.createRange();"
+                               @"    range.selectNodeContents(summary);"
+                               @"    const textWidth = range.getBoundingClientRect().width;"
+                               @"    return textWidth;"
+                               @"}"
+                               @""
+                               @"function updateDetailsSummaryLineWidth() {"
+                               @"    const detailsSummaryList = document.querySelectorAll('details summary');"
+                               @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
+                               @"        const summary = detailsSummaryList[i];"
+                               @"        const summaryText = summary.innerText;"
+                               @"        const computedStyle = getComputedStyle(summary);"
+                               @"        const font = {"
+                               @"            fontSize: computedStyle.fontSize,"
+                               @"            fontWeight: computedStyle.fontWeight,"
+                               @"            fontFamily: computedStyle.fontFamily,"
+                               @"        };"
+                               @""
+                               @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
+                               @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
+                               @""
+                               @"        const detailsMargin = 20;"
+                               @"        const detailsSummaryTriangleWidth = 20;"
+                               @"        const detailsPadding = 10;"
+                               @"        let summaryLineWidth ="
+                               @"            (document.documentElement.clientWidth -"
+                               @"            detailsMargin -"
+                               @"            summaryTextWidth -"
+                               @"            detailsSummaryTriangleWidth -"
+                               @"            detailsPadding) /"
+                               @"            2;"
+                               @""
+                               @"        console.log(`summaryLineWidth: ${summaryLineWidth}`);"
+                               @""
+                               @"        summary.style.setProperty("
+                               @"            '--before-after-summary-width',"
+                               @"            `${summaryLineWidth}px`"
+                               @"        );"
+                               @"    }"
+                               @"}"
+                               
                                @"    function updateAllIframeHeight() {"
                                @"      var iframes = document.querySelectorAll('iframe');"
                                @"      for (var i = 0; i < iframes.length; i++) {"
@@ -321,11 +285,9 @@ static CGFloat const kDictNameFontSize = 18;
 
 /// Get dict name width
 - (CGFloat)getDictNameWidth:(NSString *)dictName {
+    NSFont *boldPingFangFont = [NSFont fontWithName:@"PingFangSC-Regular" size:18];
     
-    NSFont *boldPingFangFont = [NSFont  fontWithName:kDictNameFont size:kDictNameFontSize];
-    
-
-    NSDictionary *attributes = @{NSFontAttributeName: boldPingFangFont};
+    NSDictionary *attributes = @{NSFontAttributeName : boldPingFangFont};
     CGFloat width = [dictName sizeWithAttributes:attributes].width;
     
     width = [dictName mm_widthWithFont:boldPingFangFont];
@@ -334,7 +296,6 @@ static CGFloat const kDictNameFontSize = 18;
     
     return width;
 }
-
 
 
 - (NSString *)getParagraphHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
