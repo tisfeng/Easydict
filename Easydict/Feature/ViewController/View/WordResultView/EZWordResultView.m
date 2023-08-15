@@ -910,7 +910,6 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     // Cost ~0.15s
-    NSLog(@"loaded webView");
     NSString *script = @"document.body.scrollHeight;";
     
     mm_weakify(self);
@@ -922,9 +921,9 @@ static const CGFloat kVerticalPadding_8 = 8;
             
             // Cost ~0.2s
             CGFloat contentHeight = [result doubleValue];
-            NSLog(@"contentHeight: %.1f", contentHeight);
+//            NSLog(@"contentHeight: %.1f", contentHeight);
             
-            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.5;
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.6;
             
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
@@ -1025,18 +1024,20 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 
 - (void)evaluateJavaScript:(NSString *)jsCode {
-    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-            NSLog(@"jsCode: %@", jsCode);
-        } else {
-            NSLog(@"result: %@", result);
-        }
-    }];
+    [self evaluateJavaScript:jsCode completionHandler:nil];
 }
 
 - (void)evaluateJavaScript:(NSString *)jsCode completionHandler:(void (^_Nullable)(_Nullable id, NSError *_Nullable error))completionHandler {
-    [self.webView evaluateJavaScript:jsCode completionHandler:completionHandler];
+    [self.webView evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            NSLog(@"jsCode: %@", jsCode);
+        }
+        
+        if (completionHandler) {
+            completionHandler(result, error);
+        }
+    }];
 }
 
 - (void)fetchWebViewAllIframeText:(void (^_Nullable)(NSString *text))completionHandler {
