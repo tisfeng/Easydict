@@ -225,7 +225,7 @@
     }
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { font-weight: bold; font-size: 24px; margin: 15px; }"
+                           @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: PingFang SC; }"
 
                            @"body { margin: 0px; background-color: %@; }"
                            @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
