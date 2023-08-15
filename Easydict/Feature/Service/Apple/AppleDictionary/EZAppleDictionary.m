@@ -37,20 +37,12 @@
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
-    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, EZLanguageAuto,
-                                        EZLanguageSimplifiedChinese, EZLanguageSimplifiedChinese,
-                                        EZLanguageTraditionalChinese, EZLanguageTraditionalChinese,
-                                        EZLanguageEnglish, EZLanguageEnglish,
-                                        EZLanguageJapanese, EZLanguageJapanese,
-                                        EZLanguageKorean, EZLanguageKorean,
-                                        EZLanguageFrench, EZLanguageFrench,
-                                        EZLanguageGerman, EZLanguageGerman,
-                                        EZLanguageSpanish, EZLanguageSpanish,
-                                        EZLanguageItalian, EZLanguageItalian,
-                                        EZLanguagePortuguese, EZLanguagePortuguese,
-                                        EZLanguageDutch, EZLanguageDutch,
-                                        nil];
+    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
+    NSArray<EZLanguage> *allLanguages = [EZLanguageManager.shared allLanguages];
+    for (EZLanguage language in allLanguages) {
+        NSString *value = language;
+        [orderedDict setObject:value forKey:language];
+    }
     return orderedDict;
 }
 
@@ -59,7 +51,7 @@
         return;
     }
     
-    NSString *htmlString = [self getHTMLResultOfWord:text languages:@[ from, to ]];
+    NSString *htmlString = [self getAllIframeHTMLResultOfWord:text languages:@[ from, to ]];
     self.result.HTMLString = htmlString;
     
     if (htmlString.length == 0) {
@@ -76,14 +68,10 @@
 
 #pragma mark -
 
-/// Get HTML result of word, cost ~0.2s
-- (NSString *)getHTMLResultOfWord:(NSString *)word languages:(NSArray<EZLanguage> *)languages {
-    NSString *htmlString = [self getAllIframeHTMLResultOfWord:word languages:languages];
-    return htmlString;
-}
-
-/// Get All iframe HTML of word from dictionaries.
+/// Get All iframe HTML of word from dictionaries, cost ~0.2s
+/// TODO: This code is so ugly, we should refactor it, but I'am bad at HTML and CSS 🥹
 - (NSString *)getAllIframeHTMLResultOfWord:(NSString *)word languages:(NSArray<EZLanguage> *)languages {
+    // TODO: Maybe we should filter dicts according to languages.
     NSArray<TTTDictionary *> *dicts = [TTTDictionary activeDictionaries];
     
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
@@ -150,13 +138,13 @@
                                    
                                    lightSeparatorColorString, darkSeparatorColorString];
     
-    NSMutableString *iframeHtmlString = [NSMutableString string];
+    NSMutableString *iframesHtmlString = [NSMutableString string];
     
     /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, word];
     
     for (TTTDictionary *dictionary in dicts) {
-        NSMutableString *htmlString = [NSMutableString string];
+        NSMutableString *wordHtmlString = [NSMutableString string];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -166,11 +154,11 @@
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
             if (html.length && isTheSameHeadword) {
-                [htmlString appendString:html];
+                [wordHtmlString appendString:html];
             }
         }
         
-        if (htmlString.length) {
+        if (wordHtmlString.length) {
             // Use -webkit-text-fill-color to render system dict.
             NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
@@ -187,14 +175,14 @@
                                                 textColor, darkTextColorString, darkBackgroundColorString];
             
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [htmlString escapedHTMLString]];
+            NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [wordHtmlString escapedHTMLString]];
             
             NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
-            NSString *detailsHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeContent];
+            NSString *detailsSummaryHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeHTML];
             
             bigWordHtml = @"";
             
-            [iframeHtmlString appendString:detailsHtml];
+            [iframesHtmlString appendString:detailsSummaryHtml];
         }
     }
     
@@ -275,9 +263,9 @@
     
     NSString *htmlString = nil;
     
-    if (iframeHtmlString.length) {
+    if (iframesHtmlString.length) {
         htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ </head> <body> %@ </body></html>",
-                      globalCSS, detailsSummaryCSS, jsCode, iframeHtmlString];
+                      globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
     }
     
     return htmlString;
