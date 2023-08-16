@@ -15,11 +15,11 @@ jobs:
       - if: ${{ github.event_name == 'fork' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=Forked 🍴" >> $GITHUB_ENV
+          echo "event_name=Forked🍴" >> $GITHUB_ENV
       - if: ${{ github.event_name == 'watch' }}
         run: |
           echo "🎉 triggered by a ${{ github.event_name }} event."
-          echo "event_name=Starred ✨" >> $GITHUB_ENV
+          echo "event_name=Starred✨" >> $GITHUB_ENV
 
       - name: Get repository information
         run: |

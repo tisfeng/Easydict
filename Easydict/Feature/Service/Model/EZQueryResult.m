@@ -21,15 +21,18 @@
  interjection -> interj.
  */
 NSString *getPartName(NSString *part) {
-    NSDictionary *dict = @{
+    static NSDictionary *dict = @{
         @"adjective" : @"adj.",
+        @"adj" : @"adj.",
         @"adverb" : @"adv.",
+        @"adv": @"adv.",
         @"verb" : @"v.",
         @"noun" : @"n.",
         @"pronoun" : @"pron.",
         @"preposition" : @"prep.",
         @"conjunction" : @"conj.",
         @"interjection" : @"interj.",
+        @"det": @"det.", // determinative 限定词
     };
     
     NSString *partName = dict[part];
@@ -131,6 +134,14 @@ NSString *getPartName(NSString *part) {
     return warningType;
 }
 
+- (NSString *)copiedText {
+    if (!self.HTMLString.length) {
+        return self.translatedText;
+    }
+    
+    return _copiedText;
+}
+
 - (void)reset {
     self.queryModel = [[EZQueryModel alloc] init];
     self.translatedResults = nil;
@@ -159,6 +170,8 @@ NSString *getPartName(NSString *part) {
     self.manulShow = NO;
     self.HTMLString = nil;
     self.noResultsFound = NO;
+    self.copiedText = nil;
+    self.didFinishLoadingHTMLBlock = nil;
 }
 
 @end

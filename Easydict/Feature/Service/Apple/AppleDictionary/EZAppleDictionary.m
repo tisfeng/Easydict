@@ -37,20 +37,12 @@
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
-    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        EZLanguageAuto, EZLanguageAuto,
-                                        EZLanguageSimplifiedChinese, EZLanguageSimplifiedChinese,
-                                        EZLanguageTraditionalChinese, EZLanguageTraditionalChinese,
-                                        EZLanguageEnglish, EZLanguageEnglish,
-                                        EZLanguageJapanese, EZLanguageJapanese,
-                                        EZLanguageKorean, EZLanguageKorean,
-                                        EZLanguageFrench, EZLanguageFrench,
-                                        EZLanguageGerman, EZLanguageGerman,
-                                        EZLanguageSpanish, EZLanguageSpanish,
-                                        EZLanguageItalian, EZLanguageItalian,
-                                        EZLanguagePortuguese, EZLanguagePortuguese,
-                                        EZLanguageDutch, EZLanguageDutch,
-                                        nil];
+    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
+    NSArray<EZLanguage> *allLanguages = [EZLanguageManager.shared allLanguages];
+    for (EZLanguage language in allLanguages) {
+        NSString *value = language;
+        [orderedDict setObject:value forKey:language];
+    }
     return orderedDict;
 }
 
@@ -59,7 +51,7 @@
         return;
     }
     
-    NSString *htmlString = [self getHTMLResultOfWord:text languages:@[ from, to ]];
+    NSString *htmlString = [self getAllIframeHTMLResultOfWord:text languages:@[ from, to ]];
     self.result.HTMLString = htmlString;
     
     if (htmlString.length == 0) {
@@ -76,67 +68,83 @@
 
 #pragma mark -
 
-/// Get HTML result of word, cost ~0.2s
-- (NSString *)getHTMLResultOfWord:(NSString *)word languages:(NSArray<EZLanguage> *)languages {
-    NSString *htmlString = [self getAllIframeHTMLResultOfWord:word languages:languages];
-    return htmlString;
-}
-
-/// Get All iframe HTML of word from dictionaries.
+/// Get All iframe HTML of word from dictionaries, cost ~0.2s
+/// TODO: This code is so ugly, we should refactor it, but I'am bad at HTML and CSS 🥹
 - (NSString *)getAllIframeHTMLResultOfWord:(NSString *)word languages:(NSArray<EZLanguage> *)languages {
+    // TODO: Maybe we should filter dicts according to languages.
     NSArray<TTTDictionary *> *dicts = [TTTDictionary activeDictionaries];
     
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
-
+    
     NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-
+    
     NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     
     NSString *bigWordTitleH2Class = @"big-word-title";
-    NSString *dictNameClassH2Class = @"dict-name";
     NSString *customIframeContainerClass = @"custom-iframe-container";
-
-    // Custom CSS styles for headings, separator, and paragraphs
+    
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { font-weight: bold; font-size: 24px; margin-top: 15px; margin-bottom: 15px; }"
-                           @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
-                           @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
-                           @".separator { display: flex; align-items: center; }"
-                           @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
-                           @".separator::before { margin-right: 2px; }"
-                           @".separator::after { margin-left: 2px; }"
-                           
                            @".%@ { margin-top: 0px; margin-bottom: 0px; width: 100%%; }"
-                           
                            @"body { margin: 10px; color: %@; background-color: %@; }"
-
-                           @"@media (prefers-color-scheme: dark) {"
+                           
+                           @"@media (prefers-color-scheme: dark) { "
                            @"body { color: %@; background-color: %@; }"
-                           @".separator::before, .separator::after { border-top-color: %@; }"
                            @"}"
                            @"</style>",
                            
-                           bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString,
-                           
                            customIframeContainerClass,
-                                                      
                            lightTextColorString, lightBackgroundColorString,
-                           darkTextColorString, darkBackgroundColorString, darkSeparatorColorString];
+                           darkTextColorString, darkBackgroundColorString];
     
-    NSMutableString *iframeHtmlString = [NSMutableString string];
+    NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
+                                   @"<style>"
+                                   @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: 18px; margin: 0; text-align: center; }"
+                                   @"  details summary::before, "
+                                   @"  details summary::after { "
+                                   @"    content: \"\"; "
+                                   @"    display: inline-block; "
+                                   @"    width: var(--before-after-summary-width, 0px); "
+                                   @"    height: 1px; "
+                                   @"    background: %@; "
+                                   @"    vertical-align: middle; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details[open] summary::before { "
+                                   @"    margin-right: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details[open] summary::after { "
+                                   @"    margin-left: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details:not([open]) summary::before { "
+                                   @"    margin-right: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  details:not([open]) summary::after { "
+                                   @"    margin-left: 5px; "
+                                   @"  } "
+                                   @"  "
+                                   @"  @media (prefers-color-scheme: dark) { "
+                                   @"    details summary::before, "
+                                   @"    details summary::after { "
+                                   @"      background: %@; "
+                                   @"    } "
+                                   @"  } "
+                                   @"</style>",
+                                   
+                                   lightSeparatorColorString, darkSeparatorColorString];
+    
+    NSMutableString *iframesHtmlString = [NSMutableString string];
     
     /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, word];
     
     for (TTTDictionary *dictionary in dicts) {
-        NSMutableString *htmlString = [NSMutableString string];
-        
-        NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
-        // Use <div> tag to wrap the title and separator content
-        NSString *dictTitleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
+        NSMutableString *wordHtmlString = [NSMutableString string];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
@@ -146,58 +154,97 @@
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
             if (html.length && isTheSameHeadword) {
-                // Add titleHtml when there is a html result, and only add once.
-                
-                [htmlString appendString:bigWordHtml];
-                bigWordHtml = @"";
-                
-                [htmlString appendString:dictTitleHtml];
-                
-                if (dictTitleHtml.length) {
-                    // Add top margin
-                    [htmlString appendString:@"<div style=\"height: 5px;\"></div>"];
-                }
-                [htmlString appendFormat:@"%@", html];
-
-                dictTitleHtml = @"";
+                [wordHtmlString appendString:html];
             }
         }
         
-        if (htmlString.length) {
+        if (wordHtmlString.length) {
             // Use -webkit-text-fill-color to render system dict.
             NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
             // Update background color for dark mode
             NSString *dictBackgroundColorCSS = [NSString stringWithFormat:@"<style>"
-                                   @"body { background-color: %@; }"
-
-                                   @"@media (prefers-color-scheme: dark) {"
-                                   @"body { %@: %@; background-color: %@; }"
-                                   @"}"
-                                   @"</style>",
-                                   
-                                    lightBackgroundColorString, textColor, darkTextColorString, darkBackgroundColorString];
+                                                @"body { background-color: %@; }"
+                                                
+                                                @"@media (prefers-color-scheme: dark) {"
+                                                @"body { %@: %@; background-color: %@; }"
+                                                @"}"
+                                                @"</style>",
+                                                
+                                                lightBackgroundColorString,
+                                                textColor, darkTextColorString, darkBackgroundColorString];
             
             // Create an iframe for each HTML content
-            NSString *iframeContent = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], dictBackgroundColorCSS, [htmlString escapedHTMLString]];
+            NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [wordHtmlString escapedHTMLString]];
             
-            [iframeHtmlString appendString:iframeContent];
+            NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
+            NSString *detailsSummaryHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeHTML];
+            
+            bigWordHtml = @"";
+            
+            [iframesHtmlString appendString:detailsSummaryHtml];
         }
     }
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
+                           @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
+                           
                            @"body { margin: 0px; background-color: %@; }"
-                           @".%@ { margin 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
+                           @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
-                           @"body { background-color: %@; }"
+                           @"body { background-color: %@; color: %@;}"
                            @"}"
                            @"</style>",
                            
-                           lightBackgroundColorString, customIframeContainerClass, darkBackgroundColorString];
+                           bigWordTitleH2Class,
+                           lightBackgroundColorString, customIframeContainerClass,
+                           darkBackgroundColorString, darkTextColorString];
     
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
                                @"<script>"
+                               @"function calculateSummaryTextWidth(summary) {"
+                               @"    const range = document.createRange();"
+                               @"    range.selectNodeContents(summary);"
+                               @"    const textWidth = range.getBoundingClientRect().width;"
+                               @"    return textWidth;"
+                               @"}"
+                               @""
+                               @"function updateDetailsSummaryLineWidth() {"
+                               @"    const detailsSummaryList = document.querySelectorAll('details summary');"
+                               @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
+                               @"        const summary = detailsSummaryList[i];"
+                               @"        const summaryText = summary.innerText;"
+                               @"        const computedStyle = getComputedStyle(summary);"
+                               @"        const font = {"
+                               @"            fontSize: computedStyle.fontSize,"
+                               @"            fontWeight: computedStyle.fontWeight,"
+                               @"            fontFamily: computedStyle.fontFamily,"
+                               @"        };"
+                               @""
+                               @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
+                               @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
+                               @""
+                               @"        const detailsMargin = 20;"
+                               @"        const detailsSummaryTriangleWidth = 20;"
+                               @"        const detailsPadding = 10;"
+                               @"        let summaryLineWidth ="
+                               @"            (document.documentElement.clientWidth -"
+                               @"            detailsMargin -"
+                               @"            summaryTextWidth -"
+                               @"            detailsSummaryTriangleWidth -"
+                               @"            detailsPadding) /"
+                               @"            2;"
+                               @""
+                               @"        console.log(`summaryLineWidth: ${summaryLineWidth}`);"
+                               @""
+                               @"        summary.style.setProperty("
+                               @"            '--before-after-summary-width',"
+                               @"            `${summaryLineWidth}px`"
+                               @"        );"
+                               @"    }"
+                               @"}"
+                               
                                @"    function updateAllIframeHeight() {"
                                @"      var iframes = document.querySelectorAll('iframe');"
                                @"      for (var i = 0; i < iframes.length; i++) {"
@@ -209,124 +256,33 @@
                                @"      }"
                                @"    }"
                                @"    window.onload = function() {"
-                               @"      updateAllIframeHeight();"
+                               @"       updateDetailsSummaryLineWidth(); "
+                               @"       updateAllIframeHeight();"
                                @"    };"
-                               @"  </script>"];
+                               @"</script>"];
     
     NSString *htmlString = nil;
     
-    if (iframeHtmlString.length) {
-        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ </head> <body> %@ </body></html>",
-                       globalCSS, jsCode, iframeHtmlString];
+    if (iframesHtmlString.length) {
+        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ </head> <body> %@ </body></html>",
+                      globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
     }
     
     return htmlString;
 }
 
-
-- (NSString *)getParagraphHTMLResultOfWord:(NSString *)text languages:(NSArray<EZLanguage> *)languages {
-    NSArray<TTTDictionary *> *dicts = [self getSystemActiveDictionaries];
+/// Get dict name width
+- (CGFloat)getDictNameWidth:(NSString *)dictName {
+    NSFont *boldPingFangFont = [NSFont fontWithName:@"PingFangSC-Regular" size:18];
     
-    NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-    NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+    NSDictionary *attributes = @{NSFontAttributeName : boldPingFangFont};
+    CGFloat width = [dictName sizeWithAttributes:attributes].width;
     
-    NSString *liteLightSeparatorColorString = @"#BDBDBD";
-    NSString *liteDarkSeparatorColorString = @"#5B5A5A";
-    NSString *bigWordTitleH2Class = @"big-word-title";
-    NSString *dictNameClassH2Class = @"dict-name";
-    NSString *customParagraphClass = @"custom-paragraph";
+    width = [dictName mm_widthWithFont:boldPingFangFont];
     
-    // Custom CSS styles for headings, separator, and paragraphs
-    NSString *customCssStyle = [NSString stringWithFormat:@"<style>"
-                                @".%@ { font-weight: 600; font-size: 25px; margin-top: -5px; margin-bottom: 10px; }"
-                                @".%@ { font-weight: 500; font-size: 18px; margin: 0; text-align: center; }"
-                                @".%@::before, .%@::after { content: ''; flex: 1; border-top: 1px solid black; margin: 0 2px; }"
-                                @".separator { display: flex; align-items: center; }"
-                                @".separator::before, .separator::after { content: ''; flex: 1; border-top: 1px solid %@; }"
-                                @".separator::before { margin-right: 2px; }"
-                                @".separator::after { margin-left: 2px; }"
-                                
-                                @".%@ { margin-top: 5px; margin-bottom: 15px; }"
-                                @"</style>",
-                                
-                                bigWordTitleH2Class, dictNameClassH2Class, dictNameClassH2Class, dictNameClassH2Class, lightSeparatorColorString, customParagraphClass];
+    NSLog(@"%@ width: %.1f", dictName, width);
     
-    // Custom CSS styles for span.x_xo0>span.x_xoLblBlk
-    NSString *replaceCssStyle = [NSString stringWithFormat:@"<style>"
-                                 @"body { margin: 10px;  }"
-                                 @".x_xo0 .x_xoLblBlk {"
-                                 @"display: block;"
-                                 @"font-variant: small-caps;"
-                                 @"font-size: 90%%;"
-                                 @"display: block;"
-                                 @"padding-bottom: 0.3em;"
-                                 @"border-bottom: solid thin %@;"
-                                 @"color: -apple-system-secondary-label;"
-                                 @"margin-top: 2em;"
-                                 @"margin-bottom: 0.5em;"
-                                 @"}"
-                                 @".separator::before, .separator::after {"
-                                 @"border-top-color: %@;"
-                                 @"}"
-                                 @".x_xo0 .x_xoLblBlk {"
-                                 @"border-bottom-color: %@;"
-                                 @"}"
-                                 @"@media (prefers-color-scheme: dark) {"
-                                 @".separator::before, .separator::after { border-top-color: %@; }"
-                                 @".x_xo0 .x_xoLblBlk {"
-                                 @"border-bottom-color: %@;"
-                                 @"}"
-                                 @"}"
-                                 @"</style>",
-                                 
-                                 liteLightSeparatorColorString, lightSeparatorColorString, liteDarkSeparatorColorString,
-                                 darkSeparatorColorString, liteDarkSeparatorColorString];
-    
-    NSMutableString *htmlString = [NSMutableString string];
-    
-    NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, text];
-    
-    for (TTTDictionary *dictionary in dicts) {
-        NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
-        // Use <div> tag to wrap the title and separator content
-        NSString *titleHtml = [NSString stringWithFormat:@"<div class=\"separator\"><h2 class=\"%@\">%@</h2></div>", dictNameClassH2Class, dictName];
-        
-        for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:text]) {
-            NSString *html = entry.HTMLWithAppCSS;
-            NSString *headword = entry.headword;
-            
-            // LOG --> log,  根据 genju--> 根据  gēnjù
-            BOOL isTheSameHeadword = [self containsSubstring:text inString:headword];
-            
-            if (html.length && isTheSameHeadword) {
-                // Add titleHtml when there is a html result, and only add once.
-                
-                [htmlString appendString:customCssStyle];
-                customCssStyle = @"";
-                
-                [htmlString appendString:bigWordHtml];
-                bigWordHtml = @"";
-                
-                [htmlString appendString:titleHtml];
-                titleHtml = @"";
-                
-                [htmlString appendFormat:@"<p class=\"%@\">%@</p>", customParagraphClass, html];
-            }
-        }
-    }
-    
-    if (htmlString.length) {
-        // TODO: Are we really need to remove the origin border-bottom css style?
-        [self removeOriginBorderBottomCssStyle:htmlString];
-        
-        // Find the first <body> element
-        NSRange bodyRange = [htmlString rangeOfString:@"<body>"];
-        
-        // Replace the system's span.x_xo0>span.x_xoLblBlk style to fix the separator color issue in dark mode.
-        [htmlString insertString:replaceCssStyle atIndex:bodyRange.location];
-    }
-    
-    return htmlString;
+    return width;
 }
 
 - (NSArray<TTTDictionary *> *)getUserActiveDictionaries {
@@ -346,7 +302,7 @@
 
 - (NSArray<TTTDictionary *> *)getSystemActiveDictionaries {
     NSArray *activeDictionaries = [TTTDictionary activeDictionaries];
-
+    
     NSMutableArray *systemDicts = [NSMutableArray array];
     
     // Add all system dicts
@@ -480,11 +436,11 @@
     // test a dict html
     BOOL test = YES;
     if (test) {
-                [queryDictNames removeAllObjects];
+        [queryDictNames removeAllObjects];
         
         [queryDictNames addObjectsFromArray:@[
-//            @"简明英汉字典",
-//            @"柯林斯高阶英汉双解词典",
+            //            @"简明英汉字典",
+            //            @"柯林斯高阶英汉双解词典",
             //        @"新世纪英汉大词典",
             //        @"柯林斯高阶英汉双解学习词典",
             //        @"新世纪英汉大词典",
