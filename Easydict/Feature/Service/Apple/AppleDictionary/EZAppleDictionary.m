@@ -102,6 +102,7 @@
     NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
                                    @"<style>"
                                    @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: 18px; margin: 0; text-align: center; }"
+                                   @"  details summary::-webkit-details-marker { width: 10px; height: 10px; }"
                                    @"  details summary::before, "
                                    @"  details summary::after { "
                                    @"    content: \"\"; "
@@ -178,7 +179,7 @@
             NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [wordHtmlString escapedHTMLString]];
             
             NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
-            NSString *detailsSummaryHtml = [NSString stringWithFormat:@"%@<details open><summary> %@ </summary> %@ </details>", bigWordHtml, dictName, iframeHTML];
+            NSString *detailsSummaryHtml = [NSString stringWithFormat:@"%@<details open><summary>%@</summary> %@ </details>", bigWordHtml, dictName, iframeHTML];
             
             bigWordHtml = @"";
             
