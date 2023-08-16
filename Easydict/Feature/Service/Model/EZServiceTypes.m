@@ -48,9 +48,9 @@ static EZServiceTypes *_instance;
 
 - (MMOrderedDictionary<EZServiceType, Class> *)allServiceDict {
     MMOrderedDictionary *allServiceDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                           //  EZServiceTypeOpenAI, [EZOpenAIService class],
-                                           EZServiceTypeYoudao, [EZYoudaoTranslate class],
                                            EZServiceTypeAppleDictionary, [EZAppleDictionary class],
+                                           EZServiceTypeYoudao, [EZYoudaoTranslate class],
+                                           EZServiceTypeOpenAI, [EZOpenAIService class],
                                            EZServiceTypeDeepL, [EZDeepLTranslate class],
                                            EZServiceTypeGoogle, [EZGoogleTranslate class],
                                            EZServiceTypeApple, [EZAppleService class],
@@ -58,12 +58,8 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                            EZServiceTypeBing, [EZBingService class],
                                            nil];
-    if ([EZConfiguration.shared isBeta]) {
-        [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];
-    }
     return allServiceDict;
 }
-
 
 - (nullable EZQueryService *)serviceWithType:(EZServiceType)type {
     Class Cls = [[self allServiceDict] objectForKey:type];
