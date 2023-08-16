@@ -131,7 +131,7 @@
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
     NSString *maxText = [self maxTextLength:queryModel.inputText fromLanguage:queryModel.queryFromLanguage];
     NSString *text = [maxText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", kTranslatorHost, text, from, to];
+    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", getTranslatorHost(), text, from, to];
 }
 
 - (NSString *)name {
