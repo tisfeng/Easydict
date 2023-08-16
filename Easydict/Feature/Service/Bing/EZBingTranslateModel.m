@@ -1,23 +1,23 @@
 //
-//  EZMicrosoftTranslateModel.m
+//  EZBingTranslateModel.m
 //  Easydict
 //
 //  Created by ChoiKarl on 2023/8/10.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZMicrosoftTranslateModel.h"
+#import "EZBingTranslateModel.h"
 #import "MJExtension.h"
 
-@implementation EZMicrosoftDetectedLanguageModel
+@implementation EZBingDetectedLanguageModel
 
 @end
 
-@implementation EZMicrosoftTransliterationModel
+@implementation EZBingTransliterationModel
 
 @end
 
-@implementation EZMicrosoftSentLenModel
+@implementation EZBingSentLenModel
 + (NSDictionary *)mj_objectClassInArray {
     return @{
         @"srcSentLen": [NSNumber class],
@@ -26,14 +26,14 @@
 }
 @end
 
-@implementation EZMicrosoftTranslationsModel
+@implementation EZBingTranslationsModel
 
 @end
 
-@implementation EZMicrosoftTranslateModel
+@implementation EZBingTranslateModel
 + (NSDictionary *)mj_objectClassInArray {
     return @{
-        @"translations": [EZMicrosoftTranslationsModel class]  
+        @"translations": [EZBingTranslationsModel class]
     };
 }
 @end

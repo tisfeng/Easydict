@@ -1,28 +1,27 @@
 //
-//  EZMicrosoftService.m
+//  EZBingService.m
 //  Easydict
 //
 //  Created by ChoiKarl on 2023/8/8.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZMicrosoftService.h"
-#import "EZMicrosoftRequest.h"
-#import "MJExtension.h"
-#import "EZMicrosoftTranslateModel.h"
-#import "EZMicrosoftLookupModel.h"
+#import "EZBingService.h"
+#import "EZBingRequest.h"
+#import "EZBingTranslateModel.h"
+#import "EZBingLookupModel.h"
 
-@interface EZMicrosoftService()
-@property (nonatomic, strong) EZMicrosoftRequest *request;
+@interface EZBingService()
+@property (nonatomic, strong) EZBingRequest *request;
 @property (nonatomic, assign) BOOL canRetry;
 @end
 
-@implementation EZMicrosoftService
+@implementation EZBingService
 
 - (instancetype)init {
     if (self = [super init]) {
         _canRetry = YES;
-        _request = [[EZMicrosoftRequest alloc] init];
+        _request = [[EZBingRequest alloc] init];
     }
     return self;
 }
@@ -97,7 +96,7 @@
         @try {
             if (translateError) {
                 self.result.error = translateError;
-                NSLog(@"microsoft translate error %@", translateError);
+                NSLog(@"bing translate error %@", translateError);
             } else {
                 BOOL needRetry;
                 NSError * error = [self processTranslateResult:translateData text:text from:from to:to needRetry: &needRetry];
@@ -114,7 +113,7 @@
                     return;
                 }
                 if (lookupError) {
-                    NSLog(@"microsoft lookup error %@", lookupError);
+                    NSLog(@"bing lookup error %@", lookupError);
                 } else {
                     [self processWordSimpleWordAndPart:lookupData];
                 }
@@ -122,7 +121,7 @@
             completion(self.result ,translateError);
         } @catch (NSException *exception) {
             MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
-            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"microsoft translate data parse failed", exception));
+            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing translate data parse failed", exception));
         }
     }];
 }
@@ -135,11 +134,11 @@
 }
 
 - (NSString *)name {
-    return NSLocalizedString(@"microsoft_translate", nil);
+    return NSLocalizedString(@"bing_translate", nil);
 }
 
 - (EZServiceType)serviceType {
-    return EZServiceTypeMicrosoft;
+    return EZServiceTypeBing;
 }
 
 #pragma mark - private
@@ -152,11 +151,11 @@
 
 - (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to needRetry:(BOOL *)needRetry {
     if (translateData.length == 0) {
-        return EZTranslateError(EZErrorTypeAPI, @"microsoft translate data is empty", nil);
+        return EZTranslateError(EZErrorTypeAPI, @"bing translate data is empty", nil);
     }
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
-        NSString *msg = [NSString stringWithFormat:@"microsoft json parse failed\n%@", json];
+        NSString *msg = [NSString stringWithFormat:@"bing json parse failed\n%@", json];
         if ([json isKindOfClass:[NSDictionary class]]) {
             // 通过测试发现205应该是token失效，需要重新获取token
             if ([((NSDictionary *)json)[@"statusCode"] intValue] == 205) {
@@ -169,7 +168,7 @@
         }
         return EZTranslateError(EZErrorTypeAPI, msg, nil);
     }
-    EZMicrosoftTranslateModel *translateModel = [EZMicrosoftTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
+    EZBingTranslateModel *translateModel = [EZBingTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
     self.result.from = translateModel.detectedLanguage.language ? [self languageEnumFromCode:translateModel.detectedLanguage.language] : from;
     self.result.to = translateModel.translations.firstObject.to ? [self languageEnumFromCode:translateModel.translations.firstObject.to] : to;
     
@@ -198,7 +197,7 @@
     }
 outer:
     self.result.raw = translateData;
-    self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZMicrosoftTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZBingTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return obj.text;
     }];
     return nil;
@@ -208,11 +207,11 @@ outer:
     if (!lookupData) return;
     NSArray *lookupJson = [NSJSONSerialization JSONObjectWithData:lookupData options:0 error:nil];
     if ([lookupJson isKindOfClass:[NSArray class]]) {
-        EZMicrosoftLookupModel *lookupModel = [EZMicrosoftLookupModel mj_objectArrayWithKeyValuesArray:lookupJson].firstObject;
+        EZBingLookupModel *lookupModel = [EZBingLookupModel mj_objectArrayWithKeyValuesArray:lookupJson].firstObject;
         EZTranslateWordResult *wordResult = self.result.wordResult ?: [EZTranslateWordResult new];
-        NSMutableDictionary<NSString *, NSMutableArray<EZMicrosoftLookupTranslationsModel *> *> *tags = [NSMutableDictionary dictionary];
-        for (EZMicrosoftLookupTranslationsModel *translation in lookupModel.translations) {
-            NSMutableArray<EZMicrosoftLookupTranslationsModel *> *array = tags[translation.posTag];
+        NSMutableDictionary<NSString *, NSMutableArray<EZBingLookupTranslationsModel *> *> *tags = [NSMutableDictionary dictionary];
+        for (EZBingLookupTranslationsModel *translation in lookupModel.translations) {
+            NSMutableArray<EZBingLookupTranslationsModel *> *array = tags[translation.posTag];
             if (!array) {
                 array = [NSMutableArray array];
                 tags[translation.posTag] = array;
@@ -223,12 +222,12 @@ outer:
         // 中文翻译英文
         if (([self.result.from isEqualToString:EZLanguageSimplifiedChinese] || [self.result.from isEqualToString:EZLanguageTraditionalChinese]) && [self.result.to isEqualToString:EZLanguageEnglish]) {
             NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
-            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZMicrosoftLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
-                for (EZMicrosoftLookupTranslationsModel *model in obj) {
+            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
+                for (EZBingLookupTranslationsModel *model in obj) {
                     EZTranslateSimpleWord * simpleWord = [EZTranslateSimpleWord new];
                     simpleWord.part = [key lowercaseString];
                     simpleWord.word = model.displayTarget;
-                    simpleWord.means = [model.backTranslations mm_map:^id _Nullable(EZMicrosoftLookupBackTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    simpleWord.means = [model.backTranslations mm_map:^id _Nullable(EZBingLookupBackTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                         return obj.displayText;
                     }];
                     [simpleWords addObject:simpleWord];
@@ -239,10 +238,10 @@ outer:
             }
         } else {
             NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
-            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZMicrosoftLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
+            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
                 EZTranslatePart *part = [EZTranslatePart new];
                 part.part = [key lowercaseString];
-                part.means = [obj mm_map:^id _Nullable(EZMicrosoftLookupTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                part.means = [obj mm_map:^id _Nullable(EZBingLookupTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     return obj.displayTarget;
                 }];
                 [parts addObject:part];

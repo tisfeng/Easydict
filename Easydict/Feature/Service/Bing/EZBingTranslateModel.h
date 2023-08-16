@@ -1,5 +1,5 @@
 //
-//  EZMicrosoftTranslateModel.h
+//  EZBingTranslateModel.h
 //  Easydict
 //
 //  Created by ChoiKarl on 2023/8/10.
@@ -11,37 +11,37 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// 检测出的from语言
-@interface EZMicrosoftDetectedLanguageModel : NSObject
+@interface EZBingDetectedLanguageModel : NSObject
 /// example：en、zh-Hans...
 @property (nonatomic, copy) NSString *language;
 @property (nonatomic, assign) double score;
 @end
 
-@interface EZMicrosoftTransliterationModel : NSObject
+@interface EZBingTransliterationModel : NSObject
 @property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) NSString *script;
 @end
 
-@interface EZMicrosoftSentLenModel : NSObject
+@interface EZBingSentLenModel : NSObject
 @property (nonatomic, strong) NSArray<NSNumber *> *srcSentLen;
 @property (nonatomic, strong) NSArray<NSNumber *> *transSentLen;
 @end
 
 /// 翻译结果
-@interface EZMicrosoftTranslationsModel : NSObject
+@interface EZBingTranslationsModel : NSObject
 /// 翻译结果
 @property (nonatomic, copy) NSString *text;
-@property (nonatomic, strong) EZMicrosoftTransliterationModel *transliteration;
+@property (nonatomic, strong) EZBingTransliterationModel *transliteration;
 /// 翻译源语言
 /// example：en、zh-Hans...
 @property (nonatomic, copy) NSString *to;
-@property (nonatomic, strong) EZMicrosoftSentLenModel *sentLen;
+@property (nonatomic, strong) EZBingSentLenModel *sentLen;
 @end
 
 
-@interface EZMicrosoftTranslateModel : NSObject
-@property (nonatomic, strong) EZMicrosoftDetectedLanguageModel *detectedLanguage;
-@property (nonatomic, strong) NSArray<EZMicrosoftTranslationsModel *> *translations;
+@interface EZBingTranslateModel : NSObject
+@property (nonatomic, strong) EZBingDetectedLanguageModel *detectedLanguage;
+@property (nonatomic, strong) NSArray<EZBingTranslationsModel *> *translations;
 @end
 
 NS_ASSUME_NONNULL_END
