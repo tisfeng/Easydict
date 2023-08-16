@@ -216,56 +216,56 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 <p>
 
-| Languages             | Youdao | DeepL | macOS System | Google | Baidu | Volcano |
-| :-------------------- | :----: | :---: | :----------: | :----: | :---: | :-----: |
-| Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Chinese (Traditional) |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| English               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Japanese              |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Korean                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| French                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Spanish               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Portuguese            |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Italian               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| German                |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Russian               |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Arabic                |   ✅   |  ❌   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Swedish               |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Romanian              |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Thai                  |   ✅   |  ❌   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Slovak                |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Dutch                 |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Hungarian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Greek                 |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Danish                |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Finnish               |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Polish                |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Czech                 |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Turkish               |   ❌   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Lithuanian            |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Latvian               |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Ukrainian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Bulgarian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Indonesian            |   ✅   |  ✅   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Malay                 |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Slovenian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Estonian              |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Vietnamese            |   ✅   |  ❌   |      ✅      |   ✅   |  ✅   |   ✅    |
-| Persian               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Hindi                 |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Telugu                |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Tamil                 |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Urdu                  |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Filipino              |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Khmer                 |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Lao                   |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Bengali               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Burmese               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Norwegian             |   ❌   |  ✅   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Serbian               |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Croatian              |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Mongolian             |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
-| Hebrew                |   ❌   |  ❌   |      ❌      |   ✅   |  ✅   |   ✅    |
+| Languages             | Youdao | DeepL | macOS System | Bing | Google | Baidu | Volcano |
+|:--------------------- |:------:|:-----:|:------------:|:----:|:------:|:-----:|:-------:|
+| Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Chinese (Traditional) |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| English               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Japanese              |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Korean                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| French                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Spanish               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Portuguese            |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Italian               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| German                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Russian               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Arabic                |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Swedish               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Romanian              |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Thai                  |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Slovak                |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Dutch                 |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Hungarian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Greek                 |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Danish                |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Finnish               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Polish                |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Czech                 |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Turkish               |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Lithuanian            |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Latvian               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Ukrainian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Bulgarian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Indonesian            |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Malay                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Slovenian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Estonian              |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Vietnamese            |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Persian               |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Hindi                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Telugu                |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Tamil                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Urdu                  |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Filipino              |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Khmer                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Lao                   |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Bengali               |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
+| Burmese               |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
+| Norwegian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Serbian               |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Croatian              |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Mongolian             |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+| Hebrew                |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 
 </p>
 
