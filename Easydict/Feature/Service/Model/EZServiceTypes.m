@@ -14,7 +14,7 @@
 #import "EZVolcanoTranslate.h"
 #import "EZAppleService.h"
 #import "EZOpenAIService.h"
-#import "EZMicrosoftService.h"
+#import "EZBingService.h"
 #import "EZConfiguration.h"
 #import "EZAppleDictionary.h"
 
@@ -56,7 +56,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeApple, [EZAppleService class],
                                            EZServiceTypeBaidu, [EZBaiduTranslate class],
                                            EZServiceTypeVolcano, [EZVolcanoTranslate class],
-                                           EZServiceTypeMicrosoft, [EZMicrosoftService class],
+                                           EZServiceTypeBing, [EZBingService class],
                                            nil];
     if ([EZConfiguration.shared isBeta]) {
         [allServiceDict insertObject:[EZOpenAIService class] forKey:EZServiceTypeOpenAI atIndex:0];

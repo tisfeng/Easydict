@@ -93,7 +93,7 @@
 "volcano_translate" = "火山翻译";
 "openai_translate" = "OpenAI 翻译";
 "apple_dictionary" = "苹果词典";
-"microsoft_translate" = "微软翻译";
+"bing_translate" = "Bing 翻译";
 
 // disabled app list
 "disabled_app_list" = "禁止名单";

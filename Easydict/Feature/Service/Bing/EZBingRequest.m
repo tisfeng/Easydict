@@ -1,12 +1,12 @@
 //
-//  EZMicrosoftRequest.m
+//  EZBingRequest.m
 //  Easydict
 //
 //  Created by ChoiKarl on 2023/8/8.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZMicrosoftRequest.h"
+#import "EZBingRequest.h"
 #import "EZTranslateError.h"
 
 NSString * const kRequestHostCN = @"https://cn.bing.com";
@@ -33,7 +33,7 @@ NSString *getTLookupV3Host(void) {
 
 
 
-@interface EZMicrosoftRequest ()
+@interface EZBingRequest ()
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) AFHTTPSessionManager *translateSession;
 @property (nonatomic, strong) NSData *translateData;
@@ -41,10 +41,10 @@ NSString *getTLookupV3Host(void) {
 @property (nonatomic, strong) NSError *translateError;
 @property (nonatomic, strong) NSError *lookupError;
 @property (nonatomic, assign) NSInteger responseCount;
-@property (nonatomic, copy) MicrosoftTranslateCompletion completion;
+@property (nonatomic, copy) BingTranslateCompletion completion;
 @end
 
-@implementation EZMicrosoftRequest
+@implementation EZBingRequest
 
 - (void)executeCallback {
     self.responseCount += 1;
@@ -66,7 +66,7 @@ NSString *getTLookupV3Host(void) {
         } else {
             kRequestHostString = [NSString stringWithFormat:@"%@://%@", task.response.URL.scheme, task.response.URL.host];
         }
-        NSLog(@"microsoft host %@", kRequestHostString);
+        NSLog(@"bing host %@", kRequestHostString);
         callback(kRequestHostString);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         kRequestHostString = @"https://www.bing.com";
@@ -82,54 +82,54 @@ NSString *getTLookupV3Host(void) {
     
     [self.htmlSession GET:getTranslatorHost() parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (![responseObject isKindOfClass:[NSData class]]) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft htmlSession responseObject is not NSData", nil));
-            NSLog(@"microsoft html responseObject type is %@", [responseObject class]);
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing htmlSession responseObject is not NSData", nil));
+            NSLog(@"bing html responseObject type is %@", [responseObject class]);
             return;
         }
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
         NSString *IG = [self getIGValueFromHTML:responseString];
         if (IG.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft IG is empty", nil));
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing IG is empty", nil));
             return;
         }
         kIG = IG;
-        NSLog(@"microsoft IG: %@", IG);
+        NSLog(@"bing IG: %@", IG);
         
         NSString *IID = [self getValueOfDataIidFromHTML:responseString];
         if (IID.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft IID is empty", nil));
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing IID is empty", nil));
             return;
         }
         kIID = IID;
-        NSLog(@"microsoft IID: %@", IID);
+        NSLog(@"bing IID: %@", IID);
         
         NSArray *arr = [self getParamsAbusePreventionHelperArrayFromHTML:responseString];
         if (arr.count != 3) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft get key and token failed", nil));
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing get key and token failed", nil));
             return;
         }
         NSString *key = arr[0];
         if (key.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft key is empey", nil));
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing key is empey", nil));
             return;
         }
         NSString *token = arr[1];
         if (token.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"microsoft token is empey", nil));
+            failure(EZTranslateError(EZErrorTypeAPI, @"bing token is empey", nil));
             return;
         }
         kKey = key;
-        NSLog(@"microsoft key: %@", key);
+        NSLog(@"bing key: %@", key);
         kToken = token;
-        NSLog(@"microsoft token: %@", token);
+        NSLog(@"bing token: %@", token);
         paramCallback(IG, IID, token, key);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failure(error);
     }];
 }
 
-- (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(MicrosoftTranslateCompletion)completion {
+- (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(BingTranslateCompletion)completion {
     self.completion = completion;
     [self fetchRequestHost:^(NSString *host) {
         [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
@@ -140,8 +140,8 @@ NSString *getTLookupV3Host(void) {
             request.HTTPBody = [[NSString stringWithFormat:@"tryFetchingGenderDebiasedTranslations=true&fromLang=%@&to=%@&text=%@&token=%@&key=%@", from, to, text, token, key] dataUsingEncoding:NSUTF8StringEncoding];
             NSURLSessionDataTask *task = [self.translateSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
-                    NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"bing translate responseObject is not NSData", nil);
+                    NSLog(@"bing translate responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
                 }
@@ -160,8 +160,8 @@ NSString *getTLookupV3Host(void) {
                 @"key": key
             } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
-                    NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"bing translate responseObject is not NSData", nil);
+                    NSLog(@"bing translate responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
                 }
@@ -173,7 +173,7 @@ NSString *getTLookupV3Host(void) {
                 // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
                 // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
                 if (response.statusCode == 429) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate too many requests", nil);
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"bing translate too many requests", nil);
                 } else {
                     self.translateError = error;
                 }
@@ -189,15 +189,15 @@ NSString *getTLookupV3Host(void) {
                 @"key": key
             } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
-                    self.lookupError = EZTranslateError(EZErrorTypeAPI, @"microsoft lookup responseObject is not NSData", nil);
-                    NSLog(@"microsoft lookup responseObject type: %@", [responseObject class]);
+                    self.lookupError = EZTranslateError(EZErrorTypeAPI, @"bing lookup responseObject is not NSData", nil);
+                    NSLog(@"bing lookup responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
                 }
                 self.lookupData = responseObject;
                 [self executeCallback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"microsoft lookup error: %@", error);
+                NSLog(@"bing lookup error: %@", error);
                 self.lookupError = error;
                 [self executeCallback];
             }];

@@ -1,5 +1,5 @@
 //
-//  EZMicrosoftService.h
+//  EZBingService.h
 //  Easydict
 //
 //  Created by ChoiKarl on 2023/8/8.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZMicrosoftService : EZQueryService
+@interface EZBingService : EZQueryService
 
 @end
 
