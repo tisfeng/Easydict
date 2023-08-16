@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString * const kTranslatorHost = @"https://www.bing.com/translator";
+NSString *getTranslatorHost(void);
 
 typedef void(^MicrosoftTranslateCompletion)(NSData * _Nullable translateData, NSData * _Nullable lookupData, NSError * _Nullable translateError, NSError * _Nullable lookupError);
 

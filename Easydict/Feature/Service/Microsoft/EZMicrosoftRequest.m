@@ -6,17 +6,32 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-NSString * const kTTranslateV3Host = @"https://www.bing.com/ttranslatev3";
-NSString * const kTLookupV3Host = @"https://www.bing.com/tlookupv3";
+#import "EZMicrosoftRequest.h"
+#import "EZTranslateError.h"
+
+NSString * const kRequestHostCN = @"https://cn.bing.com";
 
 // memory cache
+static NSString *kRequestHostString;
 static NSString *kIG;
 static NSString *kIID;
 static NSString *kToken;
 static NSString *kKey;
 
-#import "EZMicrosoftRequest.h"
-#import "EZTranslateError.h"
+NSString *getTranslatorHost(void) {
+    return [NSString stringWithFormat:@"%@/translator", kRequestHostString];
+}
+
+NSString *getTTranslateV3Host(void) {
+    return [NSString stringWithFormat:@"%@/ttranslatev3", kRequestHostString];
+}
+
+NSString *getTLookupV3Host(void) {
+    return [NSString stringWithFormat:@"%@/tlookupv3", kRequestHostString];
+}
+
+
+
 
 @interface EZMicrosoftRequest ()
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
@@ -41,13 +56,31 @@ static NSString *kKey;
     }
 }
 
+- (void)fetchRequestHost:(void(^)(NSString * host))callback {
+    if (kRequestHostString.length) {
+        callback(kRequestHostString);
+    }
+    [self.translateSession GET:kRequestHostCN parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (task.response.URL == nil) {
+            kRequestHostString = @"https://www.bing.com";
+        } else {
+            kRequestHostString = [NSString stringWithFormat:@"%@://%@", task.response.URL.scheme, task.response.URL.host];
+        }
+        NSLog(@"microsoft host %@", kRequestHostString);
+        callback(kRequestHostString);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        kRequestHostString = @"https://www.bing.com";
+        callback(kRequestHostString);
+    }];
+}
+
 - (void)fetchTranslateParam:(void (^)(NSString * IG, NSString * IID, NSString * token, NSString * key))paramCallback failure:(nonnull void (^)(NSError * _Nonnull))failure {
     if (kIG.length > 0 && kIID.length > 0 && kToken.length > 0 && kKey.length > 0) {
         paramCallback(kIG, kIID, kToken, kKey);
         return;
     }
     
-    [self.htmlSession GET:kTranslatorHost parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.htmlSession GET:getTranslatorHost() parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (![responseObject isKindOfClass:[NSData class]]) {
             failure(EZTranslateError(EZErrorTypeAPI, @"microsoft htmlSession responseObject is not NSData", nil));
             NSLog(@"microsoft html responseObject type is %@", [responseObject class]);
@@ -98,79 +131,80 @@ static NSString *kKey;
 
 - (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(MicrosoftTranslateCompletion)completion {
     self.completion = completion;
-    [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
-        NSString *translateUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", kTTranslateV3Host, IG, IID];
-        
-        /*
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:translateUrlString]];
-        request.HTTPMethod = @"POST";
-        request.HTTPBody = [[NSString stringWithFormat:@"tryFetchingGenderDebiasedTranslations=true&fromLang=%@&to=%@&text=%@&token=%@&key=%@", from, to, text, token, key] dataUsingEncoding:NSUTF8StringEncoding];
-        NSURLSessionDataTask *task = [self.translateSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-            if (![responseObject isKindOfClass:[NSData class]]) {
-                self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
-                NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
-                [self executeCallback];
-                return;
-            }
-            self.translateData = responseObject;
-            self.translateError = error;
-            [self executeCallback];
-        }];
-        [task resume];
-        */
-        [self.translateSession POST:translateUrlString parameters:@{
-            @"tryFetchingGenderDebiasedTranslations": @"true",
-            @"text": text,
-            @"fromLang": from,
-            @"to": to,
-            @"token": token,
-            @"key": key
-        } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            if (![responseObject isKindOfClass:[NSData class]]) {
-                self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
-                NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
-                [self executeCallback];
-                return;
-            }
-            self.translateData = responseObject;
-            [self executeCallback];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-            // if this problem occurs, you can try switching networks
-            // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
-            // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
-            if (response.statusCode == 429) {
-                self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate too many requests", nil);
-            } else {
+    [self fetchRequestHost:^(NSString *host) {
+        [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
+            NSString *translateUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", getTTranslateV3Host(), IG, IID];
+            /*
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:translateUrlString]];
+            request.HTTPMethod = @"POST";
+            request.HTTPBody = [[NSString stringWithFormat:@"tryFetchingGenderDebiasedTranslations=true&fromLang=%@&to=%@&text=%@&token=%@&key=%@", from, to, text, token, key] dataUsingEncoding:NSUTF8StringEncoding];
+            NSURLSessionDataTask *task = [self.translateSession dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                if (![responseObject isKindOfClass:[NSData class]]) {
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
+                    NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
+                    [self executeCallback];
+                    return;
+                }
+                self.translateData = responseObject;
                 self.translateError = error;
-            }
-            [self executeCallback];
-        }];
-        
-        NSString *lookupUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", kTLookupV3Host, IG, IID];
-        [self.translateSession POST:lookupUrlString parameters:@{
-            @"from": from,
-            @"to": to,
-            @"text": text,
-            @"token": token,
-            @"key": key
-        } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            if (![responseObject isKindOfClass:[NSData class]]) {
-                self.lookupError = EZTranslateError(EZErrorTypeAPI, @"microsoft lookup responseObject is not NSData", nil);
-                NSLog(@"microsoft lookup responseObject type: %@", [responseObject class]);
                 [self executeCallback];
-                return;
-            }
-            self.lookupData = responseObject;
-            [self executeCallback];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"microsoft lookup error: %@", error);
-            self.lookupError = error;
-            [self executeCallback];
+            }];
+            [task resume];
+            */
+            [self.translateSession POST:translateUrlString parameters:@{
+                @"tryFetchingGenderDebiasedTranslations": @"true",
+                @"text": text,
+                @"fromLang": from,
+                @"to": to,
+                @"token": token,
+                @"key": key
+            } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                if (![responseObject isKindOfClass:[NSData class]]) {
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate responseObject is not NSData", nil);
+                    NSLog(@"microsoft translate responseObject type: %@", [responseObject class]);
+                    [self executeCallback];
+                    return;
+                }
+                self.translateData = responseObject;
+                [self executeCallback];
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+                // if this problem occurs, you can try switching networks
+                // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
+                // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
+                if (response.statusCode == 429) {
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"microsoft translate too many requests", nil);
+                } else {
+                    self.translateError = error;
+                }
+                [self executeCallback];
+            }];
+            
+            NSString *lookupUrlString = [NSString stringWithFormat:@"%@?isVertical=1&IG=%@&IID=%@", getTLookupV3Host(), IG, IID];
+            [self.translateSession POST:lookupUrlString parameters:@{
+                @"from": from,
+                @"to": to,
+                @"text": text,
+                @"token": token,
+                @"key": key
+            } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                if (![responseObject isKindOfClass:[NSData class]]) {
+                    self.lookupError = EZTranslateError(EZErrorTypeAPI, @"microsoft lookup responseObject is not NSData", nil);
+                    NSLog(@"microsoft lookup responseObject type: %@", [responseObject class]);
+                    [self executeCallback];
+                    return;
+                }
+                self.lookupData = responseObject;
+                [self executeCallback];
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"microsoft lookup error: %@", error);
+                self.lookupError = error;
+                [self executeCallback];
+            }];
+            
+        } failure:^(NSError * error) {
+            completion(nil, nil, error, nil);
         }];
-        
-    } failure:^(NSError * error) {
-        completion(nil, nil, error, nil);
     }];
 }
 
