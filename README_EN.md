@@ -217,7 +217,7 @@ If you still feel that the system language recognition is inaccurate in actual u
 <p>
 
 | Languages             | Youdao | DeepL | macOS System | Bing | Google | Baidu | Volcano |
-|:--------------------- |:------:|:-----:|:------------:|:----:|:------:|:-----:|:-------:|
+|:------:|:------:|:-----:|:------:|:------:|:------:|:------:|:------:|
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 | Chinese (Traditional) |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 | English               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
