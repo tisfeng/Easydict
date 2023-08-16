@@ -33,6 +33,28 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     NSString *text = [[self topCandidates:1] firstObject].string;
     return text;
 }
+
+- (NSString *)description {
+    return [self customDescription:YES];
+}
+
+- (NSString *)debugDescription {
+    return [self customDescription:NO];
+}
+
+- (NSString *)customDescription:(BOOL)showAddressFlag {
+    NSMutableString *description = [NSMutableString string];
+    if (showAddressFlag) {
+        [description appendFormat:@"<%@: %p>", self.class, self];
+    }
+
+    CGRect boundRect = self.boundingBox;
+    NSString *content = [NSString stringWithFormat:@"{ x=%.3f, y=%.3f, width=%.3f, height=%.3f }, %@", boundRect.origin.x, boundRect.origin.y, boundRect.size.width, boundRect.size.height, self.firstText];
+    
+    [description appendFormat:@" %@", content];
+    return description;
+}
+
 @end
 
 @interface NSArray (VNRecognizedTextObservation)
@@ -900,19 +922,20 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     NSMutableArray *recognizedStrings = [NSMutableArray array];
     NSArray<VNRecognizedTextObservation *> *textObservations = request.results;
+    NSLog(@"\n textObservations: %@", textObservations);
+    
     NSInteger lineCount = textObservations.count;
     
     NSInteger lineSpacingCount = 0;
     
     for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *textObservation = textObservations[i];
+
         VNRecognizedText *recognizedText = [[textObservation topCandidates:1] firstObject];
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
         
         CGRect boundingBox = textObservation.boundingBox;
-        NSLog(@"%@, %@", @(boundingBox), recognizedString);
-        
         CGFloat lineHeight = boundingBox.size.height;
         totalLineHeight += lineHeight;
         if (lineHeight < minLineHeight) {
@@ -979,11 +1002,8 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         return;
     }
     
-    
     NSArray<NSString *> *stringArray = ocrResult.texts;
-    NSLog(@"%@", textObservations);
-    NSLog(@"ocr stringArray (%@): %@", ocrResult.from, stringArray);
-    
+    NSLog(@"Original ocr strings (%@): %@", ocrResult.from, stringArray);
     
     BOOL isPoetry = [self isPoetryOftextObservations:textObservations];
     NSLog(@"isPoetry: %d", isPoetry);
@@ -994,7 +1014,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
     
     // !!!: Need to Sort textObservations
     textObservations = [self sortedTextObservations:textObservations];
-    NSLog(@"%@", textObservations.recognizedTexts);
+    NSLog(@"Sorted ocr stings: %@", textObservations.recognizedTexts);
     
     for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *textObservation = textObservations[i];
@@ -1003,8 +1023,9 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         
         NSString *recognizedString = recognizedText.string;
         CGRect boundingBox = textObservation.boundingBox;
-        NSLog(@"%@ %@", recognizedString, @(boundingBox));
         
+        printf("%s\n", textObservation.description.UTF8String);
+
         /**
          《摊破浣溪沙》  123  《浣溪沙》
          
@@ -1115,11 +1136,28 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 /// Sort textObservations by textObservation.boundingBox.origin.y
 - (NSArray<VNRecognizedTextObservation *> *)sortedTextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
+    
     /**
-     NSRect: {{0.07716049382716049, 0.51535836177474403}, {0.87345679012345678, 0.085324232081911311}}, 梦入江南烟水路，行尽江南，不与离人遇。睡里消魂无说处，觉来惆怅
-     NSRect: {{0.021604938271604937, 0.37201365187713309}, {0.11111111111111112, 0.078498293515358419}}, 消魂误。
-     NSRect: {{0.023148148148148147, 0.08191126279863481}, {0.10956790123456792, 0.085324232081911311}}, 秦筝柱。
-     NSRect: {{0.075617283950617287, 0.22525597269624575}, {0.87654320987654322, 0.0853242320819112}}, 欲尽此情书尺素。浮雁沉鱼，终了无凭据。却倚缓弦歌别绪，断肠移破
+     !!!: Sometims the textObservations' order or some of the bound rect y is incorrect, so we hava to resort this array.
+     
+     {{0.071, 0.515}, {0.873, 0.085}}, 梦入江南烟水路，行尽江南，不与离人遇。睡里消魂无说处，觉来惆怅
+     {{0.021, 0.372}, {0.111, 0.078}}, 消魂误。
+     {{0.023, 0.081}, {0.109, 0.085}}, 秦筝柱。
+     {{0.075, 0.225}, {0.876, 0.085}}, 欲尽此情书尺素。浮雁沉鱼，终了无凭据。却倚缓弦歌别绪，断肠移破
+     
+     
+     Ref: https://twitter.com/nishuang/status/1269366861877125122
+    
+     { x=0.050, y=0.842, width=0.892, height=0.088 }, When you get really good,
+     { x=0.059, y=0.736, width=0.879, height=0.106 }, people, they know they're,
+     { x=0.056, y=0.630, width=0.887, height=0.124 }, really good, and you don't,
+     { x=0.057, y=0.548, width=0.883, height=0.101 }, have to baby people's egos,
+     { x=0.055, y=0.454, width=0.305, height=0.090 }, so much.,
+     { x=0.056, y=0.255, width=0.887, height=0.107 }, And what really matters is,
+     { x=0.057, y=0.178, width=0.125, height=0.075 }, the,
+     { x=0.191, y=0.160, width=0.378, height=0.096 }, work, and,
+     { x=0.580, y=0.166, width=0.358, height=0.091 }, everybody,
+     { x=0.057, y=0.067, width=0.387, height=0.088 }, knows that.
      */
     NSArray *sortedTextObservations = [textObservations sortedArrayUsingComparator:^NSComparisonResult(VNRecognizedTextObservation *obj1, VNRecognizedTextObservation *obj2) {
         CGRect boundingBox1 = obj1.boundingBox;
@@ -1128,10 +1166,10 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         CGFloat y1 = boundingBox1.origin.y;
         CGFloat y2 = boundingBox2.origin.y;
         
-        if ((y1 - y2) / self.minLineHeight > 0.8)  {
-            return NSOrderedAscending; // Next line
+        if (y2 - y1 > self.minLineHeight * 0.8)  {
+            return NSOrderedDescending; // means obj2 > obj1
         } else {
-            return NSOrderedDescending;
+            return NSOrderedAscending;
         }
     }];
     
