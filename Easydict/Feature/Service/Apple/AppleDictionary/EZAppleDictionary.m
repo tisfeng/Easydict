@@ -147,6 +147,13 @@
     for (TTTDictionary *dictionary in dicts) {
         NSMutableString *wordHtmlString = [NSMutableString string];
         
+        //  /Users/tisfeng/Library/Dictionaries/Apple.dictionary/
+        NSString *dictionaryPath = dictionary.dictionaryURL.path;
+        NSLog(@"dictionary path: %@", dictionaryPath);
+        
+        //  /Users/tisfeng/Library/Dictionaries/Apple.dictionary/Contents/us_pron.png
+        NSURL *contentsURL = [dictionary.dictionaryURL URLByAppendingPathComponent:@"Contents"];
+        
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
             NSString *html = entry.HTMLWithAppCSS;
             NSString *headword = entry.headword;
@@ -155,6 +162,16 @@
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
             if (html.length && isTheSameHeadword) {
+                /**
+                 replace all src relative path with absolute path
+                 
+                 src="us_pron.png" --> src="/Users/tisfeng/Library/Dictionaries/Apple%20Dictionary.dictionary/Contents/us_pron.png"
+                 */
+                
+                NSString *contentsPath = [contentsURL.path encode];
+                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
+                html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
+                
                 [wordHtmlString appendString:html];
             }
         }
@@ -186,6 +203,9 @@
             [iframesHtmlString appendString:detailsSummaryHtml];
         }
     }
+    
+    // !!!: Chrome does not need, but Safari must need this meta tag, otherwise Chinese characters will be garbled.
+    NSString *meta = @"<meta charset=\"UTF-8\" />";
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
                            @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
@@ -265,12 +285,78 @@
     NSString *htmlString = nil;
     
     if (iframesHtmlString.length) {
-        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ </head> <body> %@ </body></html>",
-                      globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
+        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ %@ </head> <body> %@ </body></html>",
+                      meta, globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
     }
-    
+        
     return htmlString;
 }
+
+#pragma mark -
+
+/**
+ Replace HTML all src relative path with absolute path
+ 
+ src="us_pron.png" -->
+ src="/Users/tisfeng/Library/Dictionaries/Apple%20Dictionary.dictionary/Contents/us_pron.png"
+ */
+- (NSString *)replacedImagePathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
+    NSString *pattern = @"src=\"(.*?)\"";
+    NSString *replacement = [NSString stringWithFormat:@"src=\"%@/$1\"", basePath];
+
+    NSString *absolutePathHTML = [HTML stringByReplacingOccurrencesOfString:pattern
+                                                                  withString:replacement
+                                                                     options:NSRegularExpressionSearch
+                                                                       range:NSMakeRange(0, HTML.length)];
+
+    return absolutePathHTML;
+}
+
+/**
+ 
+ javascript:new Audio("uk/apple__gb_1.mp3") -->
+ javascript:new Audio("/Users/tisfeng/Library/Dictionaries/Apple%20Dictionary.dictionary/Contents/uk/apple__gb_1.mp3")
+
+ */
+
+//- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
+//
+//    NSString *pattern = @"javascript:new Audio(\\\"(.*?)(?<!quot;)\\\\\"|\\'(.*?)(?<!quot;)\\'|quot;(.*?)&quot;)";
+//
+//    NSString *replacement = [NSString stringWithFormat:@"javascript:new Audio(\"%@%@/$1\")", basePath, [basePath hasSuffix:@"/"]?@"":@"/"];
+//
+//    NSError *error = nil;
+//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+//                                                                           options:NSRegularExpressionCaseInsensitive
+//                                                                             error:&error];
+//
+//    NSString *modifiedHTML = [regex stringByReplacingMatchesInString:HTML
+//                                                             options:0
+//                                                               range:NSMakeRange(0, HTML.length)
+//                                                        withTemplate:replacement];
+//
+//    return modifiedHTML;
+//
+//}
+
+- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
+    NSString *pattern = @"new Audio\\(&quot;(.*?)&quot;\\)";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    
+    NSMutableString *modifiedHTML = [HTML mutableCopy];
+    
+    [regex enumerateMatchesInString:modifiedHTML options:0 range:NSMakeRange(0, modifiedHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
+        NSRange matchRange = [result rangeAtIndex:1];
+        NSString *encodedRelativePath = [modifiedHTML substringWithRange:matchRange];
+        
+        NSString *absolutePath = [basePath stringByAppendingPathComponent:encodedRelativePath];
+        NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
+        [modifiedHTML replaceCharactersInRange:result.range withString:replacement];
+    }];
+    
+    return [modifiedHTML copy];
+}
+
 
 /// Get dict name width
 - (CGFloat)getDictNameWidth:(NSString *)dictName {

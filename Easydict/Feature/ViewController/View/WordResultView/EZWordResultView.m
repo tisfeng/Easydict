@@ -25,6 +25,7 @@
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
 #import <WebKit/WebKit.h>
+#import "TTTDictionary.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -251,7 +252,30 @@ static const CGFloat kVerticalPadding_8 = 8;
         NSLog(@"load webView");
         WKWebView *webView = [[WKWebView alloc] init];
         [self addSubview:webView];
-        [webView loadHTMLString:result.HTMLString baseURL:nil];
+        
+//        NSString *dictionaryPath = @"/Users/tisfeng/Library/Containers/com.apple.Dictionary/Data/Library/Dictionaries/";
+       
+        
+        NSURL *dictionaryURL = [TTTDictionary dictionaryDirectoryURL];;
+        
+//        [webView loadHTMLString:result.HTMLString baseURL:dictionaryURL];
+        
+    
+        NSError *error = nil;
+
+        
+//        NSString *htmlFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"temp.html"];
+
+        NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"temp.html"].path;
+        
+        [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+
+        
+        NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
+
+        
+        [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+        
         webView.navigationDelegate = self;
         self.webView = webView;
         
@@ -907,6 +931,7 @@ static const CGFloat kVerticalPadding_8 = 8;
     return NO;
 }
 
+#pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     // Cost ~0.15s
@@ -974,6 +999,59 @@ static const CGFloat kVerticalPadding_8 = 8;
         }
     }];
 }
+
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLog(@"didFailNavigation: %@", error);
+    
+}
+
+/** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLog(@"didFailProvisionalNavigation: %@", error);
+
+}
+
+// 监听 JavaScript 代码是否执行
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    // JavaScript 代码执行
+    NSLog(@"runJavaScriptAlertPanelWithMessage: %@", message);
+}
+
+
+/** 在收到响应后，决定是否跳转 */
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
+//    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+
+    // 这里可以查看页面内部的网络请求，并做出相应的处理
+    // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
+    // decisionHandler 是一个回调，你可以通过它来决定是否允许这个请求发送
+
+
+    //允许跳转
+    decisionHandler(WKNavigationResponsePolicyAllow);
+    //不允许跳转
+    // decisionHandler(WKNavigationResponsePolicyCancel);
+}
+
+/** 接收到服务器跳转请求即服务重定向时之后调用 */
+- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
+//    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
+}
+
+/** 收到服务器响应后，在发送请求之前，决定是否跳转 */
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
+    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+
+
+    //允许跳转
+    decisionHandler(WKNavigationActionPolicyAllow);
+    //不允许跳转
+    // decisionHandler(WKNavigationActionPolicyCancel);
+}
+
+#pragma mark -
 
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];

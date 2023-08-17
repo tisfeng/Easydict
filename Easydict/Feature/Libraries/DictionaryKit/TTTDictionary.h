@@ -85,11 +85,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray<TTTDictionary *> *)activeDictionaries;
 
++ (NSURL *)dictionaryDirectoryURL;
 
 /**
  Get dict with CFBundleDisplayName
  */
 + (instancetype)dictionaryNamed:(NSString *)name;
+
 
 /**
  
