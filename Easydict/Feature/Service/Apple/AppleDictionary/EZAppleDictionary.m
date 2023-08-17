@@ -162,12 +162,7 @@
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
             if (html.length && isTheSameHeadword) {
-                /**
-                 replace all src relative path with absolute path
-                 
-                 src="us_pron.png" --> src="/Users/tisfeng/Library/Dictionaries/Apple%20Dictionary.dictionary/Contents/us_pron.png"
-                 */
-                
+               // Replace source relative path with absolute path.
                 NSString *contentsPath = [contentsURL.path encode];
                 html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
                 html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
@@ -303,59 +298,48 @@
 - (NSString *)replacedImagePathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
     NSString *pattern = @"src=\"(.*?)\"";
     NSString *replacement = [NSString stringWithFormat:@"src=\"%@/$1\"", basePath];
-
     NSString *absolutePathHTML = [HTML stringByReplacingOccurrencesOfString:pattern
                                                                   withString:replacement
                                                                      options:NSRegularExpressionSearch
                                                                        range:NSMakeRange(0, HTML.length)];
-
     return absolutePathHTML;
 }
 
 /**
+ Replace HTML all audio relative path with absolute path
  
- javascript:new Audio("uk/apple__gb_1.mp3") -->
- javascript:new Audio("/Users/tisfeng/Library/Dictionaries/Apple%20Dictionary.dictionary/Contents/uk/apple__gb_1.mp3")
-
+ &quot; == "
+ 
+ javascript:new Audio(&quot;uk/apple__gb_1.mp3&quot;) -->
+ javascript:new Audio('/Users/tisfeng/Library/Contents/uk/apple__gb_1.mp3')
  */
-
-//- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
-//
-//    NSString *pattern = @"javascript:new Audio(\\\"(.*?)(?<!quot;)\\\\\"|\\'(.*?)(?<!quot;)\\'|quot;(.*?)&quot;)";
-//
-//    NSString *replacement = [NSString stringWithFormat:@"javascript:new Audio(\"%@%@/$1\")", basePath, [basePath hasSuffix:@"/"]?@"":@"/"];
-//
-//    NSError *error = nil;
-//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-//                                                                           options:NSRegularExpressionCaseInsensitive
-//                                                                             error:&error];
-//
-//    NSString *modifiedHTML = [regex stringByReplacingMatchesInString:HTML
-//                                                             options:0
-//                                                               range:NSMakeRange(0, HTML.length)
-//                                                        withTemplate:replacement];
-//
-//    return modifiedHTML;
-//
-//}
-
 - (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
     NSString *pattern = @"new Audio\\(&quot;(.*?)&quot;\\)";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-    
-    NSMutableString *modifiedHTML = [HTML mutableCopy];
-    
-    [regex enumerateMatchesInString:modifiedHTML options:0 range:NSMakeRange(0, modifiedHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
-        NSRange matchRange = [result rangeAtIndex:1];
-        NSString *encodedRelativePath = [modifiedHTML substringWithRange:matchRange];
-        
-        NSString *absolutePath = [basePath stringByAppendingPathComponent:encodedRelativePath];
-        NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
-        [modifiedHTML replaceCharactersInRange:result.range withString:replacement];
-    }];
-    
-    return [modifiedHTML copy];
+    NSString *replacement = [NSString stringWithFormat:@"new Audio('%@/$1')", basePath];
+    NSString *absolutePathHTML = [HTML stringByReplacingOccurrencesOfString:pattern
+                                                                 withString:replacement
+                                                                    options:NSRegularExpressionSearch
+                                                                      range:NSMakeRange(0, HTML.length)];
+    return absolutePathHTML;
 }
+
+//- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
+//    NSString *pattern = @"new Audio\\(&quot;(.*?)&quot;\\)";
+//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+//
+//    NSMutableString *modifiedHTML = [HTML mutableCopy];
+//
+//    [regex enumerateMatchesInString:modifiedHTML options:0 range:NSMakeRange(0, modifiedHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
+//        NSRange matchRange = [result rangeAtIndex:1];
+//        NSString *encodedRelativePath = [modifiedHTML substringWithRange:matchRange];
+//
+//        NSString *absolutePath = [basePath stringByAppendingPathComponent:encodedRelativePath];
+//        NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
+//        [modifiedHTML replaceCharactersInRange:result.range withString:replacement];
+//    }];
+//
+//    return [modifiedHTML copy];
+//}
 
 
 /// Get dict name width
