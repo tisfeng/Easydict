@@ -147,11 +147,7 @@
     for (TTTDictionary *dictionary in dicts) {
         NSMutableString *wordHtmlString = [NSMutableString string];
         
-        //  /Users/tisfeng/Library/Dictionaries/Apple.dictionary/
-        NSString *dictionaryPath = dictionary.dictionaryURL.path;
-        NSLog(@"dictionary path: %@", dictionaryPath);
-        
-        //  /Users/tisfeng/Library/Dictionaries/Apple.dictionary/Contents/us_pron.png
+        //  ~/Library/Dictionaries/Apple.dictionary/Contents/
         NSURL *contentsURL = [dictionary.dictionaryURL URLByAppendingPathComponent:@"Contents"];
         
         for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {

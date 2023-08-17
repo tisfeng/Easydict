@@ -85,6 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray<TTTDictionary *> *)activeDictionaries;
 
+/// Dictionary directory URL, path is ~/Library/Dictionaries/
 + (NSURL *)dictionaryDirectoryURL;
 
 /**

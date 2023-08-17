@@ -253,26 +253,10 @@ static const CGFloat kVerticalPadding_8 = 8;
         WKWebView *webView = [[WKWebView alloc] init];
         [self addSubview:webView];
         
-//        NSString *dictionaryPath = @"/Users/tisfeng/Library/Containers/com.apple.Dictionary/Data/Library/Dictionaries/";
-       
-        
         NSURL *dictionaryURL = [TTTDictionary dictionaryDirectoryURL];;
-        
-//        [webView loadHTMLString:result.HTMLString baseURL:dictionaryURL];
-        
-    
-        NSError *error = nil;
-
-        
-//        NSString *htmlFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"temp.html"];
-
-        NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"temp.html"].path;
-        
-        [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-
-        
+        NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
+        [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
         NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
-
         
         [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
         
