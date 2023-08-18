@@ -124,9 +124,8 @@ extern DCSDictionaryRef DCSGetDefaultDictionary(void);
 extern DCSDictionaryRef DCSGetDefaultThesaurus(void);
 extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef);
 extern CFURLRef DCSDictionaryGetURL(DCSDictionaryRef);
-extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef);
+//extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef);
 extern CFStringRef DCSDictionaryGetIdentifier(DCSDictionaryRef);
-
 
 /**
  #   extern CFArrayRef DCSCopyRecordsForSearchString (DCSDictionaryRef, CFStringRef, unsigned long long, long long)
@@ -320,14 +319,18 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term {
+    return [self entriesForSearchTerm:term searchType:TTTDictionarySearchTypeExactMatch];;
+}
+
+- (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term searchType:(TTTDictionarySearchType)searchType {
     CFRange termRange = DCSGetTermRangeInString(self.dictionary, (__bridge CFStringRef)term, 0);
     if (termRange.location == kCFNotFound) {
         return nil;
     }
-
+    
     term = [term substringWithRange:NSMakeRange(termRange.location, termRange.length)];
 
-    NSArray *records = (__bridge_transfer NSArray *)DCSCopyRecordsForSearchString(self.dictionary, (__bridge CFStringRef)term, 0, 0);
+    NSArray *records = (__bridge_transfer NSArray *)DCSCopyRecordsForSearchString(self.dictionary, (__bridge CFStringRef)term, searchType, 0);
     NSMutableArray *mutableEntries = [NSMutableArray arrayWithCapacity:[records count]];
     if (records) {
         for (id record in records) {

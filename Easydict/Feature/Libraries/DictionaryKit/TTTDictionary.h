@@ -57,6 +57,14 @@ NS_ASSUME_NONNULL_END
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Search word type
+typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
+    TTTDictionarySearchTypeExactMatch = 0, // exact match
+    TTTDictionarySearchTypePrefixMatch = 1, // forward match (prefix match)
+    TTTDictionarySearchTypeLeadingMatch = 2, // partial query match (matching (leading) part of query; including ignoring diacritics, four tones in Chinese, etc)
+};
+
+
 /**
     TTTDictionary
  */
@@ -93,11 +101,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (instancetype)dictionaryNamed:(NSString *)name;
 
-
-/**
- 
- */
+// Default searchType is exact match, 0
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term;
+
+- (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term searchType:(TTTDictionarySearchType)searchType;
 
 @end
 

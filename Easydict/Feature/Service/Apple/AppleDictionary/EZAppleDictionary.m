@@ -150,14 +150,15 @@
         //  ~/Library/Dictionaries/Apple.dictionary/Contents/
         NSURL *contentsURL = [dictionary.dictionaryURL URLByAppendingPathComponent:@"Contents"];
         
-        for (TTTDictionaryEntry *entry in [dictionary entriesForSearchTerm:word]) {
+        NSArray<TTTDictionaryEntry *> *entries = [dictionary entriesForSearchTerm:word];
+        for (TTTDictionaryEntry *entry in entries) {
             NSString *html = entry.HTMLWithAppCSS;
             NSString *headword = entry.headword;
             
             // LOG --> log,  根据 genju--> 根据  gēnjù
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
-            if (html.length && isTheSameHeadword) {
+            if (html.length && isTheSameHeadword ) {
                // Replace source relative path with absolute path.
                 NSString *contentsPath = [contentsURL.path encode];
                 html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
