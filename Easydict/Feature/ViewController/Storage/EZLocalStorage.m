@@ -89,7 +89,7 @@ static EZLocalStorage *_instance;
         [[NSUserDefaults standardUserDefaults] setObject:allStoredServiceTypes forKey:allServiceTypesKey];
     } else {
         NSMutableArray *array = [NSMutableArray arrayWithArray:allStoredServiceTypes];
-        if (allStoredServiceTypes.count != allServiceTypes.count) {
+        if (![allStoredServiceTypes isEqualToArray:allServiceTypes]) {
             for (EZServiceType type in allServiceTypes) {
                 if ([allStoredServiceTypes indexOfObject:type] == NSNotFound) {
                     [array insertObject:type atIndex:0];
