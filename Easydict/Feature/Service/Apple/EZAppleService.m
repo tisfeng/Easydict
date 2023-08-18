@@ -1492,10 +1492,17 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
         }
     }
     
-    if (isPrevList && isList) {
-        needLineBreak = YES;
+    if (isPrevList) {
+        if (isList) {
+            needLineBreak = YES;
+            isNewParagraph = isBigLineSpacing;
+        } else {
+            // Means list ends, next is new paragraph.
+            if (isBigLineSpacing) {
+                isNewParagraph = YES;
+            }
+        }
 
-        isNewParagraph = isBigLineSpacing;
     }
     
     if (isNewParagraph) {
