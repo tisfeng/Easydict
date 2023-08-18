@@ -162,6 +162,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
         return nil;
     }
 
+    // ???: __bridge_transfer will cause crash, but why?
     self.headword = (__bridge NSString *)DCSRecordGetHeadword(record);
     if (self.headword) {
         self.text = (__bridge_transfer NSString*)DCSRecordCopyData(record, TTTDictionaryVersionText);
@@ -170,7 +171,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     self.HTML = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTML);
     self.HTMLWithAppCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithAppCSS);
     self.HTMLWithPopoverCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithPopoverCSS);
-    
+        
     return self;
 }
 
@@ -199,7 +200,6 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
         for (id dictionary in (__bridge_transfer NSArray *)DCSCopyAvailableDictionaries()) {
             [mutableDictionaries addObject:[[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary]];
         }
-
         _availableDictionaries = [NSSet setWithSet:mutableDictionaries];
     });
     return _availableDictionaries;
@@ -214,10 +214,10 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSMutableArray *mutableActiveDictionaries = [NSMutableArray array];
-        for (id dictionary in (__bridge_transfer NSArray *)DCSGetActiveDictionaries()) {
+        NSArray *activeDictionaries = (__bridge_transfer NSArray *)DCSGetActiveDictionaries();
+        for (id dictionary in activeDictionaries) {
             [mutableActiveDictionaries addObject:[[TTTDictionary alloc] initWithDictionaryRef:(__bridge DCSDictionaryRef)dictionary]];
         }
-
         _activeDictionaries = [NSArray arrayWithArray:mutableActiveDictionaries];
     });
 
@@ -301,10 +301,10 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     }
 
     self.dictionary = dictionary;
-    self.name = (__bridge NSString *)DCSDictionaryGetName(self.dictionary);
-    self.shortName = (__bridge NSString *)DCSDictionaryGetShortName(self.dictionary);
+    self.name = (__bridge_transfer NSString *)DCSDictionaryGetName(self.dictionary);
+    self.shortName = (__bridge_transfer NSString *)DCSDictionaryGetShortName(self.dictionary);
     
-    self.identifier = (__bridge NSString *)(DCSDictionaryGetIdentifier(dictionary));
+    self.identifier = (__bridge_transfer NSString *)(DCSDictionaryGetIdentifier(dictionary));
     self.dictionaryURL = (__bridge_transfer NSURL *)DCSDictionaryGetURL(dictionary);
 
     return self;
