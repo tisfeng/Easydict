@@ -89,10 +89,21 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
     return [EZPointCharacterList containsObject:firstWord];
 }
 
+/// Check if the first char of text contains EZPointCharacterList element.
+- (BOOL)isPointFirstChar {
+    NSString *firstChar = [self firstChar];
+    return [EZPointCharacterList containsObject:firstChar];
+}
+
 - (BOOL)isDashFirstWord {
     NSString *firstWord = [self firstWord];
     return [EZDashCharacterList containsObject:firstWord];
 }
+- (BOOL)isDashFirstChar {
+    NSString *firstChar = [self firstChar];
+    return [EZDashCharacterList containsObject:firstChar];
+}
+
 
 - (BOOL)isNumberFirstWord {
     NSString *firstWord = [self firstWord];
@@ -109,6 +120,12 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
 
 - (BOOL)isListTypeFirstWord {
     BOOL isList = [self isPointFirstWord] || [self isDashFirstWord] || [self isNumberFirstWord];
+    
+    // Since ocr may be incorrect, we should check if the first char is a list type.
+    if (!isList) {
+        isList = [self isPointFirstChar] || [self isDashFirstChar];
+    }
+    
     return isList;
 }
 

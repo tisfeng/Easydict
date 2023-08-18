@@ -340,10 +340,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             return;
         }
         
-        // 3. Use simulate key to get selected text.
+        // 3. Try to use simulate key to get selected text.
         if ([self shouldUseSimulatedKey:text error:error]) {
             getSelectedTextByKeyBlock();
             return;
+        }
+        
+        if (error == kAXErrorAPIDisabled) {
+            NSLog(@"Failed to get text, kAXErrorAPIDisabled");
         }
         
         self.selectTextType = EZSelectTextTypeAccessibility;
