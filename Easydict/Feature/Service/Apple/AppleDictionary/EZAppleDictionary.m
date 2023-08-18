@@ -238,7 +238,7 @@
                                @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
                                @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
                                @""
-                               @"        const detailsMargin = 20;"
+                               @"        const detailsMargin = 10;"
                                @"        const detailsSummaryTriangleWidth = 20;"
                                @"        const detailsPadding = 10;"
                                @"        let summaryLineWidth ="
