@@ -158,8 +158,8 @@
             // LOG --> log,  根据 genju--> 根据  gēnjù
             BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
             
-            if (html.length && isTheSameHeadword ) {
-               // Replace source relative path with absolute path.
+            if (html.length && isTheSameHeadword) {
+                // Replace source relative path with absolute path.
                 NSString *contentsPath = [contentsURL.path encode];
                 html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
                 html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
@@ -214,6 +214,7 @@
                            lightBackgroundColorString, customIframeContainerClass,
                            darkBackgroundColorString, darkTextColorString];
     
+    // TODO: For better debug experience, we should use a local html file.
     NSMutableString *jsCode = [NSMutableString stringWithFormat:
                                @"<script>"
                                @"function calculateSummaryTextWidth(summary) {"
@@ -222,7 +223,7 @@
                                @"    const textWidth = range.getBoundingClientRect().width;"
                                @"    return textWidth;"
                                @"}"
-                              
+                               
                                @"function updateDetailsSummaryLineWidth() {"
                                @"    const detailsSummaryList = document.querySelectorAll('details summary');"
                                @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
@@ -258,86 +259,107 @@
                                @"    }"
                                @"}"
                                
-                               @"function brightenDarkColorsInIframe(iframe) {"
+                               @"function convertColorsInIframe(iframe, isDarkMode) {"
                                @"    var iframeDocument = iframe.contentWindow.document;"
-                               @"    var spanElements = iframeDocument.querySelectorAll('span');"
-                               @""
-                               @"    spanElements.forEach(function (span) {"
-                               @"        brightenColor(span);"
-                               @""
-                               @"        var childElements = span.querySelectorAll('*');"
-                               @"        childElements.forEach(function (child) {"
-                               @"        });"
+                               @"    var spanElements = iframeDocument.querySelectorAll('*');"
+                               @"    spanElements.forEach(function (tag) {"
+                               @"        brightenColor(tag);"
+                               @"        var childElements = tag.querySelectorAll('*');"
+                               @"        childElements.forEach(function (child) {});"
                                @"    });"
-                               @""
                                @"    function brightenColor(element) {"
                                @"        var computedStyle = getComputedStyle(element);"
                                @"        var originalColor = computedStyle.color;"
-                               @""
-                               @"        var newColor = brightenColorValue(originalColor);"
-                               @""
+                               @"        var newColor = convertColor(originalColor, isDarkMode);"
+                               @"        console.log("
+                               @"            `${"
+                               @"                isDarkMode ? 'dark' : 'light'"
+                               @"            }, originalColor: ${originalColor}, newColor: ${newColor}, innerText: ${"
+                               @"                element.innerText"
+                               @"            }`"
+                               @"        );"
                                @"        element.style.color = newColor;"
                                @"    }"
-                               @""
-                               @"    function brightenColorValue(colorString) {"
+                               @"    function convertColor(colorString, isDarkMode) {"
                                @"        var rgbValues = colorString.match(/\\d+/g);"
                                @"        var r = parseInt(rgbValues[0], 10);"
                                @"        var g = parseInt(rgbValues[1], 10);"
                                @"        var b = parseInt(rgbValues[2], 10);"
-                               @""
                                @"        var brightness = (r + g + b) / 3;"
-                               @"        let brightenAmount = 20;"
-                               @"        if (brightness < 50) {"
-                               @"            brightenAmount = 200;"
-                               @"            r = Math.min(r + brightenAmount, 255);"
-                               @"            g = Math.min(g + brightenAmount, 255);"
-                               @"            b = Math.min(b + brightenAmount, 255);"
-                               @"        } else if (brightness >= 50 && brightness < 120) {"
-                               @"            brightenAmount = 80;"
-                               @""
-                               @"            r = Math.min(r + brightenAmount, 255);"
-                               @"            g = Math.min(g + brightenAmount, 255);"
-                               @"            b = Math.min(b + brightenAmount, 255);"
-                               @"        } else if (brightness >= 120 && brightness < 200) {"
-                               @"            brightenAmount = 40;"
-                               @""
-                               @"            r = Math.min(r + brightenAmount, 255);"
-                               @"            g = Math.min(g + brightenAmount, 255);"
-                               @"            b = Math.min(b + brightenAmount, 255);"
-                               @"        } else if (brightness >= 200) {"
-                               @"            brightenAmount = 20;"
-                               @""
-                               @"            r = Math.min(r + brightenAmount, 255);"
-                               @"            g = Math.min(g + brightenAmount, 255);"
-                               @"            b = Math.min(b + brightenAmount, 255);"
+                               @"        var brightenAmount = 20;"
+                               @"        if (isDarkMode) {"
+                               @"            var lowBrightness = 60;"
+                               @"            var midBrightness = 100;"
+                               @"            if (brightness < lowBrightness) {"
+                               @"                brightenAmount = 230;"
+                               @"            } else if ("
+                               @"                brightness >= lowBrightness &&"
+                               @"                brightness < midBrightness"
+                               @"            ) {"
+                               @"                brightenAmount = 100;"
+                               @"            }"
+                               @"        } else {"
+                               @"            var lowBrightness = 255 - 60;"
+                               @"            var midBrightness = 255 - 100;"
+                               @"            if (brightness > lowBrightness) {"
+                               @"                brightenAmount = -230;"
+                               @"            } else if ("
+                               @"                brightness <= lowBrightness &&"
+                               @"                brightness > midBrightness"
+                               @"            ) {"
+                               @"                brightenAmount = -100;"
+                               @"            }"
                                @"        }"
-                               @""
-                               @"        return 'rgb(' + r + ', ' + g + ', ' + b + ')';"
+                               @"        r = Math.min(Math.max(r + brightenAmount, 0), 255);"
+                               @"        g = Math.min(Math.max(g + brightenAmount, 0), 255);"
+                               @"        b = Math.min(Math.max(b + brightenAmount, 0), 255);"
+                               @"        return `rgb(${r}, ${g}, ${b})`;"
                                @"    }"
                                @"}"
-                               
                                @"function isDarkMode() {"
-                               @"   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;"
+                               @"    return ("
+                               @"        window.matchMedia &&"
+                               @"        window.matchMedia(`(prefers-color-scheme: dark)`).matches"
+                               @"    );"
                                @"}"
-
-                               @"    function updateAllIframeHeight() {"
-                               @"      var iframes = document.querySelectorAll('iframe');"
-                               @"      for (var i = 0; i < iframes.length; i++) {"
+                               @"function updateAllIframeTextColor(isDarkMode) {"
+                               @"    var iframes = document.querySelectorAll('iframe');"
+                               @"    for (var i = 0; i < iframes.length; i++) {"
                                @"        var iframe = iframes[i];"
-                               @"        if (isDarkMode()) { "
-                               @"           brightenDarkColorsInIframe(iframe);"
-                               @"        }"
-                               @"        const contentHeight = iframe.contentWindow.document.documentElement.scrollHeight;"
-                               @"        const borderHeight = parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
-                               @"        const paddingHeight = parseInt(getComputedStyle(iframe).paddingTop) * 2;"
-                               @"        iframe.style.height = contentHeight + borderHeight + paddingHeight + \"px\";"
-                               @"      }"
+                               @"        convertColorsInIframe(iframe, isDarkMode);"
                                @"    }"
+                               @"}"
+                               @"function updateAllIframeHeight() {"
+                               @"    var iframes = document.querySelectorAll('iframe');"
+                               @"    for (var i = 0; i < iframes.length; i++) {"
+                               @"        var iframe = iframes[i];"
+                               @"        const contentHeight ="
+                               @"            iframe.contentWindow.document.documentElement.scrollHeight;"
+                               @"        const borderHeight ="
+                               @"            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
+                               @"        const paddingHeight ="
+                               @"            parseInt(getComputedStyle(iframe).paddingTop) * 2;"
+                               @"        iframe.style.height ="
+                               @"            contentHeight + borderHeight + paddingHeight + 'px';"
+                               @"    }"
+                               @"}"
+                               @"window.onload = function () {"
+                               @"    updateDetailsSummaryLineWidth();"
+                               @"    updateAllIframeHeight();"
+                               @"    if (isDarkMode()) {"
+                               @"        updateAllIframeTextColor(true);"
+                               @"    }"
+                               @"    var colorSchemeListener = window.matchMedia("
+                               @"        `(prefers-color-scheme: dark)`"
+                               @"    );"
+                               @"    colorSchemeListener.addEventListener(`change`, function (event) {"
+                               @"        var isDarkMode = event.matches;"
+                               @"        console.log(`color scheme changed: ${isDarkMode ? 'dark' : 'light'}`);"
+                               @"        updateAllIframeTextColor(isDarkMode);"
+                               @"    });"
+                               @"};"
                                
-                               @"    window.onload = function() {"
-                               @"       updateDetailsSummaryLineWidth(); "
-                               @"       updateAllIframeHeight();"
-                               @"    };"
+                               
                                @"</script>"];
     
     NSString *htmlString = nil;
@@ -346,7 +368,7 @@
         htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ %@ </head> <body> %@ </body></html>",
                       meta, globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
     }
-        
+    
     return htmlString;
 }
 
@@ -362,9 +384,9 @@
     NSString *pattern = @"src=\"(.*?)\"";
     NSString *replacement = [NSString stringWithFormat:@"src=\"%@/$1\"", basePath];
     NSString *absolutePathHTML = [HTML stringByReplacingOccurrencesOfString:pattern
-                                                                  withString:replacement
-                                                                     options:NSRegularExpressionSearch
-                                                                       range:NSMakeRange(0, HTML.length)];
+                                                                 withString:replacement
+                                                                    options:NSRegularExpressionSearch
+                                                                      range:NSMakeRange(0, HTML.length)];
     return absolutePathHTML;
 }
 
