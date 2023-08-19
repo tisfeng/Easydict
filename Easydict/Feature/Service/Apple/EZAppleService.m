@@ -50,7 +50,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     if (showAddressFlag) {
         [description appendFormat:@"<%@: %p>", self.class, self];
     }
-
+    
     CGRect boundRect = self.boundingBox;
     NSString *content = [NSString stringWithFormat:@"{ x=%.3f, y=%.3f, width=%.3f, height=%.3f }, %@", boundRect.origin.x, boundRect.origin.y, boundRect.size.width, boundRect.size.height, self.firstText];
     
@@ -883,19 +883,19 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     NSArray *qrCodeTexts = [self detectQRCodeImage:image];
     if (qrCodeTexts.count) {
         NSString *text = [qrCodeTexts componentsJoinedByString:@"\n"];
-
+        
         EZOCRResult *ocrResult = [[EZOCRResult alloc] init];
         ocrResult.texts = qrCodeTexts;
         ocrResult.mergedText = text;
         ocrResult.raw = qrCodeTexts;
-
+        
         EZLanguage language = [self detectText:text];
         self.queryModel.detectedLanguage = language;
         self.queryModel.autoQuery = NO;
-
+        
         ocrResult.from = language;
         ocrResult.confidence = 1.0;
-
+        
         return ocrResult;
     }
     return nil;
@@ -933,7 +933,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     for (int i = 0; i < lineCount; i++) {
         VNRecognizedTextObservation *textObservation = textObservations[i];
-
+        
         VNRecognizedText *recognizedText = [[textObservation topCandidates:1] firstObject];
         NSString *recognizedString = recognizedText.string;
         [recognizedStrings addObject:recognizedString];
@@ -1028,7 +1028,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         CGRect boundingBox = textObservation.boundingBox;
         
         printf("%s\n", textObservation.description.UTF8String);
-
+        
         /**
          《摊破浣溪沙》  123  《浣溪沙》
          
@@ -1139,7 +1139,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 /// Sort textObservations by textObservation.boundingBox.origin.y
 - (NSArray<VNRecognizedTextObservation *> *)sortedTextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
-    
     /**
      !!!: Sometims the textObservations' order or some of the bound rect y is incorrect, so we hava to resort this array.
      
@@ -1150,7 +1149,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      
      
      Ref: https://twitter.com/nishuang/status/1269366861877125122
-    
+     
      { x=0.050, y=0.842, width=0.892, height=0.088 }, When you get really good,
      { x=0.059, y=0.736, width=0.879, height=0.106 }, people, they know they're,
      { x=0.056, y=0.630, width=0.887, height=0.124 }, really good, and you don't,
@@ -1169,7 +1168,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         CGFloat y1 = boundingBox1.origin.y;
         CGFloat y2 = boundingBox2.origin.y;
         
-        if (y2 - y1 > self.minLineHeight * 0.8)  {
+        if (y2 - y1 > self.minLineHeight * 0.8) {
             return NSOrderedDescending; // means obj2 > obj1
         } else {
             return NSOrderedAscending;
@@ -1269,8 +1268,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     /**
      Works smarter.
-      Plays harder.
-      Goes further.
+     Plays harder.
+     Goes further.
      */
     if (isAllEndPunctuationChar) {
         return YES;
@@ -1321,7 +1320,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     BOOL isPrevList = [prevText isListTypeFirstWord];
     BOOL isList = [text isListTypeFirstWord];
-
+    
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
     if (hasIndentation) {
@@ -1482,33 +1481,31 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      https://so.gushiwen.cn/shiwenv_f83627ef2908.aspx
      
      绣袈裟衣缘
-        长屋长屋〔唐代〕
-
+     长屋长屋〔唐代〕
+     
      山川异域，风月同天。
      寄诸佛子，共结来缘。
      */
-   BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language]
-                               && self.charCountPerLine < kShortPoetryCharacterCountOfLine
-                               && text.length < kShortPoetryCharacterCountOfLine;
-   
-   /**
-    Chinese poetry needs line break
+    BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language] && self.charCountPerLine < kShortPoetryCharacterCountOfLine && text.length < kShortPoetryCharacterCountOfLine;
     
-    《鹧鸪天 · 正月十一日观灯》
+    /**
+     Chinese poetry needs line break
+     
+     《鹧鸪天 · 正月十一日观灯》
+     
+     巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
+     花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
+     
+     —— 宋 · 姜夔
+     */
     
-    巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
-    花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
-    
-    —— 宋 · 姜夔
-    */
-   
-   BOOL isChinesePoetryLine = isEqualChineseText || isShortChinesePoetry;
-   if (isChinesePoetryLine) {
-       needLineBreak = YES;
-       if (isBigLineSpacing) {
-           isNewParagraph = YES;
-       }
-   }
+    BOOL isChinesePoetryLine = isEqualChineseText || isShortChinesePoetry;
+    if (isChinesePoetryLine) {
+        needLineBreak = YES;
+        if (isBigLineSpacing) {
+            isNewParagraph = YES;
+        }
+    }
     
     
     if (isPrevList) {
@@ -1521,7 +1518,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
                 isNewParagraph = YES;
             }
         }
-
     }
     
     if (isNewParagraph) {
