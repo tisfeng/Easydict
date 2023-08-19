@@ -170,19 +170,18 @@
         
         if (wordHtmlString.length) {
             // Use -webkit-text-fill-color to render system dict.
-            NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
+//            NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
             // Update background color for dark mode
             NSString *dictBackgroundColorCSS = [NSString stringWithFormat:@"<style>"
                                                 @"body { background-color: %@; }"
                                                 
                                                 @"@media (prefers-color-scheme: dark) {"
-                                                @"body { %@: %@; background-color: %@; }"
+                                                @"body { background-color: %@; }"
                                                 @"}"
                                                 @"</style>",
                                                 
-                                                lightBackgroundColorString,
-                                                textColor, darkTextColorString, darkBackgroundColorString];
+                                                lightBackgroundColorString, darkBackgroundColorString];
             
             // Create an iframe for each HTML content
             NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [wordHtmlString escapedHTMLString]];
@@ -296,7 +295,7 @@
                                @"                brightness >= lowBrightness &&"
                                @"                brightness < midBrightness"
                                @"            ) {"
-                               @"                brightenAmount = 100;"
+                               @"                brightenAmount = 150;"
                                @"            }"
                                @"        } else {"
                                @"            var lowBrightness = 255 - 60;"
@@ -307,7 +306,9 @@
                                @"                brightness <= lowBrightness &&"
                                @"                brightness > midBrightness"
                                @"            ) {"
-                               @"                brightenAmount = -100;"
+                               @"                brightenAmount = -150;"
+                               @"            } else {"
+                               @"              brightenAmount = -20;"
                                @"            }"
                                @"        }"
                                @"        r = Math.min(Math.max(r + brightenAmount, 0), 255);"
