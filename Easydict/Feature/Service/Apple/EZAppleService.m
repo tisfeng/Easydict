@@ -20,9 +20,12 @@ static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
 
-static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》" ];
+static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"〔", @"〕" ];
 
 static CGFloat const kParagraphLineHeightRatio = 1.2;
+
+static NSInteger const kShortPoetryCharacterCountOfLine = 12;
+
 
 @interface VNRecognizedTextObservation (EZText)
 @property (nonatomic, copy, readonly) NSString *firstText;
@@ -1473,24 +1476,40 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
                 needLineBreak = YES;
             }
         }
-        
-        /**
-         Chinese poetry needs line break
-         
-         《鹧鸪天 · 正月十一日观灯》
-         
-         巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
-         花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
-         
-         —— 宋 · 姜夔
-         */
-        if (isEqualChineseText) {
-            needLineBreak = YES;
-            if (isBigLineSpacing) {
-                isNewParagraph = YES;
-            }
-        }
     }
+    
+    /**
+     https://so.gushiwen.cn/shiwenv_f83627ef2908.aspx
+     
+     绣袈裟衣缘
+        长屋长屋〔唐代〕
+
+     山川异域，风月同天。
+     寄诸佛子，共结来缘。
+     */
+   BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language]
+                               && self.charCountPerLine < kShortPoetryCharacterCountOfLine
+                               && text.length < kShortPoetryCharacterCountOfLine;
+   
+   /**
+    Chinese poetry needs line break
+    
+    《鹧鸪天 · 正月十一日观灯》
+    
+    巷陌风光纵赏时，笼纱未出马先嘶。白头居士无呵殿，只有乘肩小女随。
+    花满市，月侵衣，少年情事老来悲。沙河塘上春寒浅，看了游人缓缓归。
+    
+    —— 宋 · 姜夔
+    */
+   
+   BOOL isChinesePoetryLine = isEqualChineseText || isShortChinesePoetry;
+   if (isChinesePoetryLine) {
+       needLineBreak = YES;
+       if (isBigLineSpacing) {
+           isNewParagraph = YES;
+       }
+   }
+    
     
     if (isPrevList) {
         if (isList) {
@@ -1698,7 +1717,7 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
     // Two Chinese words length
-    CGFloat threshold = 80;
+    CGFloat threshold = 60;
     BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
         threshold = 230; // This value is related to the font size, take the average, and a bit larger.
