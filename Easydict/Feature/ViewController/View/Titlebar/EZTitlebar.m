@@ -83,11 +83,15 @@
     
     [self.googleButton removeFromSuperview];
     [self.eudicButton removeFromSuperview];
+    [self.appleDictionaryButton removeFromSuperview];
     
     NSView *lastView;
     CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_25;
     CGFloat quickLinkButtonRightOffset = 12;
     
+    // TODO: We should refactor it later.
+    
+    // Google
     if (EZConfiguration.shared.showGoogleQuickLink) {
         EZOpenLinkButton *googleButton = [[EZOpenLinkButton alloc] init];
         [self addSubview:googleButton];
@@ -111,6 +115,7 @@
         lastView = googleButton;
     }
     
+    // Eudic
     if (EZConfiguration.shared.showEudicQuickLink) {
         EZOpenLinkButton *eudicButton = [[EZOpenLinkButton alloc] init];
         
@@ -138,6 +143,30 @@
             }];
             lastView = eudicButton;
         }
+    }
+    
+    // Apple Dictionary
+    if (EZConfiguration.shared.showAppleDictionaryQuickLink) {
+        EZOpenLinkButton *appleDictButton = [[EZOpenLinkButton alloc] init];
+        [self addSubview:appleDictButton];
+        self.appleDictionaryButton = appleDictButton;
+        self.favoriteButton = appleDictButton;
+        
+        appleDictButton.link = EZAppleDictionaryAppURLScheme;
+        appleDictButton.image = [[NSImage imageNamed:EZServiceTypeAppleDictionary] resizeToSize:imageSize];
+        appleDictButton.toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"open_in_apple_dictionary", nil), @"⌘+⇧+D"];
+        appleDictButton.contentTintColor = NSColor.clearColor;
+        
+        [appleDictButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self).offset(quickLinkButtonTopOffset);
+            make.size.mas_equalTo(buttonSize);
+            if (lastView) {
+                make.right.equalTo(lastView.mas_left).offset(-kButtonPadding_4);
+            } else {
+                make.right.equalTo(self).offset(-quickLinkButtonRightOffset);
+            }
+        }];
+        lastView = appleDictButton;
     }
     
     [super updateConstraints];

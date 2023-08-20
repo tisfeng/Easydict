@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -381,6 +381,11 @@ DQ
                                                 <action selector="eudicAction:" target="qM9-fT-Fym" id="mmv-DW-Np6"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Apple Dictionary" keyEquivalent="D" toolTip="Open in Eudic" id="KbN-5H-9z5" userLabel="Apple Dictionary">
+                                            <connections>
+                                                <action selector="appleDictionaryAction:" target="qM9-fT-Fym" id="TCI-Gj-GL5"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -706,6 +711,7 @@ DQ
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="qM9-fT-Fym" customClass="EZMenuItemManager">
                     <connections>
+                        <outlet property="appleDictionaryItem" destination="KbN-5H-9z5" id="KgI-YD-QKj"/>
                         <outlet property="checkForUpdateItem" destination="GQ2-WA-9QB" id="UTm-kG-JmC"/>
                         <outlet property="eudicItem" destination="sXT-M2-L5C" id="lfd-aF-Kn2"/>
                         <outlet property="googleItem" destination="qiF-2J-X2C" id="ieo-Uu-FLp"/>

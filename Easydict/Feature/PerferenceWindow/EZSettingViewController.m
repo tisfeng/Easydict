@@ -76,6 +76,7 @@
 @property (nonatomic, strong) NSTextField *showQuickLinkLabel;
 @property (nonatomic, strong) NSButton *showGoogleQuickLinkButton;
 @property (nonatomic, strong) NSButton *showEudicQuickLinkButton;
+@property (nonatomic, strong) NSButton *showAppleDictionaryQuickLinkButton;
 
 @property (nonatomic, strong) NSView *separatorView2;
 
@@ -352,6 +353,10 @@
     self.showEudicQuickLinkButton = [NSButton checkboxWithTitle:showEudicQuickLink target:self action:@selector(showEudicQuickLinkButtonClicked:)];
     [self.contentView addSubview:self.showEudicQuickLinkButton];
     
+    NSString *showAppleDictionaryQuickLink = NSLocalizedString(@"show_apple_dictionary_quick_link", nil);
+    self.showAppleDictionaryQuickLinkButton = [NSButton checkboxWithTitle:showAppleDictionaryQuickLink target:self action:@selector(showAppleDictionaryQuickLinkButtonClicked:)];
+    [self.contentView addSubview:self.showAppleDictionaryQuickLinkButton];
+    
     
     NSView *separatorView2 = [[NSView alloc] init];
     [self.contentView addSubview:separatorView2];
@@ -412,6 +417,7 @@
     self.autoCopyFirstTranslatedTextButton.mm_isOn = self.config.autoCopyFirstTranslatedText;
     self.showGoogleQuickLinkButton.mm_isOn = self.config.showGoogleQuickLink;
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
+    self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
 }
 
@@ -620,11 +626,15 @@
         make.left.equalTo(self.showGoogleQuickLinkButton);
         make.top.equalTo(self.showGoogleQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
+    [self.showAppleDictionaryQuickLinkButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.showEudicQuickLinkButton);
+        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+    }];
     
     
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
     
@@ -760,6 +770,11 @@
 - (void)showEudicQuickLinkButtonClicked:(NSButton *)sender {
     self.config.showEudicQuickLink = sender.mm_isOn;
 }
+
+- (void)showAppleDictionaryQuickLinkButtonClicked:(NSButton *)sender {
+    self.config.showAppleDictionaryQuickLink = sender.mm_isOn;
+}
+
 
 - (void)hideMenuBarIconButtonClicked:(NSButton *)sender {
     // !!!: EZFloatingWindowLevel shouldn't be higher than kCGModalPanelWindowLevel (8)

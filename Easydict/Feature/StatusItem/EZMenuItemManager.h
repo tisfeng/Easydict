@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak) IBOutlet NSMenuItem *googleItem;
 @property (weak) IBOutlet NSMenuItem *eudicItem;
+@property (weak) IBOutlet NSMenuItem *appleDictionaryItem;
 
 + (instancetype)shared;
 

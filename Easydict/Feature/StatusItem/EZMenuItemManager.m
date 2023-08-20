@@ -268,6 +268,13 @@ static EZMenuItemManager *_instance;
     [window.titleBar.eudicButton openLink];
 }
 
+// apple diction action
+- (IBAction)appleDictionaryAction:(NSMenuItem *)sender {
+    EZBaseQueryWindow *window = EZWindowManager.shared.floatingWindow;
+    [window.titleBar.appleDictionaryButton openLink];
+}
+
+
 #pragma mark - NSMenuDelegate
 
 - (void)menuWillOpen:(NSMenu *)menu {

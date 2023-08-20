@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZGoogleWebSearchURL = @"https://www.google.com/search?q=%@";
 static NSString *const EZEudicAppURLScheme = @"eudic://dict/%@";
+static NSString *const EZAppleDictionaryAppURLScheme = @"dict://%@";
+
 
 // TODO: need to optimize, similar to EZBlueTextButton.
 @interface EZOpenLinkButton : EZButton

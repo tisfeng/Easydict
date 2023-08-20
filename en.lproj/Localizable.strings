@@ -66,6 +66,7 @@
 "quick_link" = "Quick Link:";
 "show_google_quick_link" = "Show Google quick link icon";
 "show_eudic_quick_link" = "Show Eudic quick link icon (if installed)";
+"show_apple_dictionary_quick_link" = "Show Apple Dictionary quick link icon";
 
 
 "show_main_window" = "Main Window:";
@@ -166,3 +167,4 @@
 "show"= "Show";
 "open_in_google" = "Open in Google";
 "open_in_eudic" = "Open in Eudic";
+"open_in_apple_dictionary" = "Open in Apple Dictionary";

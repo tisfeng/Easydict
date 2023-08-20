@@ -39,6 +39,7 @@ static NSString *const kAutoCopyFirstTranslatedTextKey = @"EZConfiguration_kAuto
 static NSString *const kLanguageDetectOptimizeTypeKey = @"EZConfiguration_kLanguageDetectOptimizeTypeKey";
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
+static NSString *const kShowAppleDictionaryLinkKey = @"EZConfiguration_kShowAppleDictionaryLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
@@ -94,6 +95,7 @@ static EZConfiguration *_instance;
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:EZLanguageDetectOptimizeNone];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
+    self.showAppleDictionaryQuickLink = [NSUserDefaults mm_readBool:kShowAppleDictionaryLinkKey defaultValue:YES];
     self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:EZShowWindowPositionRight];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
@@ -260,6 +262,16 @@ static EZConfiguration *_instance;
     
     EZMenuItemManager.shared.eudicItem.hidden = !showEudicLink;
 }
+
+- (void)setShowAppleDictionaryQuickLink:(BOOL)showAppleDictionaryQuickLink {
+    _showAppleDictionaryQuickLink = showAppleDictionaryQuickLink;
+
+    [NSUserDefaults mm_write:@(showAppleDictionaryQuickLink) forKey:kShowAppleDictionaryLinkKey];
+    [self postUpdateQuickLinkButtonNotification];
+    
+    EZMenuItemManager.shared.appleDictionaryItem.hidden = !showAppleDictionaryQuickLink;
+}
+
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
     _hideMenuBarIcon = hideMenuBarIcon;

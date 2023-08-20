@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZOpenLinkButton *eudicButton;
 @property (nonatomic, strong) EZOpenLinkButton *googleButton;
+@property (nonatomic, strong) EZOpenLinkButton *appleDictionaryButton;
 
 @property (nonatomic, strong) EZOpenLinkButton *favoriteButton;
 

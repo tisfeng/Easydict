@@ -65,6 +65,7 @@
 "quick_link" = "快捷功能:";
 "show_google_quick_link" = "显示 Google 快捷图标";
 "show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
+"show_apple_dictionary_quick_link" = "显示苹果词典快捷图标";
 
 
 "show_main_window" = "主窗口:";
@@ -165,3 +166,4 @@
 "show"= "显示";
 "open_in_google" = "通过 Google 搜索";
 "open_in_eudic" = "在欧路词典中打开";
+"open_in_apple_dictionary" = "在苹果词典中打开";

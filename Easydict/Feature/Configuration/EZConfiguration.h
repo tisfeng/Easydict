@@ -47,6 +47,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) EZLanguageDetectOptimize languageDetectOptimize;
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;
+@property (nonatomic, assign) BOOL showAppleDictionaryQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 @property (nonatomic, assign) BOOL adjustPopButtomOrigin;
