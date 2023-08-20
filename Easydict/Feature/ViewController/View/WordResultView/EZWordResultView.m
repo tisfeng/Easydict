@@ -253,7 +253,7 @@ static const CGFloat kVerticalPadding_8 = 8;
         WKWebView *webView = [[WKWebView alloc] init];
         [self addSubview:webView];
         
-        NSURL *dictionaryURL = [TTTDictionary dictionaryDirectoryURL];;
+        NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
         NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
         [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
         NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];

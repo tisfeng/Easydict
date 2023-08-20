@@ -224,17 +224,11 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     return _activeDictionaries;
 }
 
-+ (NSURL *)dictionaryDirectoryURL {
-    static NSURL *_dictionaryDirectoryURL = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _dictionaryDirectoryURL = [[self activeDictionaries].firstObject.dictionaryURL URLByDeletingLastPathComponent];
-    });
-
-    return _dictionaryDirectoryURL;
++ (NSURL *)userDictionaryDirectoryURL {
+    NSString *userDictPath = [DCSUserDictionaryDirectoryPath stringByExpandingTildeInPath];
+    NSURL *dictionaryDirectoryURL = [NSURL fileURLWithPath:userDictPath isDirectory:YES];
+    return dictionaryDirectoryURL;
 }
-
-
 
 + (instancetype)dictionaryNamed:(NSString *)name {
     static NSDictionary *_availableDictionariesKeyedByName = nil;

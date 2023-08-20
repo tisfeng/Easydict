@@ -94,7 +94,7 @@ typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
 + (NSArray<TTTDictionary *> *)activeDictionaries;
 
 /// Dictionary directory URL, path is ~/Library/Dictionaries/
-+ (NSURL *)dictionaryDirectoryURL;
++ (NSURL *)userDictionaryDirectoryURL;
 
 /**
  Get dict with CFBundleDisplayName

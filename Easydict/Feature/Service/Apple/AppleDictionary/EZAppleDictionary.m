@@ -289,7 +289,7 @@
                                @"    const b = parseInt(rgbValues[2], 10);"
                                @"    const brightness = (r + g + b) / 3;"
                                @"    let brightenAmount = 0;"
-                               @"    const lowBrightnessThreshold = 40;"
+                               @"    const lowBrightnessThreshold = 30;"
                                @"    const lightLowBrightnessAmount = 255 - lowBrightnessThreshold;"
                                @"    const ratio = 0.6;"
                                @"    if (isDarkMode) {"
@@ -339,6 +339,8 @@
                                @"            contentHeight + borderHeight + paddingHeight + 'px';"
                                @"    }"
                                @"}"
+                               
+                               
                                @"window.onload = function () {"
                                @"    updateDetailsSummaryLineWidth();"
                                @"    updateAllIframeHeight();"
