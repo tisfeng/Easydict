@@ -263,8 +263,8 @@
                                @"    var spanElements = iframeDocument.querySelectorAll('*');"
                                @"    spanElements.forEach(function (tag) {"
                                @"        brightenColor(tag);"
-//                               @"        var childElements = tag.querySelectorAll('*');"
-//                               @"        childElements.forEach(function (child) {});"
+                               //                               @"        var childElements = tag.querySelectorAll('*');"
+                               //                               @"        childElements.forEach(function (child) {});"
                                @"    });"
                                @"    function brightenColor(element) {"
                                @"        var computedStyle = getComputedStyle(element);"
@@ -281,8 +281,8 @@
                                @"    }"
                                
                                // FIXME: This function does not work perfectly, we need to improve it later.
-                            
-                               @"function convertColor(colorString, isDarkMode) {"
+                               
+                               @"  function convertColor(colorString, isDarkMode) {"
                                @"    const rgbValues = colorString.match(/\\d+/g);"
                                @"    const r = parseInt(rgbValues[0], 10);"
                                @"    const g = parseInt(rgbValues[1], 10);"
@@ -309,9 +309,9 @@
                                @"    const adjustedG = Math.min(Math.max(g + brightenAmount, 0), 255);"
                                @"    const adjustedB = Math.min(Math.max(b + brightenAmount, 0), 255);"
                                @"    return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;"
+                               @"  }"
                                @"}"
                                
-                               @"}"
                                @"function isDarkMode() {"
                                @"    return ("
                                @"        window.matchMedia &&"
@@ -325,6 +325,7 @@
                                @"        convertColorsInIframe(iframe, isDarkMode);"
                                @"    }"
                                @"}"
+                               
                                @"function updateAllIframeHeight() {"
                                @"    var iframes = document.querySelectorAll('iframe');"
                                @"    for (var i = 0; i < iframes.length; i++) {"
@@ -340,12 +341,29 @@
                                @"    }"
                                @"}"
                                
+                               @"function updateAllIframeAppleSystemLabelBorderBottomColor(isDark) {"
+                               @"    console.log(`updateAllIframeAppleSystemLabelColor`);"
+                               @"    var iframes = document.querySelectorAll(`iframe`);"
+                               @"    var newColor = isDark ? '%@' : '%@';"
+                               @""
+                               @"    for (var i = 0; i < iframes.length; i++) {"
+                               @"        var iframe = iframes[i];"
+                               @"        var iframeDocument = iframe.contentWindow.document;"
+                               @"        var elements = iframeDocument.querySelectorAll(`.x_xoLblBlk`);"
+                               @""
+                               @"        for (var j = 0; j < elements.length; j++) {"
+                               @"            var element = elements[j];"
+                               @"            element.style.borderBottomColor = newColor;"
+                               @"        }"
+                               @"    }"
+                               @"}"
                                
                                @"window.onload = function () {"
                                @"    updateDetailsSummaryLineWidth();"
                                @"    updateAllIframeHeight();"
                                @"    if (isDarkMode()) {"
                                @"        updateAllIframeTextColor(true);"
+                               @"        updateAllIframeAppleSystemLabelBorderBottomColor(true);"
                                @"    }"
                                @"    var colorSchemeListener = window.matchMedia("
                                @"        `(prefers-color-scheme: dark)`"
@@ -354,11 +372,13 @@
                                @"        var isDarkMode = event.matches;"
                                //  @"        console.log(`color scheme changed: ${isDarkMode ? 'dark' : 'light'}`);"
                                @"        updateAllIframeTextColor(isDarkMode);"
+                               @"        updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);"
                                @"    });"
                                @"};"
                                
                                
-                               @"</script>"];
+                               @"</script>",
+                               darkSeparatorColorString, lightSeparatorColorString];
     
     NSString *htmlString = nil;
     
