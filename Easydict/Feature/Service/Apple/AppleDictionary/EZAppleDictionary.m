@@ -658,9 +658,24 @@
     NSString *normalizedString = [string stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
     NSString *normalizedSubstring = [substring stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
     
-    // 使用范围搜索方法检查标准化后的字符串是否包含标准化后的子字符串
-    NSRange range = [normalizedString rangeOfString:normalizedSubstring options:NSLiteralSearch];
-    return range.location != NSNotFound;
+    BOOL isContained = [normalizedString containsString:normalizedSubstring];
+//    isContain = [normalizedString isEqualToString:normalizedSubstring];
+    
+    /**
+     Since some user dict word result is too redundant, we need to remove some useless words.
+     
+     Such as 简明英汉词典, when look up "log", the results are: -log, log-, log, we should filter the first two.
+     */
+    
+    if (isContained) {
+        // remove substring
+        NSString *remainedText = [string stringByReplacingOccurrencesOfString:substring withString:@""];
+        if ([remainedText isEqualToString:@"-"]) {
+            isContained = NO;
+        }
+    }
+    
+    return isContained;
 }
 
 @end

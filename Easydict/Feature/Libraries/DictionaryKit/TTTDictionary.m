@@ -175,6 +175,10 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     return self;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, headword: %@>", NSStringFromClass([self class]), self, self.headword];
+}
+
 @end
 
 @interface TTTDictionary ()

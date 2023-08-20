@@ -31,19 +31,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface TTTDictionaryEntry : NSObject
 
-/**
- 
- */
+/// 词头
 @property (readonly, nonatomic, copy) NSString *headword;
 
-/**
- 
- */
+/// innerText of HTML
 @property (readonly, nonatomic, copy) NSString *text;
 
-/**
- 
- */
 @property (readonly, nonatomic, copy) NSString *HTML;
 @property (readonly, nonatomic, copy) NSString *HTMLWithAppCSS;
 @property (readonly, nonatomic, copy) NSString *HTMLWithPopoverCSS;
