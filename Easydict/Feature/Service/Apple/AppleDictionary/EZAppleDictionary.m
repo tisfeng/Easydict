@@ -263,8 +263,8 @@
                                @"    var spanElements = iframeDocument.querySelectorAll('*');"
                                @"    spanElements.forEach(function (tag) {"
                                @"        brightenColor(tag);"
-                               @"        var childElements = tag.querySelectorAll('*');"
-                               @"        childElements.forEach(function (child) {});"
+//                               @"        var childElements = tag.querySelectorAll('*');"
+//                               @"        childElements.forEach(function (child) {});"
                                @"    });"
                                @"    function brightenColor(element) {"
                                @"        var computedStyle = getComputedStyle(element);"
@@ -280,6 +280,8 @@
                                @"        element.style.color = newColor;"
                                @"    }"
                                
+                               // FIXME: This function does not work perfectly, we need to improve it later.
+                            
                                @"function convertColor(colorString, isDarkMode) {"
                                @"    const rgbValues = colorString.match(/\\d+/g);"
                                @"    const r = parseInt(rgbValues[0], 10);"
