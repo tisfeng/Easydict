@@ -75,9 +75,9 @@
     CGSize imageSize = CGSizeMake(kImagenWidth_20, kImagenWidth_20);
     
     [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        CGFloat pinButtonWidth = 25;
+        CGFloat pinButtonWidth = 24;
         make.width.height.mas_equalTo(pinButtonWidth);
-        make.left.inset(10);
+        make.left.inset(11);
         make.top.equalTo(self).offset(EZTitlebarHeight_28 - pinButtonWidth);
     }];
     
