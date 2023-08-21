@@ -841,7 +841,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
     linkButton.image = linkImage;
-    linkButton.toolTip = NSLocalizedString(@"open_web_link", nil);
+    
+    NSString *toolTip = NSLocalizedString(@"open_web_link", nil);
+    if (result.serviceType == EZServiceTypeAppleDictionary) {
+        toolTip = NSLocalizedString(@"open_in_apple_dictionary", nil);
+    }
+    linkButton.toolTip = toolTip;
+
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {
