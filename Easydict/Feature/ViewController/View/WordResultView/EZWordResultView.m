@@ -31,6 +31,8 @@ static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
 static const CGFloat kVerticalPadding_8 = 8;
 
+static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
+
 @interface EZWordResultView () <NSTextViewDelegate, WKNavigationDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
@@ -1025,10 +1027,32 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    NSString *navigationActionURL = navigationAction.request.URL.absoluteString;
+    NSURL *navigationActionURL = navigationAction.request.URL;
     NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
 
-
+    /**
+     If URL has a prefix "x-dictionary", means this is a Apple Dictionary URI scheme. Docs: https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/DictionaryServicesProgGuide/schema/schema.html
+     
+     x-dictionary:r:m_en_gbus0793530:com.apple.dictionary.NOAD:poikilotherm
+     x-dictionary:r:z_DWS-004175:com.apple.dictionary.zh_CN-en.OCD
+     */
+    if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
+        NSLog(@"Open URI: %@", navigationActionURL);
+        
+        [self getTextWithHref:navigationActionURL.absoluteString completionHandler:^(NSString *text) {
+            NSLog(@"URL text is: %@", text);
+            
+            if (self.queryTextBlock) {
+                self.queryTextBlock([text trim]);
+            }
+        }];
+        
+//        [[NSWorkspace sharedWorkspace] openURL:navigationActionURL];
+        
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+    
     //允许跳转
     decisionHandler(WKNavigationActionPolicyAllow);
     //不允许跳转
@@ -1122,6 +1146,28 @@ static const CGFloat kVerticalPadding_8 = 8;
             if (completionHandler) {
                 completionHandler(result);
             }
+        }
+    }];
+}
+
+- (void)getTextWithHref:(NSString *)href completionHandler:(void (^_Nullable)(NSString *text))completionHandler {
+    NSString *jsCode = [NSString stringWithFormat:@"var iframes = document.querySelectorAll('iframe');\
+                                                var linkText = '';\
+                                                for (var i = 0; i < iframes.length; i++) {\
+                                                    var iframe = iframes[i];\
+                                                    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');\
+                                                    if (linkElement) {\
+                                                        linkText = linkElement.innerText;\
+                                                        break;\
+                                                    }\
+                                                }\
+                                                linkText;", href];
+    
+    
+    [self.webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+        if (!error) {
+           NSString *linkText = (NSString *)result;
+            completionHandler(linkText);
         }
     }];
 }
