@@ -67,12 +67,12 @@
 }
 
 - (void)updateConstraints {
-    CGFloat kButtonWidth_25 = 25;
-    CGFloat kImagenWidth_21 = 21;
+    CGFloat kButtonWidth_24 = 24;
+    CGFloat kImagenWidth_20 = 20;
     CGFloat kButtonPadding_4 = 4;
     
-    CGSize buttonSize = CGSizeMake(kButtonWidth_25, kButtonWidth_25);
-    CGSize imageSize = CGSizeMake(kImagenWidth_21, kImagenWidth_21);
+    CGSize buttonSize = CGSizeMake(kButtonWidth_24, kButtonWidth_24);
+    CGSize imageSize = CGSizeMake(kImagenWidth_20, kImagenWidth_20);
     
     [self.pinButton mas_makeConstraints:^(MASConstraintMaker *make) {
         CGFloat pinButtonWidth = 25;
@@ -86,7 +86,7 @@
     [self.appleDictionaryButton removeFromSuperview];
     
     NSView *lastView;
-    CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_25;
+    CGFloat quickLinkButtonTopOffset = EZTitlebarHeight_28 - kButtonWidth_24;
     CGFloat quickLinkButtonRightOffset = 12;
     
     // TODO: We should refactor it later.
