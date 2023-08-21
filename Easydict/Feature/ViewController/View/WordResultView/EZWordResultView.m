@@ -1151,20 +1151,20 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 }
 
 - (void)getTextWithHref:(NSString *)href completionHandler:(void (^_Nullable)(NSString *text))completionHandler {
-    NSString *jsCode = [NSString stringWithFormat:@"var iframes = document.querySelectorAll('iframe');\
-                                                var linkText = '';\
-                                                for (var i = 0; i < iframes.length; i++) {\
-                                                    var iframe = iframes[i];\
-                                                    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');\
-                                                    if (linkElement) {\
-                                                        linkText = linkElement.innerText;\
-                                                        break;\
-                                                    }\
-                                                }\
-                                                linkText;", href];
+    NSString *jsCode = [NSString stringWithFormat:
+        @"var iframes = document.querySelectorAll('iframe');"
+        @"var linkText = '';"
+        @"for (var i = 0; i < iframes.length; i++) {"
+        @"    var iframe = iframes[i];"
+        @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
+        @"    if (linkElement) {"
+        @"        linkText = linkElement.innerText;"
+        @"        break;"
+        @"    }"
+        @"}"
+        @"linkText;", href];
     
-    
-    [self.webView evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
+    [self evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
         if (!error) {
            NSString *linkText = (NSString *)result;
             completionHandler(linkText);
