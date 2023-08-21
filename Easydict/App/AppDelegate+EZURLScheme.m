@@ -23,15 +23,33 @@
     JLRoutes *routes = [JLRoutes globalRoutes];
     [routes addRoute:@"/:action" handler:^BOOL(NSDictionary *parameters) {
         NSString *action = parameters[@"action"];
-        
-        // easydict://query?text=good
+        NSString *queryText = action;
+        /**
+         easydict://good
+         easydict://query?text=good
+         
+         easydictd://good
+         easydictd://query?text=good
+         easydictd://good%2Fgirl  (easydictd://good/girl)
+         */
         if ([action isEqualToString:EZQueryKey]) {
-            NSString *queryText = parameters[@"text"];
-            
-            [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
+            queryText = parameters[@"text"];
         }
-
+        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
+        
         return YES; // return YES to say we have handled the route
+    }];
+    
+    [routes addRoute:@"*" handler:^BOOL(NSDictionary *parameters) {
+        NSLog(@"parameters: %@", parameters);
+        
+        NSURL *URL = parameters[JLRouteURLKey];
+        NSLog(@"URL: %@", URL);
+        
+//        NSString *queryText = [URL.resourceSpecifier stringByReplacingOccurrencesOfString:@"//" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, 2)];
+//        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
+        
+        return YES;
     }];
 }
 
