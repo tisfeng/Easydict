@@ -195,22 +195,22 @@
         }
     }
     
-    // !!!: Chrome does not need, but Safari must need this meta tag, otherwise Chinese characters will be garbled.
+    // !!!: Chrome does not need charset, but Safari must need this meta tag, otherwise Chinese characters will be garbled.
     NSString *meta = @"<meta charset=\"UTF-8\" />";
     
     NSString *globalCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { margin: 8px 0px 5px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
+                           @".%@ { margin: 8px 0px 0px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
                            
                            @"body { margin: 0px; background-color: %@; }"
-                           @".%@ { margin: 0px; padding: 0px; width: 100%%; border: 0px solid black; }"
+                           @".%@ { margin: 5px 0px 12px 0px; width: calc(100%% - 2px); border: 1px solid %@; border-radius: 7px; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
-                           @"body { background-color: %@; color: %@;}"
+                           @"body { background-color: %@; color: %@; }"
                            @"}"
                            @"</style>",
                            
                            bigWordTitleH2Class,
-                           lightBackgroundColorString, customIframeContainerClass,
+                           lightBackgroundColorString, customIframeContainerClass, @"#86BEE9",
                            darkBackgroundColorString, darkTextColorString];
     
     // TODO: For better debug experience, we should use a local html file.
@@ -359,7 +359,7 @@
                                @"}"
                                
                                @"window.onload = function () {"
-                               @"    updateDetailsSummaryLineWidth();"
+//                               @"    updateDetailsSummaryLineWidth();"
                                @"    updateAllIframeHeight();"
                                @"    if (isDarkMode()) {"
                                @"        updateAllIframeTextColor(true);"
