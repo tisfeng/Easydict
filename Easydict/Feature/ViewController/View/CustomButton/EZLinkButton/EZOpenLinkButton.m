@@ -80,8 +80,11 @@ static NSString *const EZQueryKey = @"{Query}";
         urlString = [NSString stringWithFormat:urlString, encodedText];
     }
     
-    // dict://美丽
-    NSURL *URL = [urlString detectLink];;
+    /**
+     google.com
+     dict://when the cat is away, the mice will play
+     */
+    NSURL *URL = [urlString detectLink] ?: [NSURL URLWithString:urlString];
     
     // If link is EZGoogleWebSearchURL and queryText is a URL, we should open URL directly.
     if ([self.link isEqualToString:EZGoogleWebSearchURL]) {
