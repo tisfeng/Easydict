@@ -669,7 +669,7 @@
     
     if (isContained) {
         // remove substring
-        NSString *remainedText = [string stringByReplacingOccurrencesOfString:substring withString:@""];
+        NSString *remainedText = [normalizedString stringByReplacingOccurrencesOfString:normalizedSubstring withString:@""];
         if ([remainedText isEqualToString:@"-"]) {
             isContained = NO;
         }

@@ -931,7 +931,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     mm_weakify(self);
     
-    
     [webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error) {
             mm_strongify(self);
@@ -940,7 +939,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             CGFloat contentHeight = [result doubleValue];
             NSLog(@"contentHeight: %.1f", contentHeight);
             
-            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.6;
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.5;
             
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
