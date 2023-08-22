@@ -74,15 +74,17 @@
     // TODO: Maybe we should filter dicts according to languages.
     NSArray<TTTDictionary *> *dicts = [TTTDictionary activeDictionaries];
     
+    NSString *baseHtmlPath = [[NSBundle mainBundle] pathForResource:@"apple-dictionary" ofType:@"html"];
+    NSString *baseHtmlString = [NSString stringWithContentsOfFile:baseHtmlPath encoding:NSUTF8StringEncoding error:nil];
+    
+    
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     
     NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
     
-    NSString *lightSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
-    NSString *darkSeparatorColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
-    
+
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *customIframeContainerClass = @"custom-iframe-container";
     
@@ -98,46 +100,6 @@
                            customIframeContainerClass,
                            lightTextColorString, lightBackgroundColorString,
                            darkTextColorString, darkBackgroundColorString];
-    
-    NSString *detailsSummaryCSS = [NSString stringWithFormat:@""
-                                   @"<style>"
-                                   @"  details summary { font-family: 'PingFang SC'; font-weight: 400; font-size: 18px; margin: 0; text-align: center; }"
-                                   @"  details summary::-webkit-details-marker { width: 10px; height: 10px; }"
-                                   @"  details summary::before, "
-                                   @"  details summary::after { "
-                                   @"    content: \"\"; "
-                                   @"    display: inline-block; "
-                                   @"    width: var(--before-after-summary-width, 0px); "
-                                   @"    height: 1px; "
-                                   @"    background: %@; "
-                                   @"    vertical-align: middle; "
-                                   @"  } "
-                                   @"  "
-                                   @"  details[open] summary::before { "
-                                   @"    margin-right: 5px; "
-                                   @"  } "
-                                   @"  "
-                                   @"  details[open] summary::after { "
-                                   @"    margin-left: 5px; "
-                                   @"  } "
-                                   @"  "
-                                   @"  details:not([open]) summary::before { "
-                                   @"    margin-right: 5px; "
-                                   @"  } "
-                                   @"  "
-                                   @"  details:not([open]) summary::after { "
-                                   @"    margin-left: 5px; "
-                                   @"  } "
-                                   @"  "
-                                   @"  @media (prefers-color-scheme: dark) { "
-                                   @"    details summary::before, "
-                                   @"    details summary::after { "
-                                   @"      background: %@; "
-                                   @"    } "
-                                   @"  } "
-                                   @"</style>",
-                                   
-                                   lightSeparatorColorString, darkSeparatorColorString];
     
     NSMutableString *iframesHtmlString = [NSMutableString string];
     
@@ -195,196 +157,11 @@
         }
     }
     
-    // !!!: Chrome does not need charset, but Safari must need this meta tag, otherwise Chinese characters will be garbled.
-    NSString *meta = @"<meta charset=\"UTF-8\" />";
-    
-    NSString *globalCSS = [NSString stringWithFormat:@"<style>"
-                           @".%@ { margin: 8px 0px 0px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
-                           
-                           @"body { margin: 0px; background-color: %@; }"
-                           @".%@ { margin: 5px 3px 12px 3px; width: calc(100%% - 8px); border: 1px solid %@; border-radius: 7px; }"
-                           
-                           @"@media (prefers-color-scheme: dark) {"
-                           @"body { background-color: %@; color: %@; }"
-                           @"}"
-                           @"</style>",
-                           
-                           bigWordTitleH2Class,
-                           lightBackgroundColorString, customIframeContainerClass, @"#ACACAC",
-                           darkBackgroundColorString, darkTextColorString];
-    
-    // TODO: For better debug experience, we should use a local html file.
-    NSMutableString *jsCode = [NSMutableString stringWithFormat:
-                               @"<script>"
-                               @"function calculateSummaryTextWidth(summary) {"
-                               @"    const range = document.createRange();"
-                               @"    range.selectNodeContents(summary);"
-                               @"    const textWidth = range.getBoundingClientRect().width;"
-                               @"    return textWidth;"
-                               @"}"
-                               
-                               @"function updateDetailsSummaryLineWidth() {"
-                               @"    const detailsSummaryList = document.querySelectorAll('details summary');"
-                               @"    for (var i = 0; i < detailsSummaryList.length; i++) {"
-                               @"        const summary = detailsSummaryList[i];"
-                               @"        const summaryText = summary.innerText;"
-                               @"        const computedStyle = getComputedStyle(summary);"
-                               @"        const font = {"
-                               @"            fontSize: computedStyle.fontSize,"
-                               @"            fontWeight: computedStyle.fontWeight,"
-                               @"            fontFamily: computedStyle.fontFamily,"
-                               @"        };"
-                               @""
-                               @"        const summaryTextWidth = calculateSummaryTextWidth(summary);"
-                               //  @"        console.log(`text: {${summaryText}}, width: ${summaryTextWidth}`);"
-                               @""
-                               @"        const detailsMargin = 10;"
-                               @"        const detailsSummaryTriangleWidth = 20;"
-                               @"        const detailsPadding = 10;"
-                               @"        let summaryLineWidth ="
-                               @"            (document.documentElement.clientWidth -"
-                               @"            detailsMargin -"
-                               @"            summaryTextWidth -"
-                               @"            detailsSummaryTriangleWidth -"
-                               @"            detailsPadding) /"
-                               @"            2;"
-                               @""
-                               //  @"        console.log(`summaryLineWidth: ${summaryLineWidth}`);"
-                               @""
-                               @"        summary.style.setProperty("
-                               @"            '--before-after-summary-width',"
-                               @"            `${summaryLineWidth}px`"
-                               @"        );"
-                               @"    }"
-                               @"}"
-                               
-                               @"function convertColorsInIframe(iframe, isDarkMode) {"
-                               @"    var iframeDocument = iframe.contentWindow.document;"
-                               @"    var spanElements = iframeDocument.querySelectorAll('*');"
-                               @"    spanElements.forEach(function (tag) {"
-                               @"        brightenColor(tag);"
-                               //                               @"        var childElements = tag.querySelectorAll('*');"
-                               //                               @"        childElements.forEach(function (child) {});"
-                               @"    });"
-                               @"    function brightenColor(element) {"
-                               @"        var computedStyle = getComputedStyle(element);"
-                               @"        var originalColor = computedStyle.color;"
-                               @"        var newColor = convertColor(originalColor, isDarkMode);"
-                               //                               @"        console.log("
-                               //                               @"            `${"
-                               //                               @"                isDarkMode ? 'dark' : 'light'"
-                               //                               @"            }, originalColor: ${originalColor}, newColor: ${newColor}, innerText: ${"
-                               //                               @"                element.innerText"
-                               //                               @"            }`"
-                               //                               @"        );"
-                               @"        element.style.color = newColor;"
-                               @"    }"
-                               
-                               // FIXME: This function does not work perfectly, we need to improve it later.
-                               
-                               @"  function convertColor(colorString, isDarkMode) {"
-                               @"    const rgbValues = colorString.match(/\\d+/g);"
-                               @"    const r = parseInt(rgbValues[0], 10);"
-                               @"    const g = parseInt(rgbValues[1], 10);"
-                               @"    const b = parseInt(rgbValues[2], 10);"
-                               @"    const brightness = (r + g + b) / 3;"
-                               @"    let brightenAmount = 0;"
-                               @"    const lowBrightnessThreshold = 30;"
-                               @"    const lightLowBrightnessAmount = 255 - lowBrightnessThreshold;"
-                               @"    const ratio = 0.6;"
-                               @"    if (isDarkMode) {"
-                               @"        if (brightness < lowBrightnessThreshold) {"
-                               @"            brightenAmount = lightLowBrightnessAmount;"
-                               @"        } else {"
-                               @"            brightenAmount = lightLowBrightnessAmount * ratio;"
-                               @"        }"
-                               @"    } else {"
-                               @"        if (brightness > lightLowBrightnessAmount) {"
-                               @"            brightenAmount = -lightLowBrightnessAmount;"
-                               @"        } else {"
-                               @"            brightenAmount = -lightLowBrightnessAmount * ratio;"
-                               @"        }"
-                               @"    }"
-                               @"    const adjustedR = Math.min(Math.max(r + brightenAmount, 0), 255);"
-                               @"    const adjustedG = Math.min(Math.max(g + brightenAmount, 0), 255);"
-                               @"    const adjustedB = Math.min(Math.max(b + brightenAmount, 0), 255);"
-                               @"    return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;"
-                               @"  }"
-                               @"}"
-                               
-                               @"function isDarkMode() {"
-                               @"    return ("
-                               @"        window.matchMedia &&"
-                               @"        window.matchMedia(`(prefers-color-scheme: dark)`).matches"
-                               @"    );"
-                               @"}"
-                               @"function updateAllIframeTextColor(isDarkMode) {"
-                               @"    var iframes = document.querySelectorAll('iframe');"
-                               @"    for (var i = 0; i < iframes.length; i++) {"
-                               @"        var iframe = iframes[i];"
-                               @"        convertColorsInIframe(iframe, isDarkMode);"
-                               @"    }"
-                               @"}"
-                               
-                               @"function updateAllIframeHeight() {"
-                               @"    var iframes = document.querySelectorAll('iframe');"
-                               @"    for (var i = 0; i < iframes.length; i++) {"
-                               @"        var iframe = iframes[i];"
-                               @"        const contentHeight ="
-                               @"            iframe.contentWindow.document.documentElement.scrollHeight;"
-                               @"        const borderHeight ="
-                               @"            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;"
-                               @"        const paddingHeight ="
-                               @"            parseInt(getComputedStyle(iframe).paddingTop) * 2;"
-                               @"        iframe.style.height ="
-                               @"            contentHeight + borderHeight + paddingHeight + 'px';"
-                               @"    }"
-                               @"}"
-                               
-                               @"function updateAllIframeAppleSystemLabelBorderBottomColor(isDark) {"
-                               @"    console.log(`updateAllIframeAppleSystemLabelColor`);"
-                               @"    var iframes = document.querySelectorAll(`iframe`);"
-                               @"    var newColor = isDark ? '%@' : '%@';"
-                               @""
-                               @"    for (var i = 0; i < iframes.length; i++) {"
-                               @"        var iframe = iframes[i];"
-                               @"        var iframeDocument = iframe.contentWindow.document;"
-                               @"        var elements = iframeDocument.querySelectorAll(`.x_xoLblBlk`);"
-                               @""
-                               @"        for (var j = 0; j < elements.length; j++) {"
-                               @"            var element = elements[j];"
-                               @"            element.style.borderBottomColor = newColor;"
-                               @"        }"
-                               @"    }"
-                               @"}"
-                               
-                               @"window.onload = function () {"
-//                               @"    updateDetailsSummaryLineWidth();"
-                               @"    updateAllIframeHeight();"
-                               @"    if (isDarkMode()) {"
-                               @"        updateAllIframeTextColor(true);"
-                               @"        updateAllIframeAppleSystemLabelBorderBottomColor(true);"
-                               @"    }"
-                               @"    var colorSchemeListener = window.matchMedia("
-                               @"        `(prefers-color-scheme: dark)`"
-                               @"    );"
-                               @"    colorSchemeListener.addEventListener(`change`, function (event) {"
-                               @"        var isDarkMode = event.matches;"
-                               //  @"        console.log(`color scheme changed: ${isDarkMode ? 'dark' : 'light'}`);"
-                               @"        updateAllIframeTextColor(isDarkMode);"
-                               @"        updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);"
-                               @"    });"
-                               @"};"
-                               
-                               
-                               @"</script>",
-                               darkSeparatorColorString, lightSeparatorColorString];
-    
     NSString *htmlString = nil;
-    
     if (iframesHtmlString.length) {
-        htmlString = [NSString stringWithFormat:@"<html><head> %@ %@ %@ %@ </head> <body> %@ </body></html>",
-                      meta, globalCSS, detailsSummaryCSS, jsCode, iframesHtmlString];
+        // Insert iframesHtmlString <body> </body> in baseHtmlString
+        htmlString = [baseHtmlString stringByReplacingOccurrencesOfString:@"</body>"
+                                                                   withString:[NSString stringWithFormat:@"%@ </body>", iframesHtmlString]];
     }
     
     return htmlString;

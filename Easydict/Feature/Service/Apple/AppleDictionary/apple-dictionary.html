@@ -1,0 +1,214 @@
+<html>
+  <head>
+    <!-- !!!: Chrome does not need charset, but Safari must need this meta tag, otherwise Chinese characters will be garbled. -->
+    <meta charset="UTF-8" />
+
+    <style>
+      :root {
+        --light-background-color: #f6f6f6;
+        --light-text-color: #262626;
+        --light-border-color: #acacac;
+        --dark-background-color: #303132;
+        --dark-text-color: #e0e0e0;
+        --dark-border-color: #e0e0e0;
+      }
+      body {
+        margin: 0px;
+        color: var(--light-text-color);
+        background-color: var(--light-background-color);
+      }
+      .big-word-title {
+        margin: 8px 0px 0px 10px;
+        font-weight: bold;
+        font-size: 24px;
+        font-family: "PingFang SC";
+      }
+      .custom-iframe-container {
+        margin: 5px 4px 12px 4px;
+        width: calc(100% - 10px);
+        border: 1px solid var(--light-border-color);
+        border-radius: 7px;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: var(--dark-background-color);
+          color: var(--dark-text-color);
+        }
+      }
+    </style>
+    <style>
+      details summary {
+        font-family: "PingFang SC";
+        font-weight: 400;
+        font-size: 18px;
+        margin: 0;
+        text-align: center;
+      }
+      details summary::-webkit-details-marker {
+        width: 10px;
+        height: 10px;
+      }
+      details summary::before,
+      details summary::after {
+        content: "";
+        display: inline-block;
+        width: var(--before-after-summary-width, 0px);
+        height: 1px;
+        background: var(--light-text-color);
+        vertical-align: middle;
+      }
+      details[open] summary::before {
+        margin-right: 5px;
+      }
+      details[open] summary::after {
+        margin-left: 5px;
+      }
+      details:not([open]) summary::before {
+        margin-right: 5px;
+      }
+      details:not([open]) summary::after {
+        margin-left: 5px;
+      }
+      @media (prefers-color-scheme: dark) {
+        details summary::before,
+        details summary::after {
+          background: var(--dark-text-color);
+        }
+      }
+    </style>
+    <script>
+      function calculateSummaryTextWidth(summary) {
+        const range = document.createRange();
+        range.selectNodeContents(summary);
+        const textWidth = range.getBoundingClientRect().width;
+        return textWidth;
+      }
+      function updateDetailsSummaryLineWidth() {
+        const detailsSummaryList = document.querySelectorAll("details summary");
+        for (var i = 0; i < detailsSummaryList.length; i++) {
+          const summary = detailsSummaryList[i];
+          const summaryText = summary.innerText;
+          const computedStyle = getComputedStyle(summary);
+          const font = {
+            fontSize: computedStyle.fontSize,
+            fontWeight: computedStyle.fontWeight,
+            fontFamily: computedStyle.fontFamily,
+          };
+          const summaryTextWidth = calculateSummaryTextWidth(summary);
+          const detailsMargin = 10;
+          const detailsSummaryTriangleWidth = 20;
+          const detailsPadding = 10;
+          let summaryLineWidth =
+            (document.documentElement.clientWidth -
+              detailsMargin -
+              summaryTextWidth -
+              detailsSummaryTriangleWidth -
+              detailsPadding) /
+            2;
+          summary.style.setProperty(
+            "--before-after-summary-width",
+            `${summaryLineWidth}px`
+          );
+        }
+      }
+      function convertColorsInIframe(iframe, isDarkMode) {
+        var iframeDocument = iframe.contentWindow.document;
+        var spanElements = iframeDocument.querySelectorAll("*");
+        spanElements.forEach(function (tag) {
+          brightenColor(tag);
+        });
+        function brightenColor(element) {
+          var computedStyle = getComputedStyle(element);
+          var originalColor = computedStyle.color;
+          var newColor = convertColor(originalColor, isDarkMode);
+          element.style.color = newColor;
+        }
+        function convertColor(colorString, isDarkMode) {
+          const rgbValues = colorString.match(/\d+/g);
+          const r = parseInt(rgbValues[0], 10);
+          const g = parseInt(rgbValues[1], 10);
+          const b = parseInt(rgbValues[2], 10);
+          const brightness = (r + g + b) / 3;
+          let brightenAmount = 0;
+          const lowBrightnessThreshold = 30;
+          const lightLowBrightnessAmount = 255 - lowBrightnessThreshold;
+          const ratio = 0.6;
+          if (isDarkMode) {
+            if (brightness < lowBrightnessThreshold) {
+              brightenAmount = lightLowBrightnessAmount;
+            } else {
+              brightenAmount = lightLowBrightnessAmount * ratio;
+            }
+          } else {
+            if (brightness > lightLowBrightnessAmount) {
+              brightenAmount = -lightLowBrightnessAmount;
+            } else {
+              brightenAmount = -lightLowBrightnessAmount * ratio;
+            }
+          }
+          const adjustedR = Math.min(Math.max(r + brightenAmount, 0), 255);
+          const adjustedG = Math.min(Math.max(g + brightenAmount, 0), 255);
+          const adjustedB = Math.min(Math.max(b + brightenAmount, 0), 255);
+          return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;
+        }
+      }
+      function isDarkMode() {
+        return (
+          window.matchMedia &&
+          window.matchMedia(`(prefers-color-scheme: dark)`).matches
+        );
+      }
+      function updateAllIframeTextColor(isDarkMode) {
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          convertColorsInIframe(iframe, isDarkMode);
+        }
+      }
+      function updateAllIframeHeight() {
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          const contentHeight =
+            iframe.contentWindow.document.documentElement.scrollHeight;
+          const borderHeight =
+            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;
+          const paddingHeight =
+            parseInt(getComputedStyle(iframe).paddingTop) * 2;
+          iframe.style.height =
+            contentHeight + borderHeight + paddingHeight + "px";
+        }
+      }
+      function updateAllIframeAppleSystemLabelBorderBottomColor(isDark) {
+        console.log(`updateAllIframeAppleSystemLabelColor`);
+        var iframes = document.querySelectorAll(`iframe`);
+        var newColor = isDark ? "#E0E0E0" : "#262626";
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          var iframeDocument = iframe.contentWindow.document;
+          var elements = iframeDocument.querySelectorAll(`.x_xoLblBlk`);
+          for (var j = 0; j < elements.length; j++) {
+            var element = elements[j];
+            element.style.borderBottomColor = newColor;
+          }
+        }
+      }
+      window.onload = function () {
+        updateAllIframeHeight();
+        if (isDarkMode()) {
+          updateAllIframeTextColor(true);
+          updateAllIframeAppleSystemLabelBorderBottomColor(true);
+        }
+        var colorSchemeListener = window.matchMedia(
+          `(prefers-color-scheme: dark)`
+        );
+        colorSchemeListener.addEventListener(`change`, function (event) {
+          var isDarkMode = event.matches;
+          updateAllIframeTextColor(isDarkMode);
+          updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);
+        });
+      };
+    </script>
+  </head>
+  <body></body>
+</html>
