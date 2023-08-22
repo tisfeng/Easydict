@@ -202,7 +202,7 @@
                            @".%@ { margin: 8px 0px 0px 10px; font-weight: bold; font-size: 24px; font-family: 'PingFang SC'; }"
                            
                            @"body { margin: 0px; background-color: %@; }"
-                           @".%@ { margin: 5px 0px 12px 0px; width: calc(100%% - 2px); border: 1px solid %@; border-radius: 7px; }"
+                           @".%@ { margin: 5px 3px 12px 3px; width: calc(100%% - 8px); border: 1px solid %@; border-radius: 7px; }"
                            
                            @"@media (prefers-color-scheme: dark) {"
                            @"body { background-color: %@; color: %@; }"
@@ -210,7 +210,7 @@
                            @"</style>",
                            
                            bigWordTitleH2Class,
-                           lightBackgroundColorString, customIframeContainerClass, @"#86BEE9",
+                           lightBackgroundColorString, customIframeContainerClass, @"#ACACAC",
                            darkBackgroundColorString, darkTextColorString];
     
     // TODO: For better debug experience, we should use a local html file.
