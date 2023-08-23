@@ -6,10 +6,12 @@
     <style>
       :root {
         --light-background-color: #f6f6f6;
-        --light-text-color: #262626;
-        --light-border-color: #acacac;
         --dark-background-color: #303132;
+
+        --light-text-color: #262626;
         --dark-text-color: #e0e0e0;
+
+        --light-border-color: #acacac;
         --dark-border-color: #e0e0e0;
       }
       body {
@@ -24,8 +26,8 @@
         font-family: "PingFang SC";
       }
       .custom-iframe-container {
-        margin: 5px 4px 12px 4px;
-        width: calc(100% - 10px);
+        margin: 5px 5px 12px 5px;
+        width: calc(100% - 12px);
         border: 1px solid var(--light-border-color);
         border-radius: 7px;
       }
@@ -113,18 +115,68 @@
       }
       function convertColorsInIframe(iframe, isDarkMode) {
         var iframeDocument = iframe.contentWindow.document;
-        var spanElements = iframeDocument.querySelectorAll("*");
-        spanElements.forEach(function (tag) {
-          brightenColor(tag);
+        var elements = iframeDocument.querySelectorAll("*");
+        elements.forEach(function (tag) {
+          convertElementColor(tag);
         });
-        function brightenColor(element) {
+
+        function convertElementColor(element) {
           var computedStyle = getComputedStyle(element);
           var originalColor = computedStyle.color;
-          var newColor = convertColor(originalColor, isDarkMode);
+          var newColor = convertColorValue(originalColor, isDarkMode);
           element.style.color = newColor;
+
+          // convert background color if has
+          var originalBackgroundColor = computedStyle.backgroundColor;
+          if (
+            originalBackgroundColor &&
+            originalBackgroundColor !== "rgba(0, 0, 0, 0)"
+          ) {
+            var newBackgroundColor = convertColorValue(
+              originalBackgroundColor,
+              !isDarkMode
+            );
+            // newBackgroundColor = revertColorValue(originalBackgroundColor);
+            element.style.backgroundColor = newBackgroundColor;
+
+            // console.log(`originalBackgroundColor: ${originalBackgroundColor}`);
+            // console.log(`newBackgroundColor: ${newBackgroundColor}`);
+          }
+
+          // convert border color if has
+          var originalBorderColor = computedStyle.borderColor;
+          if (originalBorderColor) {
+            var newBorderColor = convertColorValue(
+              originalBorderColor,
+              isDarkMode
+            );
+            element.style.borderColor = newBorderColor;
+
+            // console.log(`originalBorderColor: ${originalBorderColor}`);
+            // console.log(`newBorderColor: ${newBorderColor}`);
+          }
         }
-        function convertColor(colorString, isDarkMode) {
-          const rgbValues = colorString.match(/\d+/g);
+
+        function isNotCustomBackgroundColor(color) {
+          var rootStyles = getComputedStyle(document.documentElement);
+          var lightBackgroundColor = rootStyles.getPropertyValue(
+            "--light-background-color"
+          );
+          var darkBackgroundColor = rootStyles.getPropertyValue(
+            "--dark-background-color"
+          );
+
+          // console.log(`color: ${color}`);
+          // console.log(`lightBackgroundColor: ${lightBackgroundColor}`);
+          // console.log(`darkBackgroundColor: ${darkBackgroundColor}`);
+
+          return (
+            color !== lightBackgroundColor && color !== darkBackgroundColor
+          );
+        }
+
+        function convertColorValue(color, isDarkMode) {
+          const rgbValues = color.match(/\d+/g);
           const r = parseInt(rgbValues[0], 10);
           const g = parseInt(rgbValues[1], 10);
           const b = parseInt(rgbValues[2], 10);
@@ -151,36 +203,32 @@
           const adjustedB = Math.min(Math.max(b + brightenAmount, 0), 255);
           return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;
         }
+
+        // revert color
+        function revertColorValue(color) {
+          // 提取颜色值中的数字部分
+          var colorNumbers = color.match(/\d+/g);
+          // console.log(`colorNumbers: ${colorNumbers}`);
+
+          // 反转颜色值的数组
+          colorNumbers = colorNumbers.map(function (value) {
+            var intValue = parseInt(value, 10);
+            return 255 - intValue; // 反转颜色值
+          });
+
+          // 将反转后的数字数组拼接为反转后的颜色值
+          return "rgb(" + colorNumbers.join(", ") + ")";
+        }
       }
+
       function isDarkMode() {
         return (
           window.matchMedia &&
           window.matchMedia(`(prefers-color-scheme: dark)`).matches
         );
       }
-      function updateAllIframeTextColor(isDarkMode) {
-        var iframes = document.querySelectorAll("iframe");
-        for (var i = 0; i < iframes.length; i++) {
-          var iframe = iframes[i];
-          convertColorsInIframe(iframe, isDarkMode);
-        }
-      }
-      function updateAllIframeHeight() {
-        var iframes = document.querySelectorAll("iframe");
-        for (var i = 0; i < iframes.length; i++) {
-          var iframe = iframes[i];
-          const contentHeight =
-            iframe.contentWindow.document.documentElement.scrollHeight;
-          const borderHeight =
-            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;
-          const paddingHeight =
-            parseInt(getComputedStyle(iframe).paddingTop) * 2;
-          iframe.style.height =
-            contentHeight + borderHeight + paddingHeight + "px";
-        }
-      }
+
       function updateAllIframeAppleSystemLabelBorderBottomColor(isDark) {
-        console.log(`updateAllIframeAppleSystemLabelColor`);
         var iframes = document.querySelectorAll(`iframe`);
         var newColor = isDark ? "#E0E0E0" : "#262626";
         for (var i = 0; i < iframes.length; i++) {
@@ -193,19 +241,91 @@
           }
         }
       }
-      window.onload = function () {
-        updateAllIframeHeight();
-        if (isDarkMode()) {
-          updateAllIframeTextColor(true);
-          updateAllIframeAppleSystemLabelBorderBottomColor(true);
+
+      // update all iframe style
+      function updateAllIframeStyle() {
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          var iframeDocument = iframe.contentWindow.document;
+
+          // modify iframe body margin
+          var body = iframeDocument.querySelector("body");
+          body.style.margin = "6px 8px";
+          body.style.padding = "0px";
+
+          // modify iframe height
+          const contentHeight = iframeDocument.documentElement.scrollHeight;
+          const borderHeight =
+            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;
+          const paddingHeight =
+            parseInt(getComputedStyle(iframe).paddingTop) * 2;
+          iframe.style.height =
+            contentHeight + borderHeight + paddingHeight + "px";
         }
+      }
+
+      // update all iframe color
+      function updateAllIframeColor(isDarkMode) {
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          convertColorsInIframe(iframe, isDarkMode);
+        }
+      }
+
+      // update body background color and all iframe background color
+      function updateBackgroundColor(isDarkMode) {
+        var rootStyles = getComputedStyle(document.documentElement);
+        var lightBackgroundColor = rootStyles.getPropertyValue(
+          "--light-background-color"
+        );
+        var darkBackgroundColor = rootStyles.getPropertyValue(
+          "--dark-background-color"
+        );
+
+        var newBackgroundColor = isDarkMode
+          ? darkBackgroundColor
+          : lightBackgroundColor;
+        document.body.style.backgroundColor = newBackgroundColor;
+
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          var iframeDocument = iframe.contentWindow.document;
+          var newBackgroundColor = isDarkMode
+            ? darkBackgroundColor
+            : lightBackgroundColor;
+          iframeDocument.body.style.backgroundColor = newBackgroundColor;
+
+          // console.log(
+          //   `iframeDocument firstChild: ${iframeDocument.firstChild.innerText}`
+          // );
+          // console.log(
+          //   `isDarkMode: ${isDarkMode}, newBackgroundColor: ${newBackgroundColor}`
+          // );
+        }
+      }
+
+      window.onload = function () {
+        updateAllIframeStyle();
+
+        if (isDarkMode()) {
+          updateAllIframeColor(true);
+          updateBackgroundColor(true);
+
+          // updateAllIframeAppleSystemLabelBorderBottomColor(true);
+        }
+
         var colorSchemeListener = window.matchMedia(
           `(prefers-color-scheme: dark)`
         );
         colorSchemeListener.addEventListener(`change`, function (event) {
           var isDarkMode = event.matches;
-          updateAllIframeTextColor(isDarkMode);
-          updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);
+          updateAllIframeColor(isDarkMode);
+          updateBackgroundColor(isDarkMode);
+
+          // updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);
         });
       };
     </script>

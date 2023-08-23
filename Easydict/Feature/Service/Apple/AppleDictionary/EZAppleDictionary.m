@@ -84,7 +84,7 @@
     NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
     
-
+    
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *customIframeContainerClass = @"custom-iframe-container";
     
@@ -161,7 +161,7 @@
     if (iframesHtmlString.length) {
         // Insert iframesHtmlString <body> </body> in baseHtmlString
         htmlString = [baseHtmlString stringByReplacingOccurrencesOfString:@"</body>"
-                                                                   withString:[NSString stringWithFormat:@"%@ </body>", iframesHtmlString]];
+                                                               withString:[NSString stringWithFormat:@"%@ </body>", iframesHtmlString]];
     }
     
     return htmlString;
@@ -436,7 +436,7 @@
     NSString *normalizedSubstring = [substring stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
     
     BOOL isContained = [normalizedString containsString:normalizedSubstring];
-//    isContain = [normalizedString isEqualToString:normalizedSubstring];
+    //    isContain = [normalizedString isEqualToString:normalizedSubstring];
     
     /**
      Since some user dict word result is too redundant, we need to remove some useless words.
