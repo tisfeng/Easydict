@@ -59,6 +59,7 @@ NSString *getTLookupV3Host(void) {
 - (void)fetchRequestHost:(void(^)(NSString * host))callback {
     if (kRequestHostString.length) {
         callback(kRequestHostString);
+        return;
     }
     [self.translateSession GET:kRequestHostCN parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (task.response.URL == nil) {

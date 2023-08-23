@@ -71,3 +71,6 @@ node_modules/
 
 # .vscode - Visual Studio Code
 .vscode/*
+
+# idea
+.idea/*
