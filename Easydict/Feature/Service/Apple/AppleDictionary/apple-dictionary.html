@@ -11,7 +11,7 @@
         --light-text-color: #262626;
         --dark-text-color: #e0e0e0;
 
-        --light-border-color: #acacac;
+        --light-border-color: #868686;
         --dark-border-color: #e0e0e0;
       }
       body {
@@ -182,9 +182,9 @@
           const b = parseInt(rgbValues[2], 10);
           const brightness = (r + g + b) / 3;
           let brightenAmount = 0;
-          const lowBrightnessThreshold = 30;
+          const lowBrightnessThreshold = 15;
           const lightLowBrightnessAmount = 255 - lowBrightnessThreshold;
-          const ratio = 0.6;
+          const ratio = 0.5;
           if (isDarkMode) {
             if (brightness < lowBrightnessThreshold) {
               brightenAmount = lightLowBrightnessAmount;
@@ -206,17 +206,14 @@
 
         // revert color
         function revertColorValue(color) {
-          // 提取颜色值中的数字部分
           var colorNumbers = color.match(/\d+/g);
           // console.log(`colorNumbers: ${colorNumbers}`);
 
-          // 反转颜色值的数组
           colorNumbers = colorNumbers.map(function (value) {
             var intValue = parseInt(value, 10);
             return 255 - intValue; // 反转颜色值
           });
 
-          // 将反转后的数字数组拼接为反转后的颜色值
           return "rgb(" + colorNumbers.join(", ") + ")";
         }
       }
@@ -284,11 +281,13 @@
           "--dark-background-color"
         );
 
+        // update body background color
         var newBackgroundColor = isDarkMode
           ? darkBackgroundColor
           : lightBackgroundColor;
         document.body.style.backgroundColor = newBackgroundColor;
 
+        // update all iframe background color
         var iframes = document.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
           var iframe = iframes[i];
@@ -298,12 +297,16 @@
             : lightBackgroundColor;
           iframeDocument.body.style.backgroundColor = newBackgroundColor;
 
-          // console.log(
-          //   `iframeDocument firstChild: ${iframeDocument.firstChild.innerText}`
-          // );
-          // console.log(
-          //   `isDarkMode: ${isDarkMode}, newBackgroundColor: ${newBackgroundColor}`
-          // );
+          // update iframe border color
+          var lightBorderColor = rootStyles.getPropertyValue(
+            "--light-border-color"
+          );
+          var darkBorderColor = rootStyles.getPropertyValue(
+            "--dark-border-color"
+          );
+
+          var newBorderColor = isDarkMode ? darkBorderColor : lightBorderColor;
+          iframe.style.borderColor = newBorderColor;
         }
       }
 
