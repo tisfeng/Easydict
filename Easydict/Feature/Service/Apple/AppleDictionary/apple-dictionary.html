@@ -248,17 +248,26 @@
 
           // modify iframe body margin
           var body = iframeDocument.querySelector("body");
-          body.style.margin = "6px 8px";
+          body.style.margin = "8px 10px";
           body.style.padding = "0px";
 
-          // modify iframe height
-          const contentHeight = iframeDocument.documentElement.scrollHeight;
-          const borderHeight =
-            parseInt(getComputedStyle(iframe).borderTopWidth) * 2;
-          const paddingHeight =
-            parseInt(getComputedStyle(iframe).paddingTop) * 2;
-          iframe.style.height =
-            contentHeight + borderHeight + paddingHeight + "px";
+          // 获取iframe的内容文档
+          var doc = iframe.contentWindow.document;
+          // 获取body元素的样式
+          var bodyStyle = getComputedStyle(doc.body);
+
+          // 计算总高度，包括内容、内边距、边框和外边距
+          var totalHeight =
+            doc.body.scrollHeight +
+            parseInt(bodyStyle.marginTop) +
+            parseInt(bodyStyle.marginBottom) +
+            parseInt(bodyStyle.borderTopWidth) +
+            parseInt(bodyStyle.borderBottomWidth);
+
+          // 设置iframe的高度
+          iframe.style.height = totalHeight + "px";
+
+          // console.log("Height of iframe " + i + ": " + totalHeight);
         }
       }
 
