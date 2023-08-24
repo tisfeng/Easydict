@@ -123,7 +123,9 @@
             if (html.length && isTheSameHeadword) {
                 // Replace source relative path with absolute path.
                 NSString *contentsPath = [contentsURL.path encode];
-                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
+                // System seems to automatically adapt the image path internally.
+//                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
+                
                 html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
                 
                 [wordHtmlString appendString:html];
@@ -194,13 +196,52 @@
  javascript:new Audio('/Users/tisfeng/Library/Contents/uk/apple__gb_1.mp3')
  */
 - (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
-    NSString *pattern = @"new Audio\\(&quot;(.*?)&quot;\\)";
-    NSString *replacement = [NSString stringWithFormat:@"new Audio('%@/$1')", basePath];
-    NSString *absolutePathHTML = [HTML stringByReplacingOccurrencesOfString:pattern
-                                                                 withString:replacement
-                                                                    options:NSRegularExpressionSearch
-                                                                      range:NSMakeRange(0, HTML.length)];
-    return absolutePathHTML;
+    NSString *pattern = @"href=\"javascript:new Audio\\((.*?)\\)";
+
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:0
+                                                                             error:nil];
+    NSRange range = NSMakeRange(0, HTML.length);
+    
+    NSMutableArray<NSTextCheckingResult *> *matchingResults = [NSMutableArray array];
+
+    [regex enumerateMatchesInString:HTML options:0 range:range usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
+         [matchingResults addObject:result];
+     }];
+    
+    NSMutableString *mutableHTML = [HTML mutableCopy];
+    
+    __block NSString *fileBasePath = basePath;
+    for (NSTextCheckingResult *result in matchingResults) {
+        NSRange filePathRange = [result rangeAtIndex:1];
+        NSString *filePath = [HTML substringWithRange:filePathRange];
+        
+        NSString *relativePath = [filePath stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
+
+        // media/english/ameProns/ld45cat.mp3
+        NSLog(@"relativePath: %@", relativePath);
+        
+        // get media directory
+        NSArray *array = [relativePath componentsSeparatedByString:@"/"];
+        if (array.count > 1) {
+            NSString *directory = array.firstObject;
+            
+            fileBasePath = [self findFilePathInDirectory:basePath withTargetDirectory:directory];
+            fileBasePath = [fileBasePath stringByDeletingLastPathComponent];
+            
+            // /Users/tisfeng/Library/Dictionaries/LDOCE5.dictionary/Contents/Resources/media
+            NSLog(@"fileBasePath: %@", fileBasePath);
+        }
+        
+        NSString *absolutePath = [fileBasePath stringByAppendingPathComponent:relativePath];
+        NSLog(@"absolutePath: %@", absolutePath);
+        
+        absolutePath = [NSString stringWithFormat:@"'%@'", absolutePath];
+        
+        [mutableHTML replaceOccurrencesOfString:filePath withString:absolutePath options:0 range:range];
+    }
+    
+    return mutableHTML;
 }
 
 //- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
@@ -220,6 +261,38 @@
 //
 //    return [modifiedHTML copy];
 //}
+
+
+- (NSString *)findFilePathInDirectory:(NSString *)directoryPath withTargetDirectory:(NSString *)targetDirectory {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error = nil;
+    
+    NSArray<NSString *> *contents = [fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
+    if (error) {
+        NSLog(@"Error reading directory: %@", error);
+        return nil;
+    }
+        
+    for (NSString *content in contents) {
+        NSString *fullPath = [directoryPath stringByAppendingPathComponent:content];
+        
+        BOOL isDirectory;
+        [fileManager fileExistsAtPath:fullPath isDirectory:&isDirectory];
+        
+        if (isDirectory) {
+            if ([content isEqualToString:targetDirectory]) {
+                return fullPath;
+            }
+            
+            NSString *subDirectoryPath = [self findFilePathInDirectory:fullPath withTargetDirectory:targetDirectory];
+            if (subDirectoryPath) {
+                return subDirectoryPath;
+            }
+        }
+    }
+    
+    return nil;
+}
 
 
 /// Get dict name width
