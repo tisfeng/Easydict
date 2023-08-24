@@ -92,13 +92,14 @@ NSString *getTLookupV3Host(void) {
         return;
     }
     [self.translateSession GET:kRequestBingHost parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (task.response.URL == nil) {
+        NSURL *responseURL = task.response.URL;
+        if (!responseURL) {
             host = kRequestBingHost;
         } else {
-            host = [NSString stringWithFormat:@"%@://%@", task.response.URL.scheme, task.response.URL.host];
+            host = [NSString stringWithFormat:@"%@://%@", responseURL.scheme, responseURL.host];
         }
         saveBingHost(host);
-        NSLog(@"bing host %@", host);
+        NSLog(@"bing host: %@", host);
         callback(host);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         saveBingHost(kRequestBingHost);
