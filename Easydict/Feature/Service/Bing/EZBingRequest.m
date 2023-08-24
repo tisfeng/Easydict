@@ -9,29 +9,34 @@
 #import "EZBingRequest.h"
 #import "EZTranslateError.h"
 
-NSString * const kRequestHostCN = @"https://cn.bing.com";
+NSString * const kRequestBingHost = @"https://www.bing.com";
+NSString * const kBingHostKey = @"kBingHostKey";
 
 // memory cache
-static NSString *kRequestHostString;
 static NSString *kIG;
 static NSString *kIID;
 static NSString *kToken;
 static NSString *kKey;
 
+NSString *getBingHost(void) {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kBingHostKey];
+}
+
+void saveBingHost(NSString *host) {
+    [[NSUserDefaults standardUserDefaults] setObject:host forKey:kBingHostKey];
+}
+
 NSString *getTranslatorHost(void) {
-    return [NSString stringWithFormat:@"%@/translator", kRequestHostString];
+    return [NSString stringWithFormat:@"%@/translator", getBingHost()];
 }
 
 NSString *getTTranslateV3Host(void) {
-    return [NSString stringWithFormat:@"%@/ttranslatev3", kRequestHostString];
+    return [NSString stringWithFormat:@"%@/ttranslatev3", getBingHost()];
 }
 
 NSString *getTLookupV3Host(void) {
-    return [NSString stringWithFormat:@"%@/tlookupv3", kRequestHostString];
+    return [NSString stringWithFormat:@"%@/tlookupv3", getBingHost()];
 }
-
-
-
 
 @interface EZBingRequest ()
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
@@ -41,37 +46,63 @@ NSString *getTLookupV3Host(void) {
 @property (nonatomic, strong) NSError *translateError;
 @property (nonatomic, strong) NSError *lookupError;
 @property (nonatomic, assign) NSInteger responseCount;
+
+@property (nonatomic, copy) NSString *from;
+@property (nonatomic, copy) NSString *to;
+@property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) BingTranslateCompletion completion;
+
+@property (nonatomic, assign) BOOL canRetryFetchHost;
 @end
 
 @implementation EZBingRequest
 
+- (instancetype)init {
+    if (self = [super init]) {
+        _canRetryFetchHost = YES;
+    }
+    return self;
+}
+
 - (void)executeCallback {
     self.responseCount += 1;
     if (self.responseCount >= 2) {
+        // 测试发现，切换到与之前国家不同的ip后，可能使用之前的host请求不会报错，但是data没却没有值。
+        // 所以需要重新获取一下host。
+        // 但是不保证这个场景下一定是host的问题，所以重试一次。
+        if (self.canRetryFetchHost && self.translateData != nil && self.translateData.length == 0 && self.lookupData != nil && self.lookupData.length == 0) {
+            [self reset];
+            self.canRetryFetchHost = NO;
+            saveBingHost(nil);
+            [self translateWithFrom:self.from to:self.to text:self.text completionHandler:self.completion];
+            return;
+        } 
         if (self.completion != nil) {
             self.completion([self.translateData copy], [self.lookupData copy], [self.translateError copy], [self.lookupError copy]);
+            self.canRetryFetchHost = YES;
         }
         [self resetData];
     }
 }
 
 - (void)fetchRequestHost:(void(^)(NSString * host))callback {
-    if (kRequestHostString.length) {
-        callback(kRequestHostString);
+    __block NSString *host = getBingHost();
+    if (host.length) {
+        callback(host);
         return;
     }
-    [self.translateSession GET:kRequestHostCN parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.translateSession GET:kRequestBingHost parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (task.response.URL == nil) {
-            kRequestHostString = @"https://www.bing.com";
+            host = kRequestBingHost;
         } else {
-            kRequestHostString = [NSString stringWithFormat:@"%@://%@", task.response.URL.scheme, task.response.URL.host];
+            host = [NSString stringWithFormat:@"%@://%@", task.response.URL.scheme, task.response.URL.host];
         }
-        NSLog(@"bing host %@", kRequestHostString);
-        callback(kRequestHostString);
+        saveBingHost(host);
+        NSLog(@"bing host %@", host);
+        callback(host);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        kRequestHostString = @"https://www.bing.com";
-        callback(kRequestHostString);
+        saveBingHost(kRequestBingHost);
+        callback(kRequestBingHost);
     }];
 }
 
@@ -131,6 +162,9 @@ NSString *getTLookupV3Host(void) {
 }
 
 - (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(BingTranslateCompletion)completion {
+    self.from = from;
+    self.to = to;
+    self.text = text;
     self.completion = completion;
     [self fetchRequestHost:^(NSString *host) {
         [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
