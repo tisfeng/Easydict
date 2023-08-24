@@ -239,7 +239,6 @@
         }
       }
 
-      // update all iframe style
       function updateAllIframeStyle() {
         var iframes = document.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
@@ -256,18 +255,51 @@
           // 获取body元素的样式
           var bodyStyle = getComputedStyle(doc.body);
 
-          // 计算总高度，包括内容、内边距、边框和外边距
-          var totalHeight =
-            doc.body.scrollHeight +
-            parseInt(bodyStyle.marginTop) +
-            parseInt(bodyStyle.marginBottom) +
-            parseInt(bodyStyle.borderTopWidth) +
-            parseInt(bodyStyle.borderBottomWidth);
+          // 获取iframe元素的计算样式
+          var iframeStyle = window.getComputedStyle(iframes[i]);
+
+          // >= 150 ??
+          const documentScollHeight =
+            iframeDocument.documentElement.scrollHeight;
+          console.log("documentScollHeight: " + documentScollHeight);
+
+          // var bodyHeight = doc.body.getBoundingClientRect().height;
+          // console.log("bodyHeight: " + bodyHeight);
+
+          // 获取body元素的外边距
+          var marginTop = parseInt(bodyStyle.getPropertyValue("margin-top"));
+          var marginBottom = parseInt(
+            bodyStyle.getPropertyValue("margin-bottom")
+          );
+
+          // 获取iframe元素的边框
+          var borderTop = parseInt(
+            iframeStyle.getPropertyValue("border-top-width")
+          );
+          var borderBottom = parseInt(
+            iframeStyle.getPropertyValue("border-bottom-width")
+          );
+
+          var scrollHeight = doc.body.scrollHeight;
+          console.log("scrollHeight: " + scrollHeight);
+
+          var scrollContentHeight = documentScollHeight;
+          if (documentScollHeight === 150) {
+            scrollContentHeight = scrollHeight;
+          }
+
+          // 计算总高度
+          var totalHeight = (totalHeight =
+            scrollContentHeight +
+            marginTop +
+            marginBottom +
+            borderTop +
+            borderBottom);
 
           // 设置iframe的高度
           iframe.style.height = totalHeight + "px";
 
-          // console.log("Height of iframe " + i + ": " + totalHeight);
+          console.log("Height of iframe " + i + ": " + totalHeight);
         }
       }
 
@@ -325,8 +357,6 @@
         if (isDarkMode()) {
           updateAllIframeColor(true);
           updateBackgroundColor(true);
-
-          // updateAllIframeAppleSystemLabelBorderBottomColor(true);
         }
 
         var colorSchemeListener = window.matchMedia(
@@ -336,8 +366,6 @@
           var isDarkMode = event.matches;
           updateAllIframeColor(isDarkMode);
           updateBackgroundColor(isDarkMode);
-
-          // updateAllIframeAppleSystemLabelBorderBottomColor(isDarkMode);
         });
       };
     </script>
