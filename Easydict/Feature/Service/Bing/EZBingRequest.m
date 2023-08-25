@@ -311,7 +311,7 @@ NSString *getTLookupV3Host(void) {
     if (!_htmlSession) {
         AFHTTPSessionManager *htmlSession = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:self.userAgent forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
         htmlSession.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
@@ -325,7 +325,7 @@ NSString *getTLookupV3Host(void) {
     if (!_translateSession) {
         AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-        [requestSerializer setValue:self.userAgent forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         session.responseSerializer = responseSerializer;
@@ -334,10 +334,4 @@ NSString *getTLookupV3Host(void) {
     return _translateSession;
 }
 
-- (NSString *)userAgent {
-    return @"Mozilla/5.0 "
-           "AppleWebKit/537.36 (KHTML, like Gecko) "
-           "Chrome/77.0.3865.120 "
-           "Safari/537.36";
-}
 @end
