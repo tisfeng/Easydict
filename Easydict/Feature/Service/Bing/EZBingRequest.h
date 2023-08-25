@@ -21,7 +21,7 @@ typedef void(^BingTranslateCompletion)(NSData * _Nullable translateData, NSData 
 
 - (void)reset;
 
-- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from toLanguage:(EZLanguage)to completion:(void (^)(NSData * _Nullable, NSError * _Nullable))completion;
+- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSData * _Nullable, NSError * _Nullable))completion;
 
 @end
 

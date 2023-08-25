@@ -443,7 +443,7 @@ NSString *getTfetttsURLString(void) {
     }];
 }
 
-- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from toLanguage:(EZLanguage)to completion:(void (^)(NSData *_Nullable, NSError *_Nullable))completion {
+- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSData *_Nullable, NSError *_Nullable))completion {
     [self fetchRequestHost:^(NSString *host) {
         [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
             NSString *urlString = [self urlStringWithHost:getTfetttsURLString()];
@@ -479,7 +479,7 @@ NSString *getTfetttsURLString(void) {
 }
 
 /**
- Generate ssml with language, text, token, key
+ Generate ssml with text and language.
 
  Docs: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#speak-examples
 
@@ -497,14 +497,15 @@ NSString *getTfetttsURLString(void) {
     
     // TODO: hanle speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
     
+    
+    // TODO: check text max supported length.
+    
     NSString *ssml = [NSString stringWithFormat:@"<speak version=\"1.0\" xml:lang='%@'>"
                       @"<voice name='%@'>"
                       @"<prosody rate='%@'>%@</prosody>"
                       @"</voice>"
                       @"</speak>",
-                      
                       languageVoice.lang, languageVoice.voiceName, voiceRate, text];
-    
     return ssml;
 }
 

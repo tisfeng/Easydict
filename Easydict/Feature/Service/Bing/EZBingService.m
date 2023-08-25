@@ -142,17 +142,24 @@
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
-    NSString *toLanguage = [self getTTSLanguageCode:from];
-    [self.request fetchTextToAudio:text fromLanguage:from toLanguage:toLanguage completion:^(NSData *audioData, NSError * _Nullable error) {
+    NSString *textLanguage = [self getTTSLanguageCode:from];
+    NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
+                                                       language:textLanguage
+                                                         accent:nil
+                                                    serviceType:self.serviceType];
+    
+    // If file path already exists.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        completion(filePath, nil);
+        return;
+    }
+    
+    [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError * _Nullable error) {
         if (error) {
             completion(nil, error);
             return;
         }
-        
-        NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
-                                                           language:from
-                                                             accent:nil
-                                                        serviceType:self.serviceType];
+
         [audioData writeToFile:filePath atomically:YES];
         
         completion(filePath, nil);

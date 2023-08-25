@@ -280,7 +280,7 @@
                                              accent:accent
                                         serviceType:serviceType];
     
-    NSString *filePath = audioFilePath ?: audioURLString;
+    NSString *filePath = audioURLString ?: audioFilePath;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     // If audio file exist, play it.
