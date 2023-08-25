@@ -176,18 +176,19 @@
     if (json.count >= 2 && [json[1] isKindOfClass:[NSDictionary class]]) {
         NSString *inputTransliteration = json[1][@"inputTransliteration"];
         EZWordPhonetic *phonetic = [EZWordPhonetic new];
-        phonetic.name = NSLocalizedString(@"us_phonetic", nil);
-        if ([EZLanguageManager.shared isChineseLanguage:self.result.from]) {
-            phonetic.name = NSLocalizedString(@"chinese_phonetic", nil);
-            // 中文超过4个字感觉没必要展示拼音了，拼音会特别长。
-            if (text.length > 4) {
-                goto outer;
-            }
+        
+        EZLanguage fromLanguage = self.result.queryFromLanguage;
+        phonetic.name = [fromLanguage isEqualToString:EZLanguageEnglish] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"chinese_phonetic", nil);
+        
+        // If text is too long, we don't show phonetic.
+        if (![EZLanguageManager.shared isShortWordLength:text language:fromLanguage]) {
+            goto outer;
         }
+        
         phonetic.value = inputTransliteration;
         // https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages
 //        phonetic.speakURL = result.fromSpeakURL;
-        phonetic.language = self.result.queryModel.queryFromLanguage;
+        phonetic.language = fromLanguage;
         phonetic.word = text;
         
         if (!self.result.wordResult) {
@@ -195,6 +196,7 @@
         }
         self.result.wordResult.phonetics = @[phonetic];
     }
+    
 outer:
     self.result.raw = translateData;
     self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZBingTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {

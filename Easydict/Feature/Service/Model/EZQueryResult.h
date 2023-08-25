@@ -161,6 +161,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, nullable) void (^didFinishLoadingHTMLBlock)(void);
 
+/// A Short property, return self.queryModel.queryFromLanguage
+@property (nonatomic, copy) EZLanguage queryFromLanguage;
+
 - (void)reset;
 
 @end

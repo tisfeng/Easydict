@@ -142,6 +142,10 @@ NSString *getPartName(NSString *part) {
     return _copiedText;
 }
 
+- (EZLanguage)queryFromLanguage {
+    return self.queryModel.queryFromLanguage;
+}
+
 - (void)reset {
     self.queryModel = [[EZQueryModel alloc] init];
     self.translatedResults = nil;
