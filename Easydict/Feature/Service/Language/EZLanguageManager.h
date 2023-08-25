@@ -56,6 +56,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Check if language array only contains simplified Chinese or traditional Chinese two languages.
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages;
 
+/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language;
+
+- (BOOL)isShortWordLength:(NSString *)word language:(EZLanguage)language;
+
 #pragma mark -
 
 /// Showing language name according user preferred language, Chinese: English -> 英语, English: English -> English.

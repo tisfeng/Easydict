@@ -1529,7 +1529,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         joinedString = @" ";
     } else {
         // Like Chinese text, don't need space between words if it is not a punctuation mark.
-        if ([self isLanguageWordsNeedSpace:self.language]) {
+        if ([EZLanguageManager.shared isLanguageWordsNeedSpace:self.language]) {
             joinedString = @" ";
         }
     }
@@ -1597,7 +1597,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      
      Since English text line height is smaller than Chinese, the ratio should be bigger, but if it is too large, it may affect the normal line break of the paragraph 😢
      */
-    BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
+    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
         minLineHeightRatio = 0.8;
     }
@@ -1714,7 +1714,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
     // Two Chinese words length
     CGFloat threshold = 60;
-    BOOL isEnglishTypeLanguage = [self isLanguageWordsNeedSpace:self.language];
+    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
     if (isEnglishTypeLanguage) {
         threshold = 230; // This value is related to the font size, take the average, and a bit larger.
     }
@@ -1793,18 +1793,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     return isPoetry;
 }
-
-/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
-- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
-    NSArray *languages = @[
-        EZLanguageSimplifiedChinese,
-        EZLanguageTraditionalChinese,
-        EZLanguageJapanese,
-        EZLanguageKorean,
-    ];
-    return ![languages containsObject:language];
-}
-
 
 #pragma mark - Apple Speech Synthesizer
 

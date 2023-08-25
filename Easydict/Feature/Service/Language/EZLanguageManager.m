@@ -282,6 +282,32 @@ static EZLanguageManager *_instance;
     return YES;
 }
 
+/// Languages that don't need extra space for words, generally non-Engglish alphabet languages.
+- (BOOL)isLanguageWordsNeedSpace:(EZLanguage)language {
+    NSArray *languages = @[
+        EZLanguageSimplifiedChinese,
+        EZLanguageTraditionalChinese,
+        EZLanguageJapanese,
+        EZLanguageKorean,
+    ];
+    return ![languages containsObject:language];
+}
+
+- (BOOL)isShortWordLength:(NSString *)word language:(EZLanguage)language {
+    BOOL isShortWordLength;
+    NSInteger wordLength = word.length;
+    BOOL isNeedSpaceLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:language];
+    
+    if (isNeedSpaceLanguage) {
+        isShortWordLength = wordLength <= EZEnglishWordMaxLength;
+    } else {
+        isShortWordLength = wordLength <= 7;
+    }
+    isShortWordLength = wordLength && isShortWordLength;
+    
+    return isShortWordLength;
+}
+
 #pragma mark -
 
 - (NSArray<EZLanguage> *)allLanguages {

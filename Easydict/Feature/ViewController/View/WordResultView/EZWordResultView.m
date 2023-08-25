@@ -84,11 +84,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
     
     mm_weakify(self);
+    
     __block CGFloat ezLabelTopOffset = 0;
     
-    BOOL isWordLength = result.queryText.length && result.queryText.length <= EZEnglishWordMaxLength;
+    BOOL isShortWordLength = result.queryText.length && [EZLanguageManager.shared isShortWordLength:result.queryText language:result.queryModel.queryFromLanguage];
+    
     BOOL showBigWord = result.wordResult || result.showBigWord;
-    if (isWordLength && showBigWord) {
+    if (isShortWordLength && showBigWord) {
         EZLabel *bigWordLabel = [[EZLabel alloc] init];
         [self addSubview:bigWordLabel];
         bigWordLabel.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
