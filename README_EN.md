@@ -80,6 +80,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 - [Tips](#tips)
 - [Similar Open Source Projects](#similar-open-source-projects)
 - [Motivation](#motivation)
+- [Contributor Guide](#contributor-guide)
 - [Acknowledgements](#acknowledgements)
 - [Statement](#statement)
 - [Sponsor](#sponsor)
@@ -216,56 +217,56 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 <p>
 
-| Languages             | Youdao | DeepL | macOS System | Bing | Google | Baidu | Volcano |
-|:------:|:------:|:-----:|:------:|:------:|:------:|:------:|:------:|
+|       Languages       | Youdao | DeepL | macOS System | Bing | Google | Baidu | Volcano |
+| :-------------------: | :----: | :---: | :----------: | :--: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 | Chinese (Traditional) |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| English               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Japanese              |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Korean                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| French                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Spanish               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Portuguese            |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Italian               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| German                |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Russian               |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Arabic                |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Swedish               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Romanian              |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Thai                  |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Slovak                |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Dutch                 |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Hungarian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Greek                 |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Danish                |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Finnish               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Polish                |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Czech                 |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Turkish               |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Lithuanian            |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Latvian               |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Ukrainian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Bulgarian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Indonesian            |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Malay                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Slovenian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Estonian              |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Vietnamese            |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Persian               |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Hindi                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Telugu                |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Tamil                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Urdu                  |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Filipino              |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Khmer                 |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Lao                   |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Bengali               |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
-| Burmese               |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
-| Norwegian             |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Serbian               |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Croatian              |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Mongolian             |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-| Hebrew                |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        English        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Japanese        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Korean         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        French         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Spanish        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|      Portuguese       |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Italian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        German         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Russian        |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Arabic         |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Swedish        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Romanian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Thai          |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Slovak         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Dutch         |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Hungarian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Greek         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Danish         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Finnish        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Polish         |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Czech         |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Turkish        |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|      Lithuanian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Latvian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Ukrainian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Bulgarian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|      Indonesian       |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Malay         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Slovenian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Estonian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|      Vietnamese       |   ✅   |  ❌   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Persian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Hindi         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Telugu         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Tamil         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Urdu          |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Filipino        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|         Khmer         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|          Lao          |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Bengali        |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
+|        Burmese        |   ❌   |  ❌   |      ❌      |  ❌  |   ✅   |  ✅   |   ✅    |
+|       Norwegian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Serbian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Croatian        |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Mongolian       |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|        Hebrew         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 
 </p>
 
@@ -400,6 +401,18 @@ As a developer and beneficiary of a lot of open source software, I think that th
 Now I use Easydict a lot every day, I like it very much, and I hope more people can know it and use it.
 
 Open source makes the world better.
+
+## Contributor Guide
+
+If you are interested in this project, we welcome you to contribute to the project, and we will provide help as much as possible.
+
+Currently, the project has two main branches, dev and master. The dev branch code is usually the latest, and may contain some features that are under development. The master branch code is stable and will be merged with the dev branch code regularly.
+
+If you think there is room for improvement in the project, or if you have new ideas for features, please submit a PR:
+
+If the PR is a bug fix or feature implementation for an existing issue, please submit it to the dev branch.
+
+If the PR is about a new feature or involves UI changes, it is recommended to open an issue first to discuss it, to avoid duplicate or conflicting features.
 
 ## Acknowledgements
 
