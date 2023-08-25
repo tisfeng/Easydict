@@ -191,77 +191,42 @@
 /**
  Replace HTML all audio relative path with absolute path
  
- &quot; == "
+ &quot; is " in HTML
  
  javascript:new Audio(&quot;uk/apple__gb_1.mp3&quot;) -->
  javascript:new Audio('/Users/tisfeng/Library/Contents/uk/apple__gb_1.mp3')
  */
 - (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
-    NSString *pattern = @"javascript:new Audio\\((.*?)\\)";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:0
-                                                                             error:nil];
-    
-    NSMutableArray<NSTextCheckingResult *> *matchingResults = [NSMutableArray array];
-    [regex enumerateMatchesInString:HTML options:0 range:NSMakeRange(0, HTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
-         [matchingResults addObject:result];
-     }];
-    
+    NSString *pattern = @"new Audio\\((.*?)\\)";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+
     NSMutableString *mutableHTML = [HTML mutableCopy];
-    
-    NSString *fileBasePath = basePath;
-    for (NSTextCheckingResult *result in matchingResults) {
-        NSRange filePathRange = [result rangeAtIndex:1];
-        NSString *filePath = [HTML substringWithRange:filePathRange];
-        
+
+    [regex enumerateMatchesInString:mutableHTML options:0 range:NSMakeRange(0, mutableHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
+        NSRange matchRange = [result rangeAtIndex:1];
+        NSString *filePath = [mutableHTML substringWithRange:matchRange];
         NSString *relativePath = [filePath stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
 
-        // media/english/ameProns/ld45cat.mp3
-//        NSLog(@"relativePath: %@", relativePath);
-        
-        // get media directory
+        NSString *fileBasePath = basePath;
+
         NSArray *array = [relativePath componentsSeparatedByString:@"/"];
-        if (array.count > 1) {
-            NSString *directory = array.firstObject;
-            
-            fileBasePath = [self findFilePathInDirectory:basePath withTargetDirectory:directory];
-            fileBasePath = [fileBasePath stringByDeletingLastPathComponent];
-            
-            // /Users/tisfeng/Library/Dictionaries/LDOCE5.dictionary/Contents/Resources/media
-//            NSLog(@"fileBasePath: %@", fileBasePath);
+        BOOL isDirectoryPath = array.count > 1;
+        if (isDirectoryPath) {
+            NSString *directoryName = array.firstObject;
+            NSString *directoryPath = [self findFilePathInDirectory:basePath withTargetDirectory:directoryName];
+            fileBasePath = [directoryPath stringByDeletingLastPathComponent];
         }
         
         NSString *absolutePath = [fileBasePath stringByAppendingPathComponent:relativePath];
-//        NSLog(@"absolutePath: %@", absolutePath);
-        
-        absolutePath = [NSString stringWithFormat:@"'%@'", absolutePath];
-        NSRange rangeOfFilePath = [mutableHTML rangeOfString:filePath];
-        
-        [mutableHTML replaceCharactersInRange:rangeOfFilePath withString:absolutePath];
-//        [mutableHTML replaceOccurrencesOfString:filePath withString:absolutePath options:0 range:NSMakeRange(0, mutableHTML.length)];
-    }
-    
-    return mutableHTML;
+        NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
+        [mutableHTML replaceCharactersInRange:result.range withString:replacement];
+    }];
+
+    return [mutableHTML copy];
 }
 
-//- (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
-//    NSString *pattern = @"new Audio\\(&quot;(.*?)&quot;\\)";
-//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-//
-//    NSMutableString *modifiedHTML = [HTML mutableCopy];
-//
-//    [regex enumerateMatchesInString:modifiedHTML options:0 range:NSMakeRange(0, modifiedHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
-//        NSRange matchRange = [result rangeAtIndex:1];
-//        NSString *encodedRelativePath = [modifiedHTML substringWithRange:matchRange];
-//
-//        NSString *absolutePath = [basePath stringByAppendingPathComponent:encodedRelativePath];
-//        NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
-//        [modifiedHTML replaceCharactersInRange:result.range withString:replacement];
-//    }];
-//
-//    return [modifiedHTML copy];
-//}
 
+/// Find file path in directory.
 - (NSString *)findFilePathInDirectory:(NSString *)directoryPath withTargetDirectory:(NSString *)targetDirectory {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
