@@ -122,7 +122,8 @@
             
             if (html.length && isTheSameHeadword) {
                 // Replace source relative path with absolute path.
-                NSString *contentsPath = [contentsURL.path encode];
+                NSString *contentsPath = contentsURL.path;
+                
                 // System seems to automatically adapt the image path internally.
 //                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
                 
@@ -261,7 +262,6 @@
 //
 //    return [modifiedHTML copy];
 //}
-
 
 - (NSString *)findFilePathInDirectory:(NSString *)directoryPath withTargetDirectory:(NSString *)targetDirectory {
     NSFileManager *fileManager = [NSFileManager defaultManager];
