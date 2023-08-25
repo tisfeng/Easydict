@@ -197,22 +197,19 @@
  javascript:new Audio('/Users/tisfeng/Library/Contents/uk/apple__gb_1.mp3')
  */
 - (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
-    NSString *pattern = @"href=\"javascript:new Audio\\((.*?)\\)";
-
+    NSString *pattern = @"javascript:new Audio\\((.*?)\\)";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                            options:0
                                                                              error:nil];
-    NSRange range = NSMakeRange(0, HTML.length);
     
     NSMutableArray<NSTextCheckingResult *> *matchingResults = [NSMutableArray array];
-
-    [regex enumerateMatchesInString:HTML options:0 range:range usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
+    [regex enumerateMatchesInString:HTML options:0 range:NSMakeRange(0, HTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
          [matchingResults addObject:result];
      }];
     
     NSMutableString *mutableHTML = [HTML mutableCopy];
     
-    __block NSString *fileBasePath = basePath;
+    NSString *fileBasePath = basePath;
     for (NSTextCheckingResult *result in matchingResults) {
         NSRange filePathRange = [result rangeAtIndex:1];
         NSString *filePath = [HTML substringWithRange:filePathRange];
@@ -220,7 +217,7 @@
         NSString *relativePath = [filePath stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
 
         // media/english/ameProns/ld45cat.mp3
-        NSLog(@"relativePath: %@", relativePath);
+//        NSLog(@"relativePath: %@", relativePath);
         
         // get media directory
         NSArray *array = [relativePath componentsSeparatedByString:@"/"];
@@ -231,15 +228,17 @@
             fileBasePath = [fileBasePath stringByDeletingLastPathComponent];
             
             // /Users/tisfeng/Library/Dictionaries/LDOCE5.dictionary/Contents/Resources/media
-            NSLog(@"fileBasePath: %@", fileBasePath);
+//            NSLog(@"fileBasePath: %@", fileBasePath);
         }
         
         NSString *absolutePath = [fileBasePath stringByAppendingPathComponent:relativePath];
-        NSLog(@"absolutePath: %@", absolutePath);
+//        NSLog(@"absolutePath: %@", absolutePath);
         
         absolutePath = [NSString stringWithFormat:@"'%@'", absolutePath];
+        NSRange rangeOfFilePath = [mutableHTML rangeOfString:filePath];
         
-        [mutableHTML replaceOccurrencesOfString:filePath withString:absolutePath options:0 range:range];
+        [mutableHTML replaceCharactersInRange:rangeOfFilePath withString:absolutePath];
+//        [mutableHTML replaceOccurrencesOfString:filePath withString:absolutePath options:0 range:NSMakeRange(0, mutableHTML.length)];
     }
     
     return mutableHTML;
