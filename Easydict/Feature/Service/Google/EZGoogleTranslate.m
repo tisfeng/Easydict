@@ -372,7 +372,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                         
                         phonetic.value = phoneticText;
                         phonetic.speakURL = result.fromSpeakURL;
-                        phonetic.language = result.queryModel.queryFromLanguage;
+                        phonetic.language = result.queryFromLanguage;
                         phonetic.word = text;
                         wordResult.phonetics = @[ phonetic ];
                     }

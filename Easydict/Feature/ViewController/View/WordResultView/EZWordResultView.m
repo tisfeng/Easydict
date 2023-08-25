@@ -87,7 +87,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     __block CGFloat ezLabelTopOffset = 0;
     
-    BOOL isShortWordLength = result.queryText.length && [EZLanguageManager.shared isShortWordLength:result.queryText language:result.queryModel.queryFromLanguage];
+    BOOL isShortWordLength = result.queryText.length && [EZLanguageManager.shared isShortWordLength:result.queryText language:result.queryFromLanguage];
     
     BOOL showBigWord = result.wordResult || result.showBigWord;
     if (isShortWordLength && showBigWord) {

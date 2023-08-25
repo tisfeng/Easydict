@@ -688,7 +688,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                     if (basic) {
                         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
                         
-                        EZLanguage language = result.queryModel.queryFromLanguage;
+                        EZLanguage language = result.queryFromLanguage;
                         // 解析音频
                         NSMutableArray *phoneticArray = [NSMutableArray array];
                         if (basic.us_phonetic && basic.us_speech) {
