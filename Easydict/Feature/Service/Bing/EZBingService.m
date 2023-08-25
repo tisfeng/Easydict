@@ -141,6 +141,24 @@
     return EZServiceTypeBing;
 }
 
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+    NSString *toLanguage = [self getTTSLanguageCode:from];
+    [self.request fetchTextToAudio:text fromLanguage:from toLanguage:toLanguage completion:^(NSData *audioData, NSError * _Nullable error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        
+        NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
+                                                           language:from
+                                                             accent:nil
+                                                        serviceType:self.serviceType];
+        [audioData writeToFile:filePath atomically:YES];
+        
+        completion(filePath, nil);
+    }];
+}
+
 #pragma mark - private
 - (NSString *)maxTextLength:(NSString *)text fromLanguage:(EZLanguage)from {
     if(text.length > 1000) {

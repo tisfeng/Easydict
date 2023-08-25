@@ -45,6 +45,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)stop;
 
+
+// Get word audio file path
+- (NSString *)getWordAudioFilePath:(NSString *)word
+                          language:(EZLanguage)language
+                            accent:(nullable NSString *)accent
+                       serviceType:(EZServiceType)serviceType;
+
 @end
 
 NS_ASSUME_NONNULL_END

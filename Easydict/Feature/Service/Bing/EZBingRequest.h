@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZLanguageManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +20,9 @@ typedef void(^BingTranslateCompletion)(NSData * _Nullable translateData, NSData 
 - (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(BingTranslateCompletion)completion;
 
 - (void)reset;
+
+- (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from toLanguage:(EZLanguage)to completion:(void (^)(NSData * _Nullable, NSError * _Nullable))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -16,6 +16,8 @@
 #import "EZTextWordUtils.h"
 #import "EZServiceTypes.h"
 #import "EZConfiguration.h"
+#import <AudioToolbox/AudioToolbox.h>
+
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -260,25 +262,29 @@
 }
 
 /// Play audio URL.
-- (void)playAudioURL:(NSString *)audioURL
+- (void)playAudioURL:(NSString *)audioURLString
                 text:(NSString *)text
             language:(EZLanguage)language
               accent:(nullable NSString *)accent
          serviceType:(EZServiceType)serviceType {
-    if (audioURL.length == 0) {
+    if (audioURLString.length == 0) {
         NSLog(@"play audio url is empty");
         return;
     }
     
-    NSLog(@"play audio url: %@", audioURL);
+    NSLog(@"play audio url: %@", audioURLString);
     [self.player pause];
     
-    NSString *filePath = [self getWordAudioFilePath:text
+    NSString *audioFilePath = [self getWordAudioFilePath:text
                                            language:language
                                              accent:accent
                                         serviceType:serviceType];
-    // if audio file exist, play it.
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    
+    NSString *filePath = audioFilePath ?: audioURLString;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // If audio file exist, play it.
+    if ([fileManager fileExistsAtPath:filePath]) {
         [self playLocalAudioFile:filePath];
         return;
     }
@@ -287,7 +293,7 @@
     BOOL download = self.enableDownload;
     
     if (download) {
-        NSURL *URL = [NSURL URLWithString:audioURL];
+        NSURL *URL = [NSURL URLWithString:audioURLString];
         [self downloadWordAudio:text
                        audioURL:URL
                        autoPlay:YES
@@ -295,7 +301,7 @@
                          accent:accent
                     serviceType:serviceType];
     } else {
-        [self playRemoteAudio:audioURL];
+        [self playRemoteAudio:audioURLString];
     }
 }
 
