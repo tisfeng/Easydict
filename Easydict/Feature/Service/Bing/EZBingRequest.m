@@ -420,15 +420,21 @@ NSString *getTfetttsURLString(void) {
                 if ([task.response.MIMEType isEqualToString:kAudioMIMEType]) {
                     completion(audioData, nil);
                 } else {
-                    [self resetToken];
-                    completion(nil, nil);
+                    // If host has changed, use new host to fetch again.
+                    NSURL *responseURL = task.response.URL;
+                    if (![getBingHost() containsString:responseURL.host]) {
+                        NSString *host = [NSString stringWithFormat:@"%@://%@", responseURL.scheme, responseURL.host];
+                        saveBingHost(host);
+                        [self fetchTextToAudio:text fromLanguage:from completion:completion];
+                        return;
+                    } else {
+                        completion(nil, nil);
+                    }
                 }
             } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-                [self resetToken];
                 completion(nil, error);
             }];
         } failure:^(NSError *error) {
-            [self resetToken];
             completion(nil, error);
         }];
     }];
