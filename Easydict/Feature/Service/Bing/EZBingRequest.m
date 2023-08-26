@@ -438,22 +438,31 @@ NSString *getTfetttsURLString(void) {
          This is the text that is spoken.
      </voice>
  </speak>
-
+ 
  */
 - (NSString *)genrateSSMLWithText:(NSString *)text language:(EZLanguage)language {
     NSString *voiceRate = @"-10%"; // bing web is -20%
 
     EZBingLanguageVoice *languageVoice = [[EZBingRequest langaugeVoices] objectForKey:language];
 
-    // !!!: hanle xml speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
-
-    // TODO: check text max supported length.
-
     /**
-     1000 Chinese characters, is about 1000kb (mp3)
+     !!!: We need to hanle xml speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
+     
+     1000 Chinese characters, is about 1MB, duration 4 minutes (mp3)
+     
+     2000 Chinese characters, is about 1.9MB, duration 8 minutes
+     
+     7000 English characters, is about 2MB, duration 8 minutes
      */
-    NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)text, NULL));
     
+    NSString *trimText = [text trimToMaxLength:7000]; {
+        // Chinese text should short, long TTS will cost much time.
+        if (![EZLanguageManager.shared isLanguageWordsNeedSpace:language]) {
+            trimText = [text trimToMaxLength:2000];
+        }
+    }
+    
+    NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)trimText, NULL));
     
     NSString *ssml = [NSString stringWithFormat:@"<speak version=\"1.0\" xml:lang='%@'>"
                                                 @"<voice name='%@'>"
