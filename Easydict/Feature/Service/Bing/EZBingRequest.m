@@ -131,7 +131,6 @@ NSString *getTfetttsURLString(void) {
         allLanguageVoices = [[MMOrderedDictionary alloc] init];
 
         // follow the order of EZLanguage
-
         EZBingLanguageVoice *simplifiedChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-CN" voiceName:@"zh-CN-XiaoxiaoNeural"];
         [allLanguageVoices setObject:simplifiedChineseVoice forKey:EZLanguageSimplifiedChinese];
 
@@ -141,28 +140,28 @@ NSString *getTfetttsURLString(void) {
         EZBingLanguageVoice *englishVoice = [EZBingLanguageVoice voiceWithLanguage:@"en-US" voiceName:@"en-US-JennyNeural"];
         [allLanguageVoices setObject:englishVoice forKey:EZLanguageEnglish];
 
-        EZBingLanguageVoice *japaneseVoice = [EZBingLanguageVoice voiceWithLanguage:@"ja-JP" voiceName:@"ja-JP-Ayumi-Apollo"];
+        EZBingLanguageVoice *japaneseVoice = [EZBingLanguageVoice voiceWithLanguage:@"ja-JP" voiceName:@"ja-JP-NanamiNeural"];
         [allLanguageVoices setObject:japaneseVoice forKey:EZLanguageJapanese];
 
         EZBingLanguageVoice *koreanVoice = [EZBingLanguageVoice voiceWithLanguage:@"ko-KR" voiceName:@"ko-KR-SunHiNeural"];
         [allLanguageVoices setObject:koreanVoice forKey:EZLanguageKorean];
 
-        EZBingLanguageVoice *frenchVoice = [EZBingLanguageVoice voiceWithLanguage:@"fr-FR" voiceName:@"fr-FR-Denise-Apollo"];
+        EZBingLanguageVoice *frenchVoice = [EZBingLanguageVoice voiceWithLanguage:@"fr-FR" voiceName:@"fr-FR-DeniseNeural"];
         [allLanguageVoices setObject:frenchVoice forKey:EZLanguageFrench];
 
-        EZBingLanguageVoice *spanishVoice = [EZBingLanguageVoice voiceWithLanguage:@"es-ES" voiceName:@"es-ES-Alvaro-Apollo"];
+        EZBingLanguageVoice *spanishVoice = [EZBingLanguageVoice voiceWithLanguage:@"es-ES" voiceName:@"es-ES-ElviraNeural"];
         [allLanguageVoices setObject:spanishVoice forKey:EZLanguageSpanish];
 
-        EZBingLanguageVoice *portugueseVoice = [EZBingLanguageVoice voiceWithLanguage:@"pt-PT" voiceName:@"pt-PT-Fernanda-Apollo"];
+        EZBingLanguageVoice *portugueseVoice = [EZBingLanguageVoice voiceWithLanguage:@"pt-PT" voiceName:@"pt-PT-RaquelNeural"];
         [allLanguageVoices setObject:portugueseVoice forKey:EZLanguagePortuguese];
 
-        EZBingLanguageVoice *italianVoice = [EZBingLanguageVoice voiceWithLanguage:@"it-IT" voiceName:@"it-IT-Elsa-Apollo"];
+        EZBingLanguageVoice *italianVoice = [EZBingLanguageVoice voiceWithLanguage:@"it-IT" voiceName:@"it-IT-ElsaNeural"];
         [allLanguageVoices setObject:italianVoice forKey:EZLanguageItalian];
 
         EZBingLanguageVoice *germanVoice = [EZBingLanguageVoice voiceWithLanguage:@"de-DE" voiceName:@"de-DE-KatjaNeural"];
         [allLanguageVoices setObject:germanVoice forKey:EZLanguageGerman];
 
-        EZBingLanguageVoice *russianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ru-RU" voiceName:@"ru-RU-DariyaNeural"];
+        EZBingLanguageVoice *russianVoice = [EZBingLanguageVoice voiceWithLanguage:@"ru-RU" voiceName:@"ru-RU-SvetlanaNeural"];
         [allLanguageVoices setObject:russianVoice forKey:EZLanguageRussian];
 
         EZBingLanguageVoice *arabicVoice = [EZBingLanguageVoice voiceWithLanguage:@"ar-EG" voiceName:@"ar-EG-SalmaNeural"];
@@ -447,7 +446,6 @@ NSString *getTfetttsURLString(void) {
     [self fetchRequestHost:^(NSString *host) {
         [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
             NSString *urlString = [self urlStringWithHost:getTfetttsURLString()];
-            ;
             NSString *ssml = [self genrateSSMLWithText:text language:from];
             NSDictionary *parameters = @{
                 @"ssml" : ssml,
@@ -491,21 +489,23 @@ NSString *getTfetttsURLString(void) {
 
  */
 - (NSString *)genrateSSMLWithText:(NSString *)text language:(EZLanguage)language {
-    NSString *voiceRate = @"1"; // bing web is -20%
-    
+    NSString *voiceRate = @"-10%"; // bing web is -20%
+
     EZBingLanguageVoice *languageVoice = [[EZBingRequest langaugeVoices] objectForKey:language];
-    
-    // TODO: hanle speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
-    
-    
+
+    // !!!: hanle xml speacial characters, like ' < &, Ref:  https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/speech-synthesis-markup-structure#special-characters
+
     // TODO: check text max supported length.
+
+    NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)text, NULL));
     
     NSString *ssml = [NSString stringWithFormat:@"<speak version=\"1.0\" xml:lang='%@'>"
-                      @"<voice name='%@'>"
-                      @"<prosody rate='%@'>%@</prosody>"
-                      @"</voice>"
-                      @"</speak>",
-                      languageVoice.lang, languageVoice.voiceName, voiceRate, text];
+                                                @"<voice name='%@'>"
+                                                @"<prosody rate='%@'>%@</prosody>"
+                                                @"</voice>"
+                                                @"</speak>",
+                                                languageVoice.lang, languageVoice.voiceName, voiceRate, escapedXMLText];
+   
     return ssml;
 }
 

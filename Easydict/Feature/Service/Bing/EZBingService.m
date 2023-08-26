@@ -142,9 +142,13 @@
 }
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
-    NSString *textLanguage = [self getTTSLanguageCode:from];
+    
+    if ([from isEqualToString:EZLanguageClassicalChinese]) {
+        from = EZLanguageSimplifiedChinese;
+    }
+    
     NSString *filePath = [self.audioPlayer getWordAudioFilePath:text
-                                                       language:textLanguage
+                                                       language:from
                                                          accent:nil
                                                     serviceType:self.serviceType];
     
