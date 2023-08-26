@@ -126,11 +126,20 @@
     }];
 }
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
+    EZLanguage textLanguage = queryModel.queryFromLanguage;
+    
+    NSString *from = [self languageCodeForLanguage:textLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *maxText = [self maxTextLength:queryModel.inputText fromLanguage:queryModel.queryFromLanguage];
-    NSString *text = [maxText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", getTranslatorHost(), text, from, to];
+    NSString *maxText = [self maxTextLength:queryModel.inputText fromLanguage:textLanguage];
+    
+    NSString *text = maxText;
+    
+    // If Chinese text too long, web link page will report error.
+    if ([EZLanguageManager.shared isChineseLanguage:textLanguage]) {
+        text = [maxText trimToMaxLength:450];
+    }
+    
+    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", getTranslatorHost(), text.encode, from, to];
 }
 
 - (NSString *)name {

@@ -497,7 +497,11 @@ NSString *getTfetttsURLString(void) {
 
     // TODO: check text max supported length.
 
+    /**
+     1000 Chinese characters, is about 1000kb (mp3)
+     */
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)text, NULL));
+    
     
     NSString *ssml = [NSString stringWithFormat:@"<speak version=\"1.0\" xml:lang='%@'>"
                                                 @"<voice name='%@'>"
