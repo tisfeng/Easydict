@@ -273,23 +273,29 @@
         return;
     }
     
-    NSLog(@"play audio url: %@", audioURLString);
     [self.player pause];
+        
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    // If audio url is a local file url
+    if ([fileManager fileExistsAtPath:audioURLString]) {
+        [self playLocalAudioFile:audioURLString];
+        return;
+    }
     
     NSString *audioFilePath = [self getWordAudioFilePath:text
                                            language:language
                                              accent:accent
                                         serviceType:serviceType];
     
-    NSString *filePath = audioURLString ?: audioFilePath;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
     // If audio file exist, play it.
-    if ([fileManager fileExistsAtPath:filePath]) {
-        [self playLocalAudioFile:filePath];
+    if ([fileManager fileExistsAtPath:audioFilePath]) {
+        [self playLocalAudioFile:audioFilePath];
         return;
     }
     
+    NSLog(@"play remote audio url: %@", audioURLString);
+
     // Since some of Youdao's audio cannot be played directly, it needs to be downloaded first, such as 'set'.
     BOOL download = self.enableDownload;
     
@@ -308,12 +314,12 @@
 
 /// Download word audio file.
 - (void)downloadWordAudio:(NSString *)word
-                 audioURL:(NSURL *)url
+                 audioURL:(NSURL *)URL
                  autoPlay:(BOOL)autoPlay
                  language:(EZLanguage)language
                    accent:(nullable NSString *)accent
               serviceType:(EZServiceType)serviceType {
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSString *filePath = [self getWordAudioFilePath:word
