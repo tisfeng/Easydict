@@ -167,7 +167,7 @@
         return;
     }
     
-    NSLog(@"Bing fetch text audio: %@", text);
+    NSLog(@"Bing is fetching text audio: %@", text);
     
     [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError * _Nullable error) {
         if (error || !audioData) {

@@ -15,6 +15,8 @@ NSString *const kBingHostKey = @"kBingHostKey";
 
 static NSString *const kAudioMIMEType = @"audio/mpeg";
 
+// TODO: Maybe we can save these configs to disk.
+
 // memory cache
 static NSString *kIG;
 static NSString *kIID;
@@ -62,7 +64,7 @@ NSString *getTfetttsURLString(void) {
 
 @property (nonatomic, assign) BOOL canRetryFetchHost;
 
-@property (nonatomic, copy) MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *langaugeVoices;
+@property (nonatomic, strong) MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *langaugeVoices;
 
 @end
 
@@ -71,6 +73,15 @@ NSString *getTfetttsURLString(void) {
 - (instancetype)init {
     if (self = [super init]) {
         _canRetryFetchHost = YES;
+        
+        // To improve responsiveness, get configuration parameters in advance.
+        [self fetchRequestHost:^(NSString *host) {
+            [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
+                
+            } failure:^(NSError *error) {
+                
+            }];
+        }];
     }
     return self;
 }
