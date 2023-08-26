@@ -168,7 +168,7 @@
     }
     
     [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError * _Nullable error) {
-        if (error) {
+        if (error || !audioData) {
             completion(nil, error);
             return;
         }

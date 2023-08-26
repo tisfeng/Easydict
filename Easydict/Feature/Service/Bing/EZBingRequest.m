@@ -13,6 +13,8 @@
 NSString *const kRequestBingHost = @"https://www.bing.com";
 NSString *const kBingHostKey = @"kBingHostKey";
 
+static NSString *const kAudioMIMEType = @"audio/mpeg";
+
 // memory cache
 static NSString *kIG;
 static NSString *kIID;
@@ -454,18 +456,19 @@ NSString *getTfetttsURLString(void) {
             };
 
             [self.ttsSession POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-                if ([responseObject isKindOfClass:[NSData class]]) {
-                    completion(responseObject, nil);
-                    return;
+                NSData *audioData = responseObject;
+                if ([task.response.MIMEType isEqualToString:kAudioMIMEType]) {
+                    completion(audioData, nil);
                 } else {
+                    [self resetToken];
                     completion(nil, nil);
                 }
-
-                [self executeCallback];
-            } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error){
-
+            } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
+                [self resetToken];
+                completion(nil, error);
             }];
         } failure:^(NSError *error) {
+            [self resetToken];
             completion(nil, error);
         }];
     }];
@@ -612,7 +615,7 @@ NSString *getTfetttsURLString(void) {
 
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
-        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"audio/mpeg", @"*/*", nil];
+        responseSerializer.acceptableContentTypes = [NSSet setWithObjects:kAudioMIMEType, nil];
         session.responseSerializer = responseSerializer;
         _ttsSession = session;
     }

@@ -123,13 +123,14 @@
 - (EZQueryService *)defaultTTSService {
     if (!_defaultTTSService) {
         NSArray *enabledTTSServiceTypes = @[
-            EZServiceTypeApple,
+            EZServiceTypeBing,
             EZServiceTypeGoogle,
             EZServiceTypeBaidu,
             EZServiceTypeYoudao,
+            EZServiceTypeApple,
         ];
         
-        EZServiceType defaultTTS = EZConfiguration.shared.isBeta ? EZServiceTypeYoudao : EZServiceTypeApple;
+        EZServiceType defaultTTS = EZConfiguration.shared.isBeta ? EZServiceTypeBing : EZServiceTypeApple;
         EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:defaultTTS];
         if (![enabledTTSServiceTypes containsObject:ttsServiceType]) {
             ttsServiceType = defaultTTS;
