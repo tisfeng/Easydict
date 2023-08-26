@@ -75,68 +75,17 @@ NSString *getTfetttsURLString(void) {
     return self;
 }
 
-/**
- EZLanguageAuto, @"auto-detect",
- EZLanguageSimplifiedChinese, @"zh-Hans",
- EZLanguageTraditionalChinese, @"zh-Hant",
- EZLanguageEnglish, @"en",
- EZLanguageJapanese, @"ja",
- EZLanguageKorean, @"ko",
- EZLanguageFrench, @"fr",
- EZLanguageSpanish, @"es",
- EZLanguagePortuguese, @"pt",
- EZLanguageItalian, @"it",
- EZLanguageGerman, @"de",
- EZLanguageRussian, @"ru",
- EZLanguageArabic, @"ar",
- EZLanguageSwedish, @"sv",
- EZLanguageRomanian, @"ro",
- EZLanguageThai, @"th",
- EZLanguageSlovak, @"sk",
- EZLanguageDutch, @"nl",
- EZLanguageHungarian, @"hu",
- EZLanguageGreek, @"el",
- EZLanguageDanish, @"da",
- EZLanguageFinnish, @"fi",
- EZLanguagePolish, @"pl",
- EZLanguageCzech, @"cs",
- EZLanguageTurkish, @"tr",
- EZLanguageLithuanian, @"lt",
- EZLanguageLatvian, @"lv",
- EZLanguageUkrainian, @"uk",
- EZLanguageBulgarian, @"bg",
- EZLanguageIndonesian, @"id",
- EZLanguageMalay, @"ms",
- EZLanguageSlovenian, @"sl",
- EZLanguageEstonian, @"et",
- EZLanguageVietnamese, @"vi",
- EZLanguagePersian, @"fa",
- EZLanguageHindi, @"hi",
- EZLanguageTelugu, @"te",
- EZLanguageTamil, @"ta",
- EZLanguageUrdu, @"ur",
- EZLanguageFilipino, @"fil",
- EZLanguageKhmer, @"km",
- EZLanguageLao, @"lo",
- EZLanguageBengali, @"bn",
- EZLanguageBurmese, @"my",
- EZLanguageNorwegian, @"nb",
- EZLanguageSerbian, @"sr-Cyrl",
- EZLanguageCroatian, @"hr",
- EZLanguageMongolian, @"mn-Mong",
- EZLanguageHebrew, @"he",
- */
 + (MMOrderedDictionary<EZLanguage, EZBingLanguageVoice *> *)langaugeVoices {
     static MMOrderedDictionary *allLanguageVoices;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         allLanguageVoices = [[MMOrderedDictionary alloc] init];
 
-        // follow the order of EZLanguage
+        // Docs: https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts
         EZBingLanguageVoice *simplifiedChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-CN" voiceName:@"zh-CN-XiaoxiaoNeural"];
         [allLanguageVoices setObject:simplifiedChineseVoice forKey:EZLanguageSimplifiedChinese];
 
-        EZBingLanguageVoice *traditionalChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-HK" voiceName:@"zh-HK-HiuGaaiNeural"];
+        EZBingLanguageVoice *traditionalChineseVoice = [EZBingLanguageVoice voiceWithLanguage:@"zh-TW" voiceName:@"zh-TW-HsiaoChenNeural"];
         [allLanguageVoices setObject:traditionalChineseVoice forKey:EZLanguageTraditionalChinese];
 
         EZBingLanguageVoice *englishVoice = [EZBingLanguageVoice voiceWithLanguage:@"en-US" voiceName:@"en-US-JennyNeural"];
