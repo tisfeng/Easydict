@@ -276,6 +276,23 @@
     [self.player pause];
         
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // For English words, Youdao TTS is better than other services, so we try to play Youdao local audio first.
+    
+    // Currently, only enable to download English word audio.
+    BOOL isEnglishWord = self.enableDownload;
+    if (isEnglishWord) {
+        NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text
+                                                          language:language
+                                                            accent:accent
+                                                       serviceType:EZServiceTypeYoudao];
+        
+        if ([fileManager fileExistsAtPath:youdaoAudioFilePath]) {
+            [self playLocalAudioFile:youdaoAudioFilePath];
+            return;
+        }
+    }
+    
 
     // If audio url is a local file url
     if ([fileManager fileExistsAtPath:audioURLString]) {
