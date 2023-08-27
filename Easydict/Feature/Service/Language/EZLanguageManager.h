@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isUserChineseFirstLanguage;
 - (BOOL)isUserEnglishFirstLanguage;
 
-/// Is simplified Chinese or traditional Chinese.
+/// Is simplified, traditional or classical Chinese.
 - (BOOL)isChineseLanguage:(EZLanguage)language;
 
 - (BOOL)isSimplifiedChinese:(EZLanguage)language;

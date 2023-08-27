@@ -304,17 +304,17 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     if ([from isEqualToString:EZLanguageAuto]) {
         [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
-                completion([self getAudioURLWithText:text language:[self getTTSLanguageCode:lang]], nil);
+                completion([self getAudioURLWithText:text language:lang], nil);
             } else {
                 completion(nil, error);
             }
         }];
     } else {
-        completion([self getAudioURLWithText:text language:[self getTTSLanguageCode:from]], nil);
+        completion([self getAudioURLWithText:text language:from], nil);
     }
 }
 
-- (NSString *)getAudioURLWithText:(NSString *)text language:(NSString *)language {
+- (NSString *)getAudioURLWithText:(NSString *)text language:(EZLanguage)language {
     /**
      ???: As far as I tested, the max length of text is ~1000.
      !!!: This audio url sometimes cannot be played, Baidu web audio is not reliable.
@@ -325,9 +325,12 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
     
+    NSString *ttsLangCode = [self getTTSLanguageCode:language];
+
     // Refer to Baidu web.
     NSInteger speed = [EZLanguageManager.shared isChineseLanguage:language] ? 5 : 3;
-    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=%ld&source=web", kBaiduTranslateURL, language, text, speed];
+        
+    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?text=%@&lan=%@&spd=%ld&source=web", kBaiduTranslateURL, text, ttsLangCode, speed];
     
     return audioURL;
 }

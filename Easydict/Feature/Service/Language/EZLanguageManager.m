@@ -253,9 +253,11 @@ static EZLanguageManager *_instance;
     return [self.userFirstLanguage isEqualToString:EZLanguageEnglish];
 }
 
-
+/// Is simplified, traditional or classical Chinese.
 - (BOOL)isChineseLanguage:(EZLanguage)language {
-    if ([language isEqualToString:EZLanguageSimplifiedChinese] || [language isEqualToString:EZLanguageTraditionalChinese]) {
+    if ([language isEqualToString:EZLanguageSimplifiedChinese] ||
+        [language isEqualToString:EZLanguageTraditionalChinese] ||
+        [language isEqualToString:EZLanguageClassicalChinese]) {
         return YES;
     }
     return NO;
@@ -273,9 +275,10 @@ static EZLanguageManager *_instance;
     return [language isEqualToString:EZLanguageEnglish];
 }
 
+/// Check if language array only contains simplified Chinese or traditional Chinese two languages.
 - (BOOL)onlyContainsChineseLanguages:(NSArray<EZLanguage> *)languages {
     for (EZLanguage language in languages) {
-        if (![self isChineseLanguage:language]) {
+        if (!([self isSimplifiedChinese:language] || [self isTraditionalChinese:language])) {
             return NO;
         }
     }
