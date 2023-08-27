@@ -324,7 +324,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     
     text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
-    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=4&source=web", kBaiduTranslateURL, language, text];
+    
+    // Refer to Baidu web.
+    NSInteger speed = [EZLanguageManager.shared isChineseLanguage:language] ? 5 : 3;
+    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?lan=%@&text=%@&spd=%ld&source=web", kBaiduTranslateURL, language, text, speed];
+    
     return audioURL;
 }
 
