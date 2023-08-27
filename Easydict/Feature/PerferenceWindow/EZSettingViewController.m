@@ -101,7 +101,11 @@
     if (!_allLanguageDict) {
         MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
         for (EZLanguage language in EZLanguageManager.shared.allLanguages) {
-            if (![language isEqualToString:EZLanguageAuto]) {
+            NSArray *disableLanguages = @[
+                EZLanguageAuto,
+                EZLanguageClassicalChinese,
+            ];
+            if (![disableLanguages containsObject:language]) {
                 NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageName:language];
                 [languageDict setObject:showingLanguageName forKey:language];
             }
@@ -857,14 +861,14 @@
 
 - (void)firstLangaugePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
-    EZLanguage language = EZLanguageManager.shared.allLanguageFlagDict.sortedKeys[selectedIndex];
+    EZLanguage language = self.allLanguageDict.sortedKeys[selectedIndex];
     self.config.firstLanguage = language;
     
     [self checkIfEqualFirstLanguage:YES];
 }
 - (void)secondLangaugePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
-    EZLanguage language = EZLanguageManager.shared.allLanguageFlagDict.sortedKeys[selectedIndex];
+    EZLanguage language = self.allLanguageDict.sortedKeys[selectedIndex];
     self.config.secondLanguage = language;
     
     [self checkIfEqualFirstLanguage:NO];
