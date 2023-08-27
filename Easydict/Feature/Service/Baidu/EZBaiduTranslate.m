@@ -304,17 +304,18 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     if ([from isEqualToString:EZLanguageAuto]) {
         [self detectText:text completion:^(EZLanguage lang, NSError *_Nullable error) {
             if (!error) {
-                completion([self getAudioURLWithText:text language:lang], nil);
+                completion([self getAudioURLWithText:text langCode:[self getTTSLanguageCode:lang]], nil);
             } else {
                 completion(nil, error);
             }
         }];
     } else {
-        completion([self getAudioURLWithText:text language:from], nil);
+        completion([self getAudioURLWithText:text langCode:[self getTTSLanguageCode:from]], nil);
     }
 }
 
-- (NSString *)getAudioURLWithText:(NSString *)text language:(EZLanguage)language {
+//
+- (NSString *)getAudioURLWithText:(NSString *)text langCode:(NSString *)ttsLangCode {
     /**
      ???: As far as I tested, the max length of text is ~1000.
      !!!: This audio url sometimes cannot be played, Baidu web audio is not reliable.
@@ -325,15 +326,34 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     text = [text trimToMaxLength:1000];
     text = [text mm_urlencode]; // text.mm_urlencode
     
-    NSString *ttsLangCode = [self getTTSLanguageCode:language];
-
     // Refer to Baidu web.
-    NSInteger speed = [EZLanguageManager.shared isChineseLanguage:language] ? 5 : 3;
+    NSInteger speed = [ttsLangCode isEqualToString:@"zh"] ? 5 : 3;
         
     NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?text=%@&lan=%@&spd=%ld&source=web", kBaiduTranslateURL, text, ttsLangCode, speed];
     
     return audioURL;
 }
+
+//- (NSString *)getAudioURLWithText:(NSString *)text language:(EZLanguage)language {
+//    /**
+//     ???: As far as I tested, the max length of text is ~1000.
+//     !!!: This audio url sometimes cannot be played, Baidu web audio is not reliable.
+//
+//     https://fanyi.baidu.com/gettts?lan=en&text=good&spd=4&source=web
+//     */
+//
+//    text = [text trimToMaxLength:1000];
+//    text = [text mm_urlencode]; // text.mm_urlencode
+//
+//    NSString *ttsLangCode = [self getTTSLanguageCode:language];
+//
+//    // Refer to Baidu web.
+//    NSInteger speed = [EZLanguageManager.shared isChineseLanguage:language] ? 5 : 3;
+//
+//    NSString *audioURL = [NSString stringWithFormat:@"%@/gettts?text=%@&lan=%@&spd=%ld&source=web", kBaiduTranslateURL, text, ttsLangCode, speed];
+//
+//    return audioURL;
+//}
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     if (!image) {
@@ -528,7 +548,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                     obj.accent = @"us";
                                     obj.word = text;
                                     obj.value = symbol.ph_am;
-                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"en"];
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText langCode:@"en"];
                                 }]];
                             }
                             if (symbol.ph_en.length) {
@@ -538,7 +558,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
                                     obj.accent = @"uk";
                                     obj.word = text;
                                     obj.value = symbol.ph_en;
-                                    obj.speakURL = [self getAudioURLWithText:result.queryText language:@"uk"];
+                                    obj.speakURL = [self getAudioURLWithText:result.queryText langCode:@"uk"];
                                 }]];
                             }
                             wordResult.phonetics = phonetics.count ? phonetics.copy : nil;
