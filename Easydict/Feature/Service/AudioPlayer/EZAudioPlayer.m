@@ -16,8 +16,13 @@
 #import "EZTextWordUtils.h"
 #import "EZServiceTypes.h"
 #import "EZConfiguration.h"
-#import <AudioToolbox/AudioToolbox.h>
+#import <sys/xattr.h>
 
+
+static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";
+
+// kMDItemWhereFroms
+static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms";
 
 @interface EZAudioPlayer () <NSSpeechSynthesizerDelegate>
 
@@ -349,8 +354,24 @@
         if (autoPlay) {
             [self playLocalAudioFile:filePath.path];
         }
+//        [self testFileInfo:filePath.path];
     }];
     [downloadTask resume];
+}
+
+- (void)testFileInfo:(NSString *)filePath {
+    NSURL *fileURL = [NSURL fileURLWithPath:@"/Users/tisfeng/Downloads/reader-ios-master.zip"];
+    NSArray *URLs = [self getDownloadSourcesForFilePath:fileURL.path];
+    
+    NSArray *urls = @[
+        @"https://github.com/yuenov/reader-ios",
+        @"https://codeload.github.com/yuenov/reader-ios/zip/refs/heads/master",
+    ];
+
+    [self setDownloadSourceForFilePath:filePath sourceURLs:urls];
+    URLs = [self getDownloadSourcesForFilePath:filePath];
+    NSLog(@"URLs: %@", URLs);
+
 }
 
 /// Play local audio file
@@ -559,6 +580,87 @@
         return NO;
     }
     return YES;
+}
+
+#pragma mark - Get file download sources
+
+- (nullable NSArray<NSString *> *)getDownloadSourcesForFilePath:(NSString *)filePath {
+    NSError *error = nil;
+    
+    // Ref: https://stackoverflow.com/questions/61778159/swift-how-to-get-an-image-where-from-metadata-field
+    
+    // 获取文件属性
+    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error];
+    if (error) {
+        NSLog(@"Error getting file attributes: %@", error);
+        return nil;
+    }
+    
+    // 从文件属性中获取扩展属性
+    NSDictionary *fileExtendedAttributes = attrs[kFileExtendedAttributes];
+    NSData *itemWhereFroms = fileExtendedAttributes[kItemWhereFroms];
+    
+    if (!itemWhereFroms) {
+        return nil;
+    }
+    
+    NSString *itemWhereFromsString = [[NSString alloc] initWithData:itemWhereFroms encoding:NSASCIIStringEncoding];
+    // bplist00¢_Chttps://codeload.github.com/yuenov/reader-ios/zip/refs/heads/master_$https://github.com/yuenov/reader-iosQ
+    NSLog(@"itemWhereFromsString: %@", itemWhereFromsString);
+    
+    // 解析属性列表数据
+    NSError *plistError = nil;
+    NSPropertyListFormat format;
+    id plistData = [NSPropertyListSerialization propertyListWithData:itemWhereFroms options:NSPropertyListImmutable format:&format error:&plistError];
+    
+    if (plistError) {
+        NSLog(@"Error decoding property list: %@", plistError);
+        return nil;
+    }
+    
+    NSMutableArray *urls = [NSMutableArray array];
+    
+    if ([plistData isKindOfClass:[NSArray class]]) {
+        for (NSString *urlString in (NSArray *)plistData) {
+            [urls addObject:urlString];
+        }
+    }
+    
+    return [urls copy];
+}
+
+// ???: Why does not it work?
+- (void)setDownloadSourceForFilePath:(NSString *)filePath sourceURLs:(NSArray<NSString *> *)URLStrings {
+    NSError *error;
+    NSData *URLsData = [NSPropertyListSerialization dataWithPropertyList:URLStrings format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
+
+    if (URLsData) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSMutableDictionary *attrs = [[fileManager attributesOfItemAtPath:filePath error:nil] mutableCopy];
+        if (!attrs) {
+            attrs = [NSMutableDictionary dictionary];
+        }
+        
+        NSMutableDictionary *extendedAttributes = [attrs[kFileExtendedAttributes] mutableCopy];
+        if (!extendedAttributes) {
+            extendedAttributes = [NSMutableDictionary dictionary];
+        }
+        extendedAttributes[kItemWhereFroms] = URLsData;
+        attrs[kFileExtendedAttributes] = @{kItemWhereFroms: URLsData};
+        
+        if (![fileManager setAttributes:attrs ofItemAtPath:filePath error:&error]) {
+            NSLog(@"Error setting download source: %@", error);
+        }
+        
+        // Set the extended attribute using setxattr
+        int result = setxattr(filePath.UTF8String, kItemWhereFroms.UTF8String, [URLsData bytes], [URLsData length], 0, 0);
+        
+        if (result == 0) {
+            NSLog(@"Download source set successfully.");
+        } else {
+            NSLog(@"Error setting download source: %s", strerror(errno));
+        }
+    }
 }
 
 @end
