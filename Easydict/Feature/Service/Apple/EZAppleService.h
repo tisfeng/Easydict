@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)langString;
 - (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)lang;
 
-- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage;
+- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text textLanguage:(EZLanguage)fromLanguage;
 
 @end
 

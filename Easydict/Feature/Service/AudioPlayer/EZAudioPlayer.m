@@ -127,15 +127,16 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 // Note that user may change it when using, so we need to read it every time.
 - (EZQueryService *)defaultTTSService {
-    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;;
-    EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-    _defaultTTSService = ttsService;
-    _defaultTTSService.audioPlayer = self;
-    
-    if (defaultTTSServiceType == EZServiceTypeApple) {
-        self.appleService = (EZAppleService *)ttsService;
+    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    if (_defaultTTSService.serviceType != defaultTTSServiceType) {
+        EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        _defaultTTSService = ttsService;
+        _defaultTTSService.audioPlayer = self;
+        
+        if (defaultTTSServiceType == EZServiceTypeApple) {
+            self.appleService = (EZAppleService *)ttsService;
+        }
     }
-    
     return _defaultTTSService;
 }
 
@@ -248,7 +249,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 /// Play system text audio.
 - (void)playSystemTextAudio:(NSString *)text language:(EZLanguage)language {
-    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text fromLanguage:language];
+    NSSpeechSynthesizer *synthesizer = [self.appleService playTextAudio:text textLanguage:language];
     synthesizer.delegate = self;
     self.synthesizer = synthesizer;
     self.isPlaying = YES;

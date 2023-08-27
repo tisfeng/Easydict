@@ -384,23 +384,34 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     return [self.appleLanguagesDictionary objectForKey:ezLanguage];
 }
 
-- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text fromLanguage:(EZLanguage)fromLanguage {
-    NSLog(@"system speak: %@ (%@)", text, fromLanguage);
+- (NSSpeechSynthesizer *)playTextAudio:(NSString *)text textLanguage:(EZLanguage)textLanguage {
+    NSLog(@"system speak: %@ (%@)", text, textLanguage);
     
     // voiceIdentifier: com.apple.voice.compact.en-US.Samantha
-    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:fromLanguage];
+    NSString *voiceIdentifier = [self voiceIdentifierFromLanguage:textLanguage];
     NSSpeechSynthesizer *synthesizer = [[NSSpeechSynthesizer alloc] initWithVoice:voiceIdentifier];
+    
+    /**
+     The synthesizer’s speaking rate (words per minute).
+
+     The range of supported rates is not predefined by the Speech Synthesis framework; but the synthesizer may only respond to a limited range of speech rates. Average human speech occurs at a rate of 180 to 220 words per minute.
+     */
+    
+    // Default English rate is a little too fast.
+    if ([textLanguage isEqualToString:EZLanguageEnglish]) {
+        synthesizer.rate = 150;
+    }
     
     void (^playBlock)(NSString *, EZLanguage) = ^(NSString *text, EZLanguage fromLanguage) {
         [synthesizer startSpeakingString:text];
     };
     
-    if ([fromLanguage isEqualToString:EZLanguageAuto]) {
+    if ([textLanguage isEqualToString:EZLanguageAuto]) {
         [self detectText:text completion:^(EZLanguage _Nonnull fromLanguage, NSError *_Nullable error) {
             playBlock(text, fromLanguage);
         }];
     } else {
-        playBlock(text, fromLanguage);
+        playBlock(text, textLanguage);
     }
     
     return synthesizer;

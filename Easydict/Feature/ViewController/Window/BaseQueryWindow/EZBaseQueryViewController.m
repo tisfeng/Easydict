@@ -540,12 +540,16 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
         NSString *audioURL = self.queryModel.audioURL;
         EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-        EZQueryService *service = audioURL.length ? youdaoService : nil;
+        
+        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        EZQueryService *ttsService = audioURL.length ? youdaoService : defaultTTSService;
+        
         [self.audioPlayer playTextAudio:self.inputText
                                language:self.queryModel.queryFromLanguage
                                  accent:nil
                                audioURL:audioURL
-                      designatedService:service];
+                      designatedService:ttsService];
     };
     
     // Before playing audio, we should detect the query text language.

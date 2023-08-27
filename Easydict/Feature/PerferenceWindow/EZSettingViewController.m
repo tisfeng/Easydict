@@ -288,9 +288,9 @@
     
     NSArray *enabledTTSServiceTypes = @[
         EZServiceTypeBing,
+        EZServiceTypeYoudao,
         EZServiceTypeGoogle,
         EZServiceTypeBaidu,
-        EZServiceTypeYoudao,
         EZServiceTypeApple,
     ];
     [self.defaultTTSServicePopUpButton addItemsWithTitles:enabledTTSServiceTypes];

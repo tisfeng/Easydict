@@ -329,7 +329,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         completion(nil, EZTranslateError(EZErrorTypeParam, @"获取音频的文本为空", nil));
         return;
     }
-    //    [super textToAudio:text fromLanguage:from completion:completion];
     
     /**
      It seems that the Youdao TTS audio will auto trim to 600 chars.
