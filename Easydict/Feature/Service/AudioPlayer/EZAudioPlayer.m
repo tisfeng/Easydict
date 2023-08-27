@@ -125,17 +125,17 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     }
 }
 
+// Note that user may change it when using, so we need to read it every time.
 - (EZQueryService *)defaultTTSService {
-    if (!_defaultTTSService) {
-        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;;
-        EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-        _defaultTTSService = ttsService;
-        _defaultTTSService.audioPlayer = self;
-        
-        if (defaultTTSServiceType == EZServiceTypeApple) {
-            self.appleService = (EZAppleService *)ttsService;
-        }
+    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;;
+    EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+    _defaultTTSService = ttsService;
+    _defaultTTSService.audioPlayer = self;
+    
+    if (defaultTTSServiceType == EZServiceTypeApple) {
+        self.appleService = (EZAppleService *)ttsService;
     }
+    
     return _defaultTTSService;
 }
 
