@@ -45,6 +45,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL autoCopyOCRText;
 @property (nonatomic, assign) BOOL autoCopyFirstTranslatedText;
 @property (nonatomic, assign) EZLanguageDetectOptimize languageDetectOptimize;
+@property (nonatomic, copy) EZServiceType defaultTTSServiceType;
 @property (nonatomic, assign) BOOL showGoogleQuickLink;
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL showAppleDictionaryQuickLink;
@@ -81,9 +82,6 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 
 #pragma mark - Beta
 @property (nonatomic, assign, readonly, getter=isBeta) BOOL beta;
-
-#pragma mark - Default TTS
-@property (nonatomic, copy, readonly) EZServiceType defaultTTSServiceType;
 
 - (void)enableBetaFeaturesIfNeeded;
 

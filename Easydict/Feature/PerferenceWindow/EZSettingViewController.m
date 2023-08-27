@@ -54,6 +54,9 @@
 @property (nonatomic, strong) NSTextField *languageDetectLabel;
 @property (nonatomic, strong) NSPopUpButton *languageDetectOptimizePopUpButton;
 
+@property (nonatomic, strong) NSTextField *defaultTTSServiceLabel;
+@property (nonatomic, strong) NSPopUpButton *defaultTTSServicePopUpButton;
+
 @property (nonatomic, strong) NSTextField *fixedWindowPositionLabel;
 @property (nonatomic, strong) NSPopUpButton *fixedWindowPositionPopUpButton;
 
@@ -252,12 +255,11 @@
     self.adjustQueryIconPostionButton = [NSButton checkboxWithTitle:adjustQueryIconPostionTitle target:self action:@selector(adjustQueryIconPostionButtonClicked:)];
     [self.contentView addSubview:self.adjustQueryIconPostionButton];
     
-    
+    // language detect
     NSTextField *usesLanguageCorrectionLabel = [NSTextField labelWithString:NSLocalizedString(@"language_detect_optimize", nil)];
     usesLanguageCorrectionLabel.font = font;
     [self.contentView addSubview:usesLanguageCorrectionLabel];
     self.languageDetectLabel = usesLanguageCorrectionLabel;
-    
     
     self.languageDetectOptimizePopUpButton = [[NSPopUpButton alloc] init];
     [self.contentView addSubview:self.languageDetectOptimizePopUpButton];
@@ -270,6 +272,26 @@
     [self.languageDetectOptimizePopUpButton addItemsWithTitles:languageDetectOptimizeItems];
     self.languageDetectOptimizePopUpButton.target = self;
     self.languageDetectOptimizePopUpButton.action = @selector(languageDetectOptimizePopUpButtonClicked:);
+    
+    // default tts service
+    NSTextField *defaultTTSServiceLabel = [NSTextField labelWithString:NSLocalizedString(@"default_tts_service", nil)];
+    defaultTTSServiceLabel.font = font;
+    [self.contentView addSubview:defaultTTSServiceLabel];
+    self.defaultTTSServiceLabel = defaultTTSServiceLabel;
+    
+    self.defaultTTSServicePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.defaultTTSServicePopUpButton];
+    
+    NSArray *enabledTTSServiceTypes = @[
+        EZServiceTypeBing,
+        EZServiceTypeGoogle,
+        EZServiceTypeBaidu,
+        EZServiceTypeYoudao,
+        EZServiceTypeApple,
+    ];
+    [self.defaultTTSServicePopUpButton addItemsWithTitles:enabledTTSServiceTypes];
+    self.defaultTTSServicePopUpButton.target = self;
+    self.defaultTTSServicePopUpButton.action = @selector(defaultTTSServicePopUpButtonClicked:);
     
     
     NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:NSLocalizedString(@"fixed_window_position", nil)];
@@ -404,6 +426,7 @@
     self.clickQueryButton.mm_isOn = self.config.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = self.config.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:self.config.languageDetectOptimize];
+    [self.defaultTTSServicePopUpButton selectItemWithTitle:self.config.defaultTTSServiceType];
     [self.fixedWindowPositionPopUpButton selectItemAtIndex:self.config.fixedWindowPosition];
     self.autoPlayAudioButton.mm_isOn = self.config.autoPlayAudio;
     self.clearInputButton.mm_isOn = self.config.clearInput;
@@ -549,9 +572,18 @@
         make.centerY.equalTo(self.languageDetectLabel);
     }];
     
-    [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.defaultTTSServiceLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.languageDetectOptimizePopUpButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.defaultTTSServicePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.defaultTTSServiceLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.defaultTTSServiceLabel);
+    }];
+    
+    [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.defaultTTSServicePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
@@ -806,6 +838,11 @@
 - (void)languageDetectOptimizePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
     self.config.languageDetectOptimize = selectedIndex;
+}
+
+- (void)defaultTTSServicePopUpButtonClicked:(NSPopUpButton *)button {
+    NSString *selectedTitle = button.titleOfSelectedItem;
+    self.config.defaultTTSServiceType = selectedTitle;
 }
 
 - (void)adjustQueryIconPostionButtonClicked:(NSButton *)sender {

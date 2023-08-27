@@ -37,6 +37,7 @@ static NSString *const kAutoCopySelectedTextKey = @"EZConfiguration_kAutoCopySel
 static NSString *const kAutoCopyOCRTextKey = @"EZConfiguration_kAutoCopyOCRTextKey";
 static NSString *const kAutoCopyFirstTranslatedTextKey = @"EZConfiguration_kAutoCopyFirstTranslatedTextKey";
 static NSString *const kLanguageDetectOptimizeTypeKey = @"EZConfiguration_kLanguageDetectOptimizeTypeKey";
+static NSString *const kDefaultTTSServiceTypeKey = @"EZConfiguration_kDefaultTTSServiceTypeKey";
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kShowAppleDictionaryLinkKey = @"EZConfiguration_kShowAppleDictionaryLinkKey";
@@ -93,6 +94,7 @@ static EZConfiguration *_instance;
     self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
     self.autoCopyFirstTranslatedText = [NSUserDefaults mm_readBool:kAutoCopyFirstTranslatedTextKey defaultValue:NO];
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:EZLanguageDetectOptimizeNone];
+    self.defaultTTSServiceType = [NSUserDefaults mm_readString:kDefaultTTSServiceTypeKey defaultValue:EZServiceTypeBing];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
     self.showAppleDictionaryQuickLink = [NSUserDefaults mm_readBool:kShowAppleDictionaryLinkKey defaultValue:YES];
@@ -243,6 +245,12 @@ static EZConfiguration *_instance;
     _languageDetectOptimize = languageDetectOptimizeType;
 
     [NSUserDefaults mm_write:@(languageDetectOptimizeType) forKey:kLanguageDetectOptimizeTypeKey];
+}
+
+- (void)setDefaultTTSServiceType:(EZServiceType)defaultTTSServiceType {
+    _defaultTTSServiceType = defaultTTSServiceType;
+    
+    [NSUserDefaults mm_write:defaultTTSServiceType forKey:kDefaultTTSServiceTypeKey];
 }
 
 - (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
@@ -513,15 +521,6 @@ static EZConfiguration *_instance;
     BOOL isBeta = [stringValue boolValue];
     return isBeta;
 }
-
-#pragma mark - Default TTS
-- (void)setDefaultTTSServiceType:(EZServiceType _Nonnull)defaultTTSServiceType {
-    [NSUserDefaults mm_write:defaultTTSServiceType forKey:EZDefaultTTSServiceKey];
-}
-- (EZServiceType)defaultTTSServiceType {
-    return [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:EZServiceTypeApple];
-}
-
 
 #pragma mark -
 

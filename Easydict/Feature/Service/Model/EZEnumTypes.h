@@ -80,9 +80,6 @@ FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeSimulatedKey; // Cmd+C
 FOUNDATION_EXPORT EZSelectTextType const EZSelectTextTypeAppleScript;
 
 
-FOUNDATION_EXPORT NSString *const EZDefaultTTSServiceKey;
-
-
 /// Action trigger type
 typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
     EZTriggerTypeNone = 0,

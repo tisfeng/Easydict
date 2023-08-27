@@ -127,25 +127,12 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 - (EZQueryService *)defaultTTSService {
     if (!_defaultTTSService) {
-        NSArray *enabledTTSServiceTypes = @[
-            EZServiceTypeBing,
-            EZServiceTypeGoogle,
-            EZServiceTypeBaidu,
-            EZServiceTypeYoudao,
-            EZServiceTypeApple,
-        ];
-        
-        EZServiceType defaultTTS = EZConfiguration.shared.isBeta ? EZServiceTypeBing : EZServiceTypeApple;
-        EZServiceType ttsServiceType = [NSUserDefaults mm_readString:EZDefaultTTSServiceKey defaultValue:defaultTTS];
-        if (![enabledTTSServiceTypes containsObject:ttsServiceType]) {
-            ttsServiceType = defaultTTS;
-        }
-        
-        EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:ttsServiceType];
+        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;;
+        EZQueryService *ttsService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
         _defaultTTSService = ttsService;
         _defaultTTSService.audioPlayer = self;
         
-        if (ttsServiceType == EZServiceTypeApple) {
+        if (defaultTTSServiceType == EZServiceTypeApple) {
             self.appleService = (EZAppleService *)ttsService;
         }
     }

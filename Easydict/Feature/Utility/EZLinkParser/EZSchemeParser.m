@@ -203,9 +203,7 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslationAPIKey,
-        
-        EZDefaultTTSServiceKey,
-        
+                
         EZIntelligentQueryModeKey,
     ];
     

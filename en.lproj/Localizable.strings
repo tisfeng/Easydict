@@ -40,6 +40,8 @@
 "language_detect_optimize_baidu" = "Use Baidu language detection for optimization";
 "language_detect_optimize_google" = "Use Google language detection for optimization";
 
+"default_tts_service" = "Default TTS Service:";
+
 "fixed_window_position" = "Floating Window Position:";
 "fixed_window_position_right" = "Right Side of Screen";
 "fixed_window_position_mouse" = "Mouse Position";

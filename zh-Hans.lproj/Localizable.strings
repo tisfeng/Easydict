@@ -40,6 +40,8 @@
 "language_detect_optimize_baidu" = "使用百度语种识别进行优化";
 "language_detect_optimize_google" = "使用 Google 语种识别进行优化";
 
+"default_tts_service" = "默认TTS服务:";
+
 "fixed_window_position" = "悬浮窗口位置:";
 "fixed_window_position_right" = "屏幕右侧";
 "fixed_window_position_mouse" = "鼠标位置";
