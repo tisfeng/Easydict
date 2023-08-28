@@ -803,6 +803,8 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 /// Update cookie and token.
 - (void)updateCookieAndToken {
+    NSLog(@"update Baidu cookie and token.");
+    
     [self.networkManager requestCookieOfURL:kBaiduTranslateURL cookieName:@"BAIDUID" completion:^(NSString *cookie) {
         if (cookie.length) {
             [NSUserDefaults mm_write:cookie forKey:kBaiduTranslateURL];

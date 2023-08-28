@@ -773,7 +773,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                 if ([googleFromString
                      isKindOfClass:NSString.class]) {
                     EZLanguage googleFrom = [self languageEnumFromCode:googleFromString];
-                    if (googleFrom != EZLanguageAuto) {
+                    if (![googleFrom isEqualToString:EZLanguageAuto]) {
                         completion(googleFrom, nil);
                         return;
                     }
