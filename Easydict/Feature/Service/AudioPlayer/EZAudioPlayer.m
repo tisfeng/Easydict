@@ -386,7 +386,9 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 /// Play local audio file
 - (void)playLocalAudioFile:(NSString *)filePath {
-    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    if (![fileManager fileExistsAtPath:filePath]) {
         self.isPlaying = NO;
         NSLog(@"playLocalAudioFile not exist: %@", filePath);
         return;
@@ -397,6 +399,9 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         NSURL *URL = [NSURL fileURLWithPath:filePath];
         [self playAudioURL:URL];
     } else {
+        // If local audio file is broke, we need to remove it.
+        [fileManager removeItemAtPath:filePath error:nil];
+        
         [self playFallbackTTSWithFailedServiceType:self.currentServiceType];;
     }
 }
