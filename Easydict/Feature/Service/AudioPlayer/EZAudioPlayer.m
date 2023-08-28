@@ -150,12 +150,13 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 
 #pragma mark - Public Mehods
 
-- (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic serviceType:(nullable EZServiceType)serviceType {
+- (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic designatedService:(nullable EZQueryService *)designatedService  {
     [self playTextAudio:wordPhonetic.word
                language:wordPhonetic.language
                  accent:wordPhonetic.accent
                audioURL:wordPhonetic.speakURL
-      designatedService:nil];
+      designatedService:designatedService
+               forceURL:YES];
 }
 
 // TODO: need to optimize
@@ -173,6 +174,21 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                accent:(nullable NSString *)accent
              audioURL:(nullable NSString *)audioURL
     designatedService:(nullable EZQueryService *)designatedService {
+    [self playTextAudio:text
+               language:language
+                 accent:accent
+               audioURL:audioURL
+      designatedService:designatedService
+               forceURL:NO];
+}
+
+/// Play text audio, forceURL
+- (void)playTextAudio:(NSString *)text
+             language:(EZLanguage)language
+               accent:(nullable NSString *)accent
+             audioURL:(nullable NSString *)audioURL
+    designatedService:(nullable EZQueryService *)designatedService
+             forceURL:(BOOL)forceURL {
     if (!text.length) {
         NSLog(@"play text is empty");
         return;
@@ -195,7 +211,8 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                       text:text
                   language:language
                     accent:accent
-               serviceType:self.serviceType];
+               serviceType:self.serviceType
+                  forceURL:forceURL];
         return;
     }
     
@@ -260,7 +277,8 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                 text:(NSString *)text
             language:(EZLanguage)language
               accent:(nullable NSString *)accent
-         serviceType:(EZServiceType)serviceType {
+         serviceType:(EZServiceType)serviceType
+            forceURL:(BOOL)forceURL {
     if (audioURLString.length == 0) {
         NSLog(@"play audio url is empty");
         return;
@@ -272,9 +290,11 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     
     // For English words, Youdao TTS is better than other services, so we try to play Youdao local audio first.
     
+    BOOL isForcedURL = forceURL && audioURLString.length;
+    
     // Currently, only enable to download English word audio.
     BOOL isEnglishWord = self.enableDownload;
-    if (isEnglishWord) {
+    if (!isForcedURL && isEnglishWord) {
         NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text
                                                           language:language
                                                             accent:accent
@@ -286,7 +306,6 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         }
     }
     
-
     // If audio url is a local file url
     if ([fileManager fileExistsAtPath:audioURLString]) {
         [self playLocalAudioFile:audioURLString];

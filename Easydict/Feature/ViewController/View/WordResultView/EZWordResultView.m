@@ -26,6 +26,8 @@
 #import "NSImage+EZSymbolmage.h"
 #import <WebKit/WebKit.h>
 #import "TTTDictionary.h"
+#import "EZConfiguration.h"
+#import "EZServiceTypes.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -338,10 +340,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         [self addSubview:audioButton];
         
         EZAudioPlayer *audioPlayer = [[EZAudioPlayer alloc] init];
-        audioPlayer.service = result.service;
         audioButton.audioPlayer = audioPlayer;
         [audioButton setPlayAudioBlock:^{
-            [audioPlayer playWordPhonetic:obj serviceType:result.serviceType];
+            [audioPlayer playWordPhonetic:obj designatedService:result.service];
         }];
         
         [audioButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -793,9 +794,12 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
-        
         wordPhonetic.language = language;
-        [result.service.audioPlayer playWordPhonetic:wordPhonetic serviceType:result.serviceType];
+        
+        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+        
+        [result.service.audioPlayer playWordPhonetic:wordPhonetic designatedService:defaultTTSService];
     }];
     
     audioButton.mas_key = @"result_audioButton";

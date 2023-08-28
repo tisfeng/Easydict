@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) EZQueryService *defaultTTSService;
 
 - (void)playWordPhonetic:(EZWordPhonetic *)wordPhonetic
-             serviceType:(nullable EZServiceType)serviceType;
+       designatedService:(nullable EZQueryService *)designatedService;
 
 - (void)playTextAudio:(NSString *)text textLanguage:(EZLanguage)language;
 
