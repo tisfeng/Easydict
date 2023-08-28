@@ -294,10 +294,9 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL isForcedURL = forceURL && audioURLString.length;
     
-    // Currently, only enable to download English word audio.
-    BOOL isEnglishWord = self.enableDownload;
-    
     // For English words, Youdao TTS is better than other services, so we try to play local Youdao audio first.
+    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:text language:language];
+
     if (!isForcedURL && isEnglishWord) {
         NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text
                                                           language:language
@@ -394,8 +393,33 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     }
     NSLog(@"play local audio file: %@", filePath);
     
-    NSURL *URL = [NSURL fileURLWithPath:filePath];
-    [self playAudioURL:URL];
+    if ([self canPlayLocalAudioFileAtPath:filePath]) {
+        NSURL *URL = [NSURL fileURLWithPath:filePath];
+        [self playAudioURL:URL];
+    } else {
+        [self playFallbackTTSWithFailedServiceType:self.currentServiceType];;
+    }
+}
+
+/// Check if can play local audio file.
+- (BOOL)canPlayLocalAudioFileAtPath:(NSString *)filePath {
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    
+    // Maybe the audio file is broken, we need to check it.
+    NSError *error = nil;
+    AVAudioPlayer *audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
+    
+    if (error) {
+        NSLog(@"Error initializing audio player: %@", error);
+        return NO;
+    }
+    
+    if (audioPlayer) {
+        [audioPlayer prepareToPlay];
+        return YES;
+    }
+    
+    return NO;
 }
 
 /// Play audio with remote url string.
