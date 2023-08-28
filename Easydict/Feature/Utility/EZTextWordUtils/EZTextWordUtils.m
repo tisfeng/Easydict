@@ -88,20 +88,18 @@ static NSDictionary *const kQuotesDict = @{
     return count;
 }
 
++ (BOOL)isEnglishWord:(NSString *)text language:(EZLanguage)language {
+    BOOL isEnglish = [language isEqualToString:EZLanguageEnglish];
+    BOOL isEnglishWord = isEnglish && [EZTextWordUtils isEnglishWord:text];
+    return isEnglishWord;
+}
+
 /// Check if text is a English word. Note: B612 is not a word.
 + (BOOL)isEnglishWord:(NSString *)text {
     text = [self tryToRemoveQuotes:text];
     if (text.length > EZEnglishWordMaxLength) {
         return NO;
     }
-    
-    NSString *pattern = @"^[a-zA-Z]+$";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
-    return [predicate evaluateWithObject:text];
-}
-
-+ (BOOL)isEnglishText:(NSString *)text {
-    text = [self tryToRemoveQuotes:text];
     
     NSString *pattern = @"^[a-zA-Z]+$";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];

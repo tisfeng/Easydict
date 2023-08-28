@@ -798,8 +798,12 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-        
-        [result.service.audioPlayer playWordPhonetic:wordPhonetic designatedService:defaultTTSService];
+                
+        [result.service.audioPlayer playTextAudio:result.copiedText
+                                         language:language
+                                           accent:nil
+                                         audioURL:nil
+                                designatedService:defaultTTSService];
     }];
     
     audioButton.mas_key = @"result_audioButton";

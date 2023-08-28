@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// text should not a word, and then text is a sentence.
 + (BOOL)shouldQuerySentence:(NSString *)text language:(EZLanguage)langugae;
 
++ (BOOL)isEnglishWord:(NSString *)text language:(EZLanguage)language;
+
 /// Check if text is a English word. Note: B612 is not a word.
 + (BOOL)isEnglishWord:(NSString *)text;
 

@@ -813,7 +813,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)playOrStopQueryTextAudio {
-    [self.floatingWindow.queryViewController playOrStopQueryTextAudio];
+    [self.floatingWindow.queryViewController toggleAudioPlay];
 }
 
 

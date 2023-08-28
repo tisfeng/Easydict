@@ -24,6 +24,7 @@
 #import "EZSchemeParser.h"
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
+#import "EZTextWordUtils.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -521,32 +522,38 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (void)stopPlayingAudio {
-    [self playOrStopQueryTextAudio:NO];
+    [self toggleAudioPlay:NO];
     [self stopAllResultAudio];
 }
 
-- (void)playOrStopQueryTextAudio {
+- (void)toggleAudioPlay {
     BOOL isPlaying = self.audioPlayer.isPlaying;
-    [self playOrStopQueryTextAudio:!isPlaying];
+    [self toggleAudioPlay:!isPlaying];
 }
 
-- (void)playOrStopQueryTextAudio:(BOOL)playFlag {
-    if (!playFlag) {
+- (void)toggleAudioPlay:(BOOL)play {
+    if (!play) {
         [self.audioPlayer stop];
         return;
     }
     
-    void (^playBlock)(void) = ^{
+    void (^playAudioBlock)(void) = ^{
         // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
         NSString *audioURL = self.queryModel.audioURL;
         EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
         
+        NSString *queryText = self.queryText;
+        NSString *textLanguage = self.queryModel.queryFromLanguage;
+        BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:queryText language:textLanguage];
+        
         EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-        EZQueryService *ttsService = audioURL.length ? youdaoService : defaultTTSService;
         
-        [self.audioPlayer playTextAudio:self.inputText
-                               language:self.queryModel.queryFromLanguage
+        // If query text is an English word, use Youdao TTS to play.
+        EZQueryService *ttsService = (audioURL.length || isEnglishWord) ? youdaoService : defaultTTSService;
+        
+        [self.audioPlayer playTextAudio:queryText
+                               language:textLanguage
                                  accent:nil
                                audioURL:audioURL
                       designatedService:ttsService];
@@ -554,10 +561,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     // Before playing audio, we should detect the query text language.
     if (self.queryModel.hasQueryFromLanguage) {
-        playBlock();
+        playAudioBlock();
     } else {
         [self detectQueryText:^(NSString * _Nonnull language) {
-            playBlock();
+            playAudioBlock();
         }];
     }
 }
@@ -1147,7 +1154,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self playOrStopQueryTextAudio];
+        [self toggleAudioPlay];
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {

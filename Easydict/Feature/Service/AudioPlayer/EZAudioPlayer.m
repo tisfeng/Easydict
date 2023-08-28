@@ -18,7 +18,6 @@
 #import "EZConfiguration.h"
 #import <sys/xattr.h>
 
-
 static NSString *const kFileExtendedAttributes = @"NSFileExtendedAttributes";
 
 // kMDItemWhereFroms
@@ -40,6 +39,8 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 @property (nonatomic, copy) NSString *audioURL;
 @property (nonatomic, copy, nullable) NSString *accent;
 @property (nonatomic, copy, nonnull) EZServiceType serviceType;
+
+@property (nonatomic, copy, nonnull) EZServiceType currentServiceType;
 
 @end
 
@@ -202,7 +203,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     self.audioURL = audioURL;
     self.accent = accent;
     
-    BOOL isEnglishWord = [language isEqualToString:EZLanguageEnglish] && ([EZTextWordUtils isEnglishWord:text]);
+    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:text language:language];
     self.enableDownload = isEnglishWord;
     
     // 1. if has audio url, play audio url directly.
@@ -226,17 +227,19 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     
     // 3. get service text audio URL, and play.
     [service textToAudio:text fromLanguage:language completion:^(NSString *_Nullable url, NSError *_Nullable error) {
+        self.currentServiceType = service.serviceType;
+        
         if (!error && url.length) {
             [self playTextAudio:text
                        language:language
                          accent:nil
                        audioURL:url
-              designatedService:nil];
+              designatedService:service];
         } else {
             NSLog(@"get audio url error: %@", error);
             
-            // e.g. if Baidu get audio url failed, try to use default tts, such as Google.
-            [self playWithDefaultTTSService];
+            // e.g. if service get audio url failed, try to use default tts, such as Google.
+            [self playFallbackTTSWithFailedServiceType:service.serviceType];;
         }
     }];
 }
@@ -284,16 +287,17 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         return;
     }
     
+    self.currentServiceType = serviceType;
+    
     [self.player pause];
         
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    // For English words, Youdao TTS is better than other services, so we try to play Youdao local audio first.
-    
     BOOL isForcedURL = forceURL && audioURLString.length;
     
     // Currently, only enable to download English word audio.
     BOOL isEnglishWord = self.enableDownload;
+    
+    // For English words, Youdao TTS is better than other services, so we try to play local Youdao audio first.
     if (!isForcedURL && isEnglishWord) {
         NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text
                                                           language:language
@@ -408,7 +412,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
             AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
             [self playWithPlayerItem:playerItem];
         } else {
-            [self playWithDefaultTTSService];
+            [self playFallbackTTSWithFailedServiceType:self.currentServiceType];;
         }
     }];
 }
@@ -431,11 +435,12 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     [self playAudioURL:URL];
 }
 
-- (void)playWithDefaultTTSService {
-    NSLog(@"playWithDefaultTTSService");
+/// Play fallback TTS when service failed.
+- (void)playFallbackTTSWithFailedServiceType:(EZServiceType)failedServiceType {
+    NSLog(@"play fallback TTS with failed service: %@", failedServiceType);
     
     EZAudioPlayer *audioPlayer = self.service.audioPlayer;
-    if (![audioPlayer.service.class isEqual:audioPlayer.defaultTTSService.class]) {
+    if (![failedServiceType isEqualToString:audioPlayer.defaultTTSService.serviceType]) {
         EZAudioPlayer *defaultTTSAudioPlayer = audioPlayer.defaultTTSService.audioPlayer;
         [defaultTTSAudioPlayer playTextAudio:self.text
                                     language:self.language
