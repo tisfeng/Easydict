@@ -8,12 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EZQueryResult.h"
+#import <WebKit/WebKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZWordResultView : NSView
+@interface EZWordResultView : NSView <WKNavigationDelegate>
 
 @property (nonatomic, assign, readonly) CGFloat viewHeight;
+@property (nonatomic, strong, readonly) EZQueryResult *result;
+@property (nonatomic, strong) WKWebView *webView;
 
 @property (nonatomic, copy) void (^queryTextBlock)(NSString *word);
 

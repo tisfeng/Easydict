@@ -24,7 +24,6 @@
 #import "EZAudioButton.h"
 #import "EZCopyButton.h"
 #import "NSImage+EZSymbolmage.h"
-#import <WebKit/WebKit.h>
 #import "TTTDictionary.h"
 #import "EZConfiguration.h"
 #import "EZServiceTypes.h"
@@ -35,11 +34,9 @@ static const CGFloat kVerticalPadding_8 = 8;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
-@interface EZWordResultView () <NSTextViewDelegate, WKNavigationDelegate>
+@interface EZWordResultView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
-
-@property (nonatomic, strong) WKWebView *webView;
 
 @property (nonatomic, assign) CGFloat bottomViewHeigt;
 
@@ -255,21 +252,23 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
     
     if (result.HTMLString.length) {
-        NSLog(@"load webView");
-        WKWebView *webView = [[WKWebView alloc] init];
-        [self addSubview:webView];
+        [self addSubview:self.webView];
         
-        NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
-        NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
-        [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-        NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
+//        NSLog(@"load webView");
+//        WKWebView *webView = [[WKWebView alloc] init];
+//        [self addSubview:webView];
+//
+//        NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
+//        NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
+//        [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+//        NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
+//
+//        [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+//
+//        webView.navigationDelegate = self;
+//        self.webView = webView;
         
-        [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
-        
-        webView.navigationDelegate = self;
-        self.webView = webView;
-        
-        [webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = 0;
             if (lastView) {
                 topOffset = kHorizontalMargin_8;
@@ -282,7 +281,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.left.right.inset(2);
         }];
         
-        lastView = webView;
+        lastView = self.webView;
     }
     
     [wordResult.phonetics enumerateObjectsUsingBlock:^(EZWordPhonetic *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

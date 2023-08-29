@@ -9,11 +9,11 @@
 #import "EZResultView.h"
 #import "EZServiceTypes.h"
 #import "EZHoverButton.h"
-#import "EZWordResultView.h"
 #import "NSView+EZAnimatedHidden.h"
 #import "EZLoadingAnimationView.h"
 #import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
+#import "EZWindowManager.h"
 
 @interface EZResultView ()
 
@@ -25,8 +25,6 @@
 @property (nonatomic, strong) EZHoverButton *arrowButton;
 @property (nonatomic, strong) EZHoverButton *stopButton;
 @property (nonatomic, strong) EZHoverButton *retryButton;
-
-@property (nonatomic, strong) EZWordResultView *wordResultView;
 
 @end
 
@@ -246,29 +244,15 @@
     [self.wordResultView refreshWithResult:result];
         
     mm_weakify(self);
-    [self.wordResultView setUpdateViewHeightBlock:^(CGFloat viewHeight) {
+    [self.wordResultView setUpdateViewHeightBlock:^(CGFloat wordResultViewHeight) {
         mm_strongify(self);
-        [self updateViewHeight:viewHeight];
+        [self updateWordResultViewHeight:wordResultViewHeight];
     }];
     
     [self updateAllButtonStatus];
 
-    CGFloat wordResultViewHeight = self.wordResultView.viewHeight;
-    [self.wordResultView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.topBarView.mas_bottom);
-        make.left.right.equalTo(self);
-
-        make.height.mas_equalTo(wordResultViewHeight);
-    }];
-
-    CGFloat viewHeight = EZResultViewMiniHeight;
-    if (result.hasShowingResult && result.isShowing) {
-        viewHeight = EZResultViewMiniHeight + wordResultViewHeight;
-        //        NSLog(@"show result view height: %@", @(self.height));
-    }
-    self.result.viewHeight = viewHeight;
-    //    NSLog(@"%@, result view height: %@", result.serviceType, @(viewHeight));
-
+    CGFloat wordResultViewHeight = self.wordResultView.viewHeight ?: result.webViewManager.wordResultViewHeight;
+    [self updateWordResultViewHeight:wordResultViewHeight];
 
     // animation need right frame, but result may change, so have to layout frame.
     [self updateLoadingAnimation];
@@ -281,8 +265,19 @@
 
 #pragma mark -
 
-- (void)updateViewHeight:(CGFloat)wordResultViewHeight {
+- (void)updateWordResultViewHeight:(CGFloat)wordResultViewHeight {
+    if (self.result.HTMLString.length) {
+        self.result.webViewManager.wordResultViewHeight = wordResultViewHeight;
+        
+        if (wordResultViewHeight) {
+            self.result.isLoading = NO;
+        }
+    }
+
     [self.wordResultView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.topBarView.mas_bottom);
+        make.left.right.equalTo(self);
+        
         make.height.mas_equalTo(wordResultViewHeight);
     }];
 

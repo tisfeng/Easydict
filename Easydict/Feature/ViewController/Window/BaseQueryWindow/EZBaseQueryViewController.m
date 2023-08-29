@@ -25,6 +25,9 @@
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
 #import "EZTextWordUtils.h"
+#import <WebKit/WebKit.h>
+#import "DictionaryKit.h"
+#import "EZWebViewManager.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -43,7 +46,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
-@interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface EZBaseQueryViewController () <NSTableViewDelegate, NSTableViewDataSource, WKNavigationDelegate>
 
 @property (nonatomic, strong) NSScrollView *scrollView;
 @property (nonatomic, strong) NSTableView *tableView;
@@ -51,6 +54,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
+
+@property (nonatomic, strong) WKWebView *appleDictWebView;
 
 @property (nonatomic, copy) NSString *queryText;
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
@@ -319,6 +324,27 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSString *queryText = [_inputText trim];
     return queryText;
 }
+
+- (WKWebView *)appleDictWebView {
+    if (!_appleDictWebView) {
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
+        webView.navigationDelegate = self;
+        _appleDictWebView = webView;
+        
+        /**
+         NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
+         NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
+         [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+         NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
+         
+         [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+         
+         webView.navigationDelegate = self;
+         */
+    }
+    return _appleDictWebView;
+}
+
 
 #pragma mark - Public Methods
 
@@ -851,7 +877,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // !!!: Render webView html takes a little time(~0.5s), so we stop loading when webView finished loading.
         BOOL isFinished = YES;
         if (result.isShowing && result.HTMLString.length) {
-            isFinished = NO;
+            isFinished = result.webViewManager.wordResultViewHeight > 0;
         }
         result.isLoading = !isFinished;
         
@@ -1195,10 +1221,31 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         resultCell = [[EZResultView alloc] initWithFrame:[self tableViewContentBounds]];
         resultCell.identifier = EZResultViewId;
     }
+    
+    if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
+        resultCell.wordResultView.webView = self.appleDictWebView;
+    }
 
-    resultCell.result = service.result;
-
+    EZQueryResult *result = service.result;
+    resultCell.result = result;
     [self setupResultCell:resultCell];
+    
+    if (!result.webViewManager.isLoaded) {
+        BOOL shouldLoadHTML = result.isShowing && (result.viewHeight == EZResultViewMiniHeight) && result.HTMLString.length;
+        
+        if (shouldLoadHTML) {
+            result.webViewManager.isLoaded = YES;
+
+            NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
+            NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
+            [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+            NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
+            
+            self.appleDictWebView.navigationDelegate = resultCell.wordResultView;
+            
+            [self.appleDictWebView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+        }
+    }
 
     return resultCell;
 }

@@ -11,6 +11,7 @@
 #import "EZEnumTypes.h"
 #import "EZLanguageModel.h"
 #import "EZError.h"
+#import "EZWebViewManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -163,6 +164,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A Short property, return self.queryModel.queryFromLanguage
 @property (nonatomic, copy) EZLanguage queryFromLanguage;
+
+@property (nonatomic, strong) EZWebViewManager *webViewManager;
 
 - (void)reset;
 
