@@ -1210,14 +1210,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !result.webViewManager.isLoaded;
         if (needLoadHTML) {
             result.webViewManager.isLoaded = YES;
-
+            
             NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
             NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
+            // Cost < 0.01s
             [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
             NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
             
             webView.navigationDelegate = resultCell.wordResultView;
-            
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
         }
     }

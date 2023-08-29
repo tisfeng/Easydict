@@ -51,15 +51,18 @@
         return;
     }
     
-    NSString *htmlString = [self getAllIframeHTMLResultOfWord:text languages:@[ from, to ]];
-    self.result.HTMLString = htmlString;
-    
-    if (htmlString.length == 0) {
-        self.result.noResultsFound = YES;
-        self.result.errorType = EZErrorTypeNoResultsFound;
-    }
-    
-    completion(self.result, nil);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Note: this method may cost long time(>1.0s), if the html is very large.
+        NSString *htmlString = [self getAllIframeHTMLResultOfWord:text languages:@[ from, to ]];
+        self.result.HTMLString = htmlString;
+        
+        if (htmlString.length == 0) {
+            self.result.noResultsFound = YES;
+            self.result.errorType = EZErrorTypeNoResultsFound;
+        }
+        
+        completion(self.result, nil);
+    });
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {

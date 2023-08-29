@@ -975,11 +975,22 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 make.height.mas_equalTo(webViewHeight);
             }];
             
+            
+            /**
+             If html is too large, it takes a while to render webView, such as run script to adapt to dark mode.
+             
+             apple: 75747
+             take: 1971476
+             */
+            
+//            CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+//            NSLog(@"Delay showing time: %.2f", delayShowingTime);
+            
             // !!!: Must update view height, then update cell height.
             if (self.updateViewHeightBlock) {
                 self.updateViewHeightBlock(viewHeight);
             }
-            
+            // Notify tableView to update cell height.
             [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
             
             [self fetchWebViewAllIframeText:^(NSString *text) {
@@ -993,7 +1004,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     self.result.didFinishLoadingHTMLBlock();
                 }
             }];
- 
         } else {
             NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
         }
