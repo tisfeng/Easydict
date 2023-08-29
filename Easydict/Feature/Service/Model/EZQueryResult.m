@@ -106,6 +106,7 @@ NSString *getPartName(NSString *part) {
 - (instancetype)init {
     if (self = [super init]) {
         [self reset];
+        self.webViewManager = [[EZWebViewManager alloc] init];
     }
     return self;
 }
@@ -176,7 +177,7 @@ NSString *getPartName(NSString *part) {
     self.noResultsFound = NO;
     self.copiedText = nil;
     self.didFinishLoadingHTMLBlock = nil;
-    self.webViewManager = [[EZWebViewManager alloc] init];
+    self.webViewManager.isLoaded = NO;
 }
 
 @end
