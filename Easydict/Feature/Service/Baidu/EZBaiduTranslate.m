@@ -39,7 +39,10 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 - (instancetype)init {
     if (self = [super init]) {
+        // When debug, we should not call this method too much.
+#if !DEBUG
         [self updateCookieAndToken];
+#endif
     }
     return self;
 }

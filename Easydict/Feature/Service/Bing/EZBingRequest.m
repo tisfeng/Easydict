@@ -74,6 +74,9 @@ NSString *getTfetttsURLString(void) {
     if (self = [super init]) {
         _canRetryFetchHost = YES;
         
+        // When debug, we should not call this method too much, otherwise we will be blocked by Bing.
+        
+#if !DEBUG
         // To improve responsiveness, get configuration parameters in advance.
         [self fetchRequestHost:^(NSString *host) {
             [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
@@ -82,6 +85,7 @@ NSString *getTfetttsURLString(void) {
                 
             }];
         }];
+#endif
     }
     return self;
 }
