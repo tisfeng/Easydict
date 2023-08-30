@@ -272,6 +272,9 @@
             bodyStyle.getPropertyValue("margin-bottom")
           );
 
+          var marginHeight = marginTop + marginBottom;
+          // console.log("marginHeight: " + marginHeight); // 16
+
           // 获取iframe元素的边框
           var borderTop = parseInt(
             iframeStyle.getPropertyValue("border-top-width")
@@ -280,26 +283,25 @@
             iframeStyle.getPropertyValue("border-bottom-width")
           );
 
+          var borderHeight = borderTop + borderBottom;
+          // console.log("borderHeight: " + borderHeight); // 2
+
           var scrollHeight = doc.body.scrollHeight;
           console.log("scrollHeight: " + scrollHeight);
 
-          var scrollContentHeight = documentScollHeight;
-          if (documentScollHeight === 150) {
-            scrollContentHeight = scrollHeight;
-          }
-
           // 计算总高度
-          var totalHeight = (totalHeight =
-            scrollContentHeight +
-            marginTop +
-            marginBottom +
-            borderTop +
-            borderBottom);
+          var totalHeight = scrollHeight + marginHeight + borderHeight;
+
+          // 我也不知道为什么要加这个判断，但是不加的话，有些页面会出现滚动条 😢
+          // 但 documentScollHeight 最小值是 150，所以这里判断一下. hackathon
+          if (totalHeight <= documentScollHeight && documentScollHeight > 150) {
+            totalHeight = documentScollHeight + borderHeight;
+          }
 
           // 设置iframe的高度
           iframe.style.height = totalHeight + "px";
 
-          console.log("Height of iframe " + i + ": " + totalHeight);
+          console.log(`${i}: frame totalHeight: ${totalHeight}`);
         }
       }
 
