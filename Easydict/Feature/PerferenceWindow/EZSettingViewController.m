@@ -286,9 +286,10 @@
     self.defaultTTSServicePopUpButton = [[NSPopUpButton alloc] init];
     [self.contentView addSubview:self.defaultTTSServicePopUpButton];
     
+    // Note: Bing API has frequency limit
     NSArray *enabledTTSServiceTypes = @[
-        EZServiceTypeBing,
         EZServiceTypeYoudao,
+        EZServiceTypeBing,
         EZServiceTypeGoogle,
         EZServiceTypeBaidu,
         EZServiceTypeApple,

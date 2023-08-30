@@ -94,7 +94,7 @@ static EZConfiguration *_instance;
     self.autoCopySelectedText = [NSUserDefaults mm_readBool:kAutoCopySelectedTextKey defaultValue:NO];
     self.autoCopyFirstTranslatedText = [NSUserDefaults mm_readBool:kAutoCopyFirstTranslatedTextKey defaultValue:NO];
     self.languageDetectOptimize = [NSUserDefaults mm_readInteger:kLanguageDetectOptimizeTypeKey defaultValue:EZLanguageDetectOptimizeNone];
-    self.defaultTTSServiceType = [NSUserDefaults mm_readString:kDefaultTTSServiceTypeKey defaultValue:EZServiceTypeBing];
+    self.defaultTTSServiceType = [NSUserDefaults mm_readString:kDefaultTTSServiceTypeKey defaultValue:EZServiceTypeYoudao];
     self.showGoogleQuickLink = [NSUserDefaults mm_readBool:kShowGoogleLinkKey defaultValue:YES];
     self.showEudicQuickLink = [NSUserDefaults mm_readBool:kShowEudicLinkKey defaultValue:YES];
     self.showAppleDictionaryQuickLink = [NSUserDefaults mm_readBool:kShowAppleDictionaryLinkKey defaultValue:YES];
