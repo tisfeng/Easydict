@@ -935,6 +935,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSLog(@"webView didFinishNavigation");
+
     // Cost ~0.15s
     NSString *script = @"document.body.scrollHeight;";
     
@@ -987,12 +989,14 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 //            NSLog(@"Delay showing time: %.2f", delayShowingTime);
             
             // !!!: Must update view height, then update cell height.
+
             if (self.updateViewHeightBlock) {
                 self.updateViewHeightBlock(viewHeight);
             }
+
             // Notify tableView to update cell height.
             [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
-            
+                        
             [self fetchWebViewAllIframeText:^(NSString *text) {
                 self.result.copiedText = text;
                 
@@ -1004,6 +1008,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     self.result.didFinishLoadingHTMLBlock();
                 }
             }];
+            
         } else {
             NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
         }

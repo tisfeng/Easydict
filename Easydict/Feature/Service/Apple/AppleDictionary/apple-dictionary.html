@@ -354,12 +354,28 @@
       }
 
       window.onload = function () {
+        // 重写 console.log，以便在 Xcode 中输出日志
+        if (
+          !window.consoleLogRedefined &&
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.logHandler
+        ) {
+          window.consoleLogRedefined = true;
+          var originalConsoleLog = console.log;
+          console.log = function (message) {
+            window.webkit.messageHandlers.logHandler.postMessage(message);
+          };
+        }
+
         updateAllIframeStyle();
 
         if (isDarkMode()) {
           updateAllIframeColor(true);
           updateBackgroundColor(true);
         }
+
+        console.log("window.onload");
 
         var colorSchemeListener = window.matchMedia(
           `(prefers-color-scheme: dark)`

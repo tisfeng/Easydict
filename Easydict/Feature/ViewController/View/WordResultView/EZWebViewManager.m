@@ -8,7 +8,7 @@
 
 #import "EZWebViewManager.h"
 
-@interface EZWebViewManager () <WKNavigationDelegate>
+@interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @end
 
@@ -23,9 +23,21 @@
 
 - (WKWebView *)webView {
     if (!_webView) {
-        _webView = [[WKWebView alloc] init];
+        
+        // WKWebView 的配置，设置 messageHandlers
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        [configuration.userContentController addScriptMessageHandler:self name:@"logHandler"];
+        
+        _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
     return _webView;
+}
+
+// 处理来自 JavaScript 的消息
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"logHandler"]) {
+        NSLog(@"JavaScript log: %@", message.body);
+    }
 }
 
 @end
