@@ -950,7 +950,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             CGFloat contentHeight = [result doubleValue];
             NSLog(@"contentHeight: %.1f", contentHeight);
             
-            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.5;
+            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.55;
             
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
