@@ -938,7 +938,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSLog(@"webView didFinishNavigation");
 
     // Cost ~0.15s
-    NSString *script = @"document.body.scrollHeight;";
+    NSString *script = @"document.documentElement.scrollHeight;";
+//    script = @"Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);";
+    script = @"getWebViewTotalHeight();";
     
     mm_weakify(self);
     
@@ -951,7 +953,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             NSLog(@"contentHeight: %.1f", contentHeight);
             
             CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.55;
-            
+                    
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
             CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;

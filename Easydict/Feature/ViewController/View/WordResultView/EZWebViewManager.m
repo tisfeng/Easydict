@@ -36,7 +36,7 @@
 // 处理来自 JavaScript 的消息
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     if ([message.name isEqualToString:@"logHandler"]) {
-        NSLog(@"JavaScript log: %@", message.body);
+        NSLog(@"<javascript log>: %@", message.body);
     }
 }
 

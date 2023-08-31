@@ -262,9 +262,9 @@
           // Ref: https://gist.github.com/ifightcrime/1712614
           var documentElementScrollHeight =
             iframeDocument.documentElement.scrollHeight;
-          console.log(
-            "documentElementScrollHeight: " + documentElementScrollHeight
-          );
+          // console.log(
+          //   "documentElementScrollHeight: " + documentElementScrollHeight
+          // );
 
           // var bodyHeight = iframeDocument.body.getBoundingClientRect().height;
           // console.log("bodyHeight: " + bodyHeight);
@@ -290,7 +290,7 @@
           // console.log("borderHeight: " + borderHeight); // 2
 
           var scrollHeight = iframeDocument.body.scrollHeight;
-          console.log("scrollHeight: " + scrollHeight);
+          // console.log("scrollHeight: " + scrollHeight);
 
           // 计算总高度
           var totalHeight = scrollHeight + marginHeight + borderHeight;
@@ -306,8 +306,51 @@
           // 设置iframe的高度
           iframe.style.height = totalHeight + "px";
 
-          console.log(`${i}: frame totalHeight: ${totalHeight}`);
+          // console.log(`${i}: frame totalHeight: ${totalHeight}`);
         }
+      }
+
+      // get all iframe height, return height array
+      function getIframeHeights() {
+        var heights = [];
+        var iframes = document.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          var iframeDocument = iframe.contentWindow.document;
+          var documentElementScrollHeight =
+            iframeDocument.documentElement.scrollHeight;
+          heights.push(documentElementScrollHeight);
+        }
+        return heights;
+      }
+
+      // get webview total height
+      function getWebViewTotalHeight() {
+        /**
+         * one iframe, iframesHeight: 99, scrollHeight: 184
+         * two iframe, iframesHeight: 443, scrollHeight: 572
+         *
+         * 184-99 = 85
+         * 572-443 = 129
+         * 85*2 = 170
+         * 170-129 = 41
+         * bigWordTitleHeight = 41
+         * dictionaryTitleHeight = 85-41 = 44
+         */
+
+        var bigWordTitleHeight = 41;
+        var dictionaryTitleHeight = 44;
+        var iframesHeight = getIframeHeights();
+        var allIframesHeight = iframesHeight.reduce(function (a, b) {
+          return a + b;
+        }, 0);
+        var scrollHeight =
+          bigWordTitleHeight +
+          allIframesHeight +
+          dictionaryTitleHeight * iframesHeight.length;
+        console.log(`iframesHeight: [${iframesHeight}]`);
+        console.log(`scrollHeight: ${scrollHeight}`);
+        return scrollHeight;
       }
 
       // update all iframe color
@@ -379,8 +422,6 @@
           updateAllIframeColor(true);
           updateBackgroundColor(true);
         }
-
-        console.log("window.onload");
 
         var colorSchemeListener = window.matchMedia(
           `(prefers-color-scheme: dark)`
