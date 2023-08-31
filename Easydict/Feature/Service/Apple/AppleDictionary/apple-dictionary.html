@@ -250,20 +250,23 @@
           body.style.margin = "8px 10px";
           body.style.padding = "0px";
 
-          // 获取iframe的内容文档
-          var doc = iframe.contentWindow.document;
           // 获取body元素的样式
-          var bodyStyle = getComputedStyle(doc.body);
+          var bodyStyle = getComputedStyle(iframeDocument.body);
 
           // 获取iframe元素的计算样式
           var iframeStyle = window.getComputedStyle(iframes[i]);
 
-          // >= 150 ??
-          const documentScollHeight =
-            iframeDocument.documentElement.scrollHeight;
-          console.log("documentScollHeight: " + documentScollHeight);
+          // documentElementScrollHeight will >= 150 if we don't set iframe height to 0px
+          iframe.style.height = "0px";
 
-          // var bodyHeight = doc.body.getBoundingClientRect().height;
+          // Ref: https://gist.github.com/ifightcrime/1712614
+          var documentElementScrollHeight =
+            iframeDocument.documentElement.scrollHeight;
+          console.log(
+            "documentElementScrollHeight: " + documentElementScrollHeight
+          );
+
+          // var bodyHeight = iframeDocument.body.getBoundingClientRect().height;
           // console.log("bodyHeight: " + bodyHeight);
 
           // 获取body元素的外边距
@@ -286,7 +289,7 @@
           var borderHeight = borderTop + borderBottom;
           // console.log("borderHeight: " + borderHeight); // 2
 
-          var scrollHeight = doc.body.scrollHeight;
+          var scrollHeight = iframeDocument.body.scrollHeight;
           console.log("scrollHeight: " + scrollHeight);
 
           // 计算总高度
@@ -294,9 +297,11 @@
 
           // 我也不知道为什么要加这个判断，但是不加的话，有些页面会出现滚动条 😢
           // 但 documentScollHeight 最小值是 150，所以这里判断一下. hackathon
-          if (totalHeight <= documentScollHeight && documentScollHeight > 150) {
-            totalHeight = documentScollHeight + borderHeight;
-          }
+          // if (totalHeight <= documentScollHeight && documentScollHeight > 150) {
+          //   totalHeight = documentScollHeight + borderHeight;
+          // }
+
+          totalHeight = documentElementScrollHeight;
 
           // 设置iframe的高度
           iframe.style.height = totalHeight + "px";
