@@ -40,4 +40,10 @@
     }
 }
 
+- (void)reset {
+    self.wordResultViewHeight = 0;
+    self.isLoaded = NO;
+    self.HTMLString = nil;
+}
+
 @end

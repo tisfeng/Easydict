@@ -136,9 +136,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             //            NSLog(@"lockResizeWindow");
             return;
         }
-        
-        [self resetLoadFlagForAllResults];
-        
+                
         [self reloadTableViewDataWithLock:NO completion:^{
             // Update query view height manually, and update cell height.
             CGFloat queryViewHeight = [self.queryView heightOfQueryView];
@@ -1094,14 +1092,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     for (EZQueryResult *result in results) {
         result.isShowing = NO;
         result.isLoading = NO;
-    }
-}
-
-/// Set all result webViewManager.isLoad to NO
-- (void)resetLoadFlagForAllResults {
-    for (EZQueryService *service in self.services) {
-        EZQueryResult *result = service.result;
-        result.webViewManager.isLoaded = NO;
     }
 }
 

@@ -14,9 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EZWebViewManager : NSObject
 
 @property (nonatomic, strong) WKWebView *webView;
-@property (nonatomic, copy) NSString *HTMLString;
+@property (nonatomic, copy, nullable) NSString *HTMLString;
 @property (nonatomic, assign) CGFloat wordResultViewHeight;
 @property (nonatomic, assign) BOOL isLoaded;
+
+- (void)reset;
 
 @end
 

@@ -177,7 +177,8 @@ NSString *getPartName(NSString *part) {
     self.noResultsFound = NO;
     self.copiedText = nil;
     self.didFinishLoadingHTMLBlock = nil;
-    self.webViewManager.isLoaded = NO;
+    
+    [self.webViewManager reset];
 }
 
 @end

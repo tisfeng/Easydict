@@ -952,7 +952,14 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             CGFloat contentHeight = [result doubleValue];
             NSLog(@"contentHeight: %.1f", contentHeight);
             
-            CGFloat maxHeight = EZLayoutManager.shared.screen.visibleFrame.size.height * 0.55;
+            CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
+            CGFloat maxHeight = visibleFrameHeight * 0.55;
+
+            EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
+            EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
+            if (queryViewController.services.count == 1) {
+                maxHeight = visibleFrameHeight - floatingWindow.height;
+            }
                     
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
@@ -996,8 +1003,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 self.updateViewHeightBlock(viewHeight);
             }
 
+            
             // Notify tableView to update cell height.
-            [EZWindowManager.shared.floatingWindow.queryViewController updateCellWithResult:self.result reloadData:NO];
+            [queryViewController updateCellWithResult:self.result reloadData:NO];
                         
             [self fetchWebViewAllIframeText:^(NSString *text) {
                 self.result.copiedText = text;
