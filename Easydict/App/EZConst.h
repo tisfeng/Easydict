@@ -9,8 +9,8 @@
 #ifndef EZConst_h
 #define EZConst_h
 
-static CGFloat const EZHorizontalCellSpacing_12 = 10;
-static CGFloat const EZVerticalCellSpacing_8 = 8;
+static CGFloat const EZHorizontalCellSpacing_10 = 10;
+static CGFloat const EZVerticalCellSpacing_7 = 7;
 
 static CGFloat const EZCornerRadius_8 = 8;
 
