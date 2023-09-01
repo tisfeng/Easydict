@@ -136,7 +136,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             //            NSLog(@"lockResizeWindow");
             return;
         }
-                
+        
+        [self setNeedUpdateIframeHeightForAllResults];
+        
         [self reloadTableViewDataWithLock:NO completion:^{
             // Update query view height manually, and update cell height.
             CGFloat queryViewHeight = [self.queryView heightOfQueryView];
@@ -1095,6 +1097,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
+/// Set all result webViewManager.isLoad to NO
+- (void)setNeedUpdateIframeHeightForAllResults {
+    for (EZQueryService *service in self.services) {
+        EZQueryResult *result = service.result;
+        result.webViewManager.needUpdateIframeHeight = YES;
+    }
+}
+
 
 #pragma mark - Set up cell view
 
@@ -1219,6 +1229,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             
             webView.navigationDelegate = resultCell.wordResultView;
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+        } else if (result.webViewManager.needUpdateIframeHeight && result.webViewManager.isLoaded) {
+            NSString *script = @"updateAllIframeStyle();";
+            [webView evaluateJavaScript:script completionHandler:^(id result, NSError * _Nullable error) {
+
+            }];
         }
     }
     

@@ -1100,6 +1100,95 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 #pragma mark -
 
+- (void)updateWebViewHeight {
+    // Cost ~0.15s
+    NSString *script = @"document.documentElement.scrollHeight;";
+//    script = @"Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);";
+    script = @"getWebViewTotalHeight();";
+    
+    mm_weakify(self);
+    
+    [self.webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (!error) {
+            mm_strongify(self);
+            
+            // Cost ~0.2s
+            CGFloat contentHeight = [result doubleValue];
+            NSLog(@"contentHeight: %.1f", contentHeight);
+            
+            CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
+            CGFloat maxHeight = visibleFrameHeight * 0.55;
+
+            EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
+            EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
+            if (queryViewController.services.count == 1) {
+                maxHeight = visibleFrameHeight - floatingWindow.height - self.bottomViewHeight;
+            }
+                    
+            // Fix strange white line
+            CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
+            CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
+                        
+            /**
+             Improve scrollable height:
+             
+             If contentHeight > maxHeight, we shoud show scrollbar temporarily.
+             
+             TODO: if contentHeight <= maxHeight, we should disable webView scroll but enable tableView scroll.
+             */
+            NSMutableString *jsCode = [NSMutableString string];
+            if (contentHeight > maxHeight) {
+                [jsCode appendString:[self jsCodeOfOptimizeScrollableWebView]];
+            }
+            
+            if (jsCode.length) {
+                [self evaluateJavaScript:jsCode];
+            }
+            
+            
+            [self.webView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.height.mas_equalTo(webViewHeight);
+            }];
+            
+            
+            /**
+             If html is too large, it takes a while to render webView, such as run script to adapt to dark mode.
+             
+             apple: 75747
+             take: 1971476
+             */
+            
+//            CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+//            NSLog(@"Delay showing time: %.2f", delayShowingTime);
+            
+            // !!!: Must update view height, then update cell height.
+
+            if (self.updateViewHeightBlock) {
+                self.updateViewHeightBlock(viewHeight);
+            }
+
+            
+            // Notify tableView to update cell height.
+            [queryViewController updateCellWithResult:self.result reloadData:NO];
+                        
+            [self fetchWebViewAllIframeText:^(NSString *text) {
+                self.result.copiedText = text;
+                
+                if (self.didFinishLoadingHTMLBlock) {
+                    self.didFinishLoadingHTMLBlock();
+                }
+                
+                if (self.result.didFinishLoadingHTMLBlock) {
+                    self.result.didFinishLoadingHTMLBlock();
+                }
+            }];
+            
+        } else {
+            NSLog(@"Error evaluating JavaScript: %@", error.localizedDescription);
+        }
+    }];
+}
+
 - (void)updateWebViewBackgroundColorWithDarkMode:(BOOL)isDark {
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
