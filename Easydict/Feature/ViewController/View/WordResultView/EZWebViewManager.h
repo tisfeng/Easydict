@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isLoaded;
 @property (nonatomic, assign) BOOL needUpdateIframeHeight;
 
+@property (nonatomic, copy, nullable) void (^didFinishUpdatingIframeHeightBlock)(CGFloat height);
+
 - (void)reset;
 
 @end

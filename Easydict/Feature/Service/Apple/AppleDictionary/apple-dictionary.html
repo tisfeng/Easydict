@@ -324,8 +324,8 @@
         return heights;
       }
 
-      // get webview total height
-      function getWebViewTotalHeight() {
+      // get total scroll height
+      function getScrollHeight() {
         /**
          * one iframe, iframesHeight: 99, scrollHeight: 184
          * two iframe, iframesHeight: 443, scrollHeight: 572
@@ -416,12 +416,20 @@
           };
         }
 
-        updateAllIframeStyle();
-
         if (isDarkMode()) {
           updateAllIframeColor(true);
           updateBackgroundColor(true);
         }
+
+        updateAllIframeStyle();
+
+        var scrollHeight = getScrollHeight();
+
+        // 调用 Objective-C 方法
+        window.webkit.messageHandlers.objcHandler.postMessage({
+          method: "getScrollHeight",
+          scrollHeight: scrollHeight,
+        });
 
         var colorSchemeListener = window.matchMedia(
           `(prefers-color-scheme: dark)`

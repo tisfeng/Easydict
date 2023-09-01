@@ -1231,9 +1231,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
         } else if (result.webViewManager.needUpdateIframeHeight && result.webViewManager.isLoaded) {
             NSString *script = @"updateAllIframeStyle();";
-            [webView evaluateJavaScript:script completionHandler:^(id result, NSError * _Nullable error) {
-
-            }];
+            [webView evaluateJavaScript:script completionHandler:nil];
         }
     }
     
