@@ -406,13 +406,15 @@
         if (
           !window.consoleLogRedefined &&
           window.webkit &&
-          window.webkit.messageHandlers &&
-          window.webkit.messageHandlers.logHandler
+          window.webkit.messageHandlers
         ) {
           window.consoleLogRedefined = true;
           var originalConsoleLog = console.log;
           console.log = function (message) {
-            window.webkit.messageHandlers.logHandler.postMessage(message);
+            window.webkit.messageHandlers.objcHandler.postMessage({
+              method: "consoleLog",
+              message: message,
+            });
           };
         }
 
@@ -425,11 +427,13 @@
 
         var scrollHeight = getScrollHeight();
 
-        // 调用 Objective-C 方法
-        window.webkit.messageHandlers.objcHandler.postMessage({
-          method: "getScrollHeight",
-          scrollHeight: scrollHeight,
-        });
+        if (window.webkit && window.webkit.messageHandlers) {
+          // 调用 Objective-C 方法
+          window.webkit.messageHandlers.objcHandler.postMessage({
+            method: "getScrollHeight",
+            scrollHeight: scrollHeight,
+          });
+        }
 
         var colorSchemeListener = window.matchMedia(
           `(prefers-color-scheme: dark)`

@@ -8,6 +8,9 @@
 
 #import "EZWebViewManager.h"
 
+static NSString *kObjcHandler = @"objcHandler";
+static NSString *kMethod = @"method";
+
 @interface EZWebViewManager () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @end
@@ -23,8 +26,7 @@
 - (WKWebView *)webView {
     if (!_webView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        [configuration.userContentController addScriptMessageHandler:self name:@"logHandler"];
-        [configuration.userContentController addScriptMessageHandler:self name:@"objcHandler"];
+        [configuration.userContentController addScriptMessageHandler:self name:kObjcHandler];
 
         _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     }
@@ -35,13 +37,14 @@
 // 处理来自 JavaScript 的消息
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     id body = message.body;
-    
-    if ([message.name isEqualToString:@"logHandler"]) {
-        NSLog(@"<javascript log>: %@", body);
-    }
-    
-    if([message.name isEqualToString:@"objcHandler"]) {
-        if([body[@"method"] isEqualToString:@"getScrollHeight"]) {
+
+    if([message.name isEqualToString:kObjcHandler]) {
+        if([body[kMethod] isEqualToString:@"consoleLog"]) {
+            NSString *message = body[@"message"];
+            NSLog(@"<javascript log>: %@", message);
+        }
+        
+        if([body[kMethod] isEqualToString:@"getScrollHeight"]) {
             CGFloat scrollHeight = [body[@"scrollHeight"] floatValue];
             if (self.didFinishUpdatingIframeHeightBlock) {
                 self.didFinishUpdatingIframeHeightBlock(scrollHeight);
