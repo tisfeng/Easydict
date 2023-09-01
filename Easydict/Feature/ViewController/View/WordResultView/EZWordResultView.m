@@ -38,7 +38,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 @property (nonatomic, strong) EZQueryResult *result;
 
-@property (nonatomic, assign) CGFloat bottomViewHeigt;
+@property (nonatomic, assign) CGFloat bottomViewHeight;
 
 @end
 
@@ -833,9 +833,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }];
     lastView = audioButton;
     
-    self.bottomViewHeigt = audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_4;
+    self.bottomViewHeight = audioButtonTopOffset + EZAudioButtonWidthHeight_24 + EZAudioButtonBottomMargin_4;
     
-    height += self.bottomViewHeigt;
+    height += self.bottomViewHeight;
     _viewHeight = height;
     //    NSLog(@"word result view height: %.1f", height);
     
@@ -958,12 +958,12 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
             EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
             if (queryViewController.services.count == 1) {
-                maxHeight = visibleFrameHeight - floatingWindow.height;
+                maxHeight = visibleFrameHeight - floatingWindow.height - self.bottomViewHeight;
             }
                     
             // Fix strange white line
             CGFloat webViewHeight = ceil(MIN(maxHeight, contentHeight));
-            CGFloat viewHeight = self.bottomViewHeigt + webViewHeight;
+            CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
                         
             /**
              Improve scrollable height:
