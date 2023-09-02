@@ -642,6 +642,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             @"com.apple.iWork.Keynote", // Keynote
             @"com.apple.iWork.Numbers", // Numbers
             @"com.apple.freeform",      // Freeform 无边记
+            // Fix:  https://github.com/tisfeng/Easydict/issues/166
+            @"org.mozilla.firefox",       // Firefox
         ],
         
         // kAXErrorFailure -25200
