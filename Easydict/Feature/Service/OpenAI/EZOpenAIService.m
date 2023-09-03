@@ -449,10 +449,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      */
     
     /**
-     data: {"id":"chatcmpl-7uYwHX8kYxs4UuvxpA9qGj8g0w76w","object":"chat.completion.chunk","created":1693715029,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":"解"}}]
      
-     Sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
+     Note: Sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
      so join the next json data together with previous json data, then perform json serialization
+     
+     data: {"id":"chatcmpl-7uYwHX8kYxs4UuvxpA9qGj8g0w76w","object":"chat.completion.chunk","created":1693715029,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":
+     
      */
 
     if (lastData && *lastData) {
@@ -479,20 +481,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }
         
         NSString *dataString = [jsonString trim];
-//        NSString *dataString = jsonString;
-
-        /**
-         OpenAI uses [DONE] at the end to indicate the end, but Auzre sometimes uses "finish_reason":"stop" to indicate the end.
-         */
-        NSString *endString = @"[DONE]";
-        if ([dataString isEqualToString:endString]) {
-            NSLog(@"[DONE]");
-            if (isFinished) {
-                *isFinished = YES;
-            }
-            break;
-        }
-        
         if (dataString.length) {
             // parse string to json
             NSData *jsonData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
@@ -530,10 +518,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 if (choice[@"delta"]) {
                     // finish_reason is NSNull if not stop
                     NSString *finishReason = choice[@"finish_reason"];
-                    
                     if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
-                        NSLog(@"finish reason: %@", finishReason);
-
+//                        NSLog(@"finish reason: %@", finishReason);
                         if (isFinished) {
                             *isFinished = YES;
                         }
