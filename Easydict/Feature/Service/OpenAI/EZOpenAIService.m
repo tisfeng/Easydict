@@ -294,6 +294,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         __block NSMutableString *mutableString = [NSMutableString string];
         __block BOOL isFirst = YES;
         __block BOOL isFinished = NO;
+        __block NSData *lastData;
         __block NSString *appendSuffixQuote = nil;
         
         [manager setDataTaskDidReceiveDataBlock:^(NSURLSession *_Nonnull session, NSURLSessionDataTask *_Nonnull dataTask, NSData *_Nonnull data) {
@@ -304,7 +305,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             // convert data to JSON
             
             NSError *error;
-            NSString *content = [self parseContentFromStreamData:data error:&error isFinished:&isFinished];
+            NSString *content = [self parseContentFromStreamData:data
+                                                        lastData:&lastData
+                                                           error:&error
+                                                      isFinished:&isFinished];
             self.result.isFinished = isFinished;
             
             if (error && error.code != NSURLErrorCancelled) {
@@ -382,7 +386,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.inputText;
             
-            NSString *content = [self parseContentFromStreamData:responseObject error:nil isFinished:nil];
+            NSString *content = [self parseContentFromStreamData:responseObject
+                                                        lastData:nil
+                                                           error:nil
+                                                      isFinished:nil];
             NSLog(@"success content: %@", content);
             
             // Count quote may cost much time, so only count when query text is short.
@@ -428,6 +435,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Parse content from nsdata
 - (NSString *)parseContentFromStreamData:(NSData *)data
+                                lastData:(NSData **)lastData
                                    error:(NSError **)error
                               isFinished:(nullable BOOL *)isFinished {
     /**
@@ -440,12 +448,22 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      data: [DONE]
      */
     
-    /// sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
-    /// so join the next json together with previous json, then perform json serialization
-    static NSString *unterminatedJson = @"";
+    /**
+     data: {"id":"chatcmpl-7uYwHX8kYxs4UuvxpA9qGj8g0w76w","object":"chat.completion.chunk","created":1693715029,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":"解"}}]
+     
+     Sometimes the json data obtained from Azure Open AI through stream is a unterminated json.
+     so join the next json data together with previous json data, then perform json serialization
+     */
+
+    if (lastData && *lastData) {
+        NSMutableData *mutableData = [NSMutableData dataWithData:*lastData];
+        [mutableData appendData:data];
+        data = mutableData;
+    }
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//    NSLog(@"jsonDataString: %@", jsonDataString);
     
     // split string to array
     NSString *dataKey = @"data:";
@@ -461,8 +479,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }
         
         NSString *dataString = [jsonString trim];
+//        NSString *dataString = jsonString;
+
+        /**
+         OpenAI uses [DONE] at the end to indicate the end, but Auzre sometimes uses "finish_reason":"stop" to indicate the end.
+         */
         NSString *endString = @"[DONE]";
         if ([dataString isEqualToString:endString]) {
+            NSLog(@"[DONE]");
             if (isFinished) {
                 *isFinished = YES;
             }
@@ -477,28 +501,26 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             if (jsonError) {
                 // the error is a unterminated json error
                 if (jsonError.domain == NSCocoaErrorDomain && jsonError.code == 3840) {
-                    if (unterminatedJson.length == 0) {
-                        unterminatedJson = jsonDataString;
-                        *error = jsonError;
-                    } else {
-                        // join previous json, then serialization
-                        NSString *joinString = [NSString stringWithFormat:@"%@%@", unterminatedJson, jsonDataString];
-                        unterminatedJson = @"";
-                        NSError *err;
-                        NSString *content = [self parseContentFromStreamData:[joinString dataUsingEncoding:NSUTF8StringEncoding] error:&err isFinished:nil];
-                        if (err == nil) {
-                            return content;
-                        } else {
-                            *error = err;
-                        }
+//                    NSLog(@"\n\nincomplete dataString: %@\n\n", dataString);
+                    
+                    NSString *incompleteDataString = [NSString stringWithFormat:@"%@\n%@", dataKey, dataString];
+                    NSData *incompleteData = [incompleteDataString dataUsingEncoding:NSUTF8StringEncoding];
+                    if (lastData) {
+                        *lastData = incompleteData;
                     }
                 } else {
                     *error = jsonError;
+                    NSLog(@"json error: %@", *error);
+                    NSLog(@"dataString: %@", dataString);
                 }
                 
-                NSLog(@"error, dataString: %@", dataString);
                 break;
+            } else {
+                if (lastData) {
+                    *lastData = nil;
+                }
             }
+            
             if (json[@"choices"]) {
                 NSArray *choices = json[@"choices"];
                 if (choices.count == 0) {
@@ -506,6 +528,18 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 }
                 NSDictionary *choice = choices[0];
                 if (choice[@"delta"]) {
+                    // finish_reason is NSNull if not stop
+                    NSString *finishReason = choice[@"finish_reason"];
+                    
+                    if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
+                        NSLog(@"finish reason: %@", finishReason);
+
+                        if (isFinished) {
+                            *isFinished = YES;
+                        }
+                        break;
+                    }
+                    
                     NSDictionary *delta = choice[@"delta"];
                     if (delta[@"content"]) {
                         NSString *content = delta[@"content"];
