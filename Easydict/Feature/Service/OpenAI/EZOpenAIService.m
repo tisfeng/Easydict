@@ -55,13 +55,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return model;
 }
 
-- (NSString *)requestUrlWithDefaultFormatUrl:(nullable NSString *)defaultFormatUrl {
-    NSString *url = [NSUserDefaults mm_readString:EZOpenAIFullRequestUrlKey defaultValue:@""];
+- (NSString *)requestOpenAIEndPoint:(nullable NSString *)formatURLString {
+    NSString *url = [NSUserDefaults mm_readString:EZOpenAIEndPointKey defaultValue:@""];
     if (url.length == 0) {
-        if (defaultFormatUrl == nil || defaultFormatUrl.length == 0) {
-            defaultFormatUrl = @"https://%@/v1/chat/completions";
+        if (formatURLString.length == 0) {
+            formatURLString = @"https://%@/v1/chat/completions";
         }
-        url = [NSString stringWithFormat:defaultFormatUrl, self.domain];
+        url = [NSString stringWithFormat:formatURLString, self.domain];
     }
     return url;
 }
@@ -368,7 +368,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }];
     }
     
-    NSString *url = [self requestUrlWithDefaultFormatUrl:nil];
+    NSString *url = [self requestOpenAIEndPoint:nil];
     NSURLSessionTask *task = [manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
@@ -386,17 +386,16 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.inputText;
             
-            NSString *content = [self parseContentFromStreamData:responseObject
-                                                        lastData:nil
-                                                           error:nil
-                                                      isFinished:nil];
-            NSLog(@"success content: %@", content);
-            
             // Count quote may cost much time, so only count when query text is short.
             if (shouldHandleQuote && queryText.length < 100) {
                 NSInteger queryTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:queryText];
                 NSInteger translatedTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:self.result.translatedText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
+                    NSString *content = [self parseContentFromStreamData:responseObject
+                                                                lastData:nil
+                                                                   error:nil
+                                                              isFinished:nil];
+                    NSLog(@"success content: %@", content);
                     completion(content, nil);
                 }
             }
@@ -563,7 +562,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"stream" : @(stream),
     };
     
-    NSString *url = [self requestUrlWithDefaultFormatUrl:nil];
+    NSString *url = [self requestOpenAIEndPoint:nil];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
     request.allHTTPHeaderFields = header;
@@ -656,7 +655,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     };
     
     
-    NSString *url = [self requestUrlWithDefaultFormatUrl:@"https://%@/v1/completions"];
+    NSString *url = [self requestOpenAIEndPoint:@"https://%@/v1/completions"];
 
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";

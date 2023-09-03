@@ -23,8 +23,9 @@ static NSString *const EZOpenAISentenceKey = @"EZOpenAISentenceKey";
 static NSString *const EZOpenAIServiceUsageStatusKey = @"EZOpenAIServiceUsageStatusKey";
 
 static NSString *const EZOpenAIDomainKey = @"EZOpenAIDomainKey";
+static NSString *const EZOpenAIEndPointKey = @"EZOpenAIEndPointKey";
 static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
-static NSString *const EZOpenAIFullRequestUrlKey = @"EZOpenAIFullRequestUrlKey";
+
 
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 
