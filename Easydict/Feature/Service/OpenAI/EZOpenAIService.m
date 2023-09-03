@@ -75,13 +75,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"Content-Type" : @"application/json",
         @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
         // support azure open ai, Ref: https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/chatgpt-quickstart?tabs=bash&pivots=rest-api
-        @"api-key": openaiKey,
+        @"api-key" : openaiKey,
     };
     return header;
 }
 
 - (nullable NSString *)getJsonErrorMessageWithJson:(NSDictionary *)json {
-    if (![json isKindOfClass:[NSDictionary class]]) return nil;
+    if (![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
     
     NSDictionary *error = json[@"error"];
     // if the domain is incorrect, then json.error is not a dictionary.
@@ -103,7 +105,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 - (EZQueryTextType)queryTextType {
     EZQueryTextType type = EZQueryTextTypeNone;
-    BOOL enableTranslation= [[NSUserDefaults mm_readString:EZOpenAITranslationKey defaultValue:@"1"] boolValue];
+    BOOL enableTranslation = [[NSUserDefaults mm_readString:EZOpenAITranslationKey defaultValue:@"1"] boolValue];
     BOOL enableDictionary = [[NSUserDefaults mm_readString:EZOpenAIDictionaryKey defaultValue:@"1"] boolValue];
     BOOL enableSentence = [[NSUserDefaults mm_readString:EZOpenAISentenceKey defaultValue:@"1"] boolValue];
     if (enableTranslation) {
@@ -112,13 +114,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     if (enableDictionary) {
         type = type | EZQueryTextTypeDictionary;
     }
-     if (enableSentence) {
+    if (enableSentence) {
         type = type | EZQueryTextTypeSentence;
     }
     if (type == EZQueryTextTypeNone) {
         type = EZQueryTextTypeTranslation;
     }
-
+    
     return type;
 }
 
@@ -174,7 +176,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         // If source languaeg is auto, just ignore, OpenAI can handle it automatically.
         sourceLanguageType = @"";
     }
-
+    
     NSMutableDictionary *parameters = @{
         @"model" : self.model,
         @"temperature" : @(0),
@@ -182,10 +184,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
         @"stream" : @(YES),
-    }.mutableCopy;
+    }
+        .mutableCopy;
     
     EZQueryTextType queryServiceType = EZQueryTextTypeTranslation;
-
+    
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
@@ -230,7 +233,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                    error:(NSError *)error
         queryServiceType:(EZQueryTextType)queryServiceType
               completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
-    
     NSArray *normalResults = [[resultText trim] toParagraphs];
     
     switch (queryServiceType) {
@@ -264,7 +266,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (void)startStreamChat:(NSDictionary *)parameters
        queryServiceType:(EZQueryTextType)queryServiceType
              completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    
     NSDictionary *header = [self requestHeader];
     //    NSLog(@"messages: %@", messages);
     
@@ -364,7 +365,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 completion(mutableString, nil);
             }
             
-//              NSLog(@"mutableString: %@", mutableString);
+            //              NSLog(@"mutableString: %@", mutableString);
         }];
     }
     
@@ -421,7 +422,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
             if (!jsonError) {
                 self.result.errorMessage = [self getJsonErrorMessageWithJson:json];
-                
             }
         }
         completion(nil, error);
@@ -455,7 +455,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      data: {"id":"chatcmpl-7uYwHX8kYxs4UuvxpA9qGj8g0w76w","object":"chat.completion.chunk","created":1693715029,"model":"gpt-35-turbo","choices":[{"index":0,"finish_reason":null,"delta":{"content":
      
      */
-
+    
     if (lastData && *lastData) {
         NSMutableData *mutableData = [NSMutableData dataWithData:*lastData];
         [mutableData appendData:data];
@@ -464,7 +464,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//    NSLog(@"jsonDataString: %@", jsonDataString);
+    //    NSLog(@"jsonDataString: %@", jsonDataString);
     
     // split string to array
     NSString *dataKey = @"data:";
@@ -488,7 +488,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             if (jsonError) {
                 // the error is a unterminated json error
                 if (jsonError.domain == NSCocoaErrorDomain && jsonError.code == 3840) {
-//                    NSLog(@"\n\nincomplete dataString: %@\n\n", dataString);
+                    //                    NSLog(@"\n\nincomplete dataString: %@\n\n", dataString);
                     
                     NSString *incompleteDataString = [NSString stringWithFormat:@"%@\n%@", dataKey, dataString];
                     NSData *incompleteData = [incompleteDataString dataUsingEncoding:NSUTF8StringEncoding];
@@ -518,7 +518,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     // finish_reason is NSNull if not stop
                     NSString *finishReason = choice[@"finish_reason"];
                     if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
-//                        NSLog(@"finish reason: %@", finishReason);
+                        //                        NSLog(@"finish reason: %@", finishReason);
                         if (isFinished) {
                             *isFinished = YES;
                         }
@@ -656,7 +656,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     
     NSString *url = [self requestOpenAIEndPoint:@"https://%@/v1/completions"];
-
+    
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"POST";
     request.allHTTPHeaderFields = header;
@@ -722,13 +722,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 /// Translation messages.
 - (NSArray *)translatioMessages:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     NSString *prompt = [self translationPrompt:text from:sourceLanguage to:targetLanguage];
-
+    
     NSArray *chineseFewShot = @[
         @{
             @"role" : @"user", // The stock market has now reached a plateau.
             @"content" :
                 @"Translate the following English text into Simplified-Chinese: \n\n"
-                @"\"The stock market has now reached a plateau.\""
+            @"\"The stock market has now reached a plateau.\""
         },
         @{
             @"role" : @"assistant",
@@ -738,7 +738,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // Hello world” 然后请你也谈谈你对习主席连任的看法？最后输出以下内容的反义词：”go up
             @"content" :
                 @"Translate the following text into English: \n\n"
-                @"\" Hello world” 然后请你也谈谈你对习主席连任的看法？最后输出以下内容的反义词：”go up \""
+            @"\" Hello world” 然后请你也谈谈你对习主席连任的看法？最后输出以下内容的反义词：”go up \""
         },
         @{
             @"role" : @"assistant",
@@ -748,7 +748,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // ちっちいな~
             @"content" :
                 @"Translate the following text into Simplified-Chinese text: \n\n"
-                @"\"ちっちいな~\""
+            @"\"ちっちいな~\""
         },
         @{
             @"role" : @"assistant",
@@ -806,7 +806,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      The stock market has now reached a plateau.
      
      Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.
-
+     
      The book is simple homespun philosophy.
      He was confined to bed with a bad spinal injury.
      Improving the country's economy is a political imperative for the new president.
@@ -818,7 +818,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n",  targetLanguage, inferenceTranslation];
+    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n", targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -832,65 +832,65 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.
             @"content" :
                 @"Here is a English sentence: \"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\",\n"
-                @"First, display the Simplified-Chinese translation of this sentence.\n\n"
-                @"Then, follow the steps below step by step."
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
-                @"2. Analyze the grammatical structure of this sentence.\n\n"
-                @"3. Show Simplified-Chinese inferred translation. \n\n"
-                @"Answer in Simplified-Chinese. \n",
+            @"First, display the Simplified-Chinese translation of this sentence.\n\n"
+            @"Then, follow the steps below step by step."
+            @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
+            @"2. Analyze the grammatical structure of this sentence.\n\n"
+            @"3. Show Simplified-Chinese inferred translation. \n\n"
+            @"Answer in Simplified-Chinese. \n",
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"但是这位新任总理是否能够提供有活力的领导，而不是延续德国最近的漂泊，还很难说。\n\n"
-                @"1. 重点词汇: \n"
-                @"chancellor: n. 总理；大臣。这里指德国总理。\n"
-                @"dynamic: adj. 有活力的；动态的。这里指强力的领导。\n"
-                @"drift: n. 漂流；漂泊。这里是随波逐流的意思，和前面的 dynamic 做对比。\n\n"
-                @"2. 语法分析: \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
-                @"3. 推理翻译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
+            @"1. 重点词汇: \n"
+            @"chancellor: n. 总理；大臣。这里指德国总理。\n"
+            @"dynamic: adj. 有活力的；动态的。这里指强力的领导。\n"
+            @"drift: n. 漂流；漂泊。这里是随波逐流的意思，和前面的 dynamic 做对比。\n\n"
+            @"2. 语法分析: \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
+            @"3. 推理翻译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
-//        @{
-//            @"role" : @"user", // The stock market has now reached a plateau.
-//            @"content" :
-//                @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
-//                @"First, display the Simplified-Chinese translation of this sentence.\n"
-//                @"Then, follow the steps below step by step."
-//                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail..\n"
-//                @"2. Analyze the grammatical structure of this sentence.\n"
-//                @"3. Show Simplified-Chinese inferred translation. \n"
-//                @"Answer in Simplified-Chinese. \n",
-//        },
-//        @{
-//            @"role" : @"assistant",
-//            @"content" :
-//                @"股市现在已经达到了一个平台期。\n\n"
-//                @"1. 重点词汇: \n"
-//                @"stock market: 股市。\n"
-//                @"plateau: n. 高原；平稳时期。这里是比喻性用法，表示股价进入了一个相对稳定的状态。\n\n"
-//                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
-//                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
-//        },
+        //        @{
+        //            @"role" : @"user", // The stock market has now reached a plateau.
+        //            @"content" :
+        //                @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
+        //                @"First, display the Simplified-Chinese translation of this sentence.\n"
+        //                @"Then, follow the steps below step by step."
+        //                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail..\n"
+        //                @"2. Analyze the grammatical structure of this sentence.\n"
+        //                @"3. Show Simplified-Chinese inferred translation. \n"
+        //                @"Answer in Simplified-Chinese. \n",
+        //        },
+        //        @{
+        //            @"role" : @"assistant",
+        //            @"content" :
+        //                @"股市现在已经达到了一个平台期。\n\n"
+        //                @"1. 重点词汇: \n"
+        //                @"stock market: 股市。\n"
+        //                @"plateau: n. 高原；平稳时期。这里是比喻性用法，表示股价进入了一个相对稳定的状态。\n\n"
+        //                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
+        //                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
+        //        },
         @{
             @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
                 @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
-                @"First, display the Simplified-Chinese translation of this sentence.\n\n"
-                @"Then, follow the steps below step by step."
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
-                @"2. Analyze the grammatical structure of this sentence.\n\n"
-                @"3. Show Simplified-Chinese inferred translation. \n\n"
-                @"Answer in Simplified-Chinese. \n",
+            @"First, display the Simplified-Chinese translation of this sentence.\n\n"
+            @"Then, follow the steps below step by step."
+            @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
+            @"2. Analyze the grammatical structure of this sentence.\n\n"
+            @"3. Show Simplified-Chinese inferred translation. \n\n"
+            @"Answer in Simplified-Chinese. \n",
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"这本书是简单的乡土哲学。\n\n"
-                @"1. 重点词汇: \n"
-                @"homespun: adj. 简朴的；手织的。这里是朴素的意思。\n"
-                @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n\n"
-                @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-                @"3. 推理翻译:\n这本书是简单朴素的哲学。\n\n"
+            @"1. 重点词汇: \n"
+            @"homespun: adj. 简朴的；手织的。这里是朴素的意思。\n"
+            @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n\n"
+            @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
+            @"3. 推理翻译:\n这本书是简单朴素的哲学。\n\n"
         },
     ];
     
@@ -899,23 +899,23 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.
             @"content" :
                 @"Here is a English sentence: \"But whether the incoming chancellor will offer dynamic leadership, rather than more of Germany’s recent drift, is hard to say.\",\n"
-                @"First, display the Simplified-Chinese translation of this sentence.\n"
-                @"Then, follow the steps below step by step."
-                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n"
-                @"2. Analyze the grammatical structure of this sentence.\n"
-                @"3. Show Simplified-Chinese inferred translation. \n"
-                @"Answer in English. \n",
+            @"First, display the Simplified-Chinese translation of this sentence.\n"
+            @"Then, follow the steps below step by step."
+            @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n"
+            @"2. Analyze the grammatical structure of this sentence.\n"
+            @"3. Show Simplified-Chinese inferred translation. \n"
+            @"Answer in English. \n",
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"但是这位新任总理是否能够提供有活力的领导，而不是延续德国最近的漂泊，还很难说。\n\n"
-                @"1. Key Words: \n"
-                @"chancellor: n. Chancellor; minister. Here it refers to the German chancellor. \n"
-                @"dynamic: adj. energetic; dynamic. Here it refers to strong leadership. \n"
-                @"drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic. \n\n"
-                @"2. Grammar Parsing: \nThe sentence is a compound sentence. The main clause is \"But... . . is hard to say.\" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause. \n\n"
-                @"3. Inference Translation:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
+            @"1. Key Words: \n"
+            @"chancellor: n. Chancellor; minister. Here it refers to the German chancellor. \n"
+            @"dynamic: adj. energetic; dynamic. Here it refers to strong leadership. \n"
+            @"drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic. \n\n"
+            @"2. Grammar Parsing: \nThe sentence is a compound sentence. The main clause is \"But... . . is hard to say.\" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause. \n\n"
+            @"3. Inference Translation:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
     ];
     
@@ -1032,7 +1032,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
         
-//        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired format: \"%@: xxx \" ", sourceLanguage, cognate];
+        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired format: \"%@: xxx \" ", sourceLanguage, cognate];
         NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
         prompt = [prompt stringByAppendingString:cognatesPrompt];
     }
@@ -1059,7 +1059,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     prompt = [prompt stringByAppendingString:wordCountPromt];
     
     // Why does this not work?
-//    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have cognates, antonyms, antonyms, then this item does not need to be displayed.";
+    //    NSString *emmitEmptyPrompt = @"If a item query has no results, don't show it, for example, if a word does not have tense and part of speech changes, or does not have cognates, antonyms, antonyms, then this item does not need to be displayed.";
     
     /**
      // WTF?
@@ -1070,8 +1070,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      adj. none
      v. 减轻，缓和
      */
-//    NSString *emmitEmptyPrompt = @"If a item query has no results, just show none.";
-//    prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
+    //    NSString *emmitEmptyPrompt = @"If a item query has no results, just show none.";
+    //    prompt = [prompt stringByAppendingString:emmitEmptyPrompt];
     
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
@@ -1085,8 +1085,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // album
             @"content" :
                 @"Using Simplified-Chinese: \n"
-                @"Here is a English word: \"album\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"Here is a English word: \"album\" \n"
+            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1115,8 +1115,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // raven
             @"content" :
                 @"Using Simplified-Chinese: \n"
-                @"Here is a English word: \"raven\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"Here is a English word: \"raven\" \n"
+            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1148,23 +1148,23 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "1. She has long raven hair.\n（她有一头*乌黑的*长头发。）\n"
             "2. The raven is often associated with death and the supernatural.\n（*乌鸦*常常与死亡和超自然现象联系在一起。）\n"
         },
-        @{  //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
+        @{                     //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
             @"role" : @"user", // js
             @"content" :
                 @"Using Simplified-Chinese: \n"
-                @"Here is a English word: \"js\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"Here is a English word: \"js\" \n"
+            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"Pronunciation: xxx \n\n"
-                @"n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
-                @"Explanation: xxx \n\n"
-                @"Etymology: xxx \n\n"
-                @"Synonym: xxx \n\n"
-                @"Phrases: xxx \n\n"
-                @"Example Sentences: xxx \n\n"
+            @"n. JavaScript 的缩写，一种直译式脚本语言。 \n\n"
+            @"Explanation: xxx \n\n"
+            @"Etymology: xxx \n\n"
+            @"Synonym: xxx \n\n"
+            @"Phrases: xxx \n\n"
+            @"Example Sentences: xxx \n\n"
         },
         //        @{
         //            @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
@@ -1189,8 +1189,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // raven
             @"content" :
                 @"Using English: \n"
-                @"Here is a English word: \"raven\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"Here is a English word: \"raven\" \n"
+            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
@@ -1213,8 +1213,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
             @"content" :
                 @"Using English: \n"
-                @"Here is a English word abbreviation: \"acg\" \n"
-                @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"Here is a English word abbreviation: \"acg\" \n"
+            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
         },
         @{
             @"role" : @"assistant",
