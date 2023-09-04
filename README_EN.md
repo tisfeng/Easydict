@@ -180,7 +180,7 @@ The shortcut key to select words can work normally in any application. If you en
 
 The flow of the crossword function: Accessibility > AppleScript > simulated shortcuts, giving priority to the secondary function Accessibility fetching, and if Accessibility fetching fails (unauthorized or not supported by the application), if it is a browser application (e.g. Safari, Chrome), it will try to use AppleScript fetching. If the AppleScript fetching still fails, then the final forced fetching is done - simulating the shortcut Cmd+C to fetch the word.
 
-Therefore, it is recommended to turn on the Allow JavaScript in Apple events option in your browser to avoid event blocking on certain web pages, such as those with [forced copyright information](<(https://github.com/tisfeng/Easydict/issues/85)>), and to optimize the word fetching experience. 
+Therefore, it is recommended to turn on the Allow JavaScript in Apple events option in your browser to avoid event blocking on certain web pages, such as those with [forced copyright information](<(https://github.com/tisfeng/Easydict/issues/85)>), and to optimize the word fetching experience.
 
 For Safari users, it is highly recommended that this option be turned on, as Safari does not support Accessibility fetching, and AppleScript fetching is far superior to simulating shortcuts.
 
@@ -461,3 +461,5 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-07-21 |                   |    50    |                                                             ty                                                              |
 | 2023-07-25 |                   |    10    |                                                          感谢开源                                                           |
 | 2023-08-07 |     guanyuan      |    58    |                                                          开源万岁                                                           |
+| 2023-08-29 |     非此即彼      |    5     |                                                           优雅！                                                            |
+| 2023-09-04 |       aLong       |    10    |                                                 感谢 🙏，期待功能继续完善。                                                 |
