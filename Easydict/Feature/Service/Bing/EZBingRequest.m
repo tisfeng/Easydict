@@ -11,35 +11,8 @@
 #import "EZBingLanguageVoice.h"
 #import "NSString+EZRegex.h"
 
-// NSString *const kRequestBingHost = @"https://www.bing.com";
-// static NSString *const kBingHostKey = @"kBingHostKey";
-
 static NSString *const kAudioMIMEType = @"audio/mpeg";
 static NSString *const kBingConfigKey = @"kBingConfigKey";
-
-// NSString *getBingHost(void) {
-//     return [[NSUserDefaults standardUserDefaults] objectForKey:kBingHostKey];
-// }
-//
-// void saveBingHost(NSString *host) {
-//     [[NSUserDefaults standardUserDefaults] setObject:host forKey:kBingHostKey];
-// }
-//
-// NSString *getTranslatorHost(void) {
-//     return [NSString stringWithFormat:@"%@/translator", getBingHost()];
-// }
-//
-// NSString *getTTranslateV3Host(void) {
-//     return [NSString stringWithFormat:@"%@/ttranslatev3", getBingHost()];
-// }
-//
-// NSString *getTLookupV3Host(void) {
-//     return [NSString stringWithFormat:@"%@/tlookupv3", getBingHost()];
-// }
-//
-// NSString *getTfetttsURLString(void) {
-//     return [NSString stringWithFormat:@"%@/tfettts", getBingHost()];
-// }
 
 @interface EZBingRequest ()
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
@@ -68,18 +41,13 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
     if (self = [super init]) {
         _canRetryFetchHost = YES;
         
-        // When debug, we should not call this method too much, otherwise we will be blocked by Bing.
-        
-#if !DEBUG
-        // To improve responsiveness, get configuration parameters in advance.
-        [self fetchRequestHost:^(NSString *host) {
-            [self fetchTranslateParam:^(NSString *IG, NSString *IID, NSString *token, NSString *key) {
+        [self fetchBingHost:^{
+            [self fetchBingConfig:^{
                 
-            } failure:^(NSError *error){
+            } failure:^(NSError *error) {
                 
             }];
         }];
-#endif
     }
     return self;
 }
@@ -87,9 +55,9 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 - (EZBingConfig *)bingConfig {
     if (!_bingConfig) {
         NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kBingConfigKey];
-        EZBingConfig *bingConfig = [[EZBingConfig alloc] init];
-        if (dict) {
-            bingConfig = [EZBingConfig mj_objectWithKeyValues:dict];
+        EZBingConfig *bingConfig = [EZBingConfig mj_objectWithKeyValues:dict];
+        if (!bingConfig) {
+            bingConfig = [[EZBingConfig alloc] init];
         }
         _bingConfig = bingConfig;
     }
@@ -279,29 +247,23 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 }
 
 - (void)fetchBingHost:(void (^)(void))callback {
-    __block NSString *host = self.bingConfig.host;
-    if (host) {
+    if (self.bingConfig.host) {
         callback();
         return;
     }
     
-    NSString *webBingURLString = [NSString stringWithFormat:@"https://%@", EZBingDefaultHost];
+    // For www.bing.com, sometimes it won't return redirect URL, so we use cn.bing.com
+    NSString *webBingURLString = [NSString stringWithFormat:@"http://%@", EZBingChinaHost];
+    
     [self.translateSession GET:webBingURLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        NSURL *responseURL = task.response.URL;
-        if (!responseURL) {
-            host = EZBingDefaultHost;
-        } else {
-            host = responseURL.host;
-        }
+        NSString *host = host = task.response.URL.host ?: EZBingChinaHost;
         self.bingConfig.host = host;
         [self saveBingConfig];
-
         NSLog(@"bing host: %@", host);
         callback();
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        self.bingConfig.host = EZBingDefaultHost;
+        self.bingConfig.host = EZBingChinaHost;
         [self saveBingConfig];
-
         callback();
     }];
 }

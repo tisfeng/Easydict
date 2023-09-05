@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString *const EZBingDefaultHost = @"www.bing.com";
+static NSString *const EZBingHost = @"www.bing.com";
+static NSString *const EZBingChinaHost = @"cn.bing.com";
 
 /**
 @interface BingConfig {
