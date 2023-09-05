@@ -43,7 +43,7 @@
     // Conver to millisecond
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970] * 1000;
     
-    // default expiration is 10 min, for better experience, we get a new token after 5 min.
+    // Default expiration is 10 min, for better experience, we get a new token after 5 min.
     NSTimeInterval tokenUsedTime = now - tokenStartTime;
     BOOL isExpired = tokenUsedTime > self.expirationInterval.doubleValue / 2;
     return isExpired;

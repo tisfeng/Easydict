@@ -285,8 +285,8 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         return;
     }
     
-    NSString *urlString = [NSString stringWithFormat:@"https://%@", EZBingDefaultHost];
-    [self.translateSession GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSString *webBingURLString = [NSString stringWithFormat:@"https://%@", EZBingDefaultHost];
+    [self.translateSession GET:webBingURLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         NSURL *responseURL = task.response.URL;
         if (!responseURL) {
             host = EZBingDefaultHost;
@@ -359,9 +359,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         self.bingConfig.key = key;
         self.bingConfig.token = token;
         self.bingConfig.expirationInterval = expirationInterval;
-
         [self saveBingConfig];
-        
         callback();
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         failure(error);
@@ -504,11 +502,9 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
      */
     
     NSString *trimText = [text trimToMaxLength:7000];
-    {
-        // Chinese text should short, long TTS will cost much time.
-        if (![EZLanguageManager.shared isLanguageWordsNeedSpace:language]) {
-            trimText = [text trimToMaxLength:2000];
-        }
+    // Chinese text should short, long TTS will cost much time.
+    if (![EZLanguageManager.shared isLanguageWordsNeedSpace:language]) {
+        trimText = [text trimToMaxLength:2000];
     }
     
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)trimText, NULL));
