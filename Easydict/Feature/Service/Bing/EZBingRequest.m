@@ -9,6 +9,7 @@
 #import "EZBingRequest.h"
 #import "EZTranslateError.h"
 #import "EZBingLanguageVoice.h"
+#import "NSString+EZRegex.h"
 
 NSString *const kRequestBingHost = @"https://www.bing.com";
 NSString *const kBingHostKey = @"kBingHostKey";
@@ -515,27 +516,17 @@ NSString *getTfetttsURLString(void) {
 }
 
 - (NSString *)getIGValueFromHTML:(NSString *)htmlString {
+    // IG:"8E24D5A82C3240C8A68683C2484870E6",
     NSString *pattern = @"IG:\\s*\"([^\"]+)\"";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:htmlString options:0 range:NSMakeRange(0, htmlString.length)];
-
-    if (match && match.numberOfRanges >= 2) {
-        NSRange igValueRange = [match rangeAtIndex:1];
-        NSString *igValue = [htmlString substringWithRange:igValueRange];
-        return igValue;
-    }
-
-    return nil;
+    NSString *ig = [htmlString getStringValueWithPattern:pattern];
+    return ig;
 }
 
 - (NSArray *)getParamsAbusePreventionHelperArrayFromHTML:(NSString *)htmlString {
+    // var params_AbusePreventionHelper = [1693880687457,"0T_WDBmVBWjrlS5lBJPS6KYPLOboyyrf",3600000];
     NSString *pattern = @"params_AbusePreventionHelper\\s*=\\s*\\[([^]]+)\\]";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:htmlString options:0 range:NSMakeRange(0, htmlString.length)];
-
-    if (match && match.numberOfRanges >= 2) {
-        NSRange arrayRange = [match rangeAtIndex:1];
-        NSString *arrayString = [htmlString substringWithRange:arrayRange];
+    NSString *arrayString = [htmlString getStringValueWithPattern:pattern];
+    if (arrayString) {
         arrayString = [arrayString stringByReplacingOccurrencesOfString:@"\"" withString:@""]; // Remove double quotes
         NSArray *array = [arrayString componentsSeparatedByString:@","];
         return array;
@@ -545,17 +536,10 @@ NSString *getTfetttsURLString(void) {
 }
 
 - (NSString *)getValueOfDataIidFromHTML:(NSString *)htmlString {
+    // data-iid="translator.5029"
     NSString *pattern = @"data-iid\\s*=\\s*\"([^\"]+)\"";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:htmlString options:0 range:NSMakeRange(0, htmlString.length)];
-
-    if (match && match.numberOfRanges >= 2) {
-        NSRange dataIidValueRange = [match rangeAtIndex:1];
-        NSString *dataIidValue = [htmlString substringWithRange:dataIidValueRange];
-        return [dataIidValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    }
-
-    return nil;
+    NSString *iid = [htmlString getStringValueWithPattern:pattern];
+    return iid;
 }
 
 - (AFHTTPSessionManager *)htmlSession {

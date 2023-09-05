@@ -12,6 +12,7 @@
 #import "EZWebViewTranslator.h"
 #import "EZNetworkManager.h"
 #import "EZConfiguration.h"
+#import "NSString+EZRegex.h"
 
 static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
@@ -774,11 +775,11 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
         // token: '6d55d690ce5ade4a1fae243892f83ca6',
         NSString *tokenPattern = @"token: '(.*?)',";
-        NSString *token = [self getStringValueFromHtml:html pattern:tokenPattern];
+        NSString *token = [html getStringValueWithPattern:tokenPattern];
 
-        // window.gtk = '320305.131321201'; // default value ?
+        // window.gtk = "320305.131321201"; // default value ?
         NSString *gtkPattern = @"window.gtk = \"(.*?)\";";
-        NSString *gtk = [self getStringValueFromHtml:html pattern:gtkPattern];
+        NSString *gtk = [html getStringValueWithPattern:gtkPattern];
 
         if (token.length && gtk.length) {
             completion(token, gtk, nil);
@@ -790,18 +791,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
         completion(nil, nil, EZTranslateError(EZErrorTypeNetwork, @"获取 token 失败", reqDict));
     }];
-}
-
-/// Get string value from html
-- (NSString *)getStringValueFromHtml:(NSString *)html pattern:(NSString *)pattern {
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
-    NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
-    for (NSTextCheckingResult *match in matches) {
-        NSRange range = [match rangeAtIndex:1];
-        NSString *subString = [html substringWithRange:range];
-        return subString;
-    }
-    return nil;
 }
 
 /// Update cookie and token.

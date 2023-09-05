@@ -183,6 +183,7 @@
 		03D1C8792952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */; };
 		03D2A3DF29F42B290035CED4 /* bd.js in Resources */ = {isa = PBXBuildFile; fileRef = 03D2A3DE29F42B280035CED4 /* bd.js */; };
 		03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */; };
+		03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */; };
 		03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */; };
 		03D747432A07FB150006CD77 /* EZError.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D747422A07FB150006CD77 /* EZError.m */; };
 		03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D8A6582A42A1A300D9A968 /* EZAppModel.m */; };
@@ -561,6 +562,8 @@
 		03D2A3DE29F42B280035CED4 /* bd.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bd.js; sourceTree = "<group>"; };
 		03D2A3E129F4C6F50035CED4 /* EZNetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZNetworkManager.h; sourceTree = "<group>"; };
 		03D2A3E229F4C6F50035CED4 /* EZNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZNetworkManager.m; sourceTree = "<group>"; };
+		03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZRegex.h"; sourceTree = "<group>"; };
+		03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZRegex.m"; sourceTree = "<group>"; };
 		03D5FCFD2A5EF4E400AD26BE /* EZDeviceSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZDeviceSystemInfo.h; sourceTree = "<group>"; };
 		03D5FCFE2A5EF4E400AD26BE /* EZDeviceSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZDeviceSystemInfo.m; sourceTree = "<group>"; };
 		03D747412A07FB150006CD77 /* EZError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZError.h; sourceTree = "<group>"; };
@@ -706,6 +709,8 @@
 				0333FDA52A035D5700891515 /* NSString+EZChineseText.m */,
 				03E2BF732A298F2B00E010F3 /* NSString+EZCharacterSet.h */,
 				03E2BF742A298F2B00E010F3 /* NSString+EZCharacterSet.m */,
+				03D35DA82AA6C49B00B023FE /* NSString+EZRegex.h */,
+				03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */,
 			);
 			path = NSString;
 			sourceTree = "<group>";
@@ -930,9 +935,9 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
-				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				033363A3293C4AFA00FED9C8 /* PrintBeautifulLog */,
 				03D2A3E029F4C69E0035CED4 /* EZNetworkManager */,
 				034B077029DEBBFF00E7FD6B /* EZTextWordUtils */,
@@ -2050,6 +2055,7 @@
 				03BB2DEF29F59C8A00447EDD /* EZSymbolImageButton.m in Sources */,
 				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
+				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
