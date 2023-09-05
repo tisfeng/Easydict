@@ -38,14 +38,16 @@
         return YES;
     }
     
-    NSTimeInterval tokenStartTime = self.key.doubleValue;
+    NSTimeInterval tokenStart = self.key.doubleValue;
     
     // Conver to millisecond
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970] * 1000;
     
     // Default expiration is 10 min, for better experience, we get a new token after 5 min.
-    NSTimeInterval tokenUsedTime = now - tokenStartTime;
+    NSTimeInterval tokenUsedTime = now - tokenStart;
     BOOL isExpired = tokenUsedTime > self.expirationInterval.doubleValue / 2;
+    NSLog(@"is Bing token expired: %@", isExpired ? @"YES" : @"NO");
+    
     return isExpired;
 }
 

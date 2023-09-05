@@ -415,9 +415,10 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                     completion(audioData, nil);
                 } else {
                     // If host has changed, use new host to fetch again.
-                    NSURL *responseURL = task.response.URL;
-                    if (![self.bingConfig.host containsString:responseURL.host]) {
-                        self.bingConfig.host = responseURL.host;
+                    NSString *host = task.response.URL.host;
+                    if (![self.bingConfig.host isEqualToString:host]) {
+                        NSLog(@"bing host changed: %@", host);
+                        self.bingConfig.host = host;
                         [self saveBingConfig];
 
                         [self fetchTextToAudio:text fromLanguage:from completion:completion];
