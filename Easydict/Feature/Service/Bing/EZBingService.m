@@ -11,7 +11,7 @@
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
 
-@interface EZBingService()
+@interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
 @property (nonatomic, assign) BOOL canRetry;
 @end
@@ -29,60 +29,60 @@
 #pragma mark - override
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-            EZLanguageAuto, @"auto-detect",
-            EZLanguageSimplifiedChinese, @"zh-Hans",
-            EZLanguageTraditionalChinese, @"zh-Hant",
-            EZLanguageEnglish, @"en",
-            EZLanguageJapanese, @"ja",
-            EZLanguageKorean, @"ko",
-            EZLanguageFrench, @"fr",
-            EZLanguageSpanish, @"es",
-            EZLanguagePortuguese, @"pt",
-            EZLanguageItalian, @"it",
-            EZLanguageGerman, @"de",
-            EZLanguageRussian, @"ru",
-            EZLanguageArabic, @"ar",
-            EZLanguageSwedish, @"sv",
-            EZLanguageRomanian, @"ro",
-            EZLanguageThai, @"th",
-            EZLanguageSlovak, @"sk",
-            EZLanguageDutch, @"nl",
-            EZLanguageHungarian, @"hu",
-            EZLanguageGreek, @"el",
-            EZLanguageDanish, @"da",
-            EZLanguageFinnish, @"fi",
-            EZLanguagePolish, @"pl",
-            EZLanguageCzech, @"cs",
-            EZLanguageTurkish, @"tr",
-            EZLanguageLithuanian, @"lt",
-            EZLanguageLatvian, @"lv",
-            EZLanguageUkrainian, @"uk",
-            EZLanguageBulgarian, @"bg",
-            EZLanguageIndonesian, @"id",
-            EZLanguageMalay, @"ms",
-            EZLanguageSlovenian, @"sl",
-            EZLanguageEstonian, @"et",
-            EZLanguageVietnamese, @"vi",
-            EZLanguagePersian, @"fa",
-            EZLanguageHindi, @"hi",
-            EZLanguageTelugu, @"te",
-            EZLanguageTamil, @"ta",
-            EZLanguageUrdu, @"ur",
-            EZLanguageFilipino, @"fil",
-            EZLanguageKhmer, @"km",
-            EZLanguageLao, @"lo",
-            EZLanguageBengali, @"bn",
-            EZLanguageBurmese, @"my",
-            EZLanguageNorwegian, @"nb",
-            EZLanguageSerbian, @"sr-Cyrl",
-            EZLanguageCroatian, @"hr",
-            EZLanguageMongolian, @"mn-Mong",
-            EZLanguageHebrew, @"he",
-                    nil];
+                                        EZLanguageAuto, @"auto-detect",
+                                        EZLanguageSimplifiedChinese, @"zh-Hans",
+                                        EZLanguageTraditionalChinese, @"zh-Hant",
+                                        EZLanguageEnglish, @"en",
+                                        EZLanguageJapanese, @"ja",
+                                        EZLanguageKorean, @"ko",
+                                        EZLanguageFrench, @"fr",
+                                        EZLanguageSpanish, @"es",
+                                        EZLanguagePortuguese, @"pt",
+                                        EZLanguageItalian, @"it",
+                                        EZLanguageGerman, @"de",
+                                        EZLanguageRussian, @"ru",
+                                        EZLanguageArabic, @"ar",
+                                        EZLanguageSwedish, @"sv",
+                                        EZLanguageRomanian, @"ro",
+                                        EZLanguageThai, @"th",
+                                        EZLanguageSlovak, @"sk",
+                                        EZLanguageDutch, @"nl",
+                                        EZLanguageHungarian, @"hu",
+                                        EZLanguageGreek, @"el",
+                                        EZLanguageDanish, @"da",
+                                        EZLanguageFinnish, @"fi",
+                                        EZLanguagePolish, @"pl",
+                                        EZLanguageCzech, @"cs",
+                                        EZLanguageTurkish, @"tr",
+                                        EZLanguageLithuanian, @"lt",
+                                        EZLanguageLatvian, @"lv",
+                                        EZLanguageUkrainian, @"uk",
+                                        EZLanguageBulgarian, @"bg",
+                                        EZLanguageIndonesian, @"id",
+                                        EZLanguageMalay, @"ms",
+                                        EZLanguageSlovenian, @"sl",
+                                        EZLanguageEstonian, @"et",
+                                        EZLanguageVietnamese, @"vi",
+                                        EZLanguagePersian, @"fa",
+                                        EZLanguageHindi, @"hi",
+                                        EZLanguageTelugu, @"te",
+                                        EZLanguageTamil, @"ta",
+                                        EZLanguageUrdu, @"ur",
+                                        EZLanguageFilipino, @"fil",
+                                        EZLanguageKhmer, @"km",
+                                        EZLanguageLao, @"lo",
+                                        EZLanguageBengali, @"bn",
+                                        EZLanguageBurmese, @"my",
+                                        EZLanguageNorwegian, @"nb",
+                                        EZLanguageSerbian, @"sr-Cyrl",
+                                        EZLanguageCroatian, @"hr",
+                                        EZLanguageMongolian, @"mn-Mong",
+                                        EZLanguageHebrew, @"he",
+                                        nil];
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult * _Nullable, NSError * _Nullable))completion {
+- (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
@@ -91,7 +91,7 @@
     NSString *fromCode = [self languageCodeForLanguage:from];
     NSString *toCode = [self languageCodeForLanguage:to];
     mm_weakify(self)
-    [self.request translateWithFrom:fromCode to:toCode text:text completionHandler:^(NSData * _Nullable translateData, NSData * _Nullable lookupData, NSError * _Nullable translateError, NSError * _Nullable lookupError) {
+    [self.request translateText:text from:fromCode to:toCode completionHandler:^(NSData *_Nullable translateData, NSData *_Nullable lookupData, NSError *_Nullable translateError, NSError *_Nullable lookupError) {
         mm_strongify(self)
         @try {
             if (translateError) {
@@ -99,7 +99,7 @@
                 NSLog(@"bing translate error %@", translateError);
             } else {
                 BOOL needRetry;
-                NSError * error = [self processTranslateResult:translateData text:text from:from to:to needRetry: &needRetry];
+                NSError *error = [self processTranslateResult:translateData text:text from:from to:to needRetry:&needRetry];
                 // canRetry用来避免递归调用，code205只主动重试一次。
                 if (self.canRetry && needRetry) {
                     self.canRetry = NO;
@@ -118,7 +118,7 @@
                     [self processWordSimpleWordAndPart:lookupData];
                 }
             }
-            completion(self.result ,translateError);
+            completion(self.result, translateError);
         } @catch (NSException *exception) {
             MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
             completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing translate data parse failed", exception));
@@ -139,7 +139,7 @@
         text = [maxText trimToMaxLength:450];
     }
     
-    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", getTranslatorHost(), text.encode, from, to];
+    return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", self.request.bingConfig.translatorURLString, text.encode, from, to];
 }
 
 - (NSString *)name {
@@ -150,8 +150,7 @@
     return EZServiceTypeBing;
 }
 
-- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
-    
+- (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if ([from isEqualToString:EZLanguageClassicalChinese]) {
         from = EZLanguageSimplifiedChinese;
     }
@@ -169,12 +168,12 @@
     
     NSLog(@"Bing is fetching text audio: %@", text);
     
-    [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError * _Nullable error) {
+    [self.request fetchTextToAudio:text fromLanguage:from completion:^(NSData *audioData, NSError *_Nullable error) {
         if (error || !audioData) {
             completion(nil, error);
             return;
         }
-
+        
         [audioData writeToFile:filePath atomically:YES];
         
         completion(filePath, nil);
@@ -183,7 +182,7 @@
 
 #pragma mark - private
 - (NSString *)maxTextLength:(NSString *)text fromLanguage:(EZLanguage)from {
-    if(text.length > 1000) {
+    if (text.length > 1000) {
         return [text substringToIndex:1000];
     }
     return text;
@@ -227,26 +226,28 @@
         
         phonetic.value = inputTransliteration;
         // https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages
-//        phonetic.speakURL = result.fromSpeakURL;
+        //        phonetic.speakURL = result.fromSpeakURL;
         phonetic.language = fromLanguage;
         phonetic.word = text;
         
         if (!self.result.wordResult) {
             self.result.wordResult = [EZTranslateWordResult new];
         }
-        self.result.wordResult.phonetics = @[phonetic];
+        self.result.wordResult.phonetics = @[ phonetic ];
     }
     
 outer:
     self.result.raw = translateData;
-    self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZBingTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    self.result.translatedResults = [translateModel.translations mm_map:^id _Nullable(EZBingTranslationsModel *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         return obj.text;
     }];
     return nil;
 }
 
 - (void)processWordSimpleWordAndPart:(NSData *)lookupData {
-    if (!lookupData) return;
+    if (!lookupData) {
+        return;
+    }
     NSArray *lookupJson = [NSJSONSerialization JSONObjectWithData:lookupData options:0 error:nil];
     if ([lookupJson isKindOfClass:[NSArray class]]) {
         EZBingLookupModel *lookupModel = [EZBingLookupModel mj_objectArrayWithKeyValuesArray:lookupJson].firstObject;
@@ -264,12 +265,12 @@ outer:
         // 中文翻译英文
         if (([self.result.from isEqualToString:EZLanguageSimplifiedChinese] || [self.result.from isEqualToString:EZLanguageTraditionalChinese]) && [self.result.to isEqualToString:EZLanguageEnglish]) {
             NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
-            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
+            [tags enumerateKeysAndObjectsUsingBlock:^(NSString *_Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> *_Nonnull obj, BOOL *_Nonnull stop) {
                 for (EZBingLookupTranslationsModel *model in obj) {
-                    EZTranslateSimpleWord * simpleWord = [EZTranslateSimpleWord new];
+                    EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
                     simpleWord.part = [key lowercaseString];
                     simpleWord.word = model.displayTarget;
-                    simpleWord.means = [model.backTranslations mm_map:^id _Nullable(EZBingLookupBackTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    simpleWord.means = [model.backTranslations mm_map:^id _Nullable(EZBingLookupBackTranslationsModel *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                         return obj.displayText;
                     }];
                     [simpleWords addObject:simpleWord];
@@ -280,10 +281,10 @@ outer:
             }
         } else {
             NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
-            [tags enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> * _Nonnull obj, BOOL * _Nonnull stop) {
+            [tags enumerateKeysAndObjectsUsingBlock:^(NSString *_Nonnull key, NSMutableArray<EZBingLookupTranslationsModel *> *_Nonnull obj, BOOL *_Nonnull stop) {
                 EZTranslatePart *part = [EZTranslatePart new];
                 part.part = [key lowercaseString];
-                part.means = [obj mm_map:^id _Nullable(EZBingLookupTranslationsModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                part.means = [obj mm_map:^id _Nullable(EZBingLookupTranslationsModel *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                     return obj.displayTarget;
                 }];
                 [parts addObject:part];

@@ -8,16 +8,17 @@
 
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
+#import "EZBingConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-NSString *getTranslatorHost(void);
 
 typedef void(^BingTranslateCompletion)(NSData * _Nullable translateData, NSData * _Nullable lookupData, NSError * _Nullable translateError, NSError * _Nullable lookupError);
 
 @interface EZBingRequest : NSObject
 
-- (void)translateWithFrom:(NSString *)from to:(NSString *)to text:(NSString *)text completionHandler:(BingTranslateCompletion)completion;
+@property (nonatomic, strong) EZBingConfig *bingConfig;
+
+- (void)translateText:(NSString *)text from:(NSString *)from to:(NSString *)to  completionHandler:(BingTranslateCompletion)completion;
 
 - (void)reset;
 
