@@ -551,17 +551,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.selectLanguageCell toggleTranslationLanguages];
 }
 
-- (void)stopPlayingAudio {
-    [self toggleAudioPlay:NO];
+- (void)stopPlayingQueryText {
+    [self togglePlayQueryText:NO];
     [self stopAllResultAudio];
 }
 
-- (void)toggleAudioPlay {
+- (void)togglePlayQueryText {
     BOOL isPlaying = self.audioPlayer.isPlaying;
-    [self toggleAudioPlay:!isPlaying];
+    [self togglePlayQueryText:!isPlaying];
 }
 
-- (void)toggleAudioPlay:(BOOL)play {
+- (void)togglePlayQueryText:(BOOL)play {
     if (!play) {
         [self.audioPlayer stop];
         return;
@@ -660,9 +660,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             continue;;
         }
         
-        // 1. If Youdao dict is enabled, prefer to play Youdao word audio.
-        BOOL autoPlayWord = EZConfiguration.shared.autoPlayAudio && [service.serviceType isEqualToString:EZServiceTypeYoudao];
-        [self queryWithModel:queryModel service:service autoPlay:autoPlayWord];
+        [self queryWithModel:queryModel service:service autoPlay:NO];
         
         if (!self.firstService) {
             self.firstService = service;
@@ -672,13 +670,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
     [EZLog logQuery:queryModel];
-
     
-    // 2. If Youdao is not enabled, use default TTS to play.
-    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-    if (!youdaoService.enabledQuery) {
-        [self autoPlayEnglishWordAudio];
-    }
+    // Auto play query text if it is an English word.
+    [self autoPlayEnglishWordAudio];
 }
 
 - (void)queryWithModel:(EZQueryModel *)queryModel
@@ -698,10 +692,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         //  NSLog(@"update service: %@, %@", service.serviceType, result);
         [self updateCellWithResult:result reloadData:YES];
-
-        if (autoPlay) {
-            [self autoPlayEnglishWordAudio];
-        }
         
         if (service.autoCopyTranslatedTextBlock) {
             service.autoCopyTranslatedTextBlock(result, error);
@@ -1185,7 +1175,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     [queryView setPlayAudioBlock:^(NSString *text) {
         mm_strongify(self);
-        [self toggleAudioPlay];
+        [self togglePlayQueryText];
     }];
 
     [queryView setCopyTextBlock:^(NSString *text) {
@@ -1468,50 +1458,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (!EZConfiguration.shared.autoPlayAudio) {
         return;
     }
-
-    BOOL isEnglishWord = [self.queryModel.queryFromLanguage isEqualToString:EZLanguageEnglish];
-    if (!isEnglishWord) {
-        NSLog(@"query text is not an English");
-        return;
-    }
-
-    if ([self playYoudaoWordAudio:self.inputText]) {
-        return;
-    }
-
-    BOOL tooLong = self.inputText.length > EZEnglishWordMaxLength;
-    if (tooLong) {
-        NSLog(@"query text is too long");
-        return;
-    }
-
-    // count @" "
-    NSInteger spaceCount = [self.inputText componentsSeparatedByString:@" "].count - 1;
-    if (spaceCount > 1) {
-        return;
-    }
-
-    [self.audioPlayer playTextAudio:self.inputText textLanguage:EZLanguageEnglish];
-}
-
-- (BOOL)playYoudaoWordAudio:(NSString *)text {
-    EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-    EZQueryResult *youdaoResult = youdaoService.result;
-    if (youdaoResult.wordResult) {
-        NSString *audioURL = youdaoResult.fromSpeakURL;
-        BOOL hasAudioURL = audioURL.length && [[youdaoResult.queryText trim] isEqualToString:[text trim]];
-        if (hasAudioURL) {
-            [self.audioPlayer playTextAudio:text
-                                   language:EZLanguageEnglish
-                                     accent:nil
-                                   audioURL:audioURL
-                          designatedService:youdaoService];
-            
-            return YES;
-        }
-    }
     
-    return NO;
+    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:self.queryText language:self.queryModel.queryFromLanguage];
+    if (!isEnglishWord) {
+        NSLog(@"Not an English Word");
+        return;
+    }
+
+    [self togglePlayQueryText:YES];
 }
 
 #pragma mark -

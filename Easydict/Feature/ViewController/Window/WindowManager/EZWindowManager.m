@@ -813,7 +813,7 @@ static EZWindowManager *_instance;
 }
 
 - (void)playOrStopQueryTextAudio {
-    [self.floatingWindow.queryViewController toggleAudioPlay];
+    [self.floatingWindow.queryViewController togglePlayQueryText];
 }
 
 
@@ -828,7 +828,7 @@ static EZWindowManager *_instance;
     }
     
     // stop playing audio
-    [self.floatingWindow.queryViewController stopPlayingAudio];
+    [self.floatingWindow.queryViewController stopPlayingQueryText];
     
     self.floatingWindow.titleBar.pin = NO;
     [self.floatingWindow close];

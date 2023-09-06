@@ -45,9 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)focusInputTextView;
 
-- (void)stopPlayingAudio;
-- (void)toggleAudioPlay;
-- (void)toggleAudioPlay:(BOOL)playFlag;
+- (void)stopPlayingQueryText;
+- (void)togglePlayQueryText;
+- (void)togglePlayQueryText:(BOOL)playFlag;
 
 /// Detect query text, and update select language cell.
 - (void)detectQueryText:(nullable void (^)(NSString *language))completion;
