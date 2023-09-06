@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)，[火山翻译](https://translate.volcengine.com/translate)和[必应翻译](https://www.bing.com/translator)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)，[火山翻译](https://translate.volcengine.com/translate)和 [Bing 翻译](https://www.bing.com/translator)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -40,7 +40,7 @@
 - [x] 支持系统 OCR 截图翻译，静默截图 OCR。
 - [x] 支持系统 TTS。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，DeepL，Google，必应，百度和火山翻译。
+- [x] 支持有道词典，DeepL，Google，Bing，百度和火山翻译。
 - [x] 支持 48 种语言。
 
 下一步：
@@ -212,7 +212,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ## 翻译服务
 
-**目前支持有道词典，苹果系统翻译，DeepL，Google，必应，百度和火山翻译服务。**
+**目前支持有道词典，苹果系统翻译，DeepL，Google，Bing，百度和火山翻译服务。**
 
 > 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
@@ -220,7 +220,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 <p>
 
-|     语言     | 有道词典 | 🍎 系统翻译 | DeepL 翻译 | 必应翻译 | Google 翻译 | 百度翻译 | 火山翻译 |
+|     语言     | 有道词典 | 🍎 系统翻译 | DeepL 翻译 | Bing 翻译 | Google 翻译 | 百度翻译 | 火山翻译 |
 | :----------: | :------: | :---------: | :--------: | :------: | :---------: | :------: | :------: |
 | 中文（简体） |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
 | 中文（繁体） |    ✅    |     ✅      |     ✅     |    ✅    |     ✅      |    ✅    |    ✅    |
