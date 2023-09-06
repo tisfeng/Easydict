@@ -360,7 +360,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
                                             serviceType:serviceType];
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        NSLog(@"Download file to: %@", filePath);
+        NSLog(@"Download file to: %@", filePath.path);
         if (autoPlay) {
             [self playLocalAudioFile:filePath.path];
         }

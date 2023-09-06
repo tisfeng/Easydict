@@ -60,6 +60,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 @property (nonatomic, strong) EZQueryService *firstService;
 
+@property (nonatomic, strong) EZQueryService *defaultTTSService;
+@property (nonatomic, strong) EZQueryService *youdaoService;
+
 @property (nonatomic, strong) EZDetectManager *detectManager;
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 @property (nonatomic, strong) EZSchemeParser *schemeParser;
@@ -178,6 +181,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *serviceTypes = [NSMutableArray array];
     NSMutableArray *services = [NSMutableArray array];
 
+    self.youdaoService = nil;
+    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    
     NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
         if (service.enabled) {
@@ -186,11 +192,23 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [services addObject:service];
             [serviceTypes addObject:service.serviceType];
         }
+        
+        EZServiceType serviceType = service.serviceType;
+        if ([serviceType isEqualToString:EZServiceTypeYoudao]) {
+            self.youdaoService = service;
+        }
+        
+        if ([serviceType isEqualToString:defaultTTSServiceType]) {
+            _defaultTTSService = service;
+        }
     }
     self.services = services;
     self.serviceTypes = serviceTypes;
     
     self.audioPlayer = [[EZAudioPlayer alloc] init];
+    if (!self.youdaoService) {
+        self.youdaoService = [self serviceWithType:EZServiceTypeYoudao];
+    }
 }
 
 // 通知触发时会调用的方法
@@ -321,6 +339,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (NSString *)queryText {
     NSString *queryText = [_inputText trim];
     return queryText;
+}
+
+- (EZQueryService *)defaultTTSService {
+    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
+        _defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
+    }
+    return _defaultTTSService;
 }
 
 
@@ -542,24 +568,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     void (^playAudioBlock)(void) = ^{
-        // TODO: currently, audioURL is only used for Youdao, latter we may support more service.
-        NSString *audioURL = self.queryModel.audioURL;
-        EZQueryService *youdaoService = [self serviceWithType:EZServiceTypeYoudao];
-        
         NSString *queryText = self.queryText;
         NSString *textLanguage = self.queryModel.queryFromLanguage;
         BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:queryText language:textLanguage];
         
-        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
-        EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-        
         // If query text is an English word, use Youdao TTS to play.
-        EZQueryService *ttsService = (audioURL.length || isEnglishWord) ? youdaoService : defaultTTSService;
+        EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
         
         [self.audioPlayer playTextAudio:queryText
                                language:textLanguage
                                  accent:nil
-                               audioURL:audioURL
+                               audioURL:nil
                       designatedService:ttsService];
     };
     
