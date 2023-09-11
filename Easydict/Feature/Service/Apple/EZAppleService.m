@@ -1247,6 +1247,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     charCountPerLine = totalCharCount / lineCount;
     wordCountPerLine = totalWordCount / lineCount;
     
+    self.charCountPerLine = charCountPerLine;
+    self.totalCharCount = totalCharCount;
+    self.punctuationMarkCount = punctuationMarkCount;
+    
     CGFloat numberOfPunctuationMarksPerLine = punctuationMarkCount / lineCount;
     
     /**
@@ -1497,7 +1501,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      山川异域，风月同天。
      寄诸佛子，共结来缘。
      */
-    BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language] && self.charCountPerLine < kShortPoetryCharacterCountOfLine && text.length < kShortPoetryCharacterCountOfLine;
+    BOOL isShortChinesePoetry = [self isShortChinesePoetryText:text];
+    BOOL isPrevShortChinesePoetry = [self isShortChinesePoetryText:prevText];
     
     /**
      Chinese poetry needs line break
@@ -1510,7 +1515,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      —— 宋 · 姜夔
      */
     
-    BOOL isChinesePoetryLine = isEqualChineseText || isShortChinesePoetry;
+    BOOL isChinesePoetryLine = isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry);
     if (isChinesePoetryLine) {
         needLineBreak = YES;
         if (isBigLineSpacing) {
@@ -1579,6 +1584,14 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     return NO;
+}
+
+- (BOOL)isShortChinesePoetryText:(NSString *)text {
+    BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language]
+    && self.charCountPerLine < kShortPoetryCharacterCountOfLine
+    && text.length < kShortPoetryCharacterCountOfLine;
+    
+    return isShortChinesePoetry;
 }
 
 
