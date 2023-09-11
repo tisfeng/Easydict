@@ -71,9 +71,15 @@
 }
 
 /// Replace \" with &quot;
-- (NSString *)escapedHTMLString {
-    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
-    return escapedHTMLContent;
+- (NSString *)escapedXMLString {
+    NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)self, NULL));
+//    NSString *escapedHTMLContent = [self stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
+    return escapedXMLText;
+}
+
+- (NSString *)unescapedXMLString {
+    NSString *unescapedXMLText = CFBridgingRelease(CFXMLCreateStringByUnescapingEntities(NULL, (__bridge CFStringRef)self, NULL));
+    return unescapedXMLText;
 }
 
 - (void)copyToPasteboard {

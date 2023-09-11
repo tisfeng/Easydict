@@ -26,6 +26,7 @@
 #import "EZToast.h"
 #import "EZTextWordUtils.h"
 #import "DictionaryKit.h"
+#import "EZAppleDictionary.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -1223,6 +1224,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     WKWebView *webView = nil;
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
+        EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
+        
         webView = result.webViewManager.webView;
         resultCell.wordResultView.webView = webView;
         
@@ -1230,14 +1233,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (needLoadHTML) {
             result.webViewManager.isLoaded = YES;
             
-            NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];;
-            NSString *htmlFilePath = [dictionaryURL URLByAppendingPathComponent:@"dict.html"].path;
-            // Cost < 0.01s
-            [result.HTMLString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-            NSURL *htmlFileURL = [NSURL fileURLWithPath:htmlFilePath];
-            
+            NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
             webView.navigationDelegate = resultCell.wordResultView;
-            [webView loadFileURL:htmlFileURL allowingReadAccessToURL:dictionaryURL];
+            [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
         } else if (result.webViewManager.needUpdateIframeHeight && result.webViewManager.isLoaded) {
             NSString *script = @"updateAllIframeStyle();";
             [webView evaluateJavaScript:script completionHandler:nil];

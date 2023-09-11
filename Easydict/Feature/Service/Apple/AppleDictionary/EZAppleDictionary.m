@@ -151,8 +151,10 @@
                                                 
                                                 lightBackgroundColorString, darkBackgroundColorString];
             
+            NSString *dictHTML = [NSString stringWithFormat:@"%@ \n\n%@ \n\n%@", customCSS, dictBackgroundColorCSS, wordHtmlString];
+            
             // Create an iframe for each HTML content
-            NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\" %@ %@ %@ \" ></iframe>", customIframeContainerClass, [customCSS escapedHTMLString], [dictBackgroundColorCSS escapedHTMLString], [wordHtmlString escapedHTMLString]];
+            NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\"%@\"></iframe>", customIframeContainerClass, [dictHTML escapedXMLString]];
             
             NSString *dictName = [NSString stringWithFormat:@"%@", dictionary.shortName];
             NSString *detailsSummaryHtml = [NSString stringWithFormat:@"%@<details open><summary>%@</summary> %@ </details>", bigWordHtml, dictName, iframeHTML];
@@ -160,6 +162,23 @@
             bigWordHtml = @"";
             
             [iframesHtmlString appendString:detailsSummaryHtml];
+            
+            NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];
+            NSString *htmlDirectory = [dictionaryURL URLByAppendingPathComponent:EZAppleDictionaryHTMLDirectory].path;
+            // Create if not exist
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if (![fileManager fileExistsAtPath:htmlDirectory]) {
+                NSError *error;
+                if (![fileManager createDirectoryAtPath:htmlDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+                    NSLog(@"createDirectoryAtPath error: %@", error);
+                }
+            }
+
+            NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@.html", dictName];
+            NSError *error;
+            if (![dictHTML writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+                NSLog(@"writeToFile error: %@", error);
+            }
         }
     }
     
@@ -168,6 +187,12 @@
         // Insert iframesHtmlString <body> </body> in baseHtmlString
         htmlString = [baseHtmlString stringByReplacingOccurrencesOfString:@"</body>"
                                                                withString:[NSString stringWithFormat:@"%@ </body>", iframesHtmlString]];
+        
+        NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];
+        NSString *htmlDirectory = [dictionaryURL URLByAppendingPathComponent:EZAppleDictionaryHTMLDirectory].path;
+        NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@.html", EZAppleDictionaryHTMLDictFilePath];
+        self.htmlFilePath = htmlFilePath;
+        [htmlString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     }
     
     return htmlString;
