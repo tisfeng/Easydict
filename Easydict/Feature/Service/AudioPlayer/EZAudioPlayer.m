@@ -364,7 +364,6 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         if (autoPlay) {
             [self playLocalAudioFile:filePath.path];
         }
-//        [self testFileInfo:filePath.path];
     }];
     [downloadTask resume];
 }
@@ -395,10 +394,20 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     }
     NSLog(@"play local audio file: %@", filePath);
     
+
     if ([self canPlayLocalAudioFileAtPath:filePath]) {
         NSURL *URL = [NSURL fileURLWithPath:filePath];
         [self playAudioURL:URL];
     } else {
+        // If audio file extension is not correct, we need to try to correct it.
+        NSString *newFilePath = [self tryCorrectAudioFileTypeWithPath:filePath];
+        if (newFilePath) {
+            if ([self canPlayLocalAudioFileAtPath:newFilePath]) {
+                [self playAudioURL:[NSURL fileURLWithPath:newFilePath]];
+                return;
+            }
+        }
+        
         // If local audio file is broke, we need to remove it.
         [fileManager removeItemAtPath:filePath error:nil];
         
@@ -413,18 +422,23 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     // Maybe the audio file is broken, we need to check it.
     NSError *error = nil;
     AVAudioPlayer *audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
-    
-    if (error) {
-        NSLog(@"Error initializing audio player: %@", error);
+
+    AVAsset *asset = [AVAsset assetWithURL:fileURL];
+
+    if (!asset.readable || !asset.isPlayable) {
+        // change go.mp3 to go.m4a will cause asset not readable
+        NSLog(@"asset not readable or playable: %@", filePath);
         return NO;
     }
     
-    if (audioPlayer) {
-        [audioPlayer prepareToPlay];
-        return YES;
+    BOOL success = [audioPlayer prepareToPlay];
+    if (!success || error) {
+        // If audio data is .wav, but save it as .mp3, it will not be ready to play.
+        NSLog(@"prepareToPlay failed: %@, error: %@", filePath, [error localizedDescription]);
+        return NO;
     }
     
-    return NO;
+    return YES;
 }
 
 /// Play audio with remote url string.
@@ -460,7 +474,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
 }
 
 - (void)play {
-    NSURL *URL = [NSURL URLWithString:self.audioURL];
+    NSURL *URL = [NSURL fileURLWithPath:self.audioURL];
     [self playAudioURL:URL];
 }
 
@@ -575,16 +589,122 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
      e.g. 'set' from Youdao.
      */
     
-    // m4a
-    NSString *m4aFilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.m4a", audioFileName]];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:m4aFilePath]) {
-        return m4aFilePath;
+    NSString *filePath = [self filePathWithFileName:audioFileName atDrectoryPath:audioDirectory];
+    if (!filePath) {
+        // May we use wav as ddefault audio format, since set.mp3 can not be played.
+        // If is .wav file, it can not play, we will correct file type later.
+        NSString *fileNameWithExtension = [NSString stringWithFormat:@"%@.mp3", audioFileName];
+        filePath = [audioDirectory stringByAppendingPathComponent:fileNameWithExtension];
     }
     
-    // mp3
-    NSString *mp3FilePath = [audioDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", audioFileName]];
-    return mp3FilePath;
+    return filePath;
 }
+
+// Get file path with file name in directory
+- (nullable NSString *)filePathWithFileName:(NSString *)fileName atDrectoryPath:(NSString *)directoryPath {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:directoryPath];
+    
+    for (NSString *file in enumerator) {
+        NSString *name = [file stringByDeletingPathExtension];
+        if ([name isEqualToString:fileName]) {
+            return [directoryPath stringByAppendingPathComponent:file];
+        }
+    }
+    
+    return nil;
+}
+
+
+/// Get audio file type with file path.
+- (NSString *)audioFileTypeWithPath:(NSString *)filePath {
+    AudioFileTypeID fileTypeID = [self audioFileTypeIDWithPath:filePath];
+    NSString *fileType = [self getFileTypeString:fileTypeID];
+    return fileType;
+}
+
+- (AudioFileTypeID)audioFileTypeIDWithPath:(NSString *)filePath {
+    NSURL *filePathURL = [NSURL fileURLWithPath:filePath];
+    NSError *error;
+    NSData *fileData = [NSData dataWithContentsOfURL:filePathURL options:NSDataReadingMappedIfSafe error:&error];
+    if (error) {
+        NSLog(@"read audio file data error: %@", error);
+    }
+    
+    return [self fileTypeWithData:fileData];
+}
+
+/// Get audio AudioFileTypeID with NSData
+- (AudioFileTypeID)fileTypeWithData:(NSData *)fileData {
+    AudioFileTypeID fileType = 0;
+    
+    // 读取前几个字节
+    if (fileData.length >= 4) {
+        const UInt8 *bytes = [fileData bytes];
+        NSLog(@"file header bytes: %s", bytes);
+        
+        if (memcmp(bytes, "RIFF", 4) == 0) {
+            fileType = kAudioFileWAVEType;
+          } else if (memcmp(bytes, "ID3", 3) == 0) {
+              fileType = kAudioFileMP3Type;
+          } else {
+              
+          }
+    }
+    
+    return fileType;
+}
+
+/// Get file type string with AudioFileTypeID.
+- (nullable NSString *)getFileTypeString:(AudioFileTypeID)fileTypeID {
+    NSString *fileType;
+    switch (fileTypeID) {
+        case kAudioFileWAVEType:
+            fileType = @"wav";
+            break;
+        case kAudioFileMP3Type:
+            fileType = @"mp3";
+            
+        default:
+            break;
+    }
+    return fileType;
+}
+
+/// Correct audio file type, if file extension is not equal to true file tpye.
+- (nullable NSString *)tryCorrectAudioFileTypeWithPath:(NSString *)filePath {
+    NSString *fileExtension = [filePath pathExtension];
+    NSString *trueFileType = [self audioFileTypeWithPath:filePath];
+    if (trueFileType.length && ![trueFileType isEqualToString:fileExtension]) {
+        NSString *newFilePath = [filePath stringByDeletingPathExtension];
+        newFilePath = [newFilePath stringByAppendingPathExtension:trueFileType];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        // If file has existed, then remove old filePath.
+        if ([fileManager fileExistsAtPath:newFilePath]) {
+            NSError *error = nil;
+            if (![fileManager removeItemAtPath:filePath error:&error]) {
+                NSLog(@"remove file error: %@", [error localizedDescription]);
+                return nil;
+            }
+            return newFilePath;
+        }
+        
+        
+        NSError *error = nil;
+        if ([fileManager moveItemAtPath:filePath toPath:newFilePath error:&error]) {
+            NSLog(@"rename successful: %@", newFilePath);
+            return newFilePath;
+        } else {
+            NSLog(@"rename failed: %@", [error localizedDescription]);
+            return nil;
+        }
+    }
+    
+    return nil;
+}
+
 
 - (BOOL)isAudioFilePlayable:(NSURL *)filePathURL {
     OSStatus status;
