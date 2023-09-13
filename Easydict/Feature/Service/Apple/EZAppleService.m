@@ -1701,8 +1701,14 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      threshold = 900 * 0.016 = 14.4
      
      But sometimes OCR frame is imprecise, so threshold should be bigger.
+     
+     Old threshold is 22, about 2 alphabet.
      */
-    CGFloat threshold = 22;
+    NSInteger alphabetCount = 2;
+    CGFloat threshold = [self getThresholdWithAlphabetCount:alphabetCount textObservation:textObservation];
+    
+    // What actually needs to be calculated here is the width of about 4 spaces, which is a little smaller than 2 alphabets.
+    threshold = threshold * 0.8;
     
     // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
@@ -1736,12 +1742,13 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
-    // Two Chinese words length
-    CGFloat threshold = 60;
+
+    // For long text, there are up to 16 letters or 2 Chinese characters on the far right.
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
-    if (isEnglishTypeLanguage) {
-        threshold = 230; // This value is related to the font size, take the average, and a bit larger.
-    }
+    NSInteger alphabetCount = isEnglishTypeLanguage ? 17 : 2;
+
+    // threshold is the actual display width.  Old threshold: 230(English), 60(Chinese)
+    CGFloat threshold = [self getThresholdWithAlphabetCount:alphabetCount textObservation:textObservation];
     
     CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
@@ -1751,6 +1758,56 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     return NO;
+}
+
+- (CGFloat)getThresholdWithAlphabetCount:(NSInteger)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
+    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
+    
+    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
+    
+    // threshold is the actual display width.
+    CGFloat threshold = alphabetCount * singleAlphabetWidth * scaleFactor;
+//    NSLog(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
+    
+    return threshold;
+}
+
+- (CGFloat)singleAlphabetWidthOfText:(NSString *)text height:(CGFloat)textHeight {
+    CGFloat systemFontSize = [NSFont systemFontSize];
+    NSFont *font = [NSFont systemFontOfSize:systemFontSize];
+    CGFloat fontSize = [self fontSizeOfText:text height:textHeight];
+
+    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+    NSString *longWord = isEnglishTypeLanguage ? @"implementation" : @"你好";
+    CGFloat longWordLength = [longWord mm_sizeWithFont:font].width;
+    /**
+     longWordLength / systemFontSize = x / fontSize
+     x = fontSize * (longWordLength / font)
+     */
+    
+    CGFloat width = fontSize * (longWordLength / systemFontSize);
+    CGFloat singleAlphabetWidth = width / longWord.length;
+    
+    return singleAlphabetWidth;
+}
+
+/// Get text font size
+- (CGFloat)fontSizeOfText:(NSString *)text height:(CGFloat)textHeight {
+    CGFloat systemFontSize = [NSFont systemFontSize];
+    NSFont *font = [NSFont systemFontOfSize:systemFontSize];
+    
+    CGFloat height = [text mm_sizeWithFont:font].height;
+    
+    /**
+     systemFontSize / height = x / textHeight
+     x = textHeight * (systemFontSize / height)
+     */
+
+    CGFloat fontSize = textHeight * (systemFontSize / height);
+//    NSLog(@"Calculated font size is: %.1f", fontSize);
+
+    return fontSize;
 }
 
 
