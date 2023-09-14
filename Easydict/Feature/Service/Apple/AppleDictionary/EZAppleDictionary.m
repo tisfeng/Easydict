@@ -190,7 +190,7 @@
         
         NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];
         NSString *htmlDirectory = [dictionaryURL URLByAppendingPathComponent:EZAppleDictionaryHTMLDirectory].path;
-        NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@.html", EZAppleDictionaryHTMLDictFilePath];
+        NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@", EZAppleDictionaryHTMLDictFilePath];
         self.htmlFilePath = htmlFilePath;
         [htmlString writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     }
