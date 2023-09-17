@@ -1336,6 +1336,16 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     BOOL isPrevList = [prevText isListTypeFirstWord];
     BOOL isList = [text isListTypeFirstWord];
     
+    CGFloat textFontSize = [self fontSizeOfTextObservation:textObservation];
+    CGFloat prevTextFontSize = [self fontSizeOfTextObservation:prevTextObservation];
+    
+    CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
+    // Note: this size is not precise, so threshold should a bit large
+    BOOL isEqualFontSize = differenceFontSize <= 5;
+    if (!isEqualFontSize) {
+        NSLog(@"Not equal font size: difference = %.1f(%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
+    }
+    
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
     if (hasIndentation) {
@@ -1515,8 +1525,11 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      —— 宋 · 姜夔
      */
     
+    
     BOOL isChinesePoetryLine = isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry);
-    if (isChinesePoetryLine) {
+    BOOL shouldWrap = isChinesePoetryLine || !isEqualFontSize;
+    
+    if (shouldWrap) {
         needLineBreak = YES;
         if (isBigLineSpacing) {
             isNewParagraph = YES;
@@ -1743,8 +1756,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
       comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
 
-    // For long text, there are up to 16 letters or 2 Chinese characters on the far right.
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+    
+    // For long text, there are up to 17 letters or 2 Chinese characters on the far right.
+    // "implementation ," : @"你好"
     NSInteger alphabetCount = isEnglishTypeLanguage ? 17 : 2;
 
     // threshold is the actual display width.  Old threshold: 230(English), 60(Chinese)
@@ -1762,9 +1777,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 - (CGFloat)getThresholdWithAlphabetCount:(NSInteger)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
-    
-    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
+    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];;
     
     // threshold is the actual display width.
     CGFloat threshold = alphabetCount * singleAlphabetWidth * scaleFactor;
@@ -1772,6 +1785,13 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     return threshold;
 }
+
+- (CGFloat)singleAlphabetWidthOfTextObservation:(VNRecognizedTextObservation *)textObservation {
+    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
+    return [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
+}
+
 
 - (CGFloat)singleAlphabetWidthOfText:(NSString *)text height:(CGFloat)textHeight {
     CGFloat systemFontSize = [NSFont systemFontSize];
@@ -1790,6 +1810,12 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat singleAlphabetWidth = width / longWord.length;
     
     return singleAlphabetWidth;
+}
+
+- (CGFloat)fontSizeOfTextObservation:(VNRecognizedTextObservation *)textObservation {
+    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
+    return [self fontSizeOfText:textObservation.firstText height:textHeight];
 }
 
 /// Get text font size
