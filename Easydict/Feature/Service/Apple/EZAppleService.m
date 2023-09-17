@@ -1341,7 +1341,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
     // Note: this size is not precise, so threshold should a bit large
-    BOOL isEqualFontSize = differenceFontSize <= 5;
+    BOOL isEqualFontSize = differenceFontSize <= 7;
     if (!isEqualFontSize) {
         NSLog(@"Not equal font size: difference = %.1f(%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
     }
@@ -1500,6 +1500,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
                 needLineBreak = YES;
             }
         }
+    }
+    
+    if (!isEqualFontSize && hasPrevIndentation) {
+        isNewParagraph = YES;
     }
     
     /**
@@ -1721,7 +1725,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat threshold = [self getThresholdWithAlphabetCount:alphabetCount textObservation:textObservation];
     
     // What actually needs to be calculated here is the width of about 4 spaces, which is a little smaller than 2 alphabets.
-    threshold = threshold * 0.8;
+    threshold = threshold * 0.9;
     
     // lineX > prevLineX
     CGFloat lineX = textObservation.boundingBox.origin.x;
@@ -1734,7 +1738,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 2)) {
         return YES;
     }
-    NSLog(@"not equal x difference: %.1f", difference);
+    NSLog(@"Not equalX text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
+
     return NO;
 }
 
@@ -1772,6 +1777,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     if (difference < threshold) {
         return YES;
     }
+//    NSLog(@"Not long text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
+    
     return NO;
 }
 
