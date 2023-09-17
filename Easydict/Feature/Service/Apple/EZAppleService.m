@@ -1346,6 +1346,15 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         NSLog(@"Not equal font size: difference = %.1f(%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
     }
     
+    /**
+     https://twitter.com/yetone/status/1703102199046471893
+     
+     I'm in love with this fucking language
+     
+     Am I allowed to rant here?
+     */
+    BOOL isFirstLetterUpperCase = ![text isLowercaseFirstChar];
+    
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
     if (hasIndentation) {
@@ -1502,7 +1511,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         }
     }
     
-    if (!isEqualFontSize && hasPrevIndentation) {
+    BOOL newParagraph = (!isEqualFontSize && hasPrevIndentation)
+    || (isBigLineSpacing && isFirstLetterUpperCase);
+    
+    if (newParagraph) {
         isNewParagraph = YES;
     }
     
@@ -1630,7 +1642,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
     CGFloat lineHeightRatio = deltaY / lineHeight;
     CGFloat averageLineSpacingRatio = deltaY / self.averageLineSpacing;
-    CGFloat averagerLineHeightRatio = deltaY / self.averageLineHeight;
+    CGFloat averageLineHeightRatio = deltaY / self.averageLineHeight;
     
     CGFloat minLineHeightRatio = 0.65;
     /**
@@ -1646,8 +1658,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     // Since line spacing sometimes is too small and imprecise, we do not use it.
     if (lineHeightRatio > lineHeightRatioThreshold ||
         averageLineSpacingRatio > greaterThanLineSpacingRatio ||
-        averagerLineHeightRatio > greaterThanLineHeightRatio ||
-        (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averagerLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
+        averageLineHeightRatio > greaterThanLineHeightRatio ||
+        (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averageLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
         isBigLineSpacing = YES;
         //        NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
