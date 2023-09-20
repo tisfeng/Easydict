@@ -96,7 +96,6 @@
     }
 
     @media (prefers-color-scheme: dark) {
-
       details summary::before,
       details summary::after {
         background: var(--dark-text-color);
@@ -444,8 +443,8 @@
       }
 
       if (isDarkMode()) {
-        updateAllIframeColor(true);
-        updateBackgroundColor(true);
+        // updateAllIframeColor(true);
+        // updateBackgroundColor(true);
       }
 
       updateAllIframeStyle();
@@ -465,8 +464,8 @@
       );
       colorSchemeListener.addEventListener(`change`, function (event) {
         var isDarkMode = event.matches;
-        updateAllIframeColor(isDarkMode);
-        updateBackgroundColor(isDarkMode);
+        // updateAllIframeColor(isDarkMode);
+        // updateBackgroundColor(isDarkMode);
       });
     };
   </script>

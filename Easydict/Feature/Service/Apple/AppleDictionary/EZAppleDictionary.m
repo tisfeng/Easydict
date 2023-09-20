@@ -142,14 +142,14 @@
             
             // Update background color for dark mode
             NSString *dictBackgroundColorCSS = [NSString stringWithFormat:@"<style>"
-                                                @"body { background-color: %@; }"
+                                                @"body { background-color: %@; color: %@}"
                                                 
                                                 @"@media (prefers-color-scheme: dark) {"
-                                                @"body { background-color: %@; }"
+                                                @"body { background-color: %@; filter: invert(0.85) hue-rotate(185deg) saturate(200%%) brightness(120%%);}"
                                                 @"}"
                                                 @"</style>",
                                                 
-                                                lightBackgroundColorString, darkBackgroundColorString];
+                                                lightBackgroundColorString, lightTextColorString, darkBackgroundColorString];
             
             NSString *dictHTML = [NSString stringWithFormat:@"%@ \n\n%@ \n\n%@", customCSS, dictBackgroundColorCSS, wordHtmlString];
             
