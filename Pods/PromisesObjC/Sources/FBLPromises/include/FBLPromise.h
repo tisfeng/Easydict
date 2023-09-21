@@ -85,8 +85,8 @@ NS_ASSUME_NONNULL_BEGIN
         FBLPromise.resolved(value)
 
  */
-+ (instancetype (^)(void))pending FBL_PROMISES_DOT_SYNTAX NS_SWIFT_UNAVAILABLE("");
-+ (instancetype (^)(id __nullable))resolved FBL_PROMISES_DOT_SYNTAX NS_SWIFT_UNAVAILABLE("");
++ (FBLPromise * (^)(void))pending FBL_PROMISES_DOT_SYNTAX NS_SWIFT_UNAVAILABLE("");
++ (FBLPromise * (^)(id __nullable))resolved FBL_PROMISES_DOT_SYNTAX NS_SWIFT_UNAVAILABLE("");
 
 @end
 

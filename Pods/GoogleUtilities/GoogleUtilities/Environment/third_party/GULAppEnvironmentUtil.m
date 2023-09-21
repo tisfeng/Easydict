@@ -334,7 +334,7 @@ static BOOL HasEmbeddedMobileProvision(void) {
   // `true`, which means the condition list is order-sensitive.
 #if TARGET_OS_MACCATALYST
   applePlatform = @"maccatalyst";
-#elif TARGET_OS_IOS
+#elif TARGET_OS_IOS && (!defined(TARGET_OS_VISION) || !TARGET_OS_VISION)
 #if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
   if (@available(iOS 14.0, *)) {
     // Early iOS 14 betas do not include isiOSAppOnMac (#6969)
@@ -353,6 +353,8 @@ static BOOL HasEmbeddedMobileProvision(void) {
   applePlatform = @"macos";
 #elif TARGET_OS_WATCH
   applePlatform = @"watchos";
+#elif defined(TARGET_OS_VISION) && TARGET_OS_VISION
+  applePlatform = @"visionos";
 #endif // TARGET_OS_MACCATALYST
 
   return applePlatform;

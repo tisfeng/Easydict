@@ -53,7 +53,8 @@ final class FileStorage: Storage {
   /// Reads and returns the data from this object's associated file resource.
   ///
   /// - Returns: The data stored on disk.
-  /// - Throws: An error if reading the contents of the file resource fails (i.e. file doesn't exist).
+  /// - Throws: An error if reading the contents of the file resource fails (i.e. file doesn't
+  /// exist).
   func read() throws -> Data {
     do {
       return try Data(contentsOf: url)

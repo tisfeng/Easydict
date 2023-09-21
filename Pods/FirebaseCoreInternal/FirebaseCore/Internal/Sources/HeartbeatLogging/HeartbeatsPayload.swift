@@ -45,7 +45,8 @@ public protocol HTTPHeaderRepresentable {
 ///     }
 ///
 public struct HeartbeatsPayload: Codable {
-  /// The version of the payload. See go/firebase-apple-heartbeats for details regarding current version.
+  /// The version of the payload. See go/firebase-apple-heartbeats for details regarding current
+  /// version.
   static let version: Int = 2
 
   /// A payload component composed of a user agent and array of dates (heartbeats).
@@ -91,6 +92,14 @@ extension HeartbeatsPayload: HTTPHeaderRepresentable {
   public func headerValue() -> String {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .formatted(Self.dateFormatter)
+    #if DEBUG
+      // TODO: Remove the following #available check when FirebaseCore's minimum deployment target
+      // is iOS 11+; all other supported platforms already meet the minimum for `.sortedKeys`.
+      if #available(iOS 11, *) {
+        // Sort keys in debug builds to simplify output comparisons in unit tests.
+        encoder.outputFormatting = .sortedKeys
+      }
+    #endif // DEBUG
 
     guard let data = try? encoder.encode(self) else {
       // If encoding fails, fall back to encoding with an empty payload.
@@ -113,10 +122,10 @@ extension HeartbeatsPayload {
   /// Convenience instance that represents an empty payload.
   static let emptyPayload = HeartbeatsPayload()
 
-  /// A default date formatter that uses `YYYY-MM-dd` format.
+  /// A default date formatter that uses `yyyy-MM-dd` format.
   public static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "YYYY-MM-dd"
+    formatter.dateFormat = "yyyy-MM-dd"
     formatter.locale = Locale(identifier: "en_US_POSIX")
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter

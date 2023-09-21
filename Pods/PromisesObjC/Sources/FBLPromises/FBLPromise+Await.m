@@ -46,3 +46,6 @@ id __nullable FBLPromiseAwait(FBLPromise *promise, NSError **outError) {
   }
   return resolution;
 }
+
+/** Stub used to force the linker to include the categories in this file. */
+void FBLIncludeAwaitCategory(void) {}

@@ -280,17 +280,64 @@ static dispatch_queue_t gFBLPromiseDefaultDispatchQueue;
   return promise;
 }
 
+#pragma mark - Category linking workaround
+
+extern void FBLIncludeAllCategory(void);
+extern void FBLIncludeAlwaysCategory(void);
+extern void FBLIncludeAnyCategory(void);
+extern void FBLIncludeAsyncCategory(void);
+extern void FBLIncludeAwaitCategory(void);
+extern void FBLIncludeCatchCategory(void);
+extern void FBLIncludeDelayCategory(void);
+extern void FBLIncludeDoCategory(void);
+extern void FBLIncludeRaceCategory(void);
+extern void FBLIncludeRecoverCategory(void);
+extern void FBLIncludeReduceCategory(void);
+extern void FBLIncludeRetryCategory(void);
+extern void FBLIncludeTestingCategory(void);
+extern void FBLIncludeThenCategory(void);
+extern void FBLIncludeTimeoutCategory(void);
+extern void FBLIncludeValidateCategory(void);
+extern void FBLIncludeWrapCategory(void);
+
+/**
+ Does nothing when called, and not meant to be called.
+ 
+ This method forces the linker to include all FBLPromise categories even if
+ users do not include the '-ObjC' linker flag in their projects.
+ */
++ (void)noop {
+  FBLIncludeAllCategory();
+  FBLIncludeAllCategory();
+  FBLIncludeAlwaysCategory();
+  FBLIncludeAnyCategory();
+  FBLIncludeAsyncCategory();
+  FBLIncludeAwaitCategory();
+  FBLIncludeCatchCategory();
+  FBLIncludeDelayCategory();
+  FBLIncludeDoCategory();
+  FBLIncludeRaceCategory();
+  FBLIncludeRecoverCategory();
+  FBLIncludeReduceCategory();
+  FBLIncludeRetryCategory();
+  FBLIncludeTestingCategory();
+  FBLIncludeThenCategory();
+  FBLIncludeTimeoutCategory();
+  FBLIncludeValidateCategory();
+  FBLIncludeWrapCategory();
+}
+
 @end
 
 @implementation FBLPromise (DotSyntaxAdditions)
 
-+ (instancetype (^)(void))pending {
++ (FBLPromise * (^)(void))pending {
   return ^(void) {
     return [self pendingPromise];
   };
 }
 
-+ (instancetype (^)(id __nullable))resolved {
++ (FBLPromise * (^)(id __nullable))resolved {
   return ^(id resolution) {
     return [self resolvedWith:resolution];
   };

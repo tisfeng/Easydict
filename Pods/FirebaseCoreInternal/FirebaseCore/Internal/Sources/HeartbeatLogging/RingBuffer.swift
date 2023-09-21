@@ -41,7 +41,8 @@ struct RingBuffer<Element>: Sequence {
     tailIndex = circularQueue.startIndex
   }
 
-  /// Pushes an element to the back of the buffer, returning the element (`Element?`) that was overwritten.
+  /// Pushes an element to the back of the buffer, returning the element (`Element?`) that was
+  /// overwritten.
   /// - Parameter element: The element to push to the back of the buffer.
   /// - Returns: The element that was overwritten or `nil` if nothing was overwritten.
   /// - Complexity: O(1)
@@ -72,7 +73,8 @@ struct RingBuffer<Element>: Sequence {
     return replaced
   }
 
-  /// Pops an element from the back of the buffer, returning the element (`Element?`) that was popped.
+  /// Pops an element from the back of the buffer, returning the element (`Element?`) that was
+  /// popped.
   /// - Returns: The element that was popped or `nil` if there was no element to pop.
   /// - Complexity: O(1)
   @discardableResult

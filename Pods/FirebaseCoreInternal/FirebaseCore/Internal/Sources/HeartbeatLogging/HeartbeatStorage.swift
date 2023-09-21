@@ -69,7 +69,8 @@ final class HeartbeatStorage: HeartbeatStorageProtocol {
   /// Makes a `HeartbeatStorage` instance using a given `String` identifier.
   ///
   /// The created persistent storage object is platform dependent. For tvOS, user defaults
-  /// is used as the underlying storage container due to system storage limits. For all other platforms,
+  /// is used as the underlying storage container due to system storage limits. For all other
+  /// platforms,
   /// the file system is used.
   ///
   /// - Parameter id: A `String` identifier used to create the `HeartbeatStorage`.
@@ -115,7 +116,8 @@ final class HeartbeatStorage: HeartbeatStorageProtocol {
   /// Synchronously gets the current heartbeat data from storage and resets the storage using the
   /// given transform block.
   ///
-  /// This API is like any `getAndSet`-style API in that it gets (and returns) the current value and uses
+  /// This API is like any `getAndSet`-style API in that it gets (and returns) the current value and
+  /// uses
   /// a block to transform the current value (or, soon-to-be old value) to a new value.
   ///
   /// - Parameter transform: An optional block used to reset the currently stored heartbeat.

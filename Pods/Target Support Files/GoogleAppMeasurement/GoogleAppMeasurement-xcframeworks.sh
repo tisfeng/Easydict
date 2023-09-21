@@ -17,14 +17,14 @@ RSYNC_PROTECT_TMP_FILES=(--filter "P .*.??????")
 variant_for_slice()
 {
   case "$1" in
-  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_armv7")
+  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64")
     echo ""
-    ;;
-  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_i386_x86_64-simulator")
-    echo "simulator"
     ;;
   "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_x86_64-maccatalyst")
     echo "maccatalyst"
+    ;;
+  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_x86_64-simulator")
+    echo "simulator"
     ;;
   "GoogleAppMeasurementIdentitySupport.xcframework/macos-arm64_x86_64")
     echo ""
@@ -35,14 +35,14 @@ variant_for_slice()
   "GoogleAppMeasurementIdentitySupport.xcframework/tvos-arm64_x86_64-simulator")
     echo "simulator"
     ;;
-  "GoogleAppMeasurement.xcframework/ios-arm64_armv7")
+  "GoogleAppMeasurement.xcframework/ios-arm64")
     echo ""
-    ;;
-  "GoogleAppMeasurement.xcframework/ios-arm64_i386_x86_64-simulator")
-    echo "simulator"
     ;;
   "GoogleAppMeasurement.xcframework/ios-arm64_x86_64-maccatalyst")
     echo "maccatalyst"
+    ;;
+  "GoogleAppMeasurement.xcframework/ios-arm64_x86_64-simulator")
+    echo "simulator"
     ;;
   "GoogleAppMeasurement.xcframework/macos-arm64_x86_64")
     echo ""
@@ -59,13 +59,13 @@ variant_for_slice()
 archs_for_slice()
 {
   case "$1" in
-  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_armv7")
-    echo "arm64 armv7"
-    ;;
-  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_i386_x86_64-simulator")
-    echo "arm64 i386 x86_64"
+  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64")
+    echo "arm64"
     ;;
   "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "arm64 x86_64"
+    ;;
+  "GoogleAppMeasurementIdentitySupport.xcframework/ios-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
   "GoogleAppMeasurementIdentitySupport.xcframework/macos-arm64_x86_64")
@@ -77,13 +77,13 @@ archs_for_slice()
   "GoogleAppMeasurementIdentitySupport.xcframework/tvos-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
-  "GoogleAppMeasurement.xcframework/ios-arm64_armv7")
-    echo "arm64 armv7"
-    ;;
-  "GoogleAppMeasurement.xcframework/ios-arm64_i386_x86_64-simulator")
-    echo "arm64 i386 x86_64"
+  "GoogleAppMeasurement.xcframework/ios-arm64")
+    echo "arm64"
     ;;
   "GoogleAppMeasurement.xcframework/ios-arm64_x86_64-maccatalyst")
+    echo "arm64 x86_64"
+    ;;
+  "GoogleAppMeasurement.xcframework/ios-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
   "GoogleAppMeasurement.xcframework/macos-arm64_x86_64")

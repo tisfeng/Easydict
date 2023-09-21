@@ -110,6 +110,12 @@ NS_SWIFT_NAME(AppCenter)
 @property(class, nonatomic, strong) NSString *logUrl;
 
 /**
+ * Data residency region. 
+ * Verify list of supported regions on <link>. Value outside of supported range is treated by backend as ANY.
+ */
+@property(class, nonatomic, strong) NSString *dataResidencyRegion;
+
+/**
  * Set log handler.
  */
 @property(class, nonatomic) MSACLogHandler logHandler;

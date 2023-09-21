@@ -33,6 +33,11 @@ NS_SWIFT_NAME(Log)
 @property(nonatomic, copy) NSString *distributionGroupId;
 
 /**
+ * Data residency region.
+ */
+@property(nonatomic, copy) NSString *dataResidencyRegion;
+
+/**
  * Optional user identifier.
  */
 @property(nonatomic, copy) NSString *userId;

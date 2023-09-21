@@ -157,7 +157,15 @@
     session = [NSURLSession sessionWithConfiguration:_sessionConfig
                                             delegate:self
                                        delegateQueue:[NSOperationQueue mainQueue]];
-    postRequestTask = [session uploadTaskWithRequest:request fromData:request.HTTPBody];
+    // To avoid a runtime warning in Xcode 15 Beta 4, the given `URLRequest`
+    // should have a nil `HTTPBody`. To workaround this, the given `URLRequest`
+    // is copied and the `HTTPBody` data is removed.
+    NSData *givenRequestHTTPBody = [request.HTTPBody copy];
+    NSMutableURLRequest *requestWithoutHTTPBody = [request mutableCopy];
+    requestWithoutHTTPBody.HTTPBody = nil;
+
+    postRequestTask = [session uploadTaskWithRequest:requestWithoutHTTPBody
+                                            fromData:givenRequestHTTPBody];
   }
 
   if (!session || !postRequestTask) {

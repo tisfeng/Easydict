@@ -14,7 +14,7 @@
 		</data>
 		<key>Headers/MSACAppCenter.h</key>
 		<data>
-		wHZGyUCGolziH5LQW/TKihfSwFQ=
+		AVX4K4paPhia7Wo4ktHo/4elh48=
 		</data>
 		<key>Headers/MSACAppCenterErrors.h</key>
 		<data>
@@ -46,7 +46,7 @@
 		</data>
 		<key>Headers/MSACLog.h</key>
 		<data>
-		1/7NIwYuYLGHIVMZps8b6/zOpJg=
+		V/XUq8M6z6jrlxMZ7+cU2eydjZU=
 		</data>
 		<key>Headers/MSACLogWithProperties.h</key>
 		<data>
@@ -78,7 +78,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		Yrxi1TvJRI8jXnHR711RlNJzdTo=
+		mh3Syha53nWfjl3a32KEohsVD18=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -117,11 +117,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			wHZGyUCGolziH5LQW/TKihfSwFQ=
+			AVX4K4paPhia7Wo4ktHo/4elh48=
 			</data>
 			<key>hash2</key>
 			<data>
-			bzas4rtwYsHOrchA3GHb7dH+J6ibm6pns9HECn26uYc=
+			HxRGEIO6NfLkVeV4OHzuVNkzQhZbq6s6A8mXfb3Aw/A=
 			</data>
 		</dict>
 		<key>Headers/MSACAppCenterErrors.h</key>
@@ -205,11 +205,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			1/7NIwYuYLGHIVMZps8b6/zOpJg=
+			V/XUq8M6z6jrlxMZ7+cU2eydjZU=
 			</data>
 			<key>hash2</key>
 			<data>
-			3GF6xCTfpLDmOqKnacEOEDr5mkM/llKm0IoIEyISZKA=
+			m5KXVURli7fgqUrflE5K5P2aqJheHcgL3J+syMpm6AE=
 			</data>
 		</dict>
 		<key>Headers/MSACLogWithProperties.h</key>

@@ -53,7 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return YES if Swift runtime detected in the app.
 + (BOOL)hasSwiftRuntime __deprecated;
 
-/// @return An Apple platform. Possible values "ios", "tvos", "macos", "watchos", "maccatalyst".
+/// @return An Apple platform. Possible values "ios", "tvos", "macos", "watchos", "maccatalyst", and
+/// "visionos".
 + (NSString *)applePlatform;
 
 /// @return An Apple Device platform. Same possible values as `applePlatform`, with the addition of

@@ -14,6 +14,14 @@ API_UNAVAILABLE(macCatalyst, macos, tvos, watchos)
 + (void)initiateOnDeviceConversionMeasurementWithEmailAddress:(NSString *)emailAddress
     NS_SWIFT_NAME(initiateOnDeviceConversionMeasurement(emailAddress:));
 
+/// Initiates on-device conversion measurement given a phone number in E.164 format. Requires
+/// dependency GoogleAppMeasurementOnDeviceConversion to be linked in, otherwise it is a no-op.
+/// @param phoneNumber User phone number. Must be in E.164 format, which means it must be
+///   limited to a maximum of 15 digits and must include a plus sign (+) prefix and country code
+///   with no dashes, parentheses, or spaces.
++ (void)initiateOnDeviceConversionMeasurementWithPhoneNumber:(NSString *)phoneNumber
+    NS_SWIFT_NAME(initiateOnDeviceConversionMeasurement(phoneNumber:));
+
 @end
 
 NS_ASSUME_NONNULL_END

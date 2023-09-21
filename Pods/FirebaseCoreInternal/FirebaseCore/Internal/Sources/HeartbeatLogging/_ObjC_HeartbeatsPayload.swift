@@ -14,7 +14,8 @@
 
 import Foundation
 
-/// A model object representing a payload of heartbeat data intended for sending in network requests.
+/// A model object representing a payload of heartbeat data intended for sending in network
+/// requests.
 @objc(FIRHeartbeatsPayload)
 public class _ObjC_HeartbeatsPayload: NSObject, HTTPHeaderRepresentable {
   /// The underlying Swift structure.

@@ -28,7 +28,6 @@ NS_SWIFT_NAME(Analytics)
 ///     <li>ad_query</li>
 ///     <li>ad_reward</li>
 ///     <li>adunit_exposure</li>
-///     <li>app_background</li>
 ///     <li>app_clear_data</li>
 ///     <li>app_exception</li>
 ///     <li>app_remove</li>
