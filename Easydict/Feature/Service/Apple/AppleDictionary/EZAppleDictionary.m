@@ -80,29 +80,30 @@
     NSString *baseHtmlPath = [[NSBundle mainBundle] pathForResource:@"apple-dictionary" ofType:@"html"];
     NSString *baseHtmlString = [NSString stringWithContentsOfFile:baseHtmlPath encoding:NSUTF8StringEncoding error:nil];
     
-    
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     
-    NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
+//    NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
-    
     
     NSString *bigWordTitleH2Class = @"big-word-title";
     NSString *customIframeContainerClass = @"custom-iframe-container";
     
     NSString *customCSS = [NSString stringWithFormat:@"<style>"
                            @".%@ { margin-top: 0px; margin-bottom: 0px; width: 100%%; }"
-                           @"body { margin: 10px; color: %@; background-color: %@; }"
+                           @"body { margin: 10px; color: %@; background-color: %@; font-family: 'system-ui'; }"
                            
                            @"@media (prefers-color-scheme: dark) { "
-                           @"body { color: %@; background-color: %@; }"
+                           @"body {"
+                           @"background-color: %@;"
+                           @"filter: invert(0.85) hue-rotate(185deg) saturate(200%%) brightness(120%%);"
+                           @"}"
                            @"}"
                            @"</style>",
                            
                            customIframeContainerClass,
                            lightTextColorString, lightBackgroundColorString,
-                           darkTextColorString, darkBackgroundColorString];
+                           darkBackgroundColorString];
     
     NSMutableString *iframesHtmlString = [NSMutableString string];
     
@@ -140,18 +141,7 @@
             // Use -webkit-text-fill-color to render system dict.
             //            NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
-            // Update background color for dark mode
-            NSString *dictBackgroundColorCSS = [NSString stringWithFormat:@"<style>"
-                                                @"body { background-color: %@; color: %@}"
-                                                
-                                                @"@media (prefers-color-scheme: dark) {"
-                                                @"body { background-color: %@; filter: invert(0.85) hue-rotate(185deg) saturate(200%%) brightness(120%%);}"
-                                                @"}"
-                                                @"</style>",
-                                                
-                                                lightBackgroundColorString, lightTextColorString, darkBackgroundColorString];
-            
-            NSString *dictHTML = [NSString stringWithFormat:@"%@ \n\n%@ \n\n%@", customCSS, dictBackgroundColorCSS, wordHtmlString];
+            NSString *dictHTML = [NSString stringWithFormat:@"%@\n\n%@", customCSS, wordHtmlString];
             
             // Create an iframe for each HTML content
             NSString *iframeHTML = [NSString stringWithFormat:@"<iframe class=\"%@\" srcdoc=\"%@\"></iframe>", customIframeContainerClass, [dictHTML escapedXMLString]];
