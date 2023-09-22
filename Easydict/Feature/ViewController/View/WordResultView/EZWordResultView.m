@@ -474,6 +474,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 
                 CGSize labelSize = [partLabel oneLineSize];
                 make.size.mas_equalTo(labelSize).priorityHigh();
+                
+                exceptedWidth += ceil(labelSize.width);
             }];
             partLabel.mas_key = @"partLabel";
         }
@@ -483,9 +485,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
         meanLabel.delegate = self;
-        
-        exceptedWidth += ceil(partLabel.width);
-        
+                
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin_8);
             exceptedWidth += kHorizontalMargin_8;
