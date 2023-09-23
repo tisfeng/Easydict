@@ -234,7 +234,7 @@
 #pragma mark - Rewrite
 
 - (void)viewDidMoveToWindow {
-    [self scrollToTextViewBottom];
+//    [self scrollToTextViewBottom];
     
     [super viewDidMoveToWindow];
 }
