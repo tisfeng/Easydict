@@ -1767,34 +1767,48 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 }
 
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation {
-    return [self isLongTextObservation:textObservation comparedTextObservation:self.maxLongLineTextObservation];
+    CGFloat remainingAlphabetCount = [self remainingAlphabetCountOfTextObservation:textObservation];
+    NSLog(@"Remaining Alphabet Count: %.1f", remainingAlphabetCount);
+    
+    CGFloat threshold = [self longTextAlphabetCountThreshold:textObservation];
+    BOOL isLongText = remainingAlphabetCount < threshold;
+    
+    return isLongText;    
 }
 
-- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation
-      comparedTextObservation:(VNRecognizedTextObservation *)comparedTextObservation {
+- (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {
+    CGFloat remainingAlphabetCount = 0;
+    
+    CGFloat dx = CGRectGetMaxX(self.maxLongLineTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
+    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
+    CGFloat difference = maxLength * dx;
+    
+    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];;
+    remainingAlphabetCount = difference / singleAlphabetWidth;
+        
+    return remainingAlphabetCount;
+}
 
+- (CGFloat)longTextAlphabetCountThreshold:(VNRecognizedTextObservation *)textObservation {
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
     
     // For long text, there are up to 17 letters or 2 Chinese characters on the far right.
     // "implementation ," : @"你好"
-    NSInteger alphabetCount = isEnglishTypeLanguage ? 17 : 2;
-
-    // threshold is the actual display width.  Old threshold: 230(English), 60(Chinese)
-    CGFloat threshold = [self getThresholdWithAlphabetCount:alphabetCount textObservation:textObservation];
+    CGFloat alphabetCount = isEnglishTypeLanguage ? 17 : 2.5;
     
-    CGFloat dx = CGRectGetMaxX(comparedTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
-    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
-    CGFloat difference = maxLength * dx;
+    NSString *text = [textObservation firstText];
+    BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
     
-    if (difference < threshold) {
-        return YES;
+    if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
+        if (!isEndPunctuationChar) {
+            alphabetCount += 2;
+        }
     }
-//    NSLog(@"Not long text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
     
-    return NO;
+    return alphabetCount;
 }
 
-- (CGFloat)getThresholdWithAlphabetCount:(NSInteger)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
+- (CGFloat)getThresholdWithAlphabetCount:(CGFloat)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
     CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];;
     
