@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -51,7 +51,6 @@
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
-		0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0376AB5E294F659700E2E2A4 /* Localizable.strings */; };
 		037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AF2957FEB200D0E2CF /* EZServiceViewController.m */; };
 		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
 		037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */; };
@@ -206,6 +205,7 @@
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
 		62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZBingRequest.m */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
+		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -310,8 +310,6 @@
 		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
-		0376AB5D294F659700E2E2A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		0376AB5F294F659800E2E2A4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		037852AE2957FEB200D0E2CF /* EZServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceViewController.h; sourceTree = "<group>"; };
 		037852AF2957FEB200D0E2CF /* EZServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZServiceViewController.m; sourceTree = "<group>"; };
 		037852B129583F5200D0E2CF /* EZServiceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceCell.h; sourceTree = "<group>"; };
@@ -343,8 +341,6 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		038D20392A09364B0005D000 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
-		038D203B2A09364D0005D000 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -610,6 +606,8 @@
 		62A2D03E2A82967F007EEB01 /* EZBingRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingRequest.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
+		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
+		C4DE3D6E2AC00EB500C2B85D /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C99EEB182385796700FEE666 /* Easydict-Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -867,7 +865,6 @@
 			isa = PBXGroup;
 			children = (
 				03D1C8772952B1CD00F2C7BD /* GoogleService-Info.plist */,
-				0376AB5E294F659700E2E2A4 /* Localizable.strings */,
 				03BFBB5429235C9400C48725 /* Icons */,
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
@@ -1895,7 +1892,7 @@
 				03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */,
 				03D1C8782952B1CD00F2C7BD /* GoogleService-Info.plist in Resources */,
 				03D2A3DF29F42B290035CED4 /* bd.js in Resources */,
-				0376AB5C294F659700E2E2A4 /* Localizable.strings in Resources */,
+				C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */,
 				03BFBB662923998300C48725 /* black-white-icon@3x.png in Resources */,
 				03BFBB812923A2FA00C48725 /* white-black-icon@3x.png in Resources */,
 				03BFBB7D2923A1D900C48725 /* cyan-white-icon@2x.png in Resources */,
@@ -2137,15 +2134,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0376AB5E294F659700E2E2A4 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0376AB5D294F659700E2E2A4 /* en */,
-				0376AB5F294F659800E2E2A4 /* zh-Hans */,
-			);
-			name = Localizable.strings;
-			sourceTree = SOURCE_ROOT;
-		};
 		03839140292FBE120009828C /* Main.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2166,8 +2154,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				03B0222029231FA6001C7E63 /* Base */,
-				038D20392A09364B0005D000 /* zh-Hans */,
-				038D203B2A09364D0005D000 /* en */,
+				C4DE3D6E2AC00EB500C2B85D /* mul */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -2281,6 +2268,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -2336,6 +2324,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -2375,6 +2364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "Easydict-Debug";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2412,6 +2402,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.izual.Easydict;
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
