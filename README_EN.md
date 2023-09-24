@@ -465,3 +465,4 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-09-04 |       aLong       |    10    |                                                 感谢 🙏，期待功能继续完善。                                                 |
 | 2023-09-13 |       一座山的秋叶       |    5    |                                                       |
 | 2023-09-17 |       桂       |    200    |                  感谢开源                                     |
+| 2023-09-24 |       Austen       |    10    |                  支持开源作者                                    |
