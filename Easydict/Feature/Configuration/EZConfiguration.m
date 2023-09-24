@@ -79,7 +79,7 @@ static EZConfiguration *_instance;
     
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
-
+    
     self.autoSelectText = [NSUserDefaults mm_readBool:kAutoSelectTextKey defaultValue:YES];
     self.forceAutoGetSelectedText = [NSUserDefaults mm_readBool:kForceAutoGetSelectedText defaultValue:NO];
     self.disableEmptyCopyBeep = [NSUserDefaults mm_readBool:kDisableEmptyCopyBeepKey defaultValue:YES];
@@ -475,7 +475,14 @@ static EZConfiguration *_instance;
 }
 - (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType {
     NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
-    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:@"0"];
+    
+    NSString *defaultValue = @"0";
+    // Turn on intelligent query mode by default in mini window.
+    if (windowType == EZWindowTypeMini) {
+        defaultValue = @"1";
+    }
+    
+    NSString *stringValue = [NSUserDefaults mm_readString:key defaultValue:defaultValue];
     return [stringValue boolValue];
 }
 
@@ -526,8 +533,7 @@ static EZConfiguration *_instance;
 
 - (void)enableBetaFeaturesIfNeeded {
     if ([self isBeta]) {
-        [self setIntelligentQueryMode:YES windowType:EZWindowTypeMini];
-        [self setDefaultTTSServiceType:EZServiceTypeYoudao];
+        
     }
 }
 
