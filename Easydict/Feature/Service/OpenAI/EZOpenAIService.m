@@ -812,13 +812,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", \n\n", targetLanguage, inferenceTranslation];
+    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", Note, 'xxx' is the final result of inference translation, Do not display the inference process information.\n\n", targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -850,27 +850,27 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"2. 语法分析: \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
             @"3. 推理翻译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
-        //        @{
-        //            @"role" : @"user", // The stock market has now reached a plateau.
-        //            @"content" :
-        //                @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
-        //                @"First, display the Simplified-Chinese translation of this sentence.\n"
-        //                @"Then, follow the steps below step by step."
-        //                @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail..\n"
-        //                @"2. Analyze the grammatical structure of this sentence.\n"
-        //                @"3. Show Simplified-Chinese inferred translation. \n"
-        //                @"Answer in Simplified-Chinese. \n",
-        //        },
-        //        @{
-        //            @"role" : @"assistant",
-        //            @"content" :
-        //                @"股市现在已经达到了一个平台期。\n\n"
-        //                @"1. 重点词汇: \n"
-        //                @"stock market: 股市。\n"
-        //                @"plateau: n. 高原；平稳时期。这里是比喻性用法，表示股价进入了一个相对稳定的状态。\n\n"
-        //                @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
-        //                @"3. 翻译结果:\n股市现在已经达到了一个平稳期。\n\n"
-        //        },
+//                @{
+//                    @"role" : @"user", // The stock market has now reached a plateau.
+//                    @"content" :
+//                        @"Here is a English sentence: \"The stock market has now reached a plateau.\",\n"
+//                        @"First, display the Simplified-Chinese translation of this sentence.\n"
+//                        @"Then, follow the steps below step by step."
+//                        @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail..\n"
+//                        @"2. Analyze the grammatical structure of this sentence.\n"
+//                        @"3. Show Simplified-Chinese inferred translation. \n"
+//                        @"Answer in Simplified-Chinese. \n",
+//                },
+//                @{
+//                    @"role" : @"assistant",
+//                    @"content" :
+//                        @"股市现在已经达到了一个平台期。\n\n"
+//                        @"1. 重点词汇: \n"
+//                        @"stock market: 股市。\n"
+//                        @"plateau: n. 高原；平稳时期。这里是比喻性用法，表示股价进入了一个相对稳定的状态。\n\n"
+//                        @"2. 语法分析: 该句子是一个简单的陈述句。主语为 \"The stock market\"（股市），谓语动词为 \"has reached\"（已经达到），宾语为 \"a plateau\"（一个平稳期）。 \n\n"
+//                        @"3. 推理翻译:\n股市现在已经达到了一个平稳期。\n\n"
+//                },
         @{
             @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
