@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)，[火山翻译](https://translate.volcengine.com/translate)和 [Bing 翻译](https://www.bing.com/translator)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持**🍎苹果系统词典**，[有道词典](https://www.youdao.com/)，🍎**苹果系统翻译**，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[谷歌](https://translate.google.com)，[百度](https://fanyi.baidu.com/)，[火山翻译](https://translate.volcengine.com/translate)和 [Bing 翻译](https://www.bing.com/translator)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -37,8 +37,10 @@
 - [x] 自动识别输入语言，自动查询目标偏好语言。
 - [x] 自动划词查询，划词后自动显示查询图标，鼠标悬浮即可查询。
 - [x] 支持为不同窗口配置不同的服务。
+- [x] 支持智能查询模式。
 - [x] 支持系统 OCR 截图翻译，静默截图 OCR。
-- [x] 支持系统 TTS。
+- [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
+- [x] 支持苹果系统词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，DeepL，Google，Bing，百度和火山翻译。
 - [x] 支持 48 种语言。
@@ -49,7 +51,7 @@
 - [ ] 支持更多查询服务。
 - [ ] 支持 macOS 系统词典。
 
-_**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**_
+**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
 ---
 
@@ -68,7 +70,9 @@ _**如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/
   - [关于权限](#关于权限)
 - [OCR](#ocr)
 - [语种识别](#语种识别)
+- [TTS 服务](#tts-服务)
 - [翻译服务](#翻译服务)
+  - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [配置 API 调用方式](#配置-api-调用方式)
@@ -208,7 +212,21 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 默认使用系统语种识别，经调教后，系统语种识别的准确率已经很高了，能够满足大部分用户的需求。
 
-如果在实际使用中还是觉得系统语种识别不准确，可在设置中开启百度语种识别或 Google 语种识别优化，但请注意，这可能会导致响应速度变慢，而且识别率也不会 100% 符合用户期望。如遇到识别有误情况，可手动指定语种类型。
+如果在实际使用中还是觉得系统语种识别不准确，可在设置中开启百度语种识别或 Google 语种识别优化，但请注意，这可能会导致响应速度变慢，而且识别率也不会 100% 符合用户期望。如遇到识别有误情况，建议手动指定语种类型。
+
+## TTS 服务
+
+目前支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
+
+- 系统 TTS：最稳定可靠，但效果不是很好。通常作为备用选项，即使用其他 TTS 报错时会改用系统 TTS。
+- Bing TTS：综合效果最好，实时合成神经网络语音，但比较耗时，且文本越长，合成时间越长，目前限制最多只能合成 2000 个字符，约 10 分钟。
+- Google TTS：英文效果不错，接口稳定，但需要翻墙，且一次请求最多只能合成 200 个字符。
+- 有道 TTS：整体效果不错，尤其英语单词发音极好，但最多只能合成 600 个字符。
+- 百度 TTS：英文句子发音很好，口音很有特色，但最多只能合成约 1000 个字符。
+
+默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。
+鉴于有道 TTS 的英语单词效果拔群，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。
+除系统 TTS 外，其他 TTS 服务都是非官方接口，可能不稳定。
 
 ## 翻译服务
 
@@ -274,6 +292,68 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 </p>
 
 </details>
+
+### OpenAI（ChatGPT）翻译
+
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
+
+请先确保你有 APIKey。
+
+
+配置 APIKey
+```
+easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
+```
+<bar>
+
+查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
+```
+easydict://readValueOfKey?EZOpenAIAPIKey
+```
+
+目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">
+    <td> <img src="https://user-images.githubusercontent.com/25194972/235206916-a3ca3272-e572-426e-9728-07ae3094884e.png">
+</table>
+
+考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后， OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
+
+```
+easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+```
+
+```
+// 关闭查单词
+easydict://writeKeyValue?EZOpenAIDictionaryKey=0
+
+// 关闭句子分析
+easydict://writeKeyValue?EZOpenAISentenceKey=0
+```
+温馨提示：如果你只是偶尔不希望分析句子，可以不用关闭句子类型，只需要在【句子】后面添加一个波浪符～，这样就会变成翻译类型了。
+
+<img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
+
+
+支持设置自定义域名和模型
+
+```
+//  xxx 是 host，默认是 api.openai.com
+easydict://writeKeyValue?EZOpenAIDomainKey=xxx
+
+// xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
+easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
+
+//  xxx 默认是 gpt-3.5-turbo
+easydict://writeKeyValue?EZOpenAIModelKey=xxx
+```
+
+关于部署自定义域名，可以参考这个 vercel 反代项目 [vercel-reverse-proxy](https://github.com/gaboolic/vercel-reverse-proxy)
+
+> 本项目是vercel反向代理。完全免费，万能代理，可代理全网一切接口，包括openai、github、google等等。
+
 
 ### DeepL 翻译
 
