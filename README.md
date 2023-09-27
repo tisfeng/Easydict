@@ -221,11 +221,11 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 - 系统 TTS：最稳定可靠，但效果不是很好。通常作为备用选项，即使用其他 TTS 报错时会改用系统 TTS。
 - Bing TTS：综合效果最好，实时合成神经网络语音，但比较耗时，且文本越长，合成时间越长，目前限制最多只能合成 2000 个字符，约 10 分钟。
 - Google TTS：英文效果不错，接口稳定，但需要翻墙，且一次请求最多只能合成 200 个字符。
-- 有道 TTS：整体效果不错，尤其英语单词发音极好，但最多只能合成 600 个字符。
+- 有道 TTS：整体效果不错,接口稳定，尤其英语单词发音极好，但最多只能合成 600 个字符。
 - 百度 TTS：英文句子发音很好，口音很有特色，但最多只能合成约 1000 个字符。
 
 默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。
-鉴于有道 TTS 的英语单词效果拔群，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。
+鉴于有道 TTS 的英语单词效果很好，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。
 除系统 TTS 外，其他 TTS 服务都是非官方接口，可能不稳定。
 
 ## 翻译服务
@@ -316,7 +316,7 @@ easydict://readValueOfKey?EZOpenAIAPIKey
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">
-    <td> <img src="https://user-images.githubusercontent.com/25194972/235206916-a3ca3272-e572-426e-9728-07ae3094884e.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
 </table>
 
 考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后， OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
