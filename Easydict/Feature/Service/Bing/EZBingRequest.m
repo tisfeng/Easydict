@@ -274,12 +274,23 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         return;
     }
     
-    [self.htmlSession GET:self.bingConfig.translatorURLString parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSString *url = self.bingConfig.translatorURLString;
+    [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if (![responseObject isKindOfClass:[NSData class]]) {
             failure(EZTranslateError(EZErrorTypeAPI, @"bing htmlSession responseObject is not NSData", nil));
             NSLog(@"bing html responseObject type is %@", [responseObject class]);
             return;
         }
+        
+        NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:url]];
+        NSMutableString *cookieString = [NSMutableString string];
+        for (NSHTTPCookie *cookie in cookies) {
+            NSString *cookieText = [NSString stringWithFormat:@"%@=%@; ", cookie.name, cookie.value];
+            [cookieString appendString:cookieText];
+        }
+        
+        self.bingConfig.cookie = cookieString;
+        
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
         NSString *IG = [self getIGValueFromHTML:responseString];
@@ -541,6 +552,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:self.bingConfig.cookie forHTTPHeaderField:@"Cookie"];
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         session.responseSerializer = responseSerializer;
@@ -555,6 +567,8 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
         [requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        
+        [requestSerializer setValue:self.bingConfig.cookie forHTTPHeaderField:@"Cookie"];
         
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];

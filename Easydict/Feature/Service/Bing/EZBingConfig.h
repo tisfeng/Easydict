@@ -31,6 +31,8 @@ static NSString *const EZBingChinaHost = @"cn.bing.com";
 @property (nonatomic, copy, nullable) NSString *token;
 @property (nonatomic, copy, nullable) NSString *expirationInterval;
 
+@property (nonatomic, copy, nullable) NSString *cookie;
+
 @property (nonatomic, copy, nullable) NSString *host; // www.bing.com, or cn.bing.com
 
 @property (nonatomic, copy) NSString *translatorURLString;
