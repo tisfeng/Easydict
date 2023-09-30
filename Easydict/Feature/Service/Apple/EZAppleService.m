@@ -1340,10 +1340,16 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat prevTextFontSize = [self fontSizeOfTextObservation:prevTextObservation];
     
     CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
-    // Note: this size is not precise, so threshold should a bit large
-    BOOL isEqualFontSize = differenceFontSize <= 7;
+    // Note: this font size is not precise, so threshold should a bit large.
+    CGFloat fontDifferenceThreshold = 7;
+    // Chinese fonts seem to be more precise.
+    if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
+        fontDifferenceThreshold = 5;
+    }
+    
+    BOOL isEqualFontSize = differenceFontSize <= fontDifferenceThreshold;
     if (!isEqualFontSize) {
-        NSLog(@"Not equal font size: difference = %.1f(%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
+        NSLog(@"Not equal font size: difference = %.1f (%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
     }
     
     /**
