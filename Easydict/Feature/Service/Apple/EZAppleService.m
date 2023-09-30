@@ -1773,7 +1773,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat threshold = [self longTextAlphabetCountThreshold:textObservation];
     BOOL isLongText = remainingAlphabetCount < threshold;
     
-    return isLongText;    
+    return isLongText;
 }
 
 - (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {
@@ -1794,14 +1794,14 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     // For long text, there are up to 17 letters or 2 Chinese characters on the far right.
     // "implementation ," : @"你好"
-    CGFloat alphabetCount = isEnglishTypeLanguage ? 17 : 2.5;
+    CGFloat alphabetCount = isEnglishTypeLanguage ? 17 : 2;
     
     NSString *text = [textObservation firstText];
     BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
     
     if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
         if (!isEndPunctuationChar) {
-            alphabetCount += 2;
+            alphabetCount += 3.5;
         }
     }
     
