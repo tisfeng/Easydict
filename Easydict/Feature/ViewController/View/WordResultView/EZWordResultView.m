@@ -983,8 +983,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      */
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
         NSLog(@"Open URI: %@", navigationActionURL);
+
+        NSString *hrefText = [navigationActionURL.absoluteString decode];
         
-        [self getTextWithHref:navigationActionURL.absoluteString completionHandler:^(NSString *text) {
+        [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
             NSLog(@"URL text is: %@", text);
             
             if (self.queryTextBlock) {

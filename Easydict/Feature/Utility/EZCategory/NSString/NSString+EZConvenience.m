@@ -69,6 +69,10 @@
     NSString *encodedText = [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return encodedText;
 }
+- (NSString *)decode {
+    NSString *decodedText = [self stringByRemovingPercentEncoding];
+    return decodedText;
+}
 
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString {

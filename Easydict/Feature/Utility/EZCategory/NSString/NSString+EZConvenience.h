@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (NSString *)encode;
+- (NSString *)decode;
 
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString;
