@@ -45,12 +45,6 @@
 - [x] 支持有道词典，DeepL，Google，Bing，百度和火山翻译。
 - [x] 支持 48 种语言。
 
-下一步：
-
-- [ ] 支持翻译服务用户 API 调用。
-- [ ] 支持更多查询服务。
-- [ ] 支持 macOS 系统词典。
-
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
 ---
@@ -388,6 +382,64 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
+## 苹果系统词典
+
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+
+另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
+
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+
+<table>
+ 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
+</table>
+## 智能查询模式
+
+目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
+
+```objc
+typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
+    EZQueryTextTypeNone = 0, // 0
+    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
+    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
+    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
+};
+```
+
+Easydict 可以根据查询文本的内容，自动启用相应的查询服务。
+
+具体来说，在智能查询模式下，当查询单词时，则只会调用支持【单词查询】的服务；当翻译文本时，则只会调用支持【文本翻译】的服务。
+
+对于单词，支持查询单词的服务效果明显比翻译更好，而翻译文本时，启用单词查询服务
+
+默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
+
+```
+easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
+```
+
+同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
+
+```
+easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
+```
+
+默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
+
+```
+easydict://writeKeyValue?IntelligentQueryMode-window2=1
+```
+window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
+
+>  注意：智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头展开查询。
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
+</table>
+
 
 ## 配合 PopClip 使用
 
