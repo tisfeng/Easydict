@@ -36,10 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateWindowFrame:(EZBaseQueryWindow *)window;
 
-//- (NSString *)windowName:(EZWindowType)type;
-
-//- (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
-
 @end
 
 NS_ASSUME_NONNULL_END

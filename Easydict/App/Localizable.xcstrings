@@ -866,7 +866,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "悬浮窗口位置:"
+            "value" : "侧悬浮窗口位置:"
           }
         }
       }

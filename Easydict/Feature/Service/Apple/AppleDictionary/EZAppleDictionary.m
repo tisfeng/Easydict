@@ -20,7 +20,7 @@
 }
 
 - (EZQueryTextType)queryTextType {
-    return EZQueryTextTypeDictionary;
+    return EZQueryTextTypeDictionary | EZQueryTextTypeSentence;
 }
 
 - (EZQueryTextType)intelligentQueryTextType {

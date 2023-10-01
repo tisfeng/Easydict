@@ -132,17 +132,16 @@
         handled = YES;
     }
     
-    if ([EZConfiguration.shared isBeta]) {
-        NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
-        // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
-        NSArray *arr = [key componentsSeparatedByString:@"-"];
-        if (arr.count) {
-            NSString *keyString = arr.firstObject;
-            if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
-                handled = YES;
-            }
+    NSArray *allServiceTypes = [EZServiceTypes.shared allServiceTypes];
+    // easydict://writeKeyValue?Google-IntelligentQueryTextType=0
+    NSArray *arr = [key componentsSeparatedByString:@"-"];
+    if (arr.count) {
+        NSString *keyString = arr.firstObject;
+        if ([allServiceTypes containsObject:keyString] || [self.allowedReadWriteKeys containsObject:keyString]) {
+            handled = YES;
         }
     }
+    
     return handled;
 }
 
