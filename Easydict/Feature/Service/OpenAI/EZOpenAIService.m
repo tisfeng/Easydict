@@ -46,12 +46,20 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 }
 
 - (NSString *)domain {
-    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:@"api.openai.com"];
+    NSString *defaultDomain = @"api.openai.com";
+    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:defaultDomain];
+    if (domain.length == 0) {
+        domain = defaultDomain;
+    }
     return domain;
 }
 
 - (NSString *)model {
-    NSString *model = [NSUserDefaults mm_readString:EZOpenAIModelKey defaultValue:@"gpt-3.5-turbo"];
+    NSString *defautModel = @"gpt-3.5-turbo";
+    NSString *model = [NSUserDefaults mm_readString:EZOpenAIModelKey defaultValue:defautModel];
+    if (model.length == 0) {
+        model = defautModel;
+    }
     return model;
 }
 
