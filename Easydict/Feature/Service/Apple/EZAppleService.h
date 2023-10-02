@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSSpeechSynthesizer *)playTextAudio:(NSString *)text textLanguage:(EZLanguage)fromLanguage;
 
+- (EZLanguage)detectText:(NSString *)text;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -27,6 +27,7 @@
 #import "TTTDictionary.h"
 #import "EZConfiguration.h"
 #import "EZServiceTypes.h"
+#import "EZAppleService.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -778,19 +779,19 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }];
     
     [audioButton setPlayAudioBlock:^{
-        EZWordPhonetic *wordPhonetic = [[EZWordPhonetic alloc] init];
-        wordPhonetic.word = result.copiedText;
+        NSString *text = result.copiedText;
         
-        EZLanguage language = result.queryModel.queryTargetLanguage;
+        // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
+        EZAppleService *appleService = [[EZAppleService alloc] init];
+        EZLanguage language = [appleService detectText:text];;
         if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
-        wordPhonetic.language = language;
         
         EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
                 
-        [result.service.audioPlayer playTextAudio:result.copiedText
+        [result.service.audioPlayer playTextAudio:text
                                          language:language
                                            accent:nil
                                          audioURL:nil
