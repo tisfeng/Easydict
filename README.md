@@ -344,9 +344,9 @@ easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
-关于部署自定义域名，可以参考这个 vercel 反代项目 [vercel-reverse-proxy](https://github.com/gaboolic/vercel-reverse-proxy)
+关于部署自定义域名，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
 
-> 本项目是vercel反向代理。完全免费，万能代理，可代理全网一切接口，包括openai、github、google等等。
+> cloudflare反向代理|OpenAI/ChatGPT 免翻墙代理|github免翻墙代理|github下载加速|google代理|cloudflare万能代理
 
 
 ### DeepL 翻译
