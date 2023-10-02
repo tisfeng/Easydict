@@ -2103,7 +2103,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 /// Use NSCharacterSet to replace simlar dot sybmol with char "·"
 - (NSString *)replaceSimilarDotSymbolOfString:(NSString *)string {
     // 《蝶恋花 • 阅尽天涯离别苦》
-    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"•‧∙"];
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"⋅•⋅‧∙"];
     //    NSString *text = [[string componentsSeparatedByCharactersInSet:charSet] componentsJoinedByString:@"·"];
     
     NSString *text = string;
