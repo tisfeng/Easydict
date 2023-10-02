@@ -19,7 +19,6 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png">
 </table>
-
 ### 如何添加第三方词典
 
 > ⚠️ 需自购纸书或 App，以缓解版权不安。
@@ -32,7 +31,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 </div>
 为方便大家使用，我已经制作了几部 .dictionary 词典，放在天翼云盘上，直接下载即可用。
 
-对于朗文、柯林斯和牛津，这三本大块头词典都很好，但由于内容实在太过丰富，可能会影响 Easydict 查询加载速度，因此建议选择一本自己喜欢的就好。
+对于朗文、柯林斯和牛津，这三本大块头词典都很好，但由于词条内容实在太过丰富，可能会影响 Easydict 查询加载速度，因此建议选择其中一本自己喜欢的就好。
 
 |             词典              | 类型 |                             来源                             |                  .dictionary 下载                   |
 | :---------------------------: | ---- | :----------------------------------------------------------: | :-------------------------------------------------: |
@@ -73,9 +72,67 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### 牛津高阶英汉双解词典（8）
 
-词典的来源记不清了，这个 css 是我之前学习制作字典时自己调的，内部 `DefaultStyle.css` 有详细注释，初学者如果想尝试自定义、美化词典界面，可以从这个 css 开始。
+这部词典的来源记不清了，重点是该词典的 css 是我之前学习制作字典时自己调的，内部 `DefaultStyle.css` 有详细注释，初学者如果想尝试自定义、美化词典界面，可以从这个 css 开始。
 
 ![image-20231001190542557](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001190542557-1696158342.png)
+
+### 如何制作 .dictionary 词典
+
+>  注意：这部份教程主要面向进阶用户，需要一点编程知识和折腾精神。
+
+下面介绍一下如何借助开源项目 [pyglossary](https://github.com/ilius/pyglossary) 将 Mdict 词典转换为 .dictionary 词典，文档主要参考自 [pyglossary apple](https://github.com/ilius/pyglossary/blob/master/doc/apple.md)。
+
+
+### 准备工作
+
+1. 安装 Python 库
+
+```shell
+sudo pip3 install lxml beautifulsoup4 html5lib
+```
+
+2. 安装 Xcode 的命令行工具 [Command Line Tools for Xcode](http://developer.apple.com/downloads)
+
+3. 安装 Dictionary Development Kit
+
+   Dictionary Development Kit 是 [Additional Tools for Xcode](http://developer.apple.com/downloads) Xcode 开发工具的一部分，下载后，需要将 `Dictionary Development Kit` 移动到 `/Applications/Utilities/Dictionary Development Kit` 位置。
+
+4. 下载 [pyglossary](https://github.com/ilius/pyglossary)
+
+   请将下载的 pyglossary 库移动到一个固定目录，后面每次转换词典都需要用上它。
+
+   假设 pyglossary-master 位于 `~/Downloads/pyglossary-master`
+
+Mdict 词典资源可从下面网站获取：
+
+- [freemdict](https://forum.freemdict.com/c/12-category/12)
+- [mdict](https://mdict.org/)
+
+准备工作已完成，下面开始进入正题。
+
+### 转换步骤
+
+假设 Mdict 格式的词典文件位于 `~/Downloads/oald8/oald8.mdx`, 图片、语音文件 `oald8.mdd` 也在同一文件夹下。
+
+```shell
+cd ~/Downloads/oald8/
+
+python3 ~/Downloads/pyglossary-master/main.py --write-format=AppleDict oald8.mdx oald8-apple
+
+cd oald8-apple
+
+sed -i "" 's:src="/:src=":g' oald8-apple.xml
+
+make
+```
+
+如果一切顺利，最后会在该目录下生成一个 `objects` 文件，里面的 `oald8-apple.dictionary` 就是转换后的苹果格式词典，将其拖入到 Dictionary 的【词典文件夹】就可以了。
+
+注意，上面生成的词典，界面非常简陋，而通常流传于网上的 Mdict 都会带一份美化 css，例如 `oald8.css`，由于 pyglossary 并不会自动处理 css，因此这一步需要我们手动完成，具体步骤是将 `oald8.css` 中的内容复制，追加到 `oald8-apple.dictionary` 内部的 `DefaultStyle.css`。如果想自定义 css，同样也是修改这个文件。
+
+（完）。
+
+![image-20231002184455216](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231002184455216-1696243495.png)
 
 ### 参考
 
