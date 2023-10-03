@@ -20,6 +20,7 @@ static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 static NSString *const kFirstLanguageKey = @"EZConfiguration_kFirstLanguageKey";
 static NSString *const kSecondLanguageKey = @"EZConfiguration_kSecondLanguageKey";
 
+
 static NSString *const kFromKey = @"EZConfiguration_kFromKey";
 static NSString *const kToKey = @"EZConfiguration_kToKey";
 
@@ -43,6 +44,8 @@ static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kShowAppleDictionaryLinkKey = @"EZConfiguration_kShowAppleDictionaryLinkKey";
 static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
+static NSString *const kShortcutSelectTranslateWindowTypeKey = @"EZConfiguration_kShortcutSelectTranslateWindowTypeKey";
+static NSString *const kMouseSelectTranslateWindowTypeKey = @"EZConfiguration_kMouseSelectTranslateWindowTypeKey";
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
 static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
@@ -56,7 +59,7 @@ static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 static EZConfiguration *_instance;
 
 + (instancetype)shared {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_instance) {
             _instance = [[super allocWithZone:NULL] init];
             [_instance setup];
@@ -76,7 +79,7 @@ static EZConfiguration *_instance;
 - (void)setup {
     self.firstLanguage = [NSUserDefaults mm_read:kFirstLanguageKey];
     self.secondLanguage = [NSUserDefaults mm_read:kSecondLanguageKey];
-    
+
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
     
@@ -100,6 +103,8 @@ static EZConfiguration *_instance;
     self.showAppleDictionaryQuickLink = [NSUserDefaults mm_readBool:kShowAppleDictionaryLinkKey defaultValue:YES];
     self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:EZShowWindowPositionRight];
+    self.shotcutSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kShortcutSelectTranslateWindowTypeKey defaultValue:EZWindowTypeFixed];
+    self.mouseSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kMouseSelectTranslateWindowTypeKey defaultValue:EZWindowTypeMini];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
@@ -166,15 +171,15 @@ static EZConfiguration *_instance;
     _clickQuery = clickQuery;
 
     [NSUserDefaults mm_write:@(clickQuery) forKey:kClickQueryKey];
-    
+
     [EZWindowManager.shared updatePopButtonQueryAction];
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     BOOL oldLaunchAtStartup = self.launchAtStartup;
-    
+
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
-    
+
     // Avoid redundant calls, run AppleScript will ask for permission, trigger notification.
     if (launchAtStartup != oldLaunchAtStartup) {
         [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
@@ -191,7 +196,7 @@ static EZConfiguration *_instance;
     _hideMainWindow = hideMainWindow;
 
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
-    
+
     EZWindowManager *windowManager = EZWindowManager.shared;
     [windowManager updatePopButtonQueryAction];
     if (hideMainWindow) {
@@ -258,7 +263,7 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
-    
+
     EZMenuItemManager.shared.googleItem.hidden = !showGoogleLink;
 }
 
@@ -267,7 +272,7 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
-    
+
     EZMenuItemManager.shared.eudicItem.hidden = !showEudicLink;
 }
 
@@ -293,6 +298,18 @@ static EZConfiguration *_instance;
     _fixedWindowPosition = showFixedWindowPosition;
 
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
+}
+
+- (void)setShotcutSelectTranslateWindowType:(EZWindowType)shortcutSelectTranslateWindowType {
+    _shortcutSelectTranslateWindowType = shortcutSelectTranslateWindowType;
+
+    [NSUserDefaults mm_write:@(shortcutSelectTranslateWindowType) forKey:(kShortcutSelectTranslateWindowTypeKey)];
+}
+
+- (void)setMouseSelectTranslateWindowType:(EZWindowType)mouseSelectTranslateWindowType {
+    _mouseSelectTranslateWindowType = mouseSelectTranslateWindowType;
+
+    [NSUserDefaults mm_write:@(mouseSelectTranslateWindowType) forKey:(kMouseSelectTranslateWindowTypeKey)];
 }
 
 - (void)setAdjustPopButtomOrigin:(BOOL)adjustPopButtomOrigin {
@@ -347,7 +364,7 @@ static EZConfiguration *_instance;
     // ???: name is CFBundleExecutable, or CFBundleName ?
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
     NSString *appBundlePath = [[NSBundle mainBundle] bundlePath];
-        
+
     NSString *script = [NSString stringWithFormat:@"\
         tell application \"System Events\" to get the name of every login item\n\
         tell application \"System Events\"\n\
@@ -360,14 +377,12 @@ static EZConfiguration *_instance;
             if %@ then\n\
                 make login item at end with properties {path:\"%@\", hidden:false}\n\
             end if\n\
-        end tell"
-                        , appName,
-                        launchAtStartup ? @"true" : @"false",
-                        appBundlePath
-    ];
+        end tell", appName,
+                                                  launchAtStartup ? @"true" : @"false",
+                                                  appBundlePath];
 
     EZExeCommand *exeCommand = [[EZExeCommand alloc] init];
-    [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString * _Nonnull result, NSError * _Nonnull error) {
+    [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         if (error) {
             NSLog(@"launchAtStartup error: %@", error);
         } else {
@@ -390,7 +405,7 @@ static EZConfiguration *_instance;
 //         Ref: https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/cross_development/Using/using.html#//apple_ref/doc/uid/20002000-1114741-CJADDEIB
 //         */
 //
-//#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1300
+// #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1300
 //    // code only compiled when targeting OS X and not iOS
 //    // note use of 1050 instead of __MAC_10_5
 //
@@ -409,7 +424,7 @@ static EZConfiguration *_instance;
 //        if (!success) {
 //            MMLogInfo(@"SMAppService fail");
 //        }
-//#endif
+// #endif
 //    } else {
 //        // Ref: https://nyrra33.com/2019/09/03/cocoa-launch-at-startup-best-practice/
 //        BOOL success = SMLoginItemSetEnabled((__bridge CFStringRef)helperBundleId, launchAtStartup);

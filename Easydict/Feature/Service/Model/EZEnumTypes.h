@@ -44,10 +44,10 @@ FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
 
 typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
-    EZQueryTextTypeNone = 0, // 0
+    EZQueryTextTypeNone = 0,             // 0
     EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
-    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
-    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
+    EZQueryTextTypeDictionary = 1 << 1,  // 10 = 2
+    EZQueryTextTypeSentence = 1 << 2,    // 100 = 4
 };
 
 
@@ -90,13 +90,15 @@ typedef NS_OPTIONS(NSUInteger, EZTriggerType) {
 };
 
 
-@interface  EZEnumTypes: NSObject
+@interface EZEnumTypes : NSObject
 
 + (NSString *)stringValueOfTriggerType:(EZTriggerType)triggerType;
 
 + (NSString *)windowName:(EZWindowType)type;
 
 + (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict;
+
++ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict;
 
 @end
 
