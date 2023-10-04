@@ -1341,13 +1341,13 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         
     CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
     // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-    CGFloat fontDifferenceThreshold = 8;
+    CGFloat differenceFontThreshold = 5;
     // Chinese fonts seem to be more precise.
     if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
-        fontDifferenceThreshold = 5;
+        differenceFontThreshold = 3;
     }
     
-    BOOL isEqualFontSize = differenceFontSize <= fontDifferenceThreshold;
+    BOOL isEqualFontSize = differenceFontSize <= differenceFontThreshold;
     if (!isEqualFontSize) {
         NSLog(@"Not equal font size: difference = %.1f (%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
     }
