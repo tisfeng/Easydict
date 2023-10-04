@@ -1793,7 +1793,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     return isLongText;
 }
 
-- (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {    
+- (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
 
     CGFloat dx = CGRectGetMaxX(self.maxLongLineTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
@@ -1826,11 +1826,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 }
 
 - (CGFloat)getThresholdWithAlphabetCount:(CGFloat)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
-    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
     CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];
     
     // threshold is the actual display width.
-    CGFloat threshold = alphabetCount * singleAlphabetWidth * scaleFactor;
+    CGFloat threshold = alphabetCount * singleAlphabetWidth;
 //    NSLog(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
     
     return threshold;
@@ -1850,51 +1849,51 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 //    return singleAlphabetWidth;
 //}
 
-- (CGFloat)singleAlphabetWidthOfText:(NSString *)text height:(CGFloat)textHeight {
-    CGFloat systemFontSize = [NSFont systemFontSize]; // 13
-    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
-    CGFloat fontSize = [self fontSizeOfText:text height:textHeight];
-
-    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
-    /**
-     subscribers.
-     implementation
-     transportation
-     Sustainability
-     */
-    NSString *longWord = isEnglishTypeLanguage ? @"implementation" : @"你好";
-    CGFloat longWordLength = [longWord mm_sizeWithFont:font].width;
-    /**
-     longWordLength / systemFontSize = x / fontSize
-     x = fontSize * (longWordLength / font)
-     */
-    
-    CGFloat width = fontSize * (longWordLength / systemFontSize);
-    CGFloat singleAlphabetWidth = width / longWord.length;
-    
-    return singleAlphabetWidth;
-}
+//- (CGFloat)singleAlphabetWidthOfText:(NSString *)text width:(CGFloat)textWidth {
+//    CGFloat systemFontSize = [NSFont systemFontSize]; // 13
+//    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
+//    CGFloat fontSize = [self fontSizeOfText:text width:textWidth];
+//
+//    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+//    /**
+//     subscribers.
+//     implementation
+//     transportation
+//     Sustainability
+//     */
+//    NSString *longWord = isEnglishTypeLanguage ? @"implementation" : @"你好";
+//    CGFloat longWordLength = [longWord mm_sizeWithFont:font].width;
+//    /**
+//     longWordLength / systemFontSize = x / fontSize
+//     x = fontSize * (longWordLength / font)
+//     */
+//    
+//    CGFloat width = fontSize * (longWordLength / systemFontSize);
+//    CGFloat singleAlphabetWidth = width / longWord.length;
+//    
+//    return singleAlphabetWidth;
+//}
 
 - (CGFloat)fontSizeOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
-    CGFloat fontSize = [self fontSizeOfText:textObservation.firstText height:textHeight];
+    CGFloat textWidth = textObservation.boundingBox.size.width * self.ocrImage.size.width / scaleFactor;
+    CGFloat fontSize = [self fontSizeOfText:textObservation.firstText width:textWidth];
     return fontSize;
 }
 
 /// Get text font size
-- (CGFloat)fontSizeOfText:(NSString *)text height:(CGFloat)textHeight {
+- (CGFloat)fontSizeOfText:(NSString *)text width:(CGFloat)textWidth {
     CGFloat systemFontSize = [NSFont systemFontSize];
     NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
     
-    CGFloat height = [text mm_sizeWithFont:font].height;
+    CGFloat width = [text mm_sizeWithFont:font].width;
     
     /**
-     systemFontSize / height = x / textHeight
-     x = textHeight * (systemFontSize / height)
+     systemFontSize / width = x / textWidth
+     x = textWidth * (systemFontSize / width)
      */
 
-    CGFloat fontSize = textHeight * (systemFontSize / height);
+    CGFloat fontSize = textWidth * (systemFontSize / width);
 //    NSLog(@"Calculated font size is: %.1f", fontSize);
 
     return fontSize;
