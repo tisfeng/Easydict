@@ -57,14 +57,14 @@
 @property (nonatomic, strong) NSTextField *defaultTTSServiceLabel;
 @property (nonatomic, strong) NSPopUpButton *defaultTTSServicePopUpButton;
 
-@property (nonatomic, strong) NSTextField *fixedWindowPositionLabel;
-@property (nonatomic, strong) NSPopUpButton *fixedWindowPositionPopUpButton;
+@property (nonatomic, strong) NSTextField *mouseSelectTranslateWindowTypeLabel;
+@property (nonatomic, strong) NSPopUpButton *mouseSelectTranslateWindowTypePopUpButton;
 
 @property (nonatomic, strong) NSTextField *shortcutSelectTranslateWindowTypeLabel;
 @property (nonatomic, strong) NSPopUpButton *shortcutSelectTranslateWindowTypePopUpButton;
 
-@property (nonatomic, strong) NSTextField *mouseSelectTranslateWindowTypeLabel;
-@property (nonatomic, strong) NSPopUpButton *mouseSelectTranslateWindowTypePopUpButton;
+@property (nonatomic, strong) NSTextField *fixedWindowPositionLabel;
+@property (nonatomic, strong) NSPopUpButton *fixedWindowPositionPopUpButton;
 
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
@@ -303,19 +303,19 @@
     self.defaultTTSServicePopUpButton.target = self;
     self.defaultTTSServicePopUpButton.action = @selector(defaultTTSServicePopUpButtonClicked:);
 
-    NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:NSLocalizedString(@"fixed_window_position", nil)];
-    fixedWindowPositionLabel.font = font;
-    [self.contentView addSubview:fixedWindowPositionLabel];
-    self.fixedWindowPositionLabel = fixedWindowPositionLabel;
+    NSTextField *mouseSelectTranslateWindowTypeLabel = [NSTextField labelWithString:NSLocalizedString(@"mouse_select_translate_window_type", nil)];
+    mouseSelectTranslateWindowTypeLabel.font = font;
+    [self.contentView addSubview:mouseSelectTranslateWindowTypeLabel];
+    self.mouseSelectTranslateWindowTypeLabel = mouseSelectTranslateWindowTypeLabel;
 
-    self.fixedWindowPositionPopUpButton = [[NSPopUpButton alloc] init];
-    [self.contentView addSubview:self.fixedWindowPositionPopUpButton];
-    MMOrderedDictionary *fixedWindowPostionDict = [EZEnumTypes fixedWindowPositionDict];
-    NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
-    [self.fixedWindowPositionPopUpButton addItemsWithTitles:fixedWindowPositionItems];
-    self.fixedWindowPositionPopUpButton.target = self;
-    self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
-
+    self.mouseSelectTranslateWindowTypePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.mouseSelectTranslateWindowTypePopUpButton];
+    MMOrderedDictionary *mouseSelectTranslateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
+    NSArray *mouseSelectTranslateWindowTypeItems = [mouseSelectTranslateWindowTypeDict sortedValues];
+    [self.mouseSelectTranslateWindowTypePopUpButton addItemsWithTitles:mouseSelectTranslateWindowTypeItems];
+    self.mouseSelectTranslateWindowTypePopUpButton.target = self;
+    self.mouseSelectTranslateWindowTypePopUpButton.action = @selector(mouseSelectTranslateWindowTypePopUpButtonClicked:);
+    
     NSTextField *shortcutSelectTranslateWindowTypeLabel = [NSTextField labelWithString:NSLocalizedString(@"shortcut_select_translate_window_type", nil)];
     shortcutSelectTranslateWindowTypeLabel.font = font;
     [self.contentView addSubview:shortcutSelectTranslateWindowTypeLabel];
@@ -329,19 +329,21 @@
     self.shortcutSelectTranslateWindowTypePopUpButton.target = self;
     self.shortcutSelectTranslateWindowTypePopUpButton.action = @selector(shortcutSelectTranslateWindowTypePopUpButtonClicked:);
 
-    NSTextField *mouseSelectTranslateWindowTypeLabel = [NSTextField labelWithString:NSLocalizedString(@"mouse_select_translate_window_type", nil)];
-    mouseSelectTranslateWindowTypeLabel.font = font;
-    [self.contentView addSubview:mouseSelectTranslateWindowTypeLabel];
-    self.mouseSelectTranslateWindowTypeLabel = mouseSelectTranslateWindowTypeLabel;
+    
+    NSTextField *fixedWindowPositionLabel = [NSTextField labelWithString:NSLocalizedString(@"fixed_window_position", nil)];
+    fixedWindowPositionLabel.font = font;
+    [self.contentView addSubview:fixedWindowPositionLabel];
+    self.fixedWindowPositionLabel = fixedWindowPositionLabel;
 
-    self.mouseSelectTranslateWindowTypePopUpButton = [[NSPopUpButton alloc] init];
-    [self.contentView addSubview:self.mouseSelectTranslateWindowTypePopUpButton];
-    MMOrderedDictionary *mouseSelectTranslateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
-    NSArray *mouseSelectTranslateWindowTypeItems = [mouseSelectTranslateWindowTypeDict sortedValues];
-    [self.mouseSelectTranslateWindowTypePopUpButton addItemsWithTitles:mouseSelectTranslateWindowTypeItems];
-    self.mouseSelectTranslateWindowTypePopUpButton.target = self;
-    self.mouseSelectTranslateWindowTypePopUpButton.action = @selector(mouseSelectTranslateWindowTypePopUpButtonClicked:);
+    self.fixedWindowPositionPopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.fixedWindowPositionPopUpButton];
+    MMOrderedDictionary *fixedWindowPostionDict = [EZEnumTypes fixedWindowPositionDict];
+    NSArray *fixedWindowPositionItems = [fixedWindowPostionDict sortedValues];
+    [self.fixedWindowPositionPopUpButton addItemsWithTitles:fixedWindowPositionItems];
+    self.fixedWindowPositionPopUpButton.target = self;
+    self.fixedWindowPositionPopUpButton.action = @selector(fixedWindowPositionPopUpButtonClicked:);
 
+    
     NSTextField *playAudioLabel = [NSTextField labelWithString:NSLocalizedString(@"play_word_audio", nil)];
     playAudioLabel.font = font;
     [self.contentView addSubview:playAudioLabel];
@@ -461,9 +463,16 @@
     self.adjustQueryIconPostionButton.mm_isOn = self.config.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:self.config.languageDetectOptimize];
     [self.defaultTTSServicePopUpButton selectItemWithTitle:self.config.defaultTTSServiceType];
+    
+    MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
+    NSString *mouseWindowTitle = [translateWindowTypeDict objectForKey:@(self.config.mouseSelectTranslateWindowType)];
+    NSString *shortcutWindowTitle = [translateWindowTypeDict objectForKey:@(self.config.shortcutSelectTranslateWindowType)];
+
+    [self.mouseSelectTranslateWindowTypePopUpButton selectItemWithTitle:mouseWindowTitle];
+    [self.shortcutSelectTranslateWindowTypePopUpButton selectItemWithTitle:shortcutWindowTitle];
+
     [self.fixedWindowPositionPopUpButton selectItemAtIndex:self.config.fixedWindowPosition];
-    [self.shortcutSelectTranslateWindowTypePopUpButton selectItemAtIndex:self.config.shortcutSelectTranslateWindowType];
-    [self.mouseSelectTranslateWindowTypePopUpButton selectItemAtIndex:self.config.mouseSelectTranslateWindowType];
+
     self.autoPlayAudioButton.mm_isOn = self.config.autoPlayAudio;
     self.clearInputButton.mm_isOn = self.config.clearInput;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
@@ -617,36 +626,37 @@
         make.centerY.equalTo(self.defaultTTSServiceLabel);
     }];
 
-    [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+
+    [self.mouseSelectTranslateWindowTypeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.defaultTTSServicePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
-    [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.fixedWindowPositionLabel);
+    [self.mouseSelectTranslateWindowTypePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.mouseSelectTranslateWindowTypeLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.mouseSelectTranslateWindowTypeLabel);
     }];
-
+    
     [self.shortcutSelectTranslateWindowTypeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.fixedWindowPositionPopUpButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.mouseSelectTranslateWindowTypePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.shortcutSelectTranslateWindowTypePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.shortcutSelectTranslateWindowTypeLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.shortcutSelectTranslateWindowTypeLabel);
     }];
 
-    [self.mouseSelectTranslateWindowTypeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.fixedWindowPositionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.shortcutSelectTranslateWindowTypePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
-    [self.mouseSelectTranslateWindowTypePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.mouseSelectTranslateWindowTypeLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.mouseSelectTranslateWindowTypeLabel);
+    [self.fixedWindowPositionPopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.fixedWindowPositionLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.fixedWindowPositionLabel);
     }];
 
     [self.playAudioLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.mouseSelectTranslateWindowTypePopUpButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.fixedWindowPositionPopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoPlayAudioButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.playAudioLabel.mas_right).offset(self.horizontalPadding);
@@ -883,14 +893,16 @@
     }
 }
 
-- (void)shortcutSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {
-    NSInteger selectedIndex = button.indexOfSelectedItem;
-    self.config.shortcutSelectTranslateWindowType = selectedIndex;
-}
-
 - (void)mouseSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
-    self.config.mouseSelectTranslateWindowType = selectedIndex;
+    MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
+    self.config.mouseSelectTranslateWindowType = [[translateWindowTypeDict keyAtIndex:selectedIndex] integerValue];
+}
+
+- (void)shortcutSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
+    self.config.shortcutSelectTranslateWindowType = [[translateWindowTypeDict keyAtIndex:selectedIndex] integerValue];
 }
 
 - (void)fixedWindowPositionPopUpButtonClicked:(NSPopUpButton *)button {

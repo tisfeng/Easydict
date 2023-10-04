@@ -650,7 +650,7 @@ static EZWindowManager *_instance;
     }
 
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
-    EZWindowType windowType = EZWindowTypeFixed;
+    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
 
     // FIX https://github.com/tisfeng/Easydict/issues/126
@@ -695,7 +695,8 @@ static EZWindowManager *_instance;
         return;
     }
 
-    EZWindowType windowType = EZWindowTypeFixed;
+    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+
     if (self.floatingWindowType == windowType) {
         [self closeFloatingWindow];
         return;
@@ -714,7 +715,8 @@ static EZWindowManager *_instance;
 - (void)showMiniFloatingWindow {
     MMLogInfo(@"showMiniFloatingWindow");
 
-    EZWindowType windowType = EZWindowTypeMini;
+    EZWindowType windowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
+    
     if (self.floatingWindowType == windowType) {
         [self closeFloatingWindow];
         return;

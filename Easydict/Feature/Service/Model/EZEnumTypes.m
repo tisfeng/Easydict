@@ -85,9 +85,8 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
 
 + (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict {
     MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                                                 @(EZWindowTypeMain), NSLocalizedString(@"tranalte_window_type_main", nil),
-                                                                 @(EZWindowTypeMini), NSLocalizedString(@"tranalte_window_type_mini", nil),
-                                                                 @(EZWindowTypeFixed), NSLocalizedString(@"tranalte_window_type_fixed", nil),
+                                                                 @(EZWindowTypeMini), NSLocalizedString(@"mini_window", nil),
+                                                                 @(EZWindowTypeFixed), NSLocalizedString(@"fixed_window", nil),
                                                                  nil];
 
     return dict;
