@@ -6,6 +6,7 @@ macOS 词典的用力点按查询（或三指查询）功能很好用，但可�
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HHp1I2-1695911764.png" width="50%" />
 </div>
+
 Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
 
 ![image-20230928213750505](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928213750505-1695908270.png)
@@ -19,19 +20,23 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png">
 </table>
+
 ### 如何添加第三方词典
 
 > ⚠️ 需自购纸书或 App，以缓解版权不安。
 
 最简单的添加方式，就是找寻已转换好格式的 .dictionary 词典，将其拖入到 Dictionary 的【词典文件夹】，再重启词典 App，就可以在设置中看到这部词典了。
 
+注意：每次添加新词典后，需要重启 Easydict 才能在 Easydict 中看到该词典。另外，修改词典应用设置时，可能会导致 Easydict 崩溃，这是 feature。
+
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928224622274-1695912382.png
 " width="50%" />
 </div>
+
 为方便大家使用，我已经制作了几部 .dictionary 词典，放在天翼云盘上，直接下载即可用。
 
-对于朗文、柯林斯和牛津，这三本大块头词典都很好，但由于词条内容实在太过丰富，可能会影响 Easydict 查询加载速度，因此建议选择其中一本自己喜欢的就好。
+朗文、柯林斯和牛津，这三本大块头词典都很好，但由于词条内容实在太过丰富，可能会影响 Easydict 查询加载速度，因此建议选择其中一本自己喜欢的就好。
 
 |             词典              | 类型 |                             来源                             |                  .dictionary 下载                   |
 | :---------------------------: | ---- | :----------------------------------------------------------: | :-------------------------------------------------: |
@@ -129,6 +134,8 @@ make
 如果一切顺利，最后会在该目录下生成一个 `objects` 文件，里面的 `oald8-apple.dictionary` 就是转换后的苹果格式词典，将其拖入到 Dictionary 的【词典文件夹】就可以了。
 
 注意，上面生成的词典，界面非常简陋，而通常流传于网上的 Mdict 都会带一份美化 css，例如 `oald8.css`，由于 pyglossary 并不会自动处理 css，因此这一步需要我们手动完成，具体步骤是将 `oald8.css` 中的内容复制，追加到 `oald8-apple.dictionary` 内部的 `DefaultStyle.css`。如果想自定义 css，同样也是修改这个文件。
+
+词典的名字可通过 `Info.plist` 修改，其中 `Bundle name` 是词典在应用界面中显示的名字，`Bundle display name` 是词典在设置页中显示的名字。为使用方便，建议两者设置为同一个值。
 
 （完）。
 
