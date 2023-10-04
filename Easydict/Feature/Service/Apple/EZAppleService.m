@@ -1341,7 +1341,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         
     CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
     // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
-    CGFloat fontDifferenceThreshold = 7;
+    CGFloat fontDifferenceThreshold = 8;
     // Chinese fonts seem to be more precise.
     if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
         fontDifferenceThreshold = 5;
@@ -1355,7 +1355,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     if ([EZLanguageManager.shared isLanguageWordsNeedSpace:self.language]) {
         // If prev line is a ~English long text, usually it is equal font size.
         if (isPrevLongText) {
-            isEqualFontSize = YES;
+//            isEqualFontSize = YES;
         }
     }
     
@@ -1757,7 +1757,9 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGFloat prevLineX = prevTextObservation.boundingBox.origin.x;
     CGFloat dx = lineX - prevLineX;
     
-    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
+    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+
+    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength / scaleFactor;
     CGFloat difference = maxLength * dx;
     
     if ((difference > 0 && difference < threshold) || fabs(difference) < (threshold / 2)) {
@@ -1781,23 +1783,25 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 - (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat remainingAlphabetCount = [self remainingAlphabetCountOfTextObservation:textObservation];
-    NSLog(@"Remaining Alphabet Count: %.1f", remainingAlphabetCount);
     
     CGFloat threshold = [self longTextAlphabetCountThreshold:textObservation];
     BOOL isLongText = remainingAlphabetCount < threshold;
+    if (!isLongText) {
+        NSLog(@"Not long text, remaining alphabet Count: %.1f (threshold: %1.f)", remainingAlphabetCount, threshold);
+    }
     
     return isLongText;
 }
 
-- (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {
-    CGFloat remainingAlphabetCount = 0;
-    
+- (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {    
+    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+
     CGFloat dx = CGRectGetMaxX(self.maxLongLineTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
-    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength;
+    CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength / scaleFactor;
     CGFloat difference = maxLength * dx;
     
-    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];;
-    remainingAlphabetCount = difference / singleAlphabetWidth;
+    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];
+    CGFloat remainingAlphabetCount = difference / singleAlphabetWidth;
         
     return remainingAlphabetCount;
 }
@@ -1805,9 +1809,9 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 - (CGFloat)longTextAlphabetCountThreshold:(VNRecognizedTextObservation *)textObservation {
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
     
-    // For long text, there are up to 17 letters or 2 Chinese characters on the far right.
+    // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
     // "implementation ," : @"你好"
-    CGFloat alphabetCount = isEnglishTypeLanguage ? 17 : 2;
+    CGFloat alphabetCount = isEnglishTypeLanguage ? 16 : 2;
     
     NSString *text = [textObservation firstText];
     BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
@@ -1823,7 +1827,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 - (CGFloat)getThresholdWithAlphabetCount:(CGFloat)alphabetCount textObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];;
+    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];
     
     // threshold is the actual display width.
     CGFloat threshold = alphabetCount * singleAlphabetWidth * scaleFactor;
@@ -1834,17 +1838,30 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
 - (CGFloat)singleAlphabetWidthOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
-    return [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
+    CGFloat textWidth = textObservation.boundingBox.size.width * self.ocrImage.size.width / scaleFactor;
+    CGFloat singleAlphabetWidth = textWidth / textObservation.firstText.length;
+    return singleAlphabetWidth;
 }
 
+//- (CGFloat)singleAlphabetWidthOfTextObservation2:(VNRecognizedTextObservation *)textObservation {
+//    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
+//    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
+//    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
+//    return singleAlphabetWidth;
+//}
 
 - (CGFloat)singleAlphabetWidthOfText:(NSString *)text height:(CGFloat)textHeight {
-    CGFloat systemFontSize = [NSFont systemFontSize];
-    NSFont *font = [NSFont systemFontOfSize:systemFontSize];
+    CGFloat systemFontSize = [NSFont systemFontSize]; // 13
+    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
     CGFloat fontSize = [self fontSizeOfText:text height:textHeight];
 
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+    /**
+     subscribers.
+     implementation
+     transportation
+     Sustainability
+     */
     NSString *longWord = isEnglishTypeLanguage ? @"implementation" : @"你好";
     CGFloat longWordLength = [longWord mm_sizeWithFont:font].width;
     /**
@@ -1861,13 +1878,14 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 - (CGFloat)fontSizeOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
     CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
-    return [self fontSizeOfText:textObservation.firstText height:textHeight];
+    CGFloat fontSize = [self fontSizeOfText:textObservation.firstText height:textHeight];
+    return fontSize;
 }
 
 /// Get text font size
 - (CGFloat)fontSizeOfText:(NSString *)text height:(CGFloat)textHeight {
     CGFloat systemFontSize = [NSFont systemFontSize];
-    NSFont *font = [NSFont systemFontOfSize:systemFontSize];
+    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
     
     CGFloat height = [text mm_sizeWithFont:font].height;
     
