@@ -73,15 +73,23 @@ NSString *const EZDefaultTTSServiceKey = @"EZDefaultTTSServiceKey";
 }
 
 + (MMOrderedDictionary<NSNumber *, NSString *> *)fixedWindowPositionDict {
-    MMOrderedDictionary *dict = [
-        [MMOrderedDictionary alloc] initWithKeysAndObjects:
-        @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
-        @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
-        @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil),
-        @(EZShowWindowPositionCenter), NSLocalizedString(@"fixed_window_position_center", nil),
-        nil
-    ];
-    
+    MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                                                 @(EZShowWindowPositionRight), NSLocalizedString(@"fixed_window_position_right", nil),
+                                                                 @(EZShowWindowPositionMouse), NSLocalizedString(@"fixed_window_position_mouse", nil),
+                                                                 @(EZShowWindowPositionFormer), NSLocalizedString(@"fixed_window_position_former", nil),
+                                                                 @(EZShowWindowPositionCenter), NSLocalizedString(@"fixed_window_position_center", nil),
+                                                                 nil];
+
+    return dict;
+}
+
++ (MMOrderedDictionary<NSNumber *, NSString *> *)translateWindowTypeDict {
+    MMOrderedDictionary *dict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                                                 @(EZWindowTypeMain), NSLocalizedString(@"tranalte_window_type_main", nil),
+                                                                 @(EZWindowTypeMini), NSLocalizedString(@"tranalte_window_type_mini", nil),
+                                                                 @(EZWindowTypeFixed), NSLocalizedString(@"tranalte_window_type_fixed", nil),
+                                                                 nil];
+
     return dict;
 }
 
