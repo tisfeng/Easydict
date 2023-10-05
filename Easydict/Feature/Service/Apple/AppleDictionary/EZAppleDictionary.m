@@ -24,8 +24,7 @@
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
-    return type;
+    return EZQueryTextTypeDictionary | EZQueryTextTypeSentence;
 }
 
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
