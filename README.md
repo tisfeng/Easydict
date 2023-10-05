@@ -442,6 +442,11 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示�
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
 </table>
 
+## URL Scheme
+
+Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good。 
+
+如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://good%2Fgirl
 
 ## 配合 PopClip 使用
 
