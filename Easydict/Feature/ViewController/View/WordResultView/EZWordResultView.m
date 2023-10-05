@@ -63,6 +63,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
     EZTranslateWordResult *wordResult = result.wordResult;
+    self.webView = result.webViewManager.webView;
     
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     

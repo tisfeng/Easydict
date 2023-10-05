@@ -1219,7 +1219,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     EZQueryResult *result = service.result;
-    resultCell.result = result;
+    resultCell.result = result;    
     [self setupResultCell:resultCell];
     
     WKWebView *webView = nil;
