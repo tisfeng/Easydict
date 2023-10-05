@@ -26,6 +26,10 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 /// Check if first char is lowercaseString
 - (BOOL)isLowercaseFirstChar;
 
+/// Check if first char is uppercaseString
+- (BOOL)isUppercaseFirstChar;
+
+
 /// Get first word of string
 - (NSString *)firstWord;
 

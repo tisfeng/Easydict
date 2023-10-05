@@ -45,6 +45,21 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
     return [firstChar isLowercaseString];
 }
 
+/// Check if first char is uppercaseString
+- (BOOL)isUppercaseFirstChar {
+    if (self.length == 0) {
+        return NO;
+    }
+    
+    NSString *firstChar = [self substringToIndex:1];
+    return [firstChar isUppercaseString];
+}
+
+- (BOOL)isUppercaseString {
+    return [self isEqualToString:self.uppercaseString];
+}
+
+
 /// Get first word of string
 - (NSString *)firstWord {
     NSArray *words = [self componentsSeparatedByString:@" "];

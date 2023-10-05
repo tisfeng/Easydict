@@ -1366,7 +1366,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      
      Am I allowed to rant here?
      */
-    BOOL isFirstLetterUpperCase = ![text isLowercaseFirstChar];
+    BOOL isFirstLetterUpperCase = [text isUppercaseFirstChar];
     
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
@@ -1648,32 +1648,26 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGRect boundingBox = textObservation.boundingBox;
     CGFloat lineHeight = boundingBox.size.height;
-    
-    CGFloat lineHeightRatioThreshold = 1.0;
-    
-    
+        
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
     CGFloat lineHeightRatio = deltaY / lineHeight;
     CGFloat averageLineSpacingRatio = deltaY / self.averageLineSpacing;
     CGFloat averageLineHeightRatio = deltaY / self.averageLineHeight;
+        
+    NSString *text = textObservation.firstText;
+    NSString *prevText = prevTextObservation.firstText;
     
-    CGFloat minLineHeightRatio = 0.65;
-    /**
-     FIXME: https://github.com/tisfeng/Easydict/issues/16
-     
-     Since English text line height is smaller than Chinese, the ratio should be bigger, but if it is too large, it may affect the normal line break of the paragraph 😢
-     */
-    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
-    if (isEnglishTypeLanguage) {
-        minLineHeightRatio = 0.8;
+    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && [text isUppercaseFirstChar] && [prevText hasEndPunctuationSuffix] && lineHeightRatio > 0.6) {
+        return YES;
     }
     
     // Since line spacing sometimes is too small and imprecise, we do not use it.
-    if (lineHeightRatio > lineHeightRatioThreshold ||
+    if (lineHeightRatio > 1.0 ||
         averageLineSpacingRatio > greaterThanLineSpacingRatio ||
-        averageLineHeightRatio > greaterThanLineHeightRatio ||
-        (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averageLineHeightRatio / greaterThanLineHeightRatio > 0.75)) {
+        averageLineHeightRatio > greaterThanLineHeightRatio
+//       || (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averageLineHeightRatio / greaterThanLineHeightRatio > 0.75)
+        ) {
         isBigLineSpacing = YES;
         //        NSLog(@"is big line spacing: %@", textObservation.firstText);
     }
