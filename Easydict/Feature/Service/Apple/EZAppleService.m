@@ -1077,7 +1077,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
                 // averageLineSpacing may too small, so deltaY should be much larger than averageLineSpacing
                 BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                             prevTextObservation:prevTextObservation
-                                                    greaterThanLineSpacingRatio:2.4
                                                      greaterThanLineHeightRatio:kParagraphLineHeightRatio];
                 if (isBigLineSpacing) {
                     isNewParagraph = YES;
@@ -1323,7 +1322,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     BOOL isBigLineSpacing = [self isBigSpacingLineOfTextObservation:textObservation
                                                 prevTextObservation:prevTextObservation
-                                        greaterThanLineSpacingRatio:2.1
                                          greaterThanLineHeightRatio:1.0];
     
     BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
@@ -1350,13 +1348,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     BOOL isEqualFontSize = differenceFontSize <= differenceFontThreshold;
     if (!isEqualFontSize) {
         NSLog(@"Not equal font size: difference = %.1f (%.1f, %.1f)", differenceFontSize, prevTextFontSize, textFontSize);
-    }
-    
-    if ([EZLanguageManager.shared isLanguageWordsNeedSpace:self.language]) {
-        // If prev line is a ~English long text, usually it is equal font size.
-        if (isPrevLongText) {
-//            isEqualFontSize = YES;
-        }
     }
     
     /**
@@ -1525,8 +1516,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         }
     }
     
-    BOOL newParagraph = (!isEqualFontSize && hasPrevIndentation)
-    || (isBigLineSpacing && isFirstLetterUpperCase);
+    BOOL newParagraph = (isBigLineSpacing && isFirstLetterUpperCase) || (!isEqualFontSize && (isFirstLetterUpperCase || !isPrevLongText));
     
     if (newParagraph) {
         isNewParagraph = YES;
@@ -1555,9 +1545,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      —— 宋 · 姜夔
      */
     
-    
     BOOL isChinesePoetryLine = isEqualChineseText || (isShortChinesePoetry && isPrevShortChinesePoetry);
-    BOOL shouldWrap = isChinesePoetryLine || !isEqualFontSize;
+    BOOL shouldWrap = isChinesePoetryLine;
     
     if (shouldWrap) {
         needLineBreak = YES;
@@ -1641,7 +1630,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 // TODO: Some text has large line spacing, which can lead to misjudgments.
 - (BOOL)isBigSpacingLineOfTextObservation:(VNRecognizedTextObservation *)textObservation
                       prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation
-              greaterThanLineSpacingRatio:(CGFloat)greaterThanLineSpacingRatio
                greaterThanLineHeightRatio:(CGFloat)greaterThanLineHeightRatio {
     //  lineHeightRatio = 1.2, 1.0
     BOOL isBigLineSpacing = NO;
@@ -1652,25 +1640,26 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
     CGFloat lineHeightRatio = deltaY / lineHeight;
-    CGFloat averageLineSpacingRatio = deltaY / self.averageLineSpacing;
     CGFloat averageLineHeightRatio = deltaY / self.averageLineHeight;
         
     NSString *text = textObservation.firstText;
     NSString *prevText = prevTextObservation.firstText;
     
-    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && [text isUppercaseFirstChar] && [prevText hasEndPunctuationSuffix] && lineHeightRatio > 0.6) {
+    // Since line spacing sometimes is too small and imprecise, we do not use it.
+    if (lineHeightRatio > 1.0 || averageLineHeightRatio > greaterThanLineHeightRatio) {
         return YES;
     }
     
-    // Since line spacing sometimes is too small and imprecise, we do not use it.
-    if (lineHeightRatio > 1.0 ||
-        averageLineSpacingRatio > greaterThanLineSpacingRatio ||
-        averageLineHeightRatio > greaterThanLineHeightRatio
-//       || (lineHeightRatio / lineHeightRatioThreshold > minLineHeightRatio && averageLineHeightRatio / greaterThanLineHeightRatio > 0.75)
-        ) {
-        isBigLineSpacing = YES;
-        //        NSLog(@"is big line spacing: %@", textObservation.firstText);
+    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && [text isUppercaseFirstChar]) {
+        if (lineHeightRatio > 0.85) {
+            isBigLineSpacing = YES;
+        } else {
+            if (lineHeightRatio > 0.6 && [prevText hasEndPunctuationSuffix]) {
+                isBigLineSpacing = YES;
+            }
+        }
     }
+    
     return isBigLineSpacing;
 }
 
