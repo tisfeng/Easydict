@@ -103,8 +103,8 @@ static EZConfiguration *_instance;
     self.showAppleDictionaryQuickLink = [NSUserDefaults mm_readBool:kShowAppleDictionaryLinkKey defaultValue:YES];
     self.hideMenuBarIcon = [NSUserDefaults mm_readBool:kHideMenuBarIconKey defaultValue:NO];
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:EZShowWindowPositionRight];
-    self.shotcutSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kShortcutSelectTranslateWindowTypeKey defaultValue:EZWindowTypeFixed];
     self.mouseSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kMouseSelectTranslateWindowTypeKey defaultValue:EZWindowTypeMini];
+    self.shortcutSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kShortcutSelectTranslateWindowTypeKey defaultValue:EZWindowTypeFixed];
     self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
@@ -300,16 +300,16 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
 }
 
-- (void)setShotcutSelectTranslateWindowType:(EZWindowType)shortcutSelectTranslateWindowType {
-    _shortcutSelectTranslateWindowType = shortcutSelectTranslateWindowType;
-
-    [NSUserDefaults mm_write:@(shortcutSelectTranslateWindowType) forKey:(kShortcutSelectTranslateWindowTypeKey)];
-}
-
 - (void)setMouseSelectTranslateWindowType:(EZWindowType)mouseSelectTranslateWindowType {
     _mouseSelectTranslateWindowType = mouseSelectTranslateWindowType;
 
     [NSUserDefaults mm_write:@(mouseSelectTranslateWindowType) forKey:(kMouseSelectTranslateWindowTypeKey)];
+}
+
+- (void)setShortcutSelectTranslateWindowType:(EZWindowType)shortcutSelectTranslateWindowType {
+    _shortcutSelectTranslateWindowType = shortcutSelectTranslateWindowType;
+
+    [NSUserDefaults mm_write:@(shortcutSelectTranslateWindowType) forKey:(kShortcutSelectTranslateWindowTypeKey)];
 }
 
 - (void)setAdjustPopButtomOrigin:(BOOL)adjustPopButtomOrigin {
