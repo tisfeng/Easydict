@@ -1485,10 +1485,11 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
                 if (self.isPoetry) {
                     needLineBreak = YES;
                 } else {
-                    needLineBreak = NO;
                     // 翻页, Page turn scenes without line feeds.
-                    if (!isPrevEndPunctuationChar) {
+                    BOOL isTurnedPage = [EZLanguageManager.shared isEnglishLangauge:self.language] && [text isLowercaseFirstChar] && !isPrevEndPunctuationChar;
+                    if (isTurnedPage) {
                         isNewParagraph = NO;
+                        needLineBreak = NO;
                     }
                 }
             } else {
