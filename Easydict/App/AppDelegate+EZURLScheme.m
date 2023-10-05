@@ -23,7 +23,7 @@
     JLRoutes *routes = [JLRoutes globalRoutes];
     [routes addRoute:@"/:action" handler:^BOOL(NSDictionary *parameters) {
         NSString *action = parameters[@"action"];
-        NSString *queryText = action;
+        NSString *queryText = parameters[@"text"];
         /**
          easydict://good
          easydict://query?text=good
@@ -32,8 +32,8 @@
          easydictd://query?text=good
          easydictd://good%2Fgirl  (easydictd://good/girl)
          */
-        if ([action isEqualToString:EZQueryKey]) {
-            queryText = parameters[@"text"];
+        if (!([action isEqualToString:EZQueryKey] && queryText.length)) {
+            queryText = action;
         }
         [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
         
