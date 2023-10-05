@@ -476,10 +476,9 @@ static EZWindowManager *_instance;
     if (EZConfiguration.shared.adjustPopButtomOrigin) {
         position.y = position.y - 8;
     }
-
-
-    // If not query text, just show mini window, then show window at last position.
-    if (!self.selectedText) {
+    
+    // If input query, just show mini window, then show window at last position.
+    if (self.actionType == EZActionTypeInputQuery) {
         CGRect formerFrame = [EZLayoutManager.shared windowFrameWithType:EZWindowTypeMini];
         position = [EZCoordinateUtils getFrameTopLeftPoint:formerFrame];
     }
@@ -490,7 +489,6 @@ static EZWindowManager *_instance;
 - (CGPoint)getShowingMouseLocation {
     BOOL offsetFlag = self.popButtonWindow.isVisible;
     return [self getMouseLocation:offsetFlag];
-    ;
 }
 
 - (CGPoint)getMouseLocation:(BOOL)offsetFlag {
