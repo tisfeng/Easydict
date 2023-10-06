@@ -1192,6 +1192,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 - (BOOL)isPoetryOftextObservations:(NSArray<VNRecognizedTextObservation *> *)textObservations {
     CGFloat lineCount = textObservations.count;
     NSInteger longLineCount = 0;
+    NSInteger continuousLongLineCount = 0;
+    NSInteger maxContinuousLongLineCount = 0;
     
     NSInteger totalCharCount = 0;
     CGFloat charCountPerLine = 0;
@@ -1199,15 +1201,29 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     NSInteger totalWordCount = 0;
     NSInteger wordCountPerLine = 0;
     
-    BOOL isAllEndPunctuationChar = YES;
+    NSInteger endWithTerminatorCharLineCount = 0;
     
     for (VNRecognizedTextObservation *textObservation in textObservations) {
-        BOOL isLongLine = [self isLongTextObservation:textObservation];
+        NSString *text = [textObservation firstText];
+
+        BOOL isLongLine = [self isLongTextObservation:textObservation isStrict:YES];
         if (isLongLine) {
             longLineCount += 1;
+            
+            if (![text hasEndPunctuationSuffix]) {
+                continuousLongLineCount += 1;
+                
+                if (continuousLongLineCount > maxContinuousLongLineCount) {
+                    maxContinuousLongLineCount = continuousLongLineCount;
+                }
+                
+            } else {
+                continuousLongLineCount = 0;
+            }
+        } else {
+            continuousLongLineCount = 0;
         }
         
-        NSString *text = [textObservation firstText];
         totalCharCount += text.length;
         totalWordCount += [EZTextWordUtils wordCount:text];
         
@@ -1223,20 +1239,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
             }
             
             BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
-            if (!isEndPunctuationChar) {
-                isAllEndPunctuationChar = NO;
-            }
-            
-            /**
-             Cannot be treated as poetry, cannot join with '\n'
-             
-             　　 京洛风流绝代人，因何风絮落溪津。笼鞋浅出鸦头袜，知是凌波
-             　缥缈身。
-             　　 红乍笑，绿长颦，与谁同度可怜春。鸳鸯独宿何曾惯，化作西楼
-             　一缕云。
-             */
-            if (punctuationMarkCountOfLine >= 3 && !isEndPunctuationChar) {
-                return NO;
+            if (isEndPunctuationChar) {
+                endWithTerminatorCharLineCount++;
             }
         }
         
@@ -1285,8 +1289,16 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      Plays harder.
      Goes further.
      */
-    if (isAllEndPunctuationChar) {
+    if (endWithTerminatorCharLineCount == lineCount) {
         return YES;
+    }
+    
+    if (endWithTerminatorCharLineCount == 0 && lineCount >= 6) {
+        return YES;
+    }
+    
+    if (maxContinuousLongLineCount >= 2) {
+        return NO;
     }
     
     /**
@@ -1295,7 +1307,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      这首诗以白描手法写江南农村初夏时节的田野风光和农忙景象，
      前两句描绘自然景物
      */
-    BOOL tooManyLongLine = longLineCount / lineCount >= 0.5;
+    BOOL tooManyLongLine = longLineCount / lineCount >= 0.4;
     if (tooManyLongLine) {
         return NO;
     }
@@ -1327,7 +1339,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     BOOL hasPrevIndentation = [self hasIndentationOfTextObservation:prevTextObservation];
     BOOL hasIndentation = [self hasIndentationOfTextObservation:textObservation];
     
-    BOOL isPrevLongText = [self isLongTextObservation:prevTextObservation];
+    BOOL isPrevLongText = [self isLongTextObservation:prevTextObservation isStrict:NO];
     
     BOOL isEqualChineseText = [self isEqualChineseTextObservation:textObservation prevTextObservation:prevTextObservation];
     
@@ -1765,10 +1777,15 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     return (minValue / maxValue) > ratio;
 }
 
-- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation {
+- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation isStrict:(BOOL)isStrict {
+    CGFloat threshold = [self longTextAlphabetCountThreshold:textObservation isStrict:isStrict];
+    BOOL isLongText = [self isLongTextObservation:textObservation threshold:threshold];
+    return isLongText;
+}
+
+- (BOOL)isLongTextObservation:(VNRecognizedTextObservation *)textObservation threshold:(CGFloat)threshold {
     CGFloat remainingAlphabetCount = [self remainingAlphabetCountOfTextObservation:textObservation];
     
-    CGFloat threshold = [self longTextAlphabetCountThreshold:textObservation];
     BOOL isLongText = remainingAlphabetCount < threshold;
     if (!isLongText) {
         NSLog(@"Not long text, remaining alphabet Count: %.1f (threshold: %1.f)", remainingAlphabetCount, threshold);
@@ -1790,7 +1807,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     return remainingAlphabetCount;
 }
 
-- (CGFloat)longTextAlphabetCountThreshold:(VNRecognizedTextObservation *)textObservation {
+- (CGFloat)longTextAlphabetCountThreshold:(VNRecognizedTextObservation *)textObservation isStrict:(BOOL)isStrict {
     BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
     
     // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
@@ -1800,7 +1817,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     NSString *text = [textObservation firstText];
     BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
     
-    if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
+    if (!isStrict && [EZLanguageManager.shared isChineseLanguage:self.language]) {
         if (!isEndPunctuationChar) {
             alphabetCount += 3.5;
         }
