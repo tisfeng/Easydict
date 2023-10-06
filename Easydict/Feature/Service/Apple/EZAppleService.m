@@ -1203,8 +1203,29 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     NSInteger endWithTerminatorCharLineCount = 0;
     
-    for (VNRecognizedTextObservation *textObservation in textObservations) {
-        NSString *text = [textObservation firstText];
+    for (int i = 0; i < lineCount; i++) {
+        VNRecognizedTextObservation *textObservation = textObservations[i];
+        NSString *text = textObservation.firstText;
+        
+        BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
+        if (isEndPunctuationChar) {
+            endWithTerminatorCharLineCount++;
+            
+            /**
+             10月1日  |  星期日  |  国庆节
+               
+             只要我们展现意志，大自然会为我们找到出
+             路。
+
+             */
+            if (i > 0) {
+                VNRecognizedTextObservation *prevTextObservation = textObservations[i - 1];
+                NSString *prevText = prevTextObservation.firstText;
+                if ([self isLongTextObservation:prevTextObservation isStrict:YES] && ![prevText hasEndPunctuationSuffix]) {
+                    return NO;
+                }
+            }
+        }
 
         BOOL isLongLine = [self isLongTextObservation:textObservation isStrict:YES];
         if (isLongLine) {
@@ -1236,11 +1257,6 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
             BOOL isChar = [self isPunctuationChar:charString excludeCharacters:allowedCharArray];
             if (isChar) {
                 punctuationMarkCountOfLine += 1;
-            }
-            
-            BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
-            if (isEndPunctuationChar) {
-                endWithTerminatorCharLineCount++;
             }
         }
         
@@ -1307,7 +1323,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      这首诗以白描手法写江南农村初夏时节的田野风光和农忙景象，
      前两句描绘自然景物
      */
-    BOOL tooManyLongLine = longLineCount / lineCount >= 0.4;
+    BOOL tooManyLongLine = longLineCount / lineCount > 0.4;
     if (tooManyLongLine) {
         return NO;
     }
