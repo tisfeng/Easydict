@@ -40,8 +40,8 @@
 - [x] 支持智能查询模式。
 - [x] 支持系统 OCR 截图翻译，静默截图 OCR。
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
-- [x] 支持苹果系统词典，支持第三方词典，可手动导入 mdict 词典。
-- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
+- [x] 支持苹果系统词典，支持第三方词典，可手动导入 mdict 词典。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+- [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，DeepL，Google，Bing，百度和火山翻译。
 - [x] 支持 48 种语言。
 
@@ -390,7 +390,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
