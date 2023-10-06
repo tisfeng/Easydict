@@ -66,12 +66,13 @@
 - [语种识别](#语种识别)
 - [TTS 服务](#tts-服务)
 - [查询服务](#查询服务)
+- [苹果系统词典](#苹果系统词典)
   - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [配置 API 调用方式](#配置-api-调用方式)
-- [苹果系统词典](#苹果系统词典)
 - [智能查询模式](#智能查询模式)
+- [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
 - [偏好设置](#偏好设置)
   - [设置](#设置)
@@ -289,6 +290,20 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 </details>
 
+## 苹果系统词典
+
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+
+另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
+
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+
+<table>
+ 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
+</table>
+
 ### OpenAI（ChatGPT）翻译
 
 1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
@@ -384,19 +399,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
-## 苹果系统词典
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
-
-另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
-
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
-
-<table>
- 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
-</table>
 ## 智能查询模式
 
 目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
@@ -501,6 +504,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 - `Cmd + Shift + K`: 清空输入框和查询结果，等同于点击输入框右下角的清空按钮。
 - `Cmd + I`: 聚集输入框。(Focus Input)
 - `Cmd + Shift + C`: 复制查询内容。
+- `Cmd + Shift + J`: 复制首个翻译结果。
 - `Cmd + S`: 播放查询文本的发音。(Play Sound)
 - `Cmd + R`: 再次查询。(Retry Query)
 - `Cmd + T`: 交换翻译语言。(Toggle Translate Language)
