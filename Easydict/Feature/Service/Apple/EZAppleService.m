@@ -1678,7 +1678,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     
-    if (lineHeightRatio > 0.6 && (![self isLongTextObservation:prevTextObservation isStrict:YES] || [prevText hasEndPunctuationSuffix])) {
+    if (lineHeightRatio > 0.6 && (![self isLongTextObservation:prevTextObservation isStrict:YES] || [prevText hasEndPunctuationSuffix] || prevTextObservation == self.maxLongLineTextObservation)) {
         return YES;
     }
     
