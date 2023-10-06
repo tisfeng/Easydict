@@ -26,9 +26,13 @@ static CGFloat const kParagraphLineHeightRatio = 1.2;
 
 static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 
+static char kJoinedStringKey;
 
 @interface VNRecognizedTextObservation (EZText)
 @property (nonatomic, copy, readonly) NSString *firstText;
+
+@property (nonatomic, copy) NSString *joinedString;
+
 @end
 
 @implementation VNRecognizedTextObservation (EZText)
@@ -36,6 +40,15 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     NSString *text = [[self topCandidates:1] firstObject].string;
     return text;
 }
+
+- (void)setJoinedString:(NSString *)joinedString {
+    objc_setAssociatedObject(self, &kJoinedStringKey, joinedString, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString *)joinedString {
+    return objc_getAssociatedObject(self, &kJoinedStringKey);
+}
+
 
 - (NSString *)description {
     return [self customDescription:YES];
@@ -1119,6 +1132,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
                 joinedString = @" "; // if the same line, just join two texts
             }
             
+            textObservation.joinedString = joinedString;
+            
             // 1. append joined string
             [mergedText appendString:joinedString];
         } else {
@@ -1309,13 +1324,25 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     
+    /**
+     9月27日  |  星期三
+       
+     世界正在变，习惯了许多理想，习惯了潇洒
+     自在，忽然间要我改变，我改变不了这些习
+     惯。
+       
+     —— 《喋血街头》  豆瓣评分 8.2
+       
+     1990 / 中国香港 / 剧情 动作 犯罪
+     */
+    if (maxContinuousLongLineCount >= 2 && endWithTerminatorCharLineCount > 0) {
+        return NO;
+    }
+    
     if (endWithTerminatorCharLineCount == 0 && lineCount >= 6) {
         return YES;
     }
-    
-    if (maxContinuousLongLineCount >= 2) {
-        return NO;
-    }
+
     
     /**
      Should >= 0.5, especially two lines.
@@ -1379,13 +1406,12 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     }
     
     /**
-     https://twitter.com/yetone/status/1703102199046471893
+     Note: firstChar cannot be non-alphabet, such as '['
      
-     I'm in love with this fucking language
-     
-     Am I allowed to rant here?
+     the latter notifies the NFc upon the occurrence of the event
+     [2].
      */
-    BOOL isFirstLetterUpperCase = [text isUppercaseFirstChar];
+    BOOL isFirstLetterUpperCase = [self isEnglishUppercaseChar:text.firstChar];
     
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
@@ -1481,7 +1507,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
              */
             
             if (isPrevLongText) {
-                if (isPrevEndPunctuationChar) {
+                if (isPrevEndPunctuationChar || !isEqualFontSize) {
                     isNewParagraph = YES;
                 } else {
                     if (!isEqualX && dx > 0) {
@@ -1544,9 +1570,13 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         }
     }
     
-    BOOL newParagraph = (isBigLineSpacing && isFirstLetterUpperCase) || (!isEqualFontSize && (isFirstLetterUpperCase || !isPrevLongText));
+    if (!isEqualFontSize || isBigLineSpacing) {
+        if (!isPrevLongText || ([EZLanguageManager.shared isEnglishLangauge:self.language] && isFirstLetterUpperCase)) {
+            isNewParagraph = YES;
+        }
+    }
     
-    if (newParagraph) {
+    if (isBigLineSpacing && isFirstLetterUpperCase) {
         isNewParagraph = YES;
     }
     
@@ -1554,7 +1584,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
      https://so.gushiwen.cn/shiwenv_f83627ef2908.aspx
      
      绣袈裟衣缘
-     长屋长屋〔唐代〕
+     长屋〔唐代〕
      
      山川异域，风月同天。
      寄诸佛子，共结来缘。
@@ -1682,8 +1712,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     
+    BOOL isFirstLetterUpperCase = [self isEnglishUppercaseChar:text.firstChar];
+    
     // For English text
-    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && [text isUppercaseFirstChar]) {
+    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && isFirstLetterUpperCase) {
         if (lineHeightRatio > 0.85) {
             isBigLineSpacing = YES;
         } else {
@@ -1833,7 +1865,7 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
     
     // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
     // "implementation ," : @"你好"
-    CGFloat alphabetCount = isEnglishTypeLanguage ? 16 : 2;
+    CGFloat alphabetCount = isEnglishTypeLanguage ? 15 : 1.5;
     
     NSString *text = [textObservation firstText];
     BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
@@ -1889,10 +1921,10 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 //     longWordLength / systemFontSize = x / fontSize
 //     x = fontSize * (longWordLength / font)
 //     */
-//    
+//
 //    CGFloat width = fontSize * (longWordLength / systemFontSize);
 //    CGFloat singleAlphabetWidth = width / longWord.length;
-//    
+//
 //    return singleAlphabetWidth;
 //}
 
@@ -2105,6 +2137,11 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
 - (BOOL)isPunctuationChar:(NSString *)charString {
     return [self isPunctuationChar:charString excludeCharacters:nil];
+}
+
+- (BOOL)isEnglishUppercaseChar:(NSString *)charString {
+    BOOL isFirstLetterUpperCase = ![self isPunctuationChar:charString] && [charString isUppercaseFirstChar];
+    return isFirstLetterUpperCase;
 }
 
 - (BOOL)isPunctuationChar:(NSString *)charString excludeCharacters:(nullable NSArray *)charArray {
