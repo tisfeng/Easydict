@@ -544,7 +544,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)copyFirstTranslatedText {
     if (self.firstService) {
-        [self.firstService.result.translatedText copyAndShowToast:YES];
+        [self.firstService.result.copiedText copyAndShowToast:YES];
     }
 }
 
