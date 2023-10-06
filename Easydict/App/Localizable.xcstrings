@@ -610,7 +610,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "默认TTS服务:"
+            "value" : "默认 TTS 服务:"
           }
         }
       }
