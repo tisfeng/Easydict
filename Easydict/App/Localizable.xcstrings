@@ -91,6 +91,17 @@
         }
       }
     },
+    "Apple" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "苹果"
+          }
+        }
+      }
+    },
     "apple_dictionary" : {
       "localizations" : {
         "en" : {
@@ -343,6 +354,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "避免和 PopClip 显示冲突"
+          }
+        }
+      }
+    },
+    "Baidu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "百度"
           }
         }
       }
@@ -2023,6 +2045,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
+          }
+        }
+      }
+    },
+    "Youdao" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "有道"
           }
         }
       }
