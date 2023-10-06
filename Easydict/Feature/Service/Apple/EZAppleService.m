@@ -1662,6 +1662,11 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
         return YES;
     }
     
+    if (lineHeightRatio > 0.6 && (![self isLongTextObservation:prevTextObservation isStrict:YES] || [prevText hasEndPunctuationSuffix])) {
+        return YES;
+    }
+    
+    // For English text
     if ([EZLanguageManager.shared isEnglishLangauge:self.language] && [text isUppercaseFirstChar]) {
         if (lineHeightRatio > 0.85) {
             isBigLineSpacing = YES;
