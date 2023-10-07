@@ -235,7 +235,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 > 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
-<details> <summary> 翻译服务支持语言： </summary>
+<details> <summary> 各个服务支持的语言： </summary>
 
 <p>
 
