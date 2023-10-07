@@ -430,7 +430,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
-        NSString *queryText = queryModel.inputText;
+        NSString *queryText = queryModel.queryText;
         NSLog(@"ocr result: %@", queryText);
         
         NSDictionary *dict = @{
@@ -612,11 +612,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self startQueryText:self.inputText actionType:self.queryModel.actionType];
 }
 
-/// Close all result view, then query.
-- (void)startQueryInputText {
-    [self startQueryText:self.queryModel.inputText];
-}
-
 - (void)startQueryWithType:(EZActionType)actionType {
     NSImage *ocrImage = self.queryModel.OCRImage;
     if (actionType == EZActionTypeOCRQuery && ocrImage) {
@@ -705,7 +700,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         NSLog(@"service disabled: %@", service.serviceType);
         return;
     }
-    if (queryModel.inputText.length == 0) {
+    if (queryModel.queryText.length == 0) {
         NSLog(@"queryText is empty");
         return;
     }

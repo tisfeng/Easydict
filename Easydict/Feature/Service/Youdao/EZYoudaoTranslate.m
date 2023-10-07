@@ -193,7 +193,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
  means: en <-> zh-CHS, ja <-> zh-CHS, ko <-> zh-CHS, fr <-> zh-CHS, if language not in this list, then return nil.
  */
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    NSString *encodedWord = [queryModel.inputText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *encodedWord = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:queryModel];
     if (!foreignLangauge) {
         return nil;

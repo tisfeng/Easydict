@@ -148,7 +148,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.inputText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
     return [NSString stringWithFormat:@"%@/#%@/%@/%@", kBaiduTranslateURL, from, to, text];
 }
@@ -513,7 +513,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     EZQueryResult *result = self.result;
     NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
 
-    NSString *text = self.queryModel.inputText;
+    NSString *text = self.queryModel.queryText;
     NSString *from = self.queryModel.queryFromLanguage;
     NSString *to = self.queryModel.queryTargetLanguage;
 

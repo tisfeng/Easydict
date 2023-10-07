@@ -130,7 +130,7 @@
     
     NSString *from = [self languageCodeForLanguage:textLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *maxText = [self maxTextLength:queryModel.inputText fromLanguage:textLanguage];
+    NSString *maxText = [self maxTextLength:queryModel.queryText fromLanguage:textLanguage];
     
     NSString *text = maxText;
     

@@ -71,7 +71,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.inputText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     /**
      !!!: need to convert '/' to '%5C%2F'

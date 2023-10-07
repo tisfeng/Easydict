@@ -67,7 +67,7 @@
 + (void)logQueryService:(EZQueryService *)service {
     NSString *name = @"query_service";
     EZQueryModel *model = service.queryModel;
-    NSString *textLengthRange = [self textLengthRange:model.inputText];
+    NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
         @"serviceType" : service.serviceType,
         @"actionType" : model.actionType,
@@ -81,7 +81,7 @@
 // Query with queryModel
 + (void)logQuery:(EZQueryModel *)model {
     NSString *name = @"query";
-    NSString *textLengthRange = [self textLengthRange:model.inputText];
+    NSString *textLengthRange = [self textLengthRange:model.queryText];
     NSDictionary *dict = @{
         @"actionType" : model.actionType,
         @"fromLanguage" : model.queryFromLanguage,

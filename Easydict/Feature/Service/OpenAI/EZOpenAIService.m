@@ -260,7 +260,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             
             self.result.translatedResults = normalResults;
             self.result.showBigWord = YES;
-            self.result.queryText = self.queryModel.inputText;
+            self.result.queryText = self.queryModel.queryText;
             self.result.translateResultsTopInset = 6;
             completion(self.result, error);
             break;
@@ -331,7 +331,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
-                if (isFirst && ![EZTextWordUtils hasPrefixQuote:self.queryModel.inputText]) {
+                if (isFirst && ![EZTextWordUtils hasPrefixQuote:self.queryModel.queryText]) {
                     appendContent = [EZTextWordUtils tryToRemovePrefixQuote:content];
                 }
                 
@@ -351,7 +351,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     }
                 } else {
                     // [DONE], end of string.
-                    if (![EZTextWordUtils hasSuffixQuote:self.queryModel.inputText]) {
+                    if (![EZTextWordUtils hasSuffixQuote:self.queryModel.queryText]) {
                         appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:appendContent];
                     } else if (appendSuffixQuote) {
                         appendContent = [content stringByAppendingString:appendSuffixQuote];
@@ -393,7 +393,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             }
         } else {
             // 动人 --> "Touching" or "Moving".
-            NSString *queryText = self.queryModel.inputText;
+            NSString *queryText = self.queryModel.queryText;
             
             // Count quote may cost much time, so only count when query text is short.
             if (shouldHandleQuote && queryText.length < 100) {
@@ -1374,7 +1374,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         EZTranslateWordResult *wordResult = [[EZTranslateWordResult alloc] init];
         wordResult.etymology = etymology;
         self.result.wordResult = wordResult;
-        self.result.queryText = self.queryModel.inputText;
+        self.result.queryText = self.queryModel.queryText;
     }
     
     completion(self.result, nil);
