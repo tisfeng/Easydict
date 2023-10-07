@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *inputText;
 /// queryText = [inputText trim]
-@property (nonatomic, copy) NSString *queryText;
+@property (nonatomic, copy, readonly) NSString *queryText;
 
 @property (nonatomic, copy) EZActionType actionType;
 @property (nonatomic, copy) EZSelectTextType selectTextType;

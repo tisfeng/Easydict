@@ -54,7 +54,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 @property (nonatomic, strong) EZQueryView *queryView;
 @property (nonatomic, strong) EZSelectLanguageCell *selectLanguageCell;
 
-@property (nonatomic, copy) NSString *queryText;
+// queryText is self.queryModel.queryText;
+@property (nonatomic, copy, readonly) NSString *queryText;
 @property (nonatomic, strong) NSArray<EZServiceType> *serviceTypes;
 @property (nonatomic, strong) NSArray<EZQueryService *> *services;
 @property (nonatomic, strong) EZQueryModel *queryModel;
@@ -328,18 +329,14 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     return _audioPlayer;
 }
 
-- (void)setInputText:(NSString *)queryText {
+- (void)setInputText:(NSString *)inputText {
     // !!!: Rewrite property copy setter. Avoid text being affected.
-    _inputText = [queryText copy];
+    _inputText = [inputText copy];
 
     self.queryModel.inputText = _inputText;
+    _queryText = self.queryModel.queryText;
 
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
-}
-
-- (NSString *)queryText {
-    NSString *queryText = [_inputText trim];
-    return queryText;
 }
 
 - (EZQueryService *)defaultTTSService {
@@ -631,12 +628,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Directly query model.
 - (void)queryCurrentModel {
-    if (self.inputText.length == 0) {
+    if (self.queryText.length == 0) {
         NSLog(@"query text is empty");
         return;
     }
 
-    NSLog(@"query text: %@", self.inputText);
+    NSLog(@"query text: %@", self.queryText);
 
     // !!!: Reset all result before new query.
     [self resetAllResults];
@@ -722,7 +719,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     result.isLoading = YES;
     
     [self updateResultLoadingAnimation:result];
-        
+    
     [service translate:queryModel.queryText
                   from:queryModel.queryFromLanguage
                     to:queryModel.queryTargetLanguage
@@ -1219,7 +1216,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     EZQueryResult *result = service.result;
-    resultCell.result = result;    
+    resultCell.result = result;
     [self setupResultCell:resultCell];
     
     WKWebView *webView = nil;

@@ -72,11 +72,8 @@
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
-}
-
-- (NSString *)queryText {
-    NSString *queryText = [_inputText trim];
-    return queryText;
+    
+    _queryText = [self handleInputText:_inputText];
 }
 
 - (void)setActionType:(EZActionType)actionType {
@@ -169,6 +166,95 @@
     for (NSString *key in self.stopBlockDictionary.allKeys) {
         [self stopServiceRequest:key];
     }
+}
+
+
+#pragma mark - Handle Input text
+
+- (NSString *)handleInputText:(NSString *)inputText {
+    NSString *queryText = [inputText trim];
+    
+    /**
+     Split camel and snake case text
+     https://github.com/tisfeng/Easydict/issues/135#issuecomment-1750498120
+     
+     _anchoredDraggable_State --> anchored Draggable State
+     */
+    if ([self isSingleWord:queryText]) {
+        queryText = [self splitSnakeCaseText:queryText];
+        queryText = [self splitCamelCaseText:queryText];
+    }
+    
+    // Filter empty text
+    NSArray *texts = [queryText componentsSeparatedByString:@" "];
+    NSMutableArray *newTexts = [NSMutableArray array];
+    for (NSString *text in texts) {
+        if (text.length) {
+            [newTexts addObject:text];
+        }
+    }
+    
+    queryText = [newTexts componentsJoinedByString:@" "];
+
+    return queryText;
+}
+
+- (BOOL)isSingleWord:(NSString *)text {
+    return text.length && [text componentsSeparatedByString:@" "].count == 1;
+}
+
+/**
+ Split camel case text.
+ 
+ anchoredDraggableState --> anchored Draggable State
+ AnchoredDraggableState --> Anchored Draggable State
+ GetHTTP --> Get HTTP
+ GetHTTPCode --> Get HTTP Code
+ */
+- (NSString *)splitCamelCaseText:(NSString *)text {
+    NSMutableString *outputText = [NSMutableString string];
+    NSCharacterSet *uppercaseCharSet = [NSCharacterSet uppercaseLetterCharacterSet];
+    
+    for (int i = 0; i < text.length; i++) {
+        NSString *currentChar = [text substringWithRange:NSMakeRange(i, 1)];
+        
+        if ([uppercaseCharSet characterIsMember:[currentChar characterAtIndex:0]]) {
+            if (i > 0) {
+                NSString *prevChar = [text substringWithRange:NSMakeRange(i - 1, 1)];
+                
+                if (![uppercaseCharSet characterIsMember:[prevChar characterAtIndex:0]]) {
+                    [outputText appendString:@" "];
+                } else {
+                    if (i < text.length - 1) {
+                        NSString *nextChar = [text substringWithRange:NSMakeRange(i + 1, 1)];
+                        
+                        if (![uppercaseCharSet characterIsMember:[nextChar characterAtIndex:0]]) {
+                            [outputText appendString:@" "];
+                        }
+                    }
+                }
+            }
+            [outputText appendString:currentChar];
+        } else {
+            [outputText appendString:currentChar];
+        }
+    }
+    
+    return outputText;
+}
+
+/**
+ Split snake case text.
+ 
+ anchored_draggable_state --> anchored draggable state
+ */
+- (NSString *)splitSnakeCaseText:(NSString *)text {
+    NSMutableString *outputText = [NSMutableString string];
+    
+    NSArray *components = [text componentsSeparatedByString:@"_"];
+    outputText = [components componentsJoinedByString:@" "].mutableCopy;
+    
+    return outputText;
 }
 
 @end

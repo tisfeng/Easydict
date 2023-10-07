@@ -21,11 +21,12 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 - (BOOL)isAlphabeticString;
 
 /// Check if lowercaseString, like
-- (BOOL)isLowercaseString;
+- (BOOL)isLowercaseLetter;
 
 /// Check if first char is lowercaseString
 - (BOOL)isLowercaseFirstChar;
 
+- (BOOL)isUppercaseLetter;
 /// Check if first char is uppercaseString
 - (BOOL)isUppercaseFirstChar;
 

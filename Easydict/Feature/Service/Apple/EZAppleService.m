@@ -1753,7 +1753,7 @@ static char kJoinedStringKey;
     NSString *newWord = [NSString stringWithFormat:@"%@%@", lastWord, firstWord];
     
     // Request-Response, Architec-ture
-    BOOL isLowercaseWord = [firstWord isLowercaseString];
+    BOOL isLowercaseWord = [firstWord isLowercaseLetter];
     BOOL isSpelledCorrectly = [EZTextWordUtils isSpelledCorrectly:newWord];
     if (isLowercaseWord && isSpelledCorrectly) {
         return YES;

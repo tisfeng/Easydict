@@ -31,8 +31,11 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
 }
 
 /// Check if lowercaseString, like
-- (BOOL)isLowercaseString {
-    return [self isEqualToString:self.lowercaseString];
+- (BOOL)isLowercaseLetter {
+    NSCharacterSet *lowercaseCharSet = [NSCharacterSet lowercaseLetterCharacterSet];
+    NSCharacterSet *stringCharacterSet = [NSCharacterSet characterSetWithCharactersInString:self];
+    return [lowercaseCharSet isSupersetOfSet:stringCharacterSet];
+
 }
 
 /// Check if first char is lowercaseString
@@ -42,7 +45,13 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
     }
     
     NSString *firstChar = [self substringToIndex:1];
-    return [firstChar isLowercaseString];
+    return [firstChar isLowercaseLetter];
+}
+
+- (BOOL)isUppercaseLetter {
+    NSCharacterSet *uppercaseCharSet = [NSCharacterSet uppercaseLetterCharacterSet];
+    NSCharacterSet *stringCharacterSet = [NSCharacterSet characterSetWithCharactersInString:self];
+    return [uppercaseCharSet isSupersetOfSet:stringCharacterSet];
 }
 
 /// Check if first char is uppercaseString
@@ -52,11 +61,7 @@ static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @"
     }
     
     NSString *firstChar = [self substringToIndex:1];
-    return [firstChar isUppercaseString];
-}
-
-- (BOOL)isUppercaseString {
-    return [self isEqualToString:self.uppercaseString];
+    return [firstChar isUppercaseLetter];
 }
 
 
