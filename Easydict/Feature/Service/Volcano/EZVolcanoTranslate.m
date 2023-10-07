@@ -68,9 +68,11 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
     NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
-    return [NSString stringWithFormat:@"%@?category=&home_language=zh&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, text];
+    // Since volcano web translation max query length is 800, so we have to truncate the text.
+    NSString *queryText = [self.queryModel.queryText trimToMaxLength:800].encode;
+    
+    return [NSString stringWithFormat:@"%@?category=&home_language=zh&source_language=%@&target_language=%@&text=%@", kVolcanoLTranslateURL, from, to, queryText];
 }
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
@@ -141,18 +143,8 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
     // https://translate.volcengine.com/?category=&home_language=zh&source_language=en&target_language=zh&text=good
     // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=en&target_language=zh&text=good
-    
-    // TODO: need to optimize.
-    
+        
     NSString *wordLink = [self wordLink:self.queryModel];
-    
-    // Since volcano web translation max query length is 800, so we have to truncate the text.
-    if (self.queryModel.queryText.length > 800) {
-        NSString *queryText = [self.queryModel.queryText substringToIndex:800];
-        EZQueryModel *queryModel = [self.queryModel copy];
-        queryModel.inputText = queryText;
-        wordLink = [self wordLink:queryModel];
-    }
     
     [self.webViewTranslator queryTranslateURL:wordLink completionHandler:^(NSArray<NSString *> *_Nonnull texts, NSError *_Nonnull error) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
