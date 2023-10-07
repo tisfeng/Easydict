@@ -68,9 +68,13 @@
 - [查询服务](#查询服务)
   - [苹果系统词典](#苹果系统词典)
   - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
+    - [配置 APIKey](#配置-apikey)
+    - [查询模式](#查询模式)
+    - [自定义设置](#自定义设置)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [配置 API 调用方式](#配置-api-调用方式)
+  - [Bing 翻译](#bing-翻译)
 - [智能查询模式](#智能查询模式)
 - [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
@@ -311,7 +315,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 请先确保你有 APIKey。
 
 
-配置 APIKey
+#### 配置 APIKey
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
@@ -321,6 +325,8 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
+
+#### 查询模式
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
@@ -348,6 +354,8 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
+#### 自定义设置
+
 支持设置自定义域名和模型
 
 ```
@@ -361,16 +369,15 @@ easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
-关于部署自定义域名，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
-
-> cloudflare反向代理|OpenAI/ChatGPT 免翻墙代理|github免翻墙代理|github下载加速|google代理|cloudflare万能代理
-
+由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
 
 ### DeepL 翻译
 
 DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会触发 429 too many requests 报错，因此 1.3.0 版本增加了对 DeepL 官方 API 的支持，暂时还没写界面，需通过命令方式启用。
 
-如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理 IP 的方式来规避 429 报错。
+如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
+
+> Note: 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### 配置 AuthKey
 
@@ -398,6 +405,23 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
+```
+
+### Bing 翻译
+
+目前 Bing 翻译使用的是网页接口，当触发频率限制 429 报错时，除了切换代理，还可以通过手动设置请求 cookie 来续命，具体续命多久暂时不清楚。
+
+具体步骤是，使用浏览器打开 [Bing Translator](https://www.bing.com/translator)，登录，然后在控制台执行以下代码获取 cookie
+
+```js
+cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
+```
+
+最后将 cookie 使用命令写入 Easydict
+
+```
+// xxx 是前面获取的 cookie
+easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 
 ## 智能查询模式
