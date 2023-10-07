@@ -293,11 +293,11 @@
 
     // Note: Bing API has frequency limit
     NSArray *enabledTTSServiceTypes = @[
-        EZServiceTypeYoudao,
-        EZServiceTypeBing,
-        EZServiceTypeGoogle,
-        EZServiceTypeBaidu,
-        EZServiceTypeApple,
+        NSLocalizedString(EZServiceTypeYoudao,nil),
+        NSLocalizedString(EZServiceTypeBing,nil),
+        NSLocalizedString(EZServiceTypeGoogle,nil),
+        NSLocalizedString(EZServiceTypeBaidu,nil),
+        NSLocalizedString(EZServiceTypeApple,nil),
     ];
     [self.defaultTTSServicePopUpButton addItemsWithTitles:enabledTTSServiceTypes];
     self.defaultTTSServicePopUpButton.target = self;
