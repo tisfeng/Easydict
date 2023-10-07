@@ -205,6 +205,8 @@
         EZDeepLTranslationAPIKey,
                 
         EZIntelligentQueryModeKey,
+        
+        EZBingCookieKey,
     ];
     
     return readWriteKeys;

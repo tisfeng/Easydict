@@ -282,15 +282,6 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             return;
         }
         
-        NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:url]];
-        NSMutableString *cookieString = [NSMutableString string];
-        for (NSHTTPCookie *cookie in cookies) {
-            NSString *cookieText = [NSString stringWithFormat:@"%@=%@; ", cookie.name, cookie.value];
-            [cookieString appendString:cookieText];
-        }
-        
-        self.bingConfig.cookie = cookieString;
-        
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
         NSString *IG = [self getIGValueFromHTML:responseString];
@@ -566,10 +557,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
         [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
-        [requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-        
         [requestSerializer setValue:self.bingConfig.cookie forHTTPHeaderField:@"Cookie"];
-        
         session.requestSerializer = requestSerializer;
         AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:kAudioMIMEType, nil];

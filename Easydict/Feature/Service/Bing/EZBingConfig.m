@@ -31,6 +31,11 @@
     return urlString;
 }
 
+- (NSString *)cookie {
+    NSString *cookie = [NSUserDefaults mm_readString:EZBingCookieKey defaultValue:@""];
+    return cookie;
+}
+
 #pragma mark -
 
 - (BOOL)isBingTokenExpired {
