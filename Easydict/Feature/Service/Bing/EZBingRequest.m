@@ -367,7 +367,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                 // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
                 // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
                 if (response.statusCode == 429) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"bing translate too many requests", nil);
+                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"429 error, Bing translate too many requests", nil);
                 } else {
                     self.translateError = error;
                 }

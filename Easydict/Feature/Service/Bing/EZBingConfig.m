@@ -65,6 +65,7 @@
     self.IG = nil;
     self.key = nil;
     self.expirationInterval = nil;
+    self.token = nil;
 }
 
 @end
