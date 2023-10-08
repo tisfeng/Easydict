@@ -125,6 +125,10 @@ brew install easydict
 
 构建环境：Xcode 13+, macOS Big Sur 11.3+。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
+> ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
+>
+> 如果你的 Xcode 版本较低，请使用 [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) 分支，注意这是一个固定版本分支，不受维护。
+
 </p>
 
 </details>
