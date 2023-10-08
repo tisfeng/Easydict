@@ -2,10 +2,24 @@
   "sourceLanguage" : "en",
   "strings" : {
     "+" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "−" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "about" : {
       "comment" : "about",
@@ -41,7 +55,15 @@
       }
     },
     "Alignment Error" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "allow_collect_analytics" : {
       "localizations" : {
@@ -96,7 +118,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "苹果"
           }
         }
@@ -363,7 +385,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "百度"
           }
         }
@@ -402,7 +424,15 @@
       }
     },
     "Buffer Too Small" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "cancel" : {
       "localizations" : {
@@ -581,7 +611,15 @@
       }
     },
     "Decode Error" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "deepL_translate" : {
       "localizations" : {
@@ -843,7 +881,15 @@
       }
     },
     "Failed to allocate memory" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "first_language" : {
       "localizations" : {
@@ -1006,10 +1052,25 @@
       }
     },
     "Function not implemented for the current algorithm" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Github:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "google_translate" : {
       "localizations" : {
@@ -1092,13 +1153,37 @@
       }
     },
     "Illegal parameter supplied to encryption/decryption algorithm" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Input data did not decode or decrypt correctly" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Input size to encryption algorithm was not aligned correctly" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "input_translate" : {
       "localizations" : {
@@ -1117,7 +1202,15 @@
       }
     },
     "Insufficient buffer provided for specified operation" : {
-      "comment" : "Error reason"
+      "comment" : "Error reason",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "language_detect_optimize" : {
       "localizations" : {
@@ -1248,7 +1341,15 @@
       }
     },
     "Memory Failure" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "menu_bar_icon" : {
       "localizations" : {
@@ -1292,7 +1393,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "鼠标划词窗口类型:"
           }
         }
@@ -1427,7 +1528,15 @@
       }
     },
     "Parameter Error" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "past" : {
       "localizations" : {
@@ -1762,7 +1871,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "快捷键划词窗口类型:"
           }
         }
@@ -1929,7 +2038,15 @@
       }
     },
     "Success" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "superlative" : {
       "localizations" : {
@@ -1996,10 +2113,26 @@
       }
     },
     "Unimplemented Function" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "Unknown Error" : {
-      "comment" : "Error description"
+      "comment" : "Error description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      }
     },
     "unpin" : {
       "localizations" : {
@@ -2054,7 +2187,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "有道"
           }
         }
