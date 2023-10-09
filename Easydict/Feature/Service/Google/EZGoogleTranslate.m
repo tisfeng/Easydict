@@ -204,7 +204,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     text = [self maxTextLength:text fromLanguage:from];
     
-    BOOL queryDictionary = [text shouldQuerySentenceWithLanguage:from];
+    BOOL queryDictionary = [text shouldQueryDictionaryWithLanguage:from];
     if (queryDictionary) {
         // This API can get word info, like pronunciation.
         [self webApptranslate:text from:from to:to completion:completion];
