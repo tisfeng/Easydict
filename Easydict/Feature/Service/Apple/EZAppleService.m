@@ -532,12 +532,12 @@ static char kJoinedStringKey;
 - (NSDictionary<NLLanguage, NSNumber *> *)customLanguageHints {
     // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
-        NLLanguageEnglish : @(4.5),
+        NLLanguageEnglish : @(6.0),
         NLLanguageSimplifiedChinese : @(2.0),
         NLLanguageTraditionalChinese : @(0.6), // 電池
         NLLanguageJapanese : @(0.25),
-        NLLanguageFrench : @(0.2), // const, ex, delimiter, proposition
         NLLanguageKorean : @(0.2),
+        NLLanguageFrench : @(0.15), // const, ex, delimiter, proposition, LaTeX, PaLM
         NLLanguageItalian : @(0.1),     // via
         NLLanguageSpanish : @(0.1),     // favor
         NLLanguageGerman : @(0.05),     // usa, sender
