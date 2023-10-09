@@ -13,7 +13,7 @@
 #import "EZEnumTypes.h"
 #import "EZBaiduTranslate.h"
 #import "EZGoogleTranslate.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import "EZServiceTypes.h"
 #import "EZConfiguration.h"
 #import <sys/xattr.h>
@@ -203,7 +203,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     self.audioURL = audioURL;
     self.accent = accent;
     
-    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:text language:language];
+    BOOL isEnglishWord = [text isEnglishWordWithLanguage:language];
     self.enableDownload = isEnglishWord;
     
     // 1. if has audio url, play audio url directly.
@@ -295,7 +295,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
     BOOL isForcedURL = forceURL && audioURLString.length;
     
     // For English words, Youdao TTS is better than other services, so we try to play local Youdao audio first.
-    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:text language:language];
+    BOOL isEnglishWord = [text isEnglishWordWithLanguage:language];
 
     if (!isForcedURL && isEnglishWord) {
         NSString *youdaoAudioFilePath = [self getWordAudioFilePath:text

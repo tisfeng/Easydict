@@ -9,7 +9,7 @@
 #import "EZOpenAIService.h"
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
 
 static NSString *const kDefinitionDelimiter = @"{---Definition---}:";
@@ -200,7 +200,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
-        isQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
+        isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from];
     }
     
     BOOL enableSentence = self.queryTextType & EZQueryTextTypeSentence;
@@ -208,7 +208,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     if (!isQueryDictionary && enableSentence) {
         BOOL isEnglishText = [from isEqualToString:EZLanguageEnglish];
         if (isEnglishText) {
-            isQueryEnglishSentence = [EZTextWordUtils shouldQuerySentence:text language:from];
+            isQueryEnglishSentence = [text shouldQuerySentenceWithLanguage:from];
         }
     }
     
@@ -331,8 +331,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
-                if (isFirst && ![EZTextWordUtils hasPrefixQuote:self.queryModel.queryText]) {
-                    appendContent = [EZTextWordUtils tryToRemovePrefixQuote:content];
+                if (isFirst && ![self.queryModel.queryText hasPrefixQuote]) {
+                    appendContent = [content tryToRemovePrefixQuote];
                 }
                 
                 if (!isFinished) {
@@ -343,16 +343,16 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                             appendSuffixQuote = nil;
                         }
                         
-                        appendSuffixQuote = [EZTextWordUtils suffixQuoteOfText:content];
+                        appendSuffixQuote = [content suffixQuote];
                         // If content has suffix quote, mark it, delay append suffix quote, in case the suffix quote is in the extra last char.
                         if (appendSuffixQuote) {
-                            appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:content];
+                            appendContent = [content tryToRemoveSuffixQuote];
                         }
                     }
                 } else {
                     // [DONE], end of string.
-                    if (![EZTextWordUtils hasSuffixQuote:self.queryModel.queryText]) {
-                        appendContent = [EZTextWordUtils tryToRemoveSuffixQuote:appendContent];
+                    if (![self.queryModel.queryText hasSuffixQuote]) {
+                        appendContent = [appendContent tryToRemoveSuffixQuote];
                     } else if (appendSuffixQuote) {
                         appendContent = [content stringByAppendingString:appendSuffixQuote];
                     }
@@ -397,8 +397,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             
             // Count quote may cost much time, so only count when query text is short.
             if (shouldHandleQuote && queryText.length < 100) {
-                NSInteger queryTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:queryText];
-                NSInteger translatedTextQuoteCount = [EZTextWordUtils countQuoteNumberInText:self.result.translatedText];
+                NSInteger queryTextQuoteCount = [queryText countQuoteNumberInText];
+                NSInteger translatedTextQuoteCount = [self.result.translatedText countQuoteNumberInText];
                 if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
                     NSString *content = [self parseContentFromStreamData:responseObject
                                                                 lastData:nil
@@ -972,13 +972,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     BOOL isEnglishWord = NO;
     BOOL isEnglishPhrase = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
-        isEnglishWord = [EZTextWordUtils isEnglishWord:word];
-        isEnglishPhrase = [EZTextWordUtils isEnglishPhrase:word];
+        isEnglishWord = [word isEnglishWord];
+        isEnglishPhrase = [word isEnglishPhrase];
     }
     
     BOOL isChineseWord = NO;
     if ([EZLanguageManager.shared isChineseLanguage:sourceLanguage]) {
-        isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
+        isChineseWord = [word isChineseWord]; // 倾国倾城
     }
     
     BOOL isWord = isEnglishWord || isChineseWord;
@@ -1387,7 +1387,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      "{------ "Hello world" And what is your opinion on President Xi's re-election?
      Finally, output the antonym of the following phrase: "go up" ------}"
      */
-    NSString *result = [EZTextWordUtils removeStartAndEnd:text with:kTranslationStartDelimiter end:kTranslationEndDelimiter];
+    NSString *result = [text removeStartAndEndWith:kTranslationStartDelimiter end:kTranslationEndDelimiter];
     return [result trim];
 }
 
@@ -1418,12 +1418,12 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     BOOL isEnglishWord = NO;
     if ([sourceLanguage isEqualToString:EZLanguageEnglish]) {
-        isEnglishWord = [EZTextWordUtils isEnglishWord:word];
+        isEnglishWord = [word isEnglishWord];
     }
     
     BOOL isChineseWord = NO;
     if ([EZLanguageManager.shared isChineseLanguage:sourceLanguage]) {
-        isChineseWord = [EZTextWordUtils isChineseWord:word]; // 倾国倾城
+        isChineseWord = [word isChineseWord]; // 倾国倾城
     }
     
     BOOL isWord = isEnglishWord || isChineseWord;

@@ -7,7 +7,7 @@
 //
 
 #import "NSString+EZChineseText.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 
 @implementation NSString (EZChineseText)
 
@@ -31,7 +31,7 @@
      
      「真个别离难，不似相逢好」--> “真个别离难，不似相逢好”
      */
-    NSString *pureText = [EZTextWordUtils removeNonNormalCharacters:self];
+    NSString *pureText = [self removeNonNormalCharacters];
     NSString *simplifiedChinese = [pureText toSimplifiedChineseText];
     if ([simplifiedChinese isEqualToString:pureText]) {
         return YES;

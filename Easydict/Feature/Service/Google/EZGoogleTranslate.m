@@ -9,7 +9,7 @@
 #import "EZGoogleTranslate.h"
 #import "EZYoudaoTranslate.h"
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import "NSArray+EZChineseText.h"
 #import "EZConfiguration.h"
 
@@ -204,7 +204,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     
     text = [self maxTextLength:text fromLanguage:from];
     
-    BOOL queryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
+    BOOL queryDictionary = [text shouldQuerySentenceWithLanguage:from];
     if (queryDictionary) {
         // This API can get word info, like pronunciation.
         [self webApptranslate:text from:from to:to completion:completion];

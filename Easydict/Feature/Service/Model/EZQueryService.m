@@ -10,7 +10,7 @@
 #import "EZLocalStorage.h"
 #import "EZAudioPlayer.h"
 #import "NSString+EZChineseText.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
 
 #define MethodNotImplemented()                                                                                                           \
@@ -56,7 +56,7 @@ userInfo:nil]
     }
     
     if ([EZConfiguration.shared intelligentQueryModeForWindowType:self.windowType]) {
-        EZQueryTextType queryType = [EZTextWordUtils queryTypeOfText:self.queryModel.queryText language:self.queryModel.queryFromLanguage];
+        EZQueryTextType queryType = [self.queryModel.queryText queryTypeWithLanguage:self.queryModel.queryFromLanguage];
         if ((queryType & self.intelligentQueryTextType) != queryType) {
             return NO;
         }

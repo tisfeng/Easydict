@@ -11,10 +11,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import "EZExeCommand.h"
 #import "EZConfiguration.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>
-#import "NSString+EZCharacterSet.h"
+#import "NSString+EZUtils.h"
 
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
@@ -1261,7 +1261,7 @@ static char kJoinedStringKey;
         }
         
         totalCharCount += text.length;
-        totalWordCount += [EZTextWordUtils wordCount:text];
+        totalWordCount += [text wordCount];
         
         NSInteger punctuationMarkCountOfLine = 0;
         
@@ -1754,7 +1754,7 @@ static char kJoinedStringKey;
     
     // Request-Response, Architec-ture
     BOOL isLowercaseWord = [firstWord isLowercaseLetter];
-    BOOL isSpelledCorrectly = [EZTextWordUtils isSpelledCorrectly:newWord];
+    BOOL isSpelledCorrectly = [newWord isSpelledCorrectly];
     if (isLowercaseWord && isSpelledCorrectly) {
         return YES;
     }
@@ -2074,14 +2074,14 @@ static char kJoinedStringKey;
 /// - !!!: Make sure the count of Chinese characters is > 50% of the entire text.
 /// test: 開門 open, 使用 OCR 123$, 月によく似た風景, アイス・スノーセーリング世界選手権大会
 - (EZLanguage)chineseLanguageTypeOfText:(NSString *)text fromLanguage:(EZLanguage)language {
-    text = [EZTextWordUtils removeNonNormalCharacters:text];
+    text = [text removeNonNormalCharacters];
     
     if (text.length == 0) {
         return EZLanguageAuto;
     }
     
     if ([language isEqualToString:EZLanguageEnglish]) {
-        NSString *noAlphabetText = [EZTextWordUtils removeAlphabet:text];
+        NSString *noAlphabetText = [text removeAlphabet];
         
         BOOL isChinese = [self isChineseText:noAlphabetText];
         if (isChinese) {

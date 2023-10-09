@@ -24,9 +24,9 @@
 #import "EZSchemeParser.h"
 #import "EZBaiduTranslate.h"
 #import "EZToast.h"
-#import "EZTextWordUtils.h"
 #import "DictionaryKit.h"
 #import "EZAppleDictionary.h"
+#import "NSString+EZUtils.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -568,7 +568,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     void (^playAudioBlock)(void) = ^{
         NSString *queryText = self.queryText;
         NSString *textLanguage = self.queryModel.queryFromLanguage;
-        BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:queryText language:textLanguage];
+        BOOL isEnglishWord = [queryText isEnglishWordWithLanguage:textLanguage];
         
         // If query text is an English word, use Youdao TTS to play.
         EZQueryService *ttsService = isEnglishWord ? self.youdaoService : self.defaultTTSService;
@@ -1448,8 +1448,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (!EZConfiguration.shared.autoPlayAudio) {
         return;
     }
-    
-    BOOL isEnglishWord = [EZTextWordUtils isEnglishWord:self.queryText language:self.queryModel.queryFromLanguage];
+        
+    BOOL isEnglishWord = [self.queryText isEnglishWordWithLanguage:self.queryModel.queryFromLanguage];
+
     if (!isEnglishWord) {
         NSLog(@"Not an English Word");
         return;

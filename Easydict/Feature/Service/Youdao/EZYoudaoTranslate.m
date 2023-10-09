@@ -12,7 +12,7 @@
 #import "EZYoudaoDictModel.h"
 #import "EZQueryResult+EZYoudaoDictModel.h"
 #import "EZWebViewTranslator.h"
-#import "EZTextWordUtils.h"
+#import "NSString+EZUtils.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
@@ -507,8 +507,8 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     
     // Youdao dict can query word, phrase, even short text.
-    BOOL shouldQueryDictionary = [EZTextWordUtils shouldQueryDictionary:text language:from];
-    
+    BOOL shouldQueryDictionary = [text shouldQueryDictionaryWithLanguage:from];
+
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;
     
