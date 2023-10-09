@@ -15,6 +15,9 @@ static NSDictionary *const kQuotesDict = @{
     @"\"" : @"\"",
     @"“" : @"”",
     @"‘" : @"’",
+    @"'" : @"'",
+    @"`" : @"`",
+    @"「" : @"」",
 };
 
 @implementation NSString (EZUtils)
@@ -41,7 +44,6 @@ static NSDictionary *const kQuotesDict = @{
     NSCharacterSet *lowercaseCharSet = [NSCharacterSet lowercaseLetterCharacterSet];
     NSCharacterSet *stringCharacterSet = [NSCharacterSet characterSetWithCharactersInString:self];
     return [lowercaseCharSet isSupersetOfSet:stringCharacterSet];
-
 }
 
 /// Check if first char is lowercaseString
@@ -441,10 +443,16 @@ static NSDictionary *const kQuotesDict = @{
     NSArray *quotes = [kQuotesDict allKeys];
     NSString *text = self;
     for (NSString *quote in quotes) {
-        text = [self removeStartAndEndWith:quote end:kQuotesDict[quote]];
+        text = [text removeStartAndEndWith:quote end:kQuotesDict[quote]];
     }
     return text;
 }
+
+- (BOOL)hasQuotesPair {
+    NSString *text = [self tryToRemoveQuotes];
+    return ![text isEqualToString:self];
+}
+
 
 #pragma mark - Remove designated characters.
 

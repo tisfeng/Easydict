@@ -107,6 +107,8 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (NSString *)tryToRemoveQuotes;
 
+- (BOOL)hasQuotesPair;
+
 
 - (NSString *)removeNonNormalCharacters;
 
