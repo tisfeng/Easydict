@@ -9,6 +9,7 @@
 #import "EZQueryModel.h"
 #import "EZConfiguration.h"
 #import <KVOController/NSObject+FBKVOController.h>
+#import "NSString+EZUtils.h"
 
 @interface EZQueryModel ()
 
@@ -181,9 +182,20 @@
      _anchoredDraggable_State --> anchored Draggable State
      */
     if ([self isSingleWord:queryText]) {
-        queryText = [self splitSnakeCaseText:queryText];
-        queryText = [self splitCamelCaseText:queryText];
+        // If text has quotes, like 'LaTeX', we don't split it.
+        if ([queryText hasQuotesPair]) {
+            queryText = [queryText tryToRemoveQuotes];
+        } else {
+            queryText = [self splitText:queryText];
+        }
     }
+
+    return queryText;
+}
+
+- (NSString *)splitText:(NSString *)text {
+    NSString *queryText = [self splitSnakeCaseText:text];
+    queryText = [self splitCamelCaseText:queryText];
     
     // Filter empty text
     NSArray *texts = [queryText componentsSeparatedByString:@" "];
@@ -195,7 +207,7 @@
     }
     
     queryText = [newTexts componentsJoinedByString:@" "];
-
+    
     return queryText;
 }
 
