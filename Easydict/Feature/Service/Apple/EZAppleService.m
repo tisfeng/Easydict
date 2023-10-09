@@ -1411,7 +1411,7 @@ static char kJoinedStringKey;
      the latter notifies the NFc upon the occurrence of the event
      [2].
      */
-    BOOL isFirstLetterUpperCase = [self isEnglishUppercaseChar:text.firstChar];
+    BOOL isFirstLetterUpperCase = [text.firstChar isUppercaseLetter];
     
     // TODO: Maybe we need to refactor it, each indented paragraph is treated separately, instead of treating them together with the longest text line.
     
@@ -1712,7 +1712,7 @@ static char kJoinedStringKey;
         return YES;
     }
     
-    BOOL isFirstLetterUpperCase = [self isEnglishUppercaseChar:text.firstChar];
+    BOOL isFirstLetterUpperCase = [text.firstChar isUppercaseLetter];
     
     // For English text
     if ([EZLanguageManager.shared isEnglishLangauge:self.language] && isFirstLetterUpperCase) {
@@ -2137,11 +2137,6 @@ static char kJoinedStringKey;
 /// Use punctuationCharacterSet to check if it is a punctuation mark.
 - (BOOL)isPunctuationChar:(NSString *)charString {
     return [self isPunctuationChar:charString excludeCharacters:nil];
-}
-
-- (BOOL)isEnglishUppercaseChar:(NSString *)charString {
-    BOOL isFirstLetterUpperCase = ![self isPunctuationChar:charString] && [charString isUppercaseFirstChar];
-    return isFirstLetterUpperCase;
 }
 
 - (BOOL)isPunctuationChar:(NSString *)charString excludeCharacters:(nullable NSArray *)charArray {
