@@ -7,6 +7,7 @@
 //
 
 #import "EZQueryService.h"
+#import "DictionaryKit.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,6 +17,10 @@ static NSString *EZAppleDictionaryHTMLDictFilePath = @"all_dict.html";
 @interface EZAppleDictionary : EZQueryService
 
 @property (nonatomic, copy) NSString *htmlFilePath;
+
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word
+                               fromToLanguages:(nullable NSArray<EZLanguage> *)languages
+                                  inDictionaryName:(NSString *)name;
 
 @end
 

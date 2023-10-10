@@ -8,7 +8,6 @@
 
 #import "EZAppleDictionary.h"
 #import "EZConfiguration.h"
-#import "DictionaryKit.h"
 #import "EZWindowManager.h"
 
 @implementation EZAppleDictionary
@@ -52,7 +51,12 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.
-        NSString *htmlString = [self getAllIframeHTMLResultOfWord:text languages:@[ from, to ]];
+        
+        NSArray<TTTDictionary *> *dictionaries = [TTTDictionary activeDictionaries];
+        NSString *htmlString = [self queryAllIframeHTMLResultOfWord:text
+                                                    fromToLanguages:@[ from, to ]
+                                                     inDictionaries:dictionaries
+                                                          autoWrite:YES];
         self.result.HTMLString = htmlString;
         
         if (htmlString.length == 0) {
@@ -70,19 +74,39 @@
 
 #pragma mark -
 
-/// Get All iframe HTML of word from dictionaries, cost ~0.2s
-/// TODO: This code is so ugly, we should refactor it, but I'am bad at HTML and CSS 🥹
-- (NSString *)getAllIframeHTMLResultOfWord:(NSString *)word languages:(NSArray<EZLanguage> *)languages {
-    // TODO: Maybe we should filter dicts according to languages.
-    NSArray<TTTDictionary *> *dicts = [TTTDictionary activeDictionaries];
+- (nullable NSString *)queryAllIframeHTMLResultOfWord:(NSString *)word
+                                      fromToLanguages:(nullable NSArray<EZLanguage> *)languages
+                                    inDictionaryNames:(NSArray<NSString *> *)dictNames
+                                            autoWrite:(BOOL)writeFlag
+{
     
+    NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
+    for (NSString *name in dictNames) {
+        TTTDictionary *dict = [TTTDictionary dictionaryNamed:name];
+        if (dict && ![dicts containsObject:dict]) {
+            [dicts addObject:dict];
+        }
+    }
+    
+    return [self queryAllIframeHTMLResultOfWord:word fromToLanguages:languages inDictionaries:dicts autoWrite:writeFlag];
+}
+
+/// Get All iframe HTML of word from dictionaries, cost ~0.2s
+- (nullable NSString *)queryAllIframeHTMLResultOfWord:(NSString *)word
+                                      fromToLanguages:(nullable NSArray<EZLanguage> *)languages
+                                       inDictionaries:(NSArray<TTTDictionary *> *)dictionaries
+                                            autoWrite:(BOOL)writeFlag
+{
+    NSLog(@"query dictionaries: %@", [dictionaries debugDescription]);
+    
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
     NSString *baseHtmlPath = [[NSBundle mainBundle] pathForResource:@"apple-dictionary" ofType:@"html"];
     NSString *baseHtmlString = [NSString stringWithContentsOfFile:baseHtmlPath encoding:NSUTF8StringEncoding error:nil];
     
     NSString *lightTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextLightColor]];
     NSString *lightBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgLightColor]];
     
-//    NSString *darkTextColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultTextDarkColor]];
     NSString *darkBackgroundColorString = [NSColor mm_hexStringFromColor:[NSColor ez_resultViewBgDarkColor]];
     
     NSString *bigWordTitleH2Class = @"big-word-title";
@@ -109,7 +133,7 @@
     /// !!!: Since some dict(like Collins) html set h1 { display: none; }, we try to use h2
     NSString *bigWordHtml = [NSString stringWithFormat:@"<h2 class=\"%@\">%@</h2>", bigWordTitleH2Class, word];
     
-    for (TTTDictionary *dictionary in dicts) {
+    for (TTTDictionary *dictionary in dictionaries) {
         NSMutableString *wordHtmlString = [NSMutableString string];
         
         //  ~/Library/Dictionaries/Apple.dictionary/Contents/
@@ -130,7 +154,9 @@
                 // System seems to automatically adapt the image path internally.
 //                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
                 
-                html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
+                if (writeFlag) {
+                    html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
+                }
                 
                 [wordHtmlString appendString:html];
             }
@@ -171,11 +197,15 @@
         }
     }
     
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"Query all dicts cost: %.1f ms", (endTime - startTime) * 1000);
+    
     NSString *htmlString = nil;
     if (iframesHtmlString.length) {
         // Insert iframesHtmlString <body> </body> in baseHtmlString
-        htmlString = [baseHtmlString stringByReplacingOccurrencesOfString:@"</body>"
-                                                               withString:[NSString stringWithFormat:@"%@ </body>", iframesHtmlString]];
+        
+        NSString *replacedString = [NSString stringWithFormat:@"%@ </body>", iframesHtmlString];
+        htmlString = [baseHtmlString stringByReplacingOccurrencesOfString:@"</body>" withString:replacedString];
         
         NSURL *dictionaryURL = [TTTDictionary userDictionaryDirectoryURL];
         NSString *htmlDirectory = [dictionaryURL URLByAppendingPathComponent:EZAppleDictionaryHTMLDirectory].path;
@@ -185,6 +215,40 @@
     }
     
     return htmlString;
+}
+
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word
+                               fromToLanguages:(nullable NSArray<EZLanguage> *)languages
+                                  inDictionaryName:(NSString *)name 
+{
+    TTTDictionary *dictionary =  [TTTDictionary dictionaryNamed:name];
+    return [self queryEntryHTMLsOfWord:word fromToLanguages:languages inDictionary:dictionary];
+}
+
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word
+                               fromToLanguages:(nullable NSArray<EZLanguage> *)languages
+                                  inDictionary:(TTTDictionary *)dictionary
+{
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    NSMutableArray *entryHTMLs = [NSMutableArray array];
+    
+    // Cost about ~10ms
+    NSArray<TTTDictionaryEntry *> *entries = [dictionary entriesForSearchTerm:word];
+    for (TTTDictionaryEntry *entry in entries) {
+        NSString *html = entry.HTMLWithAppCSS;
+        NSString *headword = entry.headword;
+        
+        // LOG --> log,  根据 genju--> 根据  gēnjù
+        BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
+        if (html.length && isTheSameHeadword) {
+            [entryHTMLs addObject:html];
+        }
+    }
+    
+    CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+    NSLog(@"Query [%@] dict cost: %.1f ms", dictionary.name, (endTime - startTime) * 1000); // 13ms
+    
+    return entryHTMLs;
 }
 
 #pragma mark -

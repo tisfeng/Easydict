@@ -15,6 +15,7 @@
 #import "NSString+EZChineseText.h"
 #import <CoreImage/CoreImage.h>
 #import "NSString+EZUtils.h"
+#import "EZAppleDictionary.h"
 
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
@@ -143,6 +144,9 @@ static char kJoinedStringKey;
 @property (nonatomic, assign) NSInteger totalCharCount;
 @property (nonatomic, assign) CGFloat charCountPerLine;
 
+@property (nonatomic, strong) EZLanguageManager *languageManager;
+@property (nonatomic, strong) EZAppleDictionary *appleDictionary;
+
 @end
 
 @implementation EZAppleService
@@ -156,6 +160,8 @@ static char kJoinedStringKey;
         self.minX = MAXFLOAT;
         self.maxLineLength = 0;
         self.minLineLength = MAXFLOAT;
+        self.languageManager = [EZLanguageManager shared];
+        self.appleDictionary = [[EZAppleDictionary alloc] init];
     }
     return self;
 }
@@ -452,17 +458,29 @@ static char kJoinedStringKey;
         mostConfidentLanguage = EZLanguageEnglish;
     }
     
-    if ([EZLanguageManager.shared isChineseLanguage:mostConfidentLanguage]) {
+    if ([self.languageManager isChineseLanguage:mostConfidentLanguage]) {
         // Correct 勿 --> zh-Hant --> zh-Hans
         EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text];
         return chineseLanguage;
     } else {
         // Try to detect Chinese language.
-        if ([EZLanguageManager.shared isUserChineseFirstLanguage]) {
+        if ([self.languageManager isUserChineseFirstLanguage]) {
             // test: 開門 open, 使用1 OCR --> 英文, --> 中文
             EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text fromLanguage:mostConfidentLanguage];
             if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
                 mostConfidentLanguage = chineseLanguage;
+            }
+        }
+        
+        // If not detected as English, try to query System English Dictioanry. Such as delimiter
+        if (![self.languageManager isEnglishLangauge:mostConfidentLanguage]) {
+            // If has result, then most likely English. Cost about ~10ms
+            NSArray *entryHTMLs = [self.appleDictionary queryEntryHTMLsOfWord:text
+                                                              fromToLanguages:nil
+                                                             inDictionaryName:DCSNewOxfordAmericanDictionaryName];
+            if (entryHTMLs.count) {
+                mostConfidentLanguage = EZLanguageEnglish;
+                NSLog(@"Apple Dictionary Detect: %@ is English, entry count: %ld", text, entryHTMLs.count);
             }
         }
     }
@@ -501,7 +519,7 @@ static char kJoinedStringKey;
     
     // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        EZLanguage firstLanguage = [EZLanguageManager.shared userFirstLanguage];
+        EZLanguage firstLanguage = [self.languageManager userFirstLanguage];
         dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
         languageProbabilityDict = @{dominantLanguage : @(0)};
     }
@@ -558,7 +576,7 @@ static char kJoinedStringKey;
 }
 
 - (NSDictionary<EZLanguage, NSNumber *> *)userPreferredLanguageProbabilities {
-    NSArray *preferredLanguages = [EZLanguageManager.shared preferredLanguages];
+    NSArray *preferredLanguages = [self.languageManager preferredLanguages];
     
     // TODO: need to test more data. Maybe need to write a unit test.
     
@@ -581,7 +599,7 @@ static char kJoinedStringKey;
             weight = 0.1;
         }
         if ([language isEqualToString:EZLanguageEnglish]) {
-            if (![EZLanguageManager.shared isUserChineseFirstLanguage]) {
+            if (![self.languageManager isUserChineseFirstLanguage]) {
                 weight += 0.2;
             } else {
                 weight += 0.1;
@@ -652,7 +670,7 @@ static char kJoinedStringKey;
         MMOrderedDictionary *appleOCRLanguageDict = [self ocrLanguageDictionary];
         NSArray<EZLanguage> *defaultRecognitionLanguages = [appleOCRLanguageDict sortedKeys];
         NSArray<EZLanguage> *recognitionLanguages = [self updateOCRRecognitionLanguages:defaultRecognitionLanguages
-                                                                     preferredLanguages:[EZLanguageManager.shared preferredLanguages]];
+                                                                     preferredLanguages:[self.languageManager preferredLanguages]];
         
         VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:cgImage options:@{}];
         VNRecognizeTextRequest *request = [[VNRecognizeTextRequest alloc] initWithCompletionHandler:^(VNRequest *_Nonnull request, NSError *_Nullable error) {
@@ -746,8 +764,8 @@ static char kJoinedStringKey;
      */
     if ([preferredLanguages.firstObject isEqualToString:EZLanguageEnglish]) {
         // iterate all system preferred languages, if contains Chinese, move Chinese to the first priority.
-        for (EZLanguage language in [EZLanguageManager.shared preferredLanguages]) {
-            if ([EZLanguageManager.shared isChineseLanguage:language]) {
+        for (EZLanguage language in [self.languageManager preferredLanguages]) {
+            if ([self.languageManager isChineseLanguage:language]) {
                 [newRecognitionLanguages removeObject:language];
                 [newRecognitionLanguages insertObject:language atIndex:0];
                 break;
@@ -1396,7 +1414,7 @@ static char kJoinedStringKey;
     // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
     CGFloat differenceFontThreshold = 5;
     // Chinese fonts seem to be more precise.
-    if ([EZLanguageManager.shared isChineseLanguage:self.language]) {
+    if ([self.languageManager isChineseLanguage:self.language]) {
         differenceFontThreshold = 3;
     }
     
@@ -1531,7 +1549,7 @@ static char kJoinedStringKey;
                     needLineBreak = YES;
                 } else {
                     // 翻页, Page turn scenes without line feeds.
-                    BOOL isTurnedPage = [EZLanguageManager.shared isEnglishLangauge:self.language] && [text isLowercaseFirstChar] && !isPrevEndPunctuationChar;
+                    BOOL isTurnedPage = [self.languageManager isEnglishLangauge:self.language] && [text isLowercaseFirstChar] && !isPrevEndPunctuationChar;
                     if (isTurnedPage) {
                         isNewParagraph = NO;
                         needLineBreak = NO;
@@ -1571,7 +1589,7 @@ static char kJoinedStringKey;
     }
     
     if (!isEqualFontSize || isBigLineSpacing) {
-        if (!isPrevLongText || ([EZLanguageManager.shared isEnglishLangauge:self.language] && isFirstLetterUpperCase)) {
+        if (!isPrevLongText || ([self.languageManager isEnglishLangauge:self.language] && isFirstLetterUpperCase)) {
             isNewParagraph = YES;
         }
     }
@@ -1635,7 +1653,7 @@ static char kJoinedStringKey;
         joinedString = @" ";
     } else {
         // Like Chinese text, don't need space between words if it is not a punctuation mark.
-        if ([EZLanguageManager.shared isLanguageWordsNeedSpace:self.language]) {
+        if ([self.languageManager isLanguageWordsNeedSpace:self.language]) {
             joinedString = @" ";
         }
     }
@@ -1670,14 +1688,14 @@ static char kJoinedStringKey;
 - (BOOL)isEqualChineseTextObservation:(VNRecognizedTextObservation *)textObservation
                   prevTextObservation:(VNRecognizedTextObservation *)prevTextObservation {
     BOOL isEqualLength = [self isEqualCharacterLengthTextObservation:textObservation prevTextObservation:prevTextObservation];
-    if (isEqualLength && [EZLanguageManager.shared isChineseLanguage:self.language]) {
+    if (isEqualLength && [self.languageManager isChineseLanguage:self.language]) {
         return YES;
     }
     return NO;
 }
 
 - (BOOL)isShortChinesePoetryText:(NSString *)text {
-    BOOL isShortChinesePoetry = [EZLanguageManager.shared isChineseLanguage:self.language]
+    BOOL isShortChinesePoetry = [self.languageManager isChineseLanguage:self.language]
     && self.charCountPerLine < kShortPoetryCharacterCountOfLine
     && text.length < kShortPoetryCharacterCountOfLine;
     
@@ -1715,7 +1733,7 @@ static char kJoinedStringKey;
     BOOL isFirstLetterUpperCase = [text.firstChar isUppercaseLetter];
     
     // For English text
-    if ([EZLanguageManager.shared isEnglishLangauge:self.language] && isFirstLetterUpperCase) {
+    if ([self.languageManager isEnglishLangauge:self.language] && isFirstLetterUpperCase) {
         if (lineHeightRatio > 0.85) {
             isBigLineSpacing = YES;
         } else {
@@ -1861,7 +1879,7 @@ static char kJoinedStringKey;
 }
 
 - (CGFloat)longTextAlphabetCountThreshold:(VNRecognizedTextObservation *)textObservation isStrict:(BOOL)isStrict {
-    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+    BOOL isEnglishTypeLanguage = [self.languageManager isLanguageWordsNeedSpace:self.language];
     
     // For long text, there are up to 15 letters or 2 Chinese characters on the far right.
     // "implementation ," : @"你好"
@@ -1870,7 +1888,7 @@ static char kJoinedStringKey;
     NSString *text = [textObservation firstText];
     BOOL isEndPunctuationChar = [text hasEndPunctuationSuffix];
     
-    if (!isStrict && [EZLanguageManager.shared isChineseLanguage:self.language]) {
+    if (!isStrict && [self.languageManager isChineseLanguage:self.language]) {
         if (!isEndPunctuationChar) {
             alphabetCount += 3.5;
         }
@@ -1908,7 +1926,7 @@ static char kJoinedStringKey;
 //    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
 //    CGFloat fontSize = [self fontSizeOfText:text width:textWidth];
 //
-//    BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:self.language];
+//    BOOL isEnglishTypeLanguage = [self.languageManager isLanguageWordsNeedSpace:self.language];
 //    /**
 //     subscribers.
 //     implementation
@@ -2007,7 +2025,7 @@ static char kJoinedStringKey;
 - (BOOL)isPoetryLineCharactersCount:(NSInteger)charactersCount language:(EZLanguage)language {
     BOOL isPoetry = NO;
     NSInteger charCountPerLineOfPoetry = 50;
-    if ([EZLanguageManager.shared isChineseLanguage:language]) {
+    if ([self.languageManager isChineseLanguage:language]) {
         charCountPerLineOfPoetry = 40;
     }
     
@@ -2022,7 +2040,7 @@ static char kJoinedStringKey;
 
 - (nullable NSString *)voiceIdentifierFromLanguage:(EZLanguage)language {
     NSString *voiceIdentifier = nil;
-    EZLanguageModel *languageModel = [EZLanguageManager.shared languageModelFromLanguage:language];
+    EZLanguageModel *languageModel = [self.languageManager languageModelFromLanguage:language];
     NSString *localeIdentifier = languageModel.localeIdentifier;
     
     NSArray *availableVoices = [NSSpeechSynthesizer availableVoices];
@@ -2111,7 +2129,7 @@ static char kJoinedStringKey;
 /// Check if text is Chinese.
 - (BOOL)isChineseText:(NSString *)text {
     EZLanguage language = [self appleDetectTextLanguage:text];
-    if ([EZLanguageManager.shared isChineseLanguage:language]) {
+    if ([self.languageManager isChineseLanguage:language]) {
         return YES;
     }
     return NO;
