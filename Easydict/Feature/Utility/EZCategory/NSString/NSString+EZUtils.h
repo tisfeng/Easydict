@@ -72,6 +72,8 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isSpelledCorrectly;
 
+- (nullable NSArray<NSString *> *)guessedWords;
+
 - (BOOL)isChineseWord;
 
 - (BOOL)isChinesePhrase;

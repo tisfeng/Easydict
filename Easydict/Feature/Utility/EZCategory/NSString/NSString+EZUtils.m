@@ -308,16 +308,22 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (BOOL)isSpelledCorrectly {
+    return [self guessedWords].count == 0;
+}
+
+- (nullable NSArray<NSString *> *)guessedWords {
     NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
     NSRange wordRange = NSMakeRange(0, [self length]);
-    NSString *language = [spellChecker language];
+    NSString *language = [spellChecker language]; // default is en
     NSString *correctedWord = [spellChecker correctionForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
-    BOOL isCorrect = correctedWord == nil;
-    if (!isCorrect) {
-        NSArray *guessWords = [spellChecker guessesForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
-        NSLog(@"guessWords: %@", guessWords);
+    
+    if (!correctedWord) {
+        return nil;
     }
-    return isCorrect;
+    
+    // poème --> poem
+    NSArray *guessWords = [spellChecker guessesForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
+    return guessWords;
 }
 
 - (BOOL)isChineseWord {

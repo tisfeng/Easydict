@@ -472,6 +472,7 @@ static char kJoinedStringKey;
             }
         }
         
+        // TODO: Maybe we can use this way to detect other language.
         // If not detected as English, try to query System English Dictioanry. Such as delimiter
         if (![self.languageManager isEnglishLangauge:mostConfidentLanguage]) {
             // If has result, then most likely English. Cost about ~10ms

@@ -1,0 +1,6 @@
+framework module Pods_EasydictTests {
+  umbrella header "Pods-EasydictTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
