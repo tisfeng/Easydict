@@ -555,10 +555,7 @@ static EZAppleService *_instance;
 /// Apple original detect language dict.
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
-    if (!text.length) {
-        return @{ EZLanguageEnglish : @(0) };
-    }
-    
+
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     // 10.14+  Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
@@ -572,9 +569,11 @@ static EZAppleService *_instance;
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [recognizer languageHypothesesWithMaximum:5];
     NLLanguage dominantLanguage = recognizer.dominantLanguage;
     
-    // !!!: All numbers will be return empty dict @{}: 729
+    // !!!: Numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        languageProbabilityDict = @{ EZLanguageEnglish : @(0) };
+        EZLanguage firstLanguage = [self.languageManager userFirstLanguage];
+        dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
+        languageProbabilityDict = @{dominantLanguage : @(0)};
     }
     
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
@@ -674,7 +673,8 @@ static EZAppleService *_instance;
 /// languageDict value add userPreferredLanguageProbabilities, then sorted by value, return max dict value.
 - (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities
                                   text:(NSString *)text
-                              printLog:(BOOL)logFlag {
+                              printLog:(BOOL)logFlag 
+{
     NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
     
