@@ -70,13 +70,12 @@
     }
     
     _inputText = [inputText copy];
-    
-    if (self.queryText.length == 0) {
+    _queryText = [self handleInputText:_inputText];
+
+    if (_queryText.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
-    
-    _queryText = [self handleInputText:_inputText];
 }
 
 - (void)setActionType:(EZActionType)actionType {
