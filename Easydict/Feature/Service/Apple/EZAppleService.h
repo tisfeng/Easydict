@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZAppleService : EZQueryService
 
++ (instancetype)shared;
+
 - (EZLanguage)languageEnumFromAppleLanguage:(NLLanguage)langString;
 - (NLLanguage)appleLanguageFromLanguageEnum:(EZLanguage)lang;
 

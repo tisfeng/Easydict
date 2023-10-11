@@ -151,6 +151,18 @@ static char kJoinedStringKey;
 
 @implementation EZAppleService
 
+static EZAppleService *_instance;
+
++ (instancetype)shared {
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [[self alloc] init];
+        });
+    }
+    return _instance;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

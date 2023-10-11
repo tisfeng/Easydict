@@ -79,8 +79,7 @@ static EZLanguageManager *_instance;
             [array removeLastObject];
             NSString *languageCode = [array componentsJoinedByString:@"-"];
             // Convert to EZLanguage
-            EZAppleService *appleService = [[EZAppleService alloc] init];
-            EZLanguage ezLanguage = [appleService languageEnumFromAppleLanguage:languageCode];
+            EZLanguage ezLanguage = [EZAppleService.shared languageEnumFromAppleLanguage:languageCode];
             
             // handle "zh-CN"
             if ([languageCode hasPrefix:@"zh"] && [ezLanguage isEqualToString:EZLanguageAuto]) {

@@ -15,7 +15,6 @@
 #import "EZCoordinateUtils.h"
 #import "EZWindowManager.h"
 #import "EZServiceTypes.h"
-#import "EZAppleService.h"
 #import "EZAudioPlayer.h"
 #import "EZLog.h"
 #import "EZConfiguration.h"
