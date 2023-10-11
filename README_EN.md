@@ -63,6 +63,7 @@
   - [About Permissions](#about-permissions)
 - [OCR](#ocr)
 - [Language Recognition](#language-recognition)
+- [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
@@ -85,7 +86,7 @@
 
 You can install it using one of the following two methods. Support macOS 11.0+
 
-### 1. Manual
+### 1. Manual Installation
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
@@ -192,7 +193,7 @@ For Safari users, it is highly recommended that this option be turned on, as Saf
 
 ## OCR
 
-Currently, only the system OCR is supported, and third-party OCR services will be introduced later.
+Currently, only the system OCR is supported, third-party OCR services will be integrated later.
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
@@ -203,6 +204,18 @@ Currently, only the system language recognition is supported, and Baidu and Goog
 The system language recognition is used by default, and after tuning, the accuracy of the system language recognition is already very high, which can meet the needs of most users.
 
 If you still feel that the system language recognition is inaccurate in actual use, you can turn on Baidu language recognition or Google language recognition optimization in the settings, but please note that this may cause the response speed to slow down, and the recognition rate will not be 100% in line with user expectations. If there is a recognition error, you can manually specify the language type.
+
+## TTS Services
+
+Currently support macOS system TTS, Bing, Google, Youdao, and Baidu online TTS service.
+
+- System TTS: The most stable and reliable option, but not very accurate. It is usually used as a fallback option, i.e., the system TTS is used instead of the other TTS when errors occur.
+- Bing TTS: Yields optimal results by generating real-time neural network speech synthesis. However, this process is more time-intensive, and the length of the input text directly impacts the duration of generation. Currently, the maximum supported character limit is 2,000 characters, roughly equivalent to a 10-minute generation time.
+- Google TTS: Good results with English, and the interface is stable. However, it can only generate upto 200 characters at a time.
+- Youdao TTS: The overall performance is commendable with a stable interface, and it excels in the pronunciation of English words. However, the maximum character limit is capped at 600 characters.
+- Baidu TTS: English sentences are well pronounced with a distinctive accent, but can only generate up to about 1,000 characters.
+
+By default, the application uses Youdao TTS, but users have the option to select their preferred TTS service in the settings. Due to its impressive performance with English words, Youdao TTS is the recommended choice for such content, while the default TTS service remains in use for other languages. It's worth noting that, apart from the system TTS, all other TTS services are unofficial interfaces and may experience instabilities from time to time
 
 ## Translation Services
 
