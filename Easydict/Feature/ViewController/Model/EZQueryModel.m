@@ -10,6 +10,7 @@
 #import "EZConfiguration.h"
 #import <KVOController/NSObject+FBKVOController.h>
 #import "NSString+EZUtils.h"
+#import "NSString+EZSplit.h"
 
 @interface EZQueryModel ()
 
@@ -181,7 +182,7 @@
      
      _anchoredDraggable_State --> anchored Draggable State
      */
-    if ([self isSingleWord:queryText]) {
+    if ([queryText isSingleWord]) {
         // If text has quotes, like 'LaTeX', we don't split it.
         if ([queryText hasQuotesPair]) {
             queryText = [queryText tryToRemoveQuotes];
@@ -194,8 +195,8 @@
 }
 
 - (NSString *)splitText:(NSString *)text {
-    NSString *queryText = [self splitSnakeCaseText:text];
-    queryText = [self splitCamelCaseText:queryText];
+    NSString *queryText = [text splitSnakeCaseText];
+    queryText = [queryText splitCamelCaseText];
     
     // Filter empty text
     NSArray *texts = [queryText componentsSeparatedByString:@" "];
@@ -209,64 +210,6 @@
     queryText = [newTexts componentsJoinedByString:@" "];
     
     return queryText;
-}
-
-- (BOOL)isSingleWord:(NSString *)text {
-    return text.length && [text componentsSeparatedByString:@" "].count == 1;
-}
-
-/**
- Split camel case text.
- 
- anchoredDraggableState --> anchored Draggable State
- AnchoredDraggableState --> Anchored Draggable State
- GetHTTP --> Get HTTP
- GetHTTPCode --> Get HTTP Code
- */
-- (NSString *)splitCamelCaseText:(NSString *)text {
-    NSMutableString *outputText = [NSMutableString string];
-    NSCharacterSet *uppercaseCharSet = [NSCharacterSet uppercaseLetterCharacterSet];
-    
-    for (int i = 0; i < text.length; i++) {
-        NSString *currentChar = [text substringWithRange:NSMakeRange(i, 1)];
-        
-        if ([uppercaseCharSet characterIsMember:[currentChar characterAtIndex:0]]) {
-            if (i > 0) {
-                NSString *prevChar = [text substringWithRange:NSMakeRange(i - 1, 1)];
-                
-                if (![uppercaseCharSet characterIsMember:[prevChar characterAtIndex:0]]) {
-                    [outputText appendString:@" "];
-                } else {
-                    if (i < text.length - 1) {
-                        NSString *nextChar = [text substringWithRange:NSMakeRange(i + 1, 1)];
-                        
-                        if (![uppercaseCharSet characterIsMember:[nextChar characterAtIndex:0]]) {
-                            [outputText appendString:@" "];
-                        }
-                    }
-                }
-            }
-            [outputText appendString:currentChar];
-        } else {
-            [outputText appendString:currentChar];
-        }
-    }
-    
-    return outputText;
-}
-
-/**
- Split snake case text.
- 
- anchored_draggable_state --> anchored draggable state
- */
-- (NSString *)splitSnakeCaseText:(NSString *)text {
-    NSMutableString *outputText = [NSMutableString string];
-    
-    NSArray *components = [text componentsSeparatedByString:@"_"];
-    outputText = [components componentsJoinedByString:@" "].mutableCopy;
-    
-    return outputText;
 }
 
 @end

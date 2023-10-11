@@ -68,6 +68,28 @@
     });
 }
 
+- (void)detectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
+    MMOrderedDictionary *languageDict = [TTTDictionary languageToDictionaryNameMap];
+    NSArray *supportedLanguages = [languageDict allKeys];
+    
+    for (EZLanguage language in supportedLanguages) {
+        if ([self queryDictionaryWithText:text language:language]) {
+            completion(language, nil);
+        }
+    }
+    
+    completion(EZLanguageAuto, nil);
+}
+
+- (BOOL)queryDictionaryWithText:(NSString *)text language:(EZLanguage)language {
+    MMOrderedDictionary *languageDict = [TTTDictionary languageToDictionaryNameMap];
+    NSString *dictName = [languageDict objectForKey:language];
+    if ([self queryEntryHTMLsOfWord:text inDictionaryName:dictName].count > 0) {
+        return YES;
+    }
+    return NO;
+}
+
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"Apple Dictionary does not support ocr");
 }
@@ -217,18 +239,12 @@
     return htmlString;
 }
 
-- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word
-                               fromToLanguages:(nullable NSArray<EZLanguage> *)languages
-                                  inDictionaryName:(NSString *)name 
-{
-    TTTDictionary *dictionary =  [TTTDictionary dictionaryNamed:name];
-    return [self queryEntryHTMLsOfWord:word fromToLanguages:languages inDictionary:dictionary];
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word inDictionaryName:(NSString *)name {
+    TTTDictionary *dictionary = [TTTDictionary dictionaryNamed:name];
+    return [self queryEntryHTMLsOfWord:word inDictionary:dictionary];
 }
 
-- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word
-                               fromToLanguages:(nullable NSArray<EZLanguage> *)languages
-                                  inDictionary:(TTTDictionary *)dictionary
-{
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word inDictionary:(TTTDictionary *)dictionary {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSMutableArray *entryHTMLs = [NSMutableArray array];
     

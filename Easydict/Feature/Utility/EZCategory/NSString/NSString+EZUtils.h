@@ -66,11 +66,16 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (NSInteger)wordCount;
 
+- (BOOL)isSingleWord;
+
 - (BOOL)isWord2;
 
 - (NSArray<NLTag> *)taggedWordsInText;
 
+/// Check English word is spelled correctly
 - (BOOL)isSpelledCorrectly;
+
+- (BOOL)isSpelledCorrectly:(nullable NSString *)language;
 
 - (nullable NSArray<NSString *> *)guessedWords;
 

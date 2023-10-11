@@ -259,7 +259,7 @@ static char kJoinedStringKey;
                                         EZLanguageBurmese, NLLanguageBurmese,
                                         EZLanguageNorwegian, NLLanguageNorwegian,
                                         EZLanguageCroatian, NLLanguageCroatian,
-                                        EZLanguageMongolian, NLLanguageMongolian,
+                                        EZLanguageMongolian, NLLanguageMongolian, // mn-Mong
                                         EZLanguageHebrew, NLLanguageHebrew,
                                         nil];
     
@@ -282,6 +282,41 @@ static char kJoinedStringKey;
                                         EZLanguageRussian, @"ru-RU",
                                         EZLanguageUkrainian, @"uk-UA",
                                         nil];
+    return orderedDict;
+}
+
+// Mostly the same as NLlanguage, from [[NSSpellChecker new] availableLanguages]
+- (MMOrderedDictionary<EZLanguage, NLLanguage> *)spellCheckerLanguagesDictionary {
+    MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                        EZLanguageAuto, @"Multilingual",
+                                        EZLanguageEnglish, @"en", // NLLanguageEnglishen
+                                        EZLanguageKorean, @"ko",
+                                        EZLanguageFrench, @"fr",
+                                        EZLanguageSpanish, @"es",
+                                        EZLanguagePortuguese, @"pt_PT",
+                                        EZLanguageItalian, @"it",
+                                        EZLanguageGerman, @"de",
+                                        EZLanguageRussian, @"ru",
+                                        EZLanguageArabic, @"ar",
+                                        EZLanguageSwedish, @"sv",
+                                        EZLanguageRomanian, @"ro",
+                                        EZLanguageDutch, @"nl",
+                                        EZLanguageHungarian, @"hu",
+                                        EZLanguageGreek, @"el",
+                                        EZLanguageDanish, @"da",
+                                        EZLanguageFinnish, @"fi",
+                                        EZLanguagePolish, @"pl",
+                                        EZLanguageCzech, @"ce",
+                                        EZLanguageTurkish, @"tr",
+                                        EZLanguageUkrainian, @"uk",
+                                        EZLanguageBulgarian, @"bg",
+                                        EZLanguageVietnamese, @"vi",
+                                        EZLanguageHindi, @"hi",
+                                        EZLanguageTelugu, @"te",
+                                        EZLanguageNorwegian, @"nb",
+                                        EZLanguageHebrew, @"he",
+                                        nil];
+    
     return orderedDict;
 }
 
@@ -476,12 +511,9 @@ static char kJoinedStringKey;
         // If not detected as English, try to query System English Dictioanry. Such as delimiter
         if (![self.languageManager isEnglishLangauge:mostConfidentLanguage]) {
             // If has result, then most likely English. Cost about ~10ms
-            NSArray *entryHTMLs = [self.appleDictionary queryEntryHTMLsOfWord:text
-                                                              fromToLanguages:nil
-                                                             inDictionaryName:DCSNewOxfordAmericanDictionaryName];
-            if (entryHTMLs.count) {
+            if ([self.appleDictionary queryDictionaryWithText:text language:EZLanguageEnglish]) {
                 mostConfidentLanguage = EZLanguageEnglish;
-                NSLog(@"Apple Dictionary Detect: %@ is English, entry count: %ld", text, entryHTMLs.count);
+                NSLog(@"Apple Dictionary Detect: %@ is English", text);
             }
         }
     }
@@ -497,7 +529,9 @@ static char kJoinedStringKey;
 
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [self appleDetectTextLanguageDict:text printLog:logFlag];
-    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict printLog:logFlag];
+    EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict
+                                                                 text:text
+                                                             printLog:logFlag];
     
     return mostConfidentLanguage;
 }
@@ -551,7 +585,7 @@ static char kJoinedStringKey;
 - (NSDictionary<NLLanguage, NSNumber *> *)customLanguageHints {
     // TODO: need to refer to the user's preferred language.
     NSDictionary *customHints = @{
-        NLLanguageEnglish : @(6.0),
+        NLLanguageEnglish : @(2.0),
         NLLanguageSimplifiedChinese : @(2.0),
         NLLanguageTraditionalChinese : @(0.6), // 電池
         NLLanguageJapanese : @(0.25),
@@ -620,7 +654,9 @@ static char kJoinedStringKey;
 
 /// Get most confident language.
 /// languageDict value add userPreferredLanguageProbabilities, then sorted by value, return max dict value.
-- (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities printLog:(BOOL)logFlag {
+- (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities
+                                  text:(NSString *)text
+                              printLog:(BOOL)logFlag {
     NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
     
@@ -646,6 +682,18 @@ static char kJoinedStringKey;
         NSLog(@"---> Apple detect: %@", ezLanguage);
     }
     
+    // Apple may mistakenly detect French word 'testant' as English, so we need to check it.
+    for (NLLanguage language in sortedLanguages) {
+        EZLanguage ezLang = [self languageEnumFromAppleLanguage:language];
+        NSString *sepllCheckerLanguage = [[self spellCheckerLanguagesDictionary] objectForKey:ezLang];
+        if (sepllCheckerLanguage && [text isSpelledCorrectly:sepllCheckerLanguage]) {
+            NSLog(@"Spell check language: %@", ezLang);
+            return ezLang;
+        }
+    }
+    
+    NSLog(@"Spell check failed, use Most Confident Language: %@", ezLanguage);
+
     return ezLanguage;
 }
 

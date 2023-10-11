@@ -21,8 +21,8 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
 #import <Cocoa/Cocoa.h>
+#import "EZLanguageModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -73,26 +73,23 @@ typedef NS_ENUM(NSUInteger, TTTDictionarySearchType) {
  */
 @property (readonly, nonatomic, copy) NSString *shortName;
 
-
 @property (readonly, nonatomic, assign) BOOL isUserDictionary;
 
 @property (readonly, nonatomic, copy, nullable) NSString *identifier;
 @property (readonly, nonatomic, strong) NSURL *dictionaryURL;
 
-/**
- 
- */
+/// key: EZLanguage, value: language dict name
+@property (class, readonly, nonatomic, copy) MMOrderedDictionary<EZLanguage, NSString *> *languageToDictionaryNameMap;
+
+/// Get dict with CFBundleDisplayName
++ (instancetype)dictionaryNamed:(NSString *)name;
+
 + (NSSet<TTTDictionary *> *)availableDictionaries;
 
 + (NSArray<TTTDictionary *> *)activeDictionaries;
 
 /// Dictionary directory URL, path is ~/Library/Dictionaries/
 + (NSURL *)userDictionaryDirectoryURL;
-
-/**
- Get dict with CFBundleDisplayName
- */
-+ (instancetype)dictionaryNamed:(NSString *)name;
 
 // Default searchType is exact match, 0
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term;

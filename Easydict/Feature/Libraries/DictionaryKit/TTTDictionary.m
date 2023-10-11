@@ -195,6 +195,22 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 @implementation TTTDictionary
 
++ (instancetype)dictionaryNamed:(NSString *)name {
+    static NSDictionary *_availableDictionariesKeyedByName = nil;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableDictionary *mutableAvailableDictionariesKeyedByName = [NSMutableDictionary dictionaryWithCapacity:[[self availableDictionaries] count]];
+        for (TTTDictionary *dictionary in [self availableDictionaries]) {
+            mutableAvailableDictionariesKeyedByName[dictionary.name] = dictionary;
+        }
+
+        _availableDictionariesKeyedByName = [NSDictionary dictionaryWithDictionary:mutableAvailableDictionariesKeyedByName];
+    });
+
+    return _availableDictionariesKeyedByName[name];
+}
+
 + (NSSet<TTTDictionary *> *)availableDictionaries {
     // Cost < 0.1s
     static NSSet *_availableDictionaries = nil;
@@ -234,20 +250,59 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     return dictionaryDirectoryURL;
 }
 
-+ (instancetype)dictionaryNamed:(NSString *)name {
-    static NSDictionary *_availableDictionariesKeyedByName = nil;
-
+/// key: EZLanguage, value: language dict name
++ (MMOrderedDictionary<EZLanguage, NSString *> *)languageToDictionaryNameMap {
+//    static NSDictionary *_languageToDictionaryNameMap = nil;
+    static MMOrderedDictionary *_languageToDictionaryNameMap = nil;
+    
+    /**
+     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+                                         EZLanguageSimplifiedChinese, @"zh-Hans",
+                                         EZLanguageTraditionalChinese, @"zh-Hant",
+                                         EZLanguageEnglish, @"en-US",
+                                         EZLanguageJapanese, @"ja-JP",
+                                         EZLanguageKorean, @"ko-KR",
+                                         EZLanguageFrench, @"fr-FR",
+                                         EZLanguageSpanish, @"es-ES",
+                                         EZLanguagePortuguese, @"pt-BR",
+                                         EZLanguageItalian, @"it-IT",
+                                         EZLanguageGerman, @"de-DE",
+                                         EZLanguageRussian, @"ru-RU",
+                                         EZLanguageUkrainian, @"uk-UA",
+                                         nil];
+     */
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSMutableDictionary *mutableAvailableDictionariesKeyedByName = [NSMutableDictionary dictionaryWithCapacity:[[self availableDictionaries] count]];
-        for (TTTDictionary *dictionary in [self availableDictionaries]) {
-            mutableAvailableDictionariesKeyedByName[dictionary.name] = dictionary;
-        }
+//        _languageToDictionaryNameMap = @{
+//            EZLanguageSimplifiedChinese : DCSSimplifiedChineseDictionaryName,
+//            EZLanguageTraditionalChinese : DCSTraditionalChineseDictionaryName,
+//            EZLanguageEnglish: DCSNewOxfordAmericanDictionaryName,
+//            EZLanguageJapanese : DCSJapaneseDictionaryName,
+//            EZLanguageKorean : DCSKoreanDictionaryName,
+//            EZLanguageFrench : DCSFrenchDictionaryName,
+//            EZLanguageGerman : DCSGermanDictionaryName,
+//            EZLanguageItalian : DCSItalianDictionaryName,
+//            EZLanguageSpanish : DCSSpanishDictionaryName,
+//            EZLanguagePortuguese : DCSPortugueseDictionaryName,
+//            EZLanguageDutch : DCSDutchDictionaryName,
+//        };
+        
+        _languageToDictionaryNameMap = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
+        EZLanguageSimplifiedChinese,DCSSimplifiedChineseDictionaryName,
+        EZLanguageTraditionalChinese,DCSTraditionalChineseDictionaryName,
+        EZLanguageEnglish,DCSNewOxfordAmericanDictionaryName,
+        EZLanguageJapanese,DCSJapaneseDictionaryName,
+        EZLanguageKorean,DCSKoreanDictionaryName,
+        EZLanguageFrench,DCSFrenchDictionaryName,
+        EZLanguageGerman,DCSGermanDictionaryName,
+        EZLanguageItalian,DCSItalianDictionaryName,
+        EZLanguageSpanish,DCSSpanishDictionaryName,
+        EZLanguagePortuguese,DCSPortugueseDictionaryName,
+        EZLanguageDutch,DCSDutchDictionaryName,
+        nil];
 
-        _availableDictionariesKeyedByName = [NSDictionary dictionaryWithDictionary:mutableAvailableDictionariesKeyedByName];
     });
-
-    return _availableDictionariesKeyedByName[name];
+    return _languageToDictionaryNameMap;
 }
 
 + (NSArray<NSString *> *)supportedSystemDictionaryNames {

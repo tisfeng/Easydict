@@ -272,6 +272,10 @@ static NSDictionary *const kQuotesDict = @{
     return count;
 }
 
+- (BOOL)isSingleWord {
+    return self.length && [self componentsSeparatedByString:@" "].count == 1;
+}
+
 - (BOOL)isWord2 {
     NSString *text = [self tryToRemoveQuotes];
     if (text.length > EZEnglishWordMaxLength) {
@@ -307,14 +311,27 @@ static NSDictionary *const kQuotesDict = @{
     return tags;
 }
 
+/// Check English word is spelled correctly
 - (BOOL)isSpelledCorrectly {
-    return [self guessedWords].count == 0;
+    return [self isSpelledCorrectly:nil];
+}
+
+- (BOOL)isSpelledCorrectly:(nullable NSString *)language {
+    return [self guessedWordsWithLanguage:language].count == 0;
 }
 
 - (nullable NSArray<NSString *> *)guessedWords {
+    return [self guessedWordsWithLanguage:nil];
+}
+
+- (nullable NSArray<NSString *> *)guessedWordsWithLanguage:(nullable NLLanguage)language {
     NSSpellChecker *spellChecker = [NSSpellChecker sharedSpellChecker];
+    if (!language) {
+        language = spellChecker.language;
+    }
+    
     NSRange wordRange = NSMakeRange(0, [self length]);
-    NSString *language = [spellChecker language]; // default is en
+    // NSSpellChecker default language is en
     NSString *correctedWord = [spellChecker correctionForWordRange:wordRange inString:self language:language inSpellDocumentWithTag:0];
     
     if (!correctedWord) {
