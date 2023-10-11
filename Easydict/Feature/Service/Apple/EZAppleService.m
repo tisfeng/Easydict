@@ -511,7 +511,7 @@ static char kJoinedStringKey;
         // If not detected as English, try to query System English Dictioanry. Such as delimiter
         if (![self.languageManager isEnglishLangauge:mostConfidentLanguage]) {
             // If has result, then most likely English. Cost about ~10ms
-            if ([self.appleDictionary queryDictionaryWithText:text language:EZLanguageEnglish]) {
+            if ([self.appleDictionary queryDictionaryForText:text language:EZLanguageEnglish]) {
                 mostConfidentLanguage = EZLanguageEnglish;
                 NSLog(@"Apple Dictionary Detect: %@ is English", text);
             }
@@ -528,6 +528,10 @@ static char kJoinedStringKey;
 }
 
 - (EZLanguage)appleDetectTextLanguage:(NSString *)text printLog:(BOOL)logFlag {
+    if (!text.length) {
+        return EZLanguageEnglish;
+    }
+    
     NSDictionary<NLLanguage, NSNumber *> *languageProbabilityDict = [self appleDetectTextLanguageDict:text printLog:logFlag];
     EZLanguage mostConfidentLanguage = [self getMostConfidentLanguage:languageProbabilityDict
                                                                  text:text
@@ -539,6 +543,10 @@ static char kJoinedStringKey;
 /// Apple original detect language dict.
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
+    if (!text.length) {
+        return @{ EZLanguageEnglish : @(0) };
+    }
+    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     // 10.14+  Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
@@ -554,9 +562,7 @@ static char kJoinedStringKey;
     
     // !!!: All numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        EZLanguage firstLanguage = [self.languageManager userFirstLanguage];
-        dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
-        languageProbabilityDict = @{dominantLanguage : @(0)};
+        languageProbabilityDict = @{ EZLanguageEnglish : @(0) };
     }
     
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();

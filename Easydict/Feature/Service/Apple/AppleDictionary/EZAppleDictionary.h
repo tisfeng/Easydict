@@ -18,9 +18,9 @@ static NSString *EZAppleDictionaryHTMLDictFilePath = @"all_dict.html";
 
 @property (nonatomic, copy) NSString *htmlFilePath;
 
-//- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word inDictionaryName:(NSString *)name;
++ (instancetype)shared;
 
-- (BOOL)queryDictionaryWithText:(NSString *)text language:(EZLanguage)language;
+- (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language;
 
 @end
 

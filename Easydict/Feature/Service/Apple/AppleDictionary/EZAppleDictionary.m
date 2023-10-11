@@ -12,6 +12,18 @@
 
 @implementation EZAppleDictionary
 
+static EZAppleDictionary *_instance;
+
++ (instancetype)shared {
+    if (!_instance) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _instance = [[self alloc] init];
+        });
+    }
+    return _instance;
+}
+
 #pragma mark - 重写父类方法
 
 - (EZServiceType)serviceType {
@@ -73,7 +85,7 @@
     NSArray *supportedLanguages = [languageDict allKeys];
     
     for (EZLanguage language in supportedLanguages) {
-        if ([self queryDictionaryWithText:text language:language]) {
+        if ([self queryDictionaryForText:text language:language]) {
             completion(language, nil);
         }
     }
@@ -81,7 +93,7 @@
     completion(EZLanguageAuto, nil);
 }
 
-- (BOOL)queryDictionaryWithText:(NSString *)text language:(EZLanguage)language {
+- (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
     MMOrderedDictionary *languageDict = [TTTDictionary languageToDictionaryNameMap];
     NSString *dictName = [languageDict objectForKey:language];
     if ([self queryEntryHTMLsOfWord:text inDictionaryName:dictName].count > 0) {
