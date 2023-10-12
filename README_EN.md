@@ -234,7 +234,7 @@ By default, the application uses Youdao TTS, but users have the option to select
 
 <p>
 
-|       Languages       | Youdao | DeepL | macOS System | Bing | Google | Baidu | Volcano |
+|       Languages       | Youdao | DeepL | 🍎 Apple Translate | Bing | Google | Baidu | Volcano |
 | :-------------------: | :----: | :---: | :----------: | :--: | :----: | :---: | :-----: |
 | Chinese (Simplified)  |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 | Chinese (Traditional) |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
@@ -262,7 +262,7 @@ By default, the application uses Youdao TTS, but users have the option to select
 |        Turkish        |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |      Lithuanian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |        Latvian        |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
-|       Ukrainian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
+|       Ukrainian       |   ❌   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |       Bulgarian       |   ❌   |  ✅   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
 |      Indonesian       |   ✅   |  ✅   |      ✅      |  ✅  |   ✅   |  ✅   |   ✅    |
 |         Malay         |   ❌   |  ❌   |      ❌      |  ✅  |   ✅   |  ✅   |   ✅    |
