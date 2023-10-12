@@ -28,6 +28,34 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
+- (NSString *)removeCommentSymbols:(NSString *)text {
+    // good # girl /*** boy */ --> good  girl  boy
+    
+    // match /*
+    NSString *pattern1 = @"/\\*+";
+    
+    // match */
+    NSString *pattern2 = @"[/*]+";
+    
+    // match // #
+    NSString *pattern3 = @"//|#";
+    
+    NSString *combinedPattern = [NSString stringWithFormat:@"%@|%@|%@", pattern1, pattern2, pattern3];
+    
+    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:combinedPattern
+                                                            withString:@""
+                                                               options:NSRegularExpressionSearch
+                                                                 range:NSMakeRange(0, text.length)];
+    
+    return cleanedText;
+}
+
+- (void)testRegx {
+    NSString *text = @"This is a sample text with */ and **/ and ***/ // good # girl /*** boy */";
+    NSString *result = [self removeCommentSymbols:text];
+    NSLog(@"result: %@", result);
+}
+
 - (void)testExample {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.

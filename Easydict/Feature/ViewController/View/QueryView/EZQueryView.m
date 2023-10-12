@@ -84,7 +84,7 @@
     
     // When programatically setting the text, like auto select text, or OCR text.
     [textView setUpdateTextBlock:^(NSString * _Nonnull text) {
-        [self updateQueryText:text];
+        [self updateInputText:text];
     }];
     
     EZLoadingAnimationView *loadingAnimationView = [[EZLoadingAnimationView alloc] init];
@@ -290,7 +290,7 @@
 //        // !!!: We need to trigger `-textDidChange:` manually, since it can be only invoked by user input automatically.
 //        [self.textView didChangeText];
         
-        [self updateQueryText:queryText];
+        [self updateInputText:queryText];
         
         [self setAlertTextHidden:YES];
     }
@@ -459,14 +459,14 @@
     self.queryModel.needDetectLanguage = YES;
     
     // textView.string has been changed, we don't need to update it again.
-    [self updateQueryText:nil];
+    [self updateInputText:nil];
 }
 
 
 #pragma mark - Other
 
 /// Must call this method when updating query text, whether user input or program update.
-- (void)updateQueryText:(nullable NSString *)text {
+- (void)updateInputText:(nullable NSString *)text {
     // !!!: set string will change selectedRange, means it will change cursor position.
     if (text) {
         self.textView.string = text;
@@ -479,9 +479,9 @@
     
     [self updateButtonsDisplayState:text];
     
-    if (self.updateQueryTextBlock) {
+    if (self.updateInputTextBlock) {
         CGFloat textViewHeight = [self heightOfTextView];
-        self.updateQueryTextBlock(text, textViewHeight + EZQueryViewExceptInputViewHeight);
+        self.updateInputTextBlock(text, textViewHeight + EZQueryViewExceptInputViewHeight);
     }
 }
 

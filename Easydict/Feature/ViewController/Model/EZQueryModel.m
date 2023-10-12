@@ -15,6 +15,8 @@
 
 @interface EZQueryModel ()
 
+@property (nonatomic, copy) NSString *queryText;
+
 @property (nonatomic, strong) NSMutableDictionary *stopBlockDictionary; // <serviceType : block>
 
 @end
@@ -70,9 +72,8 @@
     }
     
     _inputText = [inputText copy];
-    _queryText = [self handleInputText:_inputText];
 
-    if (_queryText.length == 0) {
+    if (_inputText.trim.length == 0) {
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
@@ -194,7 +195,16 @@
             }
         }
     }
+    
+    if (EZConfiguration.shared.isBeta) {
+        queryText = [self removeCommentSymbols:queryText];
+    }
 
+    return [queryText trim];
+}
+
+- (NSString *)queryText {
+    NSString *queryText = [self handleInputText:self.inputText];
     return queryText;
 }
 
@@ -215,5 +225,31 @@
     
     return queryText;
 }
+
+/**
+ Remove comment symbols
+ */
+- (NSString *)removeCommentSymbols:(NSString *)text {
+    // good # girl /*** boy */ --> good  girl  boy
+    
+    // match /*
+    NSString *pattern1 = @"/\\*+";
+    
+    // match */
+    NSString *pattern2 = @"[/*]+";
+    
+    // match // and  #
+    NSString *pattern3 = @"//|#";
+    
+    NSString *combinedPattern = [NSString stringWithFormat:@"%@|%@|%@", pattern1, pattern2, pattern3];
+    
+    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:combinedPattern
+                                                            withString:@""
+                                                               options:NSRegularExpressionSearch
+                                                                 range:NSMakeRange(0, text.length)];
+    
+    return cleanedText;
+}
+
 
 @end

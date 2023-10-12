@@ -333,9 +333,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     _inputText = [inputText copy];
 
     self.queryModel.inputText = _inputText;
-    _queryText = self.queryModel.queryText;
 
     [self updateQueryViewModelAndDetectedLanguage:self.queryModel];
+}
+
+- (NSString *)queryText {
+    NSString *queryText = self.queryModel.queryText;
+    return queryText;
 }
 
 - (EZQueryService *)defaultTTSService {
@@ -1126,7 +1130,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     queryView.audioButton.audioPlayer = self.audioPlayer;
 
     mm_weakify(self);
-    [queryView setUpdateQueryTextBlock:^(NSString *_Nonnull text, CGFloat queryViewHeight) {
+    [queryView setUpdateInputTextBlock:^(NSString *text, CGFloat queryViewHeight) {
         mm_strongify(self);
         //        NSLog(@"UpdateQueryTextBlock");
 
@@ -1139,11 +1143,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             return;
         }
 
-        NSString *oldQueryText = self.queryText;
+        NSString *oldInputText = self.inputText;
         self.inputText = text;
 
         // Only detect when query text is changed.
-        if (![self.queryText isEqualToString:oldQueryText]) {
+        if (![self.inputText.trim isEqualToString:oldInputText.trim]) {
             [self delayDetectQueryText];
         }
 
