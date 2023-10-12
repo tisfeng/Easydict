@@ -65,6 +65,10 @@
 - [Language Recognition](#language-recognition)
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
+  - [Apple System Dictionary](#apple-system-dictionary)
+  - [OpenAI (ChatGPT) Translation](#openaichatgpttranslation)
+    - [Configure AuthKey](#configure-authkey)
+    - [Configure API call method](#configure-api-call-method)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
@@ -282,11 +286,90 @@ By default, the application uses Youdao TTS, but users have the option to select
 
 </details>
 
+### Apple System Dictionary
+
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+
+另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
+
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+
+<table>
+ 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
+</table>
+
+### OpenAI (ChatGPT) Translation
+
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
+
+请先确保你有 APIKey。
+
+
+#### 配置 APIKey
+```
+easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
+```
+<bar>
+
+查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
+```
+easydict://readValueOfKey?EZOpenAIAPIKey
+```
+
+#### 查询模式
+
+目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
+</table>
+
+考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后， OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
+
+```
+easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+```
+
+```
+// 关闭查单词
+easydict://writeKeyValue?EZOpenAIDictionaryKey=0
+
+// 关闭句子分析
+easydict://writeKeyValue?EZOpenAISentenceKey=0
+```
+温馨提示：如果你只是偶尔不希望分析句子，可以不用关闭句子类型，只需要在【句子】后面添加一个波浪符～，这样就会变成翻译类型了。
+
+<img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
+
+
+#### 自定义设置
+
+支持设置自定义域名和模型
+
+```
+//  xxx 是 host，默认是 api.openai.com
+easydict://writeKeyValue?EZOpenAIDomainKey=xxx
+
+// xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
+easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
+
+//  xxx 默认是 gpt-3.5-turbo
+easydict://writeKeyValue?EZOpenAIModelKey=xxx
+```
+
+由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
 ### DeepL Translate
 
 DeepL free version web API has a frequency limit for single IP, frequent use will trigger 429 too many requests error, so version 1.3.0 adds support for DeepL official API, but the interface has not been written yet, and needs to be enabled through command.
 
 If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
+
+> Note: 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### Configure AuthKey
 
@@ -315,6 +398,74 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
+
+### Bing Translate
+
+目前 Bing 翻译使用的是网页接口，当触发频率限制 429 报错时，除了切换代理，还可以通过手动设置请求 cookie 来续命，具体续命多久暂时不清楚。
+
+具体步骤是，使用浏览器打开 [Bing Translator](https://www.bing.com/translator)，登录，然后在控制台执行以下代码获取 cookie
+
+```js
+cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
+```
+
+最后将 cookie 使用命令写入 Easydict
+
+```
+// xxx 是前面获取的 cookie
+easydict://writeKeyValue?EZBingCookieKey=xxx
+```
+
+## Smart query mode
+
+目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
+
+```objc
+typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
+    EZQueryTextTypeNone = 0, // 0
+    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
+    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
+    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
+};
+```
+
+Easydict 可以根据查询文本的内容，自动启用相应的查询服务。
+
+具体来说，在智能查询模式下，当查询单词时，则只会调用支持【单词查询】的服务；当翻译文本时，则只会调用支持【文本翻译】的服务。
+
+对于单词，支持查询单词的服务效果明显比翻译更好，而翻译文本时，启用单词查询服务
+
+默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
+
+```
+easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
+```
+
+同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
+
+```
+easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
+```
+
+默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
+
+```
+easydict://writeKeyValue?IntelligentQueryMode-window2=1
+```
+window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
+
+>  注意：智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头展开查询。
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
+</table>
+
+## URL Scheme
+
+Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good。 
+
+如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://good%2Fgirl
 
 ## Use with PopClip
 
