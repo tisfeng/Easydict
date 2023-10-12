@@ -66,7 +66,7 @@
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
   - [Apple System Dictionary](#apple-system-dictionary)
-  - [OpenAI (ChatGPT) Translation](##openai-chatgpt-translation)
+  - [OpenAI (ChatGPT) Translation](#openai-chatgpt-translation)
     - [Configure APIKey](#configure-apikey)
     - [Query Mode](#query-mode)
     - [Customizations](#customizations)
