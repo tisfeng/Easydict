@@ -292,7 +292,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)
+详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
@@ -307,7 +307,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 请先确保你有 APIKey。
 
 
-#### 配置 APIKey
+#### Configure APIKey
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
@@ -318,7 +318,7 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
-#### 查询模式
+#### Query mode
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
@@ -346,7 +346,7 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
-#### 自定义设置
+#### Customizations
 
 支持设置自定义域名和模型
 
