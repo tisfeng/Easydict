@@ -305,9 +305,9 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 ### OpenAI (ChatGPT) Translation
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
+Starting with version 1.3.0, Easydict supports OpenAI translation. Additionally, it is now compatible with  Azure OpenAI. Please note that the interface for Azure OpenAI is not yet built and requires enabling via commands.
 
-请先确保你有 APIKey。
+Please make sure you have an APIKey。
 
 
 #### Configure APIKey
@@ -316,14 +316,14 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
 <bar>
 
-查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
+Lookup for APIKey (similar to other keys), if the query succeeded, the result will be written to the clipboard.
 ```
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
 #### Query Mode
 
-目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
+Currently, OpenAI translation supports three query modes: word lookup, sentence translations, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
@@ -331,40 +331,40 @@ easydict://readValueOfKey?EZOpenAIAPIKey
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
 </table>
 
-考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后， OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
+Considering the token cost associated with OpenAI, a default 'Close' option has been implemented. After executing the following command, OpenAI will automatically stop the queries by default, and it will only be queried when the user manually clicks the 'Expand' button.
 
 ```
 easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
 ```
 
 ```
-// 关闭查单词
+// Disable word lookup
 easydict://writeKeyValue?EZOpenAIDictionaryKey=0
 
-// 关闭句子分析
+// Disable sentence analysis
 easydict://writeKeyValue?EZOpenAISentenceKey=0
 ```
-温馨提示：如果你只是偶尔不希望分析句子，可以不用关闭句子类型，只需要在【句子】后面添加一个波浪符～，这样就会变成翻译类型了。
+Quick tip: If you only want to exclude occasional sentence analysis without turning off the Sentence mode, simply append a tilde (~) after `[Sentence]`. This will convert it into the Translation mode.
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
 #### Customizations
 
-支持设置自定义域名和模型
+Support custom domains and models
 
 ```
-//  xxx 是 host，默认是 api.openai.com
+//  xxx is the host，the default one is api.openai.com
 easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 
-// xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
+// xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx 默认是 gpt-3.5-turbo
+//  xxx is set to default as gpt-3.5-turbo
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
-由于 OpenAI 官方接口对用户 IP 有限制，因此如果你需要反向代理，可以参考这个反代项目 [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+Since the official OpenAI interface has restrictions on user IPs, if you need a reverse proxy, you can refer to this project [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
 
 ### DeepL Translate
 
