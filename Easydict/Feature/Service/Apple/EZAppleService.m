@@ -205,7 +205,7 @@ static EZAppleService *_instance;
 
 - (MMOrderedDictionary *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                        //                                        EZLanguageAuto, @"auto",
+                                        //  EZLanguageAuto, @"auto",
                                         EZLanguageSimplifiedChinese, @"zh_CN",
                                         EZLanguageTraditionalChinese, @"zh_TW",
                                         EZLanguageEnglish, @"en_US",
@@ -223,6 +223,9 @@ static EZAppleService *_instance;
                                         EZLanguageTurkish, @"tr_TR",
                                         EZLanguageIndonesian, @"id_ID",
                                         EZLanguageVietnamese, @"vi_VN",
+                                        // macOS 14+
+                                        EZLanguageDutch, @"nl_NL",
+                                        EZLanguageUkrainian, @"uk_UA",
                                         nil];
     
     return orderedDict;
@@ -673,7 +676,7 @@ static EZAppleService *_instance;
 /// languageDict value add userPreferredLanguageProbabilities, then sorted by value, return max dict value.
 - (EZLanguage)getMostConfidentLanguage:(NSDictionary<NLLanguage, NSNumber *> *)defaultLanguageProbabilities
                                   text:(NSString *)text
-                              printLog:(BOOL)logFlag 
+                              printLog:(BOOL)logFlag
 {
     NSMutableDictionary<NLLanguage, NSNumber *> *languageProbabilities = [NSMutableDictionary dictionaryWithDictionary:defaultLanguageProbabilities];
     NSDictionary<EZLanguage, NSNumber *> *userPreferredLanguageProbabilities = [self userPreferredLanguageProbabilities];
