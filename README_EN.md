@@ -66,7 +66,7 @@
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
   - [Apple System Dictionary](#apple-system-dictionary)
-  - [OpenAI (ChatGPT) Translation](#openaichatgpttranslation)
+  - [OpenAI (ChatGPT) Translation](##openai-chatgpt-translation)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
   - [DeepL Translate](#deepl-translate)
