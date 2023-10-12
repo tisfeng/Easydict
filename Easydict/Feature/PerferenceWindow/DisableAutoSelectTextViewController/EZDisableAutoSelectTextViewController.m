@@ -14,6 +14,8 @@
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "EZLocalStorage.h"
 #import "EZConfiguration.h"
+#import "NSImage+EZSymbolmage.h"
+#import "NSImage+EZResize.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kRowHeight = 45;
@@ -154,8 +156,23 @@ static NSString *const EZColumnId = @"EZColumnId";
         _segmentedControl = segmentedControl;
         [self.view addSubview:segmentedControl];
         [segmentedControl setSegmentCount:2];
-        [segmentedControl setLabel:NSLocalizedString(@"+", nil) forSegment:0];
-        [segmentedControl setLabel:NSLocalizedString(@"−", nil) forSegment:1];
+        
+        CGSize size = CGSizeMake(10, 10);
+        __block NSImage *addImage = [[NSImage imageNamed:@"add"] resizeToSize:size];
+        __block NSImage *minusImage = [[NSImage imageNamed:@"minus"] resizeToSize:size];
+        
+        [segmentedControl excuteLight:^(NSSegmentedControl *segmentedControl) {
+            addImage = [addImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
+            minusImage = [minusImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
+            [segmentedControl setImage:addImage forSegment:0];
+            [segmentedControl setImage:minusImage forSegment:1];
+        } dark:^(NSSegmentedControl *segmentedControl) {
+            addImage = [addImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+            minusImage = [minusImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
+            [segmentedControl setImage:addImage forSegment:0];
+            [segmentedControl setImage:minusImage forSegment:1];
+        }];
+        
         [segmentedControl setTarget:self];
         [segmentedControl setAction:@selector(segmentedControlClicked:)];
         segmentedControl.trackingMode = NSSegmentSwitchTrackingMomentary;
