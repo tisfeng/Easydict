@@ -291,11 +291,11 @@ By default, the application uses Youdao TTS, but users have the option to select
 
 ### Apple System Dictionary
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+Easydict seamlessly integrates with the dictionaries available in the macOS Dictionary App, including popular options like the Oxford English-Chinese-Chinese-English Dictionary (Simplified Chinese-English) and the Modern Chinese Standard Dictionary (Simplified Chinese). To use these dictionaries, simply enable them through the Dictionary App settings page.
 
-另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
+Furthermore, Apple Dictionary offers support for custom dictionaries, allowing you to import third-party options such as the Concise English-Chinese Dictionary, Longman Dictionary of Contemporary Advanced English, and more. These can be added to your system by importing dictionaries in the .dictionary format.
 
-详情请看 [如何在 Easydict 中使用 🍎 macOS 系统词典？](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)
+For detailed information, please see [How to use macOS system dictionary in Easydict](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)
 
 <table>
  		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
@@ -604,7 +604,7 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 If you don't want your username to be displayed in the list, please choose anonymous.
 
-|  **日期**  |     **用户**      | **金额** |                                                          **留言**                                                           |
+|  **Date**  |     **User**      | **Amount sponsored** |                                                          **Message**                                                           |
 | :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
 | 2023-05-22 |        🍑         |    50    |                                                          感谢开源                                                           |
 | 2023-05-22 |         -         |   200    |                                                                                                                             |
