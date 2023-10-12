@@ -67,8 +67,9 @@
 - [Translation Services](#translation-services)
   - [Apple System Dictionary](#apple-system-dictionary)
   - [OpenAI (ChatGPT) Translation](##openai-chatgpt-translation)
-    - [Configure AuthKey](#configure-authkey)
-    - [Configure API call method](#configure-api-call-method)
+    - [Configure APIKey](#configure-apikey)
+    - [Query Mode](#query-mode)
+    - [Customizations](#customizations)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
@@ -318,7 +319,7 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
-#### Query mode
+#### Query Mode
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
