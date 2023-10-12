@@ -73,6 +73,8 @@
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
+  - [Bing Translate](#bing-translate)
+- [Smart Query Mode](#smart-query-mode)
 - [Use with PopClip](#use-with-popclip)
 - [Preferences](#preferences)
   - [Settings](#settings)
@@ -370,7 +372,7 @@ DeepL free version web API has a frequency limit for single IP, frequent use wil
 
 If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
 
-> Note: 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
+> Note: Using a new proxy IP is a generic solution that works for other frequency-limited services.
 
 #### Configure AuthKey
 
