@@ -1743,6 +1743,22 @@
         }
       }
     },
+    "replace_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace With Translation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "使用译文替换"
+          }
+        }
+      }
+    },
     "retry" : {
       "localizations" : {
         "en" : {

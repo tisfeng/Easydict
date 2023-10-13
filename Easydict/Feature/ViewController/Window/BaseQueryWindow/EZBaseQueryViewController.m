@@ -26,6 +26,7 @@
 #import "DictionaryKit.h"
 #import "EZAppleDictionary.h"
 #import "NSString+EZUtils.h"
+#import "EZEventMonitor.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -1018,6 +1019,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (!result) {
         result = [[EZQueryResult alloc] init];
     }
+    
+    result.showReplaceButton = EZEventMonitor.shared.isTextEditable;
+    
     service.result = result;
     return result;
 }

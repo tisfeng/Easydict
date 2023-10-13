@@ -28,6 +28,7 @@
 #import "EZConfiguration.h"
 #import "EZServiceTypes.h"
 #import "EZAppleService.h"
+#import "EZReplaceTextButton.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -861,6 +862,24 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(textCopyButton.mas_right).offset(buttonPadding);
+        make.width.height.bottom.equalTo(audioButton);
+    }];
+    
+    EZReplaceTextButton *replaceTextButton = [[EZReplaceTextButton alloc] init];
+    [self addSubview:replaceTextButton];
+    replaceTextButton.hidden = !result.showReplaceButton;
+    
+    [replaceTextButton setClickBlock:^(EZButton *button) {
+        NSString *replacedText = result.copiedText;
+        NSLog(@"replace text: %@", result.copiedText);
+        
+        EZReplaceTextButton *replaceTextButton = (EZReplaceTextButton *)button;
+        [replaceTextButton replaceSelectedText:replacedText];
+    }];
+    replaceTextButton.mas_key = @"replaceTextButton";
+    
+    [replaceTextButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(linkButton.mas_right).offset(buttonPadding);
         make.width.height.bottom.equalTo(audioButton);
     }];
     

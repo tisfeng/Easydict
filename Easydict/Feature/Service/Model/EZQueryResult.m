@@ -177,8 +177,8 @@ NSString *getPartName(NSString *part) {
     self.noResultsFound = NO;
     self.copiedText = nil;
     self.didFinishLoadingHTMLBlock = nil;
-    
     [self.webViewManager reset];
+    self.showReplaceButton = NO;
 }
 
 @end

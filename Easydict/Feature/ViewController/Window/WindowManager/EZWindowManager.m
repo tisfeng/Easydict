@@ -70,7 +70,7 @@ static EZWindowManager *_instance;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
     self.actionType = EZActionTypeAutoSelectQuery;
 
-    self.eventMonitor = [[EZEventMonitor alloc] init];
+    self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
 
     //    NSLog(@"%@", self.floatingWindowTypeArray);

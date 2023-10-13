@@ -72,12 +72,24 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 
 static EZEventMonitor *_instance = nil;
 
-- (instancetype)init {
-    if (self = [super init]) {
-        [self setup];
-        _instance = self;
++ (instancetype)shared {
+    @synchronized (self) {
+        if (!_instance) {
+            _instance = [[super allocWithZone:NULL] init];
+            [_instance setup];
+        }
     }
-    return self;
+    return _instance;
+}
+
+- (void)setup {
+    _recordEvents = [NSMutableArray array];
+    _commandKeyEvents = [NSMutableArray array];
+    
+    self.actionType = EZActionTypeAutoSelectQuery;
+    self.selectTextType = EZSelectTextTypeAccessibility;
+    self.frontmostApplication = [self getFrontmostApp];
+    self.triggerType = EZTriggerTypeNone;
 }
 
 - (EZExeCommand *)exeCommand {
@@ -135,16 +147,6 @@ static EZEventMonitor *_instance = nil;
     return defaultAppModels;
 }
 
-
-- (void)setup {
-    _recordEvents = [NSMutableArray array];
-    _commandKeyEvents = [NSMutableArray array];
-    
-    self.actionType = EZActionTypeAutoSelectQuery;
-    self.selectTextType = EZSelectTextTypeAccessibility;
-    self.frontmostApplication = [self getFrontmostApp];
-    self.triggerType = EZTriggerTypeNone;
-}
 
 - (void)addLocalMonitorWithEvent:(NSEventMask)mask handler:(void (^)(NSEvent *_Nonnull))handler {
     [self monitorWithType:EZEventMonitorTypeLocal event:mask handler:handler];
@@ -281,6 +283,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
     
+    self.isTextEditable = [self isTextEditable];
+    
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
@@ -396,7 +400,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         NSLog(@"disabled autoSelectText");
         return enabled;
     }
-    
     
     return enabled;
 }
@@ -960,8 +963,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     CFRelease(source);
 }
 
-
-/// Get nsstring from keycode
+/// Get NSString from keycode
 - (NSString *)stringFromKeyCode:(CGKeyCode)keyCode {
     TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardInputSource();
     CFDataRef uchr = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
@@ -974,6 +976,39 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     CFRelease(currentKeyboard);
     return [NSString stringWithCharacters:unicodeString length:actualStringLength];
 }
+
+// 判断当前选中文本是否可编辑
+- (BOOL)isTextEditable {
+    AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
+    
+    AXUIElementRef focusedElement = NULL;
+    AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
+    
+    BOOL isEditable = NO;
+    
+    // focusedElement may be NULL in Telegram App
+    if (focusedElement) {
+        CFTypeRef roleValue;
+        AXUIElementCopyAttributeValue(focusedElement, kAXRoleAttribute, &roleValue);
+        
+        if (roleValue != NULL) {
+            if (CFGetTypeID(roleValue) == CFStringGetTypeID()) {
+                NSString *role = (__bridge NSString *)roleValue;
+                if ([role isEqualToString:(__bridge NSString *)kAXTextAreaRole] || [role isEqualToString:(__bridge NSString *)kAXTextFieldRole]) {
+                    isEditable = YES;
+                }
+            }
+        }
+        CFRelease(focusedElement);
+    }
+    
+    NSLog(@"isEditable: %d", isEditable);
+    
+    CFRelease(systemWideElement);
+    
+    return isEditable;
+}
+
 
 #pragma mark -
 

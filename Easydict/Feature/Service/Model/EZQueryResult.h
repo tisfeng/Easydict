@@ -167,6 +167,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZWebViewManager *webViewManager;
 
+@property (nonatomic, assign) BOOL showReplaceButton;
+
 - (void)reset;
 
 @end

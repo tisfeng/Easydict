@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
 
+@property (nonatomic, assign) BOOL isTextEditable;
+
 @property (nonatomic, copy) void (^selectedTextBlock)(NSString *selectedText);
 @property (nonatomic, copy) void (^dismissPopButtonBlock)(void);
 @property (nonatomic, copy) void (^dismissMiniWindowBlock)(void);
@@ -32,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^doubleCommandBlock)(void);
 @property (nonatomic, copy) void (^mouseClickBlock)(CGPoint clickPoint);
 
+
++ (instancetype)shared;
 
 /// Use Accessibility to get selected text first, if failed, use shortcut.
 - (void)getSelectedText:(void (^)(NSString *_Nullable text))completion;
@@ -44,6 +48,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)stop;
 - (void)startMonitor;
 - (BOOL)isAccessibilityEnabled;
+
+#pragma mark -
+
+/// Simulate key event.
+void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown);
 
 @end
 
