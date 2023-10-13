@@ -73,7 +73,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
 - (NSString *)removeCommentSymbolPrefixAndJoinTexts {
     // 分割文本为行数组
     NSArray *lines = [self componentsSeparatedByString:@"\n"];
-        
+    
     NSMutableString *resultText = [NSMutableString string];
     BOOL previousLineIsComment = NO;
     
@@ -88,7 +88,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
             trimmedLine = [trimmedLine removeCommentSymbolPrefix].trim;
             
             if (i > 0) {
-                NSString *prevLine = lines[i-1];
+                NSString *prevLine = lines[i - 1];
                 if (previousLineIsComment && ![prevLine hasEndPunctuationSuffix]) {
                     // 如果前一行是注释，拼接当前行
                     [resultText appendString:@" "];
@@ -98,7 +98,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
             }
             
             previousLineIsComment = YES;
-
+            
         } else {
             [resultText appendString:@"\n"];
             previousLineIsComment = NO;

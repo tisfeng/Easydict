@@ -80,6 +80,11 @@
     }
 }
 
+- (NSString *)queryText {
+    NSString *queryText = [self handleInputText:self.inputText];
+    return queryText;
+}
+
 - (void)setActionType:(EZActionType)actionType {
     _actionType = actionType;
     
@@ -192,122 +197,17 @@
             if ([queryText hasQuotesPair]) {
                 queryText = [queryText tryToRemoveQuotes];
             } else {
-                queryText = [self splitText:queryText];
+                queryText = [queryText splitCodeText];
             }
         }
     }
     
     if (EZConfiguration.shared.isBeta) {
         queryText = [queryText removeCommentSymbolPrefixAndJoinTexts];
-        queryText = [self removeCommentSymbols:queryText];
+        queryText = [queryText removeCommentSymbols];
     }
 
     return [queryText trim];
-}
-
-- (NSString *)queryText {
-    NSString *queryText = [self handleInputText:self.inputText];
-    return queryText;
-}
-
-- (NSString *)splitText:(NSString *)text {
-    NSString *queryText = [text splitSnakeCaseText];
-    queryText = [queryText splitCamelCaseText];
-    
-    // Filter empty text
-    NSArray *texts = [queryText componentsSeparatedByString:@" "];
-    NSMutableArray *newTexts = [NSMutableArray array];
-    for (NSString *text in texts) {
-        if (text.length) {
-            [newTexts addObject:text];
-        }
-    }
-    
-    queryText = [newTexts componentsJoinedByString:@" "];
-    
-    return queryText;
-}
-
-/**
- Remove comment symbols
- */
-- (NSString *)removeCommentSymbols:(NSString *)text {
-    // good # girl /*** boy */ --> good  girl  boy
-    
-    // match /*
-    NSString *pattern1 = @"/\\*+";
-    
-    // match */
-    NSString *pattern2 = @"[/*]+";
-    
-    // match // and  #
-    NSString *pattern3 = @"//|#";
-    
-    NSString *combinedPattern = [NSString stringWithFormat:@"%@|%@|%@", pattern1, pattern2, pattern3];
-    
-    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:combinedPattern
-                                                            withString:@""
-                                                               options:NSRegularExpressionSearch
-                                                                 range:NSMakeRange(0, text.length)];
-    
-    return cleanedText;
-}
-
-/**
- Remove //, and
- 
- // These values will persist after the process is killed by the system
- // and remain available via the same object.
- */
-- (NSString *)removeCommentAndJoinText:(NSString *)text {
-    // 分割文本为行数组
-    NSArray *lines = [text componentsSeparatedByString:@"\n"];
-        
-    NSMutableString *resultText = [NSMutableString string];
-    BOOL previousLineIsComment = NO;
-    
-    for (NSString *line in lines) {
-        // 去除行首和行尾的空格和换行符
-        NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        if (previousLineIsComment) {
-            // 如果前一行是注释，拼接当前行
-            [resultText appendFormat:@" %@", trimmedLine];
-        } else if ([trimmedLine hasPrefix:@"//"]) {
-            // 当前行以 "//" 开头，标记为注释
-            previousLineIsComment = YES;
-            
-            
-            
-            [resultText appendString:trimmedLine];
-        } else {
-            // 不是注释行，追加原始行
-            previousLineIsComment = NO;
-            [resultText appendString:line];
-        }
-        
-        // 添加换行符分隔行
-        [resultText appendString:@"\n"];
-    }
-    
-    return resultText;
-}
-
-// Remove comment symbol prefix, // and #
-- (NSString *)removeCommentSymbolPrefix:(NSString *)text {
-    NSString *pattern = @"^\\s*(//|#)";
-    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:pattern
-                                                            withString:@""
-                                                               options:NSRegularExpressionSearch
-                                                                 range:NSMakeRange(0, text.length)];
-    return cleanedText;
-}
-
-// Is start with comment symbol prefix, // and #
-- (BOOL)isStartWithCommentSymbolPrefix:(NSString *)text {
-    NSString *pattern = @"^\\s*(//|#)";
-    NSRange range = [text rangeOfString:pattern options:NSRegularExpressionSearch];
-    return range.location != NSNotFound;
 }
 
 @end
