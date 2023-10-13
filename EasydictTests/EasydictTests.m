@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "EZAppleService.h"
 #import "NSString+EZUtils.h"
+#import "NSString+EZHandleInputText.h"
 
 @interface EasydictTests : XCTestCase
 
@@ -28,35 +29,25 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (NSString *)removeCommentSymbols:(NSString *)text {
-    // good # girl /*** boy */ --> good  girl  boy
-    
-    // match /*
-    NSString *pattern1 = @"/\\*+";
-    
-    // match */
-    NSString *pattern2 = @"[/*]+";
-    
-    // match // #
-    NSString *pattern3 = @"//|#";
-    
-    NSString *combinedPattern = [NSString stringWithFormat:@"%@|%@|%@", pattern1, pattern2, pattern3];
-    
-    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:combinedPattern
-                                                            withString:@""
-                                                               options:NSRegularExpressionSearch
-                                                                 range:NSMakeRange(0, text.length)];
-    
-    return cleanedText;
-}
-
-- (void)testRegx {
-    NSString *text = @"This is a sample text with */ and **/ and ***/ // good # girl /*** boy */";
-    NSString *result = [self removeCommentSymbols:text];
+- (void)testExample {
+    /**
+     // These values will persist after the process is killed by the system
+     // and remain available via the same object.
+     
+     hi
+     
+     // good girl.
+     // good boy.
+     
+     hello
+     
+     */
+    NSString *text = @" // These values will persist after the process is killed by the system\n// and remain available via the same object.\n\nhi\n\n// good girl.\n// good boy.\n\nhello";
+    NSString *result = [text removeCommentSymbolPrefixAndJoinTexts];
     NSLog(@"result: %@", result);
 }
 
-- (void)testExample {
+- (void)testDetectLanguage {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     

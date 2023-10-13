@@ -51,6 +51,7 @@
 		036196762A000F5900806370 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196722A000F5900806370 /* NSData+Base64.m */; };
 		036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 036196742A000F5900806370 /* NSData+CommonCrypto.m */; };
 		0361967B2A0037F700806370 /* NSData+EZMD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 0361967A2A0037F700806370 /* NSData+EZMD5.m */; };
+		036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */ = {isa = PBXBuildFile; fileRef = 036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */; };
 		036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */; };
 		037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852AF2957FEB200D0E2CF /* EZServiceViewController.m */; };
 		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
@@ -322,6 +323,8 @@
 		036196742A000F5900806370 /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
 		036196792A0037F700806370 /* NSData+EZMD5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+EZMD5.h"; sourceTree = "<group>"; };
 		0361967A2A0037F700806370 /* NSData+EZMD5.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+EZMD5.m"; sourceTree = "<group>"; };
+		036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZHandleInputText.h"; sourceTree = "<group>"; };
+		036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZHandleInputText.m"; sourceTree = "<group>"; };
 		036E7D79293F4FC8002675DF /* EZOpenLinkButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenLinkButton.h; sourceTree = "<group>"; };
 		036E7D7A293F4FC8002675DF /* EZOpenLinkButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZOpenLinkButton.m; sourceTree = "<group>"; };
 		037852AE2957FEB200D0E2CF /* EZServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZServiceViewController.h; sourceTree = "<group>"; };
@@ -747,6 +750,8 @@
 				03D35DA92AA6C49B00B023FE /* NSString+EZRegex.m */,
 				0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */,
 				0342A9802AD64924002A9F5F /* NSString+EZSplit.m */,
+				036A0DB62AD8403A006E6D4F /* NSString+EZHandleInputText.h */,
+				036A0DB72AD8403A006E6D4F /* NSString+EZHandleInputText.m */,
 			);
 			path = NSString;
 			sourceTree = "<group>";
@@ -2085,6 +2090,7 @@
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
+				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,

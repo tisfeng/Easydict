@@ -12,6 +12,7 @@
 #import "NSString+EZUtils.h"
 #import "NSString+EZSplit.h"
 #import "EZAppleDictionary.h"
+#import "NSString+EZHandleInputText.h"
 
 @interface EZQueryModel ()
 
@@ -197,6 +198,7 @@
     }
     
     if (EZConfiguration.shared.isBeta) {
+        queryText = [queryText removeCommentSymbolPrefixAndJoinTexts];
         queryText = [self removeCommentSymbols:queryText];
     }
 
@@ -251,5 +253,61 @@
     return cleanedText;
 }
 
+/**
+ Remove //, and
+ 
+ // These values will persist after the process is killed by the system
+ // and remain available via the same object.
+ */
+- (NSString *)removeCommentAndJoinText:(NSString *)text {
+    // 分割文本为行数组
+    NSArray *lines = [text componentsSeparatedByString:@"\n"];
+        
+    NSMutableString *resultText = [NSMutableString string];
+    BOOL previousLineIsComment = NO;
+    
+    for (NSString *line in lines) {
+        // 去除行首和行尾的空格和换行符
+        NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (previousLineIsComment) {
+            // 如果前一行是注释，拼接当前行
+            [resultText appendFormat:@" %@", trimmedLine];
+        } else if ([trimmedLine hasPrefix:@"//"]) {
+            // 当前行以 "//" 开头，标记为注释
+            previousLineIsComment = YES;
+            
+            
+            
+            [resultText appendString:trimmedLine];
+        } else {
+            // 不是注释行，追加原始行
+            previousLineIsComment = NO;
+            [resultText appendString:line];
+        }
+        
+        // 添加换行符分隔行
+        [resultText appendString:@"\n"];
+    }
+    
+    return resultText;
+}
+
+// Remove comment symbol prefix, // and #
+- (NSString *)removeCommentSymbolPrefix:(NSString *)text {
+    NSString *pattern = @"^\\s*(//|#)";
+    NSString *cleanedText = [text stringByReplacingOccurrencesOfString:pattern
+                                                            withString:@""
+                                                               options:NSRegularExpressionSearch
+                                                                 range:NSMakeRange(0, text.length)];
+    return cleanedText;
+}
+
+// Is start with comment symbol prefix, // and #
+- (BOOL)isStartWithCommentSymbolPrefix:(NSString *)text {
+    NSString *pattern = @"^\\s*(//|#)";
+    NSRange range = [text rangeOfString:pattern options:NSRegularExpressionSearch];
+    return range.location != NSNotFound;
+}
 
 @end
