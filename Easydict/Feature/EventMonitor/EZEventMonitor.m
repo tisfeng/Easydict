@@ -993,8 +993,17 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
         if (roleValue != NULL) {
             if (CFGetTypeID(roleValue) == CFStringGetTypeID()) {
                 NSString *role = (__bridge NSString *)roleValue;
-                if ([role isEqualToString:(__bridge NSString *)kAXTextAreaRole] || [role isEqualToString:(__bridge NSString *)kAXTextFieldRole]) {
+                NSSet *editableTextRoles = [NSSet setWithArray:@[
+                    (__bridge NSString *)kAXTextFieldRole,
+                    (__bridge NSString *)kAXTextAreaRole,
+                    (__bridge NSString *)kAXComboBoxRole, // Safari: Google search field
+                    (__bridge NSString *)kAXSearchFieldSubrole,
+                    (__bridge NSString *)kAXPopUpButtonRole,
+                    (__bridge NSString *)kAXMenuRole,
+                ]];
+                if ([editableTextRoles containsObject:role]) {
                     isEditable = YES;
+                    NSLog(@"role: %@", role);
                 }
             }
             CFRelease(roleValue);
