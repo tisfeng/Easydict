@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), **macOS System Translation**, [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Baidu](https://fanyi.baidu.com/), [Volcano Translation](https://translate.volcengine.com/translate), and [Bing Translate](https://www.bing.com/translator).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -38,18 +38,13 @@
 - [x] Auto select translate, automatically display the query icon after word search, and mouse hover to query.
 - [x] Support for configuring different services for different window types.
 - [x] Support system OCR screenshot translation, Silent Screenshot OCR.
-- [x] Support system TTS.
-- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](https://github.com/tisfeng/Easydict/blob/main/docs/How-to-use-macOS-system-translation-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, Google, Bing, Baidu, and Volcano Translate.
+- [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
+- [x] Support [Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
+- [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
+- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Google, Bing, Baidu, and Volcano Translate.
 - [x] Support for 48 languages.
 
-Next step.
-
-- [ ] Supports service user's API calls.
-- [ ] Support more query services.
-- [ ] Support for macOS system dictionary.
-
-_**If you like this extension, please give it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks!**_
+**If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
 ---
 
@@ -68,10 +63,18 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
   - [About Permissions](#about-permissions)
 - [OCR](#ocr)
 - [Language Recognition](#language-recognition)
+- [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
+  - [Apple System Dictionary](#apple-system-dictionary)
+  - [OpenAI (ChatGPT) Translation](#openai-chatgpt-translation)
+    - [Configure APIKey](#configure-apikey)
+    - [Query Mode](#query-mode)
+    - [Customizations](#customizations)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
+  - [Bing Translate](#bing-translate)
+- [Smart Query Mode](#smart-query-mode)
 - [Use with PopClip](#use-with-popclip)
 - [Preferences](#preferences)
   - [Settings](#settings)
@@ -90,7 +93,7 @@ _**If you like this extension, please give it a [Star](https://github.com/tisfen
 
 You can install it using one of the following two methods. Support macOS 11.0+
 
-### 1. Manual
+### 1. Manual Installation
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
@@ -197,7 +200,7 @@ For Safari users, it is highly recommended that this option be turned on, as Saf
 
 ## OCR
 
-Currently, only the system OCR is supported, and third-party OCR services will be introduced later.
+Currently, only the system OCR is supported, third-party OCR services will be integrated later.
 
 System OCR supported languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, Spanish, Portuguese, German, Italian, Russian, Ukrainian.
 
@@ -208,6 +211,18 @@ Currently, only the system language recognition is supported, and Baidu and Goog
 The system language recognition is used by default, and after tuning, the accuracy of the system language recognition is already very high, which can meet the needs of most users.
 
 If you still feel that the system language recognition is inaccurate in actual use, you can turn on Baidu language recognition or Google language recognition optimization in the settings, but please note that this may cause the response speed to slow down, and the recognition rate will not be 100% in line with user expectations. If there is a recognition error, you can manually specify the language type.
+
+## TTS Services
+
+Currently support macOS system TTS, Bing, Google, Youdao, and Baidu online TTS service.
+
+- System TTS: The most stable and reliable option, but not very accurate. It is usually used as a fallback option, i.e., the system TTS is used instead of the other TTS when errors occur.
+- Bing TTS: Yields optimal results by generating real-time neural network speech synthesis. However, this process is more time-intensive, and the length of the input text directly impacts the duration of generation. Currently, the maximum supported character limit is 2,000 characters, roughly equivalent to a 10-minute generation time.
+- Google TTS: Good results with English, and the interface is stable. However, it can only generate upto 200 characters at a time.
+- Youdao TTS: The overall performance is commendable with a stable interface, and it excels in the pronunciation of English words. However, the maximum character limit is capped at 600 characters.
+- Baidu TTS: English sentences are well pronounced with a distinctive accent, but can only generate up to about 1,000 characters.
+
+By default, the application uses Youdao TTS, but users have the option to select their preferred TTS service in the settings. Due to its impressive performance with English words, Youdao TTS is the recommended choice for such content, while the default TTS service remains in use for other languages. It's worth noting that, apart from the system TTS, all other TTS services are unofficial interfaces and may experience instabilities from time to time
 
 ## Translation Services
 
@@ -274,11 +289,90 @@ If you still feel that the system language recognition is inaccurate in actual u
 
 </details>
 
+### Apple System Dictionary
+
+Easydict seamlessly integrates with the dictionaries available in the macOS Dictionary App, including popular options like the Oxford English-Chinese-Chinese-English Dictionary (Simplified Chinese-English) and the Modern Chinese Standard Dictionary (Simplified Chinese). To use these dictionaries, simply enable them through the Dictionary App settings page.
+
+Furthermore, Apple Dictionary offers support for custom dictionaries, allowing you to import third-party options such as the Concise English-Chinese Dictionary, Longman Dictionary of Contemporary Advanced English, and more. These can be added to your system by importing dictionaries in the .dictionary format.
+
+For detailed information, please see [How to use macOS system dictionary in Easydict](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)
+
+<table>
+ 		<td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
+</table>
+
+### OpenAI (ChatGPT) Translation
+
+Starting with version 1.3.0, Easydict supports OpenAI translation. Additionally, it is now compatible with  Azure OpenAI. Please note that the interface for Azure OpenAI is not yet built and requires enabling via commands.
+
+Please make sure you have an APIKey。
+
+
+#### Configure APIKey
+```
+easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
+```
+<bar>
+
+Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
+```
+easydict://readValueOfKey?EZOpenAIAPIKey
+```
+
+#### Query Mode
+
+Currently, OpenAI translation supports three query modes: word lookup, sentence translation, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/tCMiec-1695637289.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
+</table>
+
+Considering the token cost associated with OpenAI, a default 'Close' option has been implemented. After executing the following command, OpenAI will automatically stop the queries by default, and it will only be queried when the user manually clicks the 'Expand' button.
+
+```
+easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
+```
+
+```
+// Disable word lookup
+easydict://writeKeyValue?EZOpenAIDictionaryKey=0
+
+// Disable sentence analysis
+easydict://writeKeyValue?EZOpenAISentenceKey=0
+```
+A quick tip: If you only want to exclude occasional sentence analysis without turning off the Sentence mode, simply append a tilde (~) after `[Sentence]`. This will convert it into the Translation mode.
+
+<img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
+
+
+#### Customizations
+
+Support custom domains and models
+
+```
+//  xxx is the host, the default one is api.openai.com
+easydict://writeKeyValue?EZOpenAIDomainKey=xxx
+
+// xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
+easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
+
+//  xxx is set to default as gpt-3.5-turbo
+easydict://writeKeyValue?EZOpenAIModelKey=xxx
+```
+
+Since the official OpenAI interface has restrictions on user IPs, if you need a reverse proxy, you can refer to this project [cloudflare-reverse-proxy](https://github.com/gaboolic/cloudflare-reverse-proxy)
+
 ### DeepL Translate
 
 DeepL free version web API has a frequency limit for single IP, frequent use will trigger 429 too many requests error, so version 1.3.0 adds support for DeepL official API, but the interface has not been written yet, and needs to be enabled through command.
 
 If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
+
+> Note: Using a new proxy IP is a generic solution that works for other frequency-limited services.
 
 #### Configure AuthKey
 
@@ -307,6 +401,74 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
+
+### Bing Translate
+
+At present, Bing Translator uses a web interface. When encountering a 429 error due to triggering rate limits, you can extend the usage by manually setting request cookies, aside from switching proxies. The exact duration of the time extension is currently unclear.
+
+The specific steps are, to use the browser to log in [Bing Translator](https://www.bing.com/translator), then get the cookie in the console by running the following command.
+
+```js
+cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
+```
+
+Finally, use the command to write the cookie in Easydict
+
+```
+// xxx is the obtained cookie
+easydict://writeKeyValue?EZBingCookieKey=xxx
+```
+
+## Smart query mode
+
+Currently, there are two main types of lookup services: vocabulary lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both vocabulary lookup and translating text.
+
+```objc
+typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
+    EZQueryTextTypeNone = 0, // 0
+    EZQueryTextTypeTranslation = 1 << 0, // 01 = 1
+    EZQueryTextTypeDictionary = 1 << 1, // 10 = 2
+    EZQueryTextTypeSentence = 1 << 2, // 100 = 4
+};
+```
+
+Easydict can automatically enable the appropriate query service based on the content of the query text.
+
+Specifically, under smart query mode, when looking up for vocabularies, only services that support [Words lookup] will be invoked; when translating text, only services that support [Text Translation] will be enabled.
+
+For vocabularies, services that support vocabularies lookup work significantly better than translations, while translating text with vocabularies lookups enabled.
+
+By default, all translation services support vocabularies lookup (vocabularies are also a kind of text), users can adjust it manually. For example, to set Google to translate text only, just use the following command to change the property to `translation | sentence`.
+
+```
+easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
+```
+
+Similarly, for some services that support looking up vocabulary and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabulary by setting the type to `dictionary`.
+
+```
+easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
+```
+
+By default, only [Mini Window] is enabled for Smart Query Mode, users can also enable Smart Query Mode manually for [Hover Window]:
+
+```
+easydict://writeKeyValue?IntelligentQueryMode-window2=1
+```
+window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
+
+>  Attention: Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
+
+<table>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
+</table>
+
+## URL Scheme
+
+Easydict supports fast lookup for URL scheme: `easydict://xxx`, such as easydict://good.
+
+If the query content xxx contains special characters, URL encoding is needed, such as easydict://good%2Fgirl
 
 ## Use with PopClip
 
@@ -442,7 +604,7 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 If you don't want your username to be displayed in the list, please choose anonymous.
 
-|  **日期**  |     **用户**      | **金额** |                                                          **留言**                                                           |
+|  **Date**  |     **User**      | **Amount sponsored** |                                                          **Message**                                                           |
 | :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
 | 2023-05-22 |        🍑         |    50    |                                                          感谢开源                                                           |
 | 2023-05-22 |         -         |   200    |                                                                                                                             |
