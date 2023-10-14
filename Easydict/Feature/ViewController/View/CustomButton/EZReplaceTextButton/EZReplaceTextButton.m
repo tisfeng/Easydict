@@ -11,6 +11,7 @@
 #include <Carbon/Carbon.h>
 #import "EZEventMonitor.h"
 #import "EZWindowManager.h"
+#import "EZConfiguration.h"
 
 @implementation EZReplaceTextButton
 
@@ -34,95 +35,44 @@
     self.toolTip = [NSString stringWithFormat:@"%@", action];
 }
 
-// 替换当前选中的文本
-- (void)replaceSelectedText2:(NSString *)replacementString {
-  
-    [replacementString copyToPasteboard];
-    
-    [EZWindowManager.shared activeLastFrontmostApplication];
-    
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);  // key down
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, false);  // key down
-
-}
-
 - (void)replaceSelectedText:(NSString *)replacementString {
     [EZWindowManager.shared activeLastFrontmostApplication];
+    
+    if (EZConfiguration.shared.isBeta) {
+        [self replaceSelectedTextByKey:replacementString];
+    } else {
+        [self replaceSelectedTextByAccessibility:replacementString];
+    }
+}
 
+- (void)replaceSelectedTextByAccessibility:(NSString *)replacementString {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     AXUIElementRef focusedElement = NULL;
     
-    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
+    AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     
-    NSString *selectedText;
-    AXError error = getFocusedUIElementError;
-    
-    if (getFocusedUIElementError == kAXErrorSuccess) {
-        AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-        if (getSelectedTextError == kAXErrorSuccess) {
-            // Note: selectedText may be @""
-            selectedText = (__bridge NSString *)(selectedTextValue);
-            selectedText = [selectedText removeInvisibleChar];
-            MMLogInfo(@"--> replaceSelectedText: %@", selectedText);
-            
-            AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(replacementString));
-            
-        } else {
-            if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
-            } else {
-                MMLogInfo(@"Accessibility error: %d", getSelectedTextError);
-            }
+    if (error == kAXErrorSuccess && focusedElement) {
+        error = AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(replacementString));
+        if (error != kAXErrorSuccess) {
+            MMLogInfo(@"replaceSelectedText error: %d", error);
+            [self replaceSelectedTextByKey:replacementString];
         }
-        error = getSelectedTextError;
-    }
-    
-    if (focusedElement != NULL) {
         CFRelease(focusedElement);
+    } else {
+        MMLogInfo(@"replaceSelectedText error: %d", error);
+        [self replaceSelectedTextByKey:replacementString];
     }
     CFRelease(systemWideElement);
 }
 
-
-
-- (void)getSelectedTextByAccessibility:(void (^)(NSString *_Nullable text, AXError error))completion {
-    AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    AXUIElementRef focusedElement = NULL;
+- (void)replaceSelectedTextByKey:(NSString *)replacementString {
+    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
+    MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
-    AXError getFocusedUIElementError = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
+    [replacementString copyToPasteboard];
     
-    NSString *selectedText;
-    AXError error = getFocusedUIElementError;
-    
-    if (getFocusedUIElementError == kAXErrorSuccess) {
-        AXValueRef selectedTextValue = NULL;
-        AXError getSelectedTextError = AXUIElementCopyAttributeValue(focusedElement, kAXSelectedTextAttribute, (CFTypeRef *)&selectedTextValue);
-        if (getSelectedTextError == kAXErrorSuccess) {
-            // Note: selectedText may be @""
-            selectedText = (__bridge NSString *)(selectedTextValue);
-            selectedText = [selectedText removeInvisibleChar];
-            MMLogInfo(@"--> Accessibility success, getText: %@", selectedText);
-            
-            AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(@"123"));
-
-            
-        } else {
-            if (getSelectedTextError == kAXErrorNoValue) {
-                MMLogInfo(@"Not support Auxiliary, error: %d", getSelectedTextError);
-            } else {
-                MMLogInfo(@"Accessibility error: %d", getSelectedTextError);
-            }
-        }
-        error = getSelectedTextError;
-    }
-    
-    if (focusedElement != NULL) {
-        CFRelease(focusedElement);
-    }
-    CFRelease(systemWideElement);
-    
-    completion(selectedText, error);
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
+    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, false);
 }
 
 @end

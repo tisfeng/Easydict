@@ -282,9 +282,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
-    
-    self.isTextEditable = [self isTextEditable];
-    
+        
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
         // If selected text frame is valid, maybe just dragging, then ignore it.
@@ -302,6 +300,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             // Monitor CGEventTap must be required after using Accessibility successfully.
             [self monitorCGEventTap];
             
+            self.isTextEditable = [self isTextEditable:text];
+
             completion(text);
             return;
         }
@@ -978,7 +978,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
 }
 
 // 判断当前选中文本是否可编辑
-- (BOOL)isTextEditable {
+- (BOOL)isTextEditable:(NSString *)text {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
     
     AXUIElementRef focusedElement = NULL;
@@ -987,10 +987,9 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
     BOOL isEditable = NO;
     
     // focusedElement may be NULL in Telegram App
-    if (focusedElement) {
+    if (focusedElement != NULL) {
         CFTypeRef roleValue;
         AXUIElementCopyAttributeValue(focusedElement, kAXRoleAttribute, &roleValue);
-        
         if (roleValue != NULL) {
             if (CFGetTypeID(roleValue) == CFStringGetTypeID()) {
                 NSString *role = (__bridge NSString *)roleValue;
@@ -998,6 +997,7 @@ void PostMouseEvent(CGMouseButton button, CGEventType type, const CGPoint point,
                     isEditable = YES;
                 }
             }
+            CFRelease(roleValue);
         }
         CFRelease(focusedElement);
     }
