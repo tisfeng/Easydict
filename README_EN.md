@@ -404,24 +404,24 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 ### Bing Translate
 
-目前 Bing 翻译使用的是网页接口，当触发频率限制 429 报错时，除了切换代理，还可以通过手动设置请求 cookie 来续命，具体续命多久暂时不清楚。
+At present, Bing Translator uses a web interface. When encountering a 429 error due to triggering rate limits, you can extend the usage by manually setting request cookies, aside from switching proxies. The exact duration of the time extension is currently unclear.
 
-具体步骤是，使用浏览器打开 [Bing Translator](https://www.bing.com/translator)，登录，然后在控制台执行以下代码获取 cookie
+The specific steps are, use the browser to log in [Bing Translator](https://www.bing.com/translator), then get the cookie in the console by running the following command.
 
 ```js
 cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
 ```
 
-最后将 cookie 使用命令写入 Easydict
+Finally, use command to write the cookie in Easydict
 
 ```
-// xxx 是前面获取的 cookie
+// xxx is the obtained cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 
 ## Smart query mode
 
-目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
+Currently, there are two main types of lookup services: vocabularies lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both words lookup and translating text.
 
 ```objc
 typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
@@ -432,32 +432,32 @@ typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
 };
 ```
 
-Easydict 可以根据查询文本的内容，自动启用相应的查询服务。
+Easydict can automatically enable the appropriate query service based on the content of the query text.
 
-具体来说，在智能查询模式下，当查询单词时，则只会调用支持【单词查询】的服务；当翻译文本时，则只会调用支持【文本翻译】的服务。
+Specifically, under smart query mode, when looking up for vocabularies, only services that support [Words lookup] will be invoked; when translating text, only services that support [Text Translation] will be enabled.
 
-对于单词，支持查询单词的服务效果明显比翻译更好，而翻译文本时，启用单词查询服务
+For vocabularies, services that support vocabularies lookup work significantly better than translations, while translating text with vocabularies lookups enabled.
 
-默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
+By default, all translation services support vocabularies lookup (vocabularies are also a kind of text), users can adjust it manually. For example, to set Google to translate text only, just use the following command to change the property to `translation | sentence`.
 
 ```
 easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
 ```
 
-同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
+Similarly, for some services that support looking up vocabularies and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabularies by setting the type to `dictionary`.
 
 ```
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
-默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
+By default, only [Mini Window] is enabled for Smart Query Mode, users can also enable Smart Query Mode manually for [Hover Window]:
 
 ```
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
-window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
+window1 represents mini window, while window2 represents hover window, 0 represents disabled while 1 represents enabled.
 
->  注意：智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头展开查询。
+>  Attention: Smart query mode only indicates whether this query service is  enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -466,9 +466,9 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示�
 
 ## URL Scheme
 
-Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good。 
+Easydict supports fast lookup for URL scheme: `easydict://xxx`, such as easydict://good.
 
-如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://good%2Fgirl
+If the query content xxx contains special characters, URL encode is needed, such as easydict://good%2Fgirl
 
 ## Use with PopClip
 
