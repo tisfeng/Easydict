@@ -38,11 +38,7 @@
 - (void)replaceSelectedText:(NSString *)replacementString {
     [EZWindowManager.shared activeLastFrontmostApplication];
     
-    if (EZConfiguration.shared.isBeta) {
-        [self replaceSelectedTextByKey:replacementString];
-    } else {
-        [self replaceSelectedTextByAccessibility:replacementString];
-    }
+    [self replaceSelectedTextByAccessibility:replacementString];
 }
 
 - (void)replaceSelectedTextByAccessibility:(NSString *)replacementString {
@@ -70,9 +66,7 @@
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
     [replacementString copyToPasteboard];
-    
     PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, false);
 }
 
 @end
