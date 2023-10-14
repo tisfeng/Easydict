@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services result at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -316,14 +316,14 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
 <bar>
 
-Lookup for APIKey (similar to other keys), if the query succeeded, the result will be written to the clipboard.
+Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
 ```
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
 #### Query Mode
 
-Currently, OpenAI translation supports three query modes: word lookup, sentence translations, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
+Currently, OpenAI translation supports three query modes: word lookup, sentence translation, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/2KIWfp-1695612945.png">
@@ -344,7 +344,7 @@ easydict://writeKeyValue?EZOpenAIDictionaryKey=0
 // Disable sentence analysis
 easydict://writeKeyValue?EZOpenAISentenceKey=0
 ```
-Quick tip: If you only want to exclude occasional sentence analysis without turning off the Sentence mode, simply append a tilde (~) after `[Sentence]`. This will convert it into the Translation mode.
+A quick tip: If you only want to exclude occasional sentence analysis without turning off the Sentence mode, simply append a tilde (~) after `[Sentence]`. This will convert it into the Translation mode.
 
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
@@ -354,7 +354,7 @@ Quick tip: If you only want to exclude occasional sentence analysis without turn
 Support custom domains and models
 
 ```
-//  xxx is the host，the default one is api.openai.com
+//  xxx is the host, the default one is api.openai.com
 easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 
 // xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
@@ -406,13 +406,13 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 At present, Bing Translator uses a web interface. When encountering a 429 error due to triggering rate limits, you can extend the usage by manually setting request cookies, aside from switching proxies. The exact duration of the time extension is currently unclear.
 
-The specific steps are, use the browser to log in [Bing Translator](https://www.bing.com/translator), then get the cookie in the console by running the following command.
+The specific steps are, to use the browser to log in [Bing Translator](https://www.bing.com/translator), then get the cookie in the console by running the following command.
 
 ```js
 cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
 ```
 
-Finally, use command to write the cookie in Easydict
+Finally, use the command to write the cookie in Easydict
 
 ```
 // xxx is the obtained cookie
@@ -421,7 +421,7 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 ## Smart query mode
 
-Currently, there are two main types of lookup services: vocabularies lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both words lookup and translating text.
+Currently, there are two main types of lookup services: vocabulary lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both vocabulary lookup and translating text.
 
 ```objc
 typedef NS_OPTIONS(NSUInteger, EZQueryTextType) {
@@ -444,7 +444,7 @@ By default, all translation services support vocabularies lookup (vocabularies a
 easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
 ```
 
-Similarly, for some services that support looking up vocabularies and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabularies by setting the type to `dictionary`.
+Similarly, for some services that support looking up vocabulary and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabulary by setting the type to `dictionary`.
 
 ```
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
@@ -455,9 +455,9 @@ By default, only [Mini Window] is enabled for Smart Query Mode, users can also e
 ```
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
-window1 represents mini window, while window2 represents hover window, 0 represents disabled while 1 represents enabled.
+window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
 
->  Attention: Smart query mode only indicates whether this query service is  enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
+>  Attention: Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -468,7 +468,7 @@ window1 represents mini window, while window2 represents hover window, 0 represe
 
 Easydict supports fast lookup for URL scheme: `easydict://xxx`, such as easydict://good.
 
-If the query content xxx contains special characters, URL encode is needed, such as easydict://good%2Fgirl
+If the query content xxx contains special characters, URL encoding is needed, such as easydict://good%2Fgirl
 
 ## Use with PopClip
 

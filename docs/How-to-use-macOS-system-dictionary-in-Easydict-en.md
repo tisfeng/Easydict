@@ -23,9 +23,9 @@ Furthermore, Apple Dictionary also supports custom import dictionaries. This mea
 
 ### Adding third-party dictionaries
 
-> ⚠️ To alleviate concerns related to copyright, acquire your own paperback copy or app.
+> ⚠️ To alleviate concerns related to copyright, acquire your paperback copy or app.
 
-The easiest way for adding a dictionary to macOS is to find a converted .dictionary file, drag it into the Dictionary folder of Apple Dictionary, and then restart Dictionary.app to ensure the new dictionary appears in the Settings.
+The easiest way to add a dictionary to macOS is to find a converted .dictionary file, drag it into the Dictionary folder of Apple Dictionary, and then restart the Dicionary.app to ensure the new dictionary appears in the Settings.
 
 Attention: Each time a new dictionary is added, Easydict needs to be restarted to see the changes in effect. Also, modifying the dictionary application settings may cause Easydict to crash; this is an expected behaviour.
 
@@ -83,9 +83,9 @@ I can't remember the source of this dictionary, but the point is that the css of
 
 ### How to make a .dictionary dictionary
 
->  Attention: This part of the doc is aimed at advanced users, who need a bit of programming knowledge and loves to spend time on this.
+>  Attention: This part of the doc is aimed at advanced users, who need a bit of programming knowledge and love to spend time on this.
 
-Below is an introduction on how to use the open-source project [pyglossary](https://github.com/ilius/pyglossary) to convert Mdict dictionaries into .dictionary files. This doc is  based on  [pyglossary apple](https://github.com/ilius/pyglossary/blob/master/doc/apple.md).
+Below is an introduction to how to use the open-source project [pyglossary](https://github.com/ilius/pyglossary) to convert Mdict dictionaries into .dictionary files. This doc is based on [pyglossary apple](https://github.com/ilius/pyglossary/blob/master/doc/apple.md).
 
 
 ### Preparations
@@ -104,7 +104,7 @@ sudo pip3 install lxml beautifulsoup4 html5lib
 
 4. Download [pyglossary](https://github.com/ilius/pyglossary)
 
-   Please move the downloaded pyglossary library to a fixed directory, you will need it everytime you convert a dictionary.
+   Please move the downloaded pyglossary library to a fixed directory, you will need it every time you convert a dictionary.
 
    Assuming that pyglossary-master is located at `~/Downloads/pyglossary-master`
 
@@ -115,7 +115,7 @@ Mdict dictionary resources are available from the following website:
 
 Now let's begin.
 
-### Steps of convertion
+### Steps of conversion
 
 Suppose the dictionary file in Mdict format is located in `~/Downloads/oald8/oald8.mdx`, and the picture and speech file `oald8.mdd` are also in the same folder.
 
@@ -135,7 +135,7 @@ If all goes well, you will end up with an `objects` file in that directory, with
 
 Note that the dictionary generated above has a very simple interface, and usually Mdicts circulating on the web will come with a copy of beautified css, such as `oald8.css`. Since pyglossary does not handle css automatically, we need to do it manually by copying the contents of `oald8.css` and appending it to the `DefaultStyle.css` inside the `oald8-apple.dictionary` file. If you want to customize the css, you also modify this file.
 
-The name of the dictionary can be changed via `Info.plist`, where `Bundle name` is the name of the dictionary to be displayed in the application interface, and `Bundle display name` is the name of the dictionary to be displayed in the settings page. For convenience, it is recommended that both be set to the same value.
+The name of the dictionary can be changed via `Info.plist`, where the `Bundle name` is the name of the dictionary to be displayed in the application interface, and the `Bundle display name` is the name of the dictionary to be displayed in the settings page. For convenience, it is recommended that both be set to the same value.
 
 END.
 
