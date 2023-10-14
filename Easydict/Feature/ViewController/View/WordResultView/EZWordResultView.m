@@ -39,6 +39,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 @interface EZWordResultView () <NSTextViewDelegate>
 
 @property (nonatomic, strong) EZQueryResult *result;
+@property (nonatomic, strong) NSButton *replaceTextButton;
 
 @property (nonatomic, assign) CGFloat bottomViewHeight;
 
@@ -868,13 +869,15 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     EZReplaceTextButton *replaceTextButton = [[EZReplaceTextButton alloc] init];
     [self addSubview:replaceTextButton];
     replaceTextButton.hidden = !result.showReplaceButton;
+    self.replaceTextButton = replaceTextButton;
     
     [replaceTextButton setClickBlock:^(EZButton *button) {
         NSString *replacedText = result.copiedText;
-        NSLog(@"replace text: %@", result.copiedText);
-        
         EZReplaceTextButton *replaceTextButton = (EZReplaceTextButton *)button;
         [replaceTextButton replaceSelectedText:replacedText];
+        
+        EZBaseQueryViewController *queryViewController = EZWindowManager.shared.floatingWindow.queryViewController;
+        [queryViewController disableReplaceTextButton];
     }];
     replaceTextButton.mas_key = @"replaceTextButton";
     

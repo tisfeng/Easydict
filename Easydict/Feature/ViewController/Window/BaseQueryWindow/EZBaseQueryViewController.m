@@ -1114,6 +1114,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
 }
 
+- (void)disableReplaceTextButton {
+    for (EZQueryService *service in self.services) {
+        service.result.showReplaceButton = NO;
+        
+        EZResultView *resultView = [self resultCellOfResult:service.result];
+        resultView.wordResultView.replaceTextButton.enabled = NO;
+    }
+}
+
 
 #pragma mark - Set up cell view
 

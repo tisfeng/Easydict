@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateCellWithResult:(EZQueryResult *)result reloadData:(BOOL)reloadData;
 
+- (void)disableReplaceTextButton;
+
 @end
 
 NS_ASSUME_NONNULL_END
