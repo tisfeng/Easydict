@@ -282,6 +282,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)getSelectedText:(BOOL)checkTextFrame completion:(void (^)(NSString *_Nullable))completion {
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
+    
+    self.isTextEditable = NO;
         
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
