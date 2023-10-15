@@ -67,8 +67,7 @@ static EZAppleDictionary *_instance;
         NSArray<TTTDictionary *> *dictionaries = [TTTDictionary activeDictionaries];
         NSString *htmlString = [self queryAllIframeHTMLResultOfWord:text
                                                     fromToLanguages:@[ from, to ]
-                                                     inDictionaries:dictionaries
-                                                          autoWrite:YES];
+                                                     inDictionaries:dictionaries];
         self.result.HTMLString = htmlString;
         
         if (htmlString.length == 0) {
@@ -93,6 +92,10 @@ static EZAppleDictionary *_instance;
     completion(EZLanguageAuto, nil);
 }
 
+- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
+    NSLog(@"Apple Dictionary does not support ocr");
+}
+
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
     MMOrderedDictionary *languageDict = [TTTDictionary languageToDictionaryNameMap];
     NSString *dictName = [languageDict objectForKey:language];
@@ -102,16 +105,11 @@ static EZAppleDictionary *_instance;
     return NO;
 }
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"Apple Dictionary does not support ocr");
-}
-
 #pragma mark -
 
 - (nullable NSString *)queryAllIframeHTMLResultOfWord:(NSString *)word
                                       fromToLanguages:(nullable NSArray<EZLanguage> *)languages
                                     inDictionaryNames:(NSArray<NSString *> *)dictNames
-                                            autoWrite:(BOOL)writeFlag
 {
     
     NSMutableArray<TTTDictionary *> *dicts = [NSMutableArray array];
@@ -122,19 +120,18 @@ static EZAppleDictionary *_instance;
         }
     }
     
-    return [self queryAllIframeHTMLResultOfWord:word fromToLanguages:languages inDictionaries:dicts autoWrite:writeFlag];
+    return [self queryAllIframeHTMLResultOfWord:word fromToLanguages:languages inDictionaries:dicts];
 }
 
 /// Get All iframe HTML of word from dictionaries, cost ~0.2s
 - (nullable NSString *)queryAllIframeHTMLResultOfWord:(NSString *)word
                                       fromToLanguages:(nullable NSArray<EZLanguage> *)languages
                                        inDictionaries:(NSArray<TTTDictionary *> *)dictionaries
-                                            autoWrite:(BOOL)writeFlag
 {
-    NSLog(@"query dictionaries: %@", [dictionaries debugDescription]);
+    //    NSLog(@"query dictionaries: %@", [dictionaries debugDescription]);
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-
+    
     NSString *baseHtmlPath = [[NSBundle mainBundle] pathForResource:@"apple-dictionary" ofType:@"html"];
     NSString *baseHtmlString = [NSString stringWithContentsOfFile:baseHtmlPath encoding:NSUTF8StringEncoding error:nil];
     
@@ -172,33 +169,16 @@ static EZAppleDictionary *_instance;
         
         //  ~/Library/Dictionaries/Apple.dictionary/Contents/
         NSURL *contentsURL = [dictionary.dictionaryURL URLByAppendingPathComponent:@"Contents"];
+        NSArray *entryHTMLs = [self queryEntryHTMLsOfWord:word inDictionary:dictionary];
         
-        NSArray<TTTDictionaryEntry *> *entries = [dictionary entriesForSearchTerm:word];
-        for (TTTDictionaryEntry *entry in entries) {
-            NSString *html = entry.HTMLWithAppCSS;
-            NSString *headword = entry.headword;
-            
-            // LOG --> log,  根据 genju--> 根据  gēnjù
-            BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
-            
-            if (html.length && isTheSameHeadword) {
-                // Replace source relative path with absolute path.
-                NSString *contentsPath = contentsURL.path;
-                
-                // System seems to automatically adapt the image path internally.
-//                html = [self replacedImagePathOfHTML:html withBasePath:contentsPath];
-                
-                if (writeFlag) {
-                    html = [self replacedAudioPathOfHTML:html withBasePath:contentsPath];
-                }
-                
-                [wordHtmlString appendString:html];
-            }
+        for (NSString *html in entryHTMLs) {
+            NSString *absolutePathHTML = [self replacedAudioPathOfHTML:html withBasePath:contentsURL.path];
+            [wordHtmlString appendString:absolutePathHTML];
         }
         
         if (wordHtmlString.length) {
             // Use -webkit-text-fill-color to render system dict.
-            //            NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
+            //     NSString *textColor = dictionary.isUserDictionary ? @"color" : @"-webkit-text-fill-color";
             
             NSString *dictHTML = [NSString stringWithFormat:@"%@\n\n%@", customCSS, wordHtmlString];
             
@@ -222,7 +202,7 @@ static EZAppleDictionary *_instance;
                     NSLog(@"createDirectoryAtPath error: %@", error);
                 }
             }
-
+            
             NSString *htmlFilePath = [htmlDirectory stringByAppendingFormat:@"/%@.html", dictName];
             NSError *error;
             if (![dictHTML writeToFile:htmlFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
@@ -308,16 +288,16 @@ static EZAppleDictionary *_instance;
 - (NSString *)replacedAudioPathOfHTML:(NSString *)HTML withBasePath:(NSString *)basePath {
     NSString *pattern = @"new Audio\\((.*?)\\)";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
-
+    
     NSMutableString *mutableHTML = [HTML mutableCopy];
-
+    
     [regex enumerateMatchesInString:mutableHTML options:0 range:NSMakeRange(0, mutableHTML.length) usingBlock:^(NSTextCheckingResult * _Nullable result, NSMatchingFlags flags, BOOL * _Nonnull stop) {
         NSRange matchRange = [result rangeAtIndex:1];
         NSString *filePath = [mutableHTML substringWithRange:matchRange];
         NSString *relativePath = [filePath stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
-
+        
         NSString *fileBasePath = basePath;
-
+        
         NSArray *array = [relativePath componentsSeparatedByString:@"/"];
         BOOL isDirectoryPath = array.count > 1;
         if (isDirectoryPath) {
@@ -330,7 +310,7 @@ static EZAppleDictionary *_instance;
         NSString *replacement = [NSString stringWithFormat:@"new Audio('%@')", absolutePath];
         [mutableHTML replaceCharactersInRange:result.range withString:replacement];
     }];
-
+    
     return [mutableHTML copy];
 }
 
@@ -345,7 +325,7 @@ static EZAppleDictionary *_instance;
         NSLog(@"Error reading directory: %@", error);
         return nil;
     }
-        
+    
     for (NSString *content in contents) {
         NSString *fullPath = [directoryPath stringByAppendingPathComponent:content];
         
