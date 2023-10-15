@@ -17,11 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)isKnownBrowser:(NSString *)bundleID;
 
-/// Simulate key event.
-void postKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown);
-
-
-#pragma mark - Replace Brower selected text
+- (void)getBrowserSelectedText:(NSString *)bundleID completion:(AppleScriptCompletionHandler)completion;
 
 - (void)replaceBrowserSelectedText:(NSString *)replacementString
                           bundleID:(NSString *)bundleID

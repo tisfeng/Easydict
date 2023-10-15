@@ -6,12 +6,10 @@
 //
 
 #import "EZReplaceTextButton.h"
-#import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
-#include <Carbon/Carbon.h>
 #import "EZWindowManager.h"
-#import "EZConfiguration.h"
 #import "EZAppleScriptManager.h"
+#import "EZSystemUtility.h"
 
 @implementation EZReplaceTextButton
 
@@ -78,20 +76,13 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
-    NSString *lastText = [self getPasteboardText];
+    NSString *lastText = [EZSystemUtility getLastPasteboardText];
 
-    [replacementString copyToPasteboard];
-    postKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
+    [replacementString copyToPasteboard];    
+    [EZSystemUtility postPasteEvent];
     
     [lastText copyToPasteboard];
 }
 
-/// Get last NSPasteboard string text.
-- (nullable NSString *)getPasteboardText {
-    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    // !!!: Do not use [pasteboard stringForType:NSPasteboardTypeString], it will get the last text even current copy value is nil.
-    NSString *text = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
-    return text;
-}
 
 @end

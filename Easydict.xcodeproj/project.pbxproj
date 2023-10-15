@@ -178,6 +178,7 @@
 		03BFFC68295F4B87004E033E /* EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC67295F4B87004E033E /* EZYoudaoDictModel.m */; };
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
+		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
@@ -570,6 +571,8 @@
 		03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZYoudaoDictModel.m"; sourceTree = "<group>"; };
 		03BFFC6F29612E10004E033E /* NSString+EZConvenience.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZConvenience.h"; sourceTree = "<group>"; };
 		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
+		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
+		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
 		03D043502928935300E7559E /* EZMainQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainQueryWindow.h; sourceTree = "<group>"; };
@@ -992,6 +995,7 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
@@ -1628,6 +1632,15 @@
 			path = "cyan-white-icon";
 			sourceTree = "<group>";
 		};
+		03CAB9522ADBEF5000DA94A3 /* SystemUtility */ = {
+			isa = PBXGroup;
+			children = (
+				03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */,
+				03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */,
+			);
+			path = SystemUtility;
+			sourceTree = "<group>";
+		};
 		03D0434A292884B900E7559E /* MiniQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
@@ -2213,6 +2226,7 @@
 				03D747432A07FB150006CD77 /* EZError.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
 				03B0230329231FA6001C7E63 /* EZResultView.m in Sources */,
+				03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */,
 				03BDA7C32A26DA280079D04F /* NSArray+XPMArgumentsNormalizer.m in Sources */,
 				03BB2DF329F6350200447EDD /* EZCopyButton.m in Sources */,
 				03BDA7BB2A26DA280079D04F /* XPMArgsKonstants.m in Sources */,
