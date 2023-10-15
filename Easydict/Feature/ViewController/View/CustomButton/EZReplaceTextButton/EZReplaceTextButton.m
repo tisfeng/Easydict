@@ -78,9 +78,20 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
+    NSString *lastText = [self getPasteboardText];
+
     [replacementString copyToPasteboard];
     postKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
+    
+    [lastText copyToPasteboard];
 }
 
+/// Get last NSPasteboard string text.
+- (nullable NSString *)getPasteboardText {
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    // !!!: Do not use [pasteboard stringForType:NSPasteboardTypeString], it will get the last text even current copy value is nil.
+    NSString *text = [[[pasteboard pasteboardItems] firstObject] stringForType:NSPasteboardTypeString];
+    return text;
+}
 
 @end
