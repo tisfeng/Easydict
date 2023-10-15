@@ -70,6 +70,7 @@
         // TODO: need to optimize, like needDetectLanguage.
         self.audioURL = nil;
         self.needDetectLanguage = YES;
+        self.queryText = [self handleInputText:inputText];
     }
     
     _inputText = [inputText copy];
@@ -78,11 +79,6 @@
         _detectedLanguage = EZLanguageAuto;
         _showAutoLanguage = NO;
     }
-}
-
-- (NSString *)queryText {
-    NSString *queryText = [self handleInputText:self.inputText];
-    return queryText;
 }
 
 - (void)setActionType:(EZActionType)actionType {
