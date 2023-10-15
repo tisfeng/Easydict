@@ -6,11 +6,11 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZExeCommand.h"
+#import "EZScriptExecutor.h"
 #import "EZTranslateError.h"
 #import "EZToast.h"
 
-@implementation EZExeCommand
+@implementation EZScriptExecutor
 
 /// Run translate shortcut with parameters.
 - (NSTask *)runTranslateShortcut:(NSDictionary *)parameters completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {

@@ -11,7 +11,7 @@
 #import "EZWindowManager.h"
 #import "EZConfiguration.h"
 #import "EZPreferencesWindowController.h"
-#import "EZExeCommand.h"
+#import "EZScriptExecutor.h"
 #import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
 #import "EZToast.h"
@@ -59,7 +59,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 // When isMuting, we should not read system volume.
 @property (nonatomic, assign) BOOL isMuting;
 
-@property (nonatomic, strong) EZExeCommand *exeCommand;
+@property (nonatomic, strong) EZScriptExecutor *exeCommand;
 
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
@@ -92,9 +92,9 @@ static EZEventMonitor *_instance = nil;
     self.triggerType = EZTriggerTypeNone;
 }
 
-- (EZExeCommand *)exeCommand {
+- (EZScriptExecutor *)exeCommand {
     if (!_exeCommand) {
-        _exeCommand = [[EZExeCommand alloc] init];
+        _exeCommand = [[EZScriptExecutor alloc] init];
     }
     return _exeCommand;
 }
@@ -944,7 +944,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 /// Simulate key event.
-void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
+static void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown) {
     // Ref: http://www.enkichen.com/2018/09/12/osx-mouse-keyboard-event/
     CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStatePrivate);
     CGEventRef push = CGEventCreateKeyboardEvent(source, virtualKey, keyDown);

@@ -9,7 +9,7 @@
 #import "EZAppleService.h"
 #import <Vision/Vision.h>
 #import <AVFoundation/AVFoundation.h>
-#import "EZExeCommand.h"
+#import "EZScriptExecutor.h"
 #import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZChineseText.h"
@@ -96,7 +96,7 @@ static char kJoinedStringKey;
 
 @interface EZAppleService ()
 
-@property (nonatomic, strong) EZExeCommand *exeCommand;
+@property (nonatomic, strong) EZScriptExecutor *exeCommand;
 
 @property (nonatomic, strong) NSDictionary *appleLangEnumFromStringDict;
 
@@ -178,9 +178,9 @@ static EZAppleService *_instance;
     return self;
 }
 
-- (EZExeCommand *)exeCommand {
+- (EZScriptExecutor *)exeCommand {
     if (!_exeCommand) {
-        _exeCommand = [[EZExeCommand alloc] init];
+        _exeCommand = [[EZScriptExecutor alloc] init];
     }
     return _exeCommand;
 }

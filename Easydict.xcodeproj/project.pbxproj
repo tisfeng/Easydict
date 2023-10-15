@@ -11,12 +11,13 @@
 		03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2A2940D3230062B821 /* EZDeepLTranslate.m */; };
 		03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */; };
 		03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */ = {isa = PBXBuildFile; fileRef = 03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */; };
+		030570E22ADB919900C9905E /* EZAppleScriptManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 030570E12ADB919900C9905E /* EZAppleScriptManager.m */; };
 		0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EC292B439A00AFB76A /* EZTextView.m */; };
 		0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1EF292B4A5E00AFB76A /* NSView+EZGetViewController.m */; };
 		0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0309E1F3292BD6A100AFB76A /* EZQueryModel.m */; };
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
-		03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZExeCommand.m */; };
+		03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZScriptExecutor.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
 		03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1E29EF8EE500EFECA0 /* EZPrivacyViewController.m */; };
@@ -245,6 +246,8 @@
 		03008B2D2941956D0062B821 /* EZURLSchemeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZURLSchemeHandler.m; sourceTree = "<group>"; };
 		03008B3D29444B0A0062B821 /* NSView+EZAnimatedHidden.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZAnimatedHidden.h"; sourceTree = "<group>"; };
 		03008B3E29444B0A0062B821 /* NSView+EZAnimatedHidden.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+EZAnimatedHidden.m"; sourceTree = "<group>"; };
+		030570E02ADB919900C9905E /* EZAppleScriptManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleScriptManager.h; sourceTree = "<group>"; };
+		030570E12ADB919900C9905E /* EZAppleScriptManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleScriptManager.m; sourceTree = "<group>"; };
 		0309E1EB292B439A00AFB76A /* EZTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTextView.h; sourceTree = "<group>"; };
 		0309E1EC292B439A00AFB76A /* EZTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTextView.m; sourceTree = "<group>"; };
 		0309E1EE292B4A5E00AFB76A /* NSView+EZGetViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+EZGetViewController.h"; sourceTree = "<group>"; };
@@ -254,8 +257,8 @@
 		0310C8262A94EFA100B1D81E /* apple-dictionary.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "apple-dictionary.html"; sourceTree = "<group>"; };
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
-		03247E342968158B00AFCD67 /* EZExeCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZExeCommand.h; sourceTree = "<group>"; };
-		03247E352968158B00AFCD67 /* EZExeCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZExeCommand.m; sourceTree = "<group>"; };
+		03247E342968158B00AFCD67 /* EZScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScriptExecutor.h; sourceTree = "<group>"; };
+		03247E352968158B00AFCD67 /* EZScriptExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScriptExecutor.m; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
 		03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZLoadingAnimationView.m; sourceTree = "<group>"; };
 		03262C1A29EEE91700EFECA0 /* EZEnumTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZEnumTypes.h; sourceTree = "<group>"; };
@@ -694,6 +697,15 @@
 			path = "NSView+AnimatedHidden";
 			sourceTree = "<group>";
 		};
+		030570DF2ADB916E00C9905E /* AppleScript */ = {
+			isa = PBXGroup;
+			children = (
+				030570E02ADB919900C9905E /* EZAppleScriptManager.h */,
+				030570E12ADB919900C9905E /* EZAppleScriptManager.m */,
+			);
+			path = AppleScript;
+			sourceTree = "<group>";
+		};
 		0309E1EA292B437C00AFB76A /* TextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -805,8 +817,8 @@
 				033C30FD2A74CEB10095926A /* AppleDictionary */,
 				03542A2E293645DF00C34C33 /* EZAppleService.h */,
 				03542A2F293645DF00C34C33 /* EZAppleService.m */,
-				03247E342968158B00AFCD67 /* EZExeCommand.h */,
-				03247E352968158B00AFCD67 /* EZExeCommand.m */,
+				03247E342968158B00AFCD67 /* EZScriptExecutor.h */,
+				03247E352968158B00AFCD67 /* EZScriptExecutor.m */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -980,6 +992,7 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
 				03D5FCFC2A5EF48F00AD26BE /* EZDeviceSystemInfo */,
 				03F0DB352953424F00EBF9C1 /* EZLog */,
@@ -2091,6 +2104,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				030570E22ADB919900C9905E /* EZAppleScriptManager.m in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03D8A65C2A433B4100D9A968 /* EZConfiguration+EZUserData.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
@@ -2128,7 +2142,7 @@
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
-				03247E362968158B00AFCD67 /* EZExeCommand.m in Sources */,
+				03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */,
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,
 				03B0231929231FA6001C7E63 /* SnipViewController.m in Sources */,
 				039CC910292F86F40037B91E /* NSImage+EZResize.m in Sources */,

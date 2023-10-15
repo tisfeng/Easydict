@@ -12,7 +12,7 @@
 #import <Sparkle/Sparkle.h>
 #import "EZMenuItemManager.h"
 #import "EZWindowManager.h"
-#import "EZExeCommand.h"
+#import "EZScriptExecutor.h"
 #import "EZLog.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
@@ -381,7 +381,7 @@ static EZConfiguration *_instance;
                                                   launchAtStartup ? @"true" : @"false",
                                                   appBundlePath];
 
-    EZExeCommand *exeCommand = [[EZExeCommand alloc] init];
+    EZScriptExecutor *exeCommand = [[EZScriptExecutor alloc] init];
     [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         if (error) {
             NSLog(@"launchAtStartup error: %@", error);

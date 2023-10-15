@@ -9,9 +9,9 @@
 #import "NSImage+EZResize.h"
 #import "NSImage+EZSymbolmage.h"
 #include <Carbon/Carbon.h>
-#import "EZEventMonitor.h"
 #import "EZWindowManager.h"
 #import "EZConfiguration.h"
+#import "EZAppleScriptManager.h"
 
 @implementation EZReplaceTextButton
 
@@ -38,7 +38,19 @@
 - (void)replaceSelectedText:(NSString *)replacementString {
     [EZWindowManager.shared activeLastFrontmostApplication];
     
-    [self replaceSelectedTextByAccessibility:replacementString];
+    NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
+    NSString *bundleID = app.bundleIdentifier;
+    
+    EZAppleScriptManager *appleScriptManager = [EZAppleScriptManager shared];
+    if ([appleScriptManager isKnownBrowser:bundleID]) {
+        [appleScriptManager replaceBrowserSelectedText:replacementString bundleID:bundleID completion:^(NSString * _Nullable result, NSError * _Nullable error) {
+            if (error) {
+                [self replaceSelectedTextByKey:replacementString];
+            }
+        }];
+    } else {
+        [self replaceSelectedTextByAccessibility:replacementString];
+    }
 }
 
 - (void)replaceSelectedTextByAccessibility:(NSString *)replacementString {
@@ -48,6 +60,7 @@
     AXError error = AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
     
     if (error == kAXErrorSuccess && focusedElement) {
+        // ???: Sometimes in Chrome, error is kAXErrorSuccess but replace text failed 😓
         error = AXUIElementSetAttributeValue(focusedElement, kAXSelectedTextAttribute, (__bridge CFTypeRef)(replacementString));
         if (error != kAXErrorSuccess) {
             MMLogInfo(@"replaceSelectedText error: %d", error);
@@ -66,7 +79,8 @@
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
     [replacementString copyToPasteboard];
-    PostKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
+    postKeyboardEvent(kCGEventFlagMaskCommand, kVK_ANSI_V, true);
 }
+
 
 @end

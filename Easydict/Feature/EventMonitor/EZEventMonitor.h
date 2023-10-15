@@ -49,11 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startMonitor;
 - (BOOL)isAccessibilityEnabled;
 
-#pragma mark -
-
-/// Simulate key event.
-void PostKeyboardEvent(CGEventFlags flags, CGKeyCode virtualKey, bool keyDown);
-
 @end
 
 NS_ASSUME_NONNULL_END
