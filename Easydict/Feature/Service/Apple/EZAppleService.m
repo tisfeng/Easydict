@@ -30,8 +30,8 @@ static NSInteger const kShortPoetryCharacterCountOfLine = 12;
 static char kJoinedStringKey;
 
 @interface VNRecognizedTextObservation (EZText)
-@property (nonatomic, copy, readonly) NSString *firstText;
 
+@property (nonatomic, copy, readonly) NSString *firstText;
 @property (nonatomic, copy) NSString *joinedString;
 
 @end
@@ -49,7 +49,6 @@ static char kJoinedStringKey;
 - (NSString *)joinedString {
     return objc_getAssociatedObject(self, &kJoinedStringKey);
 }
-
 
 - (NSString *)description {
     return [self customDescription:YES];
@@ -99,25 +98,6 @@ static char kJoinedStringKey;
 @property (nonatomic, strong) EZScriptExecutor *exeCommand;
 
 @property (nonatomic, strong) NSDictionary *appleLangEnumFromStringDict;
-
-/**
- CGFloat minLineHeight = MAXFLOAT;
- CGFloat totalLineHeight = 0;
- CGFloat averageLineHeight = 0;
- 
- // OCR line spacing may be less than 0
- CGFloat minLineSpacing = MAXFLOAT;
- CGFloat minPositiveLineSpacing = MAXFLOAT;
- CGFloat totalLineSpacing = 0;
- CGFloat averageLineSpacing = 0;
- 
- CGFloat minX = MAXFLOAT;
- CGFloat maxLengthOfLine = 0;
- CGFloat minLengthOfLine = MAXFLOAT;
- NSInteger punctuationMarkCount = 0;
- NSInteger totalCharCount = 0;
- CGFloat charCountPerLine = 0;
- */
 
 @property (nonatomic, copy) EZLanguage language;
 
@@ -1983,38 +1963,6 @@ static EZAppleService *_instance;
     CGFloat singleAlphabetWidth = textWidth / textObservation.firstText.length;
     return singleAlphabetWidth;
 }
-
-//- (CGFloat)singleAlphabetWidthOfTextObservation2:(VNRecognizedTextObservation *)textObservation {
-//    CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-//    CGFloat textHeight = textObservation.boundingBox.size.height * self.ocrImage.size.height / scaleFactor;
-//    CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfText:textObservation.firstText height:textHeight];
-//    return singleAlphabetWidth;
-//}
-
-//- (CGFloat)singleAlphabetWidthOfText:(NSString *)text width:(CGFloat)textWidth {
-//    CGFloat systemFontSize = [NSFont systemFontSize]; // 13
-//    NSFont *font = [NSFont boldSystemFontOfSize:systemFontSize];
-//    CGFloat fontSize = [self fontSizeOfText:text width:textWidth];
-//
-//    BOOL isEnglishTypeLanguage = [self.languageManager isLanguageWordsNeedSpace:self.language];
-//    /**
-//     subscribers.
-//     implementation
-//     transportation
-//     Sustainability
-//     */
-//    NSString *longWord = isEnglishTypeLanguage ? @"implementation" : @"你好";
-//    CGFloat longWordLength = [longWord mm_sizeWithFont:font].width;
-//    /**
-//     longWordLength / systemFontSize = x / fontSize
-//     x = fontSize * (longWordLength / font)
-//     */
-//
-//    CGFloat width = fontSize * (longWordLength / systemFontSize);
-//    CGFloat singleAlphabetWidth = width / longWord.length;
-//
-//    return singleAlphabetWidth;
-//}
 
 - (CGFloat)fontSizeOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
