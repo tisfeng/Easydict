@@ -462,7 +462,7 @@ static EZAppleService *_instance;
     
     /**
      The synthesizer’s speaking rate (words per minute).
-
+     
      The range of supported rates is not predefined by the Speech Synthesis framework; but the synthesizer may only respond to a limited range of speech rates. Average human speech occurs at a rate of 180 to 220 words per minute.
      */
     
@@ -558,7 +558,7 @@ static EZAppleService *_instance;
 /// Apple original detect language dict.
 - (NSDictionary<NLLanguage, NSNumber *> *)appleDetectTextLanguageDict:(NSString *)text printLog:(BOOL)logFlag {
     text = [text trimToMaxLength:100];
-
+    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     // 10.14+  Ref: https://developer.apple.com/documentation/naturallanguage/identifying_the_language_in_text?language=objc
@@ -714,7 +714,7 @@ static EZAppleService *_instance;
     }
     
     NSLog(@"Spell check failed, use Most Confident Language: %@", ezLanguage);
-
+    
     return ezLanguage;
 }
 
@@ -1316,10 +1316,10 @@ static EZAppleService *_instance;
             
             /**
              10月1日  |  星期日  |  国庆节
-               
+             
              只要我们展现意志，大自然会为我们找到出
              路。
-
+             
              */
             if (i > 0) {
                 VNRecognizedTextObservation *prevTextObservation = textObservations[i - 1];
@@ -1329,7 +1329,7 @@ static EZAppleService *_instance;
                 }
             }
         }
-
+        
         BOOL isLongLine = [self isLongTextObservation:textObservation isStrict:YES];
         if (isLongLine) {
             longLineCount += 1;
@@ -1414,13 +1414,13 @@ static EZAppleService *_instance;
     
     /**
      9月27日  |  星期三
-       
+     
      世界正在变，习惯了许多理想，习惯了潇洒
      自在，忽然间要我改变，我改变不了这些习
      惯。
-       
+     
      —— 《喋血街头》  豆瓣评分 8.2
-       
+     
      1990 / 中国香港 / 剧情 动作 犯罪
      */
     if (maxContinuousLongLineCount >= 2 && endWithTerminatorCharLineCount > 0) {
@@ -1430,7 +1430,7 @@ static EZAppleService *_instance;
     if (endWithTerminatorCharLineCount == 0 && lineCount >= 6) {
         return YES;
     }
-
+    
     
     /**
      Should >= 0.5, especially two lines.
@@ -1479,7 +1479,7 @@ static EZAppleService *_instance;
     
     CGFloat textFontSize = [self fontSizeOfTextObservation:textObservation];
     CGFloat prevTextFontSize = [self fontSizeOfTextObservation:prevTextObservation];
-        
+    
     CGFloat differenceFontSize = fabs(textFontSize - prevTextFontSize);
     // Note: English uppercase-lowercase font size is not precise, so threshold should a bit large.
     CGFloat differenceFontThreshold = 5;
@@ -1782,12 +1782,12 @@ static EZAppleService *_instance;
     CGRect prevBoundingBox = prevTextObservation.boundingBox;
     CGRect boundingBox = textObservation.boundingBox;
     CGFloat lineHeight = boundingBox.size.height;
-        
+    
     // !!!: deltaY may be < 0
     CGFloat deltaY = prevBoundingBox.origin.y - (boundingBox.origin.y + lineHeight);
     CGFloat lineHeightRatio = deltaY / lineHeight;
     CGFloat averageLineHeightRatio = deltaY / self.averageLineHeight;
-        
+    
     NSString *text = textObservation.firstText;
     NSString *prevText = prevTextObservation.firstText;
     
@@ -1895,7 +1895,7 @@ static EZAppleService *_instance;
     CGFloat dx = lineX - prevLineX;
     
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-
+    
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength / scaleFactor;
     CGFloat difference = maxLength * dx;
     
@@ -1903,7 +1903,7 @@ static EZAppleService *_instance;
         return YES;
     }
     NSLog(@"Not equalX text: %@(difference: %.1f, threshold: %.1f)", textObservation.firstText, difference, threshold);
-
+    
     return NO;
 }
 
@@ -1937,14 +1937,14 @@ static EZAppleService *_instance;
 
 - (CGFloat)remainingAlphabetCountOfTextObservation:(VNRecognizedTextObservation *)textObservation {
     CGFloat scaleFactor = [NSScreen.mainScreen backingScaleFactor];
-
+    
     CGFloat dx = CGRectGetMaxX(self.maxLongLineTextObservation.boundingBox) - CGRectGetMaxX(textObservation.boundingBox);
     CGFloat maxLength = self.ocrImage.size.width * self.maxLineLength / scaleFactor;
     CGFloat difference = maxLength * dx;
     
     CGFloat singleAlphabetWidth = [self singleAlphabetWidthOfTextObservation:textObservation];
     CGFloat remainingAlphabetCount = difference / singleAlphabetWidth;
-        
+    
     return remainingAlphabetCount;
 }
 
@@ -1972,7 +1972,7 @@ static EZAppleService *_instance;
     
     // threshold is the actual display width.
     CGFloat threshold = alphabetCount * singleAlphabetWidth;
-//    NSLog(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
+    //    NSLog(@"%ld alpha, threshold is: %.1f", alphabetCount, threshold);
     
     return threshold;
 }
@@ -2034,10 +2034,10 @@ static EZAppleService *_instance;
      systemFontSize / width = x / textWidth
      x = textWidth * (systemFontSize / width)
      */
-
+    
     CGFloat fontSize = textWidth * (systemFontSize / width);
-//    NSLog(@"Calculated font size is: %.1f", fontSize);
-
+    //    NSLog(@"Calculated font size is: %.1f", fontSize);
+    
     return fontSize;
 }
 
