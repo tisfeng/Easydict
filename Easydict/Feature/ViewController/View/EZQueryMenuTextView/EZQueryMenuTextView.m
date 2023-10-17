@@ -45,20 +45,27 @@
 }
 
 - (void)queryInApp:(id)sender {
-    EZWindowManager *windowManager = [EZWindowManager shared];
     EZWindowType newWindowType;
+    EZActionType actionType = EZActionTypeInvokeQuery;
+
+    EZWindowManager *windowManager = [EZWindowManager shared];
     EZWindowType floatingWindowType = windowManager.floatingWindowType;
+    
     if (EZConfiguration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
         newWindowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
     } else {
         newWindowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
     }
     
-    CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
-    [windowManager showFloatingWindowType:newWindowType 
-                                queryText:self.queryText
-                               actionType:EZActionTypeInvokeQuery
-                                  atPoint:point];
+    if (newWindowType == floatingWindowType) {
+        [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
+    } else {
+        CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
+        [windowManager showFloatingWindowType:newWindowType
+                                    queryText:self.queryText
+                                   actionType:actionType
+                                      atPoint:point];
+    }
 }
 
 - (nullable NSString *)selectedText {
