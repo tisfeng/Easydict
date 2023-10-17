@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "EZQueryMenuTextView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZTextView : NSTextView
+@interface EZTextView : EZQueryMenuTextView
 
 /// Paste text block
 @property (nonatomic, copy) void (^pasteTextBlock)(NSString *text);

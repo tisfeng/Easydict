@@ -1727,6 +1727,22 @@
         }
       }
     },
+    "query_in_app" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Query in App"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用内查询"
+          }
+        }
+      }
+    },
     "quick_link" : {
       "localizations" : {
         "en" : {
