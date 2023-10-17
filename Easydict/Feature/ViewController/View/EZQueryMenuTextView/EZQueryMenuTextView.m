@@ -45,7 +45,7 @@
 
 - (void)queryInApp:(id)sender {
     EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
-    [viewController startQueryText:self.queryText actionType:EZActionTypeInputQuery];
+    [viewController startQueryText:self.queryText actionType:EZActionTypeInvokeQuery];
 }
 
 - (nullable NSString *)selectedText {

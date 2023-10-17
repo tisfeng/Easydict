@@ -1020,7 +1020,15 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         result = [[EZQueryResult alloc] init];
     }
     
-    result.showReplaceButton = EZEventMonitor.shared.isTextEditable;
+    NSArray *enabledReplaceTypes = @[
+        EZActionTypeAutoSelectQuery,
+        EZActionTypeShortcutQuery,
+    ];
+    if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
+        result.showReplaceButton = EZEventMonitor.shared.isTextEditable;
+    } else {
+        result.showReplaceButton = NO;
+    }
     
     service.result = result;
     return result;
