@@ -68,7 +68,7 @@ static EZWindowManager *_instance;
     self.offsetPoint = CGPointMake(18, -12);
     self.screen = NSScreen.mainScreen;
     self.floatingWindowTypeArray = [NSMutableArray arrayWithArray:@[ @(EZWindowTypeNone) ]];
-    self.actionType = EZActionTypeAutoSelectQuery;
+    self.actionType = EZActionTypeInvokeQuery;
 
     self.eventMonitor = [EZEventMonitor shared];
     [self setupEventMonitor];
@@ -284,21 +284,30 @@ static EZWindowManager *_instance;
 }
 
 /// Show floating window.
-- (void)showFloatingWindowType:(EZWindowType)type queryText:(nullable NSString *)text {
-    //    if ([self hasEasydictRunningInDebugMode]) {
-    //        return;
-    //    }
+- (void)showFloatingWindowType:(EZWindowType)windowType queryText:(nullable NSString *)text {
+    [self showFloatingWindowType:windowType queryText:text actionType:self.actionType];
+}
 
+- (void)showFloatingWindowType:(EZWindowType)windowType queryText:(NSString *)text actionType:(EZActionType)actionType {
+    CGPoint point = [self floatingWindowLocationWithType:windowType];
+    [self showFloatingWindowType:windowType queryText:text actionType:actionType atPoint:point];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType 
+                     queryText:(NSString *)text
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point {
     self.selectedText = text;
+    self.actionType = actionType;
 
-    EZBaseQueryWindow *window = [self windowWithType:type];
-    __block CGPoint location = location = [self floatingWindowLocationWithType:type];
+    EZBaseQueryWindow *window = [self windowWithType:windowType];
+//    __block CGPoint point = [self floatingWindowLocationWithType:windowType];
 
     // If text is nil, means we don't need to query anything, just show the window.
     if (!text) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
-        location = CGPointMake(location.x, location.y - window.height);
-        [self showFloatingWindow:window atPoint:location];
+        CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
+        [self showFloatingWindow:window atPoint:newPoint];
         return;
     }
 
@@ -313,8 +322,8 @@ static EZWindowManager *_instance;
         [queryViewController detectQueryText:nil];
 
         // !!!: window height has changed, so we need to update location again.
-        location = CGPointMake(location.x, location.y - window.height);
-        [self showFloatingWindow:window atPoint:location];
+        CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
+        [self showFloatingWindow:window atPoint:newPoint];
 
         if ([EZConfiguration.shared autoQuerySelectedText]) {
             [queryViewController startQueryText:text actionType:self.actionType];

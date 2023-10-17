@@ -7,7 +7,8 @@
 //
 
 #import "EZQueryMenuTextView.h"
-#import "EZBaseQueryViewController.h"
+#import "EZConfiguration.h"
+#import "EZWindowManager.h"
 
 @interface EZQueryMenuTextView ()
 
@@ -44,8 +45,20 @@
 }
 
 - (void)queryInApp:(id)sender {
-    EZBaseQueryViewController *viewController = (EZBaseQueryViewController *)self.window.contentViewController;
-    [viewController startQueryText:self.queryText actionType:EZActionTypeInvokeQuery];
+    EZWindowManager *windowManager = [EZWindowManager shared];
+    EZWindowType newWindowType;
+    EZWindowType floatingWindowType = windowManager.floatingWindowType;
+    if (EZConfiguration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
+        newWindowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+    } else {
+        newWindowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
+    }
+    
+    CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
+    [windowManager showFloatingWindowType:newWindowType 
+                                queryText:self.queryText
+                               actionType:EZActionTypeInvokeQuery
+                                  atPoint:point];
 }
 
 - (nullable NSString *)selectedText {

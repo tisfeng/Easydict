@@ -35,7 +35,7 @@
         if (!([action isEqualToString:EZQueryKey] && queryText.length)) {
             queryText = action;
         }
-        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText];
+        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText actionType:EZActionTypeInvokeQuery];
         
         return YES; // return YES to say we have handled the route
     }];
