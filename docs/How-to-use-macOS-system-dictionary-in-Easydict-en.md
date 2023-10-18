@@ -43,7 +43,7 @@ Longman, Collins, and Oxford are three substantial yet outstanding dictionaries.
 |         Concise English-Chinese dictionary          | Chinese-English |       [GitHub](https://github.com/skywind3000/ECDICT)        | https://cloud.189.cn/t/aIFRNnBF7j6v（访问码：3b2r） |
 |         Youdao Words Analysis          | Chinese-English | [freemdict](https://downloads.freemdict.com/%E5%B0%9A%E6%9C%AA%E6%95%B4%E7%90%86/%E5%85%B1%E4%BA%AB2020.5.11/qwjs/39_%E6%9C%89%E9%81%93%E8%AF%8D%E8%AF%AD%E8%BE%A8%E6%9E%90/) | https://cloud.189.cn/t/f6NFBbBrU7ba（访问码：sgl5） |
 |            Great Cictionary            | Chinese-English |           [mdict](https://mdict.org/post/dacihai/)           | https://cloud.189.cn/t/nuuuYriMfiqi（访问码：yvi2） |
-|     Longman Dictionary of Contemporary Advanced English     | Chinese-English |            [v2ex](https://www.v2ex.com/t/907272)             | https://cloud.189.cn/t/2EZ7javyIZr2（访问码：vlm3） |
+|     Longman Dictionary of Contemporary Advanced English     | Chinese-English |            [v2ex](https://www.v2ex.com/t/907272)             | https://cloud.189.cn/t/B77ji2V3u6Vv（访问码：zne6） |
 |      Collins Advanced English-Chinese Dictionary       | Chinese-English | [《柯林斯双解》for macOS](https://placeless.net/blog/macos-dictionaries) | https://cloud.189.cn/t/yyyUvmzQzIr2（访问码：j3kf） |
 | Oxford Advanced Learner's English-Chinese Dictionary (8th Edition) | Chinese-English |        [Jianshu](https://www.jianshu.com/p/e279d4a979fa)        | https://cloud.189.cn/t/7FNnYjf2qeuy（访问码：1hlz） |
 |   Oxford Advanced Learner's English-Chinese Dictionary (8)   | Chinese-English |                 Source unknown, I myself modified the css               | https://cloud.189.cn/t/7FVn6f6Vf2yq（访问码：ebd6） |

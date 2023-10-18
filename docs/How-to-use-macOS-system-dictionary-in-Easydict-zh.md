@@ -43,7 +43,7 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 |         简明英汉字典          | 中英 |       [GitHub](https://github.com/skywind3000/ECDICT)        | https://cloud.189.cn/t/aIFRNnBF7j6v（访问码：3b2r） |
 |         有道词语辨析          | 中英 | [freemdict](https://downloads.freemdict.com/%E5%B0%9A%E6%9C%AA%E6%95%B4%E7%90%86/%E5%85%B1%E4%BA%AB2020.5.11/qwjs/39_%E6%9C%89%E9%81%93%E8%AF%8D%E8%AF%AD%E8%BE%A8%E6%9E%90/) | https://cloud.189.cn/t/f6NFBbBrU7ba（访问码：sgl5） |
 |            大辞海             | 中文 |           [mdict](https://mdict.org/post/dacihai/)           | https://cloud.189.cn/t/nuuuYriMfiqi（访问码：yvi2） |
-|     朗文当代高级英语辞典      | 中英 |            [v2ex](https://www.v2ex.com/t/907272)             | https://cloud.189.cn/t/2EZ7javyIZr2（访问码：vlm3） |
+|     朗文当代高级英语辞典      | 中英 |            [v2ex](https://www.v2ex.com/t/907272)             | https://cloud.189.cn/t/B77ji2V3u6Vv（访问码：zne6） |
 |      柯林斯高阶英汉双解       | 中英 | [《柯林斯双解》for macOS](https://placeless.net/blog/macos-dictionaries) | https://cloud.189.cn/t/yyyUvmzQzIr2（访问码：j3kf） |
 | 牛津高阶英汉双解词典（第8版） | 中英 |        [简书](https://www.jianshu.com/p/e279d4a979fa)        | https://cloud.189.cn/t/7FNnYjf2qeuy（访问码：1hlz） |
 |   牛津高阶英汉双解词典（8）   | 中英 |                 来源不详，css 是我自己修改的                 | https://cloud.189.cn/t/7FVn6f6Vf2yq（访问码：ebd6） |
