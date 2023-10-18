@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# 在这里添加你的应用程序执行命令
+# 例如：
+# /path/to/your/application/Easydict "$@"
+
+
+# /Users/tisfeng/Library/Developer/Xcode/DerivedData/Easydict-entaqaylceybfqboqggmsizyhose/Build/Products/Debug/Easydict-Debug.app/Contents/MacOS/Easydict-Debug "$@"
+
+/System/Volumes/Data/Applications/Easydict.app/Contents/MacOS/Easydict "$@"

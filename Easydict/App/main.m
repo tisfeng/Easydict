@@ -27,8 +27,7 @@ void queryText(NSString *text) {
 }
 
 void parseArmguments(void) {
-    XPMArgumentSignature
-    *helpSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-h --help]"],
+    XPMArgumentSignature *helpSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-h --help]"],
     *detectTextSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-d --detectText]="],
     *queryTextSig = [XPMArgumentSignature argumentSignatureWithFormat:@"[-q --queryText]="];
     

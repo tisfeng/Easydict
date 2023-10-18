@@ -384,7 +384,7 @@ static EZConfiguration *_instance;
     EZScriptExecutor *exeCommand = [[EZScriptExecutor alloc] init];
     [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         if (error) {
-            NSLog(@"launchAtStartup error: %@", error);
+            MMLogInfo(@"launchAtStartup error: %@", error);
         } else {
             NSLog(@"launchAtStartup result: %@", result);
         }
