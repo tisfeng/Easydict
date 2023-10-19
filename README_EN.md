@@ -289,7 +289,7 @@ By default, the application uses Youdao TTS, but users have the option to select
 
 </details>
 
-### Apple System Dictionary
+### 🍎 Apple System Dictionary
 
 Easydict seamlessly integrates with the dictionaries available in the macOS Dictionary App, including popular options like the Oxford English-Chinese-Chinese-English Dictionary (Simplified Chinese-English) and the Modern Chinese Standard Dictionary (Simplified Chinese). To use these dictionaries, simply enable them through the Dictionary App settings page.
 
