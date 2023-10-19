@@ -56,7 +56,7 @@
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
-  - [2. Homebrew 安装 （感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
+  - [2. Homebrew 安装（感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
   - [开发者构建](#开发者构建)
   - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
@@ -100,7 +100,7 @@
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
-### 2. Homebrew 安装 （感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 安装（感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
 
 ```bash
 brew install easydict
@@ -124,7 +124,7 @@ brew install easydict
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
 </div>
 
-构建环境：Xcode 13+, macOS Big Sur 11.3+。 为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
+构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
 > ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
 >
@@ -156,7 +156,7 @@ Easydict 是开源软件，本身是安全的，但由于苹果严格的检查�
 
 2. 如果提示应用已损坏，请参考 [macOS 绕过公证和应用签名方法](https://www.5v13.com/sz/31695.html)
 
-> “Easydict” 已损坏，无法打开。
+> “Easydict”已损坏，无法打开。
 
 在终端里输入以下命令，并输入密码即可。
 
@@ -180,7 +180,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 | 快捷键划词翻译 | 选中需要翻译的文本之后，按下划词翻译快捷键即可（默认 `⌥ + D`）                               | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
 | 截图翻译       | 按下截图翻译快捷键（默认 `⌥ + S`），截取需要翻译的区域                                       | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | 输入翻译       | 按下输入翻译快捷键（默认 `⌥ + A` 或 `⌥ + F`），输入需要翻译的文本，`Enter` 键翻译            | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
-| 静默截图 OCR   | 按下静默截图快捷键（默认 `⌥ + ⇧ + S`），截取需要 OCR 的区域，截图 OCR 结果将自动保存到剪贴板 | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
+| 静默截图 OCR   | 按下静默截图快捷键（默认 `⌥ + ⇧ + S`），截取需要 OCR 的区域，截图 OCR 结果将自动保存到剪贴板 | ![屏幕录制 2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 |                |
 
 ### 鼠标划词
@@ -227,7 +227,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 - 系统 TTS：最稳定可靠，但效果不是很好。通常作为备用选项，即使用其他 TTS 报错时会改用系统 TTS。
 - Bing TTS：综合效果最好，实时合成神经网络语音，但比较耗时，且文本越长，合成时间越长，目前限制最多只能合成 2000 个字符，约 10 分钟。
 - Google TTS：英文效果不错，接口稳定，但需要翻墙，且一次请求最多只能合成 200 个字符。
-- 有道 TTS：整体效果不错,接口稳定，尤其英语单词发音极好，但最多只能合成 600 个字符。
+- 有道 TTS：整体效果不错，接口稳定，尤其英语单词发音极好，但最多只能合成 600 个字符。
 - 百度 TTS：英文句子发音很好，口音很有特色，但最多只能合成约 1000 个字符。
 
 默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。  
@@ -238,7 +238,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 **目前支持苹果系统词典，有道词典，苹果系统翻译，DeepL，Google，Bing，百度和火山翻译服务。**
 
-> 注意 ⚠️： Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
+> 注意 ⚠️：Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
 <details> <summary> 各个服务支持的语言 </summary>
 
@@ -301,7 +301,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ### 🍎 苹果系统词典
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文 - 英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
@@ -341,7 +341,7 @@ easydict://readValueOfKey?EZOpenAIAPIKey
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/qNk8ND-1695820293.png">
 </table>
 
-考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后， OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
+考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后，OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
 
 ```
 easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
@@ -394,7 +394,7 @@ easydict://writeKeyValue?EZDeepLAuthKey=xxx
 
 #### 配置 API 调用方式
 
-1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey （如果有）
+1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey（如果有）
 
 ```
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
@@ -476,7 +476,7 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示�
 
 ### 应用内查询
 
-支持 Easydict 应用内便捷查询。在输入框或翻译结果，如遇到不熟悉的单词，可通过重压右击唤出菜单，选择第一个 “应用内查询”。
+支持 Easydict 应用内便捷查询。在输入框或翻译结果，如遇到不熟悉的单词，可通过重压右击唤出菜单，选择第一个“应用内查询”。
 
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
@@ -504,7 +504,7 @@ Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good
   key combo: option D
 ```
 
-> 参考: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+> 参考：https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
 ## 偏好设置
 
@@ -560,7 +560,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
   <img src="https://github.com/Jerry23011/Easydict/assets/89069957/ee377707-c021-43b2-b9e0-65272ad42c7e" width="30%">
 </div>
 
-若发现 OCR 识别结果不对，可通过点击 ”识别为 xx“ 按钮指定识别语言来修正 OCR 结果。
+若发现 OCR 识别结果不对，可通过点击”识别为 xx“按钮指定识别语言来修正 OCR 结果。
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230227114539063-1677469539.png" style="margin-right:40px;" width="45%">

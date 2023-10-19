@@ -55,7 +55,7 @@
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
-  - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
+  - [2. Homebrew (Thanks BingoKingo)](#2-homebrew-thanks-bingokingo)
   - [Developer Build](#developer-build)
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
@@ -109,7 +109,7 @@ brew install easydict
 
 If you are a developer, or you are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
-<details> <summary> Build Steps： </summary>
+<details> <summary> Build Steps: </summary>
 
 <p>
 
@@ -175,7 +175,7 @@ Once Easydict is launched, in addition to the main window (hidden by default), t
 | Shortcut select translate | After selecting the text to be translated, press the shortcut key (default `⌥ + D`)                                                          | ![iShot_2023-01-20_11.24.37-1674185125](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.24.37-1674185125.gif) |
 | Screenshot translate      | Press the screenshot translate shortcut key (default `⌥ + S`) to capture the area to be translated                                           | ![iShot_2023-01-20_11.26.25-1674185209](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.26.25-1674185209.gif) |
 | Input translate           | Press the input translate shortcut key (default `⌥ + A`, or `⌥ + F`), enter the text to be translated, and `Enter` key to translate          | ![iShot_2023-01-20_11.28.46-1674185354](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-01-20_11.28.46-1674185354.gif) |
-| Silent Screenshot OCR     | Press the Silent Screenshot shortcut key（default `⌥ + ⇧ + S`）to capture the area, the OCR results will be copied directly to the clipboard | ![屏幕录制2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
+| Silent Screenshot OCR     | Press the Silent Screenshot shortcut key（default `⌥ + ⇧ + S`）to capture the area, the OCR results will be copied directly to the clipboard | ![屏幕录制 2023-05-20 22 39 11](https://github.com/Jerry23011/Easydict/assets/89069957/c16f3c20-1748-411e-be04-11d8fe0e61af)                    |
 
 ### Select text by Mouse
 
@@ -309,7 +309,7 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 Starting with version 1.3.0, Easydict supports OpenAI translation. Additionally, it is now compatible with  Azure OpenAI. Please note that the interface for Azure OpenAI is not yet built and requires enabling via commands.
 
-Please make sure you have an APIKey。
+Please make sure you have an APIKey.
 
 
 #### Configure APIKey

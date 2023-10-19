@@ -144,4 +144,4 @@ END.
 ### References (Chinese)
 
 - [《柯林斯双解》for macOS](https://placeless.net/blog/macos-dictionaries)
-- [Mdict to macOS Dictionary转换笔记](https://kaihao.io/2018/mdict-to-macos-dictionary/)
+- [Mdict to macOS Dictionary 转换笔记](https://kaihao.io/2018/mdict-to-macos-dictionary/)
