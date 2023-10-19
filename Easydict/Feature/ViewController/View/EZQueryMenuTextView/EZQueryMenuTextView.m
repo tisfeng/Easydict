@@ -60,11 +60,19 @@
     if (newWindowType == floatingWindowType) {
         [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
     } else {
+        // Since floating window will be close if not pinned when losing focus.
+        EZBaseQueryWindow *floatingWindow = windowManager.floatingWindow;
+        BOOL isPin = floatingWindow.pin;
+        floatingWindow.pin = YES;
+        
         CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
         [windowManager showFloatingWindowType:newWindowType
                                     queryText:self.queryText
                                    actionType:actionType
-                                      atPoint:point];
+                                      atPoint:point
+                            completionHandler:^{
+            floatingWindow.pin = isPin;
+        }];
     }
 }
 

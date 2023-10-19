@@ -293,21 +293,33 @@ static EZWindowManager *_instance;
     [self showFloatingWindowType:windowType queryText:text actionType:actionType atPoint:point];
 }
 
-- (void)showFloatingWindowType:(EZWindowType)windowType 
+- (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(NSString *)text
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point {
+    [self showFloatingWindowType:windowType queryText:text actionType:actionType atPoint:point completionHandler:nil];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(NSString *)text
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+             completionHandler:(nullable void (^)(void))completionHandler {
     self.selectedText = text;
     self.actionType = actionType;
 
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-//    __block CGPoint point = [self floatingWindowLocationWithType:windowType];
 
     // If text is nil, means we don't need to query anything, just show the window.
     if (!text) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
+        
+        if (completionHandler) {
+            completionHandler();
+        }
+        
         return;
     }
 
@@ -331,6 +343,10 @@ static EZWindowManager *_instance;
 
         if ([EZConfiguration.shared autoCopySelectedText]) {
             [text copyToPasteboard];
+        }
+        
+        if (completionHandler) {
+            completionHandler();
         }
     }];
 }
