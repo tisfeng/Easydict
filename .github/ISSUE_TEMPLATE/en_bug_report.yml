@@ -31,7 +31,7 @@ body:
     id: reproduce
     attributes:
       label: Reproduction steps
-      description: Please describe how to reproduce the problem.
+      description: Please describe how to reproduce the problem. If the problem is episodic or requires specific action steps to reproduce, please describe it in as much detail as possible. \n If the problem is episodic, try restarting the app, uninstalling and reinstalling the app, or restarting the device to see if that solves the problem.
       placeholder:
     validations:
       required: true

@@ -31,7 +31,7 @@ body:
     id: reproduce
     attributes:
       label: 重现步骤
-      description: 请描述如何重现该问题。如果该问题是偶发性的，或者需要特定的操作步骤才能重现，请尽量详细地描述。
+      description: 请描述如何重现该问题。如果该问题是偶发性的，或者需要特定的操作步骤才能重现，请尽量详细地描述。\n如果是偶发性问题，请尝试重启应用，卸载后重新安装应用，或者重启设备，看是否能解决问题。
       placeholder:
     validations:
       required: true
@@ -57,7 +57,7 @@ body:
     attributes:
       label: 设备信息 && 操作系统版本
       description: 如果遇到比较奇怪的问题，请提供设备信息和操作系统版本，方便开发者排查
-      placeholder: Apple M1 Pro, macOS 11.2.3
+      placeholder: Apple M1 Pro, macOS 14.0
 
   - type: checkboxes
     id: PR
