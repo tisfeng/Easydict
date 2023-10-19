@@ -54,7 +54,7 @@
 - [Features](#features)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
-  - [1. Manual](#1-manual)
+  - [1. Manual Installation](#1-manual-installation)
   - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
   - [Developer Build](#developer-build)
   - [Signature Problem ⚠️](#signature-problem-️)
@@ -65,7 +65,7 @@
 - [Language Recognition](#language-recognition)
 - [TTS Services](#tts-services)
 - [Translation Services](#translation-services)
-  - [Apple System Dictionary](#apple-system-dictionary)
+  - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI (ChatGPT) Translation](#openai-chatgpt-translation)
     - [Configure APIKey](#configure-apikey)
     - [Query Mode](#query-mode)
@@ -74,7 +74,9 @@
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
   - [Bing Translate](#bing-translate)
-- [Smart Query Mode](#smart-query-mode)
+- [Smart query mode](#smart-query-mode)
+  - [Query in App](#query-in-app)
+- [URL Scheme](#url-scheme)
 - [Use with PopClip](#use-with-popclip)
 - [Preferences](#preferences)
   - [Settings](#settings)
@@ -463,6 +465,15 @@ window1 represents the mini window, while window2 represents hover window, 0 rep
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
 </table>
+
+### Query in App
+
+Easydict in-app lookup is supported. In the input box or translation result, if you encounter unfamiliar words, you can call out the menu by right-clicking with heavy pressure and selecting the first "In-app lookup".
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
+</div>
+
 
 ## URL Scheme
 

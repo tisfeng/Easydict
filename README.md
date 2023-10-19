@@ -66,7 +66,7 @@
 - [语种识别](#语种识别)
 - [TTS 服务](#tts-服务)
 - [查询服务](#查询服务)
-  - [苹果系统词典](#苹果系统词典)
+  - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
     - [配置 APIKey](#配置-apikey)
     - [查询模式](#查询模式)
@@ -76,6 +76,7 @@
     - [配置 API 调用方式](#配置-api-调用方式)
   - [Bing 翻译](#bing-翻译)
 - [智能查询模式](#智能查询模式)
+  - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
 - [偏好设置](#偏好设置)
@@ -472,6 +473,15 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示�
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001115013334-1696132213.png">
 </table>
+
+### 应用内查询
+
+支持 Easydict 应用内便捷查询。在输入框或翻译结果，如遇到不熟悉的单词，可通过重压右击唤出菜单，选择第一个 “应用内查询”。
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
+</div>
+
 
 ## URL Scheme
 
