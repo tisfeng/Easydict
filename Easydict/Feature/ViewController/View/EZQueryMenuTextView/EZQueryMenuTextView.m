@@ -45,34 +45,40 @@
 }
 
 - (void)queryInApp:(id)sender {
-    EZWindowType newWindowType;
+    EZWindowType anotherWindowType;
     EZActionType actionType = EZActionTypeInvokeQuery;
 
     EZWindowManager *windowManager = [EZWindowManager shared];
     EZWindowType floatingWindowType = windowManager.floatingWindowType;
     
     if (EZConfiguration.shared.mouseSelectTranslateWindowType == floatingWindowType) {
-        newWindowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+        anotherWindowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
     } else {
-        newWindowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
+        anotherWindowType = EZConfiguration.shared.mouseSelectTranslateWindowType;
     }
     
-    if (newWindowType == floatingWindowType) {
-        [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
-    } else {
-        // Since floating window will be close if not pinned when losing focus.
+    if (anotherWindowType != floatingWindowType) {
+        // Since floating window will be closed if not pinned when losing focus.
         EZBaseQueryWindow *floatingWindow = windowManager.floatingWindow;
         BOOL isPin = floatingWindow.pin;
         floatingWindow.pin = YES;
         
-        CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
-        [windowManager showFloatingWindowType:newWindowType
-                                    queryText:self.queryText
-                                   actionType:actionType
-                                      atPoint:point
-                            completionHandler:^{
+        EZBaseQueryWindow *anotherFloatingWindow = [windowManager windowWithType:anotherWindowType];
+        if (anotherFloatingWindow.isVisible) {
+            [anotherFloatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
             floatingWindow.pin = isPin;
-        }];
+        } else {
+            CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
+            [windowManager showFloatingWindowType:anotherWindowType
+                                        queryText:self.queryText
+                                       actionType:actionType
+                                          atPoint:point
+                                completionHandler:^{
+                floatingWindow.pin = isPin;
+            }];
+        }
+    } else {
+        [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
     }
 }
 
