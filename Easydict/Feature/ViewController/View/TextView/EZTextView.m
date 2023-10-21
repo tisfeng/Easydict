@@ -7,6 +7,7 @@
 //
 
 #import "EZTextView.h"
+#import "NSString+EZHandleInputText.h"
 
 @interface EZTextView () <NSTextViewDelegate>
 
@@ -157,8 +158,7 @@
         NSPasteboardTypeRTFD
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
-
-    pasteboardString = [pasteboardString trim];
+    pasteboardString = [pasteboardString filterPrivateUseCharacters];
     
     BOOL enableModifyParagraphSpacing = NO;
     

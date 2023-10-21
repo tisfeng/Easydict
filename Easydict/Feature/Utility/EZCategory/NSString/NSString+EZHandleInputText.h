@@ -20,8 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)removeCommentSymbolPrefix;
 
-// Is start with comment symbol prefix, // and #
+/// Is start with comment symbol prefix, // and #
 - (BOOL)hasCommentSymbolPrefix;
+
+/// Filter Private Use Area characters
+- (NSString *)filterPrivateUseCharacters;
 
 @end
 

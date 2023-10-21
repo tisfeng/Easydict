@@ -27,6 +27,7 @@
 #import "EZAppleDictionary.h"
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
+#import "NSString+EZHandleInputText.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -362,16 +363,17 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (void)startQueryText:(NSString *)text actionType:(EZActionType)actionType {
     NSLog(@"query actionType: %@", actionType);
     
-    if (text.trim.length == 0) {
+    NSString *filteredText = [text filterPrivateUseCharacters];
+    if (filteredText.length == 0) {
         NSLog(@"query text is empty");
         return;
     }
 
-    self.inputText = text;
+    self.inputText = filteredText;
     self.queryModel.actionType = actionType;
     self.queryView.isTypingChinese = NO;
 
-    if ([self handleEasydictScheme:text]) {
+    if ([self handleEasydictScheme:filteredText]) {
         return;
     }
 
@@ -380,7 +382,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
     // Close all resultView before querying new text.
     [self closeAllResultView:^{
-        self.inputText = text;
+        self.inputText = filteredText;
         [self queryCurrentModel];
     }];
 }
