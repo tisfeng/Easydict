@@ -58,24 +58,25 @@
     }
     
     if (anotherWindowType != floatingWindowType) {
-        // Since floating window will be closed if not pinned when losing focus.
+        // Note that floating window will be closed if not pinned when losing focus.
         EZBaseQueryWindow *floatingWindow = windowManager.floatingWindow;
-        BOOL isPin = floatingWindow.pin;
-        floatingWindow.pin = YES;
+        floatingWindow.titleBar.pin = YES;
         
         EZBaseQueryWindow *anotherFloatingWindow = [windowManager windowWithType:anotherWindowType];
         if (anotherFloatingWindow.isVisible) {
-            [anotherFloatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
-            floatingWindow.pin = isPin;
+            EZBaseQueryViewController *anotherQueryViewController = anotherFloatingWindow.queryViewController;
+            
+            // Focus query view controller, make sure floating window type is current query window.
+            [anotherFloatingWindow makeKeyAndOrderFront:nil];
+            [anotherQueryViewController focusInputTextView];
+            [anotherQueryViewController startQueryText:self.queryText actionType:actionType];
         } else {
             CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
             [windowManager showFloatingWindowType:anotherWindowType
                                         queryText:self.queryText
                                        actionType:actionType
                                           atPoint:point
-                                completionHandler:^{
-                floatingWindow.pin = isPin;
-            }];
+                                completionHandler:nil];
         }
     } else {
         [windowManager.floatingWindow.queryViewController startQueryText:self.queryText actionType:actionType];
