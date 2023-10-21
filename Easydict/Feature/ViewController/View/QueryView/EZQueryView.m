@@ -73,8 +73,6 @@
     textView.textStorage.delegate = self;
     textView.textContainerInset = CGSizeMake(6, 8);
     
-    
-    
     mm_weakify(self);
     [textView setPasteTextBlock:^(NSString *_Nonnull text) {
         [self highlightAllLinks];

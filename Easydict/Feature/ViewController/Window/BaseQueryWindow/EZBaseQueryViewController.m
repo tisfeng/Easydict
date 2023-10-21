@@ -539,6 +539,8 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             [self resetQueryAndResults];
         }];
     }];
+    
+    self.queryView.clearButtonHidden = YES;
 }
 
 - (void)copyQueryText {
