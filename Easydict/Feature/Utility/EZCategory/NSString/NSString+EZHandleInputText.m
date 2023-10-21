@@ -135,19 +135,22 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
      TODO: Fix this bug in a better way.
      */
     
-    // Character set for Private Use Area, Ref: https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84
-    NSCharacterSet *privateCharacterSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0xE000, 0xF8FF)]; // The Private Use Area in Unicode
-
-    NSMutableString *filteredText = [NSMutableString stringWithCapacity:self.length];
-
-    // Iterate over each character in the text and append non-private characters to filtered text
-    for (int i = 0; i < self.length; i++) {
-        unichar character = [self characterAtIndex:i];
-        if (![privateCharacterSet characterIsMember:character]) {
-            [filteredText appendFormat:@"%C", character];
+    // Private Use Area (0xE000, 0xF8FF), Ref: https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84
+    static const unichar privateUseRangeStart = 0xE000;
+    static const unichar privateUseRangeEnd = 0xF8FF;
+    
+    NSMutableString *filteredText = [NSMutableString string];
+    
+    [self enumerateSubstringsInRange:NSMakeRange(0, self.length)
+                             options:NSStringEnumerationByComposedCharacterSequences
+                          usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+        unichar codePoint = [substring characterAtIndex:0];
+        // Filter Private Use Area characters
+        if (codePoint < privateUseRangeStart || codePoint > privateUseRangeEnd) {
+            [filteredText appendString:substring];
         }
-    }
-
+    }];
+    
     return filteredText.trim;
 }
 
