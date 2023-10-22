@@ -151,7 +151,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
         }
     }];
     
-    return filteredText.trim;
+    return filteredText;
 }
 
 /// Get unicode of text

@@ -364,7 +364,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSLog(@"query actionType: %@", actionType);
     
     NSString *filteredText = [text filterPrivateUseCharacters];
-    if (filteredText.length == 0) {
+    if (filteredText.trim.length == 0) {
         NSLog(@"query text is empty");
         return;
     }

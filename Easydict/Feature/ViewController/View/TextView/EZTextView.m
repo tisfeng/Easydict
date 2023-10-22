@@ -158,7 +158,7 @@
         NSPasteboardTypeRTFD
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
-    pasteboardString = [pasteboardString filterPrivateUseCharacters];
+    pasteboardString = [pasteboardString.trim filterPrivateUseCharacters];
     
     BOOL enableModifyParagraphSpacing = NO;
     
@@ -226,12 +226,13 @@
 
 /// Update text, paragraphStyle.
 - (void)updateTextAndParagraphStyle:(NSString *)text {
-    self.string = text;
+    NSString *filteredText = [text filterPrivateUseCharacters];
+    self.string = filteredText;
     
-    NSString *newText = [text removeExtraLineBreaks];
+    NSString *newText = [filteredText removeExtraLineBreaks];
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
-    BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
+    BOOL hasExtraLineBreaks = ![newText isEqualToString:filteredText];
     
     CGFloat paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
     // If has custom paragraphSpacing, use it.
@@ -242,7 +243,7 @@
     
     // Callback shoud after updating paragraphSpacing, to update textView height.
     if (self.updateTextBlock) {
-        self.updateTextBlock(text);
+        self.updateTextBlock(filteredText);
     }
 }
 
