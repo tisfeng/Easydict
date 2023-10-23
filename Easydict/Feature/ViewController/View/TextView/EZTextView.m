@@ -226,13 +226,12 @@
 
 /// Update text, paragraphStyle.
 - (void)updateTextAndParagraphStyle:(NSString *)text {
-    NSString *filteredText = [text filterPrivateUseCharacters];
-    self.string = filteredText;
+    self.string = text;
     
-    NSString *newText = [filteredText removeExtraLineBreaks];
+    NSString *newText = [text removeExtraLineBreaks];
     
     // If the text has extra Line Breaks, then we don't need to add paragraph spacing.
-    BOOL hasExtraLineBreaks = ![newText isEqualToString:filteredText];
+    BOOL hasExtraLineBreaks = ![newText isEqualToString:text];
     
     CGFloat paragraphSpacing = hasExtraLineBreaks ? self.miniParagraphSpacing : self.defaultParagraphSpacing;
     // If has custom paragraphSpacing, use it.
@@ -243,7 +242,7 @@
     
     // Callback shoud after updating paragraphSpacing, to update textView height.
     if (self.updateTextBlock) {
-        self.updateTextBlock(filteredText);
+        self.updateTextBlock(text);
     }
 }
 
