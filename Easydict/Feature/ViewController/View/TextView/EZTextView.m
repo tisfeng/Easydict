@@ -7,7 +7,6 @@
 //
 
 #import "EZTextView.h"
-#import "NSString+EZHandleInputText.h"
 
 @interface EZTextView () <NSTextViewDelegate>
 
@@ -92,52 +91,6 @@
     return self;
 }
 
-/// Rewirte drawRect, for modifying selected range background color, to avoid showing spacing between lines and paragraphs.
-- (void)drawRect:(NSRect)dirtyRect {
-    
-    // Ref: https://stackoverflow.com/questions/29428594/set-the-placeholder-string-for-nstextview
-//    if ([self.string isEqualToString:@""] && self != [self.window firstResponder]) {
-//        [self.placeholderAttributedString drawAtPoint:NSMakePoint(0, 0)];
-//    }
-    
-    if (self.selectedRange.length == 0) {
-        [super drawRect:dirtyRect];
-        return;
-    }
-
-    NSLayoutManager *layoutManager = [self layoutManager];
-    NSRange selectedRange = self.selectedRange;
-    NSRange glyphRange = [layoutManager glyphRangeForCharacterRange:selectedRange actualCharacterRange:NULL];
-    NSColor *highlightedTextColor = [NSColor selectedTextBackgroundColor];
-
-    // 保存原始状态
-    NSParagraphStyle *originalParagraphStyle = self.defaultParagraphStyle;
-    NSColor *originalSelectionColor = [self.selectedTextAttributes objectForKey:NSBackgroundColorAttributeName];
-
-    NSMutableDictionary *newAttributes = [NSMutableDictionary dictionaryWithDictionary:self.selectedTextAttributes];
-    [newAttributes setObject:highlightedTextColor forKey:NSBackgroundColorAttributeName];
-    [layoutManager addTemporaryAttributes:newAttributes forCharacterRange:glyphRange];
-
-    // 绘制选中背景色
-    [super drawRect:dirtyRect];
-
-    [layoutManager removeTemporaryAttribute:NSBackgroundColorAttributeName forCharacterRange:glyphRange];
-
-    [self setSelectedTextAttributes:@{NSBackgroundColorAttributeName : originalSelectionColor}];
-    [self setDefaultParagraphStyle:originalParagraphStyle];
-}
-
-//- (BOOL)becomeFirstResponder {
-//  [self setNeedsDisplay:YES];
-//  return [super becomeFirstResponder];
-//}
-//
-//- (BOOL)resignFirstResponder {
-//   [self setNeedsDisplay:YES];
-//   return [super resignFirstResponder];
-//}
-
-
 // 重写粘贴方法，纯文本粘贴  https://stackoverflow.com/questions/8198767/how-can-you-intercept-pasting-into-a-nstextview-to-remove-unsupported-formatting
 - (void)paste:(id)sender {
     [self pasteAsPlainText:sender];
@@ -158,7 +111,7 @@
         NSPasteboardTypeRTFD
     ]];
     NSString *pasteboardString = [pasteboard stringForType:stringType];
-    pasteboardString = [pasteboardString.trim filterPrivateUseCharacters];
+    pasteboardString = [pasteboardString trim];
     
     BOOL enableModifyParagraphSpacing = NO;
     

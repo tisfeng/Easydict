@@ -15,7 +15,6 @@
 #import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
-#import "NSString+EZHandleInputText.h"
 
 @interface EZWindowManager ()
 
@@ -305,17 +304,15 @@ static EZWindowManager *_instance;
                      queryText:(NSString *)text
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
-             completionHandler:(nullable void (^)(void))completionHandler {
-    
-    NSString *filteredText = [text filterPrivateUseCharacters];
-
-    self.selectedText = filteredText;
+             completionHandler:(nullable void (^)(void))completionHandler 
+{
+    self.selectedText = text;
     self.actionType = actionType;
 
     EZBaseQueryWindow *window = [self windowWithType:windowType];
 
     // If text is nil, means we don't need to query anything, just show the window.
-    if (!filteredText) {
+    if (!text) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
@@ -334,7 +331,7 @@ static EZWindowManager *_instance;
 
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     [queryViewController resetTableView:^{
-        [queryViewController updateQueryTextAndParagraphStyle:filteredText actionType:self.actionType];
+        [queryViewController updateQueryTextAndParagraphStyle:text actionType:self.actionType];
         [queryViewController detectQueryText:nil];
 
         // !!!: window height has changed, so we need to update location again.
@@ -342,11 +339,11 @@ static EZWindowManager *_instance;
         [self showFloatingWindow:window atPoint:newPoint];
 
         if ([EZConfiguration.shared autoQuerySelectedText]) {
-            [queryViewController startQueryText:filteredText actionType:self.actionType];
+            [queryViewController startQueryText:text actionType:self.actionType];
         }
 
         if ([EZConfiguration.shared autoCopySelectedText]) {
-            [filteredText copyToPasteboard];
+            [text copyToPasteboard];
         }
         
         if (completionHandler) {
