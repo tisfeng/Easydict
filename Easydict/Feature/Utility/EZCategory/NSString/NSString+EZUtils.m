@@ -294,6 +294,7 @@ static NSDictionary *const kQuotesDict = @{
     return result;
 }
 
+/// Words lexical
 - (NSArray<NLTag> *)taggedWordsInText {
     NLTagScheme tagScheme = NLTagSchemeLexicalClass;
     NLTaggerOptions options = NLTaggerOmitPunctuation | NLTaggerOmitWhitespace;
@@ -309,6 +310,37 @@ static NSDictionary *const kQuotesDict = @{
                                    tokenRanges:nil];
     
     return tags;
+}
+
+/// Tokenizing text
+- (NSArray<NSString *> *)wordsInText {
+    NSMutableArray<NSString *> *words = [NSMutableArray array];
+    
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];    
+    NSString *text = [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSRange textRange = NSMakeRange(0, [text length]);
+    tokenizer.string = text;
+
+    [tokenizer enumerateTokensInRange:textRange usingBlock:^(NSRange tokenRange, NLTokenizerAttributes flags, BOOL *stop) {
+        NSString *token = [text substringWithRange:tokenRange];
+        [words addObject:token];
+    }];
+    
+    return [words copy];
+}
+
+/// Word at index.
+- (nullable NSString *)wordAtIndex:(NSInteger)characterIndex {
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
+    tokenizer.string = self;
+    NSRange wordRange = [tokenizer tokenRangeAtIndex:characterIndex];
+    // ???: Why sometimes is location=9223372036854775807, length=0
+    if (wordRange.location == NSNotFound) {
+        return nil;
+    }
+    
+    NSString *word = [self substringWithRange:wordRange];
+    return word;
 }
 
 /// Check English word is spelled correctly

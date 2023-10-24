@@ -70,7 +70,14 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isWord2;
 
+/// Words lexical
 - (NSArray<NLTag> *)taggedWordsInText;
+
+/// Tokenizing text
+- (NSArray<NSString *> *)wordsInText;
+
+/// Word at index.
+- (nullable NSString *)wordAtIndex:(NSInteger)characterIndex;
 
 /// Check English word is spelled correctly
 - (BOOL)isSpelledCorrectly;

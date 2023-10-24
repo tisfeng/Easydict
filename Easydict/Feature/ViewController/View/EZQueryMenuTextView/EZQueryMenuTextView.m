@@ -11,6 +11,7 @@
 #import "EZWindowManager.h"
 #import "EZCoordinateUtils.h"
 #import "EZLog.h"
+#import "NSString+EZUtils.h"
 
 @interface EZQueryMenuTextView ()
 
@@ -99,6 +100,9 @@
     if (selectedRanges.count > 0) {
         NSRange selectedRange = [selectedRanges[0] rangeValue];
         NSString *selectedText = [[self string] substringWithRange:selectedRange];
+        if (selectedRange.length == 0) {
+            selectedText = [self.string wordAtIndex:selectedRange.location];
+        }
         return selectedText;
     } else {
         return nil;
