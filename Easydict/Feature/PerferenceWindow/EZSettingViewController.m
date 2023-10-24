@@ -98,6 +98,8 @@
 @property (nonatomic, strong) NSTextField *menuBarIconLabel;
 @property (nonatomic, strong) NSButton *hideMenuBarIconButton;
 
+@property (nonatomic, strong) NSArray<NSString *> *enabledTTSServiceTypes;
+
 @end
 
 
@@ -119,6 +121,20 @@
         _allLanguageDict = languageDict;
     }
     return _allLanguageDict;
+}
+
+- (NSArray<NSString *> *)enabledTTSServiceTypes {
+    if (!_enabledTTSServiceTypes) {
+        // Note: Bing API has frequency limit
+        _enabledTTSServiceTypes = @[
+            EZServiceTypeYoudao,
+            EZServiceTypeBing,
+            EZServiceTypeGoogle,
+            EZServiceTypeBaidu,
+            EZServiceTypeApple,
+        ];
+    }
+    return _enabledTTSServiceTypes;
 }
 
 
@@ -290,16 +306,14 @@
 
     self.defaultTTSServicePopUpButton = [[NSPopUpButton alloc] init];
     [self.contentView addSubview:self.defaultTTSServicePopUpButton];
-
-    // Note: Bing API has frequency limit
-    NSArray *enabledTTSServiceTypes = @[
-        NSLocalizedString(EZServiceTypeYoudao,nil),
-        NSLocalizedString(EZServiceTypeBing,nil),
-        NSLocalizedString(EZServiceTypeGoogle,nil),
-        NSLocalizedString(EZServiceTypeBaidu,nil),
-        NSLocalizedString(EZServiceTypeApple,nil),
-    ];
-    [self.defaultTTSServicePopUpButton addItemsWithTitles:enabledTTSServiceTypes];
+    
+    NSMutableArray *localizedTTSTitles = [NSMutableArray array];
+    for (NSString *ttsType in self.enabledTTSServiceTypes) {
+        NSString *localizedTitle = NSLocalizedString(ttsType, nil);
+        [localizedTTSTitles addObject:localizedTitle];
+    }
+    
+    [self.defaultTTSServicePopUpButton addItemsWithTitles:localizedTTSTitles];
     self.defaultTTSServicePopUpButton.target = self;
     self.defaultTTSServicePopUpButton.action = @selector(defaultTTSServicePopUpButtonClicked:);
 
@@ -916,8 +930,8 @@
 }
 
 - (void)defaultTTSServicePopUpButtonClicked:(NSPopUpButton *)button {
-    NSString *selectedTitle = button.titleOfSelectedItem;
-    self.config.defaultTTSServiceType = selectedTitle;
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    self.config.defaultTTSServiceType = self.enabledTTSServiceTypes[selectedIndex];
 }
 
 - (void)adjustQueryIconPostionButtonClicked:(NSButton *)sender {
