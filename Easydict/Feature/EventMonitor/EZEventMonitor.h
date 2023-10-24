@@ -32,8 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^dismissMiniWindowBlock)(void);
 @property (nonatomic, copy) void (^dismissFixedWindowBlock)(void);
 @property (nonatomic, copy) void (^doubleCommandBlock)(void);
-@property (nonatomic, copy) void (^mouseClickBlock)(CGPoint clickPoint);
-
+@property (nonatomic, copy) void (^leftMouseDownBlock)(CGPoint clickPoint);
+@property (nonatomic, copy) void (^rightMouseDownBlock)(CGPoint clickPoint);
 
 + (instancetype)shared;
 

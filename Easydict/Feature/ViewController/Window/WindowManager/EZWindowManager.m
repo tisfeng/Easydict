@@ -110,9 +110,15 @@ static EZWindowManager *_instance;
 
     [self updatePopButtonQueryAction];
 
-    [self.eventMonitor setMouseClickBlock:^(CGPoint clickPoint) {
+    [self.eventMonitor setLeftMouseDownBlock:^(CGPoint clickPoint) {
         mm_strongify(self);
         self.startPoint = clickPoint;
+        self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
+        EZLayoutManager.shared.screen = self.screen;
+    }];
+    
+    [self.eventMonitor setRightMouseDownBlock:^(CGPoint clickPoint) {
+        mm_strongify(self);
         self.screen = [EZCoordinateUtils screenForPoint:clickPoint];
         EZLayoutManager.shared.screen = self.screen;
     }];

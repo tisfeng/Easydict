@@ -203,7 +203,7 @@ static EZEventMonitor *_instance = nil;
     }];
     
     mm_weakify(self);
-    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
+    NSEventMask eventMask = NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventTypeRightMouseDown| NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged | NSEventMaskLeftMouseDragged | NSEventMaskCursorUpdate | NSEventMaskMouseMoved | NSEventMaskAny | NSEventTypeSystemDefined;
     [self addGlobalMonitorWithEvent:eventMask handler:^(NSEvent *_Nonnull event) {
         mm_strongify(self);
         [self handleMonitorEvent:event];
@@ -732,6 +732,12 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             //                NSLog(@"NSEventTypeLeftMouseDragged");
             break;
         }
+        case NSEventTypeRightMouseDown: {
+            if (self.rightMouseDownBlock) {
+                self.rightMouseDownBlock(NSEvent.mouseLocation);
+            }
+            break;
+        }
         case NSEventTypeKeyDown: {
             // ???: The debugging environment sometimes does not work and it seems that you have to move the application to the application directory to get it to work properly.
             //            NSLog(@"key down");
@@ -839,8 +845,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)handleLeftMouseDownEvent:(NSEvent *)event {
     self.startPoint = NSEvent.mouseLocation;
     
-    if (self.mouseClickBlock) {
-        self.mouseClickBlock(self.startPoint);
+    if (self.leftMouseDownBlock) {
+        self.leftMouseDownBlock(self.startPoint);
     }
     
     [self dismissWindowsIfMouseLocationOutsideFloatingWindow];
