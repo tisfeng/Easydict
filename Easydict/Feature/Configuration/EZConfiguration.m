@@ -129,12 +129,18 @@ static EZConfiguration *_instance;
     _firstLanguage = firstLanguage;
 
     [NSUserDefaults mm_write:firstLanguage forKey:kFirstLanguageKey];
+    
+    NSDictionary *parameters = @{ @"first_language" : firstLanguage };
+    [EZLog logEventWithName:@"preferred_language" parameters:parameters];
 }
 
 - (void)setSecondLanguage:(EZLanguage)secondLanguage {
     _secondLanguage = secondLanguage;
 
     [NSUserDefaults mm_write:secondLanguage forKey:kSecondLanguageKey];
+    
+    NSDictionary *parameters = @{ @"second_language" : secondLanguage };
+    [EZLog logEventWithName:@"preferred_language" parameters:parameters];
 }
 
 - (void)setFrom:(EZLanguage)from {
@@ -254,8 +260,10 @@ static EZConfiguration *_instance;
 
 - (void)setDefaultTTSServiceType:(EZServiceType)defaultTTSServiceType {
     _defaultTTSServiceType = defaultTTSServiceType;
-    
     [NSUserDefaults mm_write:defaultTTSServiceType forKey:kDefaultTTSServiceTypeKey];
+    
+    NSDictionary *parameters = @{ @"new" : defaultTTSServiceType };
+    [EZLog logEventWithName:@"tts" parameters:parameters];
 }
 
 - (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
@@ -298,18 +306,27 @@ static EZConfiguration *_instance;
     _fixedWindowPosition = showFixedWindowPosition;
 
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
+    
+    NSDictionary *parameters = @{ @"fixed_window" : @(showFixedWindowPosition) };
+    [EZLog logEventWithName:@"window_position" parameters:parameters];
 }
 
 - (void)setMouseSelectTranslateWindowType:(EZWindowType)mouseSelectTranslateWindowType {
     _mouseSelectTranslateWindowType = mouseSelectTranslateWindowType;
 
     [NSUserDefaults mm_write:@(mouseSelectTranslateWindowType) forKey:(kMouseSelectTranslateWindowTypeKey)];
+    
+    NSDictionary *parameters = @{ @"mouse_window" : @(mouseSelectTranslateWindowType) };
+    [EZLog logEventWithName:@"show_window_type" parameters:parameters];
 }
 
 - (void)setShortcutSelectTranslateWindowType:(EZWindowType)shortcutSelectTranslateWindowType {
     _shortcutSelectTranslateWindowType = shortcutSelectTranslateWindowType;
 
     [NSUserDefaults mm_write:@(shortcutSelectTranslateWindowType) forKey:(kShortcutSelectTranslateWindowTypeKey)];
+    
+    NSDictionary *parameters = @{ @"shortcut_window" : @(shortcutSelectTranslateWindowType) };
+    [EZLog logEventWithName:@"show_window_type" parameters:parameters];
 }
 
 - (void)setAdjustPopButtomOrigin:(BOOL)adjustPopButtomOrigin {

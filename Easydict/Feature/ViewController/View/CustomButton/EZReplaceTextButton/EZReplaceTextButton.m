@@ -10,6 +10,7 @@
 #import "EZWindowManager.h"
 #import "EZAppleScriptManager.h"
 #import "EZSystemUtility.h"
+#import "EZLog.h"
 
 @implementation EZReplaceTextButton
 
@@ -38,6 +39,15 @@
     
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
+    NSString *textLengthRange = [EZLog textLengthRange:replacementString];
+
+    NSDictionary *parameters = @{
+        @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),
+        @"app_name" : app.localizedName,
+        @"bundle_id" : bundleID,
+        @"text_length" : textLengthRange,
+    };
+    [EZLog logEventWithName:@"replace_selected_text" parameters:parameters];
     
     EZAppleScriptManager *appleScriptManager = [EZAppleScriptManager shared];
     if ([appleScriptManager isKnownBrowser:bundleID]) {
@@ -83,6 +93,5 @@
     
     [lastText copyToPasteboard];
 }
-
 
 @end
