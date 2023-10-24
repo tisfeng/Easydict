@@ -10,6 +10,7 @@
 #import "EZBingRequest.h"
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
+#import "EZConfiguration.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
@@ -27,6 +28,12 @@
 }
 
 #pragma mark - override
+
+- (EZQueryTextType)intelligentQueryTextType {
+    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    return type;
+}
+
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
                                         EZLanguageAuto, @"auto-detect",
