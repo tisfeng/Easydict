@@ -9,6 +9,7 @@
 #import "EZQueryMenuTextView.h"
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
+#import "EZCoordinateUtils.h"
 
 @interface EZQueryMenuTextView ()
 
@@ -71,11 +72,15 @@
             [anotherQueryViewController focusInputTextView];
             [anotherQueryViewController startQueryText:self.queryText actionType:actionType];
         } else {
-            CGPoint point = CGPointMake(0, EZLayoutManager.shared.screen.visibleFrame.size.height);
+            NSScreen *screen = EZLayoutManager.shared.screen;
+            // Top left of current screen.
+            CGPoint point = CGPointMake(0, screen.frame.size.height);
+            CGPoint absolutePoint = [EZCoordinateUtils getTopLeftPoint:point inScreen:screen];
+            
             [windowManager showFloatingWindowType:anotherWindowType
                                         queryText:self.queryText
                                        actionType:actionType
-                                          atPoint:point
+                                          atPoint:absolutePoint
                                 completionHandler:nil];
         }
     } else {

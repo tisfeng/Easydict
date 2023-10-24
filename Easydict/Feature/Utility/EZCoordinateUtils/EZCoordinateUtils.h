@@ -39,6 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// !!!: Coordinate system is still Bottom-Left, not changed.
 + (CGPoint)getFrameTopLeftPoint:(CGRect)frame;
 
++ (CGPoint)getTopLeftPoint:(CGPoint)point inScreen:(nullable NSScreen *)screen;
+
 + (NSScreen *)screenForPoint:(CGPoint)point;
 
 + (NSScreen *)screenOfMousePosition;

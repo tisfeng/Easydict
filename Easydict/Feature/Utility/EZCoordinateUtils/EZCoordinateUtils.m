@@ -189,4 +189,20 @@
     return position;
 }
 
++ (CGPoint)getTopLeftPoint:(CGPoint)point inScreen:(nullable NSScreen *)screen {
+    CGPoint position = CGPointZero;
+    
+    if (!screen) {
+        screen = [self screenOfMousePosition];
+    }
+    NSRect screenRect = [screen visibleFrame];
+
+    // top-left point
+    CGFloat x = screenRect.origin.x + point.x;
+    CGFloat y = screenRect.origin.y + point.y;
+    position = CGPointMake(x, y);
+
+    return position;
+}
+
 @end
