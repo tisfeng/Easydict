@@ -299,7 +299,7 @@ static NSDictionary *const kQuotesDict = @{
     NLTagScheme tagScheme = NLTagSchemeLexicalClass;
     NLTaggerOptions options = NLTaggerOmitPunctuation | NLTaggerOmitWhitespace;
     NSRange range = NSMakeRange(0, self.length);
-
+    
     NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[ tagScheme ]];
     tagger.string = self;
     
@@ -312,15 +312,15 @@ static NSDictionary *const kQuotesDict = @{
     return tags;
 }
 
-/// Tokenizing text
+/// Tokenizing natural language text
 - (NSArray<NSString *> *)wordsInText {
-    NSMutableArray<NSString *> *words = [NSMutableArray array];
-    
-    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];    
+    // Docs: https://developer.apple.com/documentation/naturallanguage/tokenizing_natural_language_text?language=objc
+    NLTokenizer *tokenizer = [[NLTokenizer alloc] initWithUnit:NLTokenUnitWord];
     NSString *text = [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSRange textRange = NSMakeRange(0, [text length]);
     tokenizer.string = text;
-
+    
+    NSMutableArray<NSString *> *words = [NSMutableArray array];
     [tokenizer enumerateTokensInRange:textRange usingBlock:^(NSRange tokenRange, NLTokenizerAttributes flags, BOOL *stop) {
         NSString *token = [text substringWithRange:tokenRange];
         [words addObject:token];
