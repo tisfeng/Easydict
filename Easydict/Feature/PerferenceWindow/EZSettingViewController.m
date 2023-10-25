@@ -476,7 +476,7 @@
     self.clickQueryButton.mm_isOn = self.config.clickQuery;
     self.adjustQueryIconPostionButton.mm_isOn = self.config.adjustPopButtomOrigin;
     [self.languageDetectOptimizePopUpButton selectItemAtIndex:self.config.languageDetectOptimize];
-    [self.defaultTTSServicePopUpButton selectItemWithTitle:self.config.defaultTTSServiceType];
+    [self.defaultTTSServicePopUpButton selectItemWithTitle:NSLocalizedString(self.config.defaultTTSServiceType, nil)];
     
     MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
     NSString *mouseWindowTitle = [translateWindowTypeDict objectForKey:@(self.config.mouseSelectTranslateWindowType)];
