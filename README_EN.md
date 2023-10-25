@@ -640,3 +640,4 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-09-17 |       桂       |    200    |                  感谢开源                                     |
 | 2023-09-24 |       Austen       |    10    |                  支持开源作者                                    |
 | 2023-10-19 | DANIELHU | 7.3 | 感谢开源，希望能加入生词本功能。（后面会加，请等待 [33](https://github.com/tisfeng/Easydict/issues/33)） |
+| 2023-10-25 | tzcsky | 10 | 非常好的软件 |
