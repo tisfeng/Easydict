@@ -14,10 +14,10 @@
         <h3 id="2-0-0-">2.0.0  版本更新日志</h3>
         <h3 id="-">✨ 新功能</h3>
         <ul>
-        <li>新增支持 <a href="https://github.com/tisfeng/Easydict#-%E8%8B%B9%E6%9E%9C%E7%B3%BB%E7%BB%9F%E8%AF%8D%E5%85%B8" title="🍎苹果系统词典">🍎苹果系统词典</a> 查询，支持第三方词典，可手动导入 mdict 词典。<a href="https://github.com/tisfeng/Easydict/issues/148" title="#148">#148</a></li>
+        <li>新增支持 <a href="https://github.com/tisfeng/Easydict#-%E8%8B%B9%E6%9E%9C%E7%B3%BB%E7%BB%9F%E8%AF%8D%E5%85%B8">🍎 苹果系统词典</a> 查询，支持第三方词典，可手动导入 mdict 词典。<a href="https://github.com/tisfeng/Easydict/issues/148" title="#148">#148</a></li>
         <li>新增支持 Bing 翻译。<a href="https://github.com/tisfeng/Easydict/issues/143" title="#143">#143</a> by <a href="https://github.com/choykarl" title="choykarl">choykarl</a></li>
         <li>新增 <a href="https://github.com/tisfeng/Easydict#%E6%99%BA%E8%83%BD%E6%9F%A5%E8%AF%A2%E6%A8%A1%E5%BC%8F" title="智能查询模式">智能查询模式</a>。</li>
-        <li>开放 <a href="https://github.com/tisfeng/Easydict#openaichatgpt%E7%BF%BB%E8%AF%91" title="OpenAI (ChatGPT)">OpenAI (ChatGPT)</a> 翻译。 <a href="https://github.com/tisfeng/Easydict/issues/28" title="#28">#28</a></li>
+        <li>开放 <a href="https://github.com/tisfeng/Easydict#openaichatgpt%E7%BF%BB%E8%AF%91" title="OpenAI (ChatGPT)">OpenAI (ChatGPT)</a> 翻译，支持 Azure OpenAI 接口。 <a href="https://github.com/tisfeng/Easydict/issues/28" title="#28">#28</a></li>
         <li>支持修改默认 TTS 服务，支持 Bing，Google，有道和百度 TTS。</li>
         <li>允许在某些特定应用中不进行鼠标划词，即不显示查询图标，可在【设置-禁止名单】添加。 <a href="https://github.com/tisfeng/Easydict/issues/99" title="#99 ">#99 </a></li>
         <li>新增 Easydict 应用内查询。</li>
@@ -29,6 +29,12 @@
         <li>查询内容为单词时，会尝试以驼峰和下划线形式进行分词，然后再查询。 <a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1753165936" title="#135">#135</a></li>
         <li>新增侧悬浮窗口显示位置-屏幕中间。 <a href="https://github.com/tisfeng/Easydict/issues/118" title="#118">#118</a></li>
         </ul>
+        <table>
+            <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/HModYw-1696150530.png">
+            <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
+            <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
+        </table>
+
         <h3 id="-">💎 优化</h3>
         <ul>
         <li>优化了 OCR 文本拼接算法。</li>
