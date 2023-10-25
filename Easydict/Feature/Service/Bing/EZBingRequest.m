@@ -8,8 +8,8 @@
 
 #import "EZBingRequest.h"
 #import "EZTranslateError.h"
-#import "EZBingLanguageVoice.h"
 #import "NSString+EZRegex.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kAudioMIMEType = @"audio/mpeg";
 static NSString *const kBingConfigKey = @"kBingConfigKey";
