@@ -11,7 +11,7 @@
         <h2 id="-v2-0-0-2023-10-25">[v2.0.0] - 2023-10-25</h2>
         <h3 id="-">✨ 新功能</h3>
         <ul>
-        <li>新增支持 <a href="https://github.com/tisfeng/Easydict#%E8%8B%B9%E6%9E%9C%E7%B3%BB%E7%BB%9F%E8%AF%8D%E5%85%B8" title="🍎苹果系统词典">🍎苹果系统词典</a> 查询，支持第三方词典，可手动导入 mdict 词典。<a href="https://github.com/tisfeng/Easydict/issues/148" title="#148">#148</a></li>
+        <li>新增支持 <a href="https://github.com/tisfeng/Easydict#-%E8%8B%B9%E6%9E%9C%E7%B3%BB%E7%BB%9F%E8%AF%8D%E5%85%B8" title="🍎苹果系统词典">🍎苹果系统词典</a> 查询，支持第三方词典，可手动导入 mdict 词典。<a href="https://github.com/tisfeng/Easydict/issues/148" title="#148">#148</a></li>
         <li>新增支持 Bing 翻译。<a href="https://github.com/tisfeng/Easydict/issues/143" title="#143">#143</a> by <a href="https://github.com/choykarl" title="choykarl">choykarl</a></li>
         <li>新增 <a href="https://github.com/tisfeng/Easydict#%E6%99%BA%E8%83%BD%E6%9F%A5%E8%AF%A2%E6%A8%A1%E5%BC%8F" title="智能查询模式">智能查询模式</a>。</li>
         <li>开放 <a href="https://github.com/tisfeng/Easydict#openaichatgpt%E7%BF%BB%E8%AF%91" title="OpenAI (ChatGPT)">OpenAI (ChatGPT)</a> 翻译。 <a href="https://github.com/tisfeng/Easydict/issues/28" title="#28">#28</a></li>
