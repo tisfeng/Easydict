@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎**苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -40,7 +40,7 @@
 - [x] 支持智能查询模式。
 - [x] 支持系统 OCR 截图翻译，静默截图 OCR。
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
-- [x] 支持[苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
+- [x] 支持[🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
 - [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，百度和火山翻译。
 - [x] 支持 48 种语言。
@@ -234,13 +234,15 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 - 有道 TTS：整体效果不错，接口稳定，尤其英语单词发音极好，但最多只能合成 600 个字符。
 - 百度 TTS：英文句子发音很好，口音很有特色，但最多只能合成约 1000 个字符。
 
-默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。  
-鉴于有道 TTS 的英语单词效果很好，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。  
+默认使用有道 TTS，用户可在设置中切换偏好 TTS 服务。
+
+鉴于有道 TTS 的英语单词效果很好，因此英文单词优先使用有道 TTS，其他文本则使用默认 TTS 服务。
+
 除系统 TTS 外，其他 TTS 服务都是非官方接口，可能不稳定。
 
 ## 查询服务
 
-**目前支持苹果系统词典，有道词典，苹果系统翻译，DeepL，Google，Bing，百度和火山翻译服务。**
+目前支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，百度和火山翻译。
 
 > 注意 ⚠️：Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
@@ -305,7 +307,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ### 🍎 苹果系统词典
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文 - 英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 

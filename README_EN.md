@@ -228,11 +228,15 @@ Currently support macOS system TTS, Bing, Google, Youdao, and Baidu online TTS s
 - Youdao TTS: The overall performance is commendable with a stable interface, and it excels in the pronunciation of English words. However, the maximum character limit is capped at 600 characters.
 - Baidu TTS: English sentences are well pronounced with a distinctive accent, but can only generate up to about 1,000 characters.
 
-By default, the application uses Youdao TTS, but users have the option to select their preferred TTS service in the settings. Due to its impressive performance with English words, Youdao TTS is the recommended choice for such content, while the default TTS service remains in use for other languages. It's worth noting that, apart from the system TTS, all other TTS services are unofficial interfaces and may experience instabilities from time to time
+By default, the application uses Youdao TTS, but users have the option to select their preferred TTS service in the settings. 
+
+Due to its impressive performance with English words, Youdao TTS is the recommended choice for such content, while the default TTS service remains in use for other languages. 
+
+It's worth noting that, apart from the system TTS, all other TTS services are unofficial interfaces and may experience instabilities from time to time
 
 ## Translation Services
 
-**Currently, we support Youdao Dictionary, macOS system translation, DeepL, Google, Bing, Baidu, and Volcano translation, a total 6 translation services.**
+Currently supports 🍎YouDao Dictionary,🍎 Apple System Dictionary,🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
 
 > Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
