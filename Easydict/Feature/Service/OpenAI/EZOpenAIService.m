@@ -801,7 +801,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" xxx \",\n\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" $(literal_translation) \",\n\n", targetLanguage];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -826,7 +826,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ inferred translation of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the inferential translation is different from the previous direct translation, and the inferential translation should be more accurate, more reasonable and more realistic. Display inferential translation in this format: \"%@: xxx \", Note, 'xxx' is the final result of inference translation, Do not display the inference process information.\n\n", targetLanguage, inferenceTranslation];
+    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ $(inferential_translation) of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the $(inferential_translation) is different from the previous $(literal_translation). $(inferential_translation) only contains the final translation result. Display in this format: \"%@: $(inferential_translation) \", \n\n", targetLanguage, inferenceTranslation];
     prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
