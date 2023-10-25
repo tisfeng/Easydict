@@ -130,6 +130,10 @@ brew install easydict
 >
 > 如果你的 Xcode 版本较低，请使用 [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) 分支，注意这是一个固定版本分支，不受维护。
 
+如果运行遇到下面错误，请尝试更新 CocoaPods，然后 `pod install`。
+
+>  [DT_TOOLCHAIN_DIR cannot be used to evaluate LD_RUNPATH_SEARCH_PATHS, use TOOLCHAIN_DIR instead](https://github.com/CocoaPods/CocoaPods/issues/12012)
+
 </p>
 
 </details>
