@@ -3,6 +3,55 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>2.0.1</title>
+      <pubDate>Wed, 25 Oct 2023 19:20:00 +0800</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.0.1/Easydict.zip" sparkle:version="22" sparkle:shortVersionString="2.0.1" type="application/octet-stream" sparkle:edSignature="frYESPjQRSJAjtWKAf9eZXT8YJL3ZU5bVdhmoZy6+JRcv6FE9AlpcKxQeYP4tdNgmoUbuhNDmp9VvnFwy3oCCw==" length="9163463" />
+      <description><![CDATA[
+        <h2 id="-v2-0-1-2023-10-25">[v2.0.1] - 2023-10-25</h2>
+        <p>紧急修复 <a href="https://github.com/tisfeng/Easydict/releases/tag/2.0.0">2.0.0 版本</a> 应用启动崩溃问题  <a href="https://github.com/tisfeng/Easydict/issues/187">#187</a></p>
+        <hr>
+        <h3 id="2-0-0-">2.0.0  版本更新日志</h3>
+        <h3 id="-">✨ 新功能</h3>
+        <ul>
+        <li>新增支持 <a href="https://github.com/tisfeng/Easydict#%E8%8B%B9%E6%9E%9C%E7%B3%BB%E7%BB%9F%E8%AF%8D%E5%85%B8" title="🍎苹果系统词典">🍎苹果系统词典</a> 查询，支持第三方词典，可手动导入 mdict 词典。<a href="https://github.com/tisfeng/Easydict/issues/148" title="#148">#148</a></li>
+        <li>新增支持 Bing 翻译。<a href="https://github.com/tisfeng/Easydict/issues/143" title="#143">#143</a> by <a href="https://github.com/choykarl" title="choykarl">choykarl</a></li>
+        <li>新增 <a href="https://github.com/tisfeng/Easydict#%E6%99%BA%E8%83%BD%E6%9F%A5%E8%AF%A2%E6%A8%A1%E5%BC%8F" title="智能查询模式">智能查询模式</a>。</li>
+        <li>开放 <a href="https://github.com/tisfeng/Easydict#openaichatgpt%E7%BF%BB%E8%AF%91" title="OpenAI (ChatGPT)">OpenAI (ChatGPT)</a> 翻译。 <a href="https://github.com/tisfeng/Easydict/issues/28" title="#28">#28</a></li>
+        <li>支持修改默认 TTS 服务，支持 Bing，Google，有道和百度 TTS。</li>
+        <li>允许在某些特定应用中不进行鼠标划词，即不显示查询图标，可在【设置-禁止名单】添加。 <a href="https://github.com/tisfeng/Easydict/issues/99" title="#99 ">#99 </a></li>
+        <li>新增 Easydict 应用内查询。</li>
+        <li>新增【使用译文替换】查询文本。</li>
+        <li>支持手动设置用户偏好语言。</li>
+        <li>支持选择鼠标划词和快捷键划词的窗口类型。<a href="https://github.com/tisfeng/Easydict/pull/156" title="PR 156">PR 156</a> by <a href="https://github.com/rainzm" title="rainzm">rainzm</a></li>
+        <li>新增快捷键 <code>⇧+⌘+J</code> 复制首个翻译结果。<a href="https://github.com/tisfeng/Easydict/issues/151" title="#151">#151</a> by <a href="https://github.com/rainzm" title="rainzm">rainzm</a></li>
+        <li>支持输入文本自动去除代码注释符号，需手动开启。<a href="https://github.com/tisfeng/Easydict/issues/135" title="#135">#135</a></li>
+        <li>查询内容为单词时，会尝试以驼峰和下划线形式进行分词，然后再查询。 <a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1753165936" title="#135">#135</a></li>
+        <li>新增侧悬浮窗口显示位置-屏幕中间。 <a href="https://github.com/tisfeng/Easydict/issues/118" title="#118">#118</a></li>
+        </ul>
+        <h3 id="-">💎 优化</h3>
+        <ul>
+        <li>优化了 OCR 文本拼接算法。</li>
+        <li>优化了单词的语种识别准确度。</li>
+        <li>优化 OCR 窗口显示，OCR 时先关闭之前的 OCR 窗口。<a href="https://github.com/tisfeng/Easydict/issues/126" title="#126">#126</a></li>
+        <li>优化微信多选消息异常显示问题。<a href="https://github.com/tisfeng/Easydict/issues/123" title="#123">#123</a></li>
+        <li>许多其他优化。</li>
+        </ul>
+        <h3 id="-">🐞 修复</h3>
+        <ul>
+        <li>修复了划词弹出多个窗口问题。 <a href="https://github.com/tisfeng/Easydict/issues/141" title="#141">#141</a></li>
+        <li>修复了特殊字符可能导致输入框内容显示乱码问题。<a href="https://github.com/tisfeng/Easydict/issues/184" title="#184">#184</a></li>
+        <li>修复了许多其他已知问题。</li>
+        </ul>
+        <h3 id="-">新成员</h3>
+        <ul>
+        <li><a href="https://github.com/choykarl" title="choykarl">choykarl</a></li>
+        <li><a href="https://github.com/rainzm" title="rainzm">rainzm</a></li>
+        </ul>
+      ]]>
+      </description>
+    </item>
+    <item>
       <title>2.0.0</title>
       <pubDate>Wed, 25 Oct 2023 17:30:00 +0800</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
