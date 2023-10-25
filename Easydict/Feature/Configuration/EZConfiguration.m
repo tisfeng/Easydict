@@ -130,8 +130,10 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:firstLanguage forKey:kFirstLanguageKey];
     
-    NSDictionary *parameters = @{ @"first_language" : firstLanguage };
-    [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+    if (firstLanguage) {
+        NSDictionary *parameters = @{ @"first_language" : firstLanguage };
+        [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+    }
 }
 
 - (void)setSecondLanguage:(EZLanguage)secondLanguage {
@@ -139,8 +141,10 @@ static EZConfiguration *_instance;
 
     [NSUserDefaults mm_write:secondLanguage forKey:kSecondLanguageKey];
     
-    NSDictionary *parameters = @{ @"second_language" : secondLanguage };
-    [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+    if (secondLanguage) {
+        NSDictionary *parameters = @{ @"second_language" : secondLanguage };
+        [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+    }
 }
 
 - (void)setFrom:(EZLanguage)from {
