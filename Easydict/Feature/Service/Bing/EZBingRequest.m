@@ -6,10 +6,10 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+#import "Easydict-Swift.h"
 #import "EZBingRequest.h"
 #import "EZTranslateError.h"
 #import "NSString+EZRegex.h"
-#import "Easydict-Swift.h"
 
 static NSString *const kAudioMIMEType = @"audio/mpeg";
 static NSString *const kBingConfigKey = @"kBingConfigKey";
