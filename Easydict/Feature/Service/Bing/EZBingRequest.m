@@ -6,9 +6,9 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+#import "Easydict-Swift.h"
 #import "EZBingRequest.h"
 #import "EZTranslateError.h"
-#import "EZBingLanguageVoice.h"
 #import "NSString+EZRegex.h"
 
 static NSString *const kAudioMIMEType = @"audio/mpeg";
