@@ -1861,12 +1861,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通用"
+            "value" : "General"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "通用"
           }
         }
