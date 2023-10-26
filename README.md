@@ -425,7 +425,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 具体步骤是，使用浏览器打开 [Bing Translator](https://www.bing.com/translator)，登录，然后在控制台执行以下代码获取 cookie
 
 ```js
-cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +result.value)));
+cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + result.value)));
 ```
 
 最后将 cookie 使用命令写入 Easydict
@@ -434,6 +434,8 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +r
 // xxx 是前面获取的 cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
+
+> 注意，Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
 
 ## 智能查询模式
 

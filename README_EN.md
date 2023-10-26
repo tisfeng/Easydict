@@ -429,6 +429,8 @@ Finally, use the command to write the cookie in Easydict
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 
+> Note that Bing TTS also uses a web interface, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
+
 ## Smart query mode
 
 Currently, there are two main types of lookup services: vocabulary lookup (e.g., Apple Dictionary) and translating text (e.g., DeepL), and there are also some services (e.g., Yudao and Google) that support both vocabulary lookup and translating text.
