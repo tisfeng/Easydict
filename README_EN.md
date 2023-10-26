@@ -78,8 +78,8 @@
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
 - [Use with PopClip](#use-with-popclip)
-- [Preferences](#preferences)
-  - [Settings](#settings)
+- [Settings](#Settings)
+  - [General](#general)
   - [Services](#services)
   - [In-App Shortcuts](#in-app-shortcuts)
 - [Tips](#tips)
@@ -508,11 +508,11 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 
 > Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-## Preferences
+## Settings
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on a query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
 
-### Settings
+### General
 
 <img width="1036" alt="Prefences" src="https://github.com/Jerry23011/Easydict/assets/89069957/7d63ad8e-927f-44e2-bc14-9d2199a927e4">
 
