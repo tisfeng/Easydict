@@ -79,8 +79,8 @@
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
-- [偏好设置](#偏好设置)
-  - [设置](#设置)
+- [设置](#设置)
+  - [设置](#通用)
   - [服务](#服务)
 - [应用内快捷键](#应用内快捷键)
 - [Tips](#tips)
@@ -514,11 +514,11 @@ Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good
 
 > 参考：https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
 
-## 偏好设置
+## 设置
 
-设置页提供了一些偏好设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
+设置页提供了一些设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
 
-### 设置
+### 通用
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
