@@ -236,7 +236,7 @@ It's worth noting that, apart from the system TTS, all other TTS services are un
 
 ## Translation Services
 
-Currently supports 🍎YouDao Dictionary,🍎 Apple System Dictionary,🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
+Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
 
 > Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
