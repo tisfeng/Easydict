@@ -1000,11 +1000,11 @@
 }
 
 - (NSString *)toolbarItemLabel {
-    return NSLocalizedString(@"setting", nil);
+    return NSLocalizedString(@"setting_general", nil);
 }
 
 - (NSImage *)toolbarItemImage {
-    return [NSImage imageNamed:@"toolbar_setting"];
+    return [NSImage imageNamed:@"toolbar_setting_general"];
 }
 
 - (BOOL)hasResizableWidth {

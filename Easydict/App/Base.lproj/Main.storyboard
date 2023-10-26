@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22155"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -22,7 +22,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uLo-B5-Udn"/>
-                                        <menuItem title="Preferences…" keyEquivalent="," id="wgy-yj-uSV">
+                                        <menuItem title="Settings…" keyEquivalent="," id="wgy-yj-uSV">
                                             <connections>
                                                 <action selector="preferenceAction:" target="qM9-fT-Fym" id="AQg-31-GQh"/>
                                             </connections>
@@ -772,7 +772,7 @@ DQ
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="kkp-Wh-Cmv"/>
-                        <menuItem title="偏好设置" keyEquivalent="," id="Fzj-Rh-cL0">
+                        <menuItem title="设置" keyEquivalent="," id="Fzj-Rh-cL0">
                             <connections>
                                 <action selector="preferenceAction:" target="qM9-fT-Fym" id="Emg-Mm-dS5"/>
                             </connections>
