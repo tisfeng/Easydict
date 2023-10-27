@@ -1102,18 +1102,18 @@
       }
     },
     "Fzj-Rh-cL0.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"设置\"; ObjectID = \"Fzj-Rh-cL0\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"设置...\"; ObjectID = \"Fzj-Rh-cL0\";",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settings"
+            "value" : "Settings..."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置"
+            "value" : "设置..."
           }
         }
       }
