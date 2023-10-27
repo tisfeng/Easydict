@@ -14,6 +14,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
 
 @implementation NSString (EZHandleInputText)
 
+/// Split code text by snake case and camel case.
 - (NSString *)splitCodeText {
     NSString *queryText = [self splitSnakeCaseText];
     queryText = [queryText splitCamelCaseText];
@@ -33,27 +34,59 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
 }
 
 /**
- Remove comment symbols
+ * Creates a {@code UUID} from the string standard representation as
+ * described in the {@link #toString} method.
+ *
+ * @param  name
+ *         A string that specifies a {@code UUID}
+ *
+ * @return  A {@code UUID} with the specified value
+ *
+ * @throws  IllegalArgumentException
+ *          If name does not conform to the string representation as
+ *          described in {@link #toString}
+ *
+ */
+
+/// Remove comment block symbols, /* */
+- (NSString *)removeCommentBlockSymbols {
+    NSMutableString *mutableSelf = [self mutableCopy];
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"/\\*+(.*?)\\*+/" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSArray *results = [regex matchesInString:self options:0 range:NSMakeRange(0, self.length)];
+    
+    for (NSTextCheckingResult *result in [[results reverseObjectEnumerator] allObjects]) {
+        NSRange range = [result rangeAtIndex:1];
+        NSString *content = [self substringWithRange:range].trim;
+        NSArray *lines = [content componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        NSMutableArray *mutableLines = [NSMutableArray array];
+        for (NSString *line in lines) {
+            NSString *trimmedLine = [line trim];
+            // Remove all prefix *
+            NSString *newText = [trimmedLine stringByReplacingOccurrencesOfString:@"\\*+"
+                                                                       withString:@""
+                                                                          options:NSRegularExpressionSearch
+                                                                            range:NSMakeRange(0, trimmedLine.length)];
+            [mutableLines addObject:newText.trim];
+        }
+        
+        NSString *modifiedBlock = [mutableLines componentsJoinedByString:@"\n"];
+        [mutableSelf replaceCharactersInRange:result.range withString:modifiedBlock];
+    }
+    
+    return mutableSelf;
+}
+
+/**
+ Remove comment symbols, # and //
  */
 - (NSString *)removeCommentSymbols {
-    // good # girl /*** boy */ --> good  girl  boy
-    
-    // match /*
-    NSString *pattern1 = @"/\\*+";
-    
-    // match */
-    NSString *pattern2 = @"[/*]+";
-    
     // match // and  #
-    NSString *pattern3 = @"//|#";
-    
-    NSString *combinedPattern = [NSString stringWithFormat:@"%@|%@|%@", pattern1, pattern2, pattern3];
-    
-    NSString *cleanedText = [self stringByReplacingOccurrencesOfString:combinedPattern
+    NSString *pattern = @"//|#";
+    NSString *cleanedText = [self stringByReplacingOccurrencesOfString:pattern
                                                             withString:@""
                                                                options:NSRegularExpressionSearch
                                                                  range:NSMakeRange(0, self.length)];
-    
     return cleanedText;
 }
 
@@ -68,10 +101,10 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
  // good boy.
  
  hello
- 
  */
+
+/// Remove adjacent comment symbol prefix, // and #, and try to join texts.
 - (NSString *)removeCommentSymbolPrefixAndJoinTexts {
-    // 分割文本为行数组
     NSArray *lines = [self componentsSeparatedByString:@"\n"];
     
     NSMutableString *resultText = [NSMutableString string];
@@ -79,8 +112,6 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
     
     for (int i = 0; i < lines.count; i++) {
         NSString *line = lines[i];
-        
-        // 去除行首和行尾的空格和换行符
         NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
         if ([trimmedLine hasCommentSymbolPrefix]) {

@@ -200,6 +200,7 @@
     
     if (EZConfiguration.shared.isBeta) {
         queryText = [queryText removeCommentSymbolPrefixAndJoinTexts];
+        queryText = [queryText removeCommentBlockSymbols];
         queryText = [queryText removeCommentSymbols];
     }
 
