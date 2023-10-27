@@ -910,10 +910,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (CGSize)labelSize:(EZLabel *)label exceptedWidth:(CGFloat)exceptedWidth {
     // ???: 很奇怪，比如实际计算结果为 364，但界面渲染却是 364.5 😑
-    
-    NSWindow *window = [self windowOfType:self.result.service.windowType];
-    CGFloat selfWidth = window ? window.width - EZHorizontalCellSpacing_10 * 2 : self.width;
-    CGFloat width = selfWidth - exceptedWidth;
+    CGFloat width = self.width - exceptedWidth;
     //        NSLog(@"text: %@, width: %@", label.text, @(width));
     //        NSLog(@"self.width: %@, selfWidth: %@", @(self.width), @(selfWidth));
     
