@@ -507,9 +507,16 @@ Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good
 
 ```
   # popclip
-  name: Easydict
-  icon: square E
-  key combo: option D
+name: Easydict
+icon: iconify:ri:translate
+interpreter: zsh
+shell script: |
+  result=$(ps aux | grep Easydict.app | wc -l)
+  if [[ $result -lt 2 ]];then
+    open /Applications/Easydict.app
+    sleep 1
+  fi
+  open "easydict://$POPCLIP_TEXT"
 ```
 
 > 参考：https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
