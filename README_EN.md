@@ -593,7 +593,7 @@ Open source makes the world better.
 
 If you are interested in this project, we welcome you to contribute to the project, and we will provide help as much as possible.
 
-Currently, the project has two main branches, dev and master. The dev branch code is usually the latest, and may contain some features that are under development. The master branch code is stable and will be merged with the dev branch code regularly.
+Currently, the project has two main branches, dev and main. The dev branch code is usually the latest, and may contain some features that are under development. The main branch code is stable and will be merged with the dev branch code regularly.
 
 If you think there is room for improvement in the project, or if you have new ideas for features, please submit a PR:
 
