@@ -114,14 +114,6 @@ If you are a developer, or you are interested in this project, you can also try 
 
 Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file(⚠️ Not `Easydict.xcodeproj`!), `Cmd + R` to compile and run.
 
-If a signature error occurs during compilation, please use your own developer account on the `Signing & Capabilities` page of the target. If you are not an Apple developer yet, just go to https://developer.apple.com/ and register for free.
-
-If you don't want to register as an Apple developer, you can also run with automatic signature, refer to the screenshot below, change `Team` to None and `Signing Certificate` to Sign to Run Locally, note that both targets should be changed.
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
-</div>
-
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
 If the run encounters the following error, try updating CocoaPods and then `pod install`.

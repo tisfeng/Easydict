@@ -116,14 +116,6 @@ brew install easydict
 
 只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️ 不是 `Easydict.xcodeproj`!），`Cmd + R` 编译运行即可。
 
-如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
-
-如果不想注册苹果开发者，也可以用自动签名方式运行，参考下面截图，将 `Team` 改为 None，`Signing Certificate` 设置为 Sign to Run Locally，注意两个 target 都要改。
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
-</div>
-
 构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
 > ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
