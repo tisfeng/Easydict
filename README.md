@@ -499,14 +499,10 @@ Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good
 
 ## 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后为 `Easydict`设置一个快捷键，默认是 `Opt + D`，那么你就可以通过 `PopClip` 快速打开 `Easydict` 啦！
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（By **[liziqiang](https://github.com/liziqiang)**）
 
-使用方法：选中以下代码块，`PopClip` 会显示 "安装 Easydict"，点击它即可。
-
-> 注意 ⚠️: 如果你修改了默认的快捷键，你需要跟着修改下面脚本中的快捷键 `key combo`。
-
-```
-  # popclip
+```shell
+# popclip
 name: Easydict
 icon: iconify:ri:translate
 interpreter: zsh
@@ -519,7 +515,7 @@ shell script: |
   open "easydict://$POPCLIP_TEXT"
 ```
 
-> 参考：https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+> 参考：https://www.popclip.app/dev/shell-script-actions
 
 ## 设置
 
