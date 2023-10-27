@@ -1102,18 +1102,18 @@
       }
     },
     "Fzj-Rh-cL0.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"偏好设置\"; ObjectID = \"Fzj-Rh-cL0\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"设置\"; ObjectID = \"Fzj-Rh-cL0\";",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preferences"
+            "value" : "Settings"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "偏好设置"
+            "value" : "设置"
           }
         }
       }
@@ -2673,19 +2673,19 @@
       }
     },
     "wgy-yj-uSV.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Preferences…\"; ObjectID = \"wgy-yj-uSV\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Settings…\"; ObjectID = \"wgy-yj-uSV\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Preferences…"
+            "value" : "Settings…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preferences…"
+            "value" : "Settings…"
           }
         }
       }

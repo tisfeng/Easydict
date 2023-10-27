@@ -1856,19 +1856,18 @@
         }
       }
     },
-    "setting" : {
-      "comment" : "setting",
+    "setting_general" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settings"
+            "value" : "General"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置"
+            "value" : "通用"
           }
         }
       }
