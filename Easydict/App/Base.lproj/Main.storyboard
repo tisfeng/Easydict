@@ -772,7 +772,7 @@ DQ
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="kkp-Wh-Cmv"/>
-                        <menuItem title="设置" keyEquivalent="," id="Fzj-Rh-cL0">
+                        <menuItem title="设置..." keyEquivalent="," id="Fzj-Rh-cL0">
                             <connections>
                                 <action selector="preferenceAction:" target="qM9-fT-Fym" id="Emg-Mm-dS5"/>
                             </connections>
