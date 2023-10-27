@@ -502,8 +502,15 @@ Usage: Select the following code block, `PopClip` will show "Install Easydict", 
 ```
   # popclip
   name: Easydict
-  icon: square E
-  key combo: option D
+  icon: iconify:ri:translate
+  interpreter: zsh
+  shell script: |
+    result=$(ps aux | grep Easydict.app | wc -l)
+    if [[ $result -lt 2 ]];then
+      open /Applications/Easydict.app
+      sleep 1
+    fi
+    open "easydict://$POPCLIP_TEXT"
 ```
 
 > Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
