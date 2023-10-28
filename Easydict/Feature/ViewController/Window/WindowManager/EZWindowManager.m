@@ -12,9 +12,9 @@
 #import "EZEventMonitor.h"
 #import "Snip.h"
 #import "EZCoordinateUtils.h"
-#import "EZPreferencesWindowController.h"
 #import "EZConfiguration.h"
 #import "EZLog.h"
+#import "Easydict-Swift.h"
 
 @interface EZWindowManager ()
 
