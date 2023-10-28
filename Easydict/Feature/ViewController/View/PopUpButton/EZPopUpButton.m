@@ -62,11 +62,7 @@ DefineMethodMMMake_m(EZPopUpButton);
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.left.bottom.equalTo(titleContainerView);
             }];
-            [textField excuteLight:^(NSTextField *label) {
-                label.textColor = [NSColor ez_resultTextLightColor];
-            } dark:^(NSTextField *label) {
-                label.textColor = [NSColor ez_resultTextDarkColor];
-            }];
+            textField.textColor = NSColor.ez_resultTextColor;
         }];
         
         self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
@@ -78,11 +74,7 @@ DefineMethodMMMake_m(EZPopUpButton);
                 make.right.equalTo(titleContainerView);
                 make.width.height.equalTo(@8);
             }];
-            [imageView excuteLight:^(NSImageView *imageView) {
-                imageView.image = [image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-            } dark:^(NSTextField *label) {
-                imageView.image = [image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-            }];
+            imageView.image = [image imageWithTintColor:NSColor.ez_imageTintColor];
         }];
     }];
 }

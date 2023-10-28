@@ -47,13 +47,8 @@
 + (void)showSuccessToast {
     EZToast *toast = [EZToast toast];
     toast.toastPostion = CTPositionMouse;
-    [toast excuteLight:^(EZToast *toast) {
-        toast.toastBackgroundColor = [NSColor mm_colorWithHexString:@"#D6D6D6"];
-        toast.textColor = [NSColor mm_colorWithHexString:@"#454545"];
-    } dark:^(EZToast *toast) {
-        toast.toastBackgroundColor = [NSColor mm_colorWithHexString:@"#404040"];
-        toast.textColor = [NSColor mm_colorWithHexString:@"#C2C2C2"];
-    }];
+    toast.toastBackgroundColor = [NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#D6D6D6"] dark:[NSColor mm_colorWithHexString:@"#404040"]];
+    toast.textColor = [NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#454545"] dark:[NSColor mm_colorWithHexString:@"#C2C2C2"]];
     
     toast.hiddenIcon = YES;
     toast.imageMarginLeft = 0;

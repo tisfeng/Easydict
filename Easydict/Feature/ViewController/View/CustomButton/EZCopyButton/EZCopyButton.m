@@ -21,13 +21,7 @@
 - (void)setup {
     NSImage *copyImage = [NSImage imageNamed:@"copy"];
     copyImage = [copyImage resizeToSize:CGSizeMake(16, 16)];
-    self.image = copyImage;
-    
-    [self excuteLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    self.image = [copyImage imageWithTintColor:NSColor.ez_imageTintColor];
     
     NSString *action = NSLocalizedString(@"copy_text", nil);
     self.toolTip = [NSString stringWithFormat:@"%@", action];

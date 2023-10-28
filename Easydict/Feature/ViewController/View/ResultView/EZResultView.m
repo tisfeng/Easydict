@@ -41,23 +41,13 @@
 - (void)setup {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    [self.layer excuteLight:^(CALayer *layer) {
-        layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
-    } dark:^(CALayer *layer) {
-        layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
-    }];
-
+    self.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
     mm_weakify(self);
-
     self.topBarView = [NSView mm_make:^(NSView *_Nonnull view) {
         mm_strongify(self);
         [self addSubview:view];
         view.wantsLayer = YES;
-        [view.layer excuteLight:^(CALayer *layer) {
-            layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
-        } dark:^(CALayer *layer) {
-            layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
-        }];
+        view.layer.backgroundColor = NSColor.ez_titleBarBgColor.CGColor;
     }];
     self.topBarView.mas_key = @"topBarView";
 
@@ -75,11 +65,7 @@
         label.bordered = NO;
         label.backgroundColor = NSColor.clearColor;
         label.alignment = NSTextAlignmentCenter;
-        [label excuteLight:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextLightColor];
-        } dark:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextDarkColor];
-        }];
+        label.textColor = NSColor.ez_resultTextColor;
     }];
     self.serviceNameLabel.mas_key = @"typeLabel";
 
@@ -162,15 +148,10 @@
     self.retryButton = retryButton;
     [self addSubview:retryButton];
     NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
-    retryButton.image = retryImage;
+    retryButton.image = [retryImage imageWithTintColor:NSColor.ez_imageTintColor];
     retryButton.mas_key = @"retryButton";
     retryButton.toolTip = NSLocalizedString(@"retry", nil);
     retryButton.hidden = YES;
-    [retryButton excuteLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
     
     [retryButton setClickBlock:^(EZButton *button) {
         if (self.retryBlock) {
@@ -354,12 +335,7 @@
     }
     
     self.arrowButton.toolTip = self.result.isShowing ? NSLocalizedString(@"hide", nil) : NSLocalizedString(@"show", nil);
-    
-    [self.arrowButton excuteLight:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [arrowImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    self.arrowButton.image = [arrowImage imageWithTintColor:NSColor.ez_imageTintColor];
 }
 
 

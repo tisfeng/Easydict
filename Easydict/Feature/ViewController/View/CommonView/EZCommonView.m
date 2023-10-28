@@ -28,12 +28,7 @@
 - (void)setupUI {
     self.wantsLayer = YES;
     self.layer.cornerRadius = EZCornerRadius_8;
-    [self.layer excuteLight:^(id _Nonnull x) {
-        [x setBackgroundColor:[NSColor ez_queryViewBgLightColor].CGColor];
-    } dark:^(id _Nonnull x) {
-        [x setBackgroundColor:[NSColor ez_queryViewBgDarkColor].CGColor];
-    }];
-
+    self.layer.backgroundColor = NSColor.ez_queryViewBgColor.CGColor;
     
     EZHoverButton *audioButton = [[EZHoverButton alloc] init];
     [self addSubview:audioButton];

@@ -47,22 +47,10 @@
         NSParagraphStyleAttributeName : paragraphStyle,
         NSKernAttributeName : @(0.2),
         NSFontAttributeName : self.font,
+        NSForegroundColorAttributeName: self.textForegroundColor ?: NSColor.ez_resultTextColor
     }
                               range:range];
-    
-    [self excuteLight:^(NSTextView *textView) {
-        [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextLightColor],
-        }
-                                  range:range];
-        [textView.textStorage setAttributedString:attributedString];
-    } dark:^(NSTextView *textView) {
-        [attributedString addAttributes:@{
-            NSForegroundColorAttributeName : self.textForegroundColor ?: [NSColor ez_resultTextDarkColor],
-        }
-                                  range:range];
-        [textView.textStorage setAttributedString:attributedString];
-    }];
+    [self.textStorage setAttributedString:attributedString];
 }
 
 

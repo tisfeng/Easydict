@@ -106,9 +106,6 @@
 		03B0230529231FA6001C7E63 /* EZButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226829231FA6001C7E63 /* EZButton.m */; };
 		03B0230629231FA6001C7E63 /* EZLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226C29231FA6001C7E63 /* EZLabel.m */; };
 		03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0226E29231FA6001C7E63 /* EZCommonView.m */; };
-		03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */; };
-		03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */; };
-		03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0228C29231FA6001C7E63 /* DarkModeManager.m */; };
 		03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229329231FA6001C7E63 /* SnipWindow.m */; };
 		03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229429231FA6001C7E63 /* SnipFocusView.m */; };
 		03B0231729231FA6001C7E63 /* Snip.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0229529231FA6001C7E63 /* Snip.m */; };
@@ -434,13 +431,6 @@
 		03B0226C29231FA6001C7E63 /* EZLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZLabel.m; sourceTree = "<group>"; };
 		03B0226E29231FA6001C7E63 /* EZCommonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCommonView.m; sourceTree = "<group>"; };
 		03B0226F29231FA6001C7E63 /* EZCommonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCommonView.h; sourceTree = "<group>"; };
-		03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DarkMode.m"; sourceTree = "<group>"; };
-		03B0228829231FA6001C7E63 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
-		03B0228929231FA6001C7E63 /* DarkModeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarkModeManager.h; sourceTree = "<group>"; };
-		03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+HiddenDebug.m"; sourceTree = "<group>"; };
-		03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DarkMode.h"; sourceTree = "<group>"; };
-		03B0228C29231FA6001C7E63 /* DarkModeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DarkModeManager.m; sourceTree = "<group>"; };
-		03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+HiddenDebug.h"; sourceTree = "<group>"; };
 		03B0228F29231FA6001C7E63 /* Snip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snip.h; sourceTree = "<group>"; };
 		03B0229029231FA6001C7E63 /* SnipFocusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipFocusView.h; sourceTree = "<group>"; };
 		03B0229129231FA6001C7E63 /* SnipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnipViewController.h; sourceTree = "<group>"; };
@@ -1112,7 +1102,6 @@
 				038954372A25A94E00EFFDC3 /* Utility */,
 				03B0222529231FA6001C7E63 /* Shortcut */,
 				03B0222829231FA6001C7E63 /* Configuration */,
-				03B0228629231FA6001C7E63 /* DarkMode */,
 				03B0228E29231FA6001C7E63 /* Snip */,
 				03B022A529231FA6001C7E63 /* MMKit */,
 			);
@@ -1319,20 +1308,6 @@
 				03B0226E29231FA6001C7E63 /* EZCommonView.m */,
 			);
 			path = CommonView;
-			sourceTree = "<group>";
-		};
-		03B0228629231FA6001C7E63 /* DarkMode */ = {
-			isa = PBXGroup;
-			children = (
-				03B0228829231FA6001C7E63 /* Singleton.h */,
-				03B0228B29231FA6001C7E63 /* NSObject+DarkMode.h */,
-				03B0228729231FA6001C7E63 /* NSObject+DarkMode.m */,
-				03B0228929231FA6001C7E63 /* DarkModeManager.h */,
-				03B0228C29231FA6001C7E63 /* DarkModeManager.m */,
-				03B0228D29231FA6001C7E63 /* NSView+HiddenDebug.h */,
-				03B0228A29231FA6001C7E63 /* NSView+HiddenDebug.m */,
-			);
-			path = DarkMode;
 			sourceTree = "<group>";
 		};
 		03B0228E29231FA6001C7E63 /* Snip */ = {
@@ -2154,7 +2129,6 @@
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				036A0DB82AD8403A006E6D4F /* NSString+EZHandleInputText.m in Sources */,
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
-				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
@@ -2200,7 +2174,6 @@
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
-				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
@@ -2292,7 +2265,6 @@
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
-				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,

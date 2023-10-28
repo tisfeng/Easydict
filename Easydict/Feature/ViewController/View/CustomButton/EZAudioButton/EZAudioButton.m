@@ -66,13 +66,8 @@
     NSImage *playImage = [NSImage imageNamed:@"audio"];
     NSImage *pauseImage = [NSImage ez_imageWithSymbolName:@"pause.circle"];
 
-    self.image = isPlaying ? pauseImage : playImage;
-
-    [self excuteLight:^(NSButton *audioButton) {
-        audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *audioButton) {
-        audioButton.image = [audioButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    __auto_type image = isPlaying ? pauseImage : playImage;
+    self.image = [image imageWithTintColor:NSColor.ez_imageTintColor];
     
     if (self.playStatus) {
         self.playStatus(isPlaying, self);

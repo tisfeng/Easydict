@@ -22,13 +22,8 @@
 }
 
 - (void)setup {
-    self.image = [NSImage ez_imageWithSymbolName:@"arrow.forward.square"];
-    
-    [self excuteLight:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *button) {
-        button.image = [button.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
+    __auto_type image = [NSImage ez_imageWithSymbolName:@"arrow.forward.square"];
+    self.image = [image imageWithTintColor:NSColor.ez_imageTintColor];
     
     NSString *action = NSLocalizedString(@"replace_text", nil);
     self.toolTip = [NSString stringWithFormat:@"%@", action];

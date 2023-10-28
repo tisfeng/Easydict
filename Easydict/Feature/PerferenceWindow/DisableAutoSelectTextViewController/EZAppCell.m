@@ -27,12 +27,7 @@
 
         self.iconView = [[NSImageView alloc] init];
         self.nameLabel = [NSTextField labelWithString:@""];
-        self.nameLabel.textColor = [NSColor blackColor];
-        [self.nameLabel excuteLight:^(NSTextField *nameLabel) {
-            nameLabel.textColor = [NSColor blackColor];
-        } dark:^(NSTextField *nameLabel) {
-            nameLabel.textColor = [NSColor whiteColor];
-        }];
+        self.nameLabel.textColor = [NSColor ez_dynamicColorLight:NSColor.blackColor dark:NSColor.whiteColor];
         
         [self addSubview:self.iconView];
         [self addSubview:self.nameLabel];

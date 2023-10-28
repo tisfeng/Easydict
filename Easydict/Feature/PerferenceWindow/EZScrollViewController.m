@@ -89,31 +89,18 @@ static CGFloat const kMargin = 0;
 }
 
 - (void)_setupUI {
-    NSColor *lightBgColor = [NSColor ez_resultViewBgLightColor];
-    NSColor *darkBgColor = [NSColor ez_resultViewBgDarkColor];
-
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:self.view.bounds];
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = NO;
+    scrollView.contentView.backgroundColor = NSColor.ez_resultViewBgColor;
     self.scrollView = scrollView;
     [self.view addSubview:scrollView];
 
     NSView *contentView = [[NSView alloc] initWithFrame:self.view.bounds];
     scrollView.documentView = contentView;
     contentView.wantsLayer = YES;
+    contentView.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
     self.contentView = contentView;
-
-    [contentView.layer excuteLight:^(CALayer *layer) {
-        layer.backgroundColor = lightBgColor.CGColor;
-    } dark:^(CALayer *layer) {
-        layer.backgroundColor = darkBgColor.CGColor;
-    }];
-
-    [scrollView.contentView excuteLight:^(NSClipView *contentView) {
-        contentView.backgroundColor = lightBgColor;
-    } dark:^(NSClipView *contentView) {
-        contentView.backgroundColor = darkBgColor;
-    }];
 }
 
 - (void)updateViewConstraints {

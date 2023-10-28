@@ -114,7 +114,7 @@ If you are a developer, or you are interested in this project, you can also try 
 
 Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file(⚠️ Not `Easydict.xcodeproj`!), `Cmd + R` to compile and run.
 
-Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
+Build environment: Xcode 15+, macOS 13.5+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
 If the run encounters the following error, try updating CocoaPods and then `pod install`.
 

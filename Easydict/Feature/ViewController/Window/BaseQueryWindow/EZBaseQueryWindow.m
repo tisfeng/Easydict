@@ -30,12 +30,8 @@
         self.delegate = self;
         
         // !!!: must set backgroundColor
-        [self excuteLight:^(NSWindow *window) {
-            window.backgroundColor = [NSColor ez_mainViewBgLightColor];
-        } dark:^(NSWindow *window) {
-            window.backgroundColor = [NSColor ez_mainViewBgDarkColor];
-        }];
-        
+        self.backgroundColor = NSColor.ez_mainViewBgColor;
+
         [self setupUI];
         
         [[NSNotificationCenter defaultCenter] addObserver:self

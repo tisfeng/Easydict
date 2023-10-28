@@ -31,15 +31,18 @@
     self.alphaValue = 0;
     self.title = @"";
     
-    [self excuteLight:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#E8E8E8"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#DCDCDC"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#CCCCCC"];
-    } dark:^(EZButton *detectButton) {
-        detectButton.backgroundColor = [NSColor mm_colorWithHexString:@"#3D3E3F"];
-        detectButton.backgroundHoverColor = [NSColor mm_colorWithHexString:@"#47494A"];
-        detectButton.backgroundHighlightColor = [NSColor mm_colorWithHexString:@"#585A5C"];
-    }];
+    self.backgroundColor = [
+        NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#E8E8E8"]
+                                dark:[NSColor mm_colorWithHexString:@"#3D3E3F"]
+    ];
+    self.backgroundHoverColor = [
+        NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#DCDCDC"]
+                                dark:[NSColor mm_colorWithHexString:@"#47494A"]
+    ];
+    self.backgroundHighlightColor = [
+        NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#CCCCCC"]
+                                dark:[NSColor mm_colorWithHexString:@"#585A5C"]
+    ];
     
     mm_weakify(self);
     [self setClickBlock:^(EZButton *_Nonnull button) {

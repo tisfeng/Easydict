@@ -48,12 +48,7 @@
     self.languageBarView = languageBarView;
     languageBarView.wantsLayer = YES;
     languageBarView.layer.cornerRadius = EZCornerRadius_8;
-    [languageBarView excuteLight:^(NSView *barView) {
-        barView.layer.backgroundColor = [NSColor ez_titleBarBgLightColor].CGColor;
-    } dark:^(NSView *barView) {
-        barView.layer.backgroundColor = [NSColor ez_titleBarBgDarkColor].CGColor;
-
-    }];
+    languageBarView.layer.backgroundColor = NSColor.ez_titleBarBgColor.CGColor;
     languageBarView.mas_key = @"languageBarView";
     
     
@@ -64,12 +59,7 @@
     NSString *toolTip = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"toggle_languages", nil), shortcut];
     transformButton.toolTip = toolTip;
     transformButton.image = [NSImage imageNamed:@"transform"];
-    
-    [transformButton excuteLight:^(EZHoverButton *transformButton) {
-        transformButton.contentTintColor = NSColor.blackColor;
-    } dark:^(EZHoverButton *transformButton) {
-        transformButton.contentTintColor = NSColor.whiteColor;
-    }];
+    transformButton.contentTintColor = NSColor.ez_imageTintColor;
     
     mm_weakify(self);
     [self.transformButton setClickBlock:^(EZButton *button) {

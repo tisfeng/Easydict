@@ -41,11 +41,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     CGRect frame = CGRectMake(0, 0, 350, 300);
     self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
-    [self.view excuteLight:^(NSView *view) {
-        view.layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
-    } dark:^(NSView *view) {
-        view.layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
-    }];
+    self.view.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
 }
 
 - (void)viewDidLoad {
@@ -148,13 +144,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-
-        [tableView excuteLight:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
-        } dark:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
-        }];
-
+        tableView.backgroundColor = NSColor.ez_tableRowViewBgColor;
         tableView.style = NSTableViewStylePlain;
 
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];

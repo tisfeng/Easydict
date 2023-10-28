@@ -46,11 +46,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
     self.imageView = [NSImageView mm_make:^(NSImageView *_Nonnull imageView) {
         [self addSubview:imageView];
         NSImage *image = [NSImage imageNamed:@"arrow_down_filling"];
-        [imageView excuteLight:^(NSImageView *imageView) {
-            imageView.image = [image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-        } dark:^(NSImageView *imageView) {
-            imageView.image = [image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-        }];
+        imageView.image = [image imageWithTintColor:NSColor.ez_imageTintColor];
     }];
     
     self.textField = [NSTextField mm_make:^(NSTextField *_Nonnull textField) {
@@ -62,11 +58,7 @@ DefineMethodMMMake_m(EZSelectLanguageButton);
         textField.font = [NSFont systemFontOfSize:13];
         textField.maximumNumberOfLines = 1;
         textField.lineBreakMode = NSLineBreakByTruncatingTail;
-        [textField excuteLight:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextLightColor];
-        } dark:^(NSTextField *label) {
-            label.textColor = [NSColor ez_resultTextDarkColor];
-        }];
+        textField.textColor = NSColor.ez_resultTextColor;
     }];
 }
 

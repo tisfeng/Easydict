@@ -97,11 +97,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     self.view.wantsLayer = YES;
     self.view.layer.cornerRadius = EZCornerRadius_8;
     self.view.layer.masksToBounds = YES;
-    [self.view excuteLight:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = [NSColor ez_mainViewBgLightColor].CGColor;
-    } dark:^(NSView *_Nonnull x) {
-        x.layer.backgroundColor = [NSColor ez_mainViewBgDarkColor].CGColor;
-    }];
+    self.view.layer.backgroundColor = NSColor.ez_mainViewBgColor.CGColor;
 }
 
 
@@ -257,11 +253,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
-        [scrollView excuteLight:^(NSScrollView *scrollView) {
-            scrollView.backgroundColor = [NSColor ez_mainViewBgLightColor];
-        } dark:^(NSScrollView *scrollView) {
-            scrollView.backgroundColor = [NSColor ez_mainViewBgDarkColor];
-        }];
+        scrollView.backgroundColor = NSColor.ez_mainViewBgColor;
         
         [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view).offset(0);
@@ -286,13 +278,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-        
-        [tableView excuteLight:^(NSTableView *tableView) {
-            tableView.backgroundColor = [NSColor ez_mainViewBgLightColor];
-        } dark:^(NSTableView *tableView) {
-            tableView.backgroundColor = [NSColor ez_mainViewBgDarkColor];
-        }];
-        
+        tableView.backgroundColor = NSColor.ez_mainViewBgColor;
         tableView.style = NSTableViewStylePlain;
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];

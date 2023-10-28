@@ -116,7 +116,7 @@ brew install easydict
 
 只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️ 不是 `Easydict.xcodeproj`!），`Cmd + R` 编译运行即可。
 
-构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
+构建环境：Xcode 15+, macOS 13.5+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
 > ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
 >

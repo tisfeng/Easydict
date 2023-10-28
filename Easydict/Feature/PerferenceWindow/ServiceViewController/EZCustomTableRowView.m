@@ -11,28 +11,18 @@
 @implementation EZCustomTableRowView
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
-    [self excuteLight:^(id _Nonnull x) {
-        [[NSColor ez_tableRowViewBgLightColor] setFill];
-        NSRectFill(dirtyRect);
-    } dark:^(id _Nonnull x) {
-        [[NSColor ez_tableRowViewBgDarkColor] setFill];
-        NSRectFill(dirtyRect);
-    }];
+    [NSColor.ez_tableRowViewBgColor setFill];
+    NSRectFill(dirtyRect);
 }
 
 /// Rewirte select row view color.
 - (void)drawSelectionInRect:(NSRect)dirtyRect {
     if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
         NSRect selectionRect = self.bounds;
-        [self excuteLight:^(NSTextField *nameLabel) {
-            [[NSColor mm_colorWithHexString:@"#B4D8FF"] setFill];
-            NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
-            [selectionPath fill];
-        } dark:^(NSTextField *nameLabel) {
-            [[NSColor mm_colorWithHexString:@"#404040"] setFill];
-            NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
-            [selectionPath fill];
-        }];
+        NSColor *color = [NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#404040"] dark:[NSColor mm_colorWithHexString:@"#404040"]];
+        [color setFill];
+        NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRect:selectionRect];
+        [selectionPath fill];
     }
 }
 

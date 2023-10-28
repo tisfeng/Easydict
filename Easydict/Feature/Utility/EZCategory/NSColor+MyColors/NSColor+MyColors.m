@@ -7,79 +7,70 @@
 //
 
 #import "NSColor+MyColors.h"
+#import "GeneratedAssetSymbols.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @implementation NSColor (MyColors)
-
-// Main background color
-+ (NSColor *)ez_mainViewBgLightColor {
-    return [NSColor mm_colorWithHexString:@"#FFFFFF"];
-}
-+ (NSColor *)ez_mainViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#232325"];
-}
-
-// Main border color
-+ (NSColor *)ez_mainBorderLightColor {
-    return [NSColor mm_colorWithHexString:@"#FFFFFF"];
-}
-+ (NSColor *)ez_mainBorderDarkColor {
-    return [NSColor mm_colorWithHexString:@"#515253"];
++ (NSColor *)ez_dynamicColorLight:(NSColor *)light dark:(NSColor *)dark {
+    return [NSColor colorWithName:nil dynamicProvider:^NSColor * _Nonnull(NSAppearance * _Nonnull appearance) {
+        __auto_type name = [appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]];
+        if ([name isEqualToString:NSAppearanceNameDarkAqua]) {
+            return dark;
+        } else {
+            return light;
+        }
+    }];
 }
 
-// Query view background color
-+ (NSColor *)ez_queryViewBgLightColor {
-    return [NSColor mm_colorWithHexString:@"#F4F4F4"];
-}
-+ (NSColor *)ez_queryViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#303132"];
++ (NSColor *)ez_mainViewBgColor {
+    return [NSColor colorNamed:ACColorNameMainViewBg];
 }
 
-// Query text color
-+ (NSColor *)ez_queryTextLightColor {
++ (NSColor *)ez_mainBorderColor {
+    return [NSColor colorNamed:ACColorNameMainBorder];
+}
+
++ (NSColor *)ez_queryTexColor {
+    return [NSColor colorNamed:ACColorNameQueryText];
+}
+
++ (NSColor *)ez_queryViewBgColor {
+    return [NSColor colorNamed:ACColorNameQueryViewBg];
+}
+
++ (NSColor *)ez_resultTexColor {
+    return [NSColor colorNamed:ACColorNameResultText];
+}
+
++ (NSColor *)ez_resultTextLightColor {
     return [NSColor mm_colorWithHexString:@"#262626"];
 }
-+ (NSColor *)ez_queryTextDarkColor {
++ (NSColor *)ez_resultTextDarkColor {
     return [NSColor mm_colorWithHexString:@"#E0E0E0"];
 }
 
-// Result text color
-+ (NSColor *)ez_resultTextLightColor {
-    return [NSColor ez_queryTextLightColor];
-}
-+ (NSColor *)ez_resultTextDarkColor {
-    return [NSColor ez_queryTextDarkColor];
++ (NSColor *)ez_resultViewBgColor {
+    return [NSColor colorNamed:ACColorNameResultViewBg];
 }
 
-// Result view title bar color
-+ (NSColor *)ez_titleBarBgLightColor {
-    return [NSColor mm_colorWithHexString:@"#F1F1F1"];
-}
-+ (NSColor *)ez_titleBarBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#2C2D2E"];
-}
-
-// Result view background color
 + (NSColor *)ez_resultViewBgLightColor {
     return [NSColor mm_colorWithHexString:@"#F6F6F6"];
 }
 + (NSColor *)ez_resultViewBgDarkColor {
-    return [NSColor ez_queryViewBgDarkColor];
+    return [NSColor mm_colorWithHexString:@"#303132"];
 }
 
-// Button hover color
-+ (NSColor *)ez_buttonHoverLightColor {
-    return [NSColor mm_colorWithHexString:@"#E2E2E2"];
-}
-+ (NSColor *)ez_buttonHoverDarkColor {
-    return [NSColor ez_mainBorderDarkColor];
++ (NSColor *)ez_titleBarBgColor {
+    return [NSColor colorNamed:ACColorNameTitleBarBg];
 }
 
-// Image tint color
-+ (NSColor *)ez_imageTintLightColor {
-    return [NSColor blackColor];
++ (NSColor *)ez_buttonHoverColor {
+    return [NSColor colorNamed:ACColorNameButtonHover];
 }
-+ (NSColor *)ez_imageTintDarkColor {
-    return [NSColor whiteColor];
+
++ (NSColor *)ez_imageTintColor {
+    return [NSColor ez_dynamicColorLight:NSColor.blackColor dark:NSColor.whiteColor];
 }
 
 + (NSColor *)ez_imageTintBlueColor {
@@ -90,11 +81,10 @@
     return [NSColor mm_colorWithHexString:@"#007AFF"];
 }
 
-+ (NSColor *)ez_tableRowViewBgLightColor {
-    return [NSColor mm_colorWithHexString:@"#FFFFFF"];
-}
-+ (NSColor *)ez_tableRowViewBgDarkColor {
-    return [NSColor mm_colorWithHexString:@"#28292A"];
++ (NSColor *)ez_tableRowViewBgColor {
+    return [NSColor colorNamed:ACColorNameTableRowViewBg];
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -53,11 +53,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (self) {
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
-        [self.layer excuteLight:^(CALayer *layer) {
-            layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
-        } dark:^(CALayer *layer) {
-            layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
-        }];
+        self.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
     }
     return self;
 }
@@ -389,13 +385,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             
             NSButton *tagButton = [[NSButton alloc] init];
             tagButton.title = tag;
-            [tagButton excuteLight:^(NSButton *tagButton) {
-                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#7A7A78"];
-                [self updateTagButton:tagButton tagColor:tagColor];
-            } dark:^(NSButton *tagButton) {
-                NSColor *tagColor = [NSColor mm_colorWithHexString:@"#CCCCC8"];
-                [self updateTagButton:tagButton tagColor:tagColor];
-            }];
+            [self updateTagButton:tagButton tagColor:[NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#7A7A78"] dark:[NSColor mm_colorWithHexString:@"#CCCCC8"]]];
             
             [tagButton sizeToFit];
             CGSize size = tagButton.size;
@@ -414,12 +404,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 tagContentView = [[NSView alloc] init];
                 [tagScrollView addSubview:tagContentView];
                 tagContentView.wantsLayer = YES;
-                [tagContentView.layer excuteLight:^(CALayer *layer) {
-                    layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
-                } dark:^(CALayer *layer) {
-                    layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
-                }];
-                
+                tagContentView.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
                 tagContentView.height = newSize.height;
                 tagScrollView.documentView = tagContentView;
                 tagScrollView.horizontalScrollElasticity = NSScrollElasticityNone;
@@ -670,11 +655,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         meanLabel.text = obj.meansText;
         
         [self addSubview:meanLabel];
-        [meanLabel excuteLight:^(id _Nonnull x) {
-            [x setTextColor:[NSColor ez_resultTextLightColor]];
-        } dark:^(id _Nonnull x) {
-            [x setTextColor:[NSColor ez_resultTextDarkColor]];
-        }];
+        [meanLabel setTextColor:NSColor.ez_resultTextColor];
         
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = wordButton.expandValue / 2; // expandValue = 6;
@@ -844,8 +825,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     [self addSubview:linkButton];
     
     NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
-    linkButton.image = linkImage;
-    
+    linkButton.image = [linkImage imageWithTintColor:NSColor.ez_imageTintColor];
+
     NSString *toolTip = NSLocalizedString(@"open_web_link", nil);
     if (result.serviceType == EZServiceTypeAppleDictionary) {
         toolTip = NSLocalizedString(@"open_in_apple_dictionary", nil);
@@ -853,12 +834,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     linkButton.toolTip = toolTip;
 
     linkButton.link = [result.service wordLink:result.queryModel];
-    
-    [linkButton excuteLight:^(NSButton *linkButton) {
-        linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintLightColor]];
-    } dark:^(NSButton *linkButton) {
-        linkButton.image = [linkButton.image imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-    }];
     linkButton.mas_key = @"result_linkButton";
     
     [linkButton mas_makeConstraints:^(MASConstraintMaker *make) {

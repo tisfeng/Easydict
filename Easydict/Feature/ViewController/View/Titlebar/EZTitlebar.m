@@ -175,27 +175,13 @@
 - (void)updatePinButtonImage {
     CGFloat imageWidth = 18;
     CGSize imageSize = CGSizeMake(imageWidth, imageWidth);
-    
-    // Since the system's dark picture mode cannot dynamically follow the mode switch changes, we manually implement dark mode picture coloring.
-    NSColor *pinNormalLightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
-    NSColor *pinNormalDarkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
-    
-    NSImage *normalLightImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
-    normalLightImage = [normalLightImage imageWithTintColor:pinNormalLightTintColor];
-    NSImage *normalDarkImage = [normalLightImage imageWithTintColor:pinNormalDarkTintColor];
-    
+
+    NSColor *pinNormalTintColor = [NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#797A7F"] dark:[NSColor mm_colorWithHexString:@"#C0C1C4"]];
+    NSImage *normalImage = [[NSImage imageNamed:@"new_pin_normal"] resizeToSize:imageSize];
     NSImage *selectedImage = [[NSImage imageNamed:@"new_pin_selected"] resizeToSize:imageSize];
     
-    mm_weakify(self);
-    [self.pinButton excuteLight:^(EZHoverButton *button) {
-        mm_strongify(self)
-        NSImage *image = self.pin ? selectedImage : normalLightImage;
-        button.image = image;
-    } dark:^(EZHoverButton *button) {
-        mm_strongify(self)
-        NSImage *image = self.pin ? selectedImage : normalDarkImage;
-        button.image = image;
-    }];
+    __auto_type image = self.pin ? selectedImage : [normalImage imageWithTintColor:pinNormalTintColor];
+    self.pinButton.image = image;
 }
 
 

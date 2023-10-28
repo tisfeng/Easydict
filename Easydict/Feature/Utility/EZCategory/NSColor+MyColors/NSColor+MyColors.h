@@ -12,48 +12,60 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSColor (MyColors)
 
-// Main background color
-+ (NSColor *)ez_mainViewBgLightColor;
-+ (NSColor *)ez_mainViewBgDarkColor;
++ (NSColor *)ez_dynamicColorLight:(NSColor *)light dark:(NSColor *)dark;
 
-// Main border color
-+ (NSColor *)ez_mainBorderLightColor;
-+ (NSColor *)ez_mainBorderDarkColor;
+/// Main background color
++ (NSColor *)ez_mainViewBgColor;
 
-// Query view background color
-+ (NSColor *)ez_queryViewBgLightColor;
-+ (NSColor *)ez_queryViewBgDarkColor;
+/// Main border color
++ (NSColor *)ez_mainBorderColor;
 
-// Query text color
-+ (NSColor *)ez_queryTextLightColor;
-+ (NSColor *)ez_queryTextDarkColor;
+/// Query view background color
++ (NSColor *)ez_queryViewBgColor;
 
-// Result text color
+/// Query text color
++ (NSColor *)ez_queryTextColor;
+
+/// Result text color
++ (NSColor *)ez_resultTextColor;
+/// Light result text color used for CSS support
+///
+/// ``UIKit.UIColor`` and ``SwiftUI.Color`` can resolve to a given environment.
+///  But there is no such API in NSColor publicly.
 + (NSColor *)ez_resultTextLightColor;
+/// Dark result text color used for CSS support
+///
+/// ``UIKit.UIColor`` and ``SwiftUI.Color`` can resolve to a given environment.
+///  But there is no such API in NSColor publicly.
 + (NSColor *)ez_resultTextDarkColor;
 
-// Result view top bar color
-+ (NSColor *)ez_titleBarBgLightColor;
-+ (NSColor *)ez_titleBarBgDarkColor;
-
-// Result view background color
+/// Result view background color
++ (NSColor *)ez_resultViewBgColor;
+/// Light result view background color used for CSS support
+///
+/// ``UIKit.UIColor`` and ``SwiftUI.Color`` can resolve to a given environment.
+///  But there is no such API in NSColor publicly.
 + (NSColor *)ez_resultViewBgLightColor;
+/// Dark result view background color used for CSS support
+///
+/// ``UIKit.UIColor`` and ``SwiftUI.Color`` can resolve to a given environment.
+///  But there is no such API in NSColor publicly.
 + (NSColor *)ez_resultViewBgDarkColor;
 
-// Button hover color
-+ (NSColor *)ez_buttonHoverLightColor;
-+ (NSColor *)ez_buttonHoverDarkColor;
+/// Result view top bar color
++ (NSColor *)ez_titleBarBgColor;
 
-// Image tint color
-+ (NSColor *)ez_imageTintLightColor;
-+ (NSColor *)ez_imageTintDarkColor;
+/// Button hover color
++ (NSColor *)ez_buttonHoverColor;
+
+/// Image tint color
++ (NSColor *)ez_imageTintColor;
 
 + (NSColor *)ez_imageTintBlueColor;
 
 + (NSColor *)ez_blueTitleColor;
 
-+ (NSColor *)ez_tableRowViewBgLightColor;
-+ (NSColor *)ez_tableRowViewBgDarkColor;
++ (NSColor *)ez_tableRowViewBgColor;
 
 @end
 

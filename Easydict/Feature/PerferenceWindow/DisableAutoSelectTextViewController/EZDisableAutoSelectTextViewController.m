@@ -42,11 +42,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     CGRect frame = CGRectMake(0, 0, 450, 400);
     self.view = [[NSView alloc] initWithFrame:frame];
     self.view.wantsLayer = YES;
-    [self.view excuteLight:^(NSView *view) {
-        view.layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
-    } dark:^(NSView *view) {
-        view.layer.backgroundColor = [NSColor ez_resultViewBgDarkColor].CGColor;
-    }];
+    self.view.layer.backgroundColor = NSColor.ez_resultViewBgColor.CGColor;
 }
 
 - (void)viewDidLoad {
@@ -98,12 +94,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         scrollView.wantsLayer = YES;
         scrollView.layer.cornerRadius = EZCornerRadius_8;
-        
-        [scrollView excuteLight:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
-        } dark:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
-        }];
+        scrollView.backgroundColor = NSColor.ez_tableRowViewBgColor;
         
         scrollView.hasVerticalScroller = YES;
         scrollView.verticalScroller.controlSize = NSControlSizeSmall;
@@ -120,13 +111,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     if (!_tableView) {
         NSTableView *tableView = [[NSTableView alloc] initWithFrame:self.scrollView.bounds];
         _tableView = tableView;
-        
-        [tableView excuteLight:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgLightColor];
-        } dark:^(NSTableView *view) {
-            view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
-        }];
-        
+        tableView.backgroundColor = NSColor.ez_tableRowViewBgColor;
         tableView.style = NSTableViewStylePlain;
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
@@ -160,18 +145,10 @@ static NSString *const EZColumnId = @"EZColumnId";
         CGSize size = CGSizeMake(10, 10);
         __block NSImage *addImage = [[NSImage imageNamed:@"add"] resizeToSize:size];
         __block NSImage *minusImage = [[NSImage imageNamed:@"minus"] resizeToSize:size];
-        
-        [segmentedControl excuteLight:^(NSSegmentedControl *segmentedControl) {
-            addImage = [addImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-            minusImage = [minusImage imageWithTintColor:[NSColor ez_imageTintLightColor]];
-            [segmentedControl setImage:addImage forSegment:0];
-            [segmentedControl setImage:minusImage forSegment:1];
-        } dark:^(NSSegmentedControl *segmentedControl) {
-            addImage = [addImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-            minusImage = [minusImage imageWithTintColor:[NSColor ez_imageTintDarkColor]];
-            [segmentedControl setImage:addImage forSegment:0];
-            [segmentedControl setImage:minusImage forSegment:1];
-        }];
+        addImage = [addImage imageWithTintColor:[NSColor ez_imageTintColor]];
+        minusImage = [minusImage imageWithTintColor:[NSColor ez_imageTintColor]];
+        [segmentedControl setImage:addImage forSegment:0];
+        [segmentedControl setImage:minusImage forSegment:1];
         
         [segmentedControl setTarget:self];
         [segmentedControl setAction:@selector(segmentedControlClicked:)];

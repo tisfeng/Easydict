@@ -202,19 +202,13 @@
     [self.showMiniShortcutView setAssociatedUserDefaultsKey:EZShowMiniShortcutKey];
     [self.screenshotOCRShortcutView setAssociatedUserDefaultsKey:EZScreenshotOCRShortcutKey];
 
-
-    NSColor *separatorLightColor = [NSColor mm_colorWithHexString:@"#D9DADA"];
-    NSColor *separatorDarkColor = [NSColor mm_colorWithHexString:@"#3C3C3C"];
-
     NSView *separatorView = [[NSView alloc] init];
     [self.contentView addSubview:separatorView];
     self.separatorView = separatorView;
     separatorView.wantsLayer = YES;
-    [separatorView excuteLight:^(NSView *view) {
-        view.layer.backgroundColor = separatorLightColor.CGColor;
-    } dark:^(NSView *view) {
-        view.layer.backgroundColor = separatorDarkColor.CGColor;
-    }];
+    NSColor *separatorViewBackgroundColor = [NSColor ez_dynamicColorLight:[NSColor mm_colorWithHexString:@"#D9DADA"] dark:[NSColor mm_colorWithHexString:@"#3C3C3C"]];
+
+    separatorView.layer.backgroundColor = separatorViewBackgroundColor.CGColor;
 
     NSTextField *firstLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"first_language", nil)];
     firstLanguageLabel.font = font;
@@ -434,11 +428,7 @@
     [self.contentView addSubview:separatorView2];
     self.separatorView2 = separatorView2;
     separatorView2.wantsLayer = YES;
-    [separatorView2 excuteLight:^(NSView *view) {
-        view.layer.backgroundColor = separatorLightColor.CGColor;
-    } dark:^(NSView *view) {
-        view.layer.backgroundColor = separatorDarkColor.CGColor;
-    }];
+    separatorView2.layer.backgroundColor = separatorViewBackgroundColor.CGColor;
 
     NSTextField *hideMainWindowLabel = [NSTextField labelWithString:NSLocalizedString(@"show_main_window", nil)];
     hideMainWindowLabel.font = font;
