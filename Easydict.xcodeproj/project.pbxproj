@@ -87,7 +87,6 @@
 		039CC914292FB3180037B91E /* EZPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 039CC913292FB3180037B91E /* EZPopUpButton.m */; };
 		039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 039D119829D5E26300C93F46 /* EZAudioUtils.m */; };
 		039E5021296E5D9900072344 /* EZScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039E5020296E5D9900072344 /* EZScrollViewController.m */; };
-		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
 		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
 		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
@@ -208,6 +207,7 @@
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */; };
 		27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */; };
+		27CBABD92AED5D80001F1E74 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CBABD82AED5D80001F1E74 /* PreferencesWindowController.swift */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
 		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
@@ -399,9 +399,7 @@
 		039E501F296E5D9900072344 /* EZScrollViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScrollViewController.h; sourceTree = "<group>"; };
 		039E5020296E5D9900072344 /* EZScrollViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScrollViewController.m; sourceTree = "<group>"; };
 		039F54FC294B6E29004AB940 /* EZSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSettingViewController.h; sourceTree = "<group>"; };
-		039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPreferencesWindowController.m; sourceTree = "<group>"; };
 		039F54FE294B6E29004AB940 /* EZAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAboutViewController.h; sourceTree = "<group>"; };
-		039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPreferencesWindowController.h; sourceTree = "<group>"; };
 		039F5501294B6E29004AB940 /* EZSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZSettingViewController.m; sourceTree = "<group>"; };
 		039F5503294B6E29004AB940 /* EZAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZAboutViewController.m; sourceTree = "<group>"; };
 		03B0221B29231FA6001C7E63 /* Easydict-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Easydict-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -630,6 +628,7 @@
 		27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Easydict.xcconfig; sourceTree = "<group>"; };
 		27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Easydict-debug.xcconfig"; sourceTree = "<group>"; };
 		27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Easydict-debug.entitlements"; sourceTree = "<group>"; };
+		27CBABD82AED5D80001F1E74 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6220AD592A82812300BBFB52 /* EZBingService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingService.h; sourceTree = "<group>"; };
@@ -1369,8 +1368,7 @@
 			children = (
 				03DC7C5F2A3C6F3B000BF7C9 /* DisableAutoSelectTextViewController */,
 				037852AD2957FE9B00D0E2CF /* ServiceViewController */,
-				039F54FF294B6E29004AB940 /* EZPreferencesWindowController.h */,
-				039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */,
+				27CBABD82AED5D80001F1E74 /* PreferencesWindowController.swift */,
 				039F54FE294B6E29004AB940 /* EZAboutViewController.h */,
 				039F5503294B6E29004AB940 /* EZAboutViewController.m */,
 				039F54FC294B6E29004AB940 /* EZSettingViewController.h */,
@@ -2298,6 +2296,7 @@
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
+				27CBABD92AED5D80001F1E74 /* PreferencesWindowController.swift in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
@@ -2309,7 +2308,6 @@
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
 				03B0232B29231FA6001C7E63 /* NSMutableAttributedString+MM.m in Sources */,
 				03B022E829231FA6001C7E63 /* main.m in Sources */,
-				039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */,
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
@@ -2365,7 +2363,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -2389,7 +2387,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
@@ -2412,7 +2410,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 22;
@@ -2437,7 +2435,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 22;
@@ -2590,7 +2588,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Easydict/App/Easydict-debug.entitlements";
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -2628,7 +2626,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
-				CODE_SIGN_IDENTITY = "$CODE_SIGN_IDENTITY";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
 				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;

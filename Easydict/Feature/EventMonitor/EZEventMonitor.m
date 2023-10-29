@@ -9,7 +9,6 @@
 #import "EZEventMonitor.h"
 #import "EZWindowManager.h"
 #import "EZConfiguration.h"
-#import "EZPreferencesWindowController.h"
 #import "EZScriptExecutor.h"
 #import "EZAudioUtils.h"
 #import "EZCoordinateUtils.h"
@@ -17,6 +16,7 @@
 #import "EZLocalStorage.h"
 #import "EZAppleScriptManager.h"
 #import "EZSystemUtility.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;

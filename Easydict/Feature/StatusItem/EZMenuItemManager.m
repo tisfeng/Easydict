@@ -7,12 +7,12 @@
 //
 
 #import "EZMenuItemManager.h"
-#import "EZPreferencesWindowController.h"
 #import "EZWindowManager.h"
 #import "Snip.h"
 #import "EZShortcut.h"
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kImageMenuItemHeightRatio = 1.4;
 static CGFloat const kTitleMenuItemHeightRatio = 1.2;
