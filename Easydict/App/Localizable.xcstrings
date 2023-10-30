@@ -782,6 +782,9 @@
         }
       }
     },
+    "Easydict" : {
+
+    },
     "equal_first_and_second_language" : {
       "localizations" : {
         "en" : {
