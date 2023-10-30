@@ -931,8 +931,8 @@ static EZWindowManager *_instance;
     }
 
     NSRunningApplication *application = self.eventMonitor.frontmostApplication;
-    NSString *appName = application.localizedName;
-    NSString *bundleID = application.bundleIdentifier;
+    NSString *appName = application.localizedName ?: @"";
+    NSString *bundleID = application.bundleIdentifier ?: @"";
     NSString *textLength = [EZLog textLengthRange:text];
     NSString *triggerType = [EZEnumTypes stringValueOfTriggerType:self.eventMonitor.triggerType];
 
