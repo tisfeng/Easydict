@@ -490,30 +490,55 @@ static EZAppleService *_instance;
     
     if ([self.languageManager isChineseLanguage:mostConfidentLanguage]) {
         // Correct 勿 --> zh-Hant --> zh-Hans
-        EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text];
-        return chineseLanguage;
+        mostConfidentLanguage = [self chineseLanguageTypeOfText:text];
     } else {
         // Try to detect Chinese language.
         if ([self.languageManager isUserChineseFirstLanguage]) {
-            // test: 開門 open, 使用1 OCR --> 英文, --> 中文
+            // test: 開門 open, 使用1 OCR --> 英文 --> 中文
             EZLanguage chineseLanguage = [self chineseLanguageTypeOfText:text fromLanguage:mostConfidentLanguage];
             if (![chineseLanguage isEqualToString:EZLanguageAuto]) {
                 mostConfidentLanguage = chineseLanguage;
             }
         }
-        
-        // TODO: Maybe we can use this way to detect other language.
-        // If not detected as English, try to query System English Dictioanry. Such as delimiter
-        if (![self.languageManager isEnglishLangauge:mostConfidentLanguage]) {
-            // If has result, then most likely English. Cost about ~10ms
-            if ([self.appleDictionary queryDictionaryForText:text language:EZLanguageEnglish]) {
-                mostConfidentLanguage = EZLanguageEnglish;
-                NSLog(@"Apple Dictionary Detect: %@ is English", text);
+    }
+    
+    
+    // TODO: Maybe we can use this way to detect other language.
+    
+    NSArray *needCorrectedLanguages = @[
+        EZLanguageEnglish, // si
+        EZLanguageSimplifiedChinese, // 浦
+    ];
+    
+    BOOL isWordLength = text.length <= EZEnglishWordMaxLength;
+    
+    // For example, if not detected as English, try to query System English Dictioanry. eg. 'si'
+    if (isWordLength && ![needCorrectedLanguages containsObject:mostConfidentLanguage]) {
+        for (EZLanguage language in needCorrectedLanguages) {
+            BOOL success = [self correctTextLanguage:text
+                                  designatedLanguage:language
+                                    originalLanguage:&mostConfidentLanguage];
+            if (success) {
+                break;
             }
         }
     }
     
     return mostConfidentLanguage;
+}
+
+/// Using dictionary to correct text langauge, return YES if corrected successfully.
+- (BOOL)correctTextLanguage:(NSString *)text
+         designatedLanguage:(EZLanguage)designatedLanguage
+           originalLanguage:(EZLanguage *)originalLanguage
+{
+    // Cost about ~1ms
+    if ([self.appleDictionary queryDictionaryForText:text language:designatedLanguage]) {
+        *originalLanguage = designatedLanguage;
+        NSLog(@"Apple Dictionary Detect: %@ is %@", text, designatedLanguage);
+        return YES;
+    }
+    return NO;
 }
 
 /// Apple original detect language.
