@@ -36,55 +36,55 @@ NSString *const DCSSystemDictionayDirectoryPath = @"/System/Library/";
 
 
 // Simplified Chinese
-NSString *const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典"; // 简体中文
-NSString *const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典"; // 简体中文成语
-NSString *const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典"; // 简体中文同义词词典
-NSString *const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典"; // 简体中文-英文
+NSString *const DCSSimplifiedChineseDictionaryName = @"现代汉语规范词典";                                 // 简体中文
+NSString *const DCSSimplifiedChineseIdiomDictionaryName = @"汉语成语词典";                                // 简体中文成语
+NSString *const DCSSimplifiedChineseThesaurusDictionaryName = @"现代汉语同义词典";                        // 简体中文同义词词典
+NSString *const DCSSimplifiedChinese_EnglishDictionaryName = @"牛津英汉汉英词典";                         // 简体中文-英文
 NSString *const DCSSimplifiedChinese_JapaneseDictionaryName = @"超級クラウン中日辞典 / クラウン日中辞典"; // 简体中文-日文
 
 // Traditional Chinese
-NSString *const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典"; // 繁体中文
-NSString *const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）"; // 繁体中文（香港）
-NSString *const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典"; // 繁体中文-英文
+NSString *const DCSTraditionalChineseDictionaryName = @"五南國語活用辭典";              // 繁体中文
+NSString *const DCSTraditionalChineseHongkongDictionaryName = @"商務新詞典（全新版）";  // 繁体中文（香港）
+NSString *const DCSTraditionalChinese_EnglishDictionaryName = @"譯典通英漢雙向字典";    // 繁体中文-英文
 NSString *const DCSTraditionalChinese_EnglishIdiomDictionaryName = @"漢英對照成語詞典"; // 繁体中文-英文习语
 
 // English
-NSString *const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary"; // 美式英文
+NSString *const DCSNewOxfordAmericanDictionaryName = @"New Oxford American Dictionary";    // 美式英文
 NSString *const DCSOxfordAmericanWritersThesaurus = @"Oxford American Writer’s Thesaurus"; // 美式英文同义词词典
-NSString *const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English"; // 英式英文
-NSString *const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English"; // 英式英文同义词词典
+NSString *const DCSOxfordDictionaryOfEnglish = @"Oxford Dictionary of English";            // 英式英文
+NSString *const DCSOxfordThesaurusOfEnglish = @"Oxford Thesaurus of English";              // 英式英文同义词词典
 
 // Japanese
-NSString *const DCSJapaneseDictionaryName = @"スーパー大辞林"; // 日文
+NSString *const DCSJapaneseDictionaryName = @"スーパー大辞林";                                  // 日文
 NSString *const DCSJapanese_EnglishDictionaryName = @"ウィズダム英和辞典 / ウィズダム和英辞典"; // 日文-英文
 
 // French
-NSString *const DCSFrenchDictionaryName = @"Multidictionnaire de la langue française"; // 法文
-NSString *const DCSFrench_EnglishDictionaryName = @"Oxford-Hachette French Dictionary"; // 法文-英文
+NSString *const DCSFrenchDictionaryName = @"Multidictionnaire de la langue française";      // 法文
+NSString *const DCSFrench_EnglishDictionaryName = @"Oxford-Hachette French Dictionary";     // 法文-英文
 NSString *const DCSFrench_GermanDictionaryName = @"ONS Großwörterbuch Französisch Deutsch"; // 法文-德文
 
 // German
 NSString *const DCSGermanDictionaryName = @"Duden-Wissensnetz deutsche Sprache"; // 德文
-NSString *const DCSGerman_EnglishDictionaryName = @"Oxford German Dictionary"; // 德文-英文
+NSString *const DCSGerman_EnglishDictionaryName = @"Oxford German Dictionary";   // 德文-英文
 
 // Italian
-NSString *const DCSItalianDictionaryName = @"Dizionario italiano da un affiliato di Oxford University Press"; // 意大利文
+NSString *const DCSItalianDictionaryName = @"Dizionario italiano da un affiliato di Oxford University Press";             // 意大利文
 NSString *const DCSItalian_EnglishDictionaryName = @"Oxford Paravia Il Dizionario inglese - italiano/italiano - inglese"; // 意大利文-英文
 
 // Spanish
-NSString *const DCSSpanishDictionaryName = @"Diccionario General de la Lengua Española Vox"; // 西班牙文
+NSString *const DCSSpanishDictionaryName = @"Diccionario General de la Lengua Española Vox";                     // 西班牙文
 NSString *const DCSSpanish_EnglishDictionaryName = @"Gran Diccionario Oxford - Español-Inglés • Inglés-Español"; // 西班牙文-英文
 
 // Portugues
-NSString *const DCSPortugueseDictionaryName = @"Dicionário de Português licenciado para Oxford University Press";// 葡萄牙文
+NSString *const DCSPortugueseDictionaryName = @"Dicionário de Português licenciado para Oxford University Press";            // 葡萄牙文
 NSString *const DCSPortuguese_EnglishDictionaryName = @"Oxford Portuguese Dictionary - Português-Inglês • Inglês-Português"; // 葡萄牙文-英文
 
 // Dutch
-NSString *const DCSDutchDictionaryName = @"Prisma woordenboek Nederlands"; // 荷兰文
+NSString *const DCSDutchDictionaryName = @"Prisma woordenboek Nederlands";         // 荷兰文
 NSString *const DCSDutch_EnglishDictionaryName = @"Prisma Handwoordenboek Engels"; // 荷兰文-英文
 
 // Korean
-NSString *const DCSKoreanDictionaryName = @"New Ace Korean Language Dictionary"; // 韩文
+NSString *const DCSKoreanDictionaryName = @"New Ace Korean Language Dictionary";            // 韩文
 NSString *const DCSKorean_EnglishDictionaryName = @"뉴에이스 영한사전 / 뉴에이스 한영사전"; // 韩文-英文
 
 NSString *const DCSWikipediaDictionaryName = @"维基百科";
@@ -103,7 +103,7 @@ extern CFArrayRef DCSCopyAvailableDictionaries(void);
 extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef dictionary);
 extern CFStringRef DCSDictionaryGetShortName(DCSDictionaryRef dictionary);
 extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef url);
-//extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef dictionary, CFStringRef string, void *, void *);
+// extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef dictionary, CFStringRef string, void *, void *);
 
 extern CFDictionaryRef DCSCopyDefinitionMarkup(DCSDictionaryRef dictionary, CFStringRef record);
 extern CFStringRef DCSRecordCopyData(CFTypeRef record, long version);
@@ -119,12 +119,12 @@ extern CFStringRef DCSRecordGetTitle(CFTypeRef record);
 
 // Ref: https://discussions.apple.com/thread/6616776?answerId=26923349022#26923349022 and https://github.com/lipidity/CLIMac/blob/master/src/dictctl.c#L12
 extern CFArrayRef DCSGetActiveDictionaries(void);
-//extern CFSetRef DCSCopyAvailableDictionaries(void);
+// extern CFSetRef DCSCopyAvailableDictionaries(void);
 extern DCSDictionaryRef DCSGetDefaultDictionary(void);
 extern DCSDictionaryRef DCSGetDefaultThesaurus(void);
 extern DCSDictionaryRef DCSDictionaryCreate(CFURLRef);
 extern CFURLRef DCSDictionaryGetURL(DCSDictionaryRef);
-//extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef);
+// extern CFStringRef DCSDictionaryGetName(DCSDictionaryRef);
 extern CFStringRef DCSDictionaryGetIdentifier(DCSDictionaryRef);
 
 /**
@@ -155,23 +155,22 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 @implementation TTTDictionaryEntry
 
 - (instancetype)initWithRecordRef:(CFTypeRef)record
-                    dictionaryRef:(DCSDictionaryRef)dictionary
-{
+                    dictionaryRef:(DCSDictionaryRef)dictionary {
     self = [self init];
     if (!self && record) {
         return nil;
     }
-
+    
     // ???: __bridge_transfer will cause crash, but why?
     self.headword = (__bridge NSString *)DCSRecordGetHeadword(record);
     if (self.headword) {
-        self.text = (__bridge_transfer NSString*)DCSRecordCopyData(record, TTTDictionaryVersionText);
+        self.text = (__bridge_transfer NSString *)DCSRecordCopyData(record, TTTDictionaryVersionText);
     }
     
     self.HTML = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTML);
     self.HTMLWithAppCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithAppCSS);
     self.HTMLWithPopoverCSS = (__bridge_transfer NSString *)DCSRecordCopyData(record, (long)TTTDictionaryVersionHTMLWithPopoverCSS);
-        
+    
     return self;
 }
 
@@ -197,17 +196,17 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 + (instancetype)dictionaryNamed:(NSString *)name {
     static NSDictionary *_availableDictionariesKeyedByName = nil;
-
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSMutableDictionary *mutableAvailableDictionariesKeyedByName = [NSMutableDictionary dictionaryWithCapacity:[[self availableDictionaries] count]];
         for (TTTDictionary *dictionary in [self availableDictionaries]) {
             mutableAvailableDictionariesKeyedByName[dictionary.name] = dictionary;
         }
-
+        
         _availableDictionariesKeyedByName = [NSDictionary dictionaryWithDictionary:mutableAvailableDictionariesKeyedByName];
     });
-
+    
     return _availableDictionariesKeyedByName[name];
 }
 
@@ -227,7 +226,6 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 /// Active dictionaries are dictionaries that are currently enabled in Dictionary.app
 + (NSArray<TTTDictionary *> *)activeDictionaries {
-    
     // !!!: DCSGetActiveDictionaries() can only invoke once, otherwise it will crash. So we must use static variable to cache the result.
     
     static NSArray *_activeDictionaries = nil;
@@ -240,7 +238,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
         }
         _activeDictionaries = [NSArray arrayWithArray:mutableActiveDictionaries];
     });
-
+    
     return _activeDictionaries;
 }
 
@@ -252,55 +250,22 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 /// key: EZLanguage, value: language dict name
 + (MMOrderedDictionary<EZLanguage, NSString *> *)languageToDictionaryNameMap {
-//    static NSDictionary *_languageToDictionaryNameMap = nil;
     static MMOrderedDictionary *_languageToDictionaryNameMap = nil;
-    
-    /**
-     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-                                         EZLanguageSimplifiedChinese, @"zh-Hans",
-                                         EZLanguageTraditionalChinese, @"zh-Hant",
-                                         EZLanguageEnglish, @"en-US",
-                                         EZLanguageJapanese, @"ja-JP",
-                                         EZLanguageKorean, @"ko-KR",
-                                         EZLanguageFrench, @"fr-FR",
-                                         EZLanguageSpanish, @"es-ES",
-                                         EZLanguagePortuguese, @"pt-BR",
-                                         EZLanguageItalian, @"it-IT",
-                                         EZLanguageGerman, @"de-DE",
-                                         EZLanguageRussian, @"ru-RU",
-                                         EZLanguageUkrainian, @"uk-UA",
-                                         nil];
-     */
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-//        _languageToDictionaryNameMap = @{
-//            EZLanguageSimplifiedChinese : DCSSimplifiedChineseDictionaryName,
-//            EZLanguageTraditionalChinese : DCSTraditionalChineseDictionaryName,
-//            EZLanguageEnglish: DCSNewOxfordAmericanDictionaryName,
-//            EZLanguageJapanese : DCSJapaneseDictionaryName,
-//            EZLanguageKorean : DCSKoreanDictionaryName,
-//            EZLanguageFrench : DCSFrenchDictionaryName,
-//            EZLanguageGerman : DCSGermanDictionaryName,
-//            EZLanguageItalian : DCSItalianDictionaryName,
-//            EZLanguageSpanish : DCSSpanishDictionaryName,
-//            EZLanguagePortuguese : DCSPortugueseDictionaryName,
-//            EZLanguageDutch : DCSDutchDictionaryName,
-//        };
-        
         _languageToDictionaryNameMap = [[MMOrderedDictionary alloc] initWithKeysAndObjects:
-        EZLanguageSimplifiedChinese,DCSSimplifiedChineseDictionaryName,
-        EZLanguageTraditionalChinese,DCSTraditionalChineseDictionaryName,
-        EZLanguageEnglish,DCSNewOxfordAmericanDictionaryName,
-        EZLanguageJapanese,DCSJapaneseDictionaryName,
-        EZLanguageKorean,DCSKoreanDictionaryName,
-        EZLanguageFrench,DCSFrenchDictionaryName,
-        EZLanguageGerman,DCSGermanDictionaryName,
-        EZLanguageItalian,DCSItalianDictionaryName,
-        EZLanguageSpanish,DCSSpanishDictionaryName,
-        EZLanguagePortuguese,DCSPortugueseDictionaryName,
-        EZLanguageDutch,DCSDutchDictionaryName,
-        nil];
-
+                                        EZLanguageSimplifiedChinese, DCSSimplifiedChineseDictionaryName,
+                                        EZLanguageTraditionalChinese, DCSTraditionalChineseDictionaryName,
+                                        EZLanguageEnglish, DCSNewOxfordAmericanDictionaryName,
+                                        EZLanguageJapanese, DCSJapaneseDictionaryName,
+                                        EZLanguageKorean, DCSKoreanDictionaryName,
+                                        EZLanguageFrench, DCSFrenchDictionaryName,
+                                        EZLanguageGerman, DCSGermanDictionaryName,
+                                        EZLanguageItalian, DCSItalianDictionaryName,
+                                        EZLanguageSpanish, DCSSpanishDictionaryName,
+                                        EZLanguagePortuguese, DCSPortugueseDictionaryName,
+                                        EZLanguageDutch, DCSDutchDictionaryName,
+                                        nil];
     });
     return _languageToDictionaryNameMap;
 }
@@ -310,38 +275,38 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _allBuildInDictNames = @[
-                                 DCSSimplifiedChineseDictionaryName,
-                                 DCSSimplifiedChineseIdiomDictionaryName,
-                                 DCSSimplifiedChineseThesaurusDictionaryName,
-                                 DCSSimplifiedChinese_EnglishDictionaryName,
-                                 DCSSimplifiedChinese_JapaneseDictionaryName,
-                                 DCSTraditionalChineseDictionaryName,
-                                 DCSTraditionalChineseHongkongDictionaryName,
-                                 DCSTraditionalChinese_EnglishDictionaryName,
-                                 DCSTraditionalChinese_EnglishIdiomDictionaryName,
-                                 DCSNewOxfordAmericanDictionaryName,
-                                 DCSOxfordAmericanWritersThesaurus,
-                                 DCSOxfordDictionaryOfEnglish,
-                                 DCSOxfordThesaurusOfEnglish,
-                                 DCSJapaneseDictionaryName,
-                                 DCSJapanese_EnglishDictionaryName,
-                                 DCSFrenchDictionaryName,
-                                 DCSFrench_EnglishDictionaryName,
-                                 DCSGermanDictionaryName,
-                                 DCSGerman_EnglishDictionaryName,
-                                 DCSItalianDictionaryName,
-                                 DCSItalian_EnglishDictionaryName,
-                                 DCSSpanishDictionaryName,
-                                 DCSSpanish_EnglishDictionaryName,
-                                 DCSPortugueseDictionaryName,
-                                 DCSPortuguese_EnglishDictionaryName,
-                                 DCSDutchDictionaryName,
-                                 DCSDutch_EnglishDictionaryName,
-                                 DCSKoreanDictionaryName,
-                                 DCSKorean_EnglishDictionaryName,
-                                 DCSWikipediaDictionaryName,
-                                 DCSAppleDictionaryName,
-                                 ];
+            DCSSimplifiedChineseDictionaryName,
+            DCSSimplifiedChineseIdiomDictionaryName,
+            DCSSimplifiedChineseThesaurusDictionaryName,
+            DCSSimplifiedChinese_EnglishDictionaryName,
+            DCSSimplifiedChinese_JapaneseDictionaryName,
+            DCSTraditionalChineseDictionaryName,
+            DCSTraditionalChineseHongkongDictionaryName,
+            DCSTraditionalChinese_EnglishDictionaryName,
+            DCSTraditionalChinese_EnglishIdiomDictionaryName,
+            DCSNewOxfordAmericanDictionaryName,
+            DCSOxfordAmericanWritersThesaurus,
+            DCSOxfordDictionaryOfEnglish,
+            DCSOxfordThesaurusOfEnglish,
+            DCSJapaneseDictionaryName,
+            DCSJapanese_EnglishDictionaryName,
+            DCSFrenchDictionaryName,
+            DCSFrench_EnglishDictionaryName,
+            DCSGermanDictionaryName,
+            DCSGerman_EnglishDictionaryName,
+            DCSItalianDictionaryName,
+            DCSItalian_EnglishDictionaryName,
+            DCSSpanishDictionaryName,
+            DCSSpanish_EnglishDictionaryName,
+            DCSPortugueseDictionaryName,
+            DCSPortuguese_EnglishDictionaryName,
+            DCSDutchDictionaryName,
+            DCSDutch_EnglishDictionaryName,
+            DCSKoreanDictionaryName,
+            DCSKorean_EnglishDictionaryName,
+            DCSWikipediaDictionaryName,
+            DCSAppleDictionaryName,
+        ];
     });
     
     return _allBuildInDictNames;
@@ -352,14 +317,14 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     if (!self || !dictionary) {
         return nil;
     }
-
+    
     self.dictionary = dictionary;
     self.name = (__bridge_transfer NSString *)DCSDictionaryGetName(self.dictionary);
     self.shortName = (__bridge_transfer NSString *)DCSDictionaryGetShortName(self.dictionary);
     
     self.identifier = (__bridge_transfer NSString *)(DCSDictionaryGetIdentifier(dictionary));
     self.dictionaryURL = (__bridge_transfer NSURL *)DCSDictionaryGetURL(dictionary);
-
+    
     return self;
 }
 
@@ -372,7 +337,8 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term {
-    return [self entriesForSearchTerm:term searchType:TTTDictionarySearchTypeExactMatch];;
+    return [self entriesForSearchTerm:term searchType:TTTDictionarySearchTypeExactMatch];
+    ;
 }
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term searchType:(TTTDictionarySearchType)searchType {
@@ -382,7 +348,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     }
     
     term = [term substringWithRange:NSMakeRange(termRange.location, termRange.length)];
-
+    
     NSArray *records = (__bridge_transfer NSArray *)DCSCopyRecordsForSearchString(self.dictionary, (__bridge CFStringRef)term, searchType, 0);
     NSMutableArray *mutableEntries = [NSMutableArray arrayWithCapacity:[records count]];
     if (records) {
@@ -393,7 +359,7 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
             }
         }
     }
-
+    
     return [NSArray arrayWithArray:mutableEntries];
 }
 
@@ -407,11 +373,11 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
     if (self == object) {
         return YES;
     }
-
+    
     if (![object isKindOfClass:[TTTDictionary class]]) {
         return NO;
     }
-
+    
     return [self.name isEqualToString:[(TTTDictionary *)object name]];
 }
 
