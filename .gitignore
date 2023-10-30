@@ -74,3 +74,6 @@ node_modules/
 
 # idea
 .idea/*
+
+# Xcode custom configutation files
+Easydict-debug.xcconfig
