@@ -434,8 +434,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     mm_weakify(self);
     [self.detectManager ocrAndDetectText:^(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error) {
         mm_strongify(self);
-        NSString *queryText = queryModel.queryText;
-        NSLog(@"ocr result: %@", queryText);
+        // !!!: inputText should be used here, not queryText, queryText may be modified, such as easydict://query?text=xxx
+        NSString *inputText = queryModel.inputText;
+        NSLog(@"ocr result: %@", inputText);
         
         NSDictionary *dict = @{
             @"detectedLanguage" : queryModel.detectedLanguage,
@@ -445,7 +446,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         
         
         if (actionType == EZActionTypeScreenshotOCR) {
-            [queryText copyToPasteboardSafely];
+            [inputText copyToPasteboardSafely];
             
             [EZToast showSuccessToast];
             
@@ -456,12 +457,12 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (actionType == EZActionTypeOCRQuery) {
             [self.queryView startLoadingAnimation:NO];
             
-            self.inputText = queryText;
+            self.inputText = inputText;
             
             // Show detected language, even auto
             self.queryModel.showAutoLanguage = YES;
             
-            [self updateQueryTextAndParagraphStyle:queryText actionType:actionType];
+            [self updateQueryTextAndParagraphStyle:inputText actionType:actionType];
             
             if (error) {
                 NSString *errorMsg = [error localizedDescription];
@@ -470,7 +471,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             }
             
             if (EZConfiguration.shared.autoCopyOCRText) {
-                [queryText copyToPasteboardSafely];
+                [inputText copyToPasteboardSafely];
             }
             
             [self.queryView highlightAllLinks];
