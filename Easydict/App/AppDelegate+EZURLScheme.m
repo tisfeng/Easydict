@@ -10,6 +10,7 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
+#import "EZConfiguration.h"
 
 @implementation AppDelegate (EZURLScheme)
 
@@ -46,7 +47,7 @@
                 queryText = action;
             }
         }
-        [self showFloatingWindowWithQueryText:queryText];
+        [self showFloatingWindowAndAutoQueryText:queryText];
         
         return YES; // return YES to say we have handled the route
     }];
@@ -59,15 +60,22 @@
         NSLog(@"URL: %@", URL);
         
         NSString *queryText = [self extractQueryTextFromURL:URL];
-        [self showFloatingWindowWithQueryText:queryText];
+        [self showFloatingWindowAndAutoQueryText:queryText];
         
         return YES;
     }];
 }
 
-- (void)showFloatingWindowWithQueryText:(NSString *)text {
+#pragma mark -
+
+- (void)showFloatingWindowAndAutoQueryText:(NSString *)text {
     EZWindowManager *windowManager = [EZWindowManager shared];
-    [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:text.trim actionType:EZActionTypeInvokeQuery];
+    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
+
+    [windowManager showFloatingWindowType:windowType
+                                queryText:text.trim
+                                autoQuery:YES
+                               actionType:EZActionTypeInvokeQuery];
 }
 
 /// Get query text from url scheme, easydict://good%2Fgirl --> good%2Fgirl
@@ -75,8 +83,6 @@
     NSString *queryText = [URL.resourceSpecifier stringByReplacingOccurrencesOfString:@"//" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, 2)];
     return queryText.decode;
 }
-
-#pragma mark -
 
 - (void)handleURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
     NSURL *URL = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];

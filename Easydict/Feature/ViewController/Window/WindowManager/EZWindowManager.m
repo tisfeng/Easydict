@@ -290,35 +290,49 @@ static EZWindowManager *_instance;
 }
 
 /// Show floating window.
-- (void)showFloatingWindowType:(EZWindowType)windowType queryText:(nullable NSString *)text {
-    [self showFloatingWindowType:windowType queryText:text actionType:self.actionType];
+- (void)showFloatingWindowType:(EZWindowType)windowType queryText:(nullable NSString *)queryText {
+    [self showFloatingWindowType:windowType queryText:queryText actionType:self.actionType];
 }
 
-- (void)showFloatingWindowType:(EZWindowType)windowType queryText:(NSString *)text actionType:(EZActionType)actionType {
+- (void)showFloatingWindowType:(EZWindowType)windowType 
+                     queryText:(nullable NSString *)queryText
+                    actionType:(EZActionType)actionType {
+    BOOL autoQuery = [EZConfiguration.shared autoQuerySelectedText];
+    [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType {
     CGPoint point = [self floatingWindowLocationWithType:windowType];
-    [self showFloatingWindowType:windowType queryText:text actionType:actionType atPoint:point];
+    [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType atPoint:point completionHandler:nil];
 }
 
 - (void)showFloatingWindowType:(EZWindowType)windowType
-                     queryText:(NSString *)text
-                    actionType:(EZActionType)actionType
-                       atPoint:(CGPoint)point {
-    [self showFloatingWindowType:windowType queryText:text actionType:actionType atPoint:point completionHandler:nil];
-}
-
-- (void)showFloatingWindowType:(EZWindowType)windowType
-                     queryText:(NSString *)text
+                     queryText:(nullable NSString *)queryText
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
-             completionHandler:(nullable void (^)(void))completionHandler 
+             completionHandler:(nullable void (^)(void))completionHandler
 {
-    self.selectedText = text;
+    BOOL autoQuery = [EZConfiguration.shared autoQuerySelectedText];
+    [self showFloatingWindowType:windowType queryText:queryText autoQuery:autoQuery actionType:actionType atPoint:point completionHandler:completionHandler];
+}
+
+- (void)showFloatingWindowType:(EZWindowType)windowType
+                     queryText:(nullable NSString *)queryText
+                     autoQuery:(BOOL)autoQuery
+                    actionType:(EZActionType)actionType
+                       atPoint:(CGPoint)point
+             completionHandler:(nullable void (^)(void))completionHandler
+{
+    self.selectedText = queryText;
     self.actionType = actionType;
 
     EZBaseQueryWindow *window = [self windowWithType:windowType];
 
     // If text is nil, means we don't need to query anything, just show the window.
-    if (!text) {
+    if (!queryText) {
         // !!!: location is top-left point, so we need to change it to bottom-left point.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
@@ -337,19 +351,20 @@ static EZWindowManager *_instance;
 
     EZBaseQueryViewController *queryViewController = window.queryViewController;
     [queryViewController resetTableView:^{
-        [queryViewController updateQueryTextAndParagraphStyle:text actionType:self.actionType];
+        [queryViewController updateQueryTextAndParagraphStyle:queryText actionType:self.actionType];
         [queryViewController detectQueryText:nil];
 
         // !!!: window height has changed, so we need to update location again.
         CGPoint newPoint = CGPointMake(point.x, point.y - window.height);
         [self showFloatingWindow:window atPoint:newPoint];
 
-        if ([EZConfiguration.shared autoQuerySelectedText]) {
-            [queryViewController startQueryText:text actionType:self.actionType];
+        if (autoQuery) {
+            [queryViewController startQueryText:queryText actionType:self.actionType];
         }
 
+        // TODO: Maybe we should remove this option, it seems useless.
         if ([EZConfiguration.shared autoCopySelectedText]) {
-            [text copyToPasteboard];
+            [queryText copyToPasteboard];
         }
         
         if (completionHandler) {

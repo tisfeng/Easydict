@@ -22,7 +22,11 @@ static void delay_block(dispatch_block_t block) {
 void queryText(NSString *text) {
     // ???: need to wait AppDelegate loaded.
     delay_block(^{
-        [EZWindowManager.shared showFloatingWindowType:EZWindowTypeFixed queryText:text actionType:EZActionTypeInvokeQuery];
+        EZWindowManager *windowManager = [EZWindowManager shared];
+        [windowManager showFloatingWindowType:EZWindowTypeFixed
+                                    queryText:text.trim
+                                    autoQuery:YES
+                                   actionType:EZActionTypeInvokeQuery];
     });
 }
 
