@@ -17,6 +17,7 @@
 <div align="center">
 <a href="./README.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_EN.md">English</a>
 </div>
+
 ## Easydict
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
@@ -475,16 +476,18 @@ Easydict in-app lookup is supported. In the input box or translation result, if 
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
 </div>
 
-
 ## URL Scheme
 
-Easydict supports fast lookup for URL scheme: `easydict://xxx`, such as easydict://good.
+Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as easydict://query?text=good.
 
-If the query content xxx contains special characters, URL encoding is needed, such as easydict://good%2Fgirl
+If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
+
+> [!WARNING]
+> The old easydict://xxx may indeed be problematic in some scenarios, please use the full URL Scheme easydict://query?text=xxx instead.
 
 ## Use with PopClip
 
-You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (By **[liziqiang](https://github.com/liziqiang)**)
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (By [liziqiang](https://github.com/liziqiang))
 
 ```shell
 # popclip
@@ -497,7 +500,7 @@ shell script: |
     open /Applications/Easydict.app
     sleep 1
   fi
-  open "easydict://$POPCLIP_TEXT"
+  open "easydict://query?text=$POPCLIP_TEXT"
 ```
 
 > Ref: https://www.popclip.app/dev/shell-script-actions
