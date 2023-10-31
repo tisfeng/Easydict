@@ -24,6 +24,8 @@
     [routes addRoute:@"/:action" handler:^BOOL(NSDictionary *parameters) {
         NSString *action = parameters[@"action"];
         NSString *queryText = parameters[@"text"];
+        NSURL *URL = parameters[JLRouteURLKey];
+
         /**
          easydict://good
          easydict://query?text=good
@@ -33,9 +35,17 @@
          easydictd://good%2Fgirl  (easydictd://good/girl)
          */
         if (!([action isEqualToString:EZQueryKey] && queryText.length)) {
-            queryText = action;
+            if (action.length > 0) {
+                queryText = action;
+            } else {
+                /**
+                 !!!: action may be nil if URL contains '.'
+                 FIX https://github.com/tisfeng/Easydict/issues/207#issuecomment-1786267017
+                 */
+                queryText = [self queryTextFromURL:URL];
+            }
         }
-        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText actionType:EZActionTypeInvokeQuery];
+        [windowManager showFloatingWindowType:EZWindowTypeFixed queryText:queryText.trim actionType:EZActionTypeInvokeQuery];
         
         return YES; // return YES to say we have handled the route
     }];
@@ -51,6 +61,12 @@
         
         return YES;
     }];
+}
+
+/// Get query text from url scheme, easydict://good%2Fgirl --> good%2Fgirl
+- (NSString *)queryTextFromURL:(NSURL *)URL {
+    NSString *queryText = [URL.resourceSpecifier stringByReplacingOccurrencesOfString:@"//" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, 2)];
+    return queryText.decode;
 }
 
 #pragma mark -
