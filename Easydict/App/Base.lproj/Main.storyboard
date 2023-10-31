@@ -24,7 +24,7 @@
                                         <menuItem isSeparatorItem="YES" id="uLo-B5-Udn"/>
                                         <menuItem title="Settings…" keyEquivalent="," id="wgy-yj-uSV">
                                             <connections>
-                                                <action selector="preferenceAction:" target="qM9-fT-Fym" id="AQg-31-GQh"/>
+                                                <action selector="settingAction:" target="qM9-fT-Fym" id="Ygf-3h-5J7"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="srv-kw-Ziy"/>
