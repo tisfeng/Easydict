@@ -66,12 +66,10 @@
         floatingWindow.titleBar.pin = YES;
         
         EZBaseQueryWindow *anotherFloatingWindow = [windowManager windowWithType:anotherWindowType];
-        if (anotherFloatingWindow.isVisible) {
-            EZBaseQueryViewController *anotherQueryViewController = anotherFloatingWindow.queryViewController;
-            
+        if (anotherFloatingWindow.isPin) {
             // Focus query view controller, make sure floating window type is current query window.
-            [anotherFloatingWindow makeKeyAndOrderFront:nil];
-            [anotherQueryViewController focusInputTextView];
+            [windowManager orderFrontWindowAndFocusInputTextView:anotherFloatingWindow];
+            EZBaseQueryViewController *anotherQueryViewController = anotherFloatingWindow.queryViewController;
             [anotherQueryViewController startQueryText:self.queryText actionType:actionType];
         } else {
             NSScreen *screen = EZLayoutManager.shared.screen;

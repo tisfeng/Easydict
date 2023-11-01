@@ -72,6 +72,8 @@ NS_ASSUME_NONNULL_BEGIN
                        atPoint:(CGPoint)point
              completionHandler:(nullable void (^)(void))completionHandler;
 
+- (void)orderFrontWindowAndFocusInputTextView:(EZBaseQueryWindow *)window;
+
 - (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion;
 
 #pragma mark -
