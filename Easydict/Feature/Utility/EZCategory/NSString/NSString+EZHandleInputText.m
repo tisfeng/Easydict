@@ -80,7 +80,7 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
 /**
  Remove comment symbols, # and //
  */
-- (NSString *)removeCommentSymbols {
+- (NSString *)removeCommentSymbols2 {
     // match // and  #
     NSString *pattern = @"//|#";
     NSString *cleanedText = [self stringByReplacingOccurrencesOfString:pattern
@@ -90,7 +90,16 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
     return cleanedText;
 }
 
+- (NSString *)removeCommentSymbols {
+    // match // and  #, # abc #ddd # fff '#' ggg #
+//    NSString *pattern = @"(^\\s*[//|#]\\s+)|(\\s+[//|#]\\s*$)|(\\s+[//|#]\\s+)";
+    NSString *pattern = @"(^|\\s)(\\/\\/|\\#)(\\s|$)"; // replace // and # with white space
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    NSString *cleanedText = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, self.length) withTemplate:@"$1"];
+    return cleanedText;
+}
 
+ 
 /**
  // These values will persist after the process is killed by the system
  // and remain available via the same object.
