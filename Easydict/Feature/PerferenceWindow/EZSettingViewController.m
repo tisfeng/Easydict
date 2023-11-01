@@ -114,7 +114,7 @@
                 EZLanguageClassicalChinese,
             ];
             if (![disableLanguages containsObject:language]) {
-                NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageName:language];
+                NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageNameWithFlag:language];
                 [languageDict setObject:showingLanguageName forKey:language];
             }
         }
