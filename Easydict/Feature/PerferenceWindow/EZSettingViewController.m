@@ -986,10 +986,10 @@
 }
 
 - (void)updatePreferredLanguagesPopUpButton {
-    NSInteger firstLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:EZLanguageManager.shared.userFirstLanguage];
+    NSInteger firstLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:self.config.firstLanguage];
     [self.firstLanguagePopUpButton selectItemAtIndex:firstLanguageIndex];
-
-    NSInteger secondLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:EZLanguageManager.shared.userSecondLanguage];
+    
+    NSInteger secondLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:self.config.secondLanguage];
     [self.secondLanguagePopUpButton selectItemAtIndex:secondLanguageIndex];
 }
 

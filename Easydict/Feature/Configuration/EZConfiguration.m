@@ -14,6 +14,7 @@
 #import "EZWindowManager.h"
 #import "EZScriptExecutor.h"
 #import "EZLog.h"
+#import "EZLanguageManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -77,9 +78,11 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.firstLanguage = [NSUserDefaults mm_read:kFirstLanguageKey];
-    self.secondLanguage = [NSUserDefaults mm_read:kSecondLanguageKey];
-
+    EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredLanguages][0];
+    self.firstLanguage = [NSUserDefaults mm_readString:kFirstLanguageKey defaultValue:defaultFirstLanguage];
+    EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredLanguages][1];
+    self.secondLanguage = [NSUserDefaults mm_readString:kSecondLanguageKey defaultValue:defaultSecondLanguage];
+    
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
     
