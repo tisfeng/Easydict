@@ -1042,12 +1042,12 @@
         }
       }
     },
-    "Github:" : {
+    "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "GitHub:"
           }
         }
       }
