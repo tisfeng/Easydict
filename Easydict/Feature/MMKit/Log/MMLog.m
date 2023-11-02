@@ -82,12 +82,11 @@ BOOL MMDefaultLogAsyncEnabled = YES;
     DDLog *log = [[DDLog alloc] init];
     [self configDDLog:log name:name];
     NSString *identifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
     
     NSDictionary *deviceSystemInfo = [EZDeviceSystemInfo getDeviceSystemInfo];
 
-    MMDDLogInfo(log, @"\n=========>\n🚀 %@(%@)[%@] 启动 MMLog(%@)...\n\n%@\n\n日志文件夹:\n%@\n<=========\n", identifier, version, build, name, deviceSystemInfo, [self logDirectoryWithName:name]);
+    MMDDLogInfo(log, @"\n=========>\n🚀 %@ 启动 MMLog(%@)...\n%@\n日志文件夹:\n%@\n<=========\n", identifier, name, deviceSystemInfo, [self logDirectoryWithName:name]);
+    
     return log;
 }
 

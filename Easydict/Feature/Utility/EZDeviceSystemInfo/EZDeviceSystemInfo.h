@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSDictionary *)getDeviceSystemInfo;
 
+/// Get system version, eg 14.0.0
++ (NSString *)getSystemVersion;
+
 @end
 
 NS_ASSUME_NONNULL_END

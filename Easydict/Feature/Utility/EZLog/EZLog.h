@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)logQueryService:(EZQueryService *)service;
 + (void)logQuery:(EZQueryModel *)model;
 
++ (void)logAppInfo;
+
 + (NSString *)textLengthRange:(NSString *)text;
 
 @end
