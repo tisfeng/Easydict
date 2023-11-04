@@ -313,16 +313,18 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### OpenAI（ChatGPT）翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还未写界面，需要在 Easydict 的输入框中使用如下命令方式配置。
 
 请先确保你有 APIKey。
 
-
 #### 配置 APIKey
+
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
-<bar>
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
+</div>
 
 查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
 ```

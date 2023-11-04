@@ -307,16 +307,19 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 ### OpenAI (ChatGPT) Translation
 
-Starting with version 1.3.0, Easydict supports OpenAI translation. Additionally, it is now compatible with  Azure OpenAI. Please note that the interface for Azure OpenAI is not yet built and requires enabling via commands.
+Version 1.3.0 starts to support OpenAI translation, also supports Azure OpenAI interface, the interface has not been written yet, you need to configure it in the input box of Easydict using the following command method.
 
 Please make sure you have an APIKey.
 
-
 #### Configure APIKey
+
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
-<bar>
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
+</div>
 
 Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
 ```
