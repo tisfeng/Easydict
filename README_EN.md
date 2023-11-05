@@ -125,6 +125,10 @@ CODE_SIGN_STYLE = Automatic
 
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
+> [!NOTE]
+> Since the latest code uses the String Catalog feature, Xcode 15+ is required to compile.
+> If your Xcode version is lower, please use the [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) branch, note that this is a fixed version branch, not maintained.
+
 If the run encounters the following error, try updating CocoaPods and then `pod install`.
 
 >  [DT_TOOLCHAIN_DIR cannot be used to evaluate LD_RUNPATH_SEARCH_PATHS, use TOOLCHAIN_DIR instead](https://github.com/CocoaPods/CocoaPods/issues/12012)
@@ -238,7 +242,8 @@ It's worth noting that, apart from the system TTS, all other TTS services are un
 
 Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
 
-> Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
+> [!NOTE] 
+> Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
 <details> <summary> Supported languages: </summary>
 
@@ -385,7 +390,8 @@ DeepL free version web API has a frequency limit for single IP, frequent use wil
 
 If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
 
-> Note: Using a new proxy IP is a generic solution that works for other frequency-limited services.
+> [!NOTE] 
+>  Using a new proxy IP is a generic solution that works for other frequency-limited services.
 
 #### Configure AuthKey
 
@@ -431,8 +437,8 @@ Finally, use the command to write the cookie in Easydict
 // xxx is the obtained cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
-
-> Note that Bing TTS also uses a web interface, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
+> [!NOTE] 
+> Bing TTS also uses a web API, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
 
 ## Smart query mode
 
@@ -471,8 +477,9 @@ By default, only [Mini Window] is enabled for Smart Query Mode, users can also e
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
-
->  Attention: Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
+ 
+> [!NOTE] 
+> Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -494,7 +501,7 @@ Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such 
 If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
 
 > [!WARNING]
-> The old easydict://xxx may indeed be problematic in some scenarios, please use the full URL Scheme easydict://query?text=xxx instead.
+> The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme easydict://query?text=xxx
 
 ## Use with PopClip
 

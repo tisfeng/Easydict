@@ -126,8 +126,8 @@ CODE_SIGN_STYLE = Automatic
 
 构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
-> ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
->
+>[!NOTE]
+> 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
 > 如果你的 Xcode 版本较低，请使用 [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) 分支，注意这是一个固定版本分支，不受维护。
 
 如果运行遇到下面错误，请尝试更新 CocoaPods，然后 `pod install`。
@@ -244,7 +244,8 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 目前支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，百度和火山翻译。
 
-> 注意 ⚠️：Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
+> [!NOTE]
+> Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
 <details> <summary> 各个服务支持的语言 </summary>
 
@@ -390,7 +391,8 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
 
-> Note: 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
+> [!NOTE]
+> 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### 配置 AuthKey
 
@@ -436,8 +438,8 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + 
 // xxx 是前面获取的 cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
-
-> 注意，Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
+> [!NOTE]
+> Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
 
 ## 智能查询模式
 
@@ -477,7 +479,8 @@ easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
 
->  注意：智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头展开查询。
+> [!NOTE]
+> 智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头按钮展开查询。
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -500,7 +503,7 @@ Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easy
 如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://query?text=good%20girl
 
 > [!WARNING]
-> 旧的 easydict://xxx 在某些场景下确实可能出现问题，请改用完整的 URL Scheme easydict://query?text=xxx
+> 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme easydict://query?text=xxx
 
 ## 配合 PopClip 使用
 
