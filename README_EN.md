@@ -55,7 +55,7 @@
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
-  - [2. Homebrew (Thanks BingoKingo)](#2-homebrew-thanks-bingokingo)
+  - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
   - [Developer Build](#developer-build)
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
@@ -78,7 +78,7 @@
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
 - [Use with PopClip](#use-with-popclip)
-- [Settings](#Settings)
+- [Settings](#settings)
   - [General](#general)
   - [Services](#services)
   - [In-App Shortcuts](#in-app-shortcuts)
@@ -113,7 +113,15 @@ If you are a developer, or you are interested in this project, you can also try 
 
 <p>
 
-Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file(⚠️ Not `Easydict.xcodeproj`!), `Cmd + R` to compile and run.
+1. Download this Repo, and then open the `Easydict.xcworkspace` file with [Xcode](https://developer.apple.com/xcode/) (note that it is not `Easydict.xcodeproj`).
+2. Change the DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging into the Apple Developer website), or set the values of DEVELOPMENT_TEAM and CODE_SIGN_IDENTITY to empty.
+3. Use `Cmd + R` to compile and run.
+
+```
+DEVELOPMENT_TEAM = 79NQA2XYHM
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
+```
 
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 

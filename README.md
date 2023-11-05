@@ -56,7 +56,7 @@
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
-  - [2. Homebrew 安装（感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
+  - [2. Homebrew 安装（感谢 BingoKingo）](#2-homebrew-安装感谢-bingokingo)
   - [开发者构建](#开发者构建)
   - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
@@ -114,7 +114,15 @@ brew install easydict
 
 <p>
 
-只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️ 不是 `Easydict.xcodeproj`!），`Cmd + R` 编译运行即可。
+1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（注意不是 `Easydict.xcodeproj`）。
+2. 将 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 改为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），或者将 DEVELOPMENT_TEAM 和 CODE_SIGN_IDENTITY 的值设置为空。
+3. 使用 `Cmd + R` 编译运行即可。
+
+```
+DEVELOPMENT_TEAM = 79NQA2XYHM
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
+```
 
 构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
