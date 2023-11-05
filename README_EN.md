@@ -601,11 +601,13 @@ If you are interested in this project, we welcome you to contribute to the proje
 
 Currently, the project has two main branches, dev and main. The dev branch code is usually the latest, and may contain some features that are under development. The main branch code is stable and will be merged with the dev branch code regularly.
 
+In addition, we plan to migrate the project from objc to Swift, and gradually use Swift to write new feature modules in the future, see https://github.com/tisfeng/Easydict/issues/194
+
 If you think there is room for improvement in the project, or if you have new ideas for features, please submit a PR:
 
 If the PR is a bug fix or feature implementation for an existing issue, please submit it to the dev branch.
 
-If the PR is about a new feature or involves UI changes, it is recommended to open an issue first to discuss it, to avoid duplicate or conflicting features.
+If the PR is about a new feature or involves major changes to the UI, it is recommended to open an issue for discussion first to avoid duplicate or conflicting features.
 
 ## Acknowledgements
 
