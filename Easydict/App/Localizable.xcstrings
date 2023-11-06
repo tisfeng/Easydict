@@ -109,7 +109,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Dictionary"
+            "value" : "Apple Dictionary"
           }
         },
         "zh-Hans" : {
@@ -125,7 +125,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Translation"
+            "value" : "Apple Translation"
           }
         },
         "zh-Hans" : {
