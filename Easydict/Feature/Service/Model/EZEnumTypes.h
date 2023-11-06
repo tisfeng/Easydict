@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,6 +40,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;

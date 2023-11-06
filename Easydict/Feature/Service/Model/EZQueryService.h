@@ -14,11 +14,13 @@
 #import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
 #import "EZError.h"
+#import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //@class EZAudioPlayer;
 
+NS_SWIFT_NAME(QueryService)
 @interface EZQueryService : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
