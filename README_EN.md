@@ -477,7 +477,7 @@ By default, only [Mini Window] is enabled for Smart Query Mode, users can also e
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
- 
+
 > [!NOTE] 
 > Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
 
@@ -669,3 +669,4 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-10-19 | DANIELHU | 7.3 | 感谢开源，希望能加入生词本功能。（后面会加，请等待 [33](https://github.com/tisfeng/Easydict/issues/33)） |
 | 2023-10-25 | tzcsky | 10 | 非常好的软件 |
 | 2023-10-26 |  | 10 | 开源万岁🎉尽点绵薄之力，感谢！ |
+| 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力 |
