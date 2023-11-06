@@ -924,7 +924,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Center of Screen"
+            "value" : "Center of screen"
           }
         },
         "zh-Hans" : {
@@ -956,7 +956,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mouse Position"
+            "value" : "Mouse position"
           }
         },
         "zh-Hans" : {
@@ -972,7 +972,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right Side of Screen"
+            "value" : "Right side of screen"
           }
         },
         "zh-Hans" : {
