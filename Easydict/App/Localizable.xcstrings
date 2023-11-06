@@ -414,6 +414,17 @@
         }
       }
     },
+    "caiyun_translate" : {
+      "comment" : "The name of Caiyun Translate",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩云小译"
+          }
+        }
+      }
+    },
     "cancel" : {
       "localizations" : {
         "en" : {
