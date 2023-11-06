@@ -55,7 +55,7 @@
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
-  - [2. Homebrew (Thanks BingoKingo）](#2-homebrew-thanks-bingokingo)
+  - [2. Homebrew](#2-homebrew)
   - [Developer Build](#developer-build)
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
@@ -99,7 +99,9 @@ You can install it using one of the following two methods. Support macOS 11.0+
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
-### 2. Homebrew (Thanks [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 
+
+Thanks to [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) for the initial installation version.
 
 ```bash
 brew install easydict

@@ -56,7 +56,7 @@
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
-  - [2. Homebrew 安装（感谢 BingoKingo）](#2-homebrew-安装感谢-bingokingo)
+  - [2. Homebrew 安装](#2-homebrew-安装)
   - [开发者构建](#开发者构建)
   - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
@@ -100,7 +100,9 @@
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
-### 2. Homebrew 安装（感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 安装
+
+感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) 提供的最初安装版本。
 
 ```bash
 brew install easydict
@@ -308,7 +310,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ### 🍎 苹果系统词典
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文 - 英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
