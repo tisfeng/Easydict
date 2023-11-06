@@ -564,7 +564,7 @@
     }];
     
     [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.selectLabel);
+        make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
     }];
     [self.firstLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -573,7 +573,7 @@
     }];
     
     [self.secondLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.selectLabel);
+        make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.firstLanguagePopUpButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.secondLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
