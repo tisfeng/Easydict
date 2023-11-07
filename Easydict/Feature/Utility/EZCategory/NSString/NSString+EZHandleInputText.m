@@ -9,6 +9,7 @@
 #import "NSString+EZHandleInputText.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZSplit.h"
+#import "EZAppleService.h"
 
 static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
 
@@ -58,23 +59,59 @@ static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#)";
     for (NSTextCheckingResult *result in [[results reverseObjectEnumerator] allObjects]) {
         NSRange range = [result rangeAtIndex:1];
         NSString *content = [self substringWithRange:range].trim;
-        NSArray *lines = [content componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-        NSMutableArray *mutableLines = [NSMutableArray array];
-        for (NSString *line in lines) {
-            NSString *trimmedLine = [line trim];
+        NSArray<NSString *> *lines = [content componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        
+        NSArray<NSNumber *> *widths = [self widthsOfTexts:lines];
+        // Get max width in widths
+        NSNumber *maxWidthValue = [widths valueForKeyPath:@"@max.self"];
+        NSInteger maxWidthIndex = [widths indexOfObject:maxWidthValue];
+        CGFloat singleAlphabetWidth = maxWidthValue.floatValue / ([lines[maxWidthIndex] length]);
+        
+        EZLanguage language = [EZAppleService.shared detectText:content];
+        BOOL isEnglishTypeLanguage = [EZLanguageManager.shared isLanguageWordsNeedSpace:language];
+        CGFloat alphabetCount = isEnglishTypeLanguage ? 15 : 1.5;
+        
+        NSMutableString *modifiedBlockText = [NSMutableString string];
+        
+        for (int i = 0; i < lines.count; i++) {
+            NSString *line = lines[i];
             // Remove all prefix *
-            NSString *newText = [trimmedLine stringByReplacingOccurrencesOfString:@"\\*+"
+            NSString *newText = [line stringByReplacingOccurrencesOfString:@"\\*+"
                                                                        withString:@""
                                                                           options:NSRegularExpressionSearch
-                                                                            range:NSMakeRange(0, trimmedLine.length)];
-            [mutableLines addObject:newText.trim];
+                                                                            range:NSMakeRange(0, line.length)];
+            if (i > 0) {
+                BOOL isPrevLineLongText = NO;
+                CGFloat threshold = alphabetCount * singleAlphabetWidth;
+                if (maxWidthValue.floatValue - widths[i-1].floatValue <= threshold) {
+                    isPrevLineLongText = YES;
+                }
+                BOOL isPrevLineEnd = [lines[i-1] hasEndPunctuationSuffix];
+                if (newText.trim.length > 0 && isPrevLineLongText && !isPrevLineEnd) {
+                    NSString *wordConnector = isEnglishTypeLanguage ? @" " : @"";
+                    [modifiedBlockText appendFormat:@"%@%@", wordConnector, newText];
+                } else {
+                    [modifiedBlockText appendFormat:@"\n%@", newText];
+                }
+            } else {
+                [modifiedBlockText appendString:newText];
+            }
         }
         
-        NSString *modifiedBlock = [mutableLines componentsJoinedByString:@"\n"];
-        [mutableSelf replaceCharactersInRange:result.range withString:modifiedBlock];
+        [mutableSelf replaceCharactersInRange:result.range withString:modifiedBlockText];
     }
     
     return mutableSelf;
+}
+
+/// Get each text widths
+- (NSArray<NSNumber *> *)widthsOfTexts:(NSArray *)texts {
+    NSMutableArray *widths = [NSMutableArray array];
+    for (NSString *text in texts) {
+        CGFloat width = [text mm_widthWithFont:[NSFont systemFontOfSize:NSFont.systemFontSize]];
+        [widths addObject:@(width)];
+    }
+    return widths;
 }
 
 /**
