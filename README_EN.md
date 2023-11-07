@@ -642,7 +642,11 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 ### Sponsor List
 
-If you don't want your username to be displayed in the list, please choose anonymous.
+If you don't want your username to be displayed in the list, please choose anonymous. Thank you for your support.
+
+<details> <summary> Sponsor List </summary>
+
+<p>
 
 |  **Date**  |     **User**      | **Amount sponsored** |                                                          **Message**                                                           |
 | :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
@@ -654,7 +658,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-06-01 |       梦遇        |    10    |                                                            感谢                                                             |
 | 2023-06-05 |    挨揍的免子     |    1     |                                                           谢谢 🙏                                                           |
 | 2023-06-17 |       妙才        |    5     |                                                             ❤️                                                              |
-| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
+| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见 [#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
 | 2023-06-19 |      许冠英       |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
 | 2023-06-20 |    lidashuang     |    10    |                                                            感谢                                                             |
 | 2023-07-03 |       小阳        |    2     |                                                                                                                             |
@@ -672,3 +676,8 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-10-25 | tzcsky | 10 | 非常好的软件 |
 | 2023-10-26 |  | 10 | 开源万岁🎉尽点绵薄之力，感谢！ |
 | 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力 |
+| 2023-11-07 | ㅤ HDmoli | 5 | zhihui.xiong |
+
+</p>
+
+</details>
