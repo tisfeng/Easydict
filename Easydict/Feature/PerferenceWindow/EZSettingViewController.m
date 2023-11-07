@@ -12,6 +12,7 @@
 #import "NSViewController+EZWindow.h"
 #import "EZMenuItemManager.h"
 #import "EZEnumTypes.h"
+#import <KVOController/NSObject+FBKVOController.h>
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
@@ -151,6 +152,11 @@
     self.maxViewHeightRatio = 0.7;
     
     [self updateViewSize];
+    
+    // Observe selectionShortcutView.recording status.
+    [self.KVOController observe:self.selectionShortcutView keyPath:@"recording" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZSettingViewController *settingVC, MASShortcutView *selectionShortcutView, NSDictionary<NSString *, id> *_Nonnull change) {
+        EZConfiguration.shared.isRecordingSelectTextShortcutKey = [change[NSKeyValueChangeNewKey] boolValue];
+    }];
 }
 
 - (void)setupUI {
