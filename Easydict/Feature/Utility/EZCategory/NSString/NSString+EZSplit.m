@@ -17,37 +17,42 @@
  AnchoredDraggableState --> Anchored Draggable State
  GetHTTP --> Get HTTP
  GetHTTPCode --> Get HTTP Code
+ DECLINED BY VENDOR
  */
 - (NSString *)splitCamelCaseText {
     NSMutableString *outputText = [NSMutableString string];
-    NSCharacterSet *uppercaseCharSet = [NSCharacterSet uppercaseLetterCharacterSet];
 
     for (int i = 0; i < self.length; i++) {
         NSString *currentChar = [self substringWithRange:NSMakeRange(i, 1)];
-
-        if ([uppercaseCharSet characterIsMember:[currentChar characterAtIndex:0]]) {
+        if ([self isUppercaseChar:currentChar]) {
             if (i > 0) {
                 NSString *prevChar = [self substringWithRange:NSMakeRange(i - 1, 1)];
-
-                if (![uppercaseCharSet characterIsMember:[prevChar characterAtIndex:0]]) {
+                if ([self isLowercaseChar:prevChar]) {
                     [outputText appendString:@" "];
                 } else {
                     if (i < self.length - 1) {
                         NSString *nextChar = [self substringWithRange:NSMakeRange(i + 1, 1)];
-
-                        if (![uppercaseCharSet characterIsMember:[nextChar characterAtIndex:0]]) {
+                        if ([self isLowercaseChar:nextChar]) {
                             [outputText appendString:@" "];
                         }
                     }
                 }
             }
-            [outputText appendString:currentChar];
-        } else {
-            [outputText appendString:currentChar];
         }
+        [outputText appendString:currentChar];
     }
 
     return outputText;
+}
+
+- (BOOL)isUppercaseChar:(NSString *)charString {
+    NSCharacterSet *uppercaseCharSet = [NSCharacterSet uppercaseLetterCharacterSet];
+    return [uppercaseCharSet characterIsMember:[charString characterAtIndex:0]];
+}
+
+- (BOOL)isLowercaseChar:(NSString *)charString {
+    NSCharacterSet *lowercaseCharSet = [NSCharacterSet lowercaseLetterCharacterSet];
+    return [lowercaseCharSet characterIsMember:[charString characterAtIndex:0]];
 }
 
 /**
