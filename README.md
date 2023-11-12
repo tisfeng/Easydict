@@ -591,6 +591,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 ## 类似开源项目
 
 - [immersive-translate](https://github.com/immersive-translate/immersive-translate): 一个好用的沉浸式双语网页翻译扩展。
+- [pot-desktop](https://github.com/pot-app/pot-desktop) : 一个跨平台的划词翻译和 OCR 软件。
 - [ext-saladict](https://github.com/crimx/ext-saladict): 沙拉查词，一个浏览器查词和翻译扩展。
 - [openai-translator](https://github.com/yetone/openai-translator): 基于 ChatGPT API 的划词翻译浏览器插件和跨平台桌面端应用。
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): 我的另一个开源项目，一个 Raycast 扩展版本的 Easydict。

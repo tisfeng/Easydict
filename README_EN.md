@@ -588,6 +588,7 @@ If you find that the OCR result is incorrect, you can correct the OCR result by 
 ## Similar Open Source Projects
 
 - [immersive-translate](https://github.com/immersive-translate/immersive-translate): A nice Immersive Dual Web Page Translation Extension.
+- [pot-desktop](https://github.com/pot-app/pot-desktop) : A cross-platform software for text translation and recognize.
 - [ext-saladict](https://github.com/crimx/ext-saladict): A browser extension for looking up words and translating.
 - [openai-translator](https://github.com/yetone/openai-translator): Browser extension and cross-platform desktop application for translation based on ChatGPT API.
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): My other open source project, a Raycast extension version of Easydict.
