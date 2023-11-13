@@ -535,7 +535,7 @@ The settings page provides some preference setting modifications, such as automa
 
 ### Services
 
-Easydict has 3 types of windows and you can set different services for each of them.
+Easydict has 3 types of Windows and you can set different services for each of them.
 
 - Mini window: displayed when the mouse automatically picks up words.
 - Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
