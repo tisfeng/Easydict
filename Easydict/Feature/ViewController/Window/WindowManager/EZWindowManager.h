@@ -61,15 +61,18 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - URL scheme
 
 /// Show floating window.
-- (void)showFloatingWindowType:(EZWindowType)type 
+- (void)showFloatingWindowType:(EZWindowType)windowType
                      queryText:(nullable NSString *)text
+                     autoQuery:(BOOL)autoQuery
                     actionType:(EZActionType)actionType;
 
 - (void)showFloatingWindowType:(EZWindowType)windowType
-                     queryText:(NSString *)text
+                     queryText:(nullable NSString *)text
                     actionType:(EZActionType)actionType
                        atPoint:(CGPoint)point
              completionHandler:(nullable void (^)(void))completionHandler;
+
+- (void)orderFrontWindowAndFocusInputTextView:(EZBaseQueryWindow *)window;
 
 - (void)detectQueryText:(NSString *)text completion:(nullable void (^)(NSString *language))completion;
 

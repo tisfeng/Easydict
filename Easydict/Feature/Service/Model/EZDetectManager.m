@@ -91,8 +91,7 @@
 }
 
 /// Detect text language. Apple System detect, Google detect, Baidu detect.
-- (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {
-    if (queryText.length == 0) {
+- (void)detectText:(NSString *)queryText completion:(void (^)(EZQueryModel *_Nonnull queryModel, NSError *_Nullable error))completion {    if (queryText.length == 0) {
         NSString *errorString = @"detectText cannot be nil";
         NSLog(@"%@", errorString);
         completion(self.queryModel, [EZTranslateError errorWithString:errorString]);

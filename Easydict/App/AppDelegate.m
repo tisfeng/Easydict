@@ -25,6 +25,7 @@
     // Capturing crash logs must be placed first.
     [MMCrash registerHandler];
     [EZLog setupCrashLogService];
+    [EZLog logAppInfo];
 
     [self setupAppLanguage];
 

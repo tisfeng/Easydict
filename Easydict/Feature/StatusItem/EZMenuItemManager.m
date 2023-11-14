@@ -27,8 +27,7 @@ static CGFloat const kTitleMenuItemHeightRatio = 1.2;
 @property (weak) IBOutlet NSMenuItem *inputItem;
 @property (weak) IBOutlet NSMenuItem *showMiniItem;
 @property (weak) IBOutlet NSMenuItem *screenshotOCRItem;
-
-@property (weak) IBOutlet NSMenuItem *preferencesItem;
+@property (weak) IBOutlet NSMenuItem *settingsItem;
 @property (weak) IBOutlet NSMenuItem *checkForUpdateItem;
 @property (weak) IBOutlet NSMenuItem *helpItem;
 @property (weak) IBOutlet NSMenuItem *quitItem;
@@ -93,7 +92,7 @@ static EZMenuItemManager *_instance;
     self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.versionItem.title = self.versionTitle;
     
-    NSArray *items = @[self.versionItem, self.preferencesItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
+    NSArray *items = @[self.versionItem, self.settingsItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
     [self increaseMenuItemsHeight:items lineHeightRatio:kTitleMenuItemHeightRatio];
     
     [self updateVersionItem];
@@ -175,8 +174,8 @@ static EZMenuItemManager *_instance;
 }
 
 
-- (IBAction)preferenceAction:(NSMenuItem *)sender {
-    NSLog(@"偏好设置");
+- (IBAction)settingAction:(NSMenuItem *)sender {
+    NSLog(@"设置...");
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }

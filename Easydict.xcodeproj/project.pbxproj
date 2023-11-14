@@ -60,6 +60,7 @@
 		037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B229583F5200D0E2CF /* EZServiceCell.m */; };
 		037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
+		037BEFCD2A98FDF700D0F17F /* EZBingLanguageVoice.m in Sources */ = {isa = PBXBuildFile; fileRef = 037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -206,13 +207,17 @@
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
+		17FD9A002B01B9F200A528A6 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */; };
+		17FD9A012B01B9F200A528A6 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */; };
+		17FD9A022B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */; };
+		27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */; };
+		27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
 		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
 		62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZBingRequest.m */; };
 		A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
-		C4BA2E1B2AE9D3A70017EFE2 /* EZBingLanguageVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BA2E1A2AE9D3A70017EFE2 /* EZBingLanguageVoice.swift */; };
 		C4DE3D6D2AC00EB500C2B85D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */; };
 		C98CAE75239F4619005F7DCA /* EasydictHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C90BE309239F38EB00ADE88B /* EasydictHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -345,6 +350,8 @@
 		037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCustomTableRowView.m; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
+		037BEFCB2A98FDF700D0F17F /* EZBingLanguageVoice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingLanguageVoice.h; sourceTree = "<group>"; };
+		037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingLanguageVoice.m; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -625,6 +632,15 @@
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
+		17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
+		17FD99FB2B01B9F200A528A6 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
+		17FD99FC2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZNiuTransTranslateResponse.h"; sourceTree = "<group>"; };
+		17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
+		17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslate.m; sourceTree = "<group>"; };
+		17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZNiuTransTranslateResponse.m"; sourceTree = "<group>"; };
+		27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Easydict.xcconfig; sourceTree = "<group>"; };
+		27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Easydict-debug.xcconfig"; sourceTree = "<group>"; };
+		27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Easydict-debug.entitlements"; sourceTree = "<group>"; };
 		357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.release.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.release.xcconfig"; sourceTree = "<group>"; };
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6220AD592A82812300BBFB52 /* EZBingService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingService.h; sourceTree = "<group>"; };
@@ -638,7 +654,6 @@
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasydictTests.debug.xcconfig"; path = "Target Support Files/Pods-EasydictTests/Pods-EasydictTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C4BA2E1A2AE9D3A70017EFE2 /* EZBingLanguageVoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZBingLanguageVoice.swift; sourceTree = "<group>"; };
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		C4DE3D6E2AC00EB500C2B85D /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -934,6 +949,7 @@
 				03B0221F29231FA6001C7E63 /* Main.storyboard */,
 				03B0221D29231FA6001C7E63 /* Assets.xcassets */,
 				03B0221E29231FA6001C7E63 /* Easydict.entitlements */,
+				27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */,
 				03B0222129231FA6001C7E63 /* main.m */,
 				03B0222229231FA6001C7E63 /* EZConst.h */,
 				03B0221C29231FA6001C7E63 /* AppDelegate.h */,
@@ -1137,6 +1153,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				17FD99F92B01B9F200A528A6 /* Niutrans */,
 				6220AD582A8280E800BBFB52 /* Bing */,
 				0399C6A929A8608000B4AFCC /* OpenAI */,
 				03F14A382956011400CB7379 /* Volcano */,
@@ -1803,6 +1820,19 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
+		17FD99F92B01B9F200A528A6 /* Niutrans */ = {
+			isa = PBXGroup;
+			children = (
+				17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */,
+				17FD99FB2B01B9F200A528A6 /* EZNiuTransTranslate.h */,
+				17FD99FC2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.h */,
+				17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */,
+				17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */,
+				17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */,
+			);
+			path = Niutrans;
+			sourceTree = "<group>";
+		};
 		6220AD582A8280E800BBFB52 /* Bing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1810,11 +1840,12 @@
 				6220AD5A2A82812300BBFB52 /* EZBingService.m */,
 				62A2D03D2A82967F007EEB01 /* EZBingRequest.h */,
 				62A2D03E2A82967F007EEB01 /* EZBingRequest.m */,
-				C4BA2E1A2AE9D3A70017EFE2 /* EZBingLanguageVoice.swift */,
 				6295DE2F2A84D82E006145F4 /* EZBingTranslateModel.h */,
 				6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */,
 				6295DE322A84EF76006145F4 /* EZBingLookupModel.h */,
 				6295DE332A84EF76006145F4 /* EZBingLookupModel.m */,
+				037BEFCB2A98FDF700D0F17F /* EZBingLanguageVoice.h */,
+				037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */,
 				03F639932AA6CFBB009B9914 /* EZBingConfig.h */,
 				03F639942AA6CFBB009B9914 /* EZBingConfig.m */,
 			);
@@ -1852,6 +1883,8 @@
 		C99EEB0F2385796700FEE666 = {
 			isa = PBXGroup;
 			children = (
+				27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */,
+				27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */,
 				03B0221829231FA6001C7E63 /* Easydict */,
 				0383913F292FBE120009828C /* EasydictHelper */,
 				0313F86E2AD5577400A5CFB0 /* EasydictTests */,
@@ -1959,7 +1992,7 @@
 			};
 			buildConfigurationList = C99EEB132385796700FEE666 /* Build configuration list for PBXProject "Easydict" */;
 			compatibilityVersion = "Xcode 13.0";
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -2001,11 +2034,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */,
 				0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */,
 				03BFBB802923A2FA00C48725 /* white-black-icon@2x.png in Resources */,
 				031DBD792AE01E130071CF85 /* easydict in Resources */,
 				03BFBB7329239E9F00C48725 /* blue-white-icon@2x.png in Resources */,
 				03882F9229D95044005B5A52 /* Info.plist in Resources */,
+				27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */,
 				03BFBB7C2923A1D900C48725 /* cyan-white-icon@3x.png in Resources */,
 				03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */,
 				03BFBB652923998300C48725 /* black-white-icon@2x.png in Resources */,
@@ -2136,6 +2171,7 @@
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03D8A65C2A433B4100D9A968 /* EZConfiguration+EZUserData.m in Sources */,
 				03BD282229486CF200F5891A /* EZBlueTextButton.m in Sources */,
+				037BEFCD2A98FDF700D0F17F /* EZBingLanguageVoice.m in Sources */,
 				03BDA7C22A26DA280079D04F /* NSString+Indenter.m in Sources */,
 				03542A462937B4C300C34C33 /* EZBaiduTranslateResponse.m in Sources */,
 				0309E1F0292B4A5E00AFB76A /* NSView+EZGetViewController.m in Sources */,
@@ -2148,6 +2184,7 @@
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
+				17FD9A012B01B9F200A528A6 /* EZNiuTransTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
@@ -2165,7 +2202,6 @@
 				03542A522937B69200C34C33 /* EZYoudaoTranslateResponse.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,
-				C4BA2E1B2AE9D3A70017EFE2 /* EZBingLanguageVoice.swift in Sources */,
 				03262C1F29EF8EE500EFECA0 /* EZPrivacyViewController.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
@@ -2197,6 +2233,7 @@
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
+				17FD9A002B01B9F200A528A6 /* EZNiuTransTranslateResponse.m in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
@@ -2238,6 +2275,7 @@
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
+				17FD9A022B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03D747432A07FB150006CD77 /* EZError.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
@@ -2355,9 +2393,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
@@ -2378,9 +2418,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Easydict/App/PrefixHeader.pch";
@@ -2400,13 +2442,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=macosx*]" = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = EasydictHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2426,13 +2468,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				CODE_SIGN_ENTITLEMENTS = EasydictHelper/EasydictHelper.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = EasydictHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2449,6 +2491,7 @@
 		};
 		C99EEB2A2385796900FEE666 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2507,12 +2550,14 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		C99EEB2B2385796900FEE666 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2564,6 +2609,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
@@ -2577,15 +2623,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "white-black-icon";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "Easydict/App/Easydict-debug.entitlements";
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_TESTING_SEARCH_PATHS = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2598,6 +2644,93 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.0.1;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking/AFNetworking.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/CocoaLumberjack/CocoaLumberjack.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore/FirebaseCore.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreInternal/FirebaseCoreInternal.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations/FirebaseInstallations.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes/JLRoutes.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/KVOController/KVOController.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MASPreferences/MASPreferences.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MASShortcut/MASShortcut.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MJExtension/MJExtension.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Masonry/Masonry.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC/ReactiveObjC.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SSZipArchive/SSZipArchive.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb.framework/Headers\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking\"",
+					"-iframework",
+					"\"${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/CocoaLumberjack\"",
+					"-iframework",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/FirebaseAnalytics/AdIdSupport\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCore\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseCoreInternal\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInstallations\"",
+					"-iframework",
+					"\"${PODS_ROOT}/GoogleAppMeasurement/Frameworks\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAppMeasurement/AdIdSupport\"",
+					"-iframework",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAppMeasurement/WithoutAdIdSupport\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/JLRoutes\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/KVOController\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MASPreferences\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MASShortcut\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/MJExtension\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Masonry\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/ReactiveObjC\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SSZipArchive\"",
+					"-iframework",
+					"\"${PODS_ROOT}/Sparkle\"",
+					"-iframework",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nanopb\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_MODULE_NAME = Easydict;
 				PRODUCT_NAME = "Easydict-Debug";
@@ -2617,14 +2750,14 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Easydict/App/Easydict.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = $CODE_SIGN_STYLE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 79NQA2XYHM;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_TESTING_SEARCH_PATHS = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

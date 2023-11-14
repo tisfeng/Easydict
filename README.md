@@ -56,7 +56,7 @@
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
-  - [2. Homebrew 安装（感谢 BingoKingo）](#2-homebrew-安装-感谢-bingokingo)
+  - [2. Homebrew 安装](#2-homebrew-安装)
   - [开发者构建](#开发者构建)
   - [签名问题 ⚠️](#签名问题-️)
 - [使用](#使用)
@@ -79,8 +79,8 @@
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
 - [配合 PopClip 使用](#配合-popclip-使用)
-- [偏好设置](#偏好设置)
-  - [设置](#设置)
+- [设置](#设置)
+  - [通用](#通用)
   - [服务](#服务)
 - [应用内快捷键](#应用内快捷键)
 - [Tips](#tips)
@@ -100,7 +100,9 @@
 
 [下载](https://github.com/tisfeng/Easydict/releases) 最新版本的 Easydict。
 
-### 2. Homebrew 安装（感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 安装
+
+感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) 提供的最初安装版本。
 
 ```bash
 brew install easydict
@@ -114,20 +116,20 @@ brew install easydict
 
 <p>
 
-只需要下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️ 不是 `Easydict.xcodeproj`!），`Cmd + R` 编译运行即可。
+1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（注意不是 `Easydict.xcodeproj`）。
+2. 将 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 改为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），或者将 DEVELOPMENT_TEAM 和 CODE_SIGN_IDENTITY 的值设置为空。（注意，PR 时不要提交 Easydict-debug.xcconfig 文件）
+3. 使用 `Cmd + R` 编译运行即可。
 
-如果编译出现签名错误，请在 target 的 `Signing & Capabilities` 页面改用你自己的开发者账号。如果你还不是苹果开发者，只要去 https://developer.apple.com/ 免费注册一下就可以。
-
-如果不想注册苹果开发者，也可以用自动签名方式运行，参考下面截图，将 `Team` 改为 None，`Signing Certificate` 设置为 Sign to Run Locally，注意两个 target 都要改。
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
-</div>
+```
+DEVELOPMENT_TEAM = 79NQA2XYHM
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
+```
 
 构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
 
-> ⚠️ 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
->
+>[!NOTE]
+> 由于最新代码使用了 String Catalog 功能，因此需要 Xcode 15+ 才能编译。
 > 如果你的 Xcode 版本较低，请使用 [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) 分支，注意这是一个固定版本分支，不受维护。
 
 如果运行遇到下面错误，请尝试更新 CocoaPods，然后 `pod install`。
@@ -244,7 +246,8 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 目前支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，ChatGPT，DeepL，Google，Bing，百度和火山翻译。
 
-> 注意 ⚠️：Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
+> [!NOTE]
+> Google 翻译中国版已无法使用，只能使用国际版，因此需要走代理才能使用 Google 翻译。
 
 <details> <summary> 各个服务支持的语言 </summary>
 
@@ -307,7 +310,7 @@ Easydict 启动之后，除了应用主界面（默认隐藏），还会有一�
 
 ### 🍎 苹果系统词典
 
-Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文-英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
+Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英词典（简体中文 - 英语），现代汉语规范词典（简体中文）等，只需在词典 App 设置页启用相应的词典即可。
 
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
@@ -321,16 +324,18 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### OpenAI（ChatGPT）翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还没写界面，需要通过命令方式启用。
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还未写界面，需要在 Easydict 的输入框中使用如下命令方式配置。
 
 请先确保你有 APIKey。
 
-
 #### 配置 APIKey
+
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
-<bar>
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
+</div>
 
 查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
 ```
@@ -388,7 +393,8 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 如果你有 DeepL AuthKey，建议使用个人的 AuthKey，这样可以避免频率限制，用户体验会更好。如果没有，可以使用切换代理来规避 429 报错。
 
-> Note: 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
+> [!NOTE]
+> 切换代理 IP，这是通用的解决方案，对其他有频率限制的服务同样有效。
 
 #### 配置 AuthKey
 
@@ -434,8 +440,8 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + 
 // xxx 是前面获取的 cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
-
-> 注意，Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
+> [!NOTE]
+> Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
 
 ## 智能查询模式
 
@@ -475,7 +481,8 @@ easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
 
->  注意：智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头展开查询。
+> [!NOTE]
+> 智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头按钮展开查询。
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -493,32 +500,38 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示�
 
 ## URL Scheme
 
-Easydict 支持 URL scheme 快速查询：`easydict://xxx`，如 easydict://good。 
+Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easydict://query?text=good。 
 
-如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://good%2Fgirl
+如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://query?text=good%20girl
+
+> [!WARNING]
+> 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme easydict://query?text=xxx
 
 ## 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后为 `Easydict`设置一个快捷键，默认是 `Opt + D`，那么你就可以通过 `PopClip` 快速打开 `Easydict` 啦！
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（By **[liziqiang](https://github.com/liziqiang)**）
 
-使用方法：选中以下代码块，`PopClip` 会显示 "安装 Easydict"，点击它即可。
-
-> 注意 ⚠️: 如果你修改了默认的快捷键，你需要跟着修改下面脚本中的快捷键 `key combo`。
-
+```shell
+# popclip
+name: Easydict
+icon: iconify:ri:translate
+interpreter: zsh
+shell script: |
+  result=$(ps aux | grep Easydict.app | wc -l)
+  if [[ $result -lt 2 ]];then
+    open /Applications/Easydict.app
+    sleep 1
+  fi
+  open "easydict://query?text=$POPCLIP_TEXT"
 ```
-  # popclip
-  name: Easydict
-  icon: square E
-  key combo: option D
-```
 
-> 参考：https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+> 参考：https://www.popclip.app/dev/shell-script-actions
 
-## 偏好设置
+## 设置
 
-设置页提供了一些偏好设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
+设置页提供了一些设置修改，如开启查询后自动播放单词发音，修改翻译快捷键，开启、关闭服务，或调整服务顺序等。
 
-### 设置
+### 通用
 
 ![dYtfPh-1684758870](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/dYtfPh-1684758870.png)
 
@@ -596,13 +609,15 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 如果您对本项目感兴趣，我们非常欢迎参与到项目的贡献中，我们会尽可能地提供帮助。
 
-目前项目主要有两个分支，dev 和 master，dev 分支代码通常是最新的，可能包含一些正在开发中的功能。master 分支代码是稳定的，会定期合并 dev 分支代码。
+目前项目主要有 dev 和 main 两个分支，dev 分支代码通常是最新的，可能包含一些正在开发中的功能。main 分支代码是稳定的，会定期合并 dev 分支的代码。
+
+另外，我们计划将项目从 objc 向 Swift 迁移，未来逐步使用 Swift 来写新功能模块，参见 https://github.com/tisfeng/Easydict/issues/194
 
 如果您认为项目有需要改进的地方，或者有新的功能想法，欢迎提交 PR：
 
 如果 PR 是对已存在的 issue 进行 bug 修复或者功能实现，请提交到 dev 分支。
 
-如果 PR 是关于某个新功能或者涉及 UI 变动，建议先开个 issue 讨论一下，避免功能重复或者冲突。
+如果 PR 是关于某个新功能或者涉及 UI 等较大的变动，建议先开个 issue 讨论一下，避免功能重复或者冲突。
 
 ## 致谢
 
@@ -628,7 +643,11 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 
 ### 赞助列表
 
-如果不希望用户名显示在列表中，请选择匿名方式。
+如果不希望用户名显示在列表中，请选择匿名方式。感谢大家的支持！
+
+<details> <summary> 赞助列表 </summary>
+
+<p>
 
 |  **日期**  |     **用户**      | **金额** |                                                          **留言**                                                           |
 | :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
@@ -657,3 +676,9 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2023-10-19 | DANIELHU | 7.3 | 感谢开源，希望能加入生词本功能。（后面会加，请等待 [33](https://github.com/tisfeng/Easydict/issues/33)） |
 | 2023-10-25 | tzcsky | 10 | 非常好的软件 |
 | 2023-10-26 |  | 10 | 开源万岁🎉尽点绵薄之力，感谢！ |
+| 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力 |
+| 2023-11-07 | ㅤ HDmoli | 5 | zhihui.xiong |
+
+</p>
+
+</details>

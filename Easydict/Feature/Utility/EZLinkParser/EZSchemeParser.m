@@ -14,6 +14,7 @@
 #import "EZConfiguration+EZUserData.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
+#import "EZNiuTransTranslate.h"
 
 @implementation EZSchemeParser
 
@@ -176,6 +177,8 @@
      easydict://writeKeyValue?EZDeepLAuthKey=xxx
      easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
      
+     easydict://writeKeyValue?EZNiuTransAuthKey=xxx
+     
      // Youdao TTS
      easydict://writeKeyValue?EZDefaultTTSServiceKey=Youdao
      
@@ -199,10 +202,12 @@
         EZOpenAIModelKey,
         
         EZYoudaoTranslationKey,
-        EZYoudaoDictionaryKey,
+        EZYoudaoDictionaryKey,	
         
         EZDeepLAuthKey,
         EZDeepLTranslationAPIKey,
+        
+        EZNiuTransAuthKey,
                 
         EZIntelligentQueryModeKey,
         

@@ -17,6 +17,7 @@
 #import "EZBingService.h"
 #import "EZConfiguration.h"
 #import "EZAppleDictionary.h"
+#import "EZNiuTransTranslate.h"
 
 @interface EZServiceTypes ()
 
@@ -55,8 +56,9 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeGoogle, [EZGoogleTranslate class],
                                            EZServiceTypeApple, [EZAppleService class],
                                            EZServiceTypeBaidu, [EZBaiduTranslate class],
-                                           EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                            EZServiceTypeBing, [EZBingService class],
+                                           EZServiceTypeVolcano, [EZVolcanoTranslate class],
+                                           EZServiceTypeNiuTrans, [EZNiuTransTranslate class],
                                            nil];
     return allServiceDict;
 }

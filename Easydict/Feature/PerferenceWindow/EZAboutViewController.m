@@ -102,7 +102,7 @@
     authorLinkButton.openURL = authorURL; // https://github.com/tisfeng
     authorLinkButton.closeWindowAfterOpeningURL = YES;
 
-    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"Github:", nil)];
+    NSTextField *githubTextField = [NSTextField labelWithString:NSLocalizedString(@"GitHub:", nil)];
     [self.contentView addSubview:githubTextField];
     self.githubTextField = githubTextField;
 

@@ -55,7 +55,7 @@
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
-  - [2. Homebrew (Thanks BingoKingo)](#2-homebrew-thanks-bingokingo)
+  - [2. Homebrew](#2-homebrew)
   - [Developer Build](#developer-build)
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
@@ -78,8 +78,8 @@
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
 - [Use with PopClip](#use-with-popclip)
-- [Preferences](#preferences)
-  - [Settings](#settings)
+- [Settings](#settings)
+  - [General](#general)
   - [Services](#services)
   - [In-App Shortcuts](#in-app-shortcuts)
 - [Tips](#tips)
@@ -99,7 +99,9 @@ You can install it using one of the following two methods. Support macOS 11.0+
 
 [Download](https://github.com/tisfeng/Easydict/releases) the latest release of the app.
 
-### 2. Homebrew (Thanks [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763)）
+### 2. Homebrew 
+
+Thanks to [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) for the initial installation version.
 
 ```bash
 brew install easydict
@@ -113,17 +115,21 @@ If you are a developer, or you are interested in this project, you can also try 
 
 <p>
 
-Just download this Repo, then use [Xcode](https://developer.apple.com/xcode/) to open the `Easydict.xcworkspace` file(⚠️ Not `Easydict.xcodeproj`!), `Cmd + R` to compile and run.
+1. Download this Repo, and then open the `Easydict.xcworkspace` file with [Xcode](https://developer.apple.com/xcode/) (note that it is not `Easydict.xcodeproj`).
+2. Change the DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging into the Apple Developer website), or set the values of DEVELOPMENT_TEAM and CODE_SIGN_IDENTITY to empty.
+3. Use `Cmd + R` to compile and run.
 
-If a signature error occurs during compilation, please use your own developer account on the `Signing & Capabilities` page of the target. If you are not an Apple developer yet, just go to https://developer.apple.com/ and register for free.
-
-If you don't want to register as an Apple developer, you can also run with automatic signature, refer to the screenshot below, change `Team` to None and `Signing Certificate` to Sign to Run Locally, note that both targets should be changed.
-
-<div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/iShot_2023-06-22_16.06.35-1687421213.png" width="100%" />
-</div>
+```
+DEVELOPMENT_TEAM = 79NQA2XYHM
+CODE_SIGN_IDENTITY = Apple Development
+CODE_SIGN_STYLE = Automatic
+```
 
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
+
+> [!NOTE]
+> Since the latest code uses the String Catalog feature, Xcode 15+ is required to compile.
+> If your Xcode version is lower, please use the [xcode-14](https://github.com/tisfeng/Easydict/tree/xcode-14) branch, note that this is a fixed version branch, not maintained.
 
 If the run encounters the following error, try updating CocoaPods and then `pod install`.
 
@@ -238,7 +244,8 @@ It's worth noting that, apart from the system TTS, all other TTS services are un
 
 Currently supports YouDao Dictionary, 🍎 Apple System Dictionary, 🍎 Apple System Translator, ChatGPT, DeepL, Google, Bing, Baidu and Volcano Translator.
 
-> Note ⚠️: Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
+> [!NOTE] 
+> Since the Chinese version of Google Translate is currently unavailable, you can only use the international version, so you need to use a proxy to use Google Translate.
 
 <details> <summary> Supported languages: </summary>
 
@@ -315,16 +322,19 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 ### OpenAI (ChatGPT) Translation
 
-Starting with version 1.3.0, Easydict supports OpenAI translation. Additionally, it is now compatible with  Azure OpenAI. Please note that the interface for Azure OpenAI is not yet built and requires enabling via commands.
+Version 1.3.0 starts to support OpenAI translation, also supports Azure OpenAI interface, the interface has not been written yet, you need to configure it in the input box of Easydict using the following command method.
 
 Please make sure you have an APIKey.
 
-
 #### Configure APIKey
+
 ```
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
-<bar>
+
+<div>
+  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
+</div>
 
 Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
 ```
@@ -382,7 +392,8 @@ DeepL free version web API has a frequency limit for single IP, frequent use wil
 
 If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to avoid frequency limits and improve user experience. If not, you can use the way of switching proxy IP to avoid 429 error.
 
-> Note: Using a new proxy IP is a generic solution that works for other frequency-limited services.
+> [!NOTE] 
+>  Using a new proxy IP is a generic solution that works for other frequency-limited services.
 
 #### Configure AuthKey
 
@@ -428,8 +439,8 @@ Finally, use the command to write the cookie in Easydict
 // xxx is the obtained cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
-
-> Note that Bing TTS also uses a web interface, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
+> [!NOTE] 
+> Bing TTS also uses a web API, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
 
 ## Smart query mode
 
@@ -469,7 +480,8 @@ easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
 
->  Attention: Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
+> [!NOTE] 
+> Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
 
 <table>
     <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001112741097-1696130861.png">
@@ -484,35 +496,40 @@ Easydict in-app lookup is supported. In the input box or translation result, if 
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
 </div>
 
-
 ## URL Scheme
 
-Easydict supports fast lookup for URL scheme: `easydict://xxx`, such as easydict://good.
+Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as easydict://query?text=good.
 
-If the query content xxx contains special characters, URL encoding is needed, such as easydict://good%2Fgirl
+If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
+
+> [!WARNING]
+> The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme easydict://query?text=xxx
 
 ## Use with PopClip
 
-You need to install [PopClip](https://pilotmoon.com/popclip/) first, then set a shortcut key for `Easydict`, default is `Opt + D`, then you can open `Easydict` quickly with `PopClip`!
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (By [liziqiang](https://github.com/liziqiang))
 
-Usage: Select the following code block, `PopClip` will show "Install Easydict", just click it.
-
-> Note ⚠️: If you have modified the default shortcut key, you need to modify the shortcut `key combo` in the script below accordingly.
-
+```shell
+# popclip
+name: Easydict
+icon: iconify:ri:translate
+interpreter: zsh
+shell script: |
+  result=$(ps aux | grep Easydict.app | wc -l)
+  if [[ $result -lt 2 ]];then
+    open /Applications/Easydict.app
+    sleep 1
+  fi
+  open "easydict://query?text=$POPCLIP_TEXT"
 ```
-  # popclip
-  name: Easydict
-  icon: square E
-  key combo: option D
-```
 
-> Ref: https://github.com/pilotmoon/PopClip-Extensions#key-combo-string-format
+> Ref: https://www.popclip.app/dev/shell-script-actions
 
-## Preferences
+## Settings
 
 The settings page provides some preference setting modifications, such as automatically playing word pronunciation after turning on a query, modifying translation shortcut keys, turning on and off services, or adjusting the order of services, etc.
 
-### Settings
+### General
 
 <img width="1036" alt="Prefences" src="https://github.com/Jerry23011/Easydict/assets/89069957/7d63ad8e-927f-44e2-bc14-9d2199a927e4">
 
@@ -591,13 +608,15 @@ Open source makes the world better.
 
 If you are interested in this project, we welcome you to contribute to the project, and we will provide help as much as possible.
 
-Currently, the project has two main branches, dev and master. The dev branch code is usually the latest, and may contain some features that are under development. The master branch code is stable and will be merged with the dev branch code regularly.
+Currently, the project has two main branches, dev and main. The dev branch code is usually the latest, and may contain some features that are under development. The main branch code is stable and will be merged with the dev branch code regularly.
+
+In addition, we plan to migrate the project from objc to Swift, and gradually use Swift to write new feature modules in the future, see https://github.com/tisfeng/Easydict/issues/194
 
 If you think there is room for improvement in the project, or if you have new ideas for features, please submit a PR:
 
 If the PR is a bug fix or feature implementation for an existing issue, please submit it to the dev branch.
 
-If the PR is about a new feature or involves UI changes, it is recommended to open an issue first to discuss it, to avoid duplicate or conflicting features.
+If the PR is about a new feature or involves major changes to the UI, it is recommended to open an issue for discussion first to avoid duplicate or conflicting features.
 
 ## Acknowledgements
 
@@ -623,7 +642,11 @@ If sponsorship is enough to cover Apple's $99 annual fee, I will sign up for a d
 
 ### Sponsor List
 
-If you don't want your username to be displayed in the list, please choose anonymous.
+If you don't want your username to be displayed in the list, please choose anonymous. Thank you for your support.
+
+<details> <summary> Sponsor List </summary>
+
+<p>
 
 |  **Date**  |     **User**      | **Amount sponsored** |                                                          **Message**                                                           |
 | :--------: | :---------------: | :------: | :-------------------------------------------------------------------------------------------------------------------------: |
@@ -635,7 +658,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-06-01 |       梦遇        |    10    |                                                            感谢                                                             |
 | 2023-06-05 |    挨揍的免子     |    1     |                                                           谢谢 🙏                                                           |
 | 2023-06-17 |       妙才        |    5     |                                                             ❤️                                                              |
-| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见[#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
+| 2023-06-19 |         1         |    20    | 加油，有没有可能调用 chatgpt 来翻译呀？（参见 [#28](https://github.com/tisfeng/Easydict/issues/28#issuecomment-1527827829)） |
 | 2023-06-19 |      许冠英       |   6.6    |                                              感谢开发这么好用的软件，很喜欢。                                               |
 | 2023-06-20 |    lidashuang     |    10    |                                                            感谢                                                             |
 | 2023-07-03 |       小阳        |    2     |                                                                                                                             |
@@ -652,3 +675,9 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-10-19 | DANIELHU | 7.3 | 感谢开源，希望能加入生词本功能。（后面会加，请等待 [33](https://github.com/tisfeng/Easydict/issues/33)） |
 | 2023-10-25 | tzcsky | 10 | 非常好的软件 |
 | 2023-10-26 |  | 10 | 开源万岁🎉尽点绵薄之力，感谢！ |
+| 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力 |
+| 2023-11-07 | ㅤ HDmoli | 5 | zhihui.xiong |
+
+</p>
+
+</details>

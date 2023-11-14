@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22155"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -22,9 +22,9 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uLo-B5-Udn"/>
-                                        <menuItem title="Preferences…" keyEquivalent="," id="wgy-yj-uSV">
+                                        <menuItem title="Settings…" keyEquivalent="," id="wgy-yj-uSV">
                                             <connections>
-                                                <action selector="preferenceAction:" target="qM9-fT-Fym" id="AQg-31-GQh"/>
+                                                <action selector="settingAction:" target="qM9-fT-Fym" id="Ygf-3h-5J7"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="srv-kw-Ziy"/>
@@ -718,10 +718,10 @@ DQ
                         <outlet property="helpItem" destination="ICB-w8-IqK" id="MdB-xe-fCz"/>
                         <outlet property="inputItem" destination="AWf-Ci-7QE" id="Isp-ch-8Q6"/>
                         <outlet property="menu" destination="A3F-ys-zOg" id="n6f-3z-A90"/>
-                        <outlet property="preferencesItem" destination="Fzj-Rh-cL0" id="wnW-lJ-w5g"/>
                         <outlet property="quitItem" destination="JZ0-yT-1tw" id="SI7-X9-kea"/>
                         <outlet property="screenshotOCRItem" destination="bGs-JX-JVH" id="uki-N8-izc"/>
                         <outlet property="selectionItem" destination="lUI-Zn-Bwr" id="WVP-FO-jlf"/>
+                        <outlet property="settingsItem" destination="Fzj-Rh-cL0" id="bo4-Ps-zfJ"/>
                         <outlet property="showMiniItem" destination="PmP-cO-1HF" id="z5W-Mb-1f4"/>
                         <outlet property="snipItem" destination="2TG-8C-8RM" id="NNT-OJ-7eY"/>
                         <outlet property="versionItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
@@ -772,9 +772,9 @@ DQ
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="kkp-Wh-Cmv"/>
-                        <menuItem title="偏好设置" keyEquivalent="," id="Fzj-Rh-cL0">
+                        <menuItem title="设置..." keyEquivalent="," id="Fzj-Rh-cL0">
                             <connections>
-                                <action selector="preferenceAction:" target="qM9-fT-Fym" id="Emg-Mm-dS5"/>
+                                <action selector="settingAction:" target="qM9-fT-Fym" id="Hl3-VA-VEK"/>
                             </connections>
                         </menuItem>
                         <menuItem title="检查更新" id="GQ2-WA-9QB">

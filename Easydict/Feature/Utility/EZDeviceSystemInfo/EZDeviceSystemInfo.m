@@ -13,8 +13,11 @@
 @implementation EZDeviceSystemInfo
 
 + (NSDictionary *)getDeviceSystemInfo {
+    
+    NSDictionary *infoDictionary = NSBundle.mainBundle.infoDictionary;
     // 1.3.4
-    NSString *appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *appVersion = infoDictionary[@"CFBundleShortVersionString"];
+    NSString *buildVersion = infoDictionary[@"CFBundleVersion"];
     
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
     // 版本13.5（版号22G5059d）
@@ -28,15 +31,16 @@
     NSString *deviceModel = [self getDeviceModel];
     NSString *uuidString = [self getDeviceUUID];
     
-    NSDictionary *infoDictionary = @{
+    NSDictionary *infoDict = @{
         @"Version" : appVersion,
+        @"Build" : buildVersion,
         @"System" : systemVersion,
         @"Device" : deviceModel,
         @"Machine" : machine,
         @"UUID" : uuidString
     };
     
-    return infoDictionary;
+    return infoDict;
 }
 
 
@@ -59,6 +63,13 @@
     IOObjectRelease(platformExpert);
     CFRelease(uuidString);
     return uuid;
+}
+
+/// Get system version, eg 14.0.0
++ (NSString *)getSystemVersion {
+    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSString *versionString = [NSString stringWithFormat:@"%ld.%ld.%ld", (long)version.majorVersion, (long)version.minorVersion, (long)version.patchVersion];
+    return versionString;
 }
 
 @end

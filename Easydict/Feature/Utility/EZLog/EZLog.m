@@ -9,6 +9,7 @@
 #import "EZLog.h"
 #import "EZConfiguration.h"
 #import "FWEncryptorAES.h"
+#import "EZDeviceSystemInfo.h"
 
 @import FirebaseCore;
 @import FirebaseAnalytics;
@@ -107,6 +108,14 @@
     } else {
         return @"5000-∞";
     }
+}
+
++ (void)logAppInfo {
+    NSString *version = [EZDeviceSystemInfo getSystemVersion];
+    NSDictionary *dict = @{
+        @"system_version" : version
+    };
+    [EZLog logEventWithName:@"app_info" parameters:dict];
 }
 
 @end

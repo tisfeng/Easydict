@@ -14,6 +14,7 @@
 #import "EZWindowManager.h"
 #import "EZScriptExecutor.h"
 #import "EZLog.h"
+#import "EZLanguageManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -77,9 +78,11 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    self.firstLanguage = [NSUserDefaults mm_read:kFirstLanguageKey];
-    self.secondLanguage = [NSUserDefaults mm_read:kSecondLanguageKey];
-
+    EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredLanguages][0];
+    self.firstLanguage = [NSUserDefaults mm_readString:kFirstLanguageKey defaultValue:defaultFirstLanguage];
+    EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredLanguages][1];
+    self.secondLanguage = [NSUserDefaults mm_readString:kSecondLanguageKey defaultValue:defaultSecondLanguage];
+    
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
     self.to = [NSUserDefaults mm_readString:kToKey defaultValue:EZLanguageAuto];
     
@@ -127,235 +130,276 @@ static EZConfiguration *_instance;
 
 - (void)setFirstLanguage:(EZLanguage)firstLanguage {
     _firstLanguage = firstLanguage;
-
+    
     [NSUserDefaults mm_write:firstLanguage forKey:kFirstLanguageKey];
     
     if (firstLanguage) {
-        NSDictionary *parameters = @{ @"first_language" : firstLanguage };
-        [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+        [self logSettings:@{@"first_language" : firstLanguage}];
     }
 }
 
 - (void)setSecondLanguage:(EZLanguage)secondLanguage {
     _secondLanguage = secondLanguage;
-
+    
     [NSUserDefaults mm_write:secondLanguage forKey:kSecondLanguageKey];
     
     if (secondLanguage) {
-        NSDictionary *parameters = @{ @"second_language" : secondLanguage };
-        [EZLog logEventWithName:@"preferred_language" parameters:parameters];
+        [self logSettings:@{@"second_language" : secondLanguage}];
     }
 }
 
 - (void)setFrom:(EZLanguage)from {
     _from = from;
-
+    
     [NSUserDefaults mm_write:from forKey:kFromKey];
 }
 
 - (void)setTo:(EZLanguage)to {
     _to = to;
-
+    
     [NSUserDefaults mm_write:to forKey:kToKey];
 }
 
 - (void)setAutoSelectText:(BOOL)autoSelectText {
     _autoSelectText = autoSelectText;
-
+    
     [NSUserDefaults mm_write:@(autoSelectText) forKey:kAutoSelectTextKey];
+    
+    [self logSettings:@{@"auto_select_sext" : @(autoSelectText)}];
 }
 
 - (void)setForceAutoGetSelectedText:(BOOL)forceGetSelectedText {
     _forceAutoGetSelectedText = forceGetSelectedText;
-
+    
     [NSUserDefaults mm_write:@(forceGetSelectedText) forKey:kForceAutoGetSelectedText];
+    
+    [self logSettings:@{@"force_get_selected_text" : @(forceGetSelectedText)}];
 }
 
 - (void)setDisableEmptyCopyBeep:(BOOL)disableEmptyCopyBeep {
     _disableEmptyCopyBeep = disableEmptyCopyBeep;
-
+    
     [NSUserDefaults mm_write:@(disableEmptyCopyBeep) forKey:kDisableEmptyCopyBeepKey];
+    
+    [self logSettings:@{@"disableEmptyCopyBeep" : @(disableEmptyCopyBeep)}];
 }
 
 - (void)setClickQuery:(BOOL)clickQuery {
     _clickQuery = clickQuery;
-
+    
     [NSUserDefaults mm_write:@(clickQuery) forKey:kClickQueryKey];
-
+    
     [EZWindowManager.shared updatePopButtonQueryAction];
+    
+    [self logSettings:@{@"click_query" : @(clickQuery)}];
 }
 
 - (void)setLaunchAtStartup:(BOOL)launchAtStartup {
     BOOL oldLaunchAtStartup = self.launchAtStartup;
-
+    
     [NSUserDefaults mm_write:@(launchAtStartup) forKey:kLaunchAtStartupKey];
-
+    
     // Avoid redundant calls, run AppleScript will ask for permission, trigger notification.
     if (launchAtStartup != oldLaunchAtStartup) {
         [self updateLoginItemWithLaunchAtStartup:launchAtStartup];
     }
+    
+    [self logSettings:@{@"launch_at_startup" : @(launchAtStartup)}];
 }
 
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
     [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
-
+    
     [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
+    
+    [self logSettings:@{@"automatically_checks_for_updates" : @(automaticallyChecksForUpdates)}];
 }
 
 - (void)setHideMainWindow:(BOOL)hideMainWindow {
     _hideMainWindow = hideMainWindow;
-
+    
     [NSUserDefaults mm_write:@(hideMainWindow) forKey:kHideMainWindowKey];
-
+    
     EZWindowManager *windowManager = EZWindowManager.shared;
     [windowManager updatePopButtonQueryAction];
     if (hideMainWindow) {
         [windowManager closeMainWindowIfNeeded];
     }
+    
+    [self logSettings:@{@"hide_main_window" : @(hideMainWindow)}];
 }
 
 - (void)setAutoQueryOCRText:(BOOL)autoSnipTranslate {
     _autoQueryOCRText = autoSnipTranslate;
-
+    
     [NSUserDefaults mm_write:@(autoSnipTranslate) forKey:kAutoQueryOCTTextKey];
+    
+    [self logSettings:@{@"auto_query_ocr_text" : @(autoSnipTranslate)}];
 }
 
 - (void)setAutoQuerySelectedText:(BOOL)autoQuerySelectedText {
     _autoQuerySelectedText = autoQuerySelectedText;
-
+    
     [NSUserDefaults mm_write:@(autoQuerySelectedText) forKey:kAutoQuerySelectedTextKey];
+    
+    [self logSettings:@{@"auto_query_selected_text" : @(autoQuerySelectedText)}];
 }
 
 - (void)setAutoQueryPastedText:(BOOL)autoQueryPastedText {
     _autoQueryPastedText = autoQueryPastedText;
-
+    
     [NSUserDefaults mm_write:@(autoQueryPastedText) forKey:kAutoQueryPastedTextKey];
+    
+    [self logSettings:@{@"auto_query_pasted_text" : @(autoQueryPastedText)}];
 }
 
 - (void)setAutoCopyFirstTranslatedText:(BOOL)autoCopyFirstTranslatedText {
     _autoCopyFirstTranslatedText = autoCopyFirstTranslatedText;
-
+    
     [NSUserDefaults mm_write:@(autoCopyFirstTranslatedText) forKey:kAutoCopyFirstTranslatedTextKey];
+    
+    [self logSettings:@{@"auto_copy_first_translated_text" : @(autoCopyFirstTranslatedText)}];
 }
 
 - (void)setAutoPlayAudio:(BOOL)autoPlayAudio {
     _autoPlayAudio = autoPlayAudio;
-
+    
     [NSUserDefaults mm_write:@(autoPlayAudio) forKey:kAutoPlayAudioKey];
+    
+    [self logSettings:@{@"auto_play_word_audio" : @(autoPlayAudio)}];
 }
 
 - (void)setAutoCopySelectedText:(BOOL)autoCopySelectedText {
     _autoCopySelectedText = autoCopySelectedText;
-
+    
     [NSUserDefaults mm_write:@(autoCopySelectedText) forKey:kAutoCopySelectedTextKey];
+    
+    [self logSettings:@{@"auto_copy_selected_text" : @(autoCopySelectedText)}];
 }
 
 - (void)setAutoCopyOCRText:(BOOL)autoCopyOCRText {
     _autoCopyOCRText = autoCopyOCRText;
-
+    
     [NSUserDefaults mm_write:@(autoCopyOCRText) forKey:kAutoCopyOCRTextKey];
+    
+    [self logSettings:@{@"auto_copy_ocr_text" : @(autoCopyOCRText)}];
 }
 
 - (void)setLanguageDetectOptimize:(EZLanguageDetectOptimize)languageDetectOptimizeType {
     _languageDetectOptimize = languageDetectOptimizeType;
-
+    
     [NSUserDefaults mm_write:@(languageDetectOptimizeType) forKey:kLanguageDetectOptimizeTypeKey];
+    
+    [self logSettings:@{@"detect_optimize" : @(languageDetectOptimizeType)}];
 }
 
 - (void)setDefaultTTSServiceType:(EZServiceType)defaultTTSServiceType {
     _defaultTTSServiceType = defaultTTSServiceType;
     [NSUserDefaults mm_write:defaultTTSServiceType forKey:kDefaultTTSServiceTypeKey];
     
-    NSDictionary *parameters = @{ @"new" : defaultTTSServiceType };
-    [EZLog logEventWithName:@"tts" parameters:parameters];
+    [self logSettings:@{@"tts" : defaultTTSServiceType}];
 }
 
 - (void)setShowGoogleQuickLink:(BOOL)showGoogleLink {
     _showGoogleQuickLink = showGoogleLink;
-
+    
     [NSUserDefaults mm_write:@(showGoogleLink) forKey:kShowGoogleLinkKey];
     [self postUpdateQuickLinkButtonNotification];
-
+    
     EZMenuItemManager.shared.googleItem.hidden = !showGoogleLink;
+    
+    [self logSettings:@{@"show_google_link" : @(showGoogleLink)}];
 }
 
 - (void)setShowEudicQuickLink:(BOOL)showEudicLink {
     _showEudicQuickLink = showEudicLink;
-
+    
     [NSUserDefaults mm_write:@(showEudicLink) forKey:kShowEudicLinkKey];
     [self postUpdateQuickLinkButtonNotification];
-
+    
     EZMenuItemManager.shared.eudicItem.hidden = !showEudicLink;
+    
+    [self logSettings:@{@"show_eudic_link" : @(showEudicLink)}];
 }
 
 - (void)setShowAppleDictionaryQuickLink:(BOOL)showAppleDictionaryQuickLink {
     _showAppleDictionaryQuickLink = showAppleDictionaryQuickLink;
-
+    
     [NSUserDefaults mm_write:@(showAppleDictionaryQuickLink) forKey:kShowAppleDictionaryLinkKey];
     [self postUpdateQuickLinkButtonNotification];
     
     EZMenuItemManager.shared.appleDictionaryItem.hidden = !showAppleDictionaryQuickLink;
+    
+    [self logSettings:@{@"show_apple_dictionary_link" : @(showAppleDictionaryQuickLink)}];
 }
 
 
 - (void)setHideMenuBarIcon:(BOOL)hideMenuBarIcon {
     _hideMenuBarIcon = hideMenuBarIcon;
-
+    
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
-
+    
     [self hideMenuBarIcon:hideMenuBarIcon];
+    
+    [self logSettings:@{@"hide_menu_bar_icon" : @(hideMenuBarIcon)}];
 }
 
 - (void)setFixedWindowPosition:(EZShowWindowPosition)showFixedWindowPosition {
     _fixedWindowPosition = showFixedWindowPosition;
-
+    
     [NSUserDefaults mm_write:@(showFixedWindowPosition) forKey:kShowFixedWindowPositionKey];
     
-    NSDictionary *parameters = @{ @"fixed_window" : @(showFixedWindowPosition) };
-    [EZLog logEventWithName:@"window_position" parameters:parameters];
+    [self logSettings:@{@"show_fixed_window_position" : @(showFixedWindowPosition)}];
 }
 
 - (void)setMouseSelectTranslateWindowType:(EZWindowType)mouseSelectTranslateWindowType {
     _mouseSelectTranslateWindowType = mouseSelectTranslateWindowType;
-
+    
     [NSUserDefaults mm_write:@(mouseSelectTranslateWindowType) forKey:(kMouseSelectTranslateWindowTypeKey)];
     
-    NSDictionary *parameters = @{ @"mouse_window" : @(mouseSelectTranslateWindowType) };
-    [EZLog logEventWithName:@"show_window_type" parameters:parameters];
+    [self logSettings:@{@"show_mouse_window_type" : @(mouseSelectTranslateWindowType)}];
 }
 
 - (void)setShortcutSelectTranslateWindowType:(EZWindowType)shortcutSelectTranslateWindowType {
     _shortcutSelectTranslateWindowType = shortcutSelectTranslateWindowType;
-
+    
     [NSUserDefaults mm_write:@(shortcutSelectTranslateWindowType) forKey:(kShortcutSelectTranslateWindowTypeKey)];
     
-    NSDictionary *parameters = @{ @"shortcut_window" : @(shortcutSelectTranslateWindowType) };
-    [EZLog logEventWithName:@"show_window_type" parameters:parameters];
+    [self logSettings:@{@"show_shortcut_window_type" : @(shortcutSelectTranslateWindowType)}];
 }
 
 - (void)setAdjustPopButtomOrigin:(BOOL)adjustPopButtomOrigin {
     _adjustPopButtomOrigin = adjustPopButtomOrigin;
-
+    
     [NSUserDefaults mm_write:@(adjustPopButtomOrigin) forKey:kAdjustPopButtomOriginKey];
+    
+    [self logSettings:@{@"adjust_pop_buttom_origin" : @(adjustPopButtomOrigin)}];
 }
 
 - (void)setAllowCrashLog:(BOOL)allowCrashLog {
     _allowCrashLog = allowCrashLog;
-
+    
     [NSUserDefaults mm_write:@(allowCrashLog) forKey:kAllowCrashLogKey];
+    
+    [self logSettings:@{@"allow_crash_log" : @(allowCrashLog)}];
+    
     [EZLog setCrashEnabled:allowCrashLog];
 }
 
 - (void)setAllowAnalytics:(BOOL)allowAnalytics {
     _allowAnalytics = allowAnalytics;
-
+    
     [NSUserDefaults mm_write:@(allowAnalytics) forKey:kAllowAnalyticsKey];
+    
+    [self logSettings:@{@"allow_analytics" : @(allowAnalytics)}];
 }
 
 - (void)setClearInput:(BOOL)clearInput {
     _clearInput = clearInput;
-
+    
     [NSUserDefaults mm_write:@(clearInput) forKey:kClearInputKey];
+    
+    [self logSettings:@{@"clear_input" : @(clearInput)}];
 }
 
 
@@ -385,7 +429,7 @@ static EZConfiguration *_instance;
     // ???: name is CFBundleExecutable, or CFBundleName ?
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
     NSString *appBundlePath = [[NSBundle mainBundle] bundlePath];
-
+    
     NSString *script = [NSString stringWithFormat:@"\
         tell application \"System Events\" to get the name of every login item\n\
         tell application \"System Events\"\n\
@@ -399,9 +443,9 @@ static EZConfiguration *_instance;
                 make login item at end with properties {path:\"%@\", hidden:false}\n\
             end if\n\
         end tell", appName,
-                                                  launchAtStartup ? @"true" : @"false",
-                                                  appBundlePath];
-
+                        launchAtStartup ? @"true" : @"false",
+                        appBundlePath];
+    
     EZScriptExecutor *exeCommand = [[EZScriptExecutor alloc] init];
     [exeCommand runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
         if (error) {
@@ -458,12 +502,12 @@ static EZConfiguration *_instance;
 
 - (BOOL)isLoginItemEnabled {
     BOOL enabled = NO;
-
+    
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     CFArrayRef loginItems = SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
 #pragma clang diagnostic pop
-
+    
     NSString *helperBundleId = [self helperBundleId];
     for (id item in (__bridge NSArray *)loginItems) {
         if ([[[item objectForKey:@"Label"] description] isEqualToString:helperBundleId]) {
@@ -508,6 +552,12 @@ static EZConfiguration *_instance;
     NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
     NSString *stringValue = [NSString stringWithFormat:@"%d", enabled];
     [NSUserDefaults mm_write:stringValue forKey:key];
+    
+    NSDictionary *parameters = @{
+        @"enabled" : @(enabled),
+        @"window_type" : @(windowType),
+    };
+    [EZLog logEventWithName:@"intelligent_query_mode" parameters:parameters];
 }
 - (BOOL)intelligentQueryModeForWindowType:(EZWindowType)windowType {
     NSString *key = [EZConstKey constkey:EZIntelligentQueryModeKey windowType:windowType];
@@ -569,8 +619,11 @@ static EZConfiguration *_instance;
 
 - (void)enableBetaFeaturesIfNeeded {
     if ([self isBeta]) {
-        
     }
+}
+
+- (void)logSettings:(NSDictionary *)parameters {
+    [EZLog logEventWithName:@"settings" parameters:parameters];
 }
 
 @end

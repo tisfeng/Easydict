@@ -12,13 +12,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (EZHandleInputText)
 
+/// Split code text by snake case and camel case.
 - (NSString *)splitCodeText;
 
-- (NSString *)removeCommentSymbols;
+/// Remove comment block symbols, /* */
+- (NSString *)removeCommentBlockSymbols;
 
+/// Remove adjacent comment symbol prefix, // and #, and try to join texts.
 - (NSString *)removeCommentSymbolPrefixAndJoinTexts;
 
-- (NSString *)removeCommentSymbolPrefix;
+/// Remove comment symbols, # and //
+- (NSString *)removeCommentSymbols;
 
 /// Is start with comment symbol prefix, // and #
 - (BOOL)hasCommentSymbolPrefix;

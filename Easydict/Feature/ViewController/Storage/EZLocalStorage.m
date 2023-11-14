@@ -58,12 +58,12 @@ static EZLocalStorage *_instance;
                 serviceInfo.type = serviceType;
                 serviceInfo.enabled = YES;
 
-                // Mini type should keep concise.
+                // Mini type should keep concise, services <= 4 
                 if (windowType == EZWindowTypeMini) {
                     NSArray *defaultEnabledServices = @[
-                        EZServiceTypeOpenAI,
-                        EZServiceTypeDeepL,
+                        EZServiceTypeAppleDictionary,
                         EZServiceTypeYoudao,
+                        EZServiceTypeDeepL,
                         EZServiceTypeGoogle,
                     ];
                     serviceInfo.enabled = [defaultEnabledServices containsObject:serviceType];

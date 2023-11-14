@@ -1,16 +1,9 @@
 {
-  "sourceLanguage" : "en",
+  "sourceLanguage" : "zh-Hans",
   "strings" : {
     "0cE-0y-BcT.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Text Replacement\"; ObjectID = \"0cE-0y-BcT\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Text Replacement"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21,14 +14,7 @@
     },
     "0sa-UX-oa3.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Easydict\"; ObjectID = \"0sa-UX-oa3\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39,14 +25,7 @@
     },
     "00y-6C-LDt.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Customize Toolbar…\"; ObjectID = \"00y-6C-LDt\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Customize Toolbar…"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -57,14 +36,7 @@
     },
     "1eD-Dp-YEe.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Ligatures\"; ObjectID = \"1eD-Dp-YEe\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Ligatures"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -75,14 +47,7 @@
     },
     "1hf-nd-d37.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Fonts\"; ObjectID = \"1hf-nd-d37\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Fonts"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -93,14 +58,7 @@
     },
     "1y8-d6-Wtj.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Play Sound\"; ObjectID = \"1y8-d6-Wtj\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Play Sound"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -111,14 +69,7 @@
     },
     "1y8-d6-Wtj.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Play\"; ObjectID = \"1y8-d6-Wtj\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -129,14 +80,7 @@
     },
     "2cy-ys-bxL.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Find Previous\"; ObjectID = \"2cy-ys-bxL\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find Previous"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -149,7 +93,7 @@
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Copy First Translated Text\"; ObjectID = \"2kP-aF-pja\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Copy First Translated Text"
@@ -161,7 +105,7 @@
       "comment" : "Class = \"NSMenuItem\"; title = \"Copy First Result\"; ObjectID = \"2kP-aF-pja\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Copy First Result"
@@ -171,14 +115,7 @@
     },
     "2pt-do-viE.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use Default\"; ObjectID = \"2pt-do-viE\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use Default"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -206,14 +143,7 @@
     },
     "2xC-XV-qeX.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Toolbar\"; ObjectID = \"2xC-XV-qeX\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Toolbar"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -224,14 +154,7 @@
     },
     "4PD-8L-PDj.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Clear All\"; ObjectID = \"4PD-8L-PDj\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Clear All"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -242,14 +165,7 @@
     },
     "5Wf-Zh-efw.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste Style\"; ObjectID = \"5Wf-Zh-efw\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Paste Style"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -260,14 +176,7 @@
     },
     "6oP-eF-qCh.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Services\"; ObjectID = \"6oP-eF-qCh\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Services"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -278,14 +187,7 @@
     },
     "6V6-U7-iWA.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Check Spelling While Typing\"; ObjectID = \"6V6-U7-iWA\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Check Spelling While Typing"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -296,14 +198,7 @@
     },
     "7Wy-ws-99E.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"View\"; ObjectID = \"7Wy-ws-99E\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "View"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -314,14 +209,7 @@
     },
     "8og-eW-YaH.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Window\"; ObjectID = \"8og-eW-YaH\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Window"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -332,14 +220,7 @@
     },
     "9k9-E7-lZ9.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tRight to Left\"; ObjectID = \"9k9-E7-lZ9\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tRight to Left"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -350,14 +231,7 @@
     },
     "9vV-36-7Ry.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Hide Easydict\"; ObjectID = \"9vV-36-7Ry\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Hide Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -368,14 +242,7 @@
     },
     "61z-6q-qH5.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Find\"; ObjectID = \"61z-6q-qH5\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -386,14 +253,7 @@
     },
     "a4o-M9-LLq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste Ruler\"; ObjectID = \"a4o-M9-LLq\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Paste Ruler"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -404,14 +264,7 @@
     },
     "acX-uy-p1U.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tDefault\"; ObjectID = \"acX-uy-p1U\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tDefault"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -422,14 +275,7 @@
     },
     "AdF-Vq-aXV.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Jump to Selection\"; ObjectID = \"AdF-Vq-aXV\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Jump to Selection"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -440,14 +286,7 @@
     },
     "AJi-ur-lQe.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Check Grammar With Spelling\"; ObjectID = \"AJi-ur-lQe\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Check Grammar With Spelling"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -458,14 +297,7 @@
     },
     "anL-uV-VBZ.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"File\"; ObjectID = \"anL-uV-VBZ\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -476,14 +308,7 @@
     },
     "ATD-km-qzd.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Find\"; ObjectID = \"ATD-km-qzd\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -511,14 +336,7 @@
     },
     "AXS-J4-86G.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Font\"; ObjectID = \"AXS-J4-86G\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Font"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -529,14 +347,7 @@
     },
     "AYu-sK-qS6.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Main Menu\"; ObjectID = \"AYu-sK-qS6\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Main Menu"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -547,14 +358,7 @@
     },
     "AZi-Ze-aTH.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Colors\"; ObjectID = \"AZi-Ze-aTH\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Colors"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -565,14 +369,7 @@
     },
     "b6H-cv-tjV.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Substitutions\"; ObjectID = \"b6H-cv-tjV\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Substitutions"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -583,14 +380,7 @@
     },
     "B46-gX-dqX.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use Default\"; ObjectID = \"B46-gX-dqX\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use Default"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -618,14 +408,7 @@
     },
     "bMP-wz-pIO.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use Default\"; ObjectID = \"bMP-wz-pIO\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use Default"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -636,14 +419,7 @@
     },
     "Bmv-mF-MbD.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Sidebar\"; ObjectID = \"Bmv-mF-MbD\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Sidebar"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -654,14 +430,7 @@
     },
     "BoU-uf-4hi.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Kern\"; ObjectID = \"BoU-uf-4hi\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Kern"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -672,14 +441,7 @@
     },
     "BRC-If-Fmo.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Quit Easydict\"; ObjectID = \"BRC-If-Fmo\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Quit Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -690,14 +452,7 @@
     },
     "C6n-7r-dtT.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Delete\"; ObjectID = \"C6n-7r-dtT\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -708,14 +463,7 @@
     },
     "CKv-e7-TUD.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Spelling\"; ObjectID = \"CKv-e7-TUD\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Spelling"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -726,14 +474,7 @@
     },
     "cKy-v3-ja6.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Speech\"; ObjectID = \"cKy-v3-ja6\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Speech"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -744,14 +485,7 @@
     },
     "D5K-HC-eYd.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Window\"; ObjectID = \"D5K-HC-eYd\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Window"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -762,14 +496,7 @@
     },
     "d82-cy-RVu.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Toggle Translation Languages\"; ObjectID = \"d82-cy-RVu\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Toggle Translation Languages"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -780,14 +507,7 @@
     },
     "d82-cy-RVu.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Toggle\"; ObjectID = \"d82-cy-RVu\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Toggle"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -798,14 +518,7 @@
     },
     "DaJ-fK-CDq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Start Speaking\"; ObjectID = \"DaJ-fK-CDq\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Start Speaking"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -816,14 +529,7 @@
     },
     "DeD-3q-hio.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Undo\"; ObjectID = \"DeD-3q-hio\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Undo"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -834,14 +540,7 @@
     },
     "dFr-S6-9m0.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Hide Window\"; ObjectID = \"dFr-S6-9m0\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Hide Window"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -852,14 +551,7 @@
     },
     "dFr-S6-9m0.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Hide\"; ObjectID = \"dFr-S6-9m0\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Hide"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -870,14 +562,7 @@
     },
     "dgN-f3-ebA.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Capitalize\"; ObjectID = \"dgN-f3-ebA\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Capitalize"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -905,14 +590,7 @@
     },
     "DNl-wA-6Sa.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"File\"; ObjectID = \"DNl-wA-6Sa\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -923,14 +601,7 @@
     },
     "dtP-tJ-UZV.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Enter Full Screen\"; ObjectID = \"dtP-tJ-UZV\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter Full Screen"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -941,14 +612,7 @@
     },
     "ehZ-YL-v7x.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Ruler\"; ObjectID = \"ehZ-YL-v7x\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Ruler"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -959,14 +623,7 @@
     },
     "eIi-Yp-9Iw.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Shortcut\"; ObjectID = \"eIi-Yp-9Iw\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Shortcut"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -977,14 +634,7 @@
     },
     "fbP-W7-rZr.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Format\"; ObjectID = \"fbP-W7-rZr\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Format"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -995,14 +645,7 @@
     },
     "FCw-Hu-PgK.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Smart Dashes\"; ObjectID = \"FCw-Hu-PgK\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Smart Dashes"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1013,14 +656,7 @@
     },
     "fdh-pr-pKq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use None\"; ObjectID = \"fdh-pr-pKq\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use None"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1031,14 +667,7 @@
     },
     "FEQ-lS-XY2.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Copy Style\"; ObjectID = \"FEQ-lS-XY2\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Copy Style"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1049,14 +678,7 @@
     },
     "Fju-GT-JhG.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Edit\"; ObjectID = \"Fju-GT-JhG\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Edit"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1067,14 +689,7 @@
     },
     "fLW-HH-8Jl.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Clear Menu\"; ObjectID = \"fLW-HH-8Jl\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Clear Menu"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1085,14 +700,7 @@
     },
     "fmz-2f-99L.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Italic\"; ObjectID = \"fmz-2f-99L\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Italic"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1102,32 +710,25 @@
       }
     },
     "Fzj-Rh-cL0.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"偏好设置\"; ObjectID = \"Fzj-Rh-cL0\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"设置...\"; ObjectID = \"Fzj-Rh-cL0\";",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preferences"
+            "value" : "Settings..."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "偏好设置"
+            "value" : "设置..."
           }
         }
       }
     },
     "g1Y-HC-Hcm.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Pin Window\"; ObjectID = \"g1Y-HC-Hcm\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Pin Window"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1138,14 +739,7 @@
     },
     "g1Y-HC-Hcm.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Pin\"; ObjectID = \"g1Y-HC-Hcm\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Pin"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1156,14 +750,7 @@
     },
     "gGk-gP-JTi.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Copy\"; ObjectID = \"gGk-gP-JTi\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Copy"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1174,14 +761,7 @@
     },
     "gMd-iF-vmG.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Subscript\"; ObjectID = \"gMd-iF-vmG\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Subscript"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1209,14 +789,7 @@
     },
     "h3E-8k-Kcu.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Redo\"; ObjectID = \"h3E-8k-Kcu\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Redo"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1227,14 +800,7 @@
     },
     "H59-hx-Liq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Find and Replace…\"; ObjectID = \"H59-hx-Liq\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find and Replace…"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1245,14 +811,7 @@
     },
     "hBq-I4-3GU.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Smart Links\"; ObjectID = \"hBq-I4-3GU\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Smart Links"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1263,14 +822,7 @@
     },
     "hfb-pI-P93.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Transformations\"; ObjectID = \"hfb-pI-P93\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Transformations"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1281,14 +833,7 @@
     },
     "Hk7-HT-5mY.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tDefault\"; ObjectID = \"Hk7-HT-5mY\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tDefault"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1299,14 +844,7 @@
     },
     "hrx-hU-Stg.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show Spelling and Grammar\"; ObjectID = \"hrx-hU-Stg\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show Spelling and Grammar"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1317,14 +855,7 @@
     },
     "HWT-Jw-PfX.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Superscript\"; ObjectID = \"HWT-Jw-PfX\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Superscript"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1335,14 +866,7 @@
     },
     "I7U-ax-TZQ.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Lower\"; ObjectID = \"I7U-ax-TZQ\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Lower"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1353,14 +877,7 @@
     },
     "I8A-qR-Op7.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Cut\"; ObjectID = \"I8A-qR-Op7\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Cut"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1388,14 +905,7 @@
     },
     "IWX-7r-RUj.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Find Next\"; ObjectID = \"IWX-7r-RUj\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find Next"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1406,14 +916,7 @@
     },
     "iXN-BE-e7t.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Smaller\"; ObjectID = \"iXN-BE-e7t\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Smaller"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1424,14 +927,7 @@
     },
     "J5J-YV-4ty.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Kern\"; ObjectID = \"J5J-YV-4ty\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Kern"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1442,14 +938,7 @@
     },
     "jbe-2v-aJG.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Spelling and Grammar\"; ObjectID = \"jbe-2v-aJG\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Spelling and Grammar"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1479,7 +968,7 @@
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Open in Eudic\"; ObjectID = \"KbN-5H-9z5\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Open in Eudic"
@@ -1491,7 +980,7 @@
       "comment" : "Class = \"NSMenuItem\"; title = \"Apple Dictionary\"; ObjectID = \"KbN-5H-9z5\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Apple Dictionary"
@@ -1501,14 +990,7 @@
     },
     "KJd-o4-nm1.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Baseline\"; ObjectID = \"KJd-o4-nm1\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Baseline"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1519,14 +1001,7 @@
     },
     "kw1-qQ-nI8.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Smart Copy/Paste\"; ObjectID = \"kw1-qQ-nI8\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Smart Copy/Paste"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1537,14 +1012,7 @@
     },
     "LaS-Ex-XQs.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Writing Direction\"; ObjectID = \"LaS-Ex-XQs\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Writing Direction"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1555,14 +1023,7 @@
     },
     "lFU-de-f4a.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Substitutions\"; ObjectID = \"lFU-de-f4a\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Substitutions"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1573,14 +1034,7 @@
     },
     "Lki-tx-Lq5.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Format\"; ObjectID = \"Lki-tx-Lq5\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Format"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1593,7 +1047,7 @@
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Copy Query Text\"; ObjectID = \"Lq3-CB-sQ6\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Copy Query Text"
@@ -1605,7 +1059,7 @@
       "comment" : "Class = \"NSMenuItem\"; title = \"Copy\"; ObjectID = \"Lq3-CB-sQ6\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Copy"
@@ -1632,14 +1086,7 @@
     },
     "Lze-X3-X4H.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste\"; ObjectID = \"Lze-X3-X4H\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Paste"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1650,14 +1097,7 @@
     },
     "M5e-02-Qvj.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Easydict\"; ObjectID = \"M5e-02-Qvj\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1668,14 +1108,7 @@
     },
     "MfP-Gx-Wn8.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Smart Quotes\"; ObjectID = \"MfP-Gx-Wn8\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Smart Quotes"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1686,14 +1119,7 @@
     },
     "mnj-j0-7uG.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Open…\"; ObjectID = \"mnj-j0-7uG\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Open…"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1704,14 +1130,7 @@
     },
     "n5Z-fW-q2A.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Font\"; ObjectID = \"n5Z-fW-q2A\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Font"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1722,14 +1141,7 @@
     },
     "N8G-VW-gCf.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Center\"; ObjectID = \"N8G-VW-gCf\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Center"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1740,14 +1152,7 @@
     },
     "nlT-56-GWa.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Justify\"; ObjectID = \"nlT-56-GWa\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Justify"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1758,14 +1163,7 @@
     },
     "NuA-WI-yNk.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Foucs Input\"; ObjectID = \"NuA-WI-yNk\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Foucs Input"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1776,14 +1174,7 @@
     },
     "NuA-WI-yNk.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Focus\"; ObjectID = \"NuA-WI-yNk\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Focus"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1794,14 +1185,7 @@
     },
     "nWO-3y-d80.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Ligatures\"; ObjectID = \"nWO-3y-d80\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Ligatures"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1812,14 +1196,7 @@
     },
     "O8g-2J-P7F.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tLeft to Right\"; ObjectID = \"O8g-2J-P7F\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tLeft to Right"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1830,14 +1207,7 @@
     },
     "OaB-i7-GKE.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use All\"; ObjectID = \"OaB-i7-GKE\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use All"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1848,14 +1218,7 @@
     },
     "ojC-fT-Nd9.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paragraph\"; ObjectID = \"ojC-fT-Nd9\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Paragraph"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1866,14 +1229,7 @@
     },
     "omU-aR-9Dn.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Open Recent\"; ObjectID = \"omU-aR-9Dn\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Open Recent"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1884,14 +1240,7 @@
     },
     "oz1-ny-V93.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"About Easydict\"; ObjectID = \"oz1-ny-V93\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "About Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1902,14 +1251,7 @@
     },
     "P4l-Nh-yAL.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Stop Speaking\"; ObjectID = \"P4l-Nh-yAL\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Stop Speaking"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1920,14 +1262,7 @@
     },
     "p8l-cp-Ck7.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Underline\"; ObjectID = \"p8l-cp-Ck7\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Underline"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1938,14 +1273,7 @@
     },
     "P23-w4-X2h.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Copy Ruler\"; ObjectID = \"P23-w4-X2h\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Copy Ruler"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1956,14 +1284,7 @@
     },
     "pBe-oc-b5O.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Retry Query\"; ObjectID = \"pBe-oc-b5O\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Retry Query"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1974,14 +1295,7 @@
     },
     "pBe-oc-b5O.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Retry\"; ObjectID = \"pBe-oc-b5O\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Retry"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1992,14 +1306,7 @@
     },
     "pdu-F1-8Tf.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Zoom\"; ObjectID = \"pdu-F1-8Tf\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Zoom"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2010,14 +1317,7 @@
     },
     "PkP-25-JBw.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Easydict\"; ObjectID = \"PkP-25-JBw\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Easydict"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2045,14 +1345,7 @@
     },
     "PwY-WS-D9w.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Help\"; ObjectID = \"PwY-WS-D9w\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Help"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2063,14 +1356,7 @@
     },
     "PyB-Zr-Vwk.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Help\"; ObjectID = \"PyB-Zr-Vwk\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Help"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2098,14 +1384,7 @@
     },
     "q9d-pu-sQs.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Show All\"; ObjectID = \"q9d-pu-sQs\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Show All"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2116,14 +1395,7 @@
     },
     "qfO-cp-Tz9.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Writing Direction\"; ObjectID = \"qfO-cp-Tz9\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Writing Direction"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2134,14 +1406,7 @@
     },
     "QGo-r1-cSg.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Services\"; ObjectID = \"QGo-r1-cSg\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Services"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2152,14 +1417,7 @@
     },
     "qiF-2J-X2C.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Open in Google\"; ObjectID = \"qiF-2J-X2C\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Open in Google"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2170,14 +1428,7 @@
     },
     "qiF-2J-X2C.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Google\"; ObjectID = \"qiF-2J-X2C\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Google"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2188,14 +1439,7 @@
     },
     "qJD-6c-AHu.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Substitutions\"; ObjectID = \"qJD-6c-AHu\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Substitutions"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2206,14 +1450,7 @@
     },
     "qVV-ik-aTy.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"New\"; ObjectID = \"qVV-ik-aTy\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "New"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2224,14 +1461,7 @@
     },
     "qW5-1c-IcG.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Tighten\"; ObjectID = \"qW5-1c-IcG\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Tighten"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2242,14 +1472,7 @@
     },
     "Qy8-pe-t8t.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Transformations\"; ObjectID = \"Qy8-pe-t8t\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Transformations"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2260,14 +1483,7 @@
     },
     "Rcs-Bz-EcV.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Selection\"; ObjectID = \"Rcs-Bz-EcV\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Selection"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2278,14 +1494,7 @@
     },
     "rfD-Xp-c2P.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Loosen\"; ObjectID = \"rfD-Xp-c2P\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Loosen"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2296,14 +1505,7 @@
     },
     "rI6-hF-f35.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Correct Spelling Automatically\"; ObjectID = \"rI6-hF-f35\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Correct Spelling Automatically"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2314,14 +1516,7 @@
     },
     "RNR-lM-tup.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Make Upper Case\"; ObjectID = \"RNR-lM-tup\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Make Upper Case"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2332,14 +1527,7 @@
     },
     "rr4-Iy-d6B.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Clear Input\"; ObjectID = \"rr4-Iy-d6B\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Clear Input"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2350,14 +1538,7 @@
     },
     "sBq-3U-c6D.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tRight to Left\"; ObjectID = \"sBq-3U-c6D\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tRight to Left"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2368,14 +1549,7 @@
     },
     "Sk8-za-Z9A.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Data Detectors\"; ObjectID = \"Sk8-za-Z9A\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Data Detectors"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2386,14 +1560,7 @@
     },
     "SLj-GC-V01.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Hide Others\"; ObjectID = \"SLj-GC-V01\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Hide Others"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2404,14 +1571,7 @@
     },
     "soH-H3-gGE.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Raise\"; ObjectID = \"soH-H3-gGE\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Raise"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2422,14 +1582,7 @@
     },
     "SS3-CB-TLd.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Bring All to Front\"; ObjectID = \"SS3-CB-TLd\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Bring All to Front"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2440,14 +1593,7 @@
     },
     "sXT-M2-L5C.ibShadowedToolTip" : {
       "comment" : "Class = \"NSMenuItem\"; ibShadowedToolTip = \"Open in Eudic\"; ObjectID = \"sXT-M2-L5C\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Open in Eudic"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2458,14 +1604,7 @@
     },
     "sXT-M2-L5C.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Eudic\"; ObjectID = \"sXT-M2-L5C\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Eudic"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2476,14 +1615,7 @@
     },
     "T2j-FN-Qwc.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Bigger\"; ObjectID = \"T2j-FN-Qwc\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Bigger"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2494,14 +1626,7 @@
     },
     "tbU-fG-HxE.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Text\"; ObjectID = \"tbU-fG-HxE\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Text"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2512,14 +1637,7 @@
     },
     "TD1-rx-lx9.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"View\"; ObjectID = \"TD1-rx-lx9\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "View"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2530,14 +1648,7 @@
     },
     "tDT-UH-FV1.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Align Left\"; ObjectID = \"tDT-UH-FV1\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Align Left"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2548,14 +1659,7 @@
     },
     "Tef-15-EkB.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Text\"; ObjectID = \"Tef-15-EkB\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Text"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2566,14 +1670,7 @@
     },
     "Tsl-tH-rJ8.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Open Recent\"; ObjectID = \"Tsl-tH-rJ8\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Open Recent"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2584,14 +1681,7 @@
     },
     "uaR-x8-DoB.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Minimize\"; ObjectID = \"uaR-x8-DoB\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Minimize"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2602,14 +1692,7 @@
     },
     "ujd-ZP-XzB.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use Selection for Find\"; ObjectID = \"ujd-ZP-XzB\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use Selection for Find"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2620,14 +1703,7 @@
     },
     "V6P-CY-xNs.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"\\tLeft to Right\"; ObjectID = \"V6P-CY-xNs\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\tLeft to Right"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2638,14 +1714,7 @@
     },
     "V8b-cO-hn4.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Bold\"; ObjectID = \"V8b-cO-hn4\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Bold"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2656,14 +1725,7 @@
     },
     "VKd-zQ-pt5.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Make Lower Case\"; ObjectID = \"VKd-zQ-pt5\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Make Lower Case"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2673,19 +1735,12 @@
       }
     },
     "wgy-yj-uSV.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Preferences…\"; ObjectID = \"wgy-yj-uSV\";",
-      "extractionState" : "extracted_with_value",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Settings…\"; ObjectID = \"wgy-yj-uSV\";",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Preferences…"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preferences…"
+            "value" : "Settings…"
           }
         }
       }
@@ -2709,14 +1764,7 @@
     },
     "Xq7-tZ-u65.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Align Right\"; ObjectID = \"Xq7-tZ-u65\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Align Right"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2727,14 +1775,7 @@
     },
     "xui-oA-tFk.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Use None\"; ObjectID = \"xui-oA-tFk\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use None"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2745,14 +1786,7 @@
     },
     "xuj-Ac-VOd.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste and Match Style\"; ObjectID = \"xuj-Ac-VOd\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Paste and Match Style"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2763,14 +1797,7 @@
     },
     "xUx-7p-l0h.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Speech\"; ObjectID = \"xUx-7p-l0h\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Speech"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2781,14 +1808,7 @@
     },
     "Y6z-wn-ElJ.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Select All\"; ObjectID = \"Y6z-wn-ElJ\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Select All"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2799,14 +1819,7 @@
     },
     "Yd4-Cr-52d.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Edit\"; ObjectID = \"Yd4-Cr-52d\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Edit"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2817,14 +1830,7 @@
     },
     "YF0-bI-c58.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Shortcut\"; ObjectID = \"YF0-bI-c58\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Shortcut"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2835,14 +1841,7 @@
     },
     "YgC-B4-90f.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Check Document Now\"; ObjectID = \"YgC-B4-90f\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Check Document Now"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2853,14 +1852,7 @@
     },
     "yMd-CK-UoO.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Easydict Help\"; ObjectID = \"yMd-CK-UoO\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Easydict Help"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2888,14 +1880,7 @@
     },
     "zJj-ya-zFA.title" : {
       "comment" : "Class = \"NSMenu\"; title = \"Baseline\"; ObjectID = \"zJj-ya-zFA\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Baseline"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2906,14 +1891,7 @@
     },
     "zJn-Z1-IWk.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Find…\"; ObjectID = \"zJn-Z1-IWk\";",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Find…"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
