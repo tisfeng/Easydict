@@ -121,7 +121,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
     
-    // NiuTrans api free and NiuTrans pro api use different url host
+    // NiuTrans API free and NiuTrans pro API use different URL host
     NSString *host = @"https://api.niutrans.com";
     NSString *url = [NSString stringWithFormat:@"%@/NiuTransServer/translation", host];
     
@@ -137,6 +137,9 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         EZNiuTransTranslateResponse *niuTransTranslateResult = [EZNiuTransTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = niuTransTranslateResult.tgtText;
+        // When translated text has multiple paragraphs, it will have an extra line break at the end, which we need to remove.
+        translatedText = [translatedText stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        
         if (translatedText) {
             self.result.translatedResults = [translatedText toParagraphs];
             self.result.raw = responseObject;
