@@ -189,7 +189,8 @@ static NSDictionary *const kQuotesDict = @{
     }
     
     NSInteger wordCount = [self wordCount];
-    if (wordCount <= 2) {
+    // We usually don't want to lookup dictionary if text isn't English and word > 1.
+    if (wordCount == 1) {
         return YES;
     }
     
