@@ -7,8 +7,6 @@
 //
 
 #import "EZNiuTransTranslate.h"
-#import "EZWebViewTranslator.h"
-// #import "EZTranslateError.h"
 #import "NSArray+EZChineseText.h"
 #import "EZNiuTransTranslateResponse.h"
 
@@ -16,8 +14,6 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
 
 
 @interface EZNiuTransTranslate ()
-
-@property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @property (nonatomic, copy) NSString *authKey;
 
@@ -30,17 +26,6 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     }
     return self;
 }
-
-- (EZWebViewTranslator *)webViewTranslator {
-    if (!_webViewTranslator) {
-        NSString *selector = @"#target-dummydiv";
-        _webViewTranslator = [[EZWebViewTranslator alloc] init];
-        _webViewTranslator.querySelector = selector;
-        _webViewTranslator.queryModel = self.queryModel;
-    }
-    return _webViewTranslator;
-}
-
 
 - (NSString *)authKey {
     NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAuthKey] ?: @"";
@@ -60,25 +45,6 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
 
 - (NSString *)link {
     return kNiuTransTranslateURL;
-}
-
-
-// https://niutrans.com/documents/contents/trans_text#accessMode
-- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    NSString *from = [self languageCodeForLanguage:queryModel.queryFromLanguage];
-    NSString *to = [self languageCodeForLanguage:queryModel.queryTargetLanguage];
-    NSString *text = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    
-    
-    NSString *encodedText = [text stringByReplacingOccurrencesOfString:@"/" withString:@"%5C%2F"];
-    
-    if (!from || !to) {
-        return nil;
-    }
-    
-    NSString *url = [NSString stringWithFormat:@"%@#%@/%@/%@", kNiuTransTranslateURL, from, to, encodedText];
-    
-    return url;
 }
 
 // Supported languages: https://niutrans.com/documents/contents/trans_text#languageList
@@ -137,50 +103,16 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
     }
     
-    mm_weakify(self);
-    [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
-        mm_strongify(self);
-        NSArray *texts = result.translatedResults;
-        if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-            texts = [texts toTraditionalChineseTexts];
-        }
-        result.translatedResults = texts;
-    }];
-    
-    void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
-        self.didFinishBlock(result, error);
-        completion(result, error);
-    };
-    
-    [self niuTransTranslate:text from:from to:to completion:callback];
+    [self niuTransTranslate:text from:from to:to completion:completion];
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"NiuTrans not support ocr");
-}
-
-- (NSInteger)getICount:(NSString *)translateText {
-    return [[translateText componentsSeparatedByString:@"i"] count] - 1;
-}
-
-- (NSInteger)getRandomNumber {
-    NSInteger rand = arc4random_uniform(89999) + 100000;
-    return rand * 1000;
-}
-
-- (NSInteger)getTimeStampWithIcount:(NSInteger)iCount {
-    NSInteger ts = [[NSDate date] timeIntervalSince1970] * 1000;
-    if (iCount != 0) {
-        iCount = iCount + 1;
-        return ts - (ts % iCount) + iCount;
-    } else {
-        return ts;
-    }
 }
 
 #pragma mark - NiuTrans API
@@ -202,15 +134,8 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
-    
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
-        CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
-        NSLog(@"NiuTransTranslate cost: %.1f ms", (endTime - startTime) * 1000);
-        
         EZNiuTransTranslateResponse *niuTransTranslateResult = [EZNiuTransTranslateResponse mj_objectWithKeyValues:responseObject];
-        
         NSString *translatedText = niuTransTranslateResult.tgtText;
         if (translatedText) {
             self.result.translatedResults = [translatedText toParagraphs];
@@ -231,7 +156,6 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
             }
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
-        NSLog(@"NiuTransTranslate error: %@", error);
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
