@@ -171,7 +171,7 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
@@ -180,7 +180,7 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     // If translated language is Chinese, use Chinese text convert directly.
     NSArray *languages = @[ from, to ];
     if (isConvert && [EZLanguageManager.shared onlyContainsChineseLanguages:languages]) {

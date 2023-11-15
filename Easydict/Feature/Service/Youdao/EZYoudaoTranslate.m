@@ -283,7 +283,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -451,7 +451,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 #pragma mark - Youdao Translate
 
-- (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -493,7 +493,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 /// Query Youdao dict, unofficial API
-- (void)queryYoudaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)queryYoudaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -572,7 +572,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 /// Youdao web translate API,
 /// !!!: Deprecated, 2023.5
-- (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)youdaoWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     NSString *fromLanguage = [self languageCodeForLanguage:from];
     NSString *toLanguage = [self languageCodeForLanguage:to];
     
@@ -645,7 +645,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 // TODO: Use a stable Youdao translation API.
-- (void)youdaoAIDemoTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)youdaoAIDemoTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -834,7 +834,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 #pragma mark - WebView Translate
 
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
     if (!wordLink) {
         NSError *error = EZTranslateError(EZErrorTypeUnsupportedLanguage, nil, nil);
@@ -858,7 +858,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 #pragma mark - New Web Translate, 2023.5
 
 /// New Youdao web translate && dict API, Ref: https://github.com/Chen03/StaticeApp/blob/a8706aaf4806468a663d7986b901b09be5fc9319/Statice/Model/Search/Youdao.swift
-- (void)webTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+- (void)webTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     NSString *client = @"fanyideskweb";
     NSString *product = @"webfanyi";
     NSString *key = @"fsdsogkndfokasodnaso";

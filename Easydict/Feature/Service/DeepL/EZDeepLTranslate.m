@@ -129,7 +129,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
         return;
     }
@@ -162,7 +162,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 #pragma mark - WebView Translate
 
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
     
     mm_weakify(self);
@@ -195,7 +195,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 #pragma mark - DeepL Web Translate
 
 /// DeepL web translate. Ref: https://github.com/akl7777777/bob-plugin-akl-deepl-free-translate/blob/9d194783b3eb8b3a82f21bcfbbaf29d6b28c2761/src/main.js
-- (void)deepLWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)deepLWebTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
 
@@ -322,7 +322,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 #pragma mark - DeepL Official Translate API
 
-- (void)deepLTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion{
+- (void)deepLTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion{
     // Docs: https://www.deepl.com/zh/docs-api/translating-text
     
     NSString *souceLangCode = [self languageCodeForLanguage:from];

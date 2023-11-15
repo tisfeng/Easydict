@@ -131,7 +131,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
@@ -140,7 +140,7 @@ static NSString *kVolcanoLTranslateURL = @"https://translate.volcengine.com";
     [self webViewTranslate:completion];
 }
 
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     // https://translate.volcengine.com/?category=&home_language=zh&source_language=en&target_language=zh&text=good
     // https://translate.volcengine.com/translate?category=&home_language=zh&source_language=en&target_language=zh&text=good
         
