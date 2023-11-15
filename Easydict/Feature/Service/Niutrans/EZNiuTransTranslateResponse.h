@@ -12,33 +12,42 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @class EZNiuTransTranslateResponse;
-@class EZNiuTransTranslateResponseResult;
-@class EZNiuTransTranslateResponseText;
-@class EZNiuTransTranslateResponseAlternative;
 
 #pragma mark - Object interfaces
 
+/**
+ https://niutrans.com/documents/contents/trans_text#languageList
+ 
+ sccuess:
+ {
+     from: "zh",
+     to: "en",
+     tgt_text: "Hello"
+ }
+ 
+ failure
+ {
+     "apikey" : "",
+     "error_code" : "13002",
+     "error_msg" : "apikey is empty",
+     "from" : "en",
+     "src_text" : "good",
+     "to" : "zh"
+ }
+ */
+
 @interface EZNiuTransTranslateResponse : NSObject
-@property (nonatomic, assign) NSInteger identifier;
-@property (nonatomic, copy) NSString *jsonrpc;
-@property (nonatomic, strong) EZNiuTransTranslateResponseResult *result;
-@end
 
-@interface EZNiuTransTranslateResponseResult : NSObject
-@property (nonatomic, copy) NSDictionary<NSString *, NSNumber *> *detectedLanguages;
-@property (nonatomic, copy) NSString *lang;
-@property (nonatomic, assign) BOOL isLangIsConfident;
-@property (nonatomic, copy) NSArray<EZNiuTransTranslateResponseText *> *texts;
-@end
+@property (nonatomic, copy) NSString *from;
+@property (nonatomic, copy) NSString *to;
 
-@interface EZNiuTransTranslateResponseText : NSObject
-@property (nonatomic, copy) NSArray<EZNiuTransTranslateResponseAlternative *> *alternatives;
-@property (nonatomic, copy) NSString *text;
-@end
+@property (nonatomic, copy, nullable) NSString *tgtText;
 
-@interface EZNiuTransTranslateResponseAlternative : NSObject
-@property (nonatomic, copy) NSString *text;
-@end
+@property (nonatomic, copy, nullable) NSString *srcText;
+@property (nonatomic, copy, nullable) NSString *errorMsg;
+@property (nonatomic, copy, nullable) NSString *errorCode;
+@property (nonatomic, copy, nullable) NSString *apikey;
 
+@end
 
 NS_ASSUME_NONNULL_END

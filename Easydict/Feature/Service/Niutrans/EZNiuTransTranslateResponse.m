@@ -8,45 +8,15 @@
 
 #import "EZNiuTransTranslateResponse.h"
 
-
 @implementation EZNiuTransTranslateResponse
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
     return @{
-        @"identifier" : @"id",
+        @"srcText" : @"src_text",
+        @"tgtText" : @"tgt_text",
+        @"errorMsg" : @"error_msg",
+        @"errorCode" : @"error_code",
     };
 }
 
 @end
-
-@implementation EZNiuTransTranslateResponseResult
-
-+ (NSDictionary *)mj_replacedKeyFromPropertyName {
-    return @{
-        @"isLangIsConfident" : @"lang_is_confident",
-    };
-}
-
-+ (NSDictionary *)mj_objectClassInArray {
-    return @{
-        @"texts" : [EZNiuTransTranslateResponseText class],
-    };
-}
-
-@end
-
-@implementation EZNiuTransTranslateResponseText
-
-+ (NSDictionary *)mj_objectClassInArray {
-    return @{
-        @"alternatives" : [EZNiuTransTranslateResponseAlternative class],
-    };
-}
-	
-@end
-
-@implementation EZNiuTransTranslateResponseAlternative
-
-@end
-
-

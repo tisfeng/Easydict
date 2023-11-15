@@ -209,7 +209,6 @@
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		17FD9A002B01B9F200A528A6 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */; };
 		17FD9A012B01B9F200A528A6 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */; };
-		17FD9A022B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */; };
 		27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */; };
 		27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
@@ -634,10 +633,8 @@
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
 		17FD99FB2B01B9F200A528A6 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
-		17FD99FC2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EZQueryResult+EZNiuTransTranslateResponse.h"; sourceTree = "<group>"; };
 		17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
 		17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslate.m; sourceTree = "<group>"; };
-		17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EZQueryResult+EZNiuTransTranslateResponse.m"; sourceTree = "<group>"; };
 		27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Easydict.xcconfig; sourceTree = "<group>"; };
 		27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Easydict-debug.xcconfig"; sourceTree = "<group>"; };
 		27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Easydict-debug.entitlements"; sourceTree = "<group>"; };
@@ -1823,12 +1820,10 @@
 		17FD99F92B01B9F200A528A6 /* Niutrans */ = {
 			isa = PBXGroup;
 			children = (
-				17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */,
 				17FD99FB2B01B9F200A528A6 /* EZNiuTransTranslate.h */,
-				17FD99FC2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.h */,
-				17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */,
 				17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */,
-				17FD99FF2B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m */,
+				17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */,
+				17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */,
 			);
 			path = Niutrans;
 			sourceTree = "<group>";
@@ -2275,7 +2270,6 @@
 				0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */,
 				036196752A000F5900806370 /* FWEncryptorAES.m in Sources */,
 				0399C6A829A74E0F00B4AFCC /* EZQueryResult+EZDeepLTranslateResponse.m in Sources */,
-				17FD9A022B01B9F200A528A6 /* EZQueryResult+EZNiuTransTranslateResponse.m in Sources */,
 				039B694F2A9D9F370063709D /* EZWebViewManager.m in Sources */,
 				03D747432A07FB150006CD77 /* EZError.m in Sources */,
 				03B0231629231FA6001C7E63 /* SnipFocusView.m in Sources */,
