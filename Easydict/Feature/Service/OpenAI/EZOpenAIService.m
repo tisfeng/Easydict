@@ -200,7 +200,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
-        isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from];
+        isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:2];
     }
     
     BOOL enableSentence = self.queryTextType & EZQueryTextTypeSentence;

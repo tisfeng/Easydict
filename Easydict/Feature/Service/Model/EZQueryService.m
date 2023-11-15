@@ -56,7 +56,8 @@ userInfo:nil]
     }
     
     if ([EZConfiguration.shared intelligentQueryModeForWindowType:self.windowType]) {
-        EZQueryTextType queryType = [self.queryModel.queryText queryTypeWithLanguage:self.queryModel.queryFromLanguage];
+        // We usually don't want to lookup dictionary if text word > 1.
+        EZQueryTextType queryType = [self.queryModel.queryText queryTypeWithLanguage:self.queryModel.queryFromLanguage maxWordCount:1];
         if ((queryType & self.intelligentQueryTextType) != queryType) {
             return NO;
         }

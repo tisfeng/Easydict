@@ -160,8 +160,8 @@ static NSDictionary *const kQuotesDict = @{
 
 #pragma mark - Check if text is a word, or phrase
 
-- (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language {
-    BOOL isQueryDictionary = [self shouldQueryDictionaryWithLanguage:language];
+- (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount {
+    BOOL isQueryDictionary = [self shouldQueryDictionaryWithLanguage:language maxWordCount:maxWordCount];
     if (isQueryDictionary) {
         return EZQueryTextTypeDictionary;
     }
@@ -175,7 +175,7 @@ static NSDictionary *const kQuotesDict = @{
     return EZQueryTextTypeTranslation;
 }
 
-- (BOOL)shouldQueryDictionaryWithLanguage:(EZLanguage)language {
+- (BOOL)shouldQueryDictionaryWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount {
     if (self.length > EZEnglishWordMaxLength) {
         return NO;
     }
@@ -184,21 +184,20 @@ static NSDictionary *const kQuotesDict = @{
         return [self isChineseWord] || [self isChinesePhrase];
     }
     
-    if ([language isEqualToString:EZLanguageEnglish]) {
-        return [self isEnglishWord] || [self isEnglishPhrase];
+    NSInteger wordCount = [self wordCount];
+    if (wordCount > maxWordCount) {
+        return NO;
     }
     
-    NSInteger wordCount = [self wordCount];
-    // We usually don't want to lookup dictionary if text isn't English and word > 1.
-    if (wordCount == 1) {
-        return YES;
+    if ([language isEqualToString:EZLanguageEnglish]) {
+        return [self isEnglishWord] || [self isEnglishPhrase];
     }
     
     return NO;
 }
 
 - (BOOL)shouldQuerySentenceWithLanguage:(EZLanguage)language {
-    if ([self shouldQueryDictionaryWithLanguage:language]) {
+    if ([self shouldQueryDictionaryWithLanguage:language maxWordCount:1]) {
         return NO;
     }
     
