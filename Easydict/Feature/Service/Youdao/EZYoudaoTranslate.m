@@ -507,7 +507,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     
     // Youdao dict can query word, phrase, even short text.
-    BOOL shouldQueryDictionary = [text shouldQueryDictionaryWithLanguage:from];
+    BOOL shouldQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
 
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:self.queryModel];
     BOOL supportQueryDictionaryLanguage = foreignLangauge != nil;

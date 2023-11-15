@@ -50,9 +50,9 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 #pragma mark -
 
 
-- (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language;
+- (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount;
 
-- (BOOL)shouldQueryDictionaryWithLanguage:(EZLanguage)language;
+- (BOOL)shouldQueryDictionaryWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount;
 
 - (BOOL)shouldQuerySentenceWithLanguage:(EZLanguage)language;
 
