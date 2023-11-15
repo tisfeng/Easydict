@@ -702,7 +702,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 // TODO: service already has the model property.
 - (void)queryWithModel:(EZQueryModel *)queryModel
                service:(EZQueryService *)service
-            completion:(nonnull void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion {
+            completion:(nonnull void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!service.enabledQuery) {
         NSLog(@"service disabled: %@", service.serviceType);
         return;

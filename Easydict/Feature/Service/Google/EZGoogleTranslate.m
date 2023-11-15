@@ -197,7 +197,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)translate:(NSString *)text
              from:(EZLanguage)from
                to:(EZLanguage)to
-       completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+       completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
@@ -326,7 +326,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 #pragma mark - WebApp, including word info.
 
 /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
-- (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -659,7 +659,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)gtxTranslate:(NSString *)text
                 from:(EZLanguage)from
                   to:(EZLanguage)to
-          completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+          completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     EZQueryResult *result = self.result;
     
     if (!text.length) {
