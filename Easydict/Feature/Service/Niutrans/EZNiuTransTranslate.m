@@ -15,7 +15,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
 
 @interface EZNiuTransTranslate ()
 
-@property (nonatomic, copy) NSString *authKey;
+@property (nonatomic, copy) NSString *apiKey;
 
 @end
 
@@ -27,9 +27,9 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     return self;
 }
 
-- (NSString *)authKey {
-    NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAuthKey] ?: @"";
-    return authKey;
+- (NSString *)apiKey {
+    NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey] ?: @"";
+    return apiKey;
 }
 
 
@@ -126,7 +126,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     NSString *url = [NSString stringWithFormat:@"%@/NiuTransServer/translation", host];
     
     NSDictionary *params = @{
-        @"apikey" : self.authKey,
+        @"apikey" : self.apiKey,
         @"src_text" : text,
         @"from" : souceLangCode,
         @"to" : targetLangCode
