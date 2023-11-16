@@ -65,6 +65,7 @@ typedef NS_ENUM(NSUInteger, EZEventMonitorType) {
 @property (nonatomic, assign) CFMachPortRef eventTap;
 
 @property (nonatomic, assign) EZTriggerType frontmostAppTriggerType;
+@property (nonatomic, assign) BOOL isPopButtonVisible;
 
 @end
 
@@ -390,11 +391,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Auto get selected text.
 - (void)autoGetSelectedText:(BOOL)checkTextFrame {
     if ([self enabledAutoSelectText]) {
+//        NSLog(@"auto get selected text");
+        
         self.movedY = 0;
         self.actionType = EZActionTypeAutoSelectQuery;
         [self getSelectedText:checkTextFrame completion:^(NSString *_Nullable text) {
             [self handleSelectedText:text];
         }];
+        self.isPopButtonVisible = YES;
     }
 }
 
@@ -726,7 +730,6 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 - (void)handleMonitorEvent:(NSEvent *)event {
     //  NSLog(@"type: %ld", event.type);
     
-    
     switch (event.type) {
         case NSEventTypeLeftMouseUp: {
             if ([self checkIfLeftMouseDragged]) {
@@ -738,10 +741,17 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeLeftMouseDown: {
+//            NSLog(@"mouse down");
+            
+            // Record some mouse event except dragged event.
+            [self updateRecordedEvents:event];
+
             [self handleLeftMouseDownEvent:event];
             break;
         }
         case NSEventTypeLeftMouseDragged: {
+            // Record dragged event.
+            [self updateRecordedEvents:event];
             //                NSLog(@"NSEventTypeLeftMouseDragged");
             break;
         }
@@ -759,20 +769,24 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             break;
         }
         case NSEventTypeScrollWheel: {
-            CGFloat deltaY = event.scrollingDeltaY;
-            self.movedY += deltaY;
-            //            NSLog(@"movedY: %.1f", self.movedY);
-            
-            CGFloat maxDeltaY = 80;
-            if (fabs(self.movedY) > maxDeltaY) {
-                [self dismissPopButton];
+            if (self.isPopButtonVisible) {
+                CGFloat deltaY = event.scrollingDeltaY;
+                self.movedY += deltaY;
+                //            NSLog(@"movedY: %.1f", self.movedY);
+                
+                CGFloat maxDeltaY = 80;
+                if (fabs(self.movedY) > maxDeltaY) {
+                    [self dismissPopButton];
+                }
             }
             break;
         }
         case NSEventTypeMouseMoved: {
-            // Hide the button after exceeding a certain range of selected text frame.
-            if (![self isMouseInPopButtonExpandedFrame]) {
-                [self dismissPopButton];
+            if (self.isPopButtonVisible) {
+                // Hide the button after exceeding a certain range of selected text frame.
+                if (![self isMouseInPopButtonExpandedFrame]) {
+                    [self dismissPopButton];
+                }
             }
             break;
         }
@@ -801,12 +815,14 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             
         default:
             //            NSLog(@"default type: %ld", event.type);
-            [self dismissPopButton];
+            
+            if (self.isPopButtonVisible) {
+                [self dismissPopButton];
+            }
             break;
     }
-    
-    [self updateRecoredEvents:event];
 }
+
 
 - (void)dismissWindowsIfMouseLocationOutsideFloatingWindow {
     EZWindowManager *windowManager = EZWindowManager.shared;
@@ -834,7 +850,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 // If recoredEevents count > kRecoredEeventCount, remove the first one
-- (void)updateRecoredEvents:(NSEvent *)event {
+- (void)updateRecordedEvents:(NSEvent *)event {
     if (self.recordEvents.count >= kRecordEventCount) {
         [self.recordEvents removeObjectAtIndex:0];
     }
@@ -931,6 +947,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     if (self.dismissPopButtonBlock) {
         self.dismissPopButtonBlock();
     }
+    self.isPopButtonVisible = NO;
 }
 
 
