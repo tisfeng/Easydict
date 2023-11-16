@@ -129,7 +129,8 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
         @"apikey" : self.apiKey,
         @"src_text" : text,
         @"from" : souceLangCode,
-        @"to" : targetLangCode
+        @"to" : targetLangCode,
+        @"source" : @"Easydict"
     };
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
