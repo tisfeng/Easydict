@@ -3,6 +3,29 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>2.0.2</title>
+      <pubDate>THU, 16 Nov 2023 22:30:00 +0800</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.0.2/Easydict.zip" sparkle:version="23" sparkle:shortVersionString="2.0.2" type="application/octet-stream" sparkle:edSignature="AFw4bXaGzowNIagZzIo67kb+M2kvZN72azeO7P1v/tNnNhwE7vwKs8WTMkHLaP5afbYu96bHaxUw3uFQXRyrAg==" length="9174461" />
+      <description><![CDATA[
+        <h2 id="-v2-0-2-2023-11-16">[v2.0.2] - 2023-11-16</h2>
+        <h3 id="-">🐞 修复</h3>
+        <ul>
+        <li>修复了前台应用为空会导致应用崩溃问题。</li>
+        <li>修复了始终显示滚动条时会导致高度计算不正确问题。 <a href="https://github.com/tisfeng/Easydict/issues/193">#193</a> by <a href="https://github.com/Kyle-Ye"><strong>Kyle-Ye</strong></a></li>
+        <li>修复了 PopClip 划词搜索可能失败问题。<a href="https://github.com/tisfeng/Easydict/issues/207">#207</a></li>
+        <li>修复了重复设置划词翻译快捷键 <code>⌥ + D</code> 会导致异常问题。<a href="https://github.com/tisfeng/Easydict/issues/192">#192</a></li>
+        <li>修复了英文环境设置页偏好语言标签显示未对齐问题。<a href="https://github.com/tisfeng/Easydict/issues/196">#196</a></li>
+        <li>修复了去除代码注释正则式有误问题。<a href="https://github.com/tisfeng/Easydict/issues/135">#135</a></li>
+        </ul>
+        <h3 id="-">新成员</h3>
+        <ul>
+        <li><a href="https://github.com/Kyle-Ye"><strong>Kyle-Ye</strong></a></li>
+        </ul>  
+      ]]>
+      </description>
+    </item>
+    <item>
       <title>2.0.1</title>
       <pubDate>Wed, 25 Oct 2023 19:20:00 +0800</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
