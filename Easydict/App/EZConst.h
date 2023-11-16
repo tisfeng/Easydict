@@ -39,7 +39,7 @@ static NSString *const EZUserAgent = @"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 
 // ???: If value is not 0.2, it seems will block animation, because default animationResizeTime is 0.2 ?
 static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 
-static NSTimeInterval const EZNetWorkTimeoutInterval = 150.0;
+static NSTimeInterval const EZNetWorkTimeoutInterval = 15.0;
 
 // !!!: This floating window level shouldn't be higher than kCGModalPanelWindowLevel, otherwise it will cover system modal alert window.
 static NSTimeInterval const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
