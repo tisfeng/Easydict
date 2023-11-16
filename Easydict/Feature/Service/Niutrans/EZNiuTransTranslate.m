@@ -98,7 +98,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
                                         EZLanguageSerbian, @"sr",
                                         EZLanguageCroatian, @"hr",
                                         EZLanguageMongolian, @"mn",
-                                        EZLanguageHebrew, @"et",
+                                        EZLanguageHebrew, @"he",
                                         nil];
     return orderedDict;
 }
