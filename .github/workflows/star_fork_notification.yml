@@ -72,7 +72,7 @@ jobs:
           html_body+="Repo: <a href='${{ github.server_url }}/${{ github.repository }}'>${{ github.repository }}</a><br><br>"
           html_body+="Stargazers list: <a href='${{ github.server_url }}/${{ github.repository }}/stargazers'>${{ github.repository }}/stargazers</a><br><br>"
 
-          html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api?username=${{ github.actor }}&theme=algolia&show_icons=true">'
+          html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api?username=${{ github.actor }}&theme=algolia&show_icons=true"><br>'
           html_body+='<img align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=${{ github.actor }}&layout=normal&theme=algolia">'
 
           echo "html_body=$html_body" >> $GITHUB_ENV
