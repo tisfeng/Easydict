@@ -1383,8 +1383,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : ""
+            "state" : "translated",
+            "value" : "NiuTrans"
           }
         },
         "zh-Hans" : {
