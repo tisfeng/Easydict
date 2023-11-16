@@ -524,7 +524,7 @@ shell script: |
   result=$(ps aux | grep Easydict.app | wc -l)
   if [[ $result -lt 2 ]];then
     open /Applications/Easydict.app
-    sleep 1
+    sleep 2
   fi
   open "easydict://query?text=$POPCLIP_TEXT"
 ```

@@ -17,7 +17,6 @@
 <div align="center">
 <a href="./README.md">中文</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="./README_EN.md">English</a>
 </div>
-
 ## Easydict
 
 `Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), and [Volcano Translation](https://translate.volcengine.com/translate).
@@ -525,7 +524,7 @@ shell script: |
   result=$(ps aux | grep Easydict.app | wc -l)
   if [[ $result -lt 2 ]];then
     open /Applications/Easydict.app
-    sleep 1
+    sleep 2
   fi
   open "easydict://query?text=$POPCLIP_TEXT"
 ```
