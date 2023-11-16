@@ -116,14 +116,19 @@ If you are a developer, or you are interested in this project, you can also try 
 <p>
 
 1. Download this Repo, and then open the `Easydict.xcworkspace` file with [Xcode](https://developer.apple.com/xcode/) (note that it is not `Easydict.xcodeproj`).
-2. Change the DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging into the Apple Developer website), or set the values of DEVELOPMENT_TEAM and CODE_SIGN_IDENTITY to empty.
-3. Use `Cmd + R` to compile and run.
+2. Use `Cmd + R` to compile and run.
 
+
+
+For development collaborators who want to run under their own Apple account, change DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging in to the Apple developer website) and CODE_SIGN_IDENTITY to Apple Development.
+
+Be careful not to commit the Easydict-debug.xcconfig file; you can ignore local changes to this file with the following git command
+
+```bash
+git update-index --skip-worktree Easydict-debug.xcconfig
 ```
-DEVELOPMENT_TEAM = 79NQA2XYHM
-CODE_SIGN_IDENTITY = Apple Development
-CODE_SIGN_STYLE = Automatic
-```
+
+
 
 Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
@@ -478,7 +483,7 @@ By default, only [Mini Window] is enabled for Smart Query Mode, users can also e
 ```
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
-window1 represents the mini window, while window2 represents hover window, 0 represents disabled, while 1 represents enabled.
+window1 represents the mini window, while window2 represents hover window, value 0 represents disabled, while 1 represents enabled.
 
 > [!NOTE] 
 > Smart query mode only indicates whether this query service is enabled or not, and the user can manually click on the arrow to the right in the service view to expand the query at any time.
@@ -503,7 +508,9 @@ Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such 
 If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
 
 > [!WARNING]
-> The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme easydict://query?text=xxx
+> The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme:
+>
+> easydict://query?text=xxx
 
 ## Use with PopClip
 

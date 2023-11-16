@@ -117,13 +117,16 @@ brew install easydict
 <p>
 
 1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（注意不是 `Easydict.xcodeproj`）。
-2. 将 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 改为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），或者将 DEVELOPMENT_TEAM 和 CODE_SIGN_IDENTITY 的值设置为空。（注意，PR 时不要提交 Easydict-debug.xcconfig 文件）
-3. 使用 `Cmd + R` 编译运行即可。
+2. 使用 `Cmd + R` 编译运行即可。
 
-```
-DEVELOPMENT_TEAM = 79NQA2XYHM
-CODE_SIGN_IDENTITY = Apple Development
-CODE_SIGN_STYLE = Automatic
+
+
+对于开发协作者，如果想使用自己的苹果账号运行，请修改 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），CODE_SIGN_IDENTITY 改为 Apple Development。
+
+注意不要提交 Easydict-debug.xcconfig 文件，你可以使用下面 git 命令忽略这个文件的本地修改
+
+```bash
+git update-index --skip-worktree Easydict-debug.xcconfig
 ```
 
 构建环境：Xcode 13+, macOS Big Sur 11.3+。为避免不必要的问题，建议使用最新的 Xcode 和 macOS 版本 https://github.com/tisfeng/Easydict/issues/79
@@ -479,7 +482,7 @@ easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
-window1 代表迷你窗口，window2 代表侧悬浮窗口，后面的 0 表示关闭，1 表示开启。
+window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
 
 > [!NOTE]
 > 智能查询模式，只表示是否智能启用该查询服务，用户可随时手动点击服务右侧箭头按钮展开查询。
@@ -505,7 +508,8 @@ Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easy
 如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://query?text=good%20girl
 
 > [!WARNING]
-> 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme easydict://query?text=xxx
+> 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme:
+> easydict://query?text=xxx
 
 ## 配合 PopClip 使用
 
