@@ -7,7 +7,7 @@
 //
 
 #import "EZAppleScriptManager.h"
-#import "EZLanguageManager.h"
+#import "EZConfiguration.h"
 
 @interface EZAppleScriptManager ()
 
@@ -225,7 +225,7 @@ static EZAppleScriptManager *_instance = nil;
     NSString *edit;
     
     if (!appLanguage) {
-        appLanguage = [EZLanguageManager.shared userFirstLanguage];
+        appLanguage = EZConfiguration.shared.firstLanguage;
     }
     
     if ([appLanguage isEqualToString:EZLanguageEnglish]) {

@@ -785,7 +785,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Sentence messages.
 - (NSArray<NSDictionary *> *)sentenceMessages:(NSString *)sentence from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
-    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
+    NSString *answerLanguage = EZConfiguration.shared.firstLanguage;
     self.result.to = answerLanguage;
     
     NSString *prompt = @"";
@@ -955,7 +955,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     // V5. prompt
     NSString *prompt = @"";
     
-    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
+    NSString *answerLanguage = EZConfiguration.shared.firstLanguage;
     self.result.to = answerLanguage;
     
     NSString *pronunciation = @"Pronunciation";
@@ -1413,7 +1413,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSArray<NSDictionary *> *)jsonDictPromptMessages:(NSString *)word from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage {
     NSString *prompt = @"";
     
-    NSString *answerLanguage = [EZLanguageManager.shared userFirstLanguage];
+    NSString *answerLanguage = EZConfiguration.shared.firstLanguage;
     NSString *translationLanguageTitle = targetLanguage;
     
     BOOL isEnglishWord = NO;

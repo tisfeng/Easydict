@@ -24,9 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// preferredLanguages = userPreferredTwoLanguages + systemPreferredLanguages, remove the same language
 @property (nonatomic, copy, readonly) NSArray<EZLanguage> *preferredLanguages;
 
-@property (nonatomic, copy, readonly) EZLanguage userFirstLanguage;
-@property (nonatomic, copy, readonly) EZLanguage userSecondLanguage;
-
 @property (nonatomic, copy, readonly) NSArray<EZLanguage> *allLanguages;
 
 /// <EZLanguageEnglish : 🇬🇧 英语>

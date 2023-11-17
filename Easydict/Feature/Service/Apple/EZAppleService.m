@@ -579,7 +579,7 @@ static EZAppleService *_instance;
     
     // !!!: Numbers will be return empty dict @{}: 729
     if (languageProbabilityDict.count == 0) {
-        EZLanguage firstLanguage = [self.languageManager userFirstLanguage];
+        EZLanguage firstLanguage = EZConfiguration.shared.firstLanguage;
         dominantLanguage = [self appleLanguageFromLanguageEnum:firstLanguage];
         languageProbabilityDict = @{dominantLanguage : @(0)};
     }
