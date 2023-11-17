@@ -1736,7 +1736,14 @@
     },
     "wgy-yj-uSV.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Settings…\"; ObjectID = \"wgy-yj-uSV\";",
+      "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Settings…"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

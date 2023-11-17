@@ -167,7 +167,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 }
 
 /// Use OpenAI to translate text.
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
@@ -200,7 +200,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     BOOL enableDictionary = self.queryTextType & EZQueryTextTypeDictionary;
     BOOL isQueryDictionary = NO;
     if (enableDictionary) {
-        isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from];
+        isQueryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:2];
     }
     
     BOOL enableSentence = self.queryTextType & EZQueryTextTypeSentence;
@@ -240,7 +240,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (void)handleResultText:(NSString *)resultText
                    error:(NSError *)error
         queryServiceType:(EZQueryTextType)queryServiceType
-              completion:(void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+              completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSArray *normalResults = [[resultText trim] toParagraphs];
     
     switch (queryServiceType) {

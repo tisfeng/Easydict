@@ -58,8 +58,10 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL allowAnalytics;
 @property (nonatomic, assign) BOOL clearInput;
 
+// TODO: Need to move them. These are read/write properties only and will not be stored locally, only for external use.
 /// Only use when showing NSOpenPanel to select disabled apps.
 @property (nonatomic, assign) BOOL disabledAutoSelect;
+@property (nonatomic, assign) BOOL isRecordingSelectTextShortcutKey;
 
 
 + (instancetype)shared;

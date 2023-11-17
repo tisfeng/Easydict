@@ -210,7 +210,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
     return orderedDict;
 }
 
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -459,7 +459,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 #pragma mark - Web translate API
 
-- (void)sendTranslateRequest:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)sendTranslateRequest:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
         
     // 获取sign
     JSValue *value = [self.jsFunction callWithArguments:@[ text, self.gtk ]];
@@ -505,7 +505,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 }
 
 // TODO: need to optimize the results of Baidu query words.
-- (void)parseResponseObject:(id _Nullable)responseObject completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)parseResponseObject:(id _Nullable)responseObject completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self.queryModel isServiceStopped:self.serviceType]) {
         return;
     }
@@ -816,7 +816,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 
 #pragma mark - WebView Translate.
 
-- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *monitorURL = @"https://fanyi.baidu.com/v2transapi";
     [self.webViewTranslator monitorBaseURLString:monitorURL
                                          loadURL:[self wordLink:self.queryModel]

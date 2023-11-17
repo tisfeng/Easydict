@@ -590,14 +590,27 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     BOOL isAutoSelectQuery = self.actionType == EZActionTypeAutoSelectQuery;
     BOOL allowedForceAutoGetSelectedText = [EZConfiguration.shared forceAutoGetSelectedText];
     
+    NSString *easydictBundleID = [[NSBundle mainBundle] bundleIdentifier];
+
+    NSRunningApplication *application = [self getFrontmostApp];
+    NSString *bundleID = application.bundleIdentifier;
+    
+    BOOL isInEasydict = [bundleID isEqualToString:easydictBundleID];
+        
+    /**
+     When front most app is Easydict and user is recording select text shortcut key, should not use simulation key `Cmd + C`.
+     
+     FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
+     */
+    if (isInEasydict && EZConfiguration.shared.isRecordingSelectTextShortcutKey) {
+        return NO;
+    }
+    
     if (isAutoSelectQuery && !allowedForceAutoGetSelectedText) {
         return NO;
     }
     
     //    NSLog(@"Accessibility error: %d", error);
-    
-    NSRunningApplication *application = [self getFrontmostApp];
-    NSString *bundleID = application.bundleIdentifier;
     
     /**
      If Accessibility get text failed but actually has selected text, error may be kAXErrorNoValue -25212

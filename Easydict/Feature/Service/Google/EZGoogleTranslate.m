@@ -197,14 +197,16 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)translate:(NSString *)text
              from:(EZLanguage)from
                to:(EZLanguage)to
-       completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+       completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
     
     text = [self maxTextLength:text fromLanguage:from];
     
-    BOOL queryDictionary = [text shouldQueryDictionaryWithLanguage:from];
+    // TODO: We should the Google web translate API instead.
+    // Two APIs are hard to maintain, and they may differ with web translation.
+    BOOL queryDictionary = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
     if (queryDictionary) {
         // This API can get word info, like pronunciation.
         [self webApptranslate:text from:from to:to completion:completion];
@@ -282,7 +284,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         return;
     }
     
-    // 暂未找到谷歌OCR接口，暂时用有道OCR代替
+    // 暂未找到谷歌 OCR 接口，暂时用有道 OCR 代替
     // TODO: 考虑一下有没有语言问题
     [self.youdao ocr:image from:from to:to completion:completion];
 }
@@ -324,7 +326,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 #pragma mark - WebApp, including word info.
 
 /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
-- (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+- (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (!text.length) {
         completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
@@ -657,7 +659,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 - (void)gtxTranslate:(NSString *)text
                 from:(EZLanguage)from
                   to:(EZLanguage)to
-          completion:(nonnull void (^)(EZQueryResult *_Nullable, NSError *_Nullable))completion {
+          completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     EZQueryResult *result = self.result;
     
     if (!text.length) {
@@ -717,7 +719,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                             [translationArray addObject:trans];
                         }
                     }
-
+                    
                     NSString *transaltedText = [translationArray componentsJoinedByString:@""];
                     result.translatedResults = [transaltedText toParagraphs];
                     

@@ -535,7 +535,7 @@ The settings page provides some preference setting modifications, such as automa
 
 ### Services
 
-Easydict has 3 types of windows and you can set different services for each of them.
+Easydict has 3 types of Windows and you can set different services for each of them.
 
 - Mini window: displayed when the mouse automatically picks up words.
 - Floating window: displayed when shortcut keys are used to fetch words and screenshot translation.
@@ -588,6 +588,7 @@ If you find that the OCR result is incorrect, you can correct the OCR result by 
 ## Similar Open Source Projects
 
 - [immersive-translate](https://github.com/immersive-translate/immersive-translate): A nice Immersive Dual Web Page Translation Extension.
+- [pot-desktop](https://github.com/pot-app/pot-desktop) : A cross-platform software for text translation and recognize.
 - [ext-saladict](https://github.com/crimx/ext-saladict): A browser extension for looking up words and translating.
 - [openai-translator](https://github.com/yetone/openai-translator): Browser extension and cross-platform desktop application for translation based on ChatGPT API.
 - [Raycast-Easydict](https://github.com/tisfeng/Raycast-Easydict): My other open source project, a Raycast extension version of Easydict.
@@ -675,8 +676,12 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-10-19 | DANIELHU | 7.3 | 感谢开源，希望能加入生词本功能。（后面会加，请等待 [33](https://github.com/tisfeng/Easydict/issues/33)） |
 | 2023-10-25 | tzcsky | 10 | 非常好的软件 |
 | 2023-10-26 |  | 10 | 开源万岁🎉尽点绵薄之力，感谢！ |
-| 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力 |
+| 2023-11-06 | 周樹人不能沒有魯迅 | 10.66 | 有点穷，绵薄之力（囧） |
 | 2023-11-07 | ㅤ HDmoli | 5 | zhihui.xiong |
+| 2023-11-10 | ㅤ Andy | 5 ||
+| 2023-11-12 | ㅤ  | 6.6 | 请大佬喝瓶饮料🥤，感谢开源 |
+| 2023-11-13 | ㅤ御猫  | 50 | 感谢开源 |
+
 
 </p>
 

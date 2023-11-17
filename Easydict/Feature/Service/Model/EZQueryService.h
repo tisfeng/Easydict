@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否提前处理查询，如不支持的语言
 /// - Parameters:
 /// - isAutoConvert: 是否使用本地中文简繁体转换，如 API 服务支持繁简体，则最好交给 API。
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isAutoConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion;
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isAutoConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
 /// Get TTS langauge code.
 - (NSString *)getTTSLanguageCode:(EZLanguage)language;
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param from 文本语言
 /// @param to 目标语言
 /// @param completion 回调
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *_Nullable result, NSError *_Nullable error))completion;
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
 /// 获取文本的语言
 /// @param text 文本
