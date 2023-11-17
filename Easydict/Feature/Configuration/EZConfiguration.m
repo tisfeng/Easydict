@@ -78,9 +78,9 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
-    EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredLanguages][0];
+    EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][0];
     self.firstLanguage = [NSUserDefaults mm_readString:kFirstLanguageKey defaultValue:defaultFirstLanguage];
-    EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredLanguages][1];
+    EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][1];
     self.secondLanguage = [NSUserDefaults mm_readString:kSecondLanguageKey defaultValue:defaultSecondLanguage];
     
     self.from = [NSUserDefaults mm_readString:kFromKey defaultValue:EZLanguageAuto];
