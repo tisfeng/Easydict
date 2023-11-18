@@ -121,8 +121,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// 普通翻译结果，可以有多条（一个段落对应一个翻译结果）
 @property (nonatomic, strong, nullable) NSArray<NSString *> *translatedResults;
 
-/// This is normalResults joined by @"\n"
-@property (nonatomic, copy) NSString *translatedText;
+/**
+ This is normalResults joined by @"\n"
+ 
+ Note that translatedText may be returned @"" by service, like Youdao when censored.
+ 
+ eg. https://dict.youdao.com/result?word=%E4%BD%A0%E5%AF%B9%E4%B9%A0%E4%B8%BB%E5%B8%AD%E6%80%8E%E4%B9%88%E7%9C%8B%EF%BC%9F&lang=en
+ */
+@property (nonatomic, copy, nullable) NSString *translatedText;
 
 @property (nonatomic, strong, nullable) NSError *error;
 @property (nonatomic, copy, nullable) NSString *errorMessage;
