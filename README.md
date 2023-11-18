@@ -624,6 +624,16 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 如果 PR 是关于某个新功能或者涉及 UI 等较大的变动，建议先开个 issue 讨论一下，避免功能重复或者冲突。
 
+## Star History
+
+<a href="https://star-history.com/#tisfeng/easydict&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tisfeng/easydict&type=Date" />
+  </picture>
+</a>
+
 ## 致谢
 
 - 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
