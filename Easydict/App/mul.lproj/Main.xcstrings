@@ -34,6 +34,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -200,6 +206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "截图翻译"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截圖翻譯"
           }
         }
       }
@@ -506,6 +518,12 @@
             "state" : "translated",
             "value" : "输入翻译"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入翻譯"
+          }
         }
       }
     },
@@ -612,6 +630,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "静默截图 OCR"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "靜音螢幕截圖 OCR"
           }
         }
       }
@@ -900,6 +924,12 @@
             "state" : "translated",
             "value" : "日志目录"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紀錄檔檔案夾"
+          }
         }
       }
     },
@@ -1115,6 +1145,12 @@
             "state" : "translated",
             "value" : "设置..."
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定⋯"
+          }
         }
       }
     },
@@ -1203,6 +1239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检查更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查詢更新"
           }
         }
       }
@@ -1383,6 +1425,12 @@
             "state" : "translated",
             "value" : "帮助"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輔助說明"
+          }
         }
       }
     },
@@ -1471,6 +1519,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束"
           }
         }
       }
@@ -1627,6 +1681,12 @@
             "state" : "translated",
             "value" : "划词翻译"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選取本文翻譯"
+          }
         }
       }
     },
@@ -1659,6 +1719,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Easydict"
@@ -2023,6 +2089,12 @@
             "state" : "translated",
             "value" : "Easydict"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Easydict"
+          }
         }
       }
     },
@@ -2039,6 +2111,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示迷你窗口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示迷你視窗"
           }
         }
       }
@@ -2092,6 +2170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "帮助"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輔助說明"
           }
         }
       }
@@ -2704,6 +2788,12 @@
             "state" : "translated",
             "value" : "导出日志"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸出紀錄檔"
+          }
         }
       }
     },
@@ -2882,6 +2972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "反馈问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反映問題"
           }
         }
       }
