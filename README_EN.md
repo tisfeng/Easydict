@@ -85,6 +85,7 @@
 - [Similar Open Source Projects](#similar-open-source-projects)
 - [Motivation](#motivation)
 - [Contributor Guide](#contributor-guide)
+	- [Localization](#localization)
 - [Acknowledgements](#acknowledgements)
 - [Statement](#statement)
 - [Sponsor](#sponsor)
