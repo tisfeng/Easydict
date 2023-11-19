@@ -626,7 +626,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 如果 PR 是关于某个新功能或者涉及 UI 等较大的变动，建议先开个 issue 讨论一下，避免功能重复或者冲突。
 
 ### 本地化
-我们正在寻找能为 Easydict 提供翻译的 contributor，如果你想为 Easydict 提供翻译，请参考[这篇文档](/docs/How-to-translate-Easydict-zh)
+我们正在寻找能为 Easydict 提供翻译的 contributor，如果你想为 Easydict 提供翻译，请参考[这篇文档](./docs/How-to-translate-Easydict-zh.md)
 
 ## Star History
 

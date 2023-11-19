@@ -627,7 +627,7 @@ If the PR is a bug fix or feature implementation for an existing issue, please s
 If the PR is about a new feature or involves major changes to the UI, it is recommended to open an issue for discussion first to avoid duplicate or conflicting features.
 
 ### Localization
-We are actively looking for contributors who can translate Easydict into your own languages. If you are interested, please refer to this [documentation](/docs/How-to-translate-Easydict-en) for details.
+We are actively looking for contributors who can translate Easydict into your own languages. If you are interested, please refer to this [documentation](./docs/How-to-translate-Easydict-en.md) for details.
 
 ## Star History
 
