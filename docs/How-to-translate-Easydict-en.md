@@ -27,5 +27,4 @@ Now you can wait for a maintainer's review and get your translations adopted in 
 - [Localization - Apple Developer](https://developer.apple.com/documentation/Xcode/localization)
 - [Localizing and varying text with a string catalog - Apple Developer](https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog)
 - [Discover String Catalogs - WWDC23 Videos](https://developer.apple.com/videos/play/wwdc2023/10155)
-
 - [Apple Localization Glossaries](https://applelocalization.com)
