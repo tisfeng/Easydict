@@ -88,7 +88,7 @@ NSString *const EZLanguageHebrew = @"Hebrew";
         chineseTraditionalLang.chineseName = @"繁体中文";
         chineseTraditionalLang.englishName = EZLanguageTraditionalChinese;
         chineseTraditionalLang.localName = @"繁體中文";
-        chineseTraditionalLang.flagEmoji = @"🇭🇰";
+        chineseTraditionalLang.flagEmoji = @"🇹🇼🇭🇰";
         chineseTraditionalLang.localeIdentifier = @"zh_TW";
         chineseTraditionalLang.voiceName = @"Tingting";
         [allLanguages setObject:chineseTraditionalLang forKey:EZLanguageTraditionalChinese];
