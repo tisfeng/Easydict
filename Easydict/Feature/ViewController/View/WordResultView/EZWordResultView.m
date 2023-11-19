@@ -150,7 +150,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         NSString *text = nil;
-        if (result.translatedText.length > 0) {
+        if (result.translatedText) {
             text = result.translatedText;
         } else if (!result.wordResult && errorDescription.length) {
             text = errorDescription;
@@ -158,7 +158,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             text = NSLocalizedString(@"no_results_found", nil);
         }
         
-        if (text.length) {
+        if (text) {
             EZLabel *resultLabel = [[EZLabel alloc] init];
             [self addSubview:resultLabel];
             

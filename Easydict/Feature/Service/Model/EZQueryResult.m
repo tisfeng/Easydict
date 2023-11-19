@@ -111,8 +111,8 @@ NSString *getPartName(NSString *part) {
     return self;
 }
 
-- (NSString *)translatedText {
-    NSString *text = [self.translatedResults componentsJoinedByString:@"\n"] ?: @"";
+- (nullable NSString *)translatedText {
+    NSString *text = [self.translatedResults componentsJoinedByString:@"\n"];
     return text;
 }
 
@@ -124,7 +124,7 @@ NSString *getPartName(NSString *part) {
 }
 
 - (BOOL)hasTranslatedResult {
-    if (self.wordResult || self.translatedText.length || self.HTMLString.length) {
+    if (self.wordResult || self.translatedText || self.HTMLString.length) {
         return YES;
     }
     return NO;
@@ -135,7 +135,7 @@ NSString *getPartName(NSString *part) {
     return warningType;
 }
 
-- (NSString *)copiedText {
+- (nullable NSString *)copiedText {
     if (!self.HTMLString.length) {
         return self.translatedText;
     }
