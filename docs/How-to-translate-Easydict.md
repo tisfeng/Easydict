@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 We are using String Catalog in Xcode to manage translations for Easydict, so the following steps are what you need to get started on localizing the app.
 ### Install Xcode 15+
 You can install Xcode from the [Mac App Store](https://apps.apple.com/app/xcode/id497799835) or its beta versions on [Apple Developer](https://developer.apple.com/xcode/resources/).
