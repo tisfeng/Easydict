@@ -26,9 +26,7 @@
     [MMCrash registerHandler];
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
-
-    [self setupAppLanguage];
-
+    
     [EZMenuItemManager.shared setup];
     [EZShortcut setup];
 
