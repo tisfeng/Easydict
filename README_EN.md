@@ -152,18 +152,18 @@ Easydict is open source software and is inherently secure, but due to Apple's st
 
 FAQ:
 
-1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/en-us/guide/mac-help/mh40616/mac)
 
 > Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
 
 <div >
-    <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png"  width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png"  width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/5ecb4cc7-53e7-45c6-8606-df36cf4adb73" width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/7c44e542-62f3-458a-abbb-6ae555b743d7"  width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/060f4927-8df5-4bfd-9283-363cc8d3fa52"  width="30%">
 </div>
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/eb2852c1-6ffd-4575-8bb0-5c97d451d582" width="100%" />
 </div>
 
 2. If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
