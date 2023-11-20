@@ -18,17 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Remove comment block symbols, /* */
 - (NSString *)removeCommentBlockSymbols;
 
-/// Remove adjacent comment symbol prefix, // and #, and try to join texts.
-- (NSString *)removeCommentSymbolPrefixAndJoinTexts;
-
-/// Remove comment symbols, # and //
-- (NSString *)removeCommentSymbols;
-
-/// Is start with comment symbol prefix, // and #
-- (BOOL)hasCommentSymbolPrefix;
-
-/// Filter Private Use Area characters
-- (NSString *)filterPrivateUseCharacters;
+/// Check if all line starts with a comment symbol, #,//,*
+- (BOOL)allLineStartsWithCommentSymbol;
 
 @end
 
