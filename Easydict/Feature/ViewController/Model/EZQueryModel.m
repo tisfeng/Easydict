@@ -199,9 +199,7 @@
     }
     
     if (EZConfiguration.shared.isBeta) {
-        // Remove prefix // && #, and join texts.
-        queryText = [queryText removeCommentSymbolPrefixAndJoinTexts];
-        // Remove /* */
+        // Remove prefix [//,#,*,] and join texts.
         queryText = [queryText removeCommentBlockSymbols];
     }
 
