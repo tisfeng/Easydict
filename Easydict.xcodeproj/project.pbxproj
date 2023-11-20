@@ -18,6 +18,8 @@
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
+		032035AC2B0B4C81007B7171 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 032035AA2B0B4C81007B7171 /* EZNiuTransTranslateResponse.m */; };
+		032035AD2B0B4C81007B7171 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 032035AB2B0B4C81007B7171 /* EZNiuTransTranslate.m */; };
 		03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZScriptExecutor.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
@@ -263,6 +265,10 @@
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
+		032035A82B0B4C81007B7171 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
+		032035A92B0B4C81007B7171 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
+		032035AA2B0B4C81007B7171 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
+		032035AB2B0B4C81007B7171 /* EZNiuTransTranslate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslate.m; sourceTree = "<group>"; };
 		03247E342968158B00AFCD67 /* EZScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScriptExecutor.h; sourceTree = "<group>"; };
 		03247E352968158B00AFCD67 /* EZScriptExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScriptExecutor.m; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
@@ -747,6 +753,17 @@
 			path = EasydictTests;
 			sourceTree = "<group>";
 		};
+		032035A72B0B4C81007B7171 /* Niutrans */ = {
+			isa = PBXGroup;
+			children = (
+				032035A82B0B4C81007B7171 /* EZNiuTransTranslateResponse.h */,
+				032035A92B0B4C81007B7171 /* EZNiuTransTranslate.h */,
+				032035AA2B0B4C81007B7171 /* EZNiuTransTranslateResponse.m */,
+				032035AB2B0B4C81007B7171 /* EZNiuTransTranslate.m */,
+			);
+			path = Niutrans;
+			sourceTree = "<group>";
+		};
 		03247E37296AE8C800AFCD67 /* LoadingAnimationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1144,7 +1161,7 @@
 		03B0222B29231FA6001C7E63 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				17FD99F92B01B9F200A528A6 /* Niutrans */,
+				032035A72B0B4C81007B7171 /* Niutrans */,
 				6220AD582A8280E800BBFB52 /* Bing */,
 				0399C6A929A8608000B4AFCC /* OpenAI */,
 				03F14A382956011400CB7379 /* Volcano */,
@@ -1811,17 +1828,6 @@
 			path = Volcano;
 			sourceTree = "<group>";
 		};
-		17FD99F92B01B9F200A528A6 /* Niutrans */ = {
-			isa = PBXGroup;
-			children = (
-				17FD99FB2B01B9F200A528A6 /* EZNiuTransTranslate.h */,
-				17FD99FE2B01B9F200A528A6 /* EZNiuTransTranslate.m */,
-				17FD99FA2B01B9F200A528A6 /* EZNiuTransTranslateResponse.h */,
-				17FD99FD2B01B9F200A528A6 /* EZNiuTransTranslateResponse.m */,
-			);
-			path = Niutrans;
-			sourceTree = "<group>";
-		};
 		6220AD582A8280E800BBFB52 /* Bing */ = {
 			isa = PBXGroup;
 			children = (
@@ -2173,7 +2179,6 @@
 				03BDA7C12A26DA280079D04F /* XPMArgumentParser.m in Sources */,
 				03B0231329231FA6001C7E63 /* NSView+HiddenDebug.m in Sources */,
 				03008B2B2940D3230062B821 /* EZDeepLTranslate.m in Sources */,
-				17FD9A012B01B9F200A528A6 /* EZNiuTransTranslate.m in Sources */,
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
@@ -2222,7 +2227,7 @@
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,
-				17FD9A002B01B9F200A528A6 /* EZNiuTransTranslateResponse.m in Sources */,
+				032035AD2B0B4C81007B7171 /* EZNiuTransTranslate.m in Sources */,
 				039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */,
 				03BD281E29481C0400F5891A /* EZAudioPlayer.m in Sources */,
 				03E02A2629250D1D00A10260 /* EZEventMonitor.m in Sources */,
@@ -2305,6 +2310,7 @@
 				03542A4F2937B64B00C34C33 /* EZYoudaoOCRResponse.m in Sources */,
 				03B0233929231FA6001C7E63 /* MMTool.m in Sources */,
 				03542A552937B7DE00C34C33 /* EZTranslateError.m in Sources */,
+				032035AC2B0B4C81007B7171 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
