@@ -500,7 +500,7 @@ window1 represents the mini window, while window2 represents hover window, value
 Easydict in-app lookup is supported. In the input box or translation result, if you encounter unfamiliar words, you can call out the menu by right-clicking with heavy pressure and selecting the first "In-app lookup".
 
 <div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/9a8ac25d-a24f-441e-b7a9-331655def562" width="50%" />
 </div>
 
 ## URL Scheme
@@ -584,7 +584,7 @@ As long as the query window is activated, you can open the settings page by shor
 
 <div style="display:flex;align-items:center;">
   <img src="https://github.com/Jerry23011/Easydict/assets/89069957/584bb1b3-6ddd-4af8-a8b5-fc491a21605c" style="margin-right:50px;" width="40%">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/dfdda624-68eb-4534-968a-b7327201d880" width="30%">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/9f9d99c3-ca07-48dd-9892-ac7fe595a981" width="30%">
 </div>
 
 If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xxx" button to specify the recognition language.
