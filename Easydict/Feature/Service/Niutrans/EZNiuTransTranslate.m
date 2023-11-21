@@ -9,6 +9,7 @@
 #import "EZNiuTransTranslate.h"
 #import "NSArray+EZChineseText.h"
 #import "EZNiuTransTranslateResponse.h"
+#import "FWEncryptorAES.h"
 
 static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServer/translation";
 
@@ -28,7 +29,13 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
 }
 
 - (NSString *)apiKey {
-    NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey] ?: @"";
+    // This is a test APIKey, please do not abuse it. It is recommended to go to the official website to apply for a personal APIKey.
+    NSString *defaultEncryptedAPIKey = @"O5C+RKrWBR5GLMtqiOHlyS6Ib9D8JPY7aN8/S49gwmRYZNcxpbQ6eeNso6KoJVeR";
+    NSString *defaultAPIKey = [FWEncryptorAES decryptText:defaultEncryptedAPIKey key:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]];
+    NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey];
+    if (apiKey.length == 0) {
+        apiKey = defaultAPIKey;
+    }
     return apiKey;
 }
 
