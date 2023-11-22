@@ -152,18 +152,18 @@ Easydict is open source software and is inherently secure, but due to Apple's st
 
 FAQ:
 
-1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/zh-cn/guide/mac-help/mh40616/mac)
+1. If you encounter the following [Cannot open Easydict problem](https://github.com/tisfeng/Easydict/issues/2), please refer to [Open Mac App from an unidentified developer](https://support.apple.com/en-us/guide/mac-help/mh40616/mac)
 
 > Cannot open "Easydict.dmg" because Apple cannot check to see if it contains malware.
 
 <div >
-    <img src="https://user-images.githubusercontent.com/25194972/219873635-46e9d318-7237-462b-be69-44ad7a3ea760.png" width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873670-7ce67946-87c2-4d45-84fd-3cc59936f7be.png"  width="30%">
-    <img src="https://user-images.githubusercontent.com/25194972/219873722-2e780565-fe26-4ce3-9648-f1cbdd393843.png"  width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/5ecb4cc7-53e7-45c6-8606-df36cf4adb73" width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/7c44e542-62f3-458a-abbb-6ae555b743d7"  width="30%">
+    <img src="https://github.com/Jerry23011/Easydict/assets/89069957/060f4927-8df5-4bfd-9283-363cc8d3fa52"  width="30%">
 </div>
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://user-images.githubusercontent.com/25194972/219873809-2b407852-7f77-4aef-9206-3f6393cb7c31.png" width="100%" />
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/eb2852c1-6ffd-4575-8bb0-5c97d451d582" width="100%" />
 </div>
 
 2. If it indicates that the app is corrupted, please refer to [macOS Bypassing Notary and App Signing Methods](https://www.5v13.com/sz/31695.html)
@@ -500,7 +500,7 @@ window1 represents the mini window, while window2 represents hover window, value
 Easydict in-app lookup is supported. In the input box or translation result, if you encounter unfamiliar words, you can call out the menu by right-clicking with heavy pressure and selecting the first "In-app lookup".
 
 <div>
-  <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231019101421740-1697681661-1697681993.png" width="50%" />
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/9a8ac25d-a24f-441e-b7a9-331655def562" width="50%" />
 </div>
 
 ## URL Scheme
@@ -584,7 +584,7 @@ As long as the query window is activated, you can open the settings page by shor
 
 <div style="display:flex;align-items:center;">
   <img src="https://github.com/Jerry23011/Easydict/assets/89069957/584bb1b3-6ddd-4af8-a8b5-fc491a21605c" style="margin-right:50px;" width="40%">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/dfdda624-68eb-4534-968a-b7327201d880" width="30%">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/9f9d99c3-ca07-48dd-9892-ac7fe595a981" width="30%">
 </div>
 
 If you find that the OCR result is incorrect, you can correct the OCR result by clicking the "Detected xxx" button to specify the recognition language.
