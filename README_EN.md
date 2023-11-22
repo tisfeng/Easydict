@@ -86,8 +86,6 @@
 - [Similar Open Source Projects](#similar-open-source-projects)
 - [Motivation](#motivation)
 - [Contributor Guide](#contributor-guide)
-  - [Localization](#localization)
-- [Star History](#star-history)
 - [Acknowledgements](#acknowledgements)
 - [Statement](#statement)
 - [Sponsor](#sponsor)
@@ -627,9 +625,6 @@ If you think there is room for improvement in the project, or if you have new id
 If the PR is a bug fix or feature implementation for an existing issue, please submit it to the dev branch.
 
 If the PR is about a new feature or involves major changes to the UI, it is recommended to open an issue for discussion first to avoid duplicate or conflicting features.
-
-### Localization
-We are actively looking for contributors who can translate Easydict into your own languages. If you are interested, please refer to this [documentation](./docs/How-to-translate-Easydict-en.md) for details.
 
 ## Star History
 
