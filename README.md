@@ -584,7 +584,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 <div style="display:flex;align-items:flex-start;">
   <img src="https://user-images.githubusercontent.com/25194972/221406290-b743c5fa-75ed-4a8a-8b52-b966ac7daa68.png" style="margin-right:50px;" width="40%">
-  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/ee377707-c021-43b2-b9e0-65272ad42c7e" width="30%">
+  <img src="https://github.com/Jerry23011/Easydict/assets/89069957/274adbc6-8391-4386-911c-241db4a1bd98" width="30%">
 </div>
 
 若发现 OCR 识别结果不对，可通过点击”识别为 xx“按钮指定识别语言来修正 OCR 结果。
