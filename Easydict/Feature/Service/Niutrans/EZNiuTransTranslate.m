@@ -2,7 +2,7 @@
 //  EZNiuTransTranslate.m
 //  Easydict
 //
-//  Created by tisfeng on 2023/2/23.
+//  Created by BigGuang97 on 2023/11/23.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
