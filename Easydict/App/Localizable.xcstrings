@@ -2193,6 +2193,22 @@
         }
       }
     },
+    "niuTrans_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译"
+          }
+        }
+      }
+    },
     "Youdao" : {
       "extractionState" : "manual",
       "localizations" : {
