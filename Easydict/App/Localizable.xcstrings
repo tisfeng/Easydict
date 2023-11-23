@@ -109,7 +109,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Dictionary"
+            "value" : "Apple Dictionary"
           }
         },
         "zh-Hans" : {
@@ -125,7 +125,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Translation"
+            "value" : "Apple Translation"
           }
         },
         "zh-Hans" : {
@@ -924,7 +924,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Center of Screen"
+            "value" : "Center of screen"
           }
         },
         "zh-Hans" : {
@@ -956,7 +956,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mouse Position"
+            "value" : "Mouse position"
           }
         },
         "zh-Hans" : {
@@ -972,7 +972,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right Side of Screen"
+            "value" : "Right side of screen"
           }
         },
         "zh-Hans" : {
@@ -1042,19 +1042,15 @@
         }
       }
     },
-    "Github:" : {
-      "extractionState" : "stale",
+    "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "GitHub:"
           }
         }
       }
-    },
-    "GitHub:" : {
-
     },
     "google_translate" : {
       "localizations" : {
@@ -1379,22 +1375,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标划词窗口类型:"
-          }
-        }
-      }
-    },
-    "niuTrans_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NiuTrans"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小牛翻译"
           }
         }
       }
@@ -1876,26 +1856,21 @@
         }
       }
     },
-    "setting" : {
-      "comment" : "setting",
-      "extractionState" : "stale",
+    "setting_general" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settings"
+            "value" : "General"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置"
+            "value" : "通用"
           }
         }
       }
-    },
-    "setting_general" : {
-
     },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
@@ -2214,6 +2189,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
+          }
+        }
+      }
+    },
+    "niuTrans_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译"
           }
         }
       }
