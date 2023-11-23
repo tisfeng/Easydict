@@ -14,6 +14,7 @@
 #import "EZConfiguration+EZUserData.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
+#import "EZNiuTransTranslate.h"
 
 @implementation EZSchemeParser
 
@@ -203,6 +204,7 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslationAPIKey,
+        EZNiuTransAPIKey,
                 
         EZIntelligentQueryModeKey,
         

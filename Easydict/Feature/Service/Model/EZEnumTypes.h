@@ -38,7 +38,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeVolcano;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
-
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
@@ -63,6 +63,13 @@ typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
     EZDeepLTranslationAPIWebFirst = 0,
     EZDeepLTranslationAPIOfficialFirst = 1,
     EZDeepLTranslationAPIOnlyOfficical = 2,
+};
+
+FOUNDATION_EXPORT NSString *const EZNiuTransTranslationAPIKey;
+typedef NS_ENUM(NSUInteger, EZNiuTransTranslationAPI) {
+    EZNiuTransTranslationAPIWebFirst = 0,
+    EZNiuTransTranslationAPIOfficialFirst = 1,
+    EZNiuTransTranslationAPIOnlyOfficical = 2,
 };
 
 

@@ -109,7 +109,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Dictionary"
+            "value" : "System Dictionary"
           }
         },
         "zh-Hans" : {
@@ -125,7 +125,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Translation"
+            "value" : "System Translation"
           }
         },
         "zh-Hans" : {
@@ -924,7 +924,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Center of screen"
+            "value" : "Center of Screen"
           }
         },
         "zh-Hans" : {
@@ -956,7 +956,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mouse position"
+            "value" : "Mouse Position"
           }
         },
         "zh-Hans" : {
@@ -972,7 +972,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right side of screen"
+            "value" : "Right Side of Screen"
           }
         },
         "zh-Hans" : {
@@ -1042,15 +1042,19 @@
         }
       }
     },
-    "GitHub:" : {
+    "Github:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GitHub:"
+            "value" : ""
           }
         }
       }
+    },
+    "GitHub:" : {
+
     },
     "google_translate" : {
       "localizations" : {
@@ -1375,6 +1379,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标划词窗口类型:"
+          }
+        }
+      }
+    },
+    "niuTrans_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译"
           }
         }
       }
@@ -1856,21 +1876,26 @@
         }
       }
     },
-    "setting_general" : {
+    "setting" : {
+      "comment" : "setting",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General"
+            "value" : "Settings"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通用"
+            "value" : "设置"
           }
         }
       }
+    },
+    "setting_general" : {
+
     },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
