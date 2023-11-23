@@ -69,6 +69,8 @@ body:
       label: 设备型号 && 系统版本
       description: 如果遇到比较奇怪的问题，请提供设备型号和操作系统版本，方便开发者排查。
       placeholder: Apple M1 Pro, macOS 14.0
+    validations:
+      required: true
 
   - type: checkboxes
     id: PR
@@ -76,4 +78,4 @@ body:
       label: 是否愿意提交 PR 解决该问题？
       description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是解决该问题最快的方式。如果对 Objective-C 语言不熟悉，可以尝试使用 ChatGPT，也许它能帮到你。
       options:
-        - label: 我愿意提交 PR!
+        - label: 我愿意提交 PR

@@ -69,6 +69,8 @@ body:
       label: Device type and OS version
       description: If you encounter an unusual problem, you can provide device type and OS versions to help developers troubleshoot.
       placeholder: Apple M1 Pro, macOS 14.0
+    validations:
+      required: true
 
   - type: checkboxes
     id: PR
@@ -76,4 +78,4 @@ body:
       label: Are you willing to submit a PR to fix this issue?
       description: We welcome you to submit a PR to fix this issue. When the developer is short of manpower, submitting a PR is the fastest way to solve the problem. If you are not familiar with Objective-C, you can try ChatGPT, maybe it can help you.
       options:
-        - label: I'm willing to submit a PR!
+        - label: I'm willing to submit a PR
