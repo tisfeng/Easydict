@@ -65,13 +65,6 @@ typedef NS_ENUM(NSUInteger, EZDeepLTranslationAPI) {
     EZDeepLTranslationAPIOnlyOfficical = 2,
 };
 
-FOUNDATION_EXPORT NSString *const EZNiuTransTranslationAPIKey;
-typedef NS_ENUM(NSUInteger, EZNiuTransTranslationAPI) {
-    EZNiuTransTranslationAPIWebFirst = 0,
-    EZNiuTransTranslationAPIOfficialFirst = 1,
-    EZNiuTransTranslationAPIOnlyOfficical = 2,
-};
-
 
 typedef NSString *EZActionType NS_STRING_ENUM;
 FOUNDATION_EXPORT EZActionType const EZActionTypeAutoSelectQuery;

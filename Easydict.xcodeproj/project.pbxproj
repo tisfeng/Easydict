@@ -1820,10 +1820,10 @@
 		17BCAEF22B0DFF9000A7D372 /* Niutrans */ = {
 			isa = PBXGroup;
 			children = (
-				17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */,
 				17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */,
-				17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */,
 				17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */,
+				17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */,
+				17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */,
 			);
 			path = Niutrans;
 			sourceTree = "<group>";
