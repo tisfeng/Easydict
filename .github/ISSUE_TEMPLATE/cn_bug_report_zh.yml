@@ -42,7 +42,7 @@ body:
       label: 截图
       description: |
         请提供问题截图。若截图不便于描述问题，请提供录屏，方便开发者排查。
-        如果是应用崩溃问题，请提供崩溃日志，菜单图标 -> 帮助 -> 导出日志。（日志目录：`~/Library/Caches/com.izual.Easydict/MMLogs`）
+        如果是应用崩溃问题，请务必提供崩溃日志，菜单图标 -> 帮助 -> 导出日志。（日志目录：`~/Library/Caches/com.izual.Easydict/MMLogs`）
       placeholder: 请提供截图
     validations:
       required: true
@@ -66,8 +66,8 @@ body:
   - type: input
     id: device
     attributes:
-      label: 设备信息 && 操作系统版本
-      description: 如果遇到比较奇怪的问题，请提供电脑型号和操作系统版本，方便开发者排查。
+      label: 设备型号 && 系统版本
+      description: 如果遇到比较奇怪的问题，请提供设备型号和操作系统版本，方便开发者排查。
       placeholder: Apple M1 Pro, macOS 14.0
 
   - type: checkboxes
