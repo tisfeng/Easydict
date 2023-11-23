@@ -203,6 +203,7 @@
         
         EZDeepLAuthKey,
         EZDeepLTranslationAPIKey,
+        EZNiuTransAPIKey,
                 
         EZIntelligentQueryModeKey,
         
