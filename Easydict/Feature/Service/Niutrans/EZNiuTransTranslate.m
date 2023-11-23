@@ -141,6 +141,8 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     };
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer=[AFJSONResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", @"text/plain", nil];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         EZNiuTransTranslateResponse *niuTransTranslateResult = [EZNiuTransTranslateResponse mj_objectWithKeyValues:responseObject];
