@@ -1,9 +1,7 @@
 name: Bug report
 description: Report an issue
-title: "🐞 Bug Report: Please fill in the title"
+title: "🐞 Bug Report: "
 labels: ["bug"]
-assignees:
-  -
 
 body:
   - type: checkboxes
@@ -15,14 +13,14 @@ body:
           required: true
         - label: I have searched through the [issues](https://github.com/tisfeng/Easydict/issues) page but couldn't find a solution.(Including issue that has been closed)
           required: true
-        - label: Easydict has been upgraded to the latest version.
+        - label: Easydict has been upgraded to the [latest version](https://github.com/tisfeng/Easydict/releases)
           required: true
 
   - type: textarea
     id: description
     attributes:
       label: Problem description
-      description: Please describe the problem as clearly and detailed as possible. If it involves UI, please provide screenshots. If it's a complex problem, it would be best to provide a screencast to help developers troubleshoot. If it is an application crash issue, please provide the crash log, menu icon -> Help -> Export Log.
+      description: Please describe the problem as clearly and detailed as possible.
       placeholder: Problem description
     validations:
       required: true
@@ -31,8 +29,21 @@ body:
     id: reproduce
     attributes:
       label: Reproduction steps
-      description: Please describe how to reproduce the problem. If the problem is episodic or requires specific action steps to reproduce, please describe it in as much detail as possible. \n If the problem is episodic, try restarting the app, uninstalling and reinstalling the app, or restarting the device to see if that solves the problem.
-      placeholder:
+      description: |
+        Please describe how to reproduce the problem. If the problem is episodic or requires specific action steps to reproduce, please describe it in as much detail as possible, otherwise the developer will not be able to locate the problem.
+        (If the problem is episodic, try restarting the app, restarting the device, or uninstalling and reinstalling the app to see if that solves the problem 🤔)
+      placeholder: Reproduction steps
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: |
+        Please provide a screenshot of the problem. If the screenshot is not convenient to describe the problem, please provide a screen recording for the developer to troubleshoot.
+        If it is a crash problem, please provide the crash log, menu icon -> Help -> Export log. (Log directory: `~/Library/Caches/com.izual.Easydict/MMLogs`)
+      placeholder: Please provide a screenshot
     validations:
       required: true
 
@@ -41,7 +52,7 @@ body:
     attributes:
       label: Expected result
       description: Please describe the result you expect.
-      placeholder:
+      placeholder: Expected result
     validations:
       required: true
 
@@ -50,14 +61,14 @@ body:
     attributes:
       label: Proposed solution (optional)
       description: Do you have any proposed solutions or suggestions for this issue?
-      placeholder:
+      placeholder: Proposed solution
 
   - type: input
     id: device
     attributes:
-      label: Device information and OS version
-      description: If you encounter an unusual problem, you can provide device information and OS versions to help developers troubleshoot.
-      placeholder: Apple M1 Pro, macOS 11.2.3
+      label: Device type and OS version
+      description: If you encounter an unusual problem, you can provide device type and OS versions to help developers troubleshoot.
+      placeholder: Apple M1 Pro, macOS 14.0
 
   - type: checkboxes
     id: PR
