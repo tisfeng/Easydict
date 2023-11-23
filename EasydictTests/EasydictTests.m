@@ -30,21 +30,7 @@
 }
 
 - (void)testExample {
-    /**
-     // These values will persist after the process is killed by the system
-     // and remain available via the same object.
-     
-     hi
-     
-     // good girl.
-     // good boy.
-     
-     hello
-     
-     */
-    NSString *text = @" // These values will persist after the process is killed by the system\n// and remain available via the same object.\n\nhi\n\n// good girl.\n// good boy.\n\nhello";
-    NSString *result = [text removeCommentSymbolPrefixAndJoinTexts];
-    NSLog(@"result: %@", result);
+
 }
 
 - (void)testDetectLanguage {
