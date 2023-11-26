@@ -11,9 +11,6 @@
 #import "EZNiuTransTranslateResponse.h"
 #import "FWEncryptorAES.h"
 
-static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServer/translation";
-
-
 @interface EZNiuTransTranslate ()
 
 @property (nonatomic, copy) NSString *apiKey;
@@ -51,7 +48,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
 }
 
 - (NSString *)link {
-    return kNiuTransTranslateURL;
+    return @"https://niutrans.com/trans?type=text";
 }
 
 // Supported languages: https://niutrans.com/documents/contents/trans_text#languageList
@@ -128,10 +125,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     NSString *souceLangCode = [self languageCodeForLanguage:from];
     NSString *targetLangCode = [self languageCodeForLanguage:to];
     
-    // NiuTrans API free and NiuTrans pro API use different URL host
-    NSString *host = @"https://api.niutrans.com";
-    NSString *url = [NSString stringWithFormat:@"%@/NiuTransServer/translation", host];
-    
+    NSString *url = @"https://api.niutrans.com/NiuTransServer/translation";
     NSDictionary *params = @{
         @"apikey" : self.apiKey,
         @"src_text" : text,
@@ -144,6 +138,7 @@ static NSString *kNiuTransTranslateURL = @"https://api.niutrans.com/NiuTransServ
     // Response data is JSON format, but the response header is text/html, so we have to add text/html, https://github.com/tisfeng/Easydict/pull/239#discussion_r1402998211
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", nil];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
+    
     NSURLSessionTask *task = [manager POST:url parameters:params progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         EZNiuTransTranslateResponse *niuTransTranslateResult = [EZNiuTransTranslateResponse mj_objectWithKeyValues:responseObject];
         NSString *translatedText = niuTransTranslateResult.tgtText;
