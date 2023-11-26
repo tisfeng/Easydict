@@ -13,10 +13,10 @@
         <ul>
         <li>新增支持 <a href="https://niutrans.com/">小牛翻译</a> ，详情请看 <a href="https://github.com/tisfeng/Easydict#%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91">README</a> 介绍。</li>
         </ul>
-        <p><img width="480" src="https://github.com/tisfeng/Easydict/assets/25194972/376bb898-9714-4737-bc50-06296843b762" alt="Niutrans"></p>
+        <p><img src="https://github.com/tisfeng/Easydict/assets/25194972/376bb898-9714-4737-bc50-06296843b762" alt="Niutrans"></p>
         <h3 id="-">💎 优化</h3>
         <ul>
-        <li>优化了自动去除代码注释符号功能。<a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1818136014">135</a></li>
+        <li>优化了自动去除代码注释符号功能。<a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1818136014">#135</a></li>
         <li>优化了翻译结果显示逻辑，现在即使接口返回结果为空也可以显示。</li>
         </ul>
       ]]>
