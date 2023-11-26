@@ -204,7 +204,7 @@
         EZDeepLAuthKey,
         EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
-//        EZCaiyunAPIKey,
+        EZCaiyunToken,
 
         EZIntelligentQueryModeKey,
         

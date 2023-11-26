@@ -53,7 +53,7 @@ public final class CaiyunService: QueryService {
     private static let defaultTestToken = FWEncryptorAES.decryptText("hlvDXvvfjeFTjMjhkB5HMlyPWEXQhn3U1r+qIqn/YAk=", key: "Easydict")
 
     private var token: String {
-        let token = UserDefaults.standard.string(forKey: EZCaiyunAPIKey)
+        let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
         if let token, !token.isEmpty {
             return token
         } else {
@@ -68,7 +68,7 @@ public final class CaiyunService: QueryService {
         let transType = CaiyunTranslateType.type(from: from, to: to)
         guard transType != .unsupported else {
             result.errorType = .unsupportedLanguage
-            result.errorMessage = "不支持的翻译类型: \(from.rawValue) --> \(to.rawValue)"
+            result.errorMessage = "不支持的翻译类型：\(from.rawValue) --> \(to.rawValue)"
             completion(result, nil)
             return
         }

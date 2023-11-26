@@ -31,7 +31,7 @@ static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
 
 static NSString *const EZBingCookieKey = @"EZBingCookieKey";
 static NSString *const EZNiuTransAPIKey = @"EZNiuTransAPIKey";
-static NSString *const EZCaiyunAPIKey = @"EZCaiyunAPIKey";
+static NSString *const EZCaiyunToken = @"EZCaiyunToken";
 
 
 @interface EZConstKey : NSObject
