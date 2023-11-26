@@ -3,6 +3,26 @@
   <channel>
     <title>Easydict</title>
     <item>
+      <title>2.1.0</title>
+      <pubDate>Sun, 26 Nov 2023 17:00:00 +0800</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.1.0/Easydict.zip" sparkle:version="26" sparkle:shortVersionString="2.1.0" type="application/octet-stream" sparkle:edSignature="W4gH+haPANSQfbyFWbeq+LpIHQsGcHZiedkJQtYjIoN17e8WJbS5s+gekfGfDqeZEIsq7t24yjLOpANodAIGCA==" length="9288149" />
+      <description><![CDATA[
+        <h2 id="-v2-1-0-2023-11-26">[v2.1.0] - 2023-11-26</h2>
+        <h3 id="-">✨ 新功能</h3>
+        <ul>
+        <li>新增支持 <a href="https://niutrans.com/">小牛翻译</a> ，详情请看 <a href="https://github.com/tisfeng/Easydict#%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91">README</a> 介绍。</li>
+        </ul>
+        <p><img width="536" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/376bb898-9714-4737-bc50-06296843b762"></p>
+        <h3 id="-">💎 优化</h3>
+        <ul>
+        <li>优化了自动去除代码注释符号功能。<a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1818136014">135</a></li>
+        <li>优化了翻译结果显示逻辑，现在即使接口返回结果为空也可以显示。</li>
+        </ul>
+      ]]>
+      </description>
+    </item>
+    <item>
       <title>2.0.4</title>
       <pubDate>Fri, 17 Nov 2023 18:00:00 +0800</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
