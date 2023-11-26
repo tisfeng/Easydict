@@ -74,6 +74,7 @@
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
   - [Bing Translate](#bing-translate)
+  - [Niutrans](#niutrans)
 - [Smart query mode](#smart-query-mode)
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
@@ -447,6 +448,17 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 > [!NOTE] 
 > Bing TTS also uses a web API, which is also easy to trigger interface restrictions and does not report errors, so if you set Bing to the default TTS, it is recommended to set cookies.
+
+### Niutrans
+
+[Niutrans](https://niutrans.com/) requires an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+
+It is recommended to use your own APIKey, each registered user of Niutrans is given 200,000 characters of traffic per day, which is enough for daily use.
+
+```
+// xxx is the APIKey of Niutrans
+easydict://writeKeyValue?EZNiuTransAPIKey=xxx
+```
 
 ## Smart query mode
 

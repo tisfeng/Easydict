@@ -75,6 +75,7 @@
     - [配置 AuthKey](#配置-authkey)
     - [配置 API 调用方式](#配置-api-调用方式)
   - [Bing 翻译](#bing-翻译)
+  - [小牛翻译](#小牛翻译)
 - [智能查询模式](#智能查询模式)
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
@@ -446,6 +447,17 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 > [!NOTE]
 > Bing TTS 用的也是网页接口，同样容易触发接口限制，且不会报错提示，因此如果将 Bing 设为默认的 TTS，建议设置 cookie。
+
+### 小牛翻译
+
+[小牛翻译](https://niutrans.com/) 需要 APIKey，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+
+建议使用自己的 APIKey，每个注册用户小牛翻译每日赠送 20 万字符流量，足以日常使用了。
+
+```
+// xxx 小牛翻译的 APIKey
+easydict://writeKeyValue?EZNiuTransAPIKey=xxx
+```
 
 ## 智能查询模式
 
