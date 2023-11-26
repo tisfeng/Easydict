@@ -163,7 +163,7 @@ userInfo:nil]
 
 /// 单词直达链接
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    return nil;
+    return self.link;
 }
 
 
