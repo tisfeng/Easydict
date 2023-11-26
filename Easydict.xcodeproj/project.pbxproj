@@ -217,6 +217,7 @@
 		27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */; };
 		27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
+		6228426E2B1342AF00AEF58A /* EZBingDictService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6228426D2B1342AF00AEF58A /* EZBingDictService.m */; };
 		6295DE312A84D82E006145F4 /* EZBingTranslateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */; };
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
 		62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZBingRequest.m */; };
@@ -651,6 +652,8 @@
 		378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasydictTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6220AD592A82812300BBFB52 /* EZBingService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingService.h; sourceTree = "<group>"; };
 		6220AD5A2A82812300BBFB52 /* EZBingService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingService.m; sourceTree = "<group>"; };
+		6228426C2B1342AF00AEF58A /* EZBingDictService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingDictService.h; sourceTree = "<group>"; };
+		6228426D2B1342AF00AEF58A /* EZBingDictService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingDictService.m; sourceTree = "<group>"; };
 		6295DE2F2A84D82E006145F4 /* EZBingTranslateModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingTranslateModel.h; sourceTree = "<group>"; };
 		6295DE302A84D82E006145F4 /* EZBingTranslateModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingTranslateModel.m; sourceTree = "<group>"; };
 		6295DE322A84EF76006145F4 /* EZBingLookupModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingLookupModel.h; sourceTree = "<group>"; };
@@ -1881,6 +1884,8 @@
 				037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */,
 				03F639932AA6CFBB009B9914 /* EZBingConfig.h */,
 				03F639942AA6CFBB009B9914 /* EZBingConfig.m */,
+				6228426C2B1342AF00AEF58A /* EZBingDictService.h */,
+				6228426D2B1342AF00AEF58A /* EZBingDictService.m */,
 			);
 			path = Bing;
 			sourceTree = "<group>";
@@ -2335,6 +2340,7 @@
 				03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */,
 				03D8B26E292DBD2000D5A811 /* EZCoordinateUtils.m in Sources */,
 				03B0232029231FA6001C7E63 /* NSWindow+MM.m in Sources */,
+				6228426E2B1342AF00AEF58A /* EZBingDictService.m in Sources */,
 				03542A30293645DF00C34C33 /* EZAppleService.m in Sources */,
 				03BB2DE329F5772F00447EDD /* EZAudioButton.m in Sources */,
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,

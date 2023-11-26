@@ -11,9 +11,11 @@
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
 #import "EZConfiguration.h"
+#import "EZBingDictService.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
+@property (nonatomic, strong) EZBingDictService *dictService;
 @property (nonatomic, assign) BOOL canRetry;
 @end
 
@@ -23,6 +25,8 @@
     if (self = [super init]) {
         _canRetry = YES;
         _request = [[EZBingRequest alloc] init];
+        _dictService = [[EZBingDictService alloc] initWithHost:@"https://www.bing.com"];
+        
     }
     return self;
 }
@@ -89,8 +93,20 @@
     return orderedDict;
 }
 
+- (BOOL)isChineseEnglishWordTranslate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
+    if ([from isEqualToString:EZLanguageSimplifiedChinese] || [from isEqualToString:EZLanguageEnglish] || [to isEqualToString:EZLanguageSimplifiedChinese] || [to isEqualToString:EZLanguageEnglish]) {
+        return YES;
+    }
+    return NO;
+}
+
 - (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
+        return;
+    }
+    
+    if ([self isChineseEnglishWordTranslate:text from:from to:to]) {
+        [self.dictService translateWithWord:text];
         return;
     }
     
