@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct TencentTranslateType {
+struct TencentTranslateType: Equatable {
+
     var sourceLanguage: String
     var targetLanguage: String
 
