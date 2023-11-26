@@ -7,3 +7,4 @@
 #import "EZQueryService.h"
 #import "EZConstKey.h"
 #import "FWEncryptorAES.h"
+#import "NSString+EZChineseText.h"

@@ -180,6 +180,7 @@
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
+		03CF88632B137F650030C199 /* Array+ChineseTextConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
@@ -584,6 +585,7 @@
 		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
+		03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+ChineseTextConversion.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
 		03D043502928935300E7559E /* EZMainQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainQueryWindow.h; sourceTree = "<group>"; };
@@ -1021,6 +1023,7 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03CF88602B137ECB0030C199 /* Swift */,
 				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
@@ -1670,6 +1673,22 @@
 			path = SystemUtility;
 			sourceTree = "<group>";
 		};
+		03CF88602B137ECB0030C199 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				03CF88612B137ED60030C199 /* Array */,
+			);
+			path = Swift;
+			sourceTree = "<group>";
+		};
+		03CF88612B137ED60030C199 /* Array */ = {
+			isa = PBXGroup;
+			children = (
+				03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */,
+			);
+			path = Array;
+			sourceTree = "<group>";
+		};
 		03D0434A292884B900E7559E /* MiniQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
@@ -2247,6 +2266,7 @@
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
+				03CF88632B137F650030C199 /* Array+ChineseTextConversion.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,

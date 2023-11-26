@@ -39,8 +39,8 @@ NS_SWIFT_NAME(QueryService)
 
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 
-@property (nonatomic, copy, nullable) void (^didFinishBlock)(EZQueryResult *result, NSError *error);
-@property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *error);
+@property (nonatomic, copy, nullable) void (^didFinishBlock)(EZQueryResult *result,  NSError * _Nullable error);
+@property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *_Nullable error);
 
 
 /// 支持的语言

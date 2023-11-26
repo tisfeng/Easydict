@@ -15,6 +15,11 @@ struct CaiyunTranslateType: RawRepresentable {
 
     // Align with the web interface
     static func type(from: Language, to: Language) -> CaiyunTranslateType {
+        // Auto convert Tradional Chinese
+        if to == .traditionalChinese {
+            return transType(from: from, to: to)
+        }
+        
         if from.isChinese {
             guard [Language.english, .japanese, .korean, .spanish, .french, .russian].contains(to) else {
                 return .unsupported
@@ -48,6 +53,10 @@ struct CaiyunTranslateType: RawRepresentable {
                 return .unsupported
             }
         }
+        return transType(from: from, to: to)
+    }
+    
+    static func transType(from: Language, to: Language) -> CaiyunTranslateType {
         return CaiyunTranslateType(rawValue: "\(from.caiyunValue)2\(to.caiyunValue)")
     }
 }
