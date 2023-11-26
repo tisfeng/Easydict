@@ -685,6 +685,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         result.error = error;
         
+        if (service.autoConvertToTraditionalChineseResult) {
+            [service.result convertToTraditionalChineseResult];
+        }
+        
         BOOL hideResult = !result.manulShow && !result.hasTranslatedResult && result.isWarningErrorType;
         if (hideResult) {
             result.isShowing = NO;

@@ -7,7 +7,6 @@
 //
 
 #import "EZNiuTransTranslate.h"
-#import "NSArray+EZChineseText.h"
 #import "EZNiuTransTranslateResponse.h"
 #import "FWEncryptorAES.h"
 

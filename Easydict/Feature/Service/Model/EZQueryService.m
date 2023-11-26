@@ -132,7 +132,6 @@ userInfo:nil]
     [self ocr:queryModel.OCRImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
 }
 
-
 #pragma mark - 子类重写
 
 - (EZServiceType)serviceType {

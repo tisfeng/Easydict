@@ -74,15 +74,7 @@ public final class CaiyunService: QueryService {
             return
         }
         
-        self.didFinishBlock = ({ [weak self] (result: EZQueryResult, error: Error?) in
-            guard let self = self else { return }
-            guard var texts = result.translatedResults else { return }
-
-            if self.queryModel.queryTargetLanguage == Language.traditionalChinese {
-                texts = texts.toTraditionalChineseTexts()
-            }
-            result.translatedResults = texts
-        })
+        self.autoConvertToTraditionalChineseResult = true
 
         // Docs: https://docs.caiyunapp.com/blog/
         let parameters: [String: Any] = [
@@ -112,7 +104,6 @@ public final class CaiyunService: QueryService {
                     result.to = to
                     result.queryText = text
                     result.translatedResults = value.target
-                    self.didFinishBlock!(result, nil)
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Caiyun lookup error \(error)")

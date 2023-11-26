@@ -42,6 +42,8 @@ NS_SWIFT_NAME(QueryService)
 @property (nonatomic, copy, nullable) void (^didFinishBlock)(EZQueryResult *result,  NSError * _Nullable error);
 @property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *_Nullable error);
 
+@property (nonatomic, assign) BOOL autoConvertToTraditionalChineseResult;
+
 
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;
