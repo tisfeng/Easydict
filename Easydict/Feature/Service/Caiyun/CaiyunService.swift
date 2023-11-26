@@ -69,8 +69,9 @@ public final class CaiyunService: QueryService {
             return
         }
 
+        // Docs: https://docs.caiyunapp.com/blog/
         let parameters: [String: Any] = [
-            "source": text.split(separator: "\n"),
+            "source": text.split(separator: "\n", omittingEmptySubsequences: false),
             "trans_type": transType.rawValue,
             "media": "text",
             "request_id": "Easydict",
