@@ -2175,6 +2175,17 @@
         }
       }
     },
+    "tencent_translate" : {
+      "comment" : "The name of Tencent Translate",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "腾讯翻译"
+          }
+        }
+      }
+    },
     "toggle_languages" : {
       "localizations" : {
         "en" : {

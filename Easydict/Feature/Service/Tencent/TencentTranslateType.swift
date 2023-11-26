@@ -8,10 +8,11 @@
 
 import Foundation
 
-struct TencentTranslateType: RawRepresentable {
-    var rawValue: String
+struct TencentTranslateType {
+    var sourceLanguage: String
+    var targetLanguage: String
 
-    static let unsupported = TencentTranslateType(rawValue: "unsupported")
+    static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
     // Align with the web interface
     static func type(from: Language, to: Language) -> TencentTranslateType {
@@ -92,7 +93,7 @@ struct TencentTranslateType: RawRepresentable {
                 return .unsupported
             }
         }
-        return TencentTranslateType(rawValue: "\(from.tencentValue)2\(to.tencentValue)")
+        return TencentTranslateType(sourceLanguage: from.tencentValue, targetLanguage: to.tencentValue)
     }
 }
 

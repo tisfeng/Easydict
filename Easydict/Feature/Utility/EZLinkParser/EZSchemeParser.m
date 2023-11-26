@@ -206,6 +206,8 @@
         EZNiuTransAPIKey,
         EZCaiyunToken,
 
+        EZTencentAPIKey,
+
         EZIntelligentQueryModeKey,
         
         EZBingCookieKey,
