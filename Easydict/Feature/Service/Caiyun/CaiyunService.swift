@@ -31,6 +31,10 @@ public final class CaiyunService: QueryService {
             .simplifiedChinese: "zh",
             .english: "en",
             .japanese: "ja",
+            .korean: "ko",
+            .french: "fr",
+            .spanish: "es",
+            .russian: "ru",
         ]
         dic.forEach { key, value in
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
