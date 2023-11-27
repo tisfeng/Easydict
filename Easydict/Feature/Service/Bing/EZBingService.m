@@ -91,11 +91,7 @@
 }
 
 - (BOOL)isEnglishWordToChinese:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
-    BOOL should = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
-    if (!should) {
-        return NO;
-    }
-    if ([from isEqualToString:EZLanguageEnglish] && [to isEqualToString:EZLanguageSimplifiedChinese]) {
+    if ([from isEqualToString:EZLanguageEnglish] && [to isEqualToString:EZLanguageSimplifiedChinese] && [text shouldQueryDictionaryWithLanguage:from maxWordCount:1]) {
         return YES;
     }
     return NO;
@@ -108,7 +104,7 @@
     
     if ([self isEnglishWordToChinese:text from:from to:to]) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
-            [self parseBindDictTranslate:json word:text completion:completion];
+            [self parseBingDictTranslate:json word:text completion:completion];
         }];
         return;
     }
@@ -326,7 +322,7 @@ outer:
     }
 }
 
-- (void)parseBindDictTranslate:(NSDictionary *)json word:(NSString *)word completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+- (void)parseBingDictTranslate:(NSDictionary *)json word:(NSString *)word completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     @try {
         NSArray *value = json[@"value"];
         if (value.count == 0) {
