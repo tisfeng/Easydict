@@ -18,6 +18,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
 @property (nonatomic, strong) AFHTTPSessionManager *htmlSession;
 @property (nonatomic, strong) AFHTTPSessionManager *translateSession;
 @property (nonatomic, strong) AFHTTPSessionManager *ttsSession;
+@property (nonatomic, strong) AFHTTPSessionManager *dictTranslateSession;
 @property (nonatomic, strong) NSData *translateData;
 @property (nonatomic, strong) NSData *lookupData;
 @property (nonatomic, strong) NSError *translateError;
@@ -438,6 +439,20 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
     }];
 }
 
+- (void)translateTextFromDict:(NSString *)text completion:(void (^)(NSDictionary * _Nullable json, NSError * _Nullable error))completion {
+    assert(completion != nil);
+    NSString *url = [NSString stringWithFormat:@"https://www.bing.com/api/v7/dictionarywords/search?q=%@&appid=371E7B2AF0F9B84EC491D731DF90A55719C7D209&mkt=zh-cn&pname=bingdict&img=1", text];
+    [self.dictTranslateSession GET:url parameters:nil progress:nil  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (![responseObject isKindOfClass:[NSDictionary class]]) {
+           completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate json parse fail", nil));
+            return;
+        }
+        completion(responseObject, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
 
 /**
  Generate ssml with text and language.
@@ -565,6 +580,19 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         _ttsSession = session;
     }
     return _ttsSession;
+}
+
+- (AFHTTPSessionManager *)dictTranslateSession {
+    if (!_dictTranslateSession) {
+        AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
+        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+        [requestSerializer setValue:EZUserAgent forHTTPHeaderField:@"User-Agent"];
+        [requestSerializer setValue:self.bingConfig.cookie forHTTPHeaderField:@"Cookie"];
+        session.requestSerializer = requestSerializer;
+        session.responseSerializer = [AFJSONResponseSerializer serializer];
+        _dictTranslateSession = session;
+    }
+    return _dictTranslateSession;
 }
 
 @end

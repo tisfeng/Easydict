@@ -11,11 +11,10 @@
 #import "EZBingTranslateModel.h"
 #import "EZBingLookupModel.h"
 #import "EZConfiguration.h"
-#import "EZBingDictService.h"
+#import "NSString+EZUtils.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
-@property (nonatomic, strong) EZBingDictService *dictService;
 @property (nonatomic, assign) BOOL canRetry;
 @end
 
@@ -25,8 +24,6 @@
     if (self = [super init]) {
         _canRetry = YES;
         _request = [[EZBingRequest alloc] init];
-        _dictService = [[EZBingDictService alloc] initWithHost:@"https://www.bing.com"];
-        
     }
     return self;
 }
@@ -93,8 +90,12 @@
     return orderedDict;
 }
 
-- (BOOL)isChineseEnglishWordTranslate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
-    if ([from isEqualToString:EZLanguageSimplifiedChinese] || [from isEqualToString:EZLanguageEnglish] || [to isEqualToString:EZLanguageSimplifiedChinese] || [to isEqualToString:EZLanguageEnglish]) {
+- (BOOL)isEnglishWordToChinese:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
+    BOOL should = [text shouldQueryDictionaryWithLanguage:from maxWordCount:1];
+    if (!should) {
+        return NO;
+    }
+    if ([from isEqualToString:EZLanguageEnglish] && [to isEqualToString:EZLanguageSimplifiedChinese]) {
         return YES;
     }
     return NO;
@@ -105,8 +106,10 @@
         return;
     }
     
-    if ([self isChineseEnglishWordTranslate:text from:from to:to]) {
-        [self.dictService translateWithWord:text];
+    if ([self isEnglishWordToChinese:text from:from to:to]) {
+        [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
+            [self parseBindDictTranslate:json completion:completion];
+        }];
         return;
     }
     
@@ -323,5 +326,85 @@ outer:
     }
 }
 
+- (void)parseBindDictTranslate:(NSDictionary *)json completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+    @try {
+        NSArray *value = json[@"value"];
+        if (value.count == 0) {
+            completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate value is empty", nil));
+            return;
+        }
+        NSArray *meaningGroups = value.firstObject[@"meaningGroups"];
+        if (meaningGroups.count == 0) {
+            completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate meaning groups is empty", nil));
+            return;
+        }
+        
+        NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
+        NSMutableArray<EZTranslateExchange *> *exchanges = [NSMutableArray array];
+        NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
+        
+        for (NSDictionary *meaningGroup in meaningGroups) {
+            NSArray *partOfSpeech = meaningGroup[@"partsOfSpeech"];
+            if (partOfSpeech.count == 0) {
+                continue;
+            }
+            NSString *name = partOfSpeech.firstObject[@"name"];
+            NSString *description = partOfSpeech.firstObject[@"description"];
+            NSArray *meanings = meaningGroup[@"meanings"];
+            if (meanings.count == 0) {
+                continue;
+            }
+            NSArray *richDefinitions = meanings.firstObject[@"richDefinitions"];
+            NSArray *fragments = richDefinitions.firstObject[@"fragments"];
+            if ([description isEqualToString:@"快速释义"]) {
+                EZTranslatePart *partObj = [EZTranslatePart new];
+                partObj.part = name;
+                partObj.means = [fragments mm_map:^id _Nullable(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+                    return obj[@"text"];
+                }];
+                [parts addObject:partObj];
+            } else if ([description isEqualToString:@"词组"]) {
+                for (NSDictionary *richDefinition in richDefinitions) {
+                    NSArray *examples = richDefinition[@"examples"];
+                    if (examples.count != 2) {
+                        continue;
+                    }
+                    EZTranslateSimpleWord *simpleWord = [EZTranslateSimpleWord new];
+                    simpleWord.word = examples.firstObject;
+                    simpleWord.meansText = examples.lastObject;
+                    [simpleWords addObject:simpleWord];
+                }
+            }
+            if ([name isEqualToString:@"变形"]) {
+                for (NSDictionary *fragment in fragments) {
+                    NSString *text = fragment[@"text"];
+                    NSArray *value = [text componentsSeparatedByString:@"："];
+                    if (value.count == 2) {
+                        EZTranslateExchange *exchange = [EZTranslateExchange new];
+                        exchange.name = value.firstObject;
+                        exchange.words = @[value.lastObject];
+                        [exchanges addObject:exchange];
+                    }
+                }
+            }
+        }
+        
+        EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
+        self.result.wordResult = wordResult;
+        if (parts.count) {
+            wordResult.parts = parts;
+        }
+        if (exchanges.count) {
+            wordResult.exchanges = exchanges;
+        }
+        if (simpleWords.count) {
+            wordResult.simpleWords = simpleWords;
+        }
+        completion(self.result, nil);
+    } @catch (NSException *exception) {
+        MMLogInfo(@"微软词典接口数据解析异常 %@", exception);
+        completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate data parse failed", exception));
+    }
+}
 
 @end
