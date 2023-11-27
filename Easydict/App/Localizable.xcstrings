@@ -408,8 +408,25 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
+          }
+        }
+      }
+    },
+    "caiyun_translate" : {
+      "comment" : "The name of Caiyun Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩云小译"
           }
         }
       }
@@ -595,7 +612,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -865,7 +882,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1036,7 +1053,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1137,7 +1154,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1148,7 +1165,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1159,7 +1176,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1186,7 +1203,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1325,7 +1342,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1375,6 +1392,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标划词窗口类型:"
+          }
+        }
+      }
+    },
+    "niuTrans_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译"
           }
         }
       }
@@ -1512,7 +1545,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1769,7 +1802,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "使用译文替换"
           }
         }
@@ -2053,7 +2086,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -2128,7 +2161,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -2139,7 +2172,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -2157,6 +2190,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消钉住"
+          }
+        }
+      }
+    },
+    "unsupported_translation_type" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported translation type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持的翻译类型"
           }
         }
       }
@@ -2189,22 +2238,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
-          }
-        }
-      }
-    },
-    "niuTrans_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NiuTrans"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小牛翻译"
           }
         }
       }

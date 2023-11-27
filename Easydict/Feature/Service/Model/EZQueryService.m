@@ -132,7 +132,6 @@ userInfo:nil]
     [self ocr:queryModel.OCRImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
 }
 
-
 #pragma mark - 子类重写
 
 - (EZServiceType)serviceType {
@@ -164,6 +163,10 @@ userInfo:nil]
 /// 单词直达链接
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
     return self.link;
+}
+
+- (BOOL)autoConvertToTraditionalChineseResult {
+    return NO;
 }
 
 

@@ -177,6 +177,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)reset;
 
+- (void)convertToTraditionalChineseResult;
+
 @end
 
 NS_ASSUME_NONNULL_END

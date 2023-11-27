@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +29,7 @@ typedef NS_ENUM(NSUInteger, EZShowWindowPosition) {
 
 FOUNDATION_EXPORT NSString *const EZServiceTypeKey;
 
-typedef NSString *EZServiceType NS_STRING_ENUM;
+typedef NSString *EZServiceType NS_STRING_ENUM NS_SWIFT_NAME(ServiceType);
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeGoogle;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBaidu;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeYoudao;
@@ -39,6 +40,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeOpenAI;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
