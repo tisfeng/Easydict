@@ -417,6 +417,12 @@
     "caiyun_translate" : {
       "comment" : "The name of Caiyun Translate",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1390,6 +1396,22 @@
         }
       }
     },
+    "niuTrans_translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译"
+          }
+        }
+      }
+    },
     "no_results_found" : {
       "localizations" : {
         "en" : {
@@ -2200,22 +2222,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "火山翻译"
-          }
-        }
-      }
-    },
-    "niuTrans_translate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NiuTrans"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小牛翻译"
           }
         }
       }
