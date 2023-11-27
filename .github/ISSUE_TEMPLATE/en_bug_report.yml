@@ -76,6 +76,6 @@ body:
     id: PR
     attributes:
       label: Are you willing to submit a PR to fix this issue?
-      description: We welcome you to submit a PR to fix this issue. When the developer is short of manpower, submitting a PR is the fastest way to solve the problem. If you are not familiar with Objective-C, you can try ChatGPT, maybe it can help you.
+      description: We welcome you to submit a PR to fix this issue. When the developer is short of manpower, submitting a PR is the fastest way to solve the problem. If you are not familiar with objc or Swift you can try ChatGPT, maybe it can help you.
       options:
         - label: I'm willing to submit a PR
