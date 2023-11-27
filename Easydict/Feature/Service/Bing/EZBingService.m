@@ -108,7 +108,7 @@
     
     if ([self isEnglishWordToChinese:text from:from to:to]) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
-            [self parseBindDictTranslate:json completion:completion];
+            [self parseBindDictTranslate:json word:text completion:completion];
         }];
         return;
     }
@@ -326,22 +326,23 @@ outer:
     }
 }
 
-- (void)parseBindDictTranslate:(NSDictionary *)json completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+- (void)parseBindDictTranslate:(NSDictionary *)json word:(NSString *)word completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     @try {
         NSArray *value = json[@"value"];
         if (value.count == 0) {
-            completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate value is empty", nil));
+            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate value is empty", nil));
             return;
         }
         NSArray *meaningGroups = value.firstObject[@"meaningGroups"];
         if (meaningGroups.count == 0) {
-            completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate meaning groups is empty", nil));
+            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate meaning groups is empty", nil));
             return;
         }
         
         NSMutableArray<EZTranslatePart *> *parts = [NSMutableArray array];
         NSMutableArray<EZTranslateExchange *> *exchanges = [NSMutableArray array];
         NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
+        NSMutableArray<EZWordPhonetic *> *phonetics = [NSMutableArray array];
         
         for (NSDictionary *meaningGroup in meaningGroups) {
             NSArray *partOfSpeech = meaningGroup[@"partsOfSpeech"];
@@ -356,7 +357,19 @@ outer:
             }
             NSArray *richDefinitions = meanings.firstObject[@"richDefinitions"];
             NSArray *fragments = richDefinitions.firstObject[@"fragments"];
-            if ([description isEqualToString:@"快速释义"]) {
+            if ([description isEqualToString:@"发音"]) {
+                if ([name isEqualToString:@"US"] || [name isEqualToString:@"UK"]) {
+                    NSString *usAudioUrl = value.firstObject[@"pronunciationAudio"][@"contentUrl"];
+                    EZWordPhonetic *phonetic = [EZWordPhonetic new];
+                    phonetic.word = word;
+                    phonetic.language = EZLanguageEnglish;
+                    phonetic.name = [name isEqualToString:@"US"] ? @"美" : @"英";
+                    phonetic.value = fragments.firstObject[@"text"];
+                    phonetic.speakURL = [name isEqualToString:@"US"] ? usAudioUrl : [usAudioUrl stringByReplacingOccurrencesOfString:@"tom" withString:@"george"];
+                    phonetic.accent = name;
+                    [phonetics addObject:phonetic];
+                }
+            } else if ([description isEqualToString:@"快速释义"]) {
                 EZTranslatePart *partObj = [EZTranslatePart new];
                 partObj.part = name;
                 partObj.means = [fragments mm_map:^id _Nullable(NSDictionary *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -391,6 +404,9 @@ outer:
         
         EZTranslateWordResult *wordResult = [EZTranslateWordResult new];
         self.result.wordResult = wordResult;
+        if (phonetics.count) {
+            wordResult.phonetics = phonetics;
+        }
         if (parts.count) {
             wordResult.parts = parts;
         }
@@ -399,6 +415,14 @@ outer:
         }
         if (simpleWords.count) {
             wordResult.simpleWords = simpleWords;
+        }
+        self.result.from = EZLanguageEnglish;
+        self.result.to = EZLanguageSimplifiedChinese;
+        
+        // 接口没有字段表示翻译结果，从parts里去一个当作结果。
+        NSString *translateResult = wordResult.parts.firstObject.means.firstObject;
+        if (translateResult.length) {
+            self.result.translatedResults = @[translateResult];
         }
         completion(self.result, nil);
     } @catch (NSException *exception) {
