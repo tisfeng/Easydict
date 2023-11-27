@@ -2194,6 +2194,22 @@
         }
       }
     },
+    "unsupported_translation_type" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported translation type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持的翻译类型"
+          }
+        }
+      }
+    },
     "us_phonetic" : {
       "localizations" : {
         "en" : {
