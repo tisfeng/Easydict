@@ -66,7 +66,7 @@ public final class CaiyunService: QueryService {
         if prehandleQueryTextLanguage(text, autoConvertChineseText: true, from: from, to: to, completion: completion) {
             return
         }
-        let transType = CaiyunTranslateType.type(from: from, to: to)
+        let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             result.errorType = .unsupportedLanguage
             let unsupportedType = NSLocalizedString("unsupported_translation_type", comment: "")

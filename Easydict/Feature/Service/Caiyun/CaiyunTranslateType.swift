@@ -10,54 +10,28 @@ import Foundation
 
 struct CaiyunTranslateType: RawRepresentable {
     var rawValue: String
-
+    
     static let unsupported = CaiyunTranslateType(rawValue: "unsupported")
-
-    // Align with the web interface
-    static func type(from: Language, to: Language) -> CaiyunTranslateType {
-        // Auto convert Tradional Chinese
-        if to == .traditionalChinese {
-            return transType(from: from, to: to)
-        }
-        
-        if from.isChinese {
-            guard [Language.english, .japanese, .korean, .spanish, .french, .russian].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .english {
-            guard [Language.simplifiedChinese, .spanish, .french, .russian].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .japanese {
-            guard [Language.simplifiedChinese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .korean {
-            guard [Language.simplifiedChinese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .spanish {
-            guard [Language.simplifiedChinese, .english, .french, .russian].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .french {
-            guard [Language.simplifiedChinese, .english, .spanish, .russian].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .french {
-            guard [Language.simplifiedChinese, .english, .spanish, .french].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .auto {
-            guard [Language.simplifiedChinese, .english, .japanese, .korean, .spanish, .french, .russian].contains(to) else {
-                return .unsupported
-            }
-        }
-        return transType(from: from, to: to)
-    }
+    
+    // Align with the web interface, https://fanyi.caiyunapp.com/#/
+    static let supportedTypes: [Language: [Language]] = [
+        .simplifiedChinese: [.english, .japanese, .korean, .spanish, .french, .russian],
+        .english: [.simplifiedChinese, .spanish, .french, .russian],
+        .japanese: [.simplifiedChinese],
+        .korean: [.simplifiedChinese],
+        .spanish: [.simplifiedChinese, .english, .french, .russian],
+        .french: [.simplifiedChinese, .english, .spanish, .russian],
+        .russian: [.simplifiedChinese, .english, .spanish, .french],
+    ]
     
     static func transType(from: Language, to: Language) -> CaiyunTranslateType {
-        return CaiyunTranslateType(rawValue: "\(from.caiyunValue)2\(to.caiyunValue)")
+        // We can auto convert to Traditional Chinese.
+        if (supportedTypes[from] != nil && to == .traditionalChinese) ||
+            (supportedTypes[from]?.contains(to) == true) {
+            return CaiyunTranslateType(rawValue: "\(from.caiyunValue)2\(to.caiyunValue)")
+        } else {
+            return .unsupported
+        }
     }
 }
 
