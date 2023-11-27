@@ -408,7 +408,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -612,7 +612,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -882,7 +882,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1053,7 +1053,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1154,7 +1154,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1165,7 +1165,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1176,7 +1176,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1203,7 +1203,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1342,7 +1342,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1545,7 +1545,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -1802,7 +1802,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "使用译文替换"
           }
         }
@@ -2086,7 +2086,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -2161,7 +2161,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
@@ -2172,7 +2172,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : ""
           }
         }
