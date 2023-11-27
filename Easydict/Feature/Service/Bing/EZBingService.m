@@ -424,6 +424,7 @@ outer:
         if (translateResult.length) {
             self.result.translatedResults = @[translateResult];
         }
+        self.result.raw = json;
         completion(self.result, nil);
     } @catch (NSException *exception) {
         MMLogInfo(@"微软词典接口数据解析异常 %@", exception);

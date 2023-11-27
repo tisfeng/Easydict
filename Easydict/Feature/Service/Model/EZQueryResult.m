@@ -22,7 +22,7 @@
  interjection -> interj.
  */
 NSString *getPartName(NSString *part) {
-    static NSDictionary *dict = @{
+    static NSDictionary *partOfSpeechMap = @{
         @"adjective" : @"adj.",
         @"adj" : @"adj.",
         @"adverb" : @"adv.",
@@ -34,9 +34,31 @@ NSString *getPartName(NSString *part) {
         @"conjunction" : @"conj.",
         @"interjection" : @"interj.",
         @"det": @"det.", // determinative 限定词
+        @"abbreviation": @"abbr.",
+        @"abbr": @"abbr.",
+        @"web": @"web."
     };
     
-    NSString *partName = dict[part];
+    static NSDictionary *chinesePartOfSpeechMap = @{
+        @"形容词" : @"adj.",
+        @"副词" : @"adv.",
+        @"动词" : @"v.",
+        @"名词" : @"n.",
+        @"代词" : @"pron.",
+        @"介词" : @"prep.",
+        @"连词" : @"conj.",
+        @"感叹词" : @"interj.",
+        @"限定词" : @"det.", // determinative 限定词
+        @"缩写" : @"abbr.",
+        @"网络" : @"web."
+    };
+    
+    NSString *partName = partOfSpeechMap[part];
+    
+    if (!partName) {
+        partName = chinesePartOfSpeechMap[part];
+    }
+    
     if (!partName) {
         partName = part;
     }
