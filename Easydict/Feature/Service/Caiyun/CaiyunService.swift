@@ -24,20 +24,9 @@ public final class CaiyunService: QueryService {
     }
 
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
-        // TODO: Replace MMOrderedDictionary in the API
+        // TODO: Replace MMOrderedDictionary.
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        let dic: [Language: String] = [
-            .auto: "auto",
-            .simplifiedChinese: "zh",
-            .traditionalChinese: "zh",
-            .english: "en",
-            .japanese: "ja",
-            .korean: "ko",
-            .french: "fr",
-            .spanish: "es",
-            .russian: "ru",
-        ]
-        dic.forEach { key, value in
+        CaiyunTranslateType.supportLanguagesDictionary.forEach { key, value in
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict

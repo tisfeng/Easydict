@@ -13,7 +13,7 @@ struct CaiyunTranslateType: RawRepresentable {
     
     static let unsupported = CaiyunTranslateType(rawValue: "unsupported")
     
-    // Align with the web interface, https://fanyi.caiyunapp.com/#/
+    // Align with the web interface https://fanyi.caiyunapp.com/#/
     static let supportedTypes: [Language: [Language]] = [
         .simplifiedChinese: [.english, .japanese, .korean, .spanish, .french, .russian],
         .english: [.simplifiedChinese, .spanish, .french, .russian],
@@ -24,33 +24,29 @@ struct CaiyunTranslateType: RawRepresentable {
         .russian: [.simplifiedChinese, .english, .spanish, .french],
     ]
     
+    static let supportLanguagesDictionary: [Language: String] = [
+        .auto: "auto",
+        .simplifiedChinese: "zh",
+        .traditionalChinese: "zh",
+        .english: "en",
+        .japanese: "ja",
+        .korean: "ko",
+        .french: "fr",
+        .spanish: "es",
+        .russian: "ru",
+    ]
+    
     static func transType(from: Language, to: Language) -> CaiyunTranslateType {
         // We can auto convert to Traditional Chinese.
         if (supportedTypes[from] != nil && to == .traditionalChinese) ||
             (supportedTypes[from]?.contains(to) == true) {
-            return CaiyunTranslateType(rawValue: "\(from.caiyunValue)2\(to.caiyunValue)")
+            guard let from = supportLanguagesDictionary[from],
+                  let to = supportLanguagesDictionary[to] else {
+                return .unsupported
+            }
+            return CaiyunTranslateType(rawValue: "\(from)2\(to)")
         } else {
             return .unsupported
-        }
-    }
-}
-
-extension Language {
-    var isChinese: Bool {
-        [Language.classicalChinese, .simplifiedChinese, .traditionalChinese].contains(self)
-    }
-
-    var caiyunValue: String {
-        switch self {
-        case .classicalChinese, .simplifiedChinese, .traditionalChinese: return "zh"
-        case .english: return "en"
-        case .japanese: return "ja"
-        case .korean: return "ko"
-        case .spanish: return "es"
-        case .french: return "fr"
-        case .russian: return "ru"
-        case .auto: return "auto"
-        default: return ""
         }
     }
 }
