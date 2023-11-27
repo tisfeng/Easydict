@@ -133,8 +133,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         return;
     }
     
-    self.autoConvertToTraditionalChineseResult = YES;
-    
     if (self.apiType == EZDeepLTranslationAPIWebFirst) {
         [self deepLWebTranslate:text from:from to:to completion:completion];
     } else {
@@ -144,6 +142,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"deepL not support ocr");
+}
+
+- (BOOL)autoConvertToTraditionalChineseResult {
+    return YES;
 }
 
 #pragma mark - WebView Translate

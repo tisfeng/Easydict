@@ -61,8 +61,12 @@ public final class CaiyunService: QueryService {
             return CaiyunService.defaultTestToken
         }
     }
+    
+    override public func autoConvertToTraditionalChineseResult() -> Bool {
+        return true
+    }
 
-    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {        
         if prehandleQueryTextLanguage(text, autoConvertChineseText: true, from: from, to: to, completion: completion) {
             return
         }
@@ -74,8 +78,6 @@ public final class CaiyunService: QueryService {
             completion(result, nil)
             return
         }
-        
-        self.autoConvertToTraditionalChineseResult = true
 
         // Docs: https://docs.caiyunapp.com/blog/
         let parameters: [String: Any] = [

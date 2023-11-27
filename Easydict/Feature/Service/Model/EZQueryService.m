@@ -165,6 +165,10 @@ userInfo:nil]
     return nil;
 }
 
+- (BOOL)autoConvertToTraditionalChineseResult {
+    return NO;
+}
+
 
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MethodNotImplemented();
