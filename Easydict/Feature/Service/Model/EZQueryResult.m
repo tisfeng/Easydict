@@ -8,6 +8,7 @@
 
 #import "EZQueryResult.h"
 #import "EZLocalStorage.h"
+#import "NSArray+EZChineseText.h"
 
 /// Convert part
 /**
@@ -179,6 +180,10 @@ NSString *getPartName(NSString *part) {
     self.didFinishLoadingHTMLBlock = nil;
     [self.webViewManager reset];
     self.showReplaceButton = NO;
+}
+
+- (void)convertToTraditionalChineseResult {
+    self.translatedResults = [self.translatedResults toTraditionalChineseTexts];
 }
 
 @end

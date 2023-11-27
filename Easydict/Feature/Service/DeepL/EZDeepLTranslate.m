@@ -10,7 +10,6 @@
 #import "EZWebViewTranslator.h"
 #import "EZTranslateError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
-#import "NSArray+EZChineseText.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 
@@ -134,30 +133,19 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         return;
     }
     
-    mm_weakify(self);
-    [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
-        mm_strongify(self);
-        NSArray *texts = result.translatedResults;
-        if ([self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
-            texts = [texts toTraditionalChineseTexts];
-        }
-        result.translatedResults = texts;
-    }];
-    
-    void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
-        self.didFinishBlock(result, error);
-        completion(result, error);
-    };
-        
     if (self.apiType == EZDeepLTranslationAPIWebFirst) {
-        [self deepLWebTranslate:text from:from to:to completion:callback];
+        [self deepLWebTranslate:text from:from to:to completion:completion];
     } else {
-        [self deepLTranslate:text from:from to:to completion:callback];
+        [self deepLTranslate:text from:from to:to completion:completion];
     }
 }
 
 - (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     NSLog(@"deepL not support ocr");
+}
+
+- (BOOL)autoConvertToTraditionalChineseResult {
+    return YES;
 }
 
 #pragma mark - WebView Translate

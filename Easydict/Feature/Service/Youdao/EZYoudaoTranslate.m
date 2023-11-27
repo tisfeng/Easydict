@@ -20,7 +20,6 @@
 #import <WebKit/WebKit.h>
 #import "NSData+EZMD5.h"
 #import "EZNetworkManager.h"
-#import "NSArray+EZChineseText.h"
 #import "EZConfiguration.h"
 
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
@@ -293,17 +292,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         return;
     }
     
-    [self setDidFinishBlock:^(EZQueryResult *result, NSError *error) {
-        NSArray *texts = result.translatedResults;
-        result.translatedResults = texts;
-    }];
-    
-    void (^callback)(EZQueryResult *result, NSError *error) = ^(EZQueryResult *result, NSError *error) {
-        self.didFinishBlock(result, error);
-        completion(result, error);
-    };
-    
-    [self queryYoudaoDictAndTranslation:text from:from to:to completion:callback];
+    [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
 }
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {

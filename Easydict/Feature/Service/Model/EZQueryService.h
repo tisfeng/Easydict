@@ -14,11 +14,13 @@
 #import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
 #import "EZError.h"
+#import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 //@class EZAudioPlayer;
 
+NS_SWIFT_NAME(QueryService)
 @interface EZQueryService : NSObject
 
 @property (nonatomic, strong) EZQueryModel *queryModel;
@@ -37,9 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EZAudioPlayer *audioPlayer;
 
-@property (nonatomic, copy, nullable) void (^didFinishBlock)(EZQueryResult *result, NSError *error);
-@property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *error);
-
+@property (nonatomic, copy, nullable) void (^autoCopyTranslatedTextBlock)(EZQueryResult *result, NSError *_Nullable error);
 
 /// 支持的语言
 - (NSArray<EZLanguage> *)languages;
@@ -50,10 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 语言字符串转枚举，不支持则返回Auto
 - (EZLanguage)languageEnumFromCode:(NSString *)langString;
 
-
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(EZLanguage)lang;
-
 
 /// 是否提前处理查询，如不支持的语言
 /// - Parameters:
@@ -65,6 +63,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+/// 子类方法，可选重写
+@interface EZQueryService ()
+
+/// 如果服务不支持繁体中文，可重写返回 YES 来支持。
+- (BOOL)autoConvertToTraditionalChineseResult;
+
+@end
 
 /// 以下方法供子类重写，且必须重写
 @interface EZQueryService ()

@@ -180,6 +180,7 @@
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
+		03CF88632B137F650030C199 /* Array+ChineseTextConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
 		03D043562928940500E7559E /* EZBaseQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043552928940500E7559E /* EZBaseQueryWindow.m */; };
@@ -209,6 +210,10 @@
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
+		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
+		2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746AEC02AF95138005FE0A1 /* CaiyunService.swift */; };
+		278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */; };
+		278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */; };
 		27B7919E2AEC36A1006E07C6 /* Easydict.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */; };
 		27B7919F2AEC36A1006E07C6 /* Easydict-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */; };
 		6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6220AD5A2A82812300BBFB52 /* EZBingService.m */; };
@@ -580,6 +585,7 @@
 		03BFFC7029612E10004E033E /* NSString+EZConvenience.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZConvenience.m"; sourceTree = "<group>"; };
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
+		03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+ChineseTextConversion.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
 		03D043502928935300E7559E /* EZMainQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMainQueryWindow.h; sourceTree = "<group>"; };
@@ -635,6 +641,9 @@
 		17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
 		17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
 		17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslate.m; sourceTree = "<group>"; };
+		2746AEC02AF95138005FE0A1 /* CaiyunService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunService.swift; sourceTree = "<group>"; };
+		2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunResponse.swift; sourceTree = "<group>"; };
+		278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunTranslateType.swift; sourceTree = "<group>"; };
 		27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Easydict.xcconfig; sourceTree = "<group>"; };
 		27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Easydict-debug.xcconfig"; sourceTree = "<group>"; };
 		27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Easydict-debug.entitlements"; sourceTree = "<group>"; };
@@ -677,6 +686,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 			);
@@ -1013,6 +1023,7 @@
 		038954372A25A94E00EFFDC3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				03CF88602B137ECB0030C199 /* Swift */,
 				03CAB9522ADBEF5000DA94A3 /* SystemUtility */,
 				030570DF2ADB916E00C9905E /* AppleScript */,
 				03D8B26A292DBC8800D5A811 /* EZCategory */,
@@ -1151,6 +1162,7 @@
 			isa = PBXGroup;
 			children = (
 				17BCAEF22B0DFF9000A7D372 /* Niutrans */,
+				2746AEBF2AF95040005FE0A1 /* Caiyun */,
 				6220AD582A8280E800BBFB52 /* Bing */,
 				0399C6A929A8608000B4AFCC /* OpenAI */,
 				03F14A382956011400CB7379 /* Volcano */,
@@ -1661,6 +1673,22 @@
 			path = SystemUtility;
 			sourceTree = "<group>";
 		};
+		03CF88602B137ECB0030C199 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				03CF88612B137ED60030C199 /* Array */,
+			);
+			path = Swift;
+			sourceTree = "<group>";
+		};
+		03CF88612B137ED60030C199 /* Array */ = {
+			isa = PBXGroup;
+			children = (
+				03CF88622B137F650030C199 /* Array+ChineseTextConversion.swift */,
+			);
+			path = Array;
+			sourceTree = "<group>";
+		};
 		03D0434A292884B900E7559E /* MiniQueryWindow */ = {
 			isa = PBXGroup;
 			children = (
@@ -1828,6 +1856,16 @@
 			path = Niutrans;
 			sourceTree = "<group>";
 		};
+		2746AEBF2AF95040005FE0A1 /* Caiyun */ = {
+			isa = PBXGroup;
+			children = (
+				2746AEC02AF95138005FE0A1 /* CaiyunService.swift */,
+				2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */,
+				278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */,
+			);
+			path = Caiyun;
+			sourceTree = "<group>";
+		};
 		6220AD582A8280E800BBFB52 /* Bing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1957,6 +1995,9 @@
 			dependencies = (
 			);
 			name = Easydict;
+			packageProductDependencies = (
+				2721E4CF2AFE920700A059AC /* Alamofire */,
+			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-Debug.app */;
 			productType = "com.apple.product-type.application";
@@ -1995,6 +2036,9 @@
 				"zh-Hans",
 			);
 			mainGroup = C99EEB0F2385796700FEE666;
+			packageReferences = (
+				2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2222,6 +2266,7 @@
 				03B0230629231FA6001C7E63 /* EZLabel.m in Sources */,
 				03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */,
 				033B7134293CE2430096E2DF /* EZWebViewTranslator.m in Sources */,
+				03CF88632B137F650030C199 /* Array+ChineseTextConversion.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
@@ -2241,6 +2286,7 @@
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
+				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
 				03542A5B2938DA2B00C34C33 /* EZDetectLanguageButton.m in Sources */,
 				03B0232929231FA6001C7E63 /* NSDictionary+MM.m in Sources */,
@@ -2313,11 +2359,13 @@
 				17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */,
 				03BDA7B82A26DA280079D04F /* XPMValuedArgument.m in Sources */,
 				036196762A000F5900806370 /* NSData+Base64.m in Sources */,
+				278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */,
 				03BDA7BA2A26DA280079D04F /* XPMMutableAttributedArray.m in Sources */,
 				037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */,
 				03F0DB382953428300EBF9C1 /* EZLog.m in Sources */,
 				03B0231429231FA6001C7E63 /* DarkModeManager.m in Sources */,
 				03BDA7C02A26DA280079D04F /* XPMArgumentPackage.m in Sources */,
+				2746AEC12AF95138005FE0A1 /* CaiyunService.swift in Sources */,
 				037852B02957FEB200D0E2CF /* EZServiceViewController.m in Sources */,
 				6220AD5B2A82812300BBFB52 /* EZBingService.m in Sources */,
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
@@ -2718,6 +2766,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2721E4CF2AFE920700A059AC /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C99EEB102385796700FEE666 /* Project object */;
 }
