@@ -74,3 +74,6 @@ node_modules/
 
 # idea
 .idea/*
+
+# GitGuardian
+.cache_ggshield
