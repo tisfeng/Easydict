@@ -13,6 +13,7 @@
 #import "EZShortcut.h"
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
+#import "EZConfiguration.h"
 
 static CGFloat const kImageMenuItemHeightRatio = 1.4;
 static CGFloat const kTitleMenuItemHeightRatio = 1.2;
@@ -69,6 +70,9 @@ static EZMenuItemManager *_instance;
 
 - (void)setup {
     if (self.statusItem) {
+        return;
+    }
+    if (EZConfiguration.shared.hideMenuBarIcon) {
         return;
     }
     
