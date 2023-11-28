@@ -1,9 +1,7 @@
 name: Feature request
 description: Request a new feature
-title: "🚀 Feature Request: Please fill in the title"
+title: "🚀 Feature Request: "
 labels: ["enhancement"]
-assignees:
-  -
 
 body:
   - type: checkboxes
@@ -15,7 +13,7 @@ body:
           required: true
         - label: I have searched through the [issues](https://github.com/tisfeng/Easydict/issues) page and didn't find a similar feature request.(Including issue that has been closed)
           required: true
-        - label: Easydict has been upgraded to the latest version.
+        - label: Easydict has been upgraded to the [latest version](https://github.com/tisfeng/Easydict/releases)
           required: true
 
   - type: textarea
@@ -23,7 +21,7 @@ body:
     attributes:
       label: Feature description
       description: Please describe the feature you would like to request. If necessary, screenshots can be provided for developers' reference.
-      placeholder:
+      placeholder: Feature description
     validations:
       required: true
 
@@ -32,19 +30,19 @@ body:
     attributes:
       label: Use case (optional)
       description: Please describe the use case of the feature you're requesting, and whether there are any similar app features for reference.
-      placeholder:
+      placeholder: Use case
 
   - type: textarea
     id: resolution
     attributes:
       label: Proposed solution (optional)
       description: Do you have any proposed solutions or suggestions for implementing this feature?
-      placeholder:
+      placeholder: Proposed solution
 
   - type: checkboxes
     id: PR
     attributes:
       label: Are you willing to submit a PR to implement this feature
-      description: We welcome you to submit PR. When the developer is short of manpower, submitting PR is the fastest way to implement the feature. If you are not familiar with Objective-C, you can try ChatGPT, maybe it can help you.
+      description: We welcome you to submit PR. When the developer is short of manpower, submitting PR is the fastest way to implement the feature. If you are not familiar with objc or Swift, you can try ChatGPT, maybe it can help you.
       options:
         - label: I'm willing to submit PR!
