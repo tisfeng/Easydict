@@ -420,6 +420,9 @@ outer:
             wordResult.exchanges = exchanges;
         }
         if (simpleWords.count) {
+            if (simpleWords.count > 5) {
+                simpleWords = [simpleWords subarrayWithRange:NSMakeRange(0, 5)].mutableCopy;
+            }
             wordResult.simpleWords = simpleWords;
         }
         self.result.from = EZLanguageEnglish;
