@@ -1,9 +1,7 @@
 name: 功能建议
 description: 功能建议
-title: "🚀 功能建议：请填写标题"
+title: "🚀 功能建议："
 labels: ["enhancement"]
-assignees:
-  -
 
 body:
   - type: checkboxes
@@ -23,7 +21,7 @@ body:
     attributes:
       label: 功能描述
       description: 请描述你希望的功能，有必要的话可以提供截图，以供开发者参考。
-      placeholder:
+      placeholder: 功能描述
     validations:
       required: true
 
@@ -32,19 +30,19 @@ body:
     attributes:
       label: 使用场景（可选）
       description: 请描述你希望功能的使用场景，有无其他类似可供参考的 App 功能等。
-      placeholder:
+      placeholder: 使用场景
 
   - type: textarea
     id: resolution
     attributes:
       label: 实现方案（可选）
       description: 对于该功能，您有什么预想的实现方案，或者建议？
-      placeholder:
+      placeholder: 实现方案
 
   - type: checkboxes
     id: PR
     attributes:
       label: 是否愿意提交 PR 实现该功能
-      description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是实现该功能的最快的方式。如果对 Objective-C 语言不熟悉，可以尝试使用 ChatGPT，也许它能帮到你。
+      description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是实现该功能的最快的方式。如果对 objc 或 Swift 语言不熟悉，可以尝试使用 ChatGPT，也许它能帮到你。
       options:
         - label: 我愿意提交 PR!
