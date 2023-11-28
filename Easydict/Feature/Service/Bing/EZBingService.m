@@ -90,6 +90,10 @@
     return orderedDict;
 }
 
+- (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+    [self translate:text useDictQuery:[self isEnglishWordToChinese:text from:from to:to] from:from to:to completion:completion];
+}
+
 - (BOOL)isEnglishWordToChinese:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
     if ([from isEqualToString:EZLanguageEnglish] && [to isEqualToString:EZLanguageSimplifiedChinese] && [text shouldQueryDictionaryWithLanguage:from maxWordCount:1]) {
         return YES;
@@ -97,14 +101,20 @@
     return NO;
 }
 
-- (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+- (void)translate:(NSString *)text useDictQuery:(BOOL)useDictQuery from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
     
-    if ([self isEnglishWordToChinese:text from:from to:to]) {
+    if (useDictQuery) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
-            [self parseBingDictTranslate:json word:text completion:completion];
+            [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
+                if (error) {
+                    [self translate:text useDictQuery:NO from:from to:to completion:completion];
+                } else {
+                    completion(dictResult, nil);
+                }
+            }];
         }];
         return;
     }
