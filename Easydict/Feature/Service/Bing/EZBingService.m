@@ -16,6 +16,7 @@
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
 @property (nonatomic, assign) BOOL canRetry;
+@property (nonatomic, assign) BOOL isDictQueryResult ;
 @end
 
 @implementation EZBingService
@@ -102,6 +103,7 @@
 }
 
 - (void)translate:(NSString *)text useDictQuery:(BOOL)useDictQuery from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+    self.isDictQueryResult = NO;
     if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
         return;
     }
@@ -112,6 +114,7 @@
                 if (error) {
                     [self translate:text useDictQuery:NO from:from to:to completion:completion];
                 } else {
+                    self.isDictQueryResult = YES;
                     completion(dictResult, nil);
                 }
             }];
@@ -169,6 +172,10 @@
     // If Chinese text too long, web link page will report error.
     if ([EZLanguageManager.shared isChineseLanguage:textLanguage]) {
         text = [maxText trimToMaxLength:450];
+    }
+    
+    if (self.isDictQueryResult) {
+        return [NSString stringWithFormat:@"https://%@/dict/search?q=%@", self.request.bingConfig.host, text.encode];
     }
     
     return [NSString stringWithFormat:@"%@/?text=%@&from=%@&to=%@", self.request.bingConfig.translatorURLString, text.encode, from, to];
