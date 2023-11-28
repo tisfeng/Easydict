@@ -205,12 +205,9 @@
         EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
-
-        EZTencentAPIKey,
+        EZBingCookieKey,
 
         EZIntelligentQueryModeKey,
-        
-        EZBingCookieKey,
     ];
     
     return readWriteKeys;
