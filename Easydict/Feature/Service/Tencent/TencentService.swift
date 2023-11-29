@@ -77,10 +77,11 @@ public final class TencentService: QueryService {
         if prehandleQueryTextLanguage(text, autoConvertChineseText: false, from: from, to: to, completion: completion) {
             return
         }
-        let transType = TencentTranslateType.type(from: from, to: to)
+        let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             result.errorType = .unsupportedLanguage
-            result.errorMessage = "不支持的翻译类型: \(from.rawValue) --> \(to.rawValue)"
+            let unsupportedType = NSLocalizedString("unsupported_translation_type", comment: "")
+            result.errorMessage = "\(unsupportedType): \(from.rawValue) --> \(to.rawValue)"
             completion(result, nil)
             return
         }
