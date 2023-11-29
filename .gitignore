@@ -1,3 +1,5 @@
+# Ref: https://github.com/github/gitignore/blob/main/Objective-C.gitignore
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -77,4 +79,6 @@ node_modules/
 
 # GitGuardian
 .cache_ggshield
+
+# Ref: https://github.com/github/gitignore/blob/4488915eec0b3a45b5c63ead28f286819c0917de/Global/macOS.gitignore
 .DS_Store
