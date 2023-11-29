@@ -663,7 +663,7 @@
 		C4DE3D6C2AC00EB500C2B85D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = Easydict/App/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		C4DE3D6E2AC00EB500C2B85D /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		C90BE309239F38EB00ADE88B /* EasydictHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasydictHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C99EEB182385796700FEE666 /* Easydict-Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C99EEB182385796700FEE666 /* Easydict-debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Easydict-debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1932,7 +1932,7 @@
 		C99EEB192385796700FEE666 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C99EEB182385796700FEE666 /* Easydict-Debug.app */,
+				C99EEB182385796700FEE666 /* Easydict-debug.app */,
 				C90BE309239F38EB00ADE88B /* EasydictHelper.app */,
 				0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */,
 			);
@@ -1999,7 +1999,7 @@
 				2721E4CF2AFE920700A059AC /* Alamofire */,
 			);
 			productName = Bob;
-			productReference = C99EEB182385796700FEE666 /* Easydict-Debug.app */;
+			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2681,7 +2681,7 @@
 				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.izual.Easydict-debug";
 				PRODUCT_MODULE_NAME = Easydict;
-				PRODUCT_NAME = "Easydict-Debug";
+				PRODUCT_NAME = "Easydict-debug";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Easydict/App/Easydict-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
