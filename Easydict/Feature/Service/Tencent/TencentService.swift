@@ -26,28 +26,7 @@ public final class TencentService: QueryService {
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        let dic: [Language: String] = [
-            .auto: "auto",
-            .simplifiedChinese: "zh",
-            .traditionalChinese: "zh-TW",
-            .english: "en",
-            .japanese: "ja",
-            .korean: "ko",
-            .french: "fr",
-            .spanish: "es",
-            .italian: "it",
-            .german: "de",
-            .turkish: "tr",
-            .russian: "ru",
-            .portuguese: "pt",
-            .vietnamese: "vi",
-            .indonesian: "id",
-            .thai: "th",
-            .malay: "ms",
-            .arabic: "ar",
-            .hindi: "hi",
-        ]
-        dic.forEach { key, value in
+        TencentTranslateType.supportLanguagesDictionary.forEach { key, value in
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
