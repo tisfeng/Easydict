@@ -77,3 +77,4 @@ node_modules/
 
 # GitGuardian
 .cache_ggshield
+.DS_Store
