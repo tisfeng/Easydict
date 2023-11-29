@@ -127,7 +127,7 @@
     NSString *url = @"https://api.niutrans.com/NiuTransServer/translation";
     NSDictionary *params = @{
         @"apikey" : self.apiKey,
-        @"src_text" : text,
+        @"src_text" : [text trimToMaxLength:5000],
         @"from" : souceLangCode,
         @"to" : targetLangCode,
         @"source" : @"Easydict"
