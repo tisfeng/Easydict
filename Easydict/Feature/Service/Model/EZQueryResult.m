@@ -9,6 +9,7 @@
 #import "EZQueryResult.h"
 #import "EZLocalStorage.h"
 #import "NSArray+EZChineseText.h"
+#import "NSString+EZUtils.h"
 
 /// Convert part
 /**
@@ -36,7 +37,11 @@ NSString *getPartName(NSString *part) {
         @"det": @"det.", // determinative 限定词
         @"abbreviation": @"abbr.",
         @"abbr": @"abbr.",
-        @"web": @"web."
+        @"infinitive": @"inf.",
+        @"participle": @"part.",
+        @"numeral": @"num.",
+        @"article": @"art.",
+        @"web": @"Web"
     };
     
     static NSDictionary *chinesePartOfSpeechMap = @{
@@ -50,7 +55,11 @@ NSString *getPartName(NSString *part) {
         @"感叹词" : @"interj.",
         @"限定词" : @"det.", // determinative 限定词
         @"缩写" : @"abbr.",
-        @"网络" : @"web."
+        @"不定词" : @"inf.",
+        @"分词" : @"part.",
+        @"数词" : @"num.",
+        @"冠词" : @"art.",
+        @"网络" : @"Web"
     };
     
     NSString *partName = partOfSpeechMap[part];
@@ -60,7 +69,11 @@ NSString *getPartName(NSString *part) {
     }
     
     if (!partName) {
-        partName = part;
+        if ([part isEnglishWord]) {
+            partName = [NSString stringWithFormat:@"%@.", part];
+        } else {
+            partName = part;
+        }
     }
     
     return partName;
