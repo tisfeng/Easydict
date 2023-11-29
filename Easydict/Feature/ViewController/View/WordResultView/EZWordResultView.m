@@ -957,20 +957,18 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             }];
         }];
         
-        [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-            CGFloat topPadding = kVerticalPadding_8;
-            make.top.equalTo(rtnView.mas_bottom).offset(topPadding);
-            *height += topPadding;
-            make.left.equalTo(partLabel.mas_right);
-            make.right.equalTo(self);
-        }];
-        
         [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(kHorizontalMargin_8);
             make.centerY.equalTo(wrapView.subviews.firstObject);
             CGSize labelSize = [partLabel oneLineSize];
             make.size.mas_equalTo(labelSize).priorityHigh();
-            *height += labelSize.height;
+        }];
+        
+        [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(rtnView.mas_bottom).offset(kVerticalPadding_8);
+            *height += kVerticalPadding_8;
+            make.left.equalTo(partLabel.mas_right);
+            make.right.equalTo(self);
         }];
         
         [wrapView layoutSubtreeIfNeeded];
