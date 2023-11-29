@@ -531,17 +531,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         lastView = meanLabel;
     }];
     
-    //同义词
-    if (result.wordResult.synonyms.count) {
-        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil) parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
-    }
-    
-    //反义词
-    if (result.wordResult.antonyms.count) {
-        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil) parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
-    }
-
-    
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         EZLabel *exchangeLabel = [[EZLabel alloc] init];
         [self addSubview:exchangeLabel];
@@ -596,6 +585,21 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             lastWordButton = wordButton;
         }];
     }];
+    
+    // 同义词
+    if (result.wordResult.synonyms.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil) parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
+    
+    // 反义词
+    if (result.wordResult.antonyms.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil) parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
+    
+    // 搭配
+    if (result.wordResult.collocation.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"collocation", nil) parts:result.wordResult.collocation textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
     
     __block NSString *lastSimpleWordPart = nil;
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {

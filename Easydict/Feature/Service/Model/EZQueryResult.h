@@ -91,6 +91,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *synonyms;
 /// 反义词
 @property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *antonyms;
+/// 搭配
+@property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *collocation;
 
 @end
 

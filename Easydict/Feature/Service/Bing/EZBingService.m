@@ -358,6 +358,7 @@ outer:
         NSMutableArray<EZWordPhonetic *> *phonetics = [NSMutableArray array];
         NSMutableArray<EZTranslatePart *> *synonyms = [NSMutableArray array];
         NSMutableArray<EZTranslatePart *> *antonyms = [NSMutableArray array];
+        NSMutableArray<EZTranslatePart *> *collocation = [NSMutableArray array];
         
         for (NSDictionary *meaningGroup in meaningGroups) {
             NSArray *partOfSpeech = meaningGroup[@"partsOfSpeech"];
@@ -429,6 +430,17 @@ outer:
                     antonymsPart.means = antonymMeans;
                     [antonyms addObject:antonymsPart];
                 }
+            } else if ([description isEqualToString:@"搭配"]) {
+                NSArray *means = [fragments mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj[@"text"];
+                }];
+                if (means.count > 5) {
+                    means = [means subarrayWithRange:NSMakeRange(0, 5)];
+                }
+                EZTranslatePart *collocationPart = [EZTranslatePart new];
+                collocationPart.part = name;
+                collocationPart.means = means;
+                [collocation addObject:collocationPart];
             }
             
             if ([name isEqualToString:@"变形"]) {
@@ -467,6 +479,9 @@ outer:
         }
         if (antonyms.count) {
             wordResult.antonyms = antonyms;
+        }
+        if (collocation.count) {
+            wordResult.collocation = collocation;
         }
         self.result.from = EZLanguageEnglish;
         self.result.to = EZLanguageSimplifiedChinese;
