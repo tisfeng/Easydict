@@ -411,6 +411,9 @@ outer:
                 }];
                 
                 if (synonymMeans.count) {
+                    if (synonymMeans.count > 5) {
+                        synonymMeans = [synonymMeans subarrayWithRange:NSMakeRange(0, 5)];
+                    }
                     EZTranslatePart *synonymsPart = [EZTranslatePart new];
                     synonymsPart.part = name;
                     synonymsPart.means = synonymMeans;
@@ -418,6 +421,9 @@ outer:
                 }
                 
                 if (antonymMeans.count) {
+                    if (antonymMeans.count > 5) {
+                        antonymMeans = [antonymMeans subarrayWithRange:NSMakeRange(0, 5)];
+                    }
                     EZTranslatePart *antonymsPart = [EZTranslatePart new];
                     antonymsPart.part = name;
                     antonymsPart.means = antonymMeans;
