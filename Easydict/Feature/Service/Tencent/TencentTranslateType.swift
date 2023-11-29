@@ -15,113 +15,58 @@ struct TencentTranslateType: Equatable {
 
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
-    // Align with the web interface
-    static func type(from: Language, to: Language) -> TencentTranslateType {
-        if from == .simplifiedChinese {
-            guard [Language.traditionalChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .traditionalChinese {
-            guard [Language.simplifiedChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .english {
-            guard [Language.simplifiedChinese, .traditionalChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .japanese {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .korean].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .korean {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .japanese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .french{
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .spanish {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .italian {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .german {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .turkish {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .russian {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .portuguese {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .vietnamese {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .indonesian {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .thai {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .malay {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .arabic {
-            guard [Language.english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .hindi {
-            guard [Language.english].contains(to) else {
-                return .unsupported
-            }
-        } else if from == .auto {
-            guard [Language.simplifiedChinese, .traditionalChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi].contains(to) else {
-                return .unsupported
-            }
-        }
-        return TencentTranslateType(sourceLanguage: from.tencentValue, targetLanguage: to.tencentValue)
-    }
-}
+    static let supportedTypes: [Language: [Language]] = [
+        .simplifiedChinese: [.traditionalChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
+        .traditionalChinese: [.simplifiedChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
+        .english: [.simplifiedChinese, .traditionalChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
+        .japanese: [.simplifiedChinese, .traditionalChinese, .english, .korean],
+        .korean: [.simplifiedChinese, .traditionalChinese, .english, .japanese],
+        .french: [.simplifiedChinese, .traditionalChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
+        .spanish: [.simplifiedChinese, .traditionalChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
+        .italian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
+        .german: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
+        .turkish: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
+        .russian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
+        .portuguese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .vietnamese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .indonesian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .thai: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .malay: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .arabic: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .hindi: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+    ]
 
-extension Language {
+    static let supportLanguagesDictionary: [Language: String] = [
+        .auto: "auto",
+        .simplifiedChinese: "zh",
+        .traditionalChinese: "zh-TW",
+        .english: "en",
+        .japanese: "ja",
+        .korean: "ko",
+        .french: "fr",
+        .spanish: "es",
+        .italian: "it",
+        .german: "de",
+        .turkish: "tr",
+        .russian: "ru",
+        .portuguese: "pt",
+        .vietnamese: "vi",
+        .indonesian: "id",
+        .thai: "th",
+        .malay: "ms",
+        .arabic: "ar",
+        .hindi: "hi",
+    ]
 
-    var tencentValue: String {
-        switch self {
-        case .auto: return "auto"
-        case .simplifiedChinese: return "zh"
-        case .traditionalChinese: return "zh-TW"
-        case .english: return "en"
-        case .japanese: return "ja"
-        case .korean: return "ko"
-        case .french: return "fr"
-        case .spanish: return "es"
-        case .italian: return "it"
-        case .german: return "de"
-        case .turkish: return "tr"
-        case .russian: return "ru"
-        case .portuguese: return "pt"
-        case .vietnamese: return "vi"
-        case .indonesian: return "id"
-        case .thai: return "th"
-        case .malay: return "ms"
-        case .arabic: return "ar"
-        case .hindi: return "hi"
-        default: return ""
+    static func transType(from: Language, to: Language) -> TencentTranslateType {
+        if (supportedTypes[from]?.contains(to) == true) {
+            guard let from = supportLanguagesDictionary[from],
+                  let to = supportLanguagesDictionary[to] else {
+                return .unsupported
+            }
+            return TencentTranslateType(sourceLanguage: from, targetLanguage: to)
+        } else {
+            return .unsupported
         }
     }
 }
