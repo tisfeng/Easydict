@@ -2178,6 +2178,12 @@
     "tencent_translate" : {
       "comment" : "The name of Tencent Translate",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent Translate"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
