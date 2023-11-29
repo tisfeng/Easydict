@@ -965,8 +965,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
         
         [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(rtnView.mas_bottom).offset(kVerticalPadding_8);
-            *height += kVerticalPadding_8;
+            CGFloat topOffset = 5;
+            make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
+            *height += topOffset;
             make.left.equalTo(partLabel.mas_right);
             make.right.equalTo(self);
         }];
