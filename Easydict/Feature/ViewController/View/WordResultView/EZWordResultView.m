@@ -29,6 +29,7 @@
 #import "EZServiceTypes.h"
 #import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
+#import "EZWrapView.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -529,6 +530,77 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         meanLabel.mas_key = @"meanTextField_parts";
         lastView = meanLabel;
     }];
+    
+     //同义词
+    if (result.wordResult.synonyms.count) {
+        EZLabel *synonymsTitle = [[EZLabel alloc] init];
+        [self addSubview:synonymsTitle];
+        synonymsTitle.font = typeTextFont;
+        synonymsTitle.textForegroundColor = typeTextColor;
+        synonymsTitle.text = @"同义词";
+        [synonymsTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kHorizontalMargin_8);
+            if (lastView) {
+                CGFloat topPadding = kVerticalMargin_12;
+                make.top.equalTo(lastView.mas_bottom).offset(topPadding);
+                height += topPadding;
+            } else {
+                make.top.offset(kVerticalPadding_8);
+                height += kVerticalPadding_8;
+            }
+            
+            CGSize labelSize = [synonymsTitle oneLineSize];
+            make.size.mas_equalTo(labelSize).priorityHigh();
+            height += labelSize.height;
+        }];
+        lastView = synonymsTitle;
+        
+        [result.wordResult.synonyms enumerateObjectsUsingBlock:^(EZTranslatePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.means.count == 0) return;
+            EZLabel *partLabel = [[EZLabel alloc] init];
+            partLabel.font = typeTextFont;
+            partLabel.textForegroundColor = typeTextColor;
+            partLabel.text = obj.part;
+            [self addSubview:partLabel];
+            
+            EZWrapView *wrapView = [[EZWrapView alloc] init];
+            [self addSubview:wrapView];
+            [obj.means enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
+                EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+                [wordButton setTitle:mean];
+                [wrapView addSubview:wordButton];
+                [wordButton setClickBlock:^(EZButton *_Nonnull button) {
+                    mm_strongify(self);
+                    if (self.queryTextBlock) {
+                        self.queryTextBlock(mean);
+                    }
+                    [mean copyToPasteboard];
+                }];
+            }];
+            
+            [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
+                CGFloat topPadding = kVerticalPadding_8;
+                make.top.equalTo(lastView.mas_bottom).offset(topPadding);
+                height += topPadding;
+                make.left.equalTo(partLabel.mas_right);
+                make.right.equalTo(self);
+            }];
+            
+            [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.offset(kHorizontalMargin_8);
+                make.centerY.equalTo(wrapView.subviews.firstObject);
+                CGSize labelSize = [partLabel oneLineSize];
+                make.size.mas_equalTo(labelSize).priorityHigh();
+                height += labelSize.height;
+            }];
+            
+            [wrapView layoutSubtreeIfNeeded];
+            CGSize wrapViewSize = [wrapView intrinsicContentSize];
+            height += wrapViewSize.height;
+            lastView = wrapView;
+        }];
+    }
+
     
     [wordResult.exchanges enumerateObjectsUsingBlock:^(EZTranslateExchange *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         EZLabel *exchangeLabel = [[EZLabel alloc] init];

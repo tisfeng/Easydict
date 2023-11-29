@@ -83,12 +83,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSArray<EZTranslateExchange *> *exchanges;
 /// 中文查词时会有，单词短语数组
 @property (nonatomic, copy, nullable) NSArray<EZTranslateSimpleWord *> *simpleWords;
-
 /// 标签：四级，六级，考研
 @property (nonatomic, copy, nullable) NSArray<NSString *> *tags;
-
 /// 词源
 @property (nonatomic, copy, nullable) NSString *etymology;
+/// 同义词
+@property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *synonyms;
+/// 反义词
+@property (nonatomic, copy, nullable) NSArray<EZTranslatePart *> *antonyms;
 
 @end
 

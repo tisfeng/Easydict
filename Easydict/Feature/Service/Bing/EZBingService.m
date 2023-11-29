@@ -356,6 +356,8 @@ outer:
         NSMutableArray<EZTranslateExchange *> *exchanges = [NSMutableArray array];
         NSMutableArray<EZTranslateSimpleWord *> *simpleWords = [NSMutableArray array];
         NSMutableArray<EZWordPhonetic *> *phonetics = [NSMutableArray array];
+        NSMutableArray<EZTranslatePart *> *synonyms = [NSMutableArray array];
+        NSMutableArray<EZTranslatePart *> *antonyms = [NSMutableArray array];
         
         for (NSDictionary *meaningGroup in meaningGroups) {
             NSArray *partOfSpeech = meaningGroup[@"partsOfSpeech"];
@@ -400,7 +402,29 @@ outer:
                     simpleWord.meansText = examples.lastObject;
                     [simpleWords addObject:simpleWord];
                 }
+            } else if ([description isEqualToString:@"分类词典"]) {
+                NSArray<NSString *> *synonymMeans = [meanings.firstObject[@"synonyms"] mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj[@"name"];
+                }];
+                NSArray<NSString *> *antonymMeans = [meanings.firstObject[@"antonyms"] mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj[@"name"];
+                }];
+                
+                if (synonymMeans.count) {
+                    EZTranslatePart *synonymsPart = [EZTranslatePart new];
+                    synonymsPart.part = name;
+                    synonymsPart.means = synonymMeans;
+                    [synonyms addObject:synonymsPart];
+                }
+                
+                if (antonymMeans.count) {
+                    EZTranslatePart *antonymsPart = [EZTranslatePart new];
+                    antonymsPart.part = name;
+                    antonymsPart.means = antonymMeans;
+                    [antonyms addObject:antonymsPart];
+                }
             }
+            
             if ([name isEqualToString:@"变形"]) {
                 for (NSDictionary *fragment in fragments) {
                     NSString *text = fragment[@"text"];
@@ -431,6 +455,12 @@ outer:
                 simpleWords = [simpleWords subarrayWithRange:NSMakeRange(0, 5)].mutableCopy;
             }
             wordResult.simpleWords = simpleWords;
+        }
+        if (synonyms.count) {
+            wordResult.synonyms = synonyms;
+        }
+        if (antonyms.count) {
+            wordResult.antonyms = antonyms;
         }
         self.result.from = EZLanguageEnglish;
         self.result.to = EZLanguageSimplifiedChinese;
