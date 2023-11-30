@@ -115,9 +115,9 @@ NSString *getPartAbbreviation(NSString *part) {
             /**
              Some special part in Bing:
              
-             infinmarker (infinitive marker): to go
-             defa (definite article): the
-             na (indefinite article): a
+             infinmarker(infinitive marker): to
+             defa(definite article): the
+             na(indefinite article): a
              */
             partName = [NSString stringWithFormat:@"%@.", part];
         } else {
