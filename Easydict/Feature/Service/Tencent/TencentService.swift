@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import CryptoKit
 import Foundation
 
 @objc(EZTencentService)
@@ -38,7 +39,6 @@ public final class TencentService: QueryService {
     }
 
 //MARK: API Request
-    private var apiEndPoint = "https://tmt.tencentcloudapi.com"
 
 //TODO: Implement user SecretId/SecretKey
 //    private static let defaultSecretId = ""
@@ -75,51 +75,109 @@ public final class TencentService: QueryService {
             return
         }
 
+        let projectId: Int64 = 0
+
         let parameters: [String: Any] = [
-            "SourceText": text.split(separator: "\n"),
+            "SourceText": "\(text.split(separator: "\n"))",
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
-            "ProjectId": "0",
+            "ProjectId": projectId,
         ]
 
-//TODO: Adopt Signiture V3 https://cloud.tencent.com/document/api/551/30636(https://www.tencentcloud.com/document/product/1161/50430)
-// SecretID & SecretKey
+        func sha256(msg: String) -> String {
+            let data = msg.data(using: .utf8)!
+            let digest = SHA256.hash(data: data)
+            return digest.compactMap{String(format: "%02x", $0)}.joined()
+        }
+
+        // 密钥参数
+        // 需要设置环境变量 TENCENTCLOUD_SECRET_ID，值为示例的 AKIDz8krbsJ5yKBZQpn74WFkmLPx3*******
+        //let secretId = ProcessInfo.processInfo.environment["TENCENTCLOUD_SECRET_ID"]
         let secretId = ""
+        // 需要设置环境变量 TENCENTCLOUD_SECRET_KEY，值为示例的 Gu5t9xGARNpq86cd98joQYCN3*******
+        //let secretKey = ProcessInfo.processInfo.environment["TENCENTCLOUD_SECRET_KEY"]
         let secretKey = ""
-// UTC date in yyyy-mm-dd
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        formatter.dateFormat = "yyyy-MM-dd"
-        let utcDate = formatter.string(from: date)
-// UNIX UTC Timestamp
-        let requestTimestamp = String(Int(Date().timeIntervalSince1970))
-// Calculate Signiture
-        let HTTPRequestMethod = "POST"
-        let CanonicalURI = "/"
-        let CanonicalQueryString = "" // Leave empty for POST method
-        let CanonicalHeaders = "content-type:application/json"
-        let HashedRequestPayload = "" //这个常量需要对 HTTP 请求正文（parameters）做 SHA256 哈希，然后十六进制编码，最后编码串转换成小写字母
-        
-// Components of auth
-        let authAlgorithm = "TC3-HMAC-SHA256"
-        let authCredential = "Credential=\(secretId)/\(utcDate)/tmt/tc3_request"
-        let authSignedHeaders = "content-type;host"
-        let authSigniture = "Signature="
-// Authentication header
-        let auth = "\(authAlgorithm) \(authCredential), \(authSignedHeaders), \(authSigniture)"
+
+        let service = "tmt"
+        let host = "tmt.tencentcloudapi.com"
+        let endpoint = "https://\(host)"
+        let region = "ap-guangzhou"
+        let action = "TextTranslate"
+        let version = "2018-03-21"
+        let algorithm = "TC3-HMAC-SHA256"
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        let date = dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(timestamp)))
+
+
+        // ************* 步骤 1：拼接规范请求串 *************
+        let httpRequestMethod = "POST"
+        let canonicalUri = "/"
+        let canonicalQuerystring = ""
+        let ct = "application/json; charset=utf-8"
+        let payload = try! JSONSerialization.data(withJSONObject: parameters)
+        let payloadString = String(data: payload, encoding: .utf8)!
+        let canonicalHeaders = "content-type:\(ct)\nhost:\(host)\nx-tc-action:\(action.lowercased())\n"
+        let signedHeaders = "content-type;host;x-tc-action"
+        let hashedRequestPayload = sha256(msg: payloadString)
+        let canonicalRequest = """
+        \(httpRequestMethod)
+        \(canonicalUri)
+        \(canonicalQuerystring)
+        \(canonicalHeaders)
+        \(signedHeaders)
+        \(hashedRequestPayload)
+        """
+
+        // ************* 步骤 2：拼接待签名字符串 *************
+        let credentialScope = "\(date)/\(service)/tc3_request"
+        let hashedCanonicalRequest = sha256(msg: canonicalRequest)
+        let stringToSign = """
+        \(algorithm)
+        \(timestamp)
+        \(credentialScope)
+        \(hashedCanonicalRequest)
+        """
+
+        // ************* 步骤 3：计算签名 *************
+        let keyData = Data("TC3\(secretKey)".utf8)
+        let dateData = Data(date.utf8)
+        var symmetricKey = SymmetricKey(data: keyData)
+        let secretDate = HMAC<SHA256>.authenticationCode(for: dateData, using: symmetricKey)
+        _ = Data(secretDate).map{String(format: "%02hhx", $0)}.joined()
+
+        let serviceData = Data(service.utf8)
+        symmetricKey = SymmetricKey(data: Data(secretDate))
+        let secretService = HMAC<SHA256>.authenticationCode(for: serviceData, using: symmetricKey)
+        _ = Data(secretService).map{String(format: "%02hhx", $0)}.joined()
+
+        let signingData = Data("tc3_request".utf8)
+        symmetricKey = SymmetricKey(data: secretService)
+        let secretSigning = HMAC<SHA256>.authenticationCode(for: signingData, using: symmetricKey)
+        _ = Data(secretSigning).map{String(format: "%02hhx", $0)}.joined()
+
+        let stringToSignData = Data(stringToSign.utf8)
+        symmetricKey = SymmetricKey(data: secretSigning)
+        let signature = HMAC<SHA256>.authenticationCode(for: stringToSignData, using: symmetricKey).map{String(format: "%02hhx", $0)}.joined()
+
+        // ************* 步骤 4：拼接 Authorization *************
+        let authorization = """
+        \(algorithm) Credential=\(secretId)/\(credentialScope), SignedHeaders=\(signedHeaders), Signature=\(signature)
+        """
 
         let headers: HTTPHeaders = [
-            "Authorization": auth,
-            "Content-Type": "application/json",
-            "Host": "tmt.tencentcloudapi.com",
-            "X-TC-Action": "TextTranslate",
-            "X-TC-Timestamp": requestTimestamp,
-            "X-TC-Version": "2018-03-21",
-            "X-TC-Region": "ap-guangzhou",
+            "Authorization": authorization,
+            "Content-Type": ct,
+            "Host": host,
+            "X-TC-Action": action,
+            "X-TC-Timestamp": "\(timestamp)",
+            "X-TC-Version": version,
+            "X-TC-Region": region,
         ]
 
-        let request = AF.request(apiEndPoint,
+        let request = AF.request(endpoint,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.default,
