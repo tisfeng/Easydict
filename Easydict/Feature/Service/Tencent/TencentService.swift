@@ -40,15 +40,25 @@ public final class TencentService: QueryService {
 //MARK: API Request
     private var apiEndPoint = "https://tmt.tencentcloudapi.com"
 
-//TODO: Implement user token
-//    private static let defaultTestToken = ""
+//TODO: Implement user SecretId/SecretKey
+//    private static let defaultSecretId = ""
+//    private static let defaultSecretKey = ""
 //
-//    private var token: String {
-//        let token = UserDefaults.standard.string(forKey: EZTencentAPIKey)
-//        if let token, !token.isEmpty {
-//            return token
+//    private var secretId: String {
+//        let secretId = UserDefaults.standard.string(forKey: EZTencentSecretId)
+//        if let secretId, !secretId.isEmpty {
+//            return secretId
 //        } else {
-//            return TencentService.defaultTestToken
+//            return TencentService.defaultSecretId
+//        }
+//    }
+//
+//    private var secretKey: String {
+//        let secretKey = UserDefaults.standard.string(forKey: EZTencentSecretKey)
+//        if let secretKey, !secretKey.isEmpty {
+//            return secretKey
+//        } else {
+//            return TencentService.defaultSecretKey
 //        }
 //    }
 
