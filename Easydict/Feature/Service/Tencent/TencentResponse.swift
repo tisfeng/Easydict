@@ -9,8 +9,12 @@
 import Foundation
 
 struct TencentResponse: Codable {
-    var RequestId: String
-    var Source: String
-    var Target: String
-    var TargetText: [String]
+    struct Response: Codable {
+        var RequestId: String
+        var Source: String
+        var Target: String
+        var TargetText: String
+    }
+    
+    var Response: Response
 }

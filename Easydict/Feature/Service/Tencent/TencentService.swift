@@ -78,7 +78,7 @@ public final class TencentService: QueryService {
         let projectId: Int64 = 0
 
         let parameters: [String: Any] = [
-            "SourceText": "\(text.split(separator: "\n"))",
+            "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
             "ProjectId": projectId,
@@ -182,7 +182,6 @@ public final class TencentService: QueryService {
                    parameters: parameters,
                    encoding: JSONEncoding.default,
                    headers: headers)
-
             .validate()
             .responseDecodable(of: TencentResponse.self) { [weak self] response in
                 guard let self else { return }
@@ -192,7 +191,7 @@ public final class TencentService: QueryService {
                     result.from = from
                     result.to = to
                     result.queryText = text
-                    result.translatedResults = value.TargetText
+                    result.translatedResults = value.Response.TargetText.components(separatedBy: "\n")
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Tencent lookup error \(error)")
