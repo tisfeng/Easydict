@@ -40,7 +40,7 @@ public final class CaiyunService: QueryService {
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
     /// Official Test Token for Caiyun
-    private static let defaultTestToken = FWEncryptorAES.decryptText("hlvDXvvfjeFTjMjhkB5HMlyPWEXQhn3U1r+qIqn/YAk=", key: "Easydict")
+    private static let defaultTestToken = FWEncryptorAES.decryptText("hlvDXvvfjeFTjMjhkB5HMlyPWEXQhn3U1r+qIqn/YAk=", key: Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String)
 
     private var token: String {
         let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
@@ -51,12 +51,12 @@ public final class CaiyunService: QueryService {
         }
     }
     
-    override public func autoConvertToTraditionalChineseResult() -> Bool {
+    override public func autoConvertTraditionalChinese() -> Bool {
         return true
     }
 
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {        
-        if prehandleQueryTextLanguage(text, autoConvertChineseText: true, from: from, to: to, completion: completion) {
+        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
             return
         }
         let transType = CaiyunTranslateType.transType(from: from, to: to)

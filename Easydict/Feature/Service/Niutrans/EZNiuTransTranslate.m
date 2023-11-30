@@ -107,7 +107,7 @@
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     
@@ -127,7 +127,7 @@
     NSString *url = @"https://api.niutrans.com/NiuTransServer/translation";
     NSDictionary *params = @{
         @"apikey" : self.apiKey,
-        @"src_text" : text,
+        @"src_text" : [text trimToMaxLength:5000],
         @"from" : souceLangCode,
         @"to" : targetLangCode,
         @"source" : @"Easydict"

@@ -27,7 +27,6 @@ userInfo:nil]
 
 @end
 
-
 @implementation EZQueryService
 
 - (instancetype)init {
@@ -132,61 +131,15 @@ userInfo:nil]
     [self ocr:queryModel.OCRImage from:queryModel.queryFromLanguage to:queryModel.queryTargetLanguage completion:completion];
 }
 
-#pragma mark - 子类重写
 
-- (EZServiceType)serviceType {
-    MethodNotImplemented();
-    return nil;
-}
-
-- (EZQueryTextType)queryTextType {
-    return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
-}
-
-- (EZQueryTextType)intelligentQueryTextType {
-    return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
-}
-
-- (EZServiceUsageStatus)serviceUsageStatus {
-    return EZServiceUsageStatusDefault;
-}
-
-- (NSString *)name {
-    MethodNotImplemented();
-    return nil;
-}
-
-- (nullable NSString *)link {
-    return nil;
-}
-
-/// 单词直达链接
-- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
-    return self.link;
-}
-
-- (BOOL)autoConvertToTraditionalChineseResult {
-    return NO;
-}
-
-
-- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
-    MethodNotImplemented();
-}
-
-- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
-    
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
-        return;
-    }
-    
-    MethodNotImplemented();
-}
-
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text
+                              from:(EZLanguage)from
+                                to:(EZLanguage)to
+                        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     // If translated language is Chinese, use Chinese text convert directly.
     NSArray *languages = @[ from, to ];
-    if (isConvert && [EZLanguageManager.shared onlyContainsChineseLanguages:languages]) {
+    if ([self autoConvertTraditionalChinese] &&
+        [EZLanguageManager.shared onlyContainsChineseLanguages:languages]) {
         NSString *result;
         if ([to isEqualToString:EZLanguageSimplifiedChinese]) {
             result = [text toSimplifiedChineseText];
@@ -218,6 +171,55 @@ userInfo:nil]
     
     return NO;
 }
+
+#pragma mark - 必须重写的子类方法
+
+- (EZServiceType)serviceType {
+    MethodNotImplemented();
+    return nil;
+}
+
+- (NSString *)name {
+    MethodNotImplemented();
+    return nil;
+}
+
+- (nullable NSString *)link {
+    return nil;
+}
+
+/// 单词直达链接
+- (nullable NSString *)wordLink:(EZQueryModel *)queryModel {
+    return self.link;
+}
+
+- (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
+    MethodNotImplemented();
+}
+
+- (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+    MethodNotImplemented();
+}
+
+
+#pragma mark - 可选重写的子类方法
+
+- (BOOL)autoConvertTraditionalChinese {
+    return NO;
+}
+
+- (EZQueryTextType)queryTextType {
+    return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
+}
+
+- (EZQueryTextType)intelligentQueryTextType {
+    return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
+}
+
+- (EZServiceUsageStatus)serviceUsageStatus {
+    return EZServiceUsageStatusDefault;
+}
+
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {
     MethodNotImplemented();

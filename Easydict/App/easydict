@@ -5,6 +5,6 @@
 # /path/to/your/application/Easydict "$@"
 
 
-# /Users/tisfeng/Library/Developer/Xcode/DerivedData/Easydict-entaqaylceybfqboqggmsizyhose/Build/Products/Debug/Easydict-Debug.app/Contents/MacOS/Easydict-Debug "$@"
+# /Users/tisfeng/Library/Developer/Xcode/DerivedData/Easydict-entaqaylceybfqboqggmsizyhose/Build/Products/Debug/Easydict-debug.app/Contents/MacOS/Easydict-debug "$@"
 
 /System/Volumes/Data/Applications/Easydict.app/Contents/MacOS/Easydict "$@"

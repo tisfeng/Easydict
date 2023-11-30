@@ -704,24 +704,20 @@ static EZWindowManager *_instance;
 - (void)snipTranslate {
     MMLogInfo(@"snipTranslate");
     
-    //    if ([self hasEasydictRunningInDebugMode]) {
-    //        return;
-    //    }
-    
     [self saveFrontmostApplication];
     
     if (Snip.shared.isSnapshotting) {
         return;
     }
     
+    // Close non-main floating window if not pinned. Fix https://github.com/tisfeng/Easydict/issues/126
+    if (!self.floatingWindow.pin && self.floatingWindowType != EZWindowTypeMain) {
+        [self closeFloatingWindow];
+    }
+    
     // Since ocr detect may be inaccurate, sometimes need to set sourceLanguage manually, so show Fixed window.
     EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
     EZBaseQueryWindow *window = [self windowWithType:windowType];
-    
-    // FIX https://github.com/tisfeng/Easydict/issues/126
-    if (!self.floatingWindow.pin) {
-        [self closeFloatingWindow];
-    }
     
     // Wait to close floating window if need.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
