@@ -15,6 +15,6 @@ struct TencentResponse: Codable {
         var Target: String
         var TargetText: String
     }
-    
+
     var Response: Response
 }

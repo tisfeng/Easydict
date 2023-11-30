@@ -38,7 +38,7 @@ public final class TencentService: QueryService {
         throw QueryServiceError.notSupported
     }
 
-//MARK: API Request
+// MARK: API Request
 
     private static let defaultSecretId = ""
     private static let defaultSecretKey = ""
@@ -82,13 +82,13 @@ public final class TencentService: QueryService {
             "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
-            "ProjectId": projectId,
+            "ProjectId": projectId
         ]
 
         func sha256(msg: String) -> String {
             let data = msg.data(using: .utf8)!
             let digest = SHA256.hash(data: data)
-            return digest.compactMap{String(format: "%02x", $0)}.joined()
+            return digest.compactMap {String(format: "%02x", $0)}.joined()
         }
 
         let service = "tmt"
@@ -103,7 +103,6 @@ public final class TencentService: QueryService {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
         let date = dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(timestamp)))
-
 
         // ************* 步骤 1：拼接规范请求串 *************
         let httpRequestMethod = "POST"
@@ -139,21 +138,21 @@ public final class TencentService: QueryService {
         let dateData = Data(date.utf8)
         var symmetricKey = SymmetricKey(data: keyData)
         let secretDate = HMAC<SHA256>.authenticationCode(for: dateData, using: symmetricKey)
-        _ = Data(secretDate).map{String(format: "%02hhx", $0)}.joined()
+        _ = Data(secretDate).map {String(format: "%02hhx", $0)}.joined()
 
         let serviceData = Data(service.utf8)
         symmetricKey = SymmetricKey(data: Data(secretDate))
         let secretService = HMAC<SHA256>.authenticationCode(for: serviceData, using: symmetricKey)
-        _ = Data(secretService).map{String(format: "%02hhx", $0)}.joined()
+        _ = Data(secretService).map {String(format: "%02hhx", $0)}.joined()
 
         let signingData = Data("tc3_request".utf8)
         symmetricKey = SymmetricKey(data: secretService)
         let secretSigning = HMAC<SHA256>.authenticationCode(for: signingData, using: symmetricKey)
-        _ = Data(secretSigning).map{String(format: "%02hhx", $0)}.joined()
+        _ = Data(secretSigning).map {String(format: "%02hhx", $0)}.joined()
 
         let stringToSignData = Data(stringToSign.utf8)
         symmetricKey = SymmetricKey(data: secretSigning)
-        let signature = HMAC<SHA256>.authenticationCode(for: stringToSignData, using: symmetricKey).map{String(format: "%02hhx", $0)}.joined()
+        let signature = HMAC<SHA256>.authenticationCode(for: stringToSignData, using: symmetricKey).map {String(format: "%02hhx", $0)}.joined()
 
         // ************* 步骤 4：拼接 Authorization *************
         let authorization = """
@@ -167,7 +166,7 @@ public final class TencentService: QueryService {
             "X-TC-Action": action,
             "X-TC-Timestamp": "\(timestamp)",
             "X-TC-Version": version,
-            "X-TC-Region": region,
+            "X-TC-Region": region
         ]
 
         let request = AF.request(endpoint,

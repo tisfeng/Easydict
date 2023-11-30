@@ -33,7 +33,7 @@ struct TencentTranslateType: Equatable {
         .thai: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
         .malay: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
         .arabic: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .hindi: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .hindi: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian]
     ]
 
     static let supportLanguagesDictionary: [Language: String] = [
@@ -55,11 +55,11 @@ struct TencentTranslateType: Equatable {
         .thai: "th",
         .malay: "ms",
         .arabic: "ar",
-        .hindi: "hi",
+        .hindi: "hi"
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
-        if (supportedTypes[from]?.contains(to) == true) {
+        if supportedTypes[from]?.contains(to) == true {
             guard let from = supportLanguagesDictionary[from],
                   let to = supportLanguagesDictionary[to] else {
                 return .unsupported
