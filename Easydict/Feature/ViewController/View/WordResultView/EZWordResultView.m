@@ -76,7 +76,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     __block CGFloat height = 0;
     __block NSView *lastView = nil;
     NSColor *typeTextColor = [NSColor mm_colorWithHexString:@"#7A7A7A"];
-    NSFont *typeTextFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
+    NSFont *typeTextFont = [NSFont systemFontOfSize:13 * EZConfiguration.shared.currentFontSizeRatio weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
     NSString *errorDescription = result.error.localizedDescription;
@@ -97,7 +97,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (isShortWordLength && showBigWord) {
         EZLabel *bigWordLabel = [[EZLabel alloc] init];
         [self addSubview:bigWordLabel];
-        bigWordLabel.font = [NSFont systemFontOfSize:24 weight:NSFontWeightSemibold];
+        bigWordLabel.font = [NSFont systemFontOfSize:24 * EZConfiguration.shared.currentFontSizeRatio weight:NSFontWeightSemibold];
         bigWordLabel.text = result.queryText;
         
         [bigWordLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -161,6 +161,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         if (text) {
             EZLabel *resultLabel = [[EZLabel alloc] init];
+            resultLabel.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio];
             [self addSubview:resultLabel];
             
             // OpenAI result text has its own paragraph style.
@@ -218,7 +219,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             NSTextField *promptTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
                 textField.stringValue = NSLocalizedString(@"please_look", nil);
-                textField.font = [NSFont systemFontOfSize:14];
+                textField.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio];
                 textField.editable = NO;
                 textField.bordered = NO;
                 textField.backgroundColor = NSColor.clearColor;
@@ -317,7 +318,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             phoneticLabel = [[EZLabel alloc] init];
             [self addSubview:phoneticLabel];
             phoneticLabel.textContainer.lineFragmentPadding = 0;
-            phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize];
+            phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * EZConfiguration.shared.currentFontSizeRatio];
             
             // ???: WTF, why Baidu phonetic contain '\n', e.g. ceil "siːl\n"
             NSString *phonetic = [obj.value trim];
@@ -486,6 +487,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         EZLabel *meanLabel = [[EZLabel alloc] init];
+        meanLabel.font = typeTextFont;
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
@@ -562,6 +564,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         __block EZBlueTextButton *lastWordButton = nil;
         [obj.words enumerateObjectsUsingBlock:^(NSString *_Nonnull word, NSUInteger idx, BOOL *_Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+            wordButton.fontSize = 14 * EZConfiguration.shared.currentFontSizeRatio;
             [self addSubview:wordButton];
             [wordButton setTitle:word];
             
@@ -632,18 +635,19 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         __block CGFloat exceptedWidth = 0;
         
         EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+        wordButton.fontSize = 14 * EZConfiguration.shared.currentFontSizeRatio;
         wordButton.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:wordButton];
         
         CGFloat maxButtonWidth = self.width / 2;
-        NSString *title = [self multipleLineText:obj.word font:[NSFont systemFontOfSize:14] lineWidth:maxButtonWidth];
+        NSString *title = [self multipleLineText:obj.word font:[NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio] lineWidth:maxButtonWidth];
         [wordButton setTitle:title];
         
         CGSize buttonSize = wordButton.size;
         if (buttonSize.width > maxButtonWidth) {
             buttonSize.width = maxButtonWidth;
         }
-        CGFloat buttonHeight = [wordButton.title mm_heightWithFont:[NSFont systemFontOfSize:14] constrainedToWidth:maxButtonWidth];
+        CGFloat buttonHeight = [wordButton.title mm_heightWithFont:[NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio] constrainedToWidth:maxButtonWidth];
         
         buttonSize.height = buttonHeight + wordButton.expandValue;
         
@@ -685,7 +689,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         EZLabel *meanLabel = [[EZLabel alloc] init];
         meanLabel.text = obj.meansText;
-        
+        meanLabel.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio];
         [self addSubview:meanLabel];
         [meanLabel excuteLight:^(id _Nonnull x) {
             [x setTextColor:[NSColor ez_resultTextLightColor]];
@@ -753,6 +757,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         EZLabel *resultLabel = [[EZLabel alloc] init];
         [self addSubview:resultLabel];
         resultLabel.text = wordResult.etymology;
+        resultLabel.font = [NSFont systemFontOfSize:14 * EZConfiguration.shared.currentFontSizeRatio];
         resultLabel.delegate = self;
         
         [resultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -994,7 +999,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     tagButton.layer.borderColor = tagColor.CGColor;
     tagButton.bordered = NO;
     
-    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12] color:tagColor];
+    NSAttributedString *attributedString = [NSAttributedString mm_attributedStringWithString:tagButton.title font:[NSFont systemFontOfSize:12 * EZConfiguration.shared.currentFontSizeRatio] color:tagColor];
     tagButton.attributedTitle = attributedString;
 }
 

@@ -1034,6 +1034,23 @@
         }
       }
     },
+    "font_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font Size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小"
+          }
+        }
+      }
+    },
     "force_auto_get_selected_text" : {
       "localizations" : {
         "en" : {

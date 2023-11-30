@@ -13,12 +13,13 @@
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         self.expandValue = 5;
+        self.fontSize = 14;
     }
     return self;
 }
 
 - (void)setTitle:(NSString *)title {    
-    NSFont *textFont = [NSFont systemFontOfSize:14];
+    NSFont *textFont = [NSFont systemFontOfSize:self.fontSize];
     self.attributedTitle = [NSAttributedString mm_attributedStringWithString:title font:textFont color:[NSColor ez_blueTitleColor]];
     
     [self sizeToFit];

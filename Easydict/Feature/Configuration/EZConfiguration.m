@@ -53,6 +53,7 @@ static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopB
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
+static NSString *const kTranslationControllerFontKey = @"EZConfiguration_kTranslationControllerFontKey";
 
 
 @interface EZConfiguration ()
@@ -121,6 +122,11 @@ static EZConfiguration *_instance;
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
     self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
+    
+    self.fontSizes = @[@(0.75), @(1), @(1.25), @(1.5), @(1.75), @(2)];
+    [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: self.fontSizes[1]}];
+    
+    self.currentFontSizeRatio = [[NSUserDefaults standardUserDefaults]floatForKey:kTranslationControllerFontKey];
 }
 
 #pragma mark - getter
@@ -412,6 +418,10 @@ static EZConfiguration *_instance;
     [self logSettings:@{@"clear_input" : @(clearInput)}];
 }
 
+- (void)setCurrentFontSizeRatio:(CGFloat)currentFontSizeRatio {
+    _currentFontSizeRatio = currentFontSizeRatio;
+    [NSUserDefaults mm_write:@(currentFontSizeRatio) forKey:kTranslationControllerFontKey];
+}
 
 #pragma mark - Window Frame
 
