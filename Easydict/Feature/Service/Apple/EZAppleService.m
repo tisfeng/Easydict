@@ -315,14 +315,18 @@ static EZAppleService *_instance;
     return orderedDict;
 }
 
+- (BOOL)autoConvertTraditionalChinese {
+    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
+    return YES;
+}
+
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (text.length == 0) {
         NSLog(@"text is empty");
         return;
     }
     
-    // Since Apple system translation not support zh-hans --> zh-hant and zh-hant --> zh-hans, so we need to convert it manually.
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:YES from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     

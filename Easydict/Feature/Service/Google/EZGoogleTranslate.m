@@ -197,7 +197,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
              from:(EZLanguage)from
                to:(EZLanguage)to
        completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     

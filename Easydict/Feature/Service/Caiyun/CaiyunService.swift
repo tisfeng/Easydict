@@ -51,12 +51,12 @@ public final class CaiyunService: QueryService {
         }
     }
     
-    override public func autoConvertToTraditionalChineseResult() -> Bool {
+    override public func autoConvertTraditionalChinese() -> Bool {
         return true
     }
 
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {        
-        if prehandleQueryTextLanguage(text, autoConvertChineseText: true, from: from, to: to, completion: completion) {
+        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
             return
         }
         let transType = CaiyunTranslateType.transType(from: from, to: to)

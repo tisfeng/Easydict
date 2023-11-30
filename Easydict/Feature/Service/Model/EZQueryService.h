@@ -53,10 +53,11 @@ NS_SWIFT_NAME(QueryService)
 /// 语言在支持的语言数组中的位置，不包含则返回0
 - (NSInteger)indexForLanguage:(EZLanguage)lang;
 
-/// 是否提前处理查询，如不支持的语言
-/// - Parameters:
-/// - isAutoConvert: 是否使用本地中文简繁体转换，如 API 服务支持繁简体，则最好交给 API。
-- (BOOL)prehandleQueryTextLanguage:(NSString *)text autoConvertChineseText:(BOOL)isAutoConvert from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
+/// 预处理查询，如遇到不支持的语言，直接报错提示。
+- (BOOL)prehandleQueryTextLanguage:(NSString *)text
+                              from:(EZLanguage)from
+                                to:(EZLanguage)to
+                        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
 
 /// Get TTS langauge code.
 - (NSString *)getTTSLanguageCode:(EZLanguage)language;
@@ -67,7 +68,7 @@ NS_SWIFT_NAME(QueryService)
 @interface EZQueryService ()
 
 /// 如果服务不支持繁体中文，可重写返回 YES 来支持。
-- (BOOL)autoConvertToTraditionalChineseResult;
+- (BOOL)autoConvertTraditionalChinese;
 
 @end
 
