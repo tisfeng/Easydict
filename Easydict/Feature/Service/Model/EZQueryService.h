@@ -45,7 +45,7 @@ NS_SWIFT_NAME(QueryService)
 - (NSArray<EZLanguage> *)languages;
 
 /// 语言枚举转字符串，不支持则返回空
-- (NSString *_Nullable)languageCodeForLanguage:(EZLanguage)lang;
+- (nullable NSString *)languageCodeForLanguage:(EZLanguage)lang;
 
 /// 语言字符串转枚举，不支持则返回Auto
 - (EZLanguage)languageEnumFromCode:(NSString *)langString;
@@ -64,42 +64,26 @@ NS_SWIFT_NAME(QueryService)
 
 @end
 
-/// 子类方法，可选重写
+
+#pragma mark - 必须重写的子类方法
+
 @interface EZQueryService ()
 
-/// 如果服务不支持繁体中文，可重写返回 YES 来支持。
-- (BOOL)autoConvertTraditionalChinese;
-
-@end
-
-/// 以下方法供子类重写，且必须重写
-@interface EZQueryService ()
-
-/// 当前翻译对象唯一标识符, OpenAI
+/// 服务类型
 - (EZServiceType)serviceType;
 
-/// Query text type: dictionary ,translation, sentence.
-- (EZQueryTextType)queryTextType;
-
-- (EZQueryTextType)intelligentQueryTextType;
-
-/// Service usage status.
-- (EZServiceUsageStatus)serviceUsageStatus;
-
-/// 翻译的名字
+/// 服务名字
 - (NSString *)name;
 
-/// 翻译网站首页
+/// 服务网站链接
 - (nullable NSString *)link;
 
-/// 单词直达链接
+/// 单词直达链接，如果为空，则使用 link
 - (nullable NSString *)wordLink:(EZQueryModel *)queryModel;
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;
 
-
-#pragma mark - Old Methods
 
 /// 文本翻译
 /// @param text 查询文本
@@ -107,6 +91,22 @@ NS_SWIFT_NAME(QueryService)
 /// @param to 目标语言
 /// @param completion 回调
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
+
+
+#pragma mark - 可选重写的子类方法
+
+/// 如果服务不支持繁体中文，可重写返回 YES 来支持。
+- (BOOL)autoConvertTraditionalChinese;
+
+/// Service usage status, default is EZServiceUsageStatusDefault 0
+- (EZServiceUsageStatus)serviceUsageStatus;
+
+/// Query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
+- (EZQueryTextType)queryTextType;
+
+/// Intelligent query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
+- (EZQueryTextType)intelligentQueryTextType;
+
 
 /// 获取文本的语言
 /// @param text 文本
