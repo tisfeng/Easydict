@@ -205,6 +205,8 @@
         EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
+        EZTencentSecretId,
+        EZTencentSecretKey,
         EZBingCookieKey,
 
         EZIntelligentQueryModeKey,

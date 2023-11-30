@@ -40,27 +40,28 @@ public final class TencentService: QueryService {
 
 //MARK: API Request
 
-//TODO: Implement user SecretId/SecretKey
-//    private static let defaultSecretId = ""
-//    private static let defaultSecretKey = ""
-//
-//    private var secretId: String {
-//        let secretId = UserDefaults.standard.string(forKey: EZTencentSecretId)
-//        if let secretId, !secretId.isEmpty {
-//            return secretId
-//        } else {
-//            return TencentService.defaultSecretId
-//        }
-//    }
-//
-//    private var secretKey: String {
-//        let secretKey = UserDefaults.standard.string(forKey: EZTencentSecretKey)
-//        if let secretKey, !secretKey.isEmpty {
-//            return secretKey
-//        } else {
-//            return TencentService.defaultSecretKey
-//        }
-//    }
+    private static let defaultSecretId = ""
+    private static let defaultSecretKey = ""
+
+    // easydict://writeKeyValue?EZTencentSecretId=xxx
+    private var secretId: String {
+        let secretId = UserDefaults.standard.string(forKey: EZTencentSecretId)
+        if let secretId, !secretId.isEmpty {
+            return secretId
+        } else {
+            return TencentService.defaultSecretId
+        }
+    }
+
+    // easydict://writeKeyValue?EZTencentSecretKey=xxx
+    private var secretKey: String {
+        let secretKey = UserDefaults.standard.string(forKey: EZTencentSecretKey)
+        if let secretKey, !secretKey.isEmpty {
+            return secretKey
+        } else {
+            return TencentService.defaultSecretKey
+        }
+    }
 
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         if prehandleQueryTextLanguage(text, autoConvertChineseText: false, from: from, to: to, completion: completion) {
@@ -89,14 +90,6 @@ public final class TencentService: QueryService {
             let digest = SHA256.hash(data: data)
             return digest.compactMap{String(format: "%02x", $0)}.joined()
         }
-
-        // 密钥参数
-        // 需要设置环境变量 TENCENTCLOUD_SECRET_ID，值为示例的 AKIDz8krbsJ5yKBZQpn74WFkmLPx3*******
-        //let secretId = ProcessInfo.processInfo.environment["TENCENTCLOUD_SECRET_ID"]
-        let secretId = ""
-        // 需要设置环境变量 TENCENTCLOUD_SECRET_KEY，值为示例的 Gu5t9xGARNpq86cd98joQYCN3*******
-        //let secretKey = ProcessInfo.processInfo.environment["TENCENTCLOUD_SECRET_KEY"]
-        let secretKey = ""
 
         let service = "tmt"
         let host = "tmt.tencentcloudapi.com"
