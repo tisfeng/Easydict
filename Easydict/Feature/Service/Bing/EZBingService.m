@@ -90,7 +90,7 @@
 }
 
 - (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     

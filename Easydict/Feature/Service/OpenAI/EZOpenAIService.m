@@ -168,7 +168,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Use OpenAI to translate text.
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text autoConvertChineseText:NO from:from to:to completion:completion]) {
+    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
     

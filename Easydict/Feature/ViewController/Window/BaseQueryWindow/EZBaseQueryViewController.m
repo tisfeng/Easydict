@@ -685,7 +685,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         result.error = error;
         
-        if (service.autoConvertToTraditionalChineseResult &&
+        if (service.autoConvertTraditionalChinese &&
             [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             [service.result convertToTraditionalChineseResult];
         }
