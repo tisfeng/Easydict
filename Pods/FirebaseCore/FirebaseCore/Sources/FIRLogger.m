@@ -90,6 +90,10 @@ __attribute__((no_sanitize("thread"))) void FIRSetAnalyticsDebugMode(BOOL analyt
   sFIRAnalyticsDebugMode = analyticsDebugMode;
 }
 
+FIRLoggerLevel FIRGetLoggerLevel(void) {
+  return (FIRLoggerLevel)GULGetLoggerLevel();
+}
+
 void FIRSetLoggerLevel(FIRLoggerLevel loggerLevel) {
   FIRLoggerInitializeASL();
   GULSetLoggerLevel((GULLoggerLevel)loggerLevel);

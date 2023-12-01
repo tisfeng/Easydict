@@ -91,6 +91,10 @@ void GULLoggerForceDebug(void) {
   }
 }
 
+GULLoggerLevel GULGetLoggerLevel(void) {
+  return sGULLoggerMaximumLevel;
+}
+
 __attribute__((no_sanitize("thread"))) void GULSetLoggerLevel(GULLoggerLevel loggerLevel) {
   if (loggerLevel < GULLoggerLevelMin || loggerLevel > GULLoggerLevelMax) {
     GULLogError(kGULLoggerLogger, NO, @"I-COR000023", @"Invalid logger level, %ld",
@@ -124,6 +128,7 @@ __attribute__((no_sanitize("thread"))) BOOL GULIsLoggableLevel(GULLoggerLevel lo
 void GULResetLogger(void) {
   sGULLoggerOnceToken = 0;
   sGULLoggerDebugMode = NO;
+  sGULLoggerMaximumLevel = GULLoggerLevelNotice;
 }
 
 aslclient getGULLoggerClient(void) {
