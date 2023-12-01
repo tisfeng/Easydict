@@ -45,6 +45,11 @@ void GULLoggerForceDebug(void);
 extern void GULLoggerEnableSTDERR(void);
 
 /**
+ * Gets the current GULLoggerLevel.
+ */
+extern GULLoggerLevel GULGetLoggerLevel(void);
+
+/**
  * Changes the default logging level of GULLoggerLevelNotice to a user-specified level.
  * The default level cannot be set above GULLoggerLevelNotice if the app is running from App Store.
  * (required) log level (one of the GULLoggerLevel enum values).

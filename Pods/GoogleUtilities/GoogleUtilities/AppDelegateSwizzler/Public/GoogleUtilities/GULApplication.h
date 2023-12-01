@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || (defined(TARGET_OS_VISION) && TARGET_OS_VISION)
 
 #import <UIKit/UIKit.h>
 

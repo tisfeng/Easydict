@@ -13,7 +13,7 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleVersion</key>
-	<string>10.13.0</string>
+	<string>10.17.0</string>
 	<key>DTSDKName</key>
 	<string>iphonesimulator11.2</string>
 </dict>
