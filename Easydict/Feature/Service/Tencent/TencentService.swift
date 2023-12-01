@@ -64,7 +64,7 @@ public final class TencentService: QueryService {
     }
 
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        if prehandleQueryTextLanguage(text, autoConvertChineseText: false, from: from, to: to, completion: completion) {
+        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
             return
         }
         let transType = TencentTranslateType.transType(from: from, to: to)
