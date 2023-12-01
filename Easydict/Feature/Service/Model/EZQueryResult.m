@@ -24,6 +24,10 @@
  interjection -> interj.
  */
 NSString *getPartAbbreviation(NSString *part) {
+    if (part.length == 0) {
+        return @"";
+    }
+    
     static NSDictionary *partOfSpeechMap = @{
         /**
          传统上，英语中有八个词类：名词、代词、形容词、动词、副词、介词、连词、感叹词。
