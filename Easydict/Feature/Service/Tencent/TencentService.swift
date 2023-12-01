@@ -104,17 +104,18 @@ public final class TencentService: QueryService {
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
         let date = dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(timestamp)))
 
-        // ************* 步骤 1：拼接规范请求串 *************
-        let httpRequestMethod = "POST"
-        let canonicalUri = "/"
-        let canonicalQuerystring = ""
-        let ct = "application/json; charset=utf-8"
-        let payload = try! JSONSerialization.data(withJSONObject: parameters)
-        let payloadString = String(data: payload, encoding: .utf8)!
-        let canonicalHeaders = "content-type:\(ct)\nhost:\(host)\nx-tc-action:\(action.lowercased())\n"
-        let signedHeaders = "content-type;host;x-tc-action"
-        let hashedRequestPayload = sha256(msg: payloadString)
-        let canonicalRequest = """
+        func headerAuth() -> (authorization: String, ct: String) {
+            // ************* 步骤 1：拼接规范请求串 *************
+            let httpRequestMethod = "POST"
+            let canonicalUri = "/"
+            let canonicalQuerystring = ""
+            let ct = "application/json; charset=utf-8"
+            let payload = try! JSONSerialization.data(withJSONObject: parameters)
+            let payloadString = String(data: payload, encoding: .utf8)!
+            let canonicalHeaders = "content-type:\(ct)\nhost:\(host)\nx-tc-action:\(action.lowercased())\n"
+            let signedHeaders = "content-type;host;x-tc-action"
+            let hashedRequestPayload = sha256(msg: payloadString)
+            let canonicalRequest = """
         \(httpRequestMethod)
         \(canonicalUri)
         \(canonicalQuerystring)
@@ -122,46 +123,48 @@ public final class TencentService: QueryService {
         \(signedHeaders)
         \(hashedRequestPayload)
         """
-
-        // ************* 步骤 2：拼接待签名字符串 *************
-        let credentialScope = "\(date)/\(service)/tc3_request"
-        let hashedCanonicalRequest = sha256(msg: canonicalRequest)
-        let stringToSign = """
+            
+            // ************* 步骤 2：拼接待签名字符串 *************
+            let credentialScope = "\(date)/\(service)/tc3_request"
+            let hashedCanonicalRequest = sha256(msg: canonicalRequest)
+            let stringToSign = """
         \(algorithm)
         \(timestamp)
         \(credentialScope)
         \(hashedCanonicalRequest)
         """
-
-        // ************* 步骤 3：计算签名 *************
-        let keyData = Data("TC3\(secretKey)".utf8)
-        let dateData = Data(date.utf8)
-        var symmetricKey = SymmetricKey(data: keyData)
-        let secretDate = HMAC<SHA256>.authenticationCode(for: dateData, using: symmetricKey)
-        _ = Data(secretDate).map {String(format: "%02hhx", $0)}.joined()
-
-        let serviceData = Data(service.utf8)
-        symmetricKey = SymmetricKey(data: Data(secretDate))
-        let secretService = HMAC<SHA256>.authenticationCode(for: serviceData, using: symmetricKey)
-        _ = Data(secretService).map {String(format: "%02hhx", $0)}.joined()
-
-        let signingData = Data("tc3_request".utf8)
-        symmetricKey = SymmetricKey(data: secretService)
-        let secretSigning = HMAC<SHA256>.authenticationCode(for: signingData, using: symmetricKey)
-        _ = Data(secretSigning).map {String(format: "%02hhx", $0)}.joined()
-
-        let stringToSignData = Data(stringToSign.utf8)
-        symmetricKey = SymmetricKey(data: secretSigning)
-        let signature = HMAC<SHA256>.authenticationCode(for: stringToSignData, using: symmetricKey).map {String(format: "%02hhx", $0)}.joined()
-
-        // ************* 步骤 4：拼接 Authorization *************
-        let authorization = """
+            
+            // ************* 步骤 3：计算签名 *************
+            let keyData = Data("TC3\(secretKey)".utf8)
+            let dateData = Data(date.utf8)
+            var symmetricKey = SymmetricKey(data: keyData)
+            let secretDate = HMAC<SHA256>.authenticationCode(for: dateData, using: symmetricKey)
+            _ = Data(secretDate).map {String(format: "%02hhx", $0)}.joined()
+            
+            let serviceData = Data(service.utf8)
+            symmetricKey = SymmetricKey(data: Data(secretDate))
+            let secretService = HMAC<SHA256>.authenticationCode(for: serviceData, using: symmetricKey)
+            _ = Data(secretService).map {String(format: "%02hhx", $0)}.joined()
+            
+            let signingData = Data("tc3_request".utf8)
+            symmetricKey = SymmetricKey(data: secretService)
+            let secretSigning = HMAC<SHA256>.authenticationCode(for: signingData, using: symmetricKey)
+            _ = Data(secretSigning).map {String(format: "%02hhx", $0)}.joined()
+            
+            let stringToSignData = Data(stringToSign.utf8)
+            symmetricKey = SymmetricKey(data: secretSigning)
+            let signature = HMAC<SHA256>.authenticationCode(for: stringToSignData, using: symmetricKey).map {String(format: "%02hhx", $0)}.joined()
+            
+            // ************* 步骤 4：拼接 Authorization *************
+            let authorization = """
         \(algorithm) Credential=\(secretId)/\(credentialScope), SignedHeaders=\(signedHeaders), Signature=\(signature)
         """
+            return (authorization, ct)
+        }
 
         let headers: HTTPHeaders = [
-            "Authorization": authorization,
-            "Content-Type": ct,
+            "Authorization": headerAuth().authorization,
+            "Content-Type": headerAuth().ct,
             "Host": host,
             "X-TC-Action": action,
             "X-TC-Timestamp": "\(timestamp)",
