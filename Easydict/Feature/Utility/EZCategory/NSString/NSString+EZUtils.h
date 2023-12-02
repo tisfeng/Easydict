@@ -13,8 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSArray *const EZPointCharacterList = @[ @"•", @"‧", @"∙"];
-static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
+static NSArray *EZPointCharacterList = nil;
+static NSArray *EZDashCharacterList = nil;
 
 @interface NSString (EZUtils)
 

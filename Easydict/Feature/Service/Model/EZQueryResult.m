@@ -10,6 +10,8 @@
 #import "EZLocalStorage.h"
 #import "NSArray+EZChineseText.h"
 
+static NSDictionary *partDict = nil;
+
 /// Convert part
 /**
  adjective -> adj.
@@ -22,7 +24,7 @@
  interjection -> interj.
  */
 NSString *getPartName(NSString *part) {
-    static NSDictionary *dict = @{
+    partDict = @{
         @"adjective" : @"adj.",
         @"adj" : @"adj.",
         @"adverb" : @"adv.",
@@ -36,7 +38,7 @@ NSString *getPartName(NSString *part) {
         @"det": @"det.", // determinative 限定词
     };
     
-    NSString *partName = dict[part];
+    NSString *partName = partDict[part];
     if (!partName) {
         partName = part;
     }

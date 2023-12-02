@@ -9,18 +9,27 @@
 #import "NSString+EZUtils.h"
 #import "EZLanguageManager.h"
 
-static NSArray *const kEndPunctuationMarks = @[ @"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：", @"...", @"……" ];
-
-static NSDictionary *const kQuotesDict = @{
-    @"\"" : @"\"",
-    @"“" : @"”",
-    @"‘" : @"’",
-    @"'" : @"'",
-    @"`" : @"`",
-    @"「" : @"」",
-};
-
 @implementation NSString (EZUtils)
+
+static NSArray *kEndPunctuationMarks = nil;
+static NSDictionary *kQuotesDict = nil;
+
+
++ (void)initialize {
+    kEndPunctuationMarks = [NSArray arrayWithObjects:@"。", @"？", @"！", @"?", @".", @"!", @";", @":", @"：", @"...", @"……", nil];
+
+    kQuotesDict = @{
+        @"\"" : @"\"",
+        @"“" : @"”",
+        @"‘" : @"’",
+        @"'" : @"'",
+        @"`" : @"`",
+        @"「" : @"」",
+    };
+    
+    EZPointCharacterList = @[ @"•", @"‧", @"∙"];
+    EZDashCharacterList = @[ @"—", @"-", @"–" ];
+}
 
 /// Check if it is a single letter of the alphabet, like 'a', 'A'
 - (BOOL)isAlphabet {

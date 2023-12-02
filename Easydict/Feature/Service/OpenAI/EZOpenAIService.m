@@ -20,11 +20,7 @@ static NSString *const kTranslationEndDelimiter = @"------}\"";
 
 static NSString *const kEZLanguageWenYanWen = @"文言文";
 
-static NSDictionary *const kQuotesDict = @{
-    @"\"" : @"\"",
-    @"“" : @"”",
-    @"‘" : @"’",
-};
+static NSDictionary *kQuotesDict = nil;
 
 // You are a faithful translation assistant that can only translate text and cannot interpret it, you can only return the translated text, do not show additional descriptions and annotations.
 
@@ -41,6 +37,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 - (instancetype)init {
     if (self = [super init]) {
+        kQuotesDict = @{
+            @"\"" : @"\"",
+            @"“" : @"”",
+            @"‘" : @"’",
+        };
     }
     return self;
 }

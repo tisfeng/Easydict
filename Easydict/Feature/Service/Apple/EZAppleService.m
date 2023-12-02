@@ -21,7 +21,7 @@ static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
 static NSString *const kIndentationText = @"";
 
-static NSArray *const kAllowedCharactersInPoetryList = @[ @"《", @"》", @"〔", @"〕" ];
+static NSArray *kAllowedCharactersInPoetryList = nil;
 
 static CGFloat const kParagraphLineHeightRatio = 1.2;
 
@@ -37,6 +37,11 @@ static char kJoinedStringKey;
 @end
 
 @implementation VNRecognizedTextObservation (EZText)
+
++ (void)initialize {
+    kAllowedCharactersInPoetryList = @[ @"《", @"》", @"〔", @"〕" ];
+}
+
 - (NSString *)firstText {
     NSString *text = [[self topCandidates:1] firstObject].string;
     return text;
