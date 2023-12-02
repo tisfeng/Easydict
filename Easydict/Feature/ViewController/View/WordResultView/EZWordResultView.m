@@ -33,7 +33,8 @@
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
-static const CGFloat kVerticalPadding_8 = 8;
+static const CGFloat kVerticalPadding_6 = 6;
+static const CGFloat kBlueTextButtonVerticalPadding_3 = 3;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
@@ -297,10 +298,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     height += kVerticalMargin_12;
                 } else {
                     make.top.offset(kHorizontalMargin_8);
-                    height += kVerticalPadding_8;
+                    height += kVerticalPadding_6;
                 }
             } else {
-                CGFloat topOffset = kVerticalPadding_8;
+                CGFloat topOffset = kVerticalPadding_6;
                 make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                 height += topOffset;
             }
@@ -466,7 +467,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 exceptedWidth += kHorizontalMargin_8;
                 
                 if (lastView) {
-                    CGFloat topOffset = kVerticalPadding_8;
+                    CGFloat topOffset = kVerticalPadding_6;
                     if (idx == 0) {
                         topOffset = kVerticalMargin_12;
                     }
@@ -505,7 +506,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 exceptedWidth += kHorizontalMargin_8;
                 
                 if (lastView) {
-                    CGFloat topPadding = kVerticalPadding_8;
+                    CGFloat topPadding = kVerticalPadding_6;
                     if (idx == 0) {
                         topPadding = kVerticalMargin_12;
                     }
@@ -514,7 +515,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     
                 } else {
                     make.top.offset(kHorizontalMargin_8);
-                    height += kVerticalPadding_8;
+                    height += kVerticalPadding_6;
                 }
             }
             CGSize labelSize = [self labelSize:meanLabel exceptedWidth:exceptedWidth];
@@ -541,15 +542,15 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         [exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(kHorizontalMargin_8);
             if (lastView) {
-                CGFloat topPadding = kVerticalPadding_8;
+                CGFloat topPadding = kVerticalPadding_6;
                 if (idx == 0) {
                     topPadding = kVerticalMargin_12;
                 }
                 make.top.equalTo(lastView.mas_bottom).offset(topPadding);
                 height += topPadding;
             } else {
-                make.top.offset(kVerticalPadding_8);
-                height += kVerticalPadding_8;
+                make.top.offset(kVerticalPadding_6);
+                height += kVerticalPadding_6;
             }
             
             CGSize labelSize = [exchangeLabel oneLineSize];
@@ -614,11 +615,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.offset(kHorizontalMargin_8);
                 if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_6);
                 } else {
-                    make.top.offset(kVerticalPadding_8);
+                    make.top.offset(kVerticalPadding_6);
                 }
-                height += kVerticalPadding_8;
+                height += kVerticalPadding_6;
                 
                 CGSize labelSize = [partLabel oneLineSize];
                 make.size.mas_equalTo(labelSize).priorityHigh();
@@ -651,13 +652,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partLabel) {
-                CGFloat topOffset = 3;
+                CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
                 height += topOffset;
                 make.top.equalTo(partLabel.mas_bottom).offset(topOffset);
             } else {
                 CGFloat topOffset = kHorizontalMargin_8;
                 if (lastView) {
-                    topOffset = 5;
+                    topOffset = kBlueTextButtonVerticalPadding_3;
                     if (idx == 0) {
                         topOffset = 8;
                     }
@@ -927,8 +928,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             make.top.equalTo(rtnView.mas_bottom).offset(topPadding);
             *height += topPadding;
         } else {
-            make.top.offset(kVerticalPadding_8);
-            *height += kVerticalPadding_8;
+            make.top.offset(kVerticalPadding_6);
+            *height += kVerticalPadding_6;
         }
         
         CGSize labelSize = [synonymsTitle oneLineSize];
@@ -969,7 +970,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
         
         [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-            CGFloat topOffset = 5;
+            CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
             make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
             *height += topOffset;
             make.left.equalTo(partLabel.mas_right);
