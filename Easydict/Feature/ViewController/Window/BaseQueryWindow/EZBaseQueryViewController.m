@@ -293,7 +293,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             tableView.backgroundColor = [NSColor ez_mainViewBgDarkColor];
         }];
         
-        tableView.style = NSTableViewStylePlain;
+        if (@available(macOS 11.0, *)) {
+            tableView.style = NSTableViewStylePlain;
+        } else {
+            // Fallback on earlier versions
+        }
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;
