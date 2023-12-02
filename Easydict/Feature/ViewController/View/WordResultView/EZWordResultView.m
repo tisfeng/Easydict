@@ -77,10 +77,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     
     NSString *errorDescription = result.error.localizedDescription;
     if (result.errorMessage.length) {
-        BOOL isOpenAI = [result.serviceType isEqualToString:EZServiceTypeOpenAI];
-        NSString *joinedString = isOpenAI ? @"\n\n" : @"";
-        errorDescription = [errorDescription stringByAppendingFormat:@"%@%@", joinedString, result.errorMessage];
-        
+        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", result.errorMessage];
         if (!errorDescription && !result.hasTranslatedResult) {
             errorDescription = result.errorMessage;
         }
