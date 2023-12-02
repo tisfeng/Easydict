@@ -1,5 +1,5 @@
 //
-//  sign.swift
+//  TencentSigning.swift
 //  Easydict
 //
 //  Created by tisfeng on 2023/12/2.
