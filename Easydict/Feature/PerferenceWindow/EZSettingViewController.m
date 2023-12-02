@@ -131,7 +131,6 @@
             EZServiceTypeYoudao,
             EZServiceTypeBing,
             EZServiceTypeCaiyun,
-            EZServiceTypeTencent,
             EZServiceTypeGoogle,
             EZServiceTypeBaidu,
             EZServiceTypeApple,
