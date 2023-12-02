@@ -42,6 +42,7 @@ public final class CaiyunService: QueryService {
     /// Official Test Token for Caiyun
     private static let defaultTestToken = FWEncryptorAES.decryptText("hlvDXvvfjeFTjMjhkB5HMlyPWEXQhn3U1r+qIqn/YAk=", key: Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String)
 
+    // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
         let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
         if let token, !token.isEmpty {
@@ -98,6 +99,9 @@ public final class CaiyunService: QueryService {
                     result.translatedResults = value.target
                     completion(result, nil)
                 case let .failure(error):
+                    if let data = response.data {
+                        result.errorMessage = String(data: data, encoding: .utf8)
+                    }
                     NSLog("Caiyun lookup error \(error)")
                     completion(result, error)
                 }
