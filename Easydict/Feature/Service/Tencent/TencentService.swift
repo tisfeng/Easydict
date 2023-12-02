@@ -36,7 +36,11 @@ public final class TencentService: QueryService {
         NSLog("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
     }
-    
+
+    override public func autoConvertTraditionalChinese() -> Bool {
+        return true
+    }
+
     // MARK: API Request
     
     private static let defaultSecretId = ""

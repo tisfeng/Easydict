@@ -16,24 +16,24 @@ struct TencentTranslateType: Equatable {
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
     static let supportedTypes: [Language: [Language]] = [
-        .simplifiedChinese: [.traditionalChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
-        .traditionalChinese: [.simplifiedChinese, .english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
-        .english: [.simplifiedChinese, .traditionalChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
-        .japanese: [.simplifiedChinese, .traditionalChinese, .english, .korean],
-        .korean: [.simplifiedChinese, .traditionalChinese, .english, .japanese],
-        .french: [.simplifiedChinese, .traditionalChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
-        .spanish: [.simplifiedChinese, .traditionalChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
-        .italian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
-        .german: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
-        .turkish: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
-        .russian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
-        .portuguese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .vietnamese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .indonesian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .thai: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .malay: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .arabic: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .hindi: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian]
+        .simplifiedChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
+        .traditionalChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
+        .english: [.simplifiedChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
+        .japanese: [.simplifiedChinese, .english, .korean],
+        .korean: [.simplifiedChinese, .english, .japanese],
+        .french: [.simplifiedChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
+        .spanish: [.simplifiedChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
+        .italian: [.simplifiedChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
+        .german: [.simplifiedChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
+        .turkish: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
+        .russian: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
+        .portuguese: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .vietnamese: [.simplifiedChinese, .english],
+        .indonesian: [.simplifiedChinese, .english],
+        .thai: [.simplifiedChinese, .english],
+        .malay: [.simplifiedChinese, .english],
+        .arabic: [.simplifiedChinese, .english],
+        .hindi: [.simplifiedChinese, .english]
     ]
 
     static let supportLanguagesDictionary: [Language: String] = [
@@ -59,7 +59,8 @@ struct TencentTranslateType: Equatable {
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
-        if supportedTypes[from]?.contains(to) == true {
+        if (supportedTypes[from] != nil && to == .traditionalChinese) ||
+            (supportedTypes[from]?.contains(to) == true) {
             guard let from = supportLanguagesDictionary[from],
                   let to = supportLanguagesDictionary[to] else {
                 return .unsupported
