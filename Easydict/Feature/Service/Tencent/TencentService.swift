@@ -87,7 +87,7 @@ public final class TencentService: QueryService {
             "ProjectId": 0
         ]
         
-        let endpoint = "https://cvm.tencentcloudapi.com"
+        let endpoint = "https://tmt.tencentcloudapi.com"
         let headers = tencentSignHeader(parameters: parameters, secretId: secretId, secretKey: secretKey)
 
         let request = AF.request(endpoint,
