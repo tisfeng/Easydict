@@ -17,7 +17,7 @@
         <p><img width="480" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/342b202c-10c9-4a90-b9a9-1f8d8b4ec6e7"></p>
         <h3 id="-">💎 优化</h3>
         <ul>
-        <li>优化了自动去除代码注释符号功能。</li>
+        <li>优化了自动去除代码注释符号功能。<a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1837474302">#135</a></li>
         </ul>
         <p>🐞 修复</p>
         <ul>
