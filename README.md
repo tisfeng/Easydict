@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -76,6 +76,7 @@
     - [配置 API 调用方式](#配置-api-调用方式)
   - [Bing 翻译](#bing-翻译)
   - [小牛翻译](#小牛翻译)
+  - [彩云小译](#彩云小译)
 - [智能查询模式](#智能查询模式)
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
@@ -457,6 +458,17 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
 // xxx 小牛翻译的 APIKey
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
+```
+
+### 彩云小译
+
+[彩云小译](https://fanyi.caiyunapp.com/) 需要 APIKey，为使用方便，我们内置了一个 key，这个 key 有一定限制，不保证一直能用。
+
+建议使用自己的 APIKey，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
+
+```
+// xxx 彩云小译的 Token
+easydict://writeKeyValue?EZCaiyunToken=xxx
 ```
 
 ## 智能查询模式
