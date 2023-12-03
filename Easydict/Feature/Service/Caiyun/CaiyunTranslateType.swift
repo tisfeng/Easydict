@@ -37,16 +37,22 @@ struct CaiyunTranslateType: RawRepresentable {
     ]
     
     static func transType(from: Language, to: Language) -> CaiyunTranslateType {
+        // Treat traditional Chinese as simplified Chinese.
+        if (from == .traditionalChinese) {
+            return transType(from: .simplifiedChinese, to: to)
+        }
+        
         // We can auto convert to Traditional Chinese.
-        if (supportedTypes[from] != nil && to == .traditionalChinese) ||
-            (supportedTypes[from]?.contains(to) == true) {
-            guard let from = supportLanguagesDictionary[from],
-                  let to = supportLanguagesDictionary[to] else {
-                return .unsupported
-            }
-            return CaiyunTranslateType(rawValue: "\(from)2\(to)")
-        } else {
+        guard let targetLanguages = supportedTypes[from],
+              targetLanguages.contains(to) || to == .traditionalChinese else {
             return .unsupported
         }
+        
+        guard let from = supportLanguagesDictionary[from],
+              let to = supportLanguagesDictionary[to] else {
+            return .unsupported
+        }
+        
+        return CaiyunTranslateType(rawValue: "\(from)2\(to)")
     }
 }
