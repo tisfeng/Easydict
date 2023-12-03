@@ -15,6 +15,7 @@ struct TencentTranslateType: Equatable {
 
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
+    // Docs: https://cloud.tencent.com/document/api/551/15619
     static let supportedTypes: [Language: [Language]] = [
         .simplifiedChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
         .traditionalChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
@@ -32,8 +33,8 @@ struct TencentTranslateType: Equatable {
         .indonesian: [.simplifiedChinese, .english],
         .thai: [.simplifiedChinese, .english],
         .malay: [.simplifiedChinese, .english],
-        .arabic: [.simplifiedChinese, .english],
-        .hindi: [.simplifiedChinese, .english]
+        .arabic: [.english],
+        .hindi: [.english]
     ]
 
     static let supportLanguagesDictionary: [Language: String] = [
