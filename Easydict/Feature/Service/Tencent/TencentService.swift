@@ -37,10 +37,6 @@ public final class TencentService: QueryService {
         throw QueryServiceError.notSupported
     }
 
-    override public func autoConvertTraditionalChinese() -> Bool {
-        return true
-    }
-
     // MARK: API Request
     private static let defaultSecretId = ""
     private static let defaultSecretKey = ""

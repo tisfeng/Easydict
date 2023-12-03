@@ -15,7 +15,7 @@ struct TencentTranslateType: Equatable {
 
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
-    // Docs: https://cloud.tencent.com/document/api/551/15619
+    // This docs missed traditionalChinese as target language if target languages contains simplifiedChinese. https://cloud.tencent.com/document/api/551/15619
     static let supportedTypes: [Language: [Language]] = [
         .simplifiedChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
         .traditionalChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
@@ -60,16 +60,32 @@ struct TencentTranslateType: Equatable {
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
-        if (supportedTypes[from] != nil && to == .traditionalChinese) ||
-            from == to ||
-            (supportedTypes[from]?.contains(to) == true) {
-            guard let from = supportLanguagesDictionary[from],
-                  let to = supportLanguagesDictionary[to] else {
-                return .unsupported
-            }
-            return TencentTranslateType(sourceLanguage: from, targetLanguage: to)
-        } else {
+        // !!!: Tencent translate support traditionalChinese as target language if target languages contain simplifiedChinese.
+        guard let targetLanguages = supportedTypes[from],
+              (targetLanguages.containsChinese() || targetLanguages.contains(to) || from == to || from.isKindOfChinese()) else {
             return .unsupported
         }
+        
+        guard let fromLanguage = supportLanguagesDictionary[from],
+              let toLanguage = supportLanguagesDictionary[to] else {
+            return .unsupported
+        }
+        
+        return TencentTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
+    }
+}
+
+
+extension Array where Element == Language {
+    // Contains Chinese language
+    func containsChinese() -> Bool {
+        contains { $0.isKindOfChinese() }
+    }
+}
+
+extension Language {
+    // Is kind of Chinese language
+    func isKindOfChinese() -> Bool {
+        self == .simplifiedChinese || self == .traditionalChinese
     }
 }
