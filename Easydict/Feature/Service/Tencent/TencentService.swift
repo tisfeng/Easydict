@@ -113,6 +113,14 @@ public final class TencentService: QueryService {
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Tencent lookup error \(error)")
+                    if let data = response.data {
+                        do {
+                            let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
+                            result.errorMessage = errorResponse.Response.Error.Message
+                        } catch {
+                            NSLog("Failed to decode error response: \(error)")
+                        }
+                    }
                     completion(result, error)
                 }
             }
