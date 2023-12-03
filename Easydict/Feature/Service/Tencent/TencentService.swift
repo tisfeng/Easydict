@@ -14,15 +14,15 @@ public final class TencentService: QueryService {
     override public func serviceType() -> ServiceType {
         .tencent
     }
-    
+
     override public func link() -> String? {
         "https://fanyi.qq.com"
     }
-    
+
     override public func name() -> String {
         NSLocalizedString("tencent_translate", comment: "The name of Tencent Translate")
     }
-    
+
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
@@ -31,7 +31,7 @@ public final class TencentService: QueryService {
         }
         return orderedDict
     }
-    
+
     override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
         NSLog("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
@@ -42,10 +42,10 @@ public final class TencentService: QueryService {
     }
 
     // MARK: API Request
-    
     private static let defaultSecretId = ""
     private static let defaultSecretKey = ""
-    
+
+
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
         let secretId = UserDefaults.standard.string(forKey: EZTencentSecretId)
@@ -55,7 +55,7 @@ public final class TencentService: QueryService {
             return TencentService.defaultSecretId
         }
     }
-    
+
     // easydict://writeKeyValue?EZTencentSecretKey=xxx
     private var secretKey: String {
         let secretKey = UserDefaults.standard.string(forKey: EZTencentSecretKey)
@@ -65,16 +65,16 @@ public final class TencentService: QueryService {
             return TencentService.defaultSecretKey
         }
     }
-    
+
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
             return
         }
-        
+
         translateText(text, from: from, to: to, completion: completion)
     }
 
-    func translateText(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void)  {
+    func translateText(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             result.errorType = .unsupportedLanguage
@@ -83,14 +83,14 @@ public final class TencentService: QueryService {
             completion(result, nil)
             return
         }
-                
+
         let parameters: [String: Any] = [
             "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
             "ProjectId": 0
         ]
-        
+
         let endpoint = "https://tmt.tencentcloudapi.com"
         let headers = tencentSignHeader(parameters: parameters, secretId: secretId, secretKey: secretKey)
 

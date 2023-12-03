@@ -23,7 +23,7 @@ func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: S
     dateFormatter.dateFormat = "yyyy-MM-dd"
     dateFormatter.timeZone = TimeZone(identifier: "UTC")
     let date = dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(timestamp)))
-    
+
     // ************* 步骤 1：拼接规范请求串 *************
     let httpRequestMethod = "POST"
     let canonicalUri = "/"
@@ -42,7 +42,7 @@ func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: S
 \(signedHeaders)
 \(hashedRequestPayload)
 """
-    
+
     // ************* 步骤 2：拼接待签名字符串 *************
     let credentialScope = "\(date)/\(service)/tc3_request"
     let hashedCanonicalRequest = canonicalRequest.sha256()
@@ -52,7 +52,7 @@ func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: S
 \(credentialScope)
 \(hashedCanonicalRequest)
 """
-    
+
     // ************* 步骤 3：计算签名 *************
     let secretDate = date.hmac(key: Data("TC3\(secretKey)".utf8))
     let secretService = service.hmac(key: secretDate)
@@ -63,7 +63,7 @@ func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: S
     let authorization = """
 \(algorithm) Credential=\(secretId)/\(credentialScope), SignedHeaders=\(signedHeaders), Signature=\(signature)
 """
-    
+
     let headers: HTTPHeaders = [
         "Authorization": authorization,
         "Content-Type": ct,
@@ -73,7 +73,7 @@ func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: S
         "X-TC-Version": version,
         "X-TC-Region": region
     ]
-    
+
     return headers
 }
 
@@ -84,7 +84,7 @@ extension String {
         let digest = SHA256.hash(data: data)
         return digest.compactMap {String(format: "%02x", $0)}.joined()
     }
-    
+
     // hmac
     func hmac(key: Data) -> Data {
         let data = Data(self.utf8)
