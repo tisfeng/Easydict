@@ -11,12 +11,12 @@ import Alamofire
 import CryptoKit
 
 // Tencent sigh header, Ref: https://github.com/TencentCloud/signature-process-demo/blob/main/signature-v3/swift/signv3.swift
-func tencentSignHeader(parameters: [String: Any], secretId: String, secretKey: String) -> HTTPHeaders {
-    let service = "tmt"
-    let host = "tmt.tencentcloudapi.com"
+func tencentSignHeader(service: String, action: String, version: String, parameters: [String: Any], secretId: String, secretKey: String) -> HTTPHeaders {
+    let service = service
+    let host = "\(service).tencentcloudapi.com"
     let region = "ap-guangzhou"
-    let action = "TextTranslate"
-    let version = "2018-03-21"
+    let action = action
+    let version = version
     let algorithm = "TC3-HMAC-SHA256"
     let timestamp = Int(Date().timeIntervalSince1970)
     let dateFormatter = DateFormatter()

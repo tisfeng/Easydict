@@ -92,7 +92,12 @@ public final class TencentService: QueryService {
         ]
 
         let endpoint = "https://tmt.tencentcloudapi.com"
-        let headers = tencentSignHeader(parameters: parameters, secretId: secretId, secretKey: secretKey)
+
+        let service = "tmt"
+        let action = "TextTranslate"
+        let version = "2018-03-21"
+
+        let headers = tencentSignHeader(service: service, action: action, version: version, parameters: parameters, secretId: secretId, secretKey: secretKey)
 
         let request = AF.request(endpoint,
                                  method: .post,
