@@ -462,9 +462,9 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 ### 彩云小译
 
-[彩云小译](https://fanyi.caiyunapp.com/) 需要 APIKey，为使用方便，我们内置了一个 key，这个 key 有一定限制，不保证一直能用。
+[彩云小译](https://fanyi.caiyunapp.com/) 需要 Token，为使用方便，我们内置了一个 token，这个 token 有一定限制，不保证一直能用。
 
-建议使用自己的 APIKey，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
+建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
 
 ```
 // xxx 彩云小译的 Token

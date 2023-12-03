@@ -463,9 +463,9 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 ### Lingocloud
 
-[Lingocloud](https://fanyi.caiyunapp.com/#/) needs an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+[Lingocloud](https://fanyi.caiyunapp.com/#/) needs an Token, for ease of use, we have built-in a token, this token has a limit on the amount, not guaranteed to be available all the time.
 
-It is recommended to use your own APIKey, each registered user of Lingocloud is given 100,000 characters of traffic per day, which is enough for daily use.
+It is recommended to use your own Token, each registered user of Lingocloud is given 100,000 characters of traffic per day, which is enough for daily use.
 
 ```
 // xxx is the Token of Lingocloud
