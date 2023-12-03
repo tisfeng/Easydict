@@ -61,6 +61,7 @@ struct TencentTranslateType: Equatable {
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
         if (supportedTypes[from] != nil && to == .traditionalChinese) ||
+            from == to ||
             (supportedTypes[from]?.contains(to) == true) {
             guard let from = supportLanguagesDictionary[from],
                   let to = supportLanguagesDictionary[to] else {
