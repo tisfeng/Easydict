@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -75,6 +75,7 @@
     - [Configure API call method](#configure-api-call-method)
   - [Bing Translate](#bing-translate)
   - [Niutrans](#niutrans)
+  - [Lingocloud](#lingocloud)
 - [Smart query mode](#smart-query-mode)
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
@@ -458,6 +459,17 @@ It is recommended to use your own APIKey, each registered user of Niutrans is gi
 ```
 // xxx is the APIKey of Niutrans
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
+```
+
+### Lingocloud
+
+[Lingocloud](https://fanyi.caiyunapp.com/#/) needs an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+
+It is recommended to use your own APIKey, each registered user of Lingocloud is given 100,000 characters of traffic per day, which is enough for daily use.
+
+```
+// xxx is the Token of Lingocloud
+easydict://writeKeyValue?EZCaiyunToken=xxx
 ```
 
 ## Smart query mode
