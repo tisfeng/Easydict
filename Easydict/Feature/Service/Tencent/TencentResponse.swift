@@ -32,14 +32,29 @@ struct TencentResponse: Codable {
  */
 struct TencentErrorResponse: Codable {
     struct Response: Codable {
-        var Error: Error
-        var RequestId: String
+        var error: Error
+        var requestId: String
+
+        // CodingKeys 枚举用于映射字段名
+        private enum CodingKeys: String, CodingKey {
+            case error = "Error" // error --> Error
+            case requestId = "RequestId" // requestId --> RequestId
+        }
     }
 
     struct Error: Codable {
-        var Code: String
-        var Message: String
+        var code: String
+        var message: String
+
+        private enum CodingKeys: String, CodingKey {
+            case code = "Code" // code --> Code
+            case message = "Message" // message --> Message
+        }
     }
 
-    var Response: Response
+    var response: Response
+
+    private enum CodingKeys: String, CodingKey {
+        case response = "Response" // response --> Response
+    }
 }

@@ -116,7 +116,7 @@ public final class TencentService: QueryService {
                     if let data = response.data {
                         do {
                             let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
-                            result.errorMessage = errorResponse.Response.Error.Message
+                            result.errorMessage = errorResponse.response.error.message
                         } catch {
                             NSLog("Failed to decode error response: \(error)")
                         }
