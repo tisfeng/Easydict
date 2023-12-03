@@ -11,7 +11,7 @@
         <h2 id="-v2-2-0-2023-12-03">[v2.2.0] - 2023-12-03</h2>
         <h3 id="-">✨ 新功能</h3>
         <ul>
-        <li>新增支持 <a href="https://fanyi.caiyunapp.com/#/">彩云小译</a> by @Kyle-Ye ，详情请看 <a href="https://github.com/tisfeng/easydict#%E5%BD%A9%E4%BA%91%E5%B0%8F%E8%AF%91">README</a> 介绍。</li>
+        <li>新增支持 <a href="https://fanyi.caiyunapp.com/#/">彩云小译</a> by <a href="https://github.com/Kyle-Ye">Kyle-Ye</a>，详情请看 <a href="https://github.com/tisfeng/easydict#%E5%BD%A9%E4%BA%91%E5%B0%8F%E8%AF%91">README</a> 介绍。</li>
         <li>支持 HTTP 请求，方便本地 LLM 提供的 OpenAI 接口调用。 <a href="https://github.com/tisfeng/Easydict/issues/245">#245</a></li>
         </ul>
         <p><img width="480" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/342b202c-10c9-4a90-b9a9-1f8d8b4ec6e7"></p>
@@ -21,8 +21,8 @@
         </ul>
         <p>🐞 修复</p>
         <ul>
-        <li>修复了隐藏菜单栏图标会在重启设备后失效问题 by @NeverAgain11 。<a href="https://github.com/tisfeng/Easydict/issues/235">#235</a></li>
-        </ul>
+        <li>修复了隐藏菜单栏图标会在重启设备后失效问题 by <a href="https://github.com/NeverAgain11">NeverAgain11</a>。<a href="https://github.com/tisfeng/Easydict/issues/235">#235</a></li>
+        </ul>        
       ]]>
       </description>
     </item>
