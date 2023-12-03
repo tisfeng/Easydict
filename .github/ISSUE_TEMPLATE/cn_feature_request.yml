@@ -13,7 +13,7 @@ body:
           required: true
         - label: 在 [issues](https://github.com/tisfeng/Easydict/issues) 页面搜索过（包括已关闭的 issue），未发现类似功能建议
           required: true
-        - label: Easydict 已升级到最新版本
+        - label: Easydict 已升级到 [最新版本](https://github.com/tisfeng/Easydict/releases)
           required: true
 
   - type: textarea
@@ -45,4 +45,4 @@ body:
       label: 是否愿意提交 PR 实现该功能
       description: 我们非常欢迎您提交 PR，当开发者人力不足时，提交 PR 是实现该功能的最快的方式。如果对 objc 或 Swift 语言不熟悉，可以尝试使用 ChatGPT，也许它能帮到你。
       options:
-        - label: 我愿意提交 PR!
+        - label: 我愿意提交 PR
