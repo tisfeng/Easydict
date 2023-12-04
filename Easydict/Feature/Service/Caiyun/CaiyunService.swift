@@ -40,7 +40,7 @@ public final class CaiyunService: QueryService {
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
     /// Official Test Token for Caiyun
-    private static let defaultTestToken = FWEncryptorAES.decryptText("hlvDXvvfjeFTjMjhkB5HMlyPWEXQhn3U1r+qIqn/YAk=", key: Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String)
+    private static let defaultTestToken = "5VZ61ZCRzQ2uTbp6MPaUGdoqXGklkB3WifIBPamAwLc=".decryptAES()
 
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {

@@ -209,6 +209,7 @@
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
+		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -638,6 +639,7 @@
 		03F25CB229327BC200E66A12 /* EZShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZShortcut.m; sourceTree = "<group>"; };
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
+		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
 		17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
@@ -1682,6 +1684,7 @@
 		03CF88602B137ECB0030C199 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
+				03FD68BC2B1E14B500FD388E /* String */,
 				03CF88612B137ED60030C199 /* Array */,
 			);
 			path = Swift;
@@ -1849,6 +1852,14 @@
 				03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */,
 			);
 			path = Volcano;
+			sourceTree = "<group>";
+		};
+		03FD68BC2B1E14B500FD388E /* String */ = {
+			isa = PBXGroup;
+			children = (
+				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
+			);
+			path = String;
 			sourceTree = "<group>";
 		};
 		17BCAEF22B0DFF9000A7D372 /* Niutrans */ = {
@@ -2247,6 +2258,7 @@
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
 				6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */,
+				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
