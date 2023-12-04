@@ -208,6 +208,7 @@
 		03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F14A3A2956016B00CB7379 /* EZVolcanoTranslate.m */; };
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
+		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -690,6 +691,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
+				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 			);
@@ -2010,6 +2012,7 @@
 			name = Easydict;
 			packageProductDependencies = (
 				2721E4CF2AFE920700A059AC /* Alamofire */,
+				03FD68BA2B1DC59600FD388E /* CryptoSwift */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2051,6 +2054,7 @@
 			mainGroup = C99EEB0F2385796700FEE666;
 			packageReferences = (
 				2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */,
+				03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -2782,6 +2786,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.0;
+			};
+		};
 		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -2793,6 +2805,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		03FD68BA2B1DC59600FD388E /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
 		2721E4CF2AFE920700A059AC /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
