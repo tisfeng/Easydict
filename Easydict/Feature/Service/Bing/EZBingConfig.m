@@ -31,6 +31,10 @@
     return urlString;
 }
 
+- (NSString *)dictTranslateURLString {
+    return [NSString stringWithFormat:@"https://%@/api/v7/dictionarywords/search?appid=371E7B2AF0F9B84EC491D731DF90A55719C7D209&mkt=zh-cn&pname=bingdict", self.host];
+}
+
 - (NSString *)cookie {
     NSString *cookie = [NSUserDefaults mm_readString:EZBingCookieKey defaultValue:@""];
     return cookie;

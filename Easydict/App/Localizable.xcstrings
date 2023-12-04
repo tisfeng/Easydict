@@ -93,6 +93,23 @@
         }
       }
     },
+    "antonyms" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antonyms"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反义词"
+          }
+        }
+      }
+    },
     "Apple" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -539,6 +556,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点击图标时才查询（需隐藏主窗口）"
+          }
+        }
+      }
+    },
+    "collocation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collocation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搭配"
           }
         }
       }
@@ -2104,6 +2138,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最高级"
+          }
+        }
+      }
+    },
+    "synonyms" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synonyms"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同义词"
           }
         }
       }

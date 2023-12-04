@@ -29,10 +29,12 @@
 #import "EZServiceTypes.h"
 #import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
+#import "EZWrapView.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
-static const CGFloat kVerticalPadding_8 = 8;
+static const CGFloat kVerticalPadding_6 = 6;
+static const CGFloat kBlueTextButtonVerticalPadding_3 = 3;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
@@ -293,10 +295,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     height += kVerticalMargin_12;
                 } else {
                     make.top.offset(kHorizontalMargin_8);
-                    height += kVerticalPadding_8;
+                    height += kVerticalPadding_6;
                 }
             } else {
-                CGFloat topOffset = kVerticalPadding_8;
+                CGFloat topOffset = kVerticalPadding_6;
                 make.top.equalTo(lastView.mas_bottom).offset(topOffset);
                 height += topOffset;
             }
@@ -462,7 +464,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 exceptedWidth += kHorizontalMargin_8;
                 
                 if (lastView) {
-                    CGFloat topOffset = kVerticalPadding_8;
+                    CGFloat topOffset = kVerticalPadding_6;
                     if (idx == 0) {
                         topOffset = kVerticalMargin_12;
                     }
@@ -501,7 +503,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                 exceptedWidth += kHorizontalMargin_8;
                 
                 if (lastView) {
-                    CGFloat topPadding = kVerticalPadding_8;
+                    CGFloat topPadding = kVerticalPadding_6;
                     if (idx == 0) {
                         topPadding = kVerticalMargin_12;
                     }
@@ -510,7 +512,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                     
                 } else {
                     make.top.offset(kHorizontalMargin_8);
-                    height += kVerticalPadding_8;
+                    height += kVerticalPadding_6;
                 }
             }
             CGSize labelSize = [self labelSize:meanLabel exceptedWidth:exceptedWidth];
@@ -537,15 +539,15 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         [exchangeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.offset(kHorizontalMargin_8);
             if (lastView) {
-                CGFloat topPadding = kVerticalPadding_8;
+                CGFloat topPadding = kVerticalPadding_6;
                 if (idx == 0) {
                     topPadding = kVerticalMargin_12;
                 }
                 make.top.equalTo(lastView.mas_bottom).offset(topPadding);
                 height += topPadding;
             } else {
-                make.top.offset(kVerticalPadding_8);
-                height += kVerticalPadding_8;
+                make.top.offset(kVerticalPadding_6);
+                height += kVerticalPadding_6;
             }
             
             CGSize labelSize = [exchangeLabel oneLineSize];
@@ -582,6 +584,21 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
     }];
     
+    // 同义词
+    if (result.wordResult.synonyms.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"synonyms", nil) parts:result.wordResult.synonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
+    
+    // 反义词
+    if (result.wordResult.antonyms.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"antonyms", nil) parts:result.wordResult.antonyms textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
+    
+    // 搭配
+    if (result.wordResult.collocation.count) {
+        lastView = [self buildSynonymsAndAntonymsView:NSLocalizedString(@"collocation", nil) parts:result.wordResult.collocation textColor:typeTextColor typeTextFont:typeTextFont height:&height lastView:lastView];
+    }
+    
     __block NSString *lastSimpleWordPart = nil;
     [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         EZLabel *partLabel = nil;
@@ -595,11 +612,11 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.offset(kHorizontalMargin_8);
                 if (lastView) {
-                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_8);
+                    make.top.equalTo(lastView.mas_bottom).offset(kVerticalPadding_6);
                 } else {
-                    make.top.offset(kVerticalPadding_8);
+                    make.top.offset(kVerticalPadding_6);
                 }
-                height += kVerticalPadding_8;
+                height += kVerticalPadding_6;
                 
                 CGSize labelSize = [partLabel oneLineSize];
                 make.size.mas_equalTo(labelSize).priorityHigh();
@@ -632,13 +649,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partLabel) {
-                CGFloat topOffset = 3;
+                CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
                 height += topOffset;
                 make.top.equalTo(partLabel.mas_bottom).offset(topOffset);
             } else {
                 CGFloat topOffset = kHorizontalMargin_8;
                 if (lastView) {
-                    topOffset = 5;
+                    topOffset = kBlueTextButtonVerticalPadding_3;
                     if (idx == 0) {
                         topOffset = 8;
                     }
@@ -892,6 +909,78 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             _viewHeight = 0;
         }
     }
+}
+
+- (NSView *)buildSynonymsAndAntonymsView:(NSString *)title parts:(NSArray<EZTranslatePart *> *)parts textColor:(NSColor *)typeTextColor typeTextFont:(NSFont *)typeTextFont height:(CGFloat *)height lastView:(NSView *)lastView {
+    __block NSView *rtnView = lastView;
+    EZLabel *synonymsTitle = [[EZLabel alloc] init];
+    [self addSubview:synonymsTitle];
+    synonymsTitle.font = typeTextFont;
+    synonymsTitle.textForegroundColor = typeTextColor;
+    synonymsTitle.text = title;
+    [synonymsTitle mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(kHorizontalMargin_8);
+        if (rtnView) {
+            CGFloat topPadding = kVerticalMargin_12;
+            make.top.equalTo(rtnView.mas_bottom).offset(topPadding);
+            *height += topPadding;
+        } else {
+            make.top.offset(kVerticalPadding_6);
+            *height += kVerticalPadding_6;
+        }
+        
+        CGSize labelSize = [synonymsTitle oneLineSize];
+        make.size.mas_equalTo(labelSize).priorityHigh();
+        *height += labelSize.height;
+    }];
+    rtnView = synonymsTitle;
+    
+    mm_weakify(self)
+    [parts enumerateObjectsUsingBlock:^(EZTranslatePart * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.means.count == 0) return;
+        EZLabel *partLabel = [[EZLabel alloc] init];
+        partLabel.font = typeTextFont;
+        partLabel.textForegroundColor = typeTextColor;
+        partLabel.text = obj.part;
+        [self addSubview:partLabel];
+        
+        EZWrapView *wrapView = [[EZWrapView alloc] init];
+        [self addSubview:wrapView];
+        [obj.means enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
+            EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+            [wordButton setTitle:mean];
+            [wrapView addSubview:wordButton];
+            [wordButton setClickBlock:^(EZButton *_Nonnull button) {
+                mm_strongify(self);
+                if (self.queryTextBlock) {
+                    self.queryTextBlock(mean);
+                }
+                [mean copyToPasteboard];
+            }];
+        }];
+        
+        [partLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.offset(kHorizontalMargin_8);
+            make.centerY.equalTo(wrapView.subviews.firstObject);
+            CGSize labelSize = [partLabel oneLineSize];
+            make.size.mas_equalTo(labelSize).priorityHigh();
+        }];
+        
+        [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
+            CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
+            make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
+            *height += topOffset;
+            make.left.equalTo(partLabel.mas_right);
+            make.right.equalTo(self);
+        }];
+        
+        [wrapView layoutSubtreeIfNeeded];
+        CGSize wrapViewSize = [wrapView intrinsicContentSize];
+        *height += wrapViewSize.height;
+        rtnView = wrapView;
+    }];
+    
+    return rtnView;
 }
 
 - (void)updateTagButton:(NSButton *)tagButton tagColor:(NSColor *)tagColor {
