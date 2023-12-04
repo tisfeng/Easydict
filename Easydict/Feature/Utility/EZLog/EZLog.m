@@ -8,8 +8,8 @@
 
 #import "EZLog.h"
 #import "EZConfiguration.h"
-#import "FWEncryptorAES.h"
 #import "EZDeviceSystemInfo.h"
+#import "Easydict-Swift.h"
 
 @import FirebaseCore;
 @import FirebaseAnalytics;
@@ -21,9 +21,8 @@
 
 + (void)setupCrashLogService {
 #if !DEBUG
-    NSString *encryptedAppSecretKey = @"w+WPowkxgDJ77BeUXJPEGZBcddvCLJyHTKjgWk3wOvB6tUMSDAYyx/DkuR4JCfA0";
     // App Center
-    [MSACAppCenter start:[FWEncryptorAES decryptText:encryptedAppSecretKey key:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]] withServices:@[
+    [MSACAppCenter start:[@"WJFbwsYrXm9olzfwt6dgXHRh0hs8OjT8etWAuZH/nSXpXuRgQgvkh14oyHhkFkme" decryptAES] withServices:@[
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];

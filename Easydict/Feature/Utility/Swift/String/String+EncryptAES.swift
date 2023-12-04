@@ -17,7 +17,7 @@ extension String {
         return aes
     }
     
-    func encryptAES() -> String {
+    public func encryptAES() -> String {
         let ciphertext = try! aes.encrypt(Array(self.utf8))
         let encryptedString = ciphertext.toBase64()
         return encryptedString
@@ -29,3 +29,16 @@ extension String {
         return decryptedString
     }
 }
+
+@objc extension NSString {
+    func encryptAES() -> NSString? {
+        guard let str = self as String? else { return nil }
+        return str.encryptAES() as NSString
+    }
+    
+    func decryptAES() -> NSString? {
+        guard let str = self as String? else { return nil }
+        return str.decryptAES() as NSString
+    }
+}
+

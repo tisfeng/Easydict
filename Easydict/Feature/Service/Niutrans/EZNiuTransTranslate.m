@@ -8,7 +8,7 @@
 
 #import "EZNiuTransTranslate.h"
 #import "EZNiuTransTranslateResponse.h"
-#import "FWEncryptorAES.h"
+#import "Easydict-Swift.h"
 
 @interface EZNiuTransTranslate ()
 
@@ -26,8 +26,9 @@
 
 - (NSString *)apiKey {
     // This is a test APIKey, please do not abuse it. It is recommended to go to the official website to apply for a personal APIKey.
-    NSString *defaultEncryptedAPIKey = @"O5C+RKrWBR5GLMtqiOHlyS6Ib9D8JPY7aN8/S49gwmRYZNcxpbQ6eeNso6KoJVeR";
-    NSString *defaultAPIKey = [FWEncryptorAES decryptText:defaultEncryptedAPIKey key:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]];
+    NSString *defaultAPIKey = [@"XOoEyjDMoM2MuMInzySOjGucFWXRj1wXQivVYDGTi6X7iDe7EkuHVVPOy2Op3RlD" decryptAES];
+    
+    // easydict://writeKeyValue?EZNiuTransAPIKey=
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey];
     if (apiKey.length == 0) {
         apiKey = defaultAPIKey;
