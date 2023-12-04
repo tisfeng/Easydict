@@ -183,7 +183,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 - (NSString *)link {
-    return @"http://fanyi.youdao.com";
+    return kYoudaoTranslatetURL;
 }
 
 /**
@@ -195,7 +195,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSString *encodedWord = [queryModel.queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *foreignLangauge = [self youdaoDictForeignLangauge:queryModel];
     if (!foreignLangauge) {
-        return nil;
+        return self.link;
     }
     return [NSString stringWithFormat:@"%@/result?word=%@&lang=%@", kYoudaoDictURL, encodedWord, foreignLangauge];
 }
@@ -825,7 +825,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
-    if (!wordLink) {
+    if ([wordLink isEqualToString:kYoudaoTranslatetURL]) {
         NSError *error = EZTranslateError(EZErrorTypeUnsupportedLanguage, nil, nil);
         completion(self.result, error);
         return;
