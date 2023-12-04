@@ -2,7 +2,7 @@
 //  EZBingRequest.h
 //  Easydict
 //
-//  Created by ChoiKarl on 2023/8/8.
+//  Created by choykarl on 2023/8/8.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
@@ -23,6 +23,8 @@ typedef void(^BingTranslateCompletion)(NSData * _Nullable translateData, NSData 
 - (void)reset;
 
 - (void)fetchTextToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSData * _Nullable, NSError * _Nullable))completion;
+
+- (void)translateTextFromDict:(NSString *)text completion:(void (^)(NSDictionary * _Nullable json, NSError * _Nullable error))completion;
 
 @end
 

@@ -39,6 +39,7 @@ static NSString *const EZBingChinaHost = @"cn.bing.com";
 @property (nonatomic, copy) NSString *ttranslatev3URLString;
 @property (nonatomic, copy) NSString *tlookupv3URLString;
 @property (nonatomic, copy) NSString *tfetttsURLString;
+@property (nonatomic, copy) NSString *dictTranslateURLString;
 
 - (BOOL)isBingTokenExpired;
 

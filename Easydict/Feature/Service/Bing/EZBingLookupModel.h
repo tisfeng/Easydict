@@ -2,7 +2,7 @@
 //  EZBingLookupModel.h
 //  Easydict
 //
-//  Created by ChoiKarl on 2023/8/10.
+//  Created by choykarl on 2023/8/10.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
