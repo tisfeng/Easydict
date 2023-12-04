@@ -10,3 +10,7 @@ module * { export * }
   link "sqlite3"
   link "z"
 }
+module FirebaseAnalytics.Swift {
+  header "FirebaseAnalytics-Swift.h"
+  requires objc
+}

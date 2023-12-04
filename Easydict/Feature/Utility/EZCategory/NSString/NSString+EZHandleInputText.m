@@ -11,7 +11,7 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleService.h"
 
-static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//|#|\\*)";
+static NSString *const kCommentSymbolPrefixPattern = @"^\\s*(//+|#+|\\*+)";
 
 @implementation NSString (EZHandleInputText)
 

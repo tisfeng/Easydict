@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，百度，小牛和火山翻译。
+- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，百度，小牛，彩云和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -76,6 +76,7 @@
     - [配置 API 调用方式](#配置-api-调用方式)
   - [Bing 翻译](#bing-翻译)
   - [小牛翻译](#小牛翻译)
+  - [彩云小译](#彩云小译)
 - [智能查询模式](#智能查询模式)
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
@@ -459,6 +460,17 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 ```
 
+### 彩云小译
+
+[彩云小译](https://fanyi.caiyunapp.com/) 需要 Token，为使用方便，我们内置了一个 token，这个 token 有一定限制，不保证一直能用。
+
+建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
+
+```
+// xxx 彩云小译的 Token
+easydict://writeKeyValue?EZCaiyunToken=xxx
+```
+
 ## 智能查询模式
 
 目前查询服务主要分为两类：查询单词（如苹果词典）和翻译文本（如 DeepL），另外有些服务（如有道和谷歌），同时支持查询单词和翻译文本。
@@ -717,6 +729,8 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2023-11-28 | ㅤ王一帆  | 5 |  |
 | 2023-11-29 | ㅤ李利明  | 5 | 伟大的开发者，伟大的开源精神！（❤️） |
 | 2023-11-30 | ㅤ Three  | 20 |  |
+| 2023-12-02 | ㅤ翻滚的土豆  | 5 | 今天刷到一个 UP 主推荐的，加油。 |
+| 2023-12-02 | ㅤ祥林叔  | 10 | 🫡 国内好的开源不多 |
 
 </p>
 

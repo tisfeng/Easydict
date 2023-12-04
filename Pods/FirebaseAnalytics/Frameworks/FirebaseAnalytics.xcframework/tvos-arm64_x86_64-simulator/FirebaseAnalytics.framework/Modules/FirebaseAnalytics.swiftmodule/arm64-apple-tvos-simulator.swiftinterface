@@ -1,0 +1,21 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-tvos12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FirebaseAnalytics
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+@_exported import FirebaseAnalytics
+import StoreKit
+import Swift
+import SwiftUI
+import _Concurrency
+import _StringProcessing
+@available(iOS 15.0, macOS 12.0, macCatalyst 15.0, tvOS 15.0, *)
+@available(watchOS, unavailable)
+extension FirebaseAnalytics.Analytics {
+  public static func logTransaction(_ transaction: StoreKit.Transaction)
+}
+@available(iOS 13.0, macOS 10.15, macCatalyst 13.0, tvOS 13.0, *)
+@available(watchOS, unavailable)
+extension SwiftUI.View {
+  public func analyticsScreen(name: Swift.String, class: Swift.String = "View", extraParameters: [Swift.String : Any] = [:]) -> some SwiftUI.View
+  
+}

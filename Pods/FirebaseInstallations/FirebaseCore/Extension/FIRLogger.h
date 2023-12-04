@@ -53,6 +53,11 @@ extern "C" {
 void FIRSetAnalyticsDebugMode(BOOL analyticsDebugMode);
 
 /**
+ * Gets the current FIRLoggerLevel.
+ */
+FIRLoggerLevel FIRGetLoggerLevel(void);
+
+/**
  * Changes the default logging level of FirebaseLoggerLevelNotice to a user-specified level.
  * The default level cannot be set above FirebaseLoggerLevelNotice if the app is running from App
  * Store. (required) log level (one of the FirebaseLoggerLevel enum values).

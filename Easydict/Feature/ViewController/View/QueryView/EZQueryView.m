@@ -17,6 +17,7 @@
 #import "EZSchemeParser.h"
 #import "EZCopyButton.h"
 #import "EZConfiguration.h"
+#import "NSImage+EZSymbolmage.h"
 
 @interface EZQueryView () <NSTextViewDelegate, NSTextStorageDelegate>
 
@@ -153,9 +154,8 @@
     [self addSubview:clearButton];
     self.clearButton = clearButton;
     
-    NSImage *clearImage = [NSImage imageWithSystemSymbolName:@"xmark.circle.fill" accessibilityDescription:nil];
+    NSImage *clearImage = [NSImage ez_imageWithSymbolName:@"xmark.circle.fill"];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#868686"]];
-    clearImage = [clearImage resizeToSize:CGSizeMake(EZAudioButtonImageWidth_16, EZAudioButtonImageWidth_16)];
     clearButton.image = clearImage;
     
     NSString *clearAction = NSLocalizedString(@"clear_all", nil);

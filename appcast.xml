@@ -4,6 +4,30 @@
     <title>Easydict</title>
     <item>
       <title>2.1.0</title>
+      <pubDate>Sun, 3 Dec 2023 20:40:00 +0800</pubDate>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.2.0/Easydict.zip" sparkle:version="27" sparkle:shortVersionString="2.2.0" type="application/octet-stream" sparkle:edSignature="SBDkUDKeSfFbnICD8ffJHA7ktCx4mqRXhmMsdfm+mDBJ9TKMy1v3wSiTLnEx8smewyQsQiE4GJlIDhYhyY11Bw==" length="10591860" />
+      <description><![CDATA[
+        <h2 id="-v2-2-0-2023-12-03">[v2.2.0] - 2023-12-03</h2>
+        <h3 id="-">✨ 新功能</h3>
+        <ul>
+        <li>新增支持 <a href="https://fanyi.caiyunapp.com/#/">彩云小译</a> by <a href="https://github.com/Kyle-Ye">Kyle-Ye</a>，详情请看 <a href="https://github.com/tisfeng/easydict#%E5%BD%A9%E4%BA%91%E5%B0%8F%E8%AF%91">README</a> 介绍。</li>
+        <li>支持 HTTP 请求，方便本地 LLM 提供的 OpenAI 接口调用。 <a href="https://github.com/tisfeng/Easydict/issues/245">#245</a></li>
+        </ul>
+        <p><img width="480" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/342b202c-10c9-4a90-b9a9-1f8d8b4ec6e7"></p>
+        <h3 id="-">💎 优化</h3>
+        <ul>
+        <li>优化了自动去除代码注释符号功能。<a href="https://github.com/tisfeng/Easydict/issues/135#issuecomment-1837474302">#135</a></li>
+        </ul>
+        <p>🐞 修复</p>
+        <ul>
+        <li>修复了隐藏菜单栏图标会在重启设备后失效问题 by <a href="https://github.com/NeverAgain11">NeverAgain11</a>。<a href="https://github.com/tisfeng/Easydict/issues/235">#235</a></li>
+        </ul>        
+      ]]>
+      </description>
+    </item>
+    <item>
+      <title>2.1.0</title>
       <pubDate>Sun, 26 Nov 2023 17:00:00 +0800</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.1.0/Easydict.zip" sparkle:version="26" sparkle:shortVersionString="2.1.0" type="application/octet-stream" sparkle:edSignature="W4gH+haPANSQfbyFWbeq+LpIHQsGcHZiedkJQtYjIoN17e8WJbS5s+gekfGfDqeZEIsq7t24yjLOpANodAIGCA==" length="9288149" />

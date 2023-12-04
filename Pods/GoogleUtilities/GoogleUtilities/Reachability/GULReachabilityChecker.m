@@ -180,7 +180,7 @@ static NSString *const kGULReachabilityDisconnectedStatus = @"Disconnected";
     // Reachable flag is set. Check further flags.
     if (!(flags & kSCNetworkReachabilityFlagsConnectionRequired)) {
 // Connection required flag is not set, so we have connectivity.
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || (defined(TARGET_OS_VISION) && TARGET_OS_VISION)
       status = (flags & kSCNetworkReachabilityFlagsIsWWAN) ? kGULReachabilityViaCellular
                                                            : kGULReachabilityViaWifi;
 #elif TARGET_OS_OSX
@@ -191,7 +191,7 @@ static NSString *const kGULReachabilityDisconnectedStatus = @"Disconnected";
                !(flags & kSCNetworkReachabilityFlagsInterventionRequired)) {
 // If the connection on demand or connection on traffic flag is set, and user intervention
 // is not required, we have connectivity.
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || (defined(TARGET_OS_VISION) && TARGET_OS_VISION)
       status = (flags & kSCNetworkReachabilityFlagsIsWWAN) ? kGULReachabilityViaCellular
                                                            : kGULReachabilityViaWifi;
 #elif TARGET_OS_OSX
