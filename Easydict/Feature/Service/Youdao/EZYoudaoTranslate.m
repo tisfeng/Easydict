@@ -17,10 +17,10 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 #import "FWEncryptorAES.h"
-#import <WebKit/WebKit.h>
 #import "NSData+EZMD5.h"
 #import "EZNetworkManager.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kYoudaoTranslatetURL = @"https://fanyi.youdao.com";
 static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
@@ -946,7 +946,9 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSData *keyDataMD5Data = [keyData md5];
     NSData *ivDataMD5Data = [ivData md5];
     
-    NSString *decryptedText = [FWEncryptorAES decryptStrFromBase64:encryptedText Key:keyDataMD5Data IV:ivDataMD5Data];
+//    NSString *decryptedText = [FWEncryptorAES decryptStrFromBase64:encryptedText Key:keyDataMD5Data IV:ivDataMD5Data];
+    NSString *decryptedText = [encryptedText decryptAESWithKeyData:keyDataMD5Data ivData:ivDataMD5Data];
+    
     return decryptedText;
 }
 
