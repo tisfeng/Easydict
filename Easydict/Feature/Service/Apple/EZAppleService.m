@@ -722,8 +722,13 @@ static EZAppleService *_instance;
     if ([text isWord]) {
         for (NLLanguage language in sortedLanguages) {
             EZLanguage ezLang = [self languageEnumFromAppleLanguage:language];
-            NSString *sepllCheckerLanguage = [[self spellCheckerLanguagesDictionary] objectForKey:ezLang];
-            if (sepllCheckerLanguage && [text isSpelledCorrectly:sepllCheckerLanguage]) {
+            NSString *spellCheckerLanguage = [[self spellCheckerLanguagesDictionary] objectForKey:ezLang];
+            // If text language is not in the list of languages that support checking spelling, such as Indonesian, break.
+            if (!spellCheckerLanguage) {
+                break;
+            }
+            
+            if ([text isSpelledCorrectly:spellCheckerLanguage]) {
                 NSLog(@"Spell check language: %@", ezLang);
                 return ezLang;
             }
