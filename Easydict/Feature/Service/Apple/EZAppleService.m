@@ -712,16 +712,23 @@ static EZAppleService *_instance;
         NSLog(@"---> Apple detect: %@", ezLanguage);
     }
     
-    // Apple may mistakenly detect French word 'testant' as English, so we need to check it.
-    for (NLLanguage language in sortedLanguages) {
-        EZLanguage ezLang = [self languageEnumFromAppleLanguage:language];
-        NSString *sepllCheckerLanguage = [[self spellCheckerLanguagesDictionary] objectForKey:ezLang];
-        if (sepllCheckerLanguage && [text isSpelledCorrectly:sepllCheckerLanguage]) {
-            NSLog(@"Spell check language: %@", ezLang);
-            return ezLang;
+    /**
+     Apple may mistakenly detect French word 'testant' as English, so we need to check it.
+     
+     !!!: Spell checker should only use in word, the following 'Indonesian' sentence was checked as 'English':
+     
+     Ukraina mungkin mendapatkan baterai Patriot lainnya.
+     */
+    if ([text isWord]) {
+        for (NLLanguage language in sortedLanguages) {
+            EZLanguage ezLang = [self languageEnumFromAppleLanguage:language];
+            NSString *sepllCheckerLanguage = [[self spellCheckerLanguagesDictionary] objectForKey:ezLang];
+            if (sepllCheckerLanguage && [text isSpelledCorrectly:sepllCheckerLanguage]) {
+                NSLog(@"Spell check language: %@", ezLang);
+                return ezLang;
+            }
         }
     }
-    
     NSLog(@"Spell check failed, use Most Confident Language: %@", ezLanguage);
     
     return ezLanguage;
