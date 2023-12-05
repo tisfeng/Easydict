@@ -24,7 +24,7 @@ extension String {
     }
     
     func decryptAES() -> String {
-        let ciphertext = try! aes.decrypt(Data(base64Encoded: self)!.bytes)
+        let ciphertext = try! aes.decrypt(Array(base64: self))
         let decryptedString = String(bytes: ciphertext, encoding: .utf8)!
         return decryptedString
     }
@@ -42,3 +42,32 @@ extension String {
     }
 }
 
+@objc extension NSString {
+    func encryptAES(keyData: Data, ivData: Data) -> NSString {
+        guard let str = self as String? else { return "" }
+
+        do {
+            let aes = try AES(key: Array(keyData), blockMode: CBC(iv: Array(ivData)), padding: .pkcs7) // aes128
+            let ciphertext = try aes.encrypt(Array(str.utf8))
+            let encryptedString = ciphertext.toBase64()
+            return encryptedString as NSString
+        } catch {
+            print("encryptAES error: \(error)")
+            return ""
+        }
+    }
+    
+    func decryptAES(keyData: Data, ivData: Data) -> NSString {
+        guard let str = self as String? else { return "" }
+        
+        do {
+            let aes = try AES(key: Array(keyData), blockMode: CBC(iv: Array(ivData)), padding: .pkcs7) // aes128
+            let ciphertext = try aes.decrypt(Array(base64: str))
+            let decryptedString = String(bytes: ciphertext, encoding: .utf8)!
+            return decryptedString as NSString
+        } catch {
+            print("decryptAES error: \(error)")
+            return ""
+        }
+    }
+}
