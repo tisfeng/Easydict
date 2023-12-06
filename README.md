@@ -528,9 +528,9 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关�
 
 ## URL Scheme
 
-Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easydict://query?text=good。 
+Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 `easydict://query?text=good`。 
 
-如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://query?text=good%20girl
+如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 `easydict://query?text=good%20girl`。 
 
 > [!WARNING]
 > 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme:
@@ -555,6 +555,8 @@ shell script: |
 ```
 
 > 参考：https://www.popclip.app/dev/shell-script-actions
+
+![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
 
 ## 设置
 
