@@ -528,13 +528,12 @@ Easydict in-app lookup is supported. In the input box or translation result, if 
 
 ## URL Scheme
 
-Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as easydict://query?text=good.
+Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as `easydict://query?text=good`.
 
-If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
+If the query content xxx contains special characters, URL encoding is needed, such as `easydict://query?text=good%20girl`.
 
 > [!WARNING]
 > The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme:
->
 > easydict://query?text=xxx
 
 ## Use with PopClip
@@ -556,6 +555,8 @@ shell script: |
 ```
 
 > Ref: https://www.popclip.app/dev/shell-script-actions
+
+![image-20231206111101898](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206111101898-1701832262.png)
 
 ## Settings
 
