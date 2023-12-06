@@ -538,7 +538,7 @@ If the query content xxx contains special characters, URL encoding is needed, su
 
 ## Use with PopClip
 
-You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (By [liziqiang](https://github.com/liziqiang))
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (Thanks [liziqiang](https://github.com/liziqiang))
 
 ```shell
 # popclip
@@ -547,16 +547,24 @@ icon: iconify:ri:translate
 interpreter: zsh
 shell script: |
   result=$(ps aux | grep Easydict.app | wc -l)
-  if [[ $result -lt 2 ]];then
+  if [[ $result -lt 2 ]]; then
     open /Applications/Easydict.app
-    sleep 2
+    while true; do
+      result=$(ps aux | grep Easydict.app | wc -l)
+      if [[ $result -ge 2 ]]; then
+        open "easydict://query?text=$POPCLIP_TEXT"
+        break
+      fi
+      sleep 0.2  # 每次等待 0.2 秒
+    done
+  else
+    open "easydict://query?text=$POPCLIP_TEXT"
   fi
-  open "easydict://query?text=$POPCLIP_TEXT"
 ```
 
-> Ref: https://www.popclip.app/dev/shell-script-actions
-
 ![image-20231206111101898](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206111101898-1701832262.png)
+
+> Ref: https://www.popclip.app/dev/shell-script-actions
 
 ## Settings
 
