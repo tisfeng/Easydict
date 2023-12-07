@@ -88,7 +88,7 @@
     NSURL *URL = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
     
     // easydict://query?text=good
-    if ([URL.scheme isEqualToString:EZEasydictScheme]) {
+    if ([URL.scheme containsString:EZEasydictScheme]) {
         NSLog(@"handle URL: %@", URL);
     }
     

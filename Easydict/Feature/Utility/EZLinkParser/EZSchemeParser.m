@@ -37,7 +37,13 @@
     NSArray *allowedActions = actionDict.allKeys;
 
     if (![allowedActions containsObject:action]) {
-        completion(NO, @"Invalid Easydict Action", nil);
+        if ([action isEqualToString:EZQueryKey]) {
+            [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:URLScheme]];
+            completion(YES, nil, nil);
+        } else {
+            completion(NO, @"Invalid Easydict Action", nil);
+        }
+    
         return;
     }
     
@@ -72,7 +78,8 @@
     NSString *urlString = [text trim];
     NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
     NSString *scheme = urlComponents.scheme;
-    return [scheme isEqualToString:EZEasydictScheme];
+    NSArray *schemes = @[EZEasydictScheme, EZEasydictDebugScheme];
+    return [schemes containsObject:scheme];
 }
 
 - (BOOL)isWriteActionKey:(NSString *)actionKey {
