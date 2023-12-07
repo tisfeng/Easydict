@@ -407,7 +407,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [self clearInput];
         
         // If write, need to update.
-        if ([self.schemeParser isWriteActionKey:actionKey]) {
+        if (actionKey && [self.schemeParser isWriteActionKey:actionKey]) {
             // Besides current window, other pages need to be notified, such as the settings service page.
             [self postUpdateServiceNotification];
         }
