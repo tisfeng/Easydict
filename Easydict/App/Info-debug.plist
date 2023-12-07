@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>$(TARGET_NAME)</string>
+	<string>Easydict-debug</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -30,10 +30,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>white-black-icon@2x</string>
 			<key>CFBundleURLName</key>
-			<string>com.izual.Easydict</string>
+			<string>com.izual.Easydict-debug</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>easydict</string>
+				<string>easydictd</string>
 			</array>
 		</dict>
 	</array>
