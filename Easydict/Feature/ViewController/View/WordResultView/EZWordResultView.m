@@ -30,6 +30,7 @@
 #import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
+#import "Easydict-Swift.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
@@ -64,6 +65,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     return self;
 }
 
+// TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
     EZTranslateWordResult *wordResult = result.wordResult;
@@ -600,7 +602,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
     
     __block NSString *lastSimpleWordPart = nil;
-    [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    NSArray *showingSimpleWords = [wordResult.simpleWords trimToMaxCount:EZMaxThreeWordPhraseCount];
+    [showingSimpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         EZLabel *partLabel = nil;
         if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             partLabel = [[EZLabel alloc] init];
@@ -715,7 +718,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             height += labelHeight + topOffset;
             //            NSLog(@"height = %1.f", height);
         }];
-        
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
         lastView = meanLabel;
@@ -946,7 +948,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         EZWrapView *wrapView = [[EZWrapView alloc] init];
         [self addSubview:wrapView];
-        [obj.means enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSArray *showingMeans = [obj.means trimToMaxCount:EZMaxFiveWordSynonymCount];
+        [showingMeans enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
             [wordButton setTitle:mean];
             [wrapView addSubview:wordButton];
