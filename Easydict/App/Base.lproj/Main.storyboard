@@ -727,7 +727,11 @@ DQ
                         <outlet property="versionItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
                     </connections>
                 </customObject>
-                <customObject id="jrA-nT-KAI" customClass="SUUpdater"/>
+                <customObject id="jrA-nT-KAI" customClass="SUUpdater">
+                    <connections>
+                        <outlet property="delegate" destination="Voe-Tx-rLC" id="x7m-9L-GYz"/>
+                    </connections>
+                </customObject>
                 <menu autoenablesItems="NO" identifier="status.item.menu" id="A3F-ys-zOg" userLabel="Status Item Menu">
                     <items>
                         <menuItem title="Easydict" id="PkP-25-JBw">
