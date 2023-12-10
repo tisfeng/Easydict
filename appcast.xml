@@ -5,15 +5,14 @@
 
     <item>
       <title>2.3.0</title>
-      <sparkle:channel>beta</sparkle:channel>
-      <pubDate>Sun, 10 Dec 2023 10:30:00 +0800</pubDate>
+      <pubDate>Sun, 10 Dec 2023 19:00:00 +0800</pubDate>
       <sparkle:version>28</sparkle:version>
       <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <sparkle:releaseNotesLink>
         https://github.com/tisfeng/easydict/releases/tag/2.3.0
       </sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/easydict/releases/download/2.3.0/easydict.zip" length="36956678" type="application/octet-stream" sparkle:edSignature="kiWm6C0aaxs9cvlSgmH3Y5iVIP5R9hbdgZGXC6qQw8mDG2E8Vc9Rq7ZY8Jz09NDL3GrDXZT3BwoY58Jdev5TAg=="/>
+      <enclosure url="https://github.com/tisfeng/easydict/releases/download/2.3.0/easydict.zip" sparkle:edSignature="YzImLoIQ0xEYnw3G854Q5ZV18urpaYfXDdJB2ppiskCfIt1ZpV6h3a2w2V+ihoCa7wge0DubV3LOpw6RYeHiDQ==" length="11153425"/>
     </item>
 
     <item>
