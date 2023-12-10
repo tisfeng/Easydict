@@ -12,7 +12,7 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        self.expandValue = 6;
+        self.expandValue = 5;
     }
     return self;
 }

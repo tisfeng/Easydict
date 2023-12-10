@@ -35,7 +35,7 @@
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
 static const CGFloat kVerticalPadding_6 = 6;
-static const CGFloat kBlueTextButtonVerticalPadding_3 = 3;
+static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
@@ -652,13 +652,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partLabel) {
-                CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
+                CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
                 height += topOffset;
                 make.top.equalTo(partLabel.mas_bottom).offset(topOffset);
             } else {
                 CGFloat topOffset = kHorizontalMargin_8;
                 if (lastView) {
-                    topOffset = kBlueTextButtonVerticalPadding_3;
+                    topOffset = kBlueTextButtonVerticalPadding_2;
                     if (idx == 0) {
                         topOffset = 8;
                     }
@@ -971,7 +971,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
         
         [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-            CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
+            CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
             make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
             *height += topOffset;
             make.left.equalTo(partLabel.mas_right);

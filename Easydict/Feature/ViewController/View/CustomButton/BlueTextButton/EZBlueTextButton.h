@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZBlueTextButton : EZHoverButton
 
-@property (nonatomic, assign) CGFloat expandValue; // default is 6.
+@property (nonatomic, assign) CGFloat expandValue; // default is 5.
 
 @property (nonatomic, copy, nullable) NSString *openURL;
 @property (nonatomic, assign) BOOL closeWindowAfterOpeningURL;
