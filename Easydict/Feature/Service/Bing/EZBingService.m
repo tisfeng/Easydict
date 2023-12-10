@@ -107,6 +107,7 @@
         return;
     }
     
+    self.isDictQueryResult = NO;
     if (useDictQuery) {
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
             [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
