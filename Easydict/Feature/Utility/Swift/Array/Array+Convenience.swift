@@ -16,3 +16,12 @@ extension Array where Element == String {
         }
     }
 }
+
+@objc extension NSArray {
+    /// Trim to max count
+    func trim(toMaxCount maxCount: Int) -> NSArray {
+        guard maxCount > 0 && maxCount < self.count else { return self }
+        let array = self.subarray(with: NSRange(location: 0, length: maxCount)) as NSArray
+        return array
+    }
+}

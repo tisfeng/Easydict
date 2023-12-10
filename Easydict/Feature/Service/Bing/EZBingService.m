@@ -412,9 +412,6 @@ outer:
                 }];
                 
                 if (synonymMeans.count) {
-                    if (synonymMeans.count > 5) {
-                        synonymMeans = [synonymMeans subarrayWithRange:NSMakeRange(0, 5)];
-                    }
                     EZTranslatePart *synonymsPart = [EZTranslatePart new];
                     synonymsPart.part = name;
                     synonymsPart.means = synonymMeans;
@@ -422,9 +419,6 @@ outer:
                 }
                 
                 if (antonymMeans.count) {
-                    if (antonymMeans.count > 5) {
-                        antonymMeans = [antonymMeans subarrayWithRange:NSMakeRange(0, 5)];
-                    }
                     EZTranslatePart *antonymsPart = [EZTranslatePart new];
                     antonymsPart.part = name;
                     antonymsPart.means = antonymMeans;
@@ -434,9 +428,6 @@ outer:
                 NSArray *means = [fragments mm_map:^id _Nullable(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     return obj[@"text"];
                 }];
-                if (means.count > 5) {
-                    means = [means subarrayWithRange:NSMakeRange(0, 5)];
-                }
                 EZTranslatePart *collocationPart = [EZTranslatePart new];
                 collocationPart.part = name;
                 collocationPart.means = means;
@@ -469,9 +460,6 @@ outer:
             wordResult.exchanges = exchanges;
         }
         if (simpleWords.count) {
-            if (simpleWords.count > 5) {
-                simpleWords = [simpleWords subarrayWithRange:NSMakeRange(0, 5)].mutableCopy;
-            }
             wordResult.simpleWords = simpleWords;
         }
         if (synonyms.count) {

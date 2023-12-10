@@ -58,10 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EZTranslateSimpleWord : NSObject
 
-/// 单词或短语
-@property (nonatomic, copy) NSString *word;
 /// 单词或短语属性
 @property (nonatomic, copy, nullable) NSString *part; // adj.
+/// 单词或短语
+@property (nonatomic, copy) NSString *word;
 /// 单词或短语意思
 @property (nonatomic, strong, nullable) NSArray<NSString *> *means; // 美好的
 
