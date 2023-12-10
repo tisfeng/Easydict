@@ -6,13 +6,11 @@
     <item>
       <title>2.3.0</title>
       <pubDate>Sun, 10 Dec 2023 19:30:00 +0800</pubDate>
-      <sparkle:version>28</sparkle:version>
-      <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <sparkle:releaseNotesLink>
         https://github.com/tisfeng/easydict/releases/tag/2.3.0
       </sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/easydict/releases/download/2.3.0/easydict.zip" type="application/octet-stream" sparkle:edSignature="yjrKEXjTfKqC1YdJvPIIGK7G27jd4aK2CJ4j/ZqbaZBUC2hQyyKvgC1CPuuWOrk274Oz/N53L2G/aXHXt7H1CQ==" length="11153425"/>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.3.0/Easydict.zip" sparkle:version="28" sparkle:shortVersionString="2.3.0" type="application/octet-stream" sparkle:edSignature="yjrKEXjTfKqC1YdJvPIIGK7G27jd4aK2CJ4j/ZqbaZBUC2hQyyKvgC1CPuuWOrk274Oz/N53L2G/aXHXt7H1CQ==" length="11153425" />
     </item>
 
     <item>
