@@ -12,11 +12,11 @@
       <sparkle:releaseNotesLink>
         https://github.com/tisfeng/easydict/releases/tag/2.3.0
       </sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/easydict/releases/download/2.3.0/easydict.zip" sparkle:edSignature="YzImLoIQ0xEYnw3G854Q5ZV18urpaYfXDdJB2ppiskCfIt1ZpV6h3a2w2V+ihoCa7wge0DubV3LOpw6RYeHiDQ==" length="11153425"/>
+      <enclosure url="https://github.com/tisfeng/easydict/releases/download/2.3.0/easydict.zip" type="application/octet-stream" sparkle:edSignature="YzImLoIQ0xEYnw3G854Q5ZV18urpaYfXDdJB2ppiskCfIt1ZpV6h3a2w2V+ihoCa7wge0DubV3LOpw6RYeHiDQ==" length="11153425"/>
     </item>
 
     <item>
-      <title>2.1.0</title>
+      <title>2.2.0</title>
       <pubDate>Sun, 3 Dec 2023 20:40:00 +0800</pubDate>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.2.0/Easydict.zip" sparkle:version="27" sparkle:shortVersionString="2.2.0" type="application/octet-stream" sparkle:edSignature="SBDkUDKeSfFbnICD8ffJHA7ktCx4mqRXhmMsdfm+mDBJ9TKMy1v3wSiTLnEx8smewyQsQiE4GJlIDhYhyY11Bw==" length="10591860" />
