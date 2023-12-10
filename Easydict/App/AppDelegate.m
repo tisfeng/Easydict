@@ -101,7 +101,7 @@
 - (NSString *)feedURLStringForUpdater:(SUUpdater *)updater {
     NSString *feedURLString = @"https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml";
 #if DEBUG
-    feedURLString = @"https://raw.githubusercontent.com/tisfeng/Easydict/dev/appcast.xml";
+    feedURLString = @"http://localhost:8000/appcast.xml";
 #endif
     return feedURLString;
 }
