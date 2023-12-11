@@ -14,13 +14,13 @@ target 'Easydict' do
   pod 'MASPreferences', '~> 1.4.1'
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
-  pod 'Sparkle', '~> 1.24.0'
-  pod 'KVOController'
+  pod 'Sparkle', '~> 2.5.1'
+  pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
-  # Add the Firebase pod for Google Analytics
-  pod 'FirebaseAnalytics'
-  pod 'AppCenter'
+  # Firebase and AppCenter
+  pod 'FirebaseAnalytics', '~> 10.19.0'
+  pod 'AppCenter', '~> 5.0.4'
   
 end
 
@@ -35,7 +35,7 @@ target 'EasydictTests' do
   pod 'MASPreferences', '~> 1.4.1'
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
-  pod 'KVOController'
+  pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
 end
