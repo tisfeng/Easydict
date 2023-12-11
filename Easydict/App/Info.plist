@@ -64,5 +64,7 @@
 	<string>https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>9Ee1FtAsmJHFD79H4bToJhAOJmTtkTYIUDr23ofEWiU=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
 </dict>
 </plist>
