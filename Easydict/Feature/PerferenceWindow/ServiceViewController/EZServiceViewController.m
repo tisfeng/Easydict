@@ -155,7 +155,11 @@ static NSString *const EZColumnId = @"EZColumnId";
             view.backgroundColor = [NSColor ez_tableRowViewBgDarkColor];
         }];
 
-        tableView.style = NSTableViewStylePlain;
+        if (@available(macOS 11.0, *)) {
+            tableView.style = NSTableViewStylePlain;
+        } else {
+            // Fallback on earlier versions
+        }
 
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
         self.column = column;

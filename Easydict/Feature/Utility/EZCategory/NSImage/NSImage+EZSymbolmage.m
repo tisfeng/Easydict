@@ -17,11 +17,22 @@
     return image;
 }
 
+
+/// Return a system symbol image, if < macos(11.0), return a normal image with image name.
+/// - Parameters:
+///   - name: system symbol image name or assets image name
+///   - size: image size
 + (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size {
-    NSImage *image = [NSImage imageWithSystemSymbolName:name accessibilityDescription:nil];
-    if (!CGSizeEqualToSize(size, CGSizeZero)) {
-        image = [image resizeToSize:size];
+    NSImage *image;
+    if (@available(macOS 11.0, *)) {
+        image = [NSImage imageWithSystemSymbolName:name accessibilityDescription:nil];
+        if (!CGSizeEqualToSize(size, CGSizeZero)) {
+        }
+    } else {
+        // Fallback on earlier versions
+        image = [NSImage imageNamed:name];
     }
+    image = [image resizeToSize:size];
     return image;
 }
 
