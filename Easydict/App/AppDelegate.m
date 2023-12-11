@@ -17,8 +17,9 @@
 #import "EZSchemeParser.h"
 #import "AppDelegate+EZURLScheme.h"
 #import <Sparkle/SPUUpdaterDelegate.h>
+#import <Sparkle/SPUStandardUserDriverDelegate.h>
 
-@interface AppDelegate () <SPUUpdaterDelegate>
+@interface AppDelegate () <SPUUpdaterDelegate, SPUStandardUserDriverDelegate>
 
 @end
 
@@ -104,6 +105,12 @@
     feedURLString = @"http://localhost:8000/appcast.xml";
 #endif
     return feedURLString;
+}
+
+#pragma mark - SPUStandardUserDriverDelegate
+
+- (BOOL)supportsGentleScheduledUpdateReminders {
+    return YES;
 }
 
 @end
