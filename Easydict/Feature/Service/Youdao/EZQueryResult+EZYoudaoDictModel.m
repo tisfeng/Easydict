@@ -157,12 +157,7 @@
                 [explanations addObject:trans.value];
             }
             simpleWord.means = explanations;
-            
             [webExplanations addObject:simpleWord];
-            
-            if (webExplanations.count > 4) {
-                webExplanations = [[webExplanations subarrayWithRange:NSMakeRange(0, 4)] mutableCopy];
-            }
         }
         
         if (webExplanations.count) {

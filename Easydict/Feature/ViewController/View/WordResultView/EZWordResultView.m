@@ -30,11 +30,12 @@
 #import "EZAppleService.h"
 #import "EZReplaceTextButton.h"
 #import "EZWrapView.h"
+#import "Easydict-Swift.h"
 
 static const CGFloat kHorizontalMargin_8 = 8;
 static const CGFloat kVerticalMargin_12 = 12;
 static const CGFloat kVerticalPadding_6 = 6;
-static const CGFloat kBlueTextButtonVerticalPadding_3 = 3;
+static const CGFloat kBlueTextButtonVerticalPadding_2 = 2;
 
 static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
@@ -64,6 +65,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     return self;
 }
 
+// TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
     EZTranslateWordResult *wordResult = result.wordResult;
@@ -600,7 +602,8 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     }
     
     __block NSString *lastSimpleWordPart = nil;
-    [wordResult.simpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    NSArray *showingSimpleWords = [wordResult.simpleWords trimToMaxCount:EZMaxThreeWordPhraseCount];
+    [showingSimpleWords enumerateObjectsUsingBlock:^(EZTranslateSimpleWord *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         EZLabel *partLabel = nil;
         if (!obj.showPartMeans && obj.part.length && (!lastSimpleWordPart || ![obj.part isEqualToString:lastSimpleWordPart])) {
             partLabel = [[EZLabel alloc] init];
@@ -649,13 +652,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             exceptedWidth += leftOffset;
             make.left.offset(leftOffset); // Since button has been expanded, so need to be shifted to the left.
             if (partLabel) {
-                CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
+                CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
                 height += topOffset;
                 make.top.equalTo(partLabel.mas_bottom).offset(topOffset);
             } else {
                 CGFloat topOffset = kHorizontalMargin_8;
                 if (lastView) {
-                    topOffset = kBlueTextButtonVerticalPadding_3;
+                    topOffset = kBlueTextButtonVerticalPadding_2;
                     if (idx == 0) {
                         topOffset = 8;
                     }
@@ -715,7 +718,6 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             height += labelHeight + topOffset;
             //            NSLog(@"height = %1.f", height);
         }];
-        
         
         meanLabel.mas_key = @"meanLabel_simpleWords";
         lastView = meanLabel;
@@ -946,7 +948,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         EZWrapView *wrapView = [[EZWrapView alloc] init];
         [self addSubview:wrapView];
-        [obj.means enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSArray *showingMeans = [obj.means trimToMaxCount:EZMaxFiveWordSynonymCount];
+        [showingMeans enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
             [wordButton setTitle:mean];
             [wrapView addSubview:wordButton];
@@ -967,7 +971,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }];
         
         [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
-            CGFloat topOffset = kBlueTextButtonVerticalPadding_3;
+            CGFloat topOffset = kBlueTextButtonVerticalPadding_2;
             make.top.equalTo(rtnView.mas_bottom).offset(topOffset);
             *height += topOffset;
             make.left.equalTo(partLabel.mas_right);

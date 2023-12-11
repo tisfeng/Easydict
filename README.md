@@ -528,9 +528,9 @@ window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关�
 
 ## URL Scheme
 
-Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easydict://query?text=good。 
+Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 `easydict://query?text=good`。 
 
-如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 easydict://query?text=good%20girl
+如果查询内容 xxx 包含特殊字符，需进行 URL encode，如 `easydict://query?text=good%20girl`。 
 
 > [!WARNING]
 > 旧版本的 easydict://xxx 在某些场景下可能会出现问题，因此建议使用完整的 URL Scheme:
@@ -538,21 +538,43 @@ Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 easy
 
 ## 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（By **[liziqiang](https://github.com/liziqiang)**）
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（感谢 **[liziqiang](https://github.com/liziqiang)**）
 
 ```shell
-# popclip
-name: Easydict
-icon: iconify:ri:translate
-interpreter: zsh
-shell script: |
+#! /bin/zsh
+# #popclip
+# name: Easydict
+# icon: iconify:ri:translate
+checkAppRunning() {
   result=$(ps aux | grep Easydict.app | wc -l)
-  if [[ $result -lt 2 ]];then
-    open /Applications/Easydict.app
-    sleep 2
-  fi
-  open "easydict://query?text=$POPCLIP_TEXT"
+  echo $result
+}
+# Open Easydict.app, it takes about 1s
+openApp() {
+  open /Applications/Easydict.app
+}
+# Loop wait until Easydict.app is opened
+waitAppOpen() {
+  while true; do
+    result=$(checkAppRunning)
+    if [[ $result -ge 2 ]]; then
+      break
+    fi
+    sleep 0.2  # wait 0.2s at a time
+  done
+}
+# Check if Easydict.app is running
+appResult=$(checkAppRunning)
+if [[ $appResult -lt 2 ]]; then
+  openApp
+  waitAppOpen
+fi
+
+# Use URL scheme to send query text to Easydict.app
+open "easydict://query?text=$POPCLIP_TEXT"
 ```
+
+![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
 
 > 参考：https://www.popclip.app/dev/shell-script-actions
 
@@ -734,6 +756,7 @@ Easydict 作为一个免费开源的非盈利项目，目前主要是作者个�
 | 2023-12-05 | ㅤ刘维尼  | 28.8 | 用户用'萌萌的维尼'吧 感谢开发好用又有品味的软件请您喝奶茶 |
 | 2023-12-05 | ㅤ hiuxia  | 100 | 感谢这么优秀的软件！|
 | 2023-12-05 | ㅤ——  | 20 |  |
+| 2023-12-07 | 小逗。🎈 | 5 |  |
 
 </p>
 

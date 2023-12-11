@@ -36,18 +36,6 @@
 				<string>easydict</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLIconFile</key>
-			<string>white-black-icon@2x</string>
-			<key>CFBundleURLName</key>
-			<string>com.izual.Easydict-debug</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>easydictd</string>
-			</array>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -60,8 +48,6 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
@@ -78,11 +64,7 @@
 	<string>https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>9Ee1FtAsmJHFD79H4bToJhAOJmTtkTYIUDr23ofEWiU=</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-      <!--Allow HTTP Request (DANGER)-->
-      <key>NSAllowsArbitraryLoads</key>
-          <true/>
-    </dict>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
 </dict>
 </plist>

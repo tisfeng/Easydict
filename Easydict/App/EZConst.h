@@ -46,4 +46,11 @@ static NSTimeInterval const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
 
 static NSInteger const EZEnglishWordMaxLength = 20;
 
+/// Show word phrases up to 3
+static NSInteger const EZMaxThreeWordPhraseCount = 3;
+
+/// Show word synonyms up to 5
+static NSInteger const EZMaxFiveWordSynonymCount = 5;
+
+
 #endif /* EZConst_h */

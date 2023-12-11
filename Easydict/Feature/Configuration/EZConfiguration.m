@@ -15,6 +15,7 @@
 #import "EZScriptExecutor.h"
 #import "EZLog.h"
 #import "EZLanguageManager.h"
+#import "AppDelegate.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -48,12 +49,18 @@ static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixe
 static NSString *const kShortcutSelectTranslateWindowTypeKey = @"EZConfiguration_kShortcutSelectTranslateWindowTypeKey";
 static NSString *const kMouseSelectTranslateWindowTypeKey = @"EZConfiguration_kMouseSelectTranslateWindowTypeKey";
 static NSString *const kWindowFrameKey = @"EZConfiguration_kWindowFrameKey";
-static NSString *const kAutomaticallyChecksForUpdatesKey = @"EZConfiguration_kAutomaticallyChecksForUpdatesKey";
 static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopButtomOriginKey";
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 
+
+@interface EZConfiguration ()
+
+@property (nonatomic, strong) AppDelegate *appDelegate;
+@property (nonatomic, strong) SPUUpdater *updater;
+
+@end
 
 @implementation EZConfiguration
 
@@ -78,6 +85,8 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
+    self.appDelegate = (AppDelegate *)[NSApp delegate];
+    
     EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][0];
     self.firstLanguage = [NSUserDefaults mm_readString:kFirstLanguageKey defaultValue:defaultFirstLanguage];
     EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][1];
@@ -108,7 +117,6 @@ static EZConfiguration *_instance;
     self.fixedWindowPosition = [NSUserDefaults mm_readInteger:kShowFixedWindowPositionKey defaultValue:EZShowWindowPositionRight];
     self.mouseSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kMouseSelectTranslateWindowTypeKey defaultValue:EZWindowTypeMini];
     self.shortcutSelectTranslateWindowType = [NSUserDefaults mm_readInteger:kShortcutSelectTranslateWindowTypeKey defaultValue:EZWindowTypeFixed];
-    self.automaticallyChecksForUpdates = [NSUserDefaults mm_readBool:kAutomaticallyChecksForUpdatesKey defaultValue:YES];
     self.adjustPopButtomOrigin = [NSUserDefaults mm_readBool:kAdjustPopButtomOriginKey defaultValue:NO];
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
@@ -123,7 +131,11 @@ static EZConfiguration *_instance;
 }
 
 - (BOOL)automaticallyChecksForUpdates {
-    return [SUUpdater sharedUpdater].automaticallyChecksForUpdates;
+    return self.updater.automaticallyChecksForUpdates;
+}
+
+- (SPUUpdater *)updater {
+    return self.appDelegate.updaterController.updater;
 }
 
 #pragma mark - setter
@@ -207,10 +219,8 @@ static EZConfiguration *_instance;
     [self logSettings:@{@"launch_at_startup" : @(launchAtStartup)}];
 }
 
-- (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
-    [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
-    
-    [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
+- (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {    
+    self.updater.automaticallyChecksForUpdates = automaticallyChecksForUpdates;
     
     [self logSettings:@{@"automatically_checks_for_updates" : @(automaticallyChecksForUpdates)}];
 }

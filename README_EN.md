@@ -528,32 +528,53 @@ Easydict in-app lookup is supported. In the input box or translation result, if 
 
 ## URL Scheme
 
-Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as easydict://query?text=good.
+Easydict supports fast lookup for URL scheme: `easydict://query?text=xxx`, such as `easydict://query?text=good`.
 
-If the query content xxx contains special characters, URL encoding is needed, such as easydict://query?text=good%20girl
+If the query content xxx contains special characters, URL encoding is needed, such as `easydict://query?text=good%20girl`.
 
 > [!WARNING]
 > The old version of easydict://xxx may cause problems in some scenarios, so it is recommended to use the complete URL Scheme:
->
 > easydict://query?text=xxx
 
 ## Use with PopClip
 
-You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (By [liziqiang](https://github.com/liziqiang))
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (Thanks [liziqiang](https://github.com/liziqiang))
 
 ```shell
-# popclip
-name: Easydict
-icon: iconify:ri:translate
-interpreter: zsh
-shell script: |
+#! /bin/zsh
+# #popclip
+# name: Easydict
+# icon: iconify:ri:translate
+checkAppRunning() {
   result=$(ps aux | grep Easydict.app | wc -l)
-  if [[ $result -lt 2 ]];then
-    open /Applications/Easydict.app
-    sleep 2
-  fi
-  open "easydict://query?text=$POPCLIP_TEXT"
+  echo $result
+}
+# Open Easydict.app, it takes about 1s
+openApp() {
+  open /Applications/Easydict.app
+}
+# Loop wait until Easydict.app is opened
+waitAppOpen() {
+  while true; do
+    result=$(checkAppRunning)
+    if [[ $result -ge 2 ]]; then
+      break
+    fi
+    sleep 0.2  # wait 0.2s at a time
+  done
+}
+# Check if Easydict.app is running
+appResult=$(checkAppRunning)
+if [[ $appResult -lt 2 ]]; then
+  openApp
+  waitAppOpen
+fi
+
+# Use URL scheme to send query text to Easydict.app
+open "easydict://query?text=$POPCLIP_TEXT"
 ```
+
+![image-20231206111101898](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206111101898-1701832262.png)
 
 > Ref: https://www.popclip.app/dev/shell-script-actions
 
@@ -736,6 +757,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-12-05 | ㅤ刘维尼  | 28.8 | 用户用'萌萌的维尼'吧 感谢开发好用又有品味的软件请您喝奶茶 |
 | 2023-12-05 | ㅤ hiuxia  | 100 | 感谢这么优秀的软件！|
 | 2023-12-05 | ㅤ——  | 20 |  |
+| 2023-12-07 | 小逗。🎈 | 5 |  |
 
 </p>
 

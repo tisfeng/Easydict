@@ -16,6 +16,11 @@
 #import "EZLog.h"
 #import "EZSchemeParser.h"
 #import "AppDelegate+EZURLScheme.h"
+#import <Sparkle/SPUUpdaterDelegate.h>
+
+@interface AppDelegate () <SPUUpdaterDelegate>
+
+@end
 
 @implementation AppDelegate
 
@@ -89,6 +94,16 @@
     [EZWindowManager.shared closeMainWindowIfNeeded];
 
     return NO;
+}
+
+#pragma mark - SUUpdaterDelegate
+
+- (NSString *)feedURLStringForUpdater:(SPUUpdater *)updater {
+    NSString *feedURLString = @"https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml";
+#if DEBUG
+    feedURLString = @"http://localhost:8000/appcast.xml";
+#endif
+    return feedURLString;
 }
 
 @end

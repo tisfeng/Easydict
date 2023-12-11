@@ -225,6 +225,13 @@ static NSDictionary *const kQuotesDict = @{
     return isEnglishWord;
 }
 
+- (NLLanguage)detectText {
+    NLTagger *tagger = [[NLTagger alloc] initWithTagSchemes:@[NLTagSchemeLanguage]];
+    tagger.string = self;
+    NLLanguage language = [tagger dominantLanguage];
+    return language;
+}
+
 - (BOOL)isEnglishWord {
     NSString *text = [self tryToRemoveQuotes];
     if (text.length > EZEnglishWordMaxLength) {

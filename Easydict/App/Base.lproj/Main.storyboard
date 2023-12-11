@@ -706,8 +706,17 @@ DQ
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
+                    <connections>
+                        <outlet property="updaterController" destination="dTQ-Lg-1D6" id="ulf-mx-z8R"/>
+                    </connections>
+                </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+                <customObject id="dTQ-Lg-1D6" customClass="SPUStandardUpdaterController">
+                    <connections>
+                        <outlet property="updaterDelegate" destination="Voe-Tx-rLC" id="3Ya-Y2-qiK"/>
+                    </connections>
+                </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="qM9-fT-Fym" customClass="EZMenuItemManager">
                     <connections>
@@ -727,7 +736,6 @@ DQ
                         <outlet property="versionItem" destination="PkP-25-JBw" id="beL-5f-TOn"/>
                     </connections>
                 </customObject>
-                <customObject id="jrA-nT-KAI" customClass="SUUpdater"/>
                 <menu autoenablesItems="NO" identifier="status.item.menu" id="A3F-ys-zOg" userLabel="Status Item Menu">
                     <items>
                         <menuItem title="Easydict" id="PkP-25-JBw">
@@ -780,7 +788,7 @@ DQ
                         <menuItem title="检查更新" id="GQ2-WA-9QB">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="checkForUpdates:" target="jrA-nT-KAI" id="9sy-r4-kzD"/>
+                                <action selector="checkForUpdates:" target="dTQ-Lg-1D6" id="ydL-Jy-6z2"/>
                             </connections>
                         </menuItem>
                         <menuItem title="帮助" id="ICB-w8-IqK">
