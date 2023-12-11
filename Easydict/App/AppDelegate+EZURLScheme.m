@@ -85,7 +85,10 @@
 }
 
 - (void)handleURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
-    NSURL *URL = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
+    NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    // PopClip text does not encode #, we need to encode it manually.
+    urlString = [urlString stringByReplacingOccurrencesOfString:@"#" withString:@"%23"];
+    NSURL *URL = [NSURL URLWithString:urlString];
     
     // easydict://query?text=good
     if ([URL.scheme containsString:EZEasydictScheme]) {
