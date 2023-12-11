@@ -41,6 +41,7 @@ FOUNDATION_EXPORT EZServiceType const EZServiceTypeAppleDictionary;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeBing;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeNiuTrans;
 FOUNDATION_EXPORT EZServiceType const EZServiceTypeCaiyun;
+FOUNDATION_EXPORT EZServiceType const EZServiceTypeTencent;
 
 FOUNDATION_EXPORT NSString *const EZQueryTextTypeKey;
 FOUNDATION_EXPORT NSString *const EZIntelligentQueryTextTypeKey;
