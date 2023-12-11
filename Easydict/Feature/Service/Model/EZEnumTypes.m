@@ -20,6 +20,7 @@ NSString *const EZServiceTypeOpenAI = @"OpenAI";
 NSString *const EZServiceTypeBing = @"Bing";
 NSString *const EZServiceTypeNiuTrans = @"NiuTrans";
 NSString *const EZServiceTypeCaiyun = @"Caiyun";
+NSString *const EZServiceTypeTencent = @"Tencent";
 
 NSString *const EZServiceTypeAppleDictionary = @"AppleDictionary";
 

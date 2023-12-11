@@ -61,6 +61,7 @@ static EZServiceTypes *_instance;
                                            EZServiceTypeVolcano, [EZVolcanoTranslate class],
                                            EZServiceTypeNiuTrans, [EZNiuTransTranslate class],
                                            EZServiceTypeCaiyun, [EZCaiyunService class],
+                                           EZServiceTypeTencent, [EZTencentService class],
                                            nil];
     return allServiceDict;
 }
