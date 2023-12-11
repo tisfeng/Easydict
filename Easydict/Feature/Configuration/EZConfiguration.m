@@ -15,6 +15,7 @@
 #import "EZScriptExecutor.h"
 #import "EZLog.h"
 #import "EZLanguageManager.h"
+#import "AppDelegate.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -55,6 +56,12 @@ static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 
 
+@interface EZConfiguration ()
+
+@property (nonatomic, strong) AppDelegate *appDelegate;
+
+@end
+
 @implementation EZConfiguration
 
 static EZConfiguration *_instance;
@@ -78,6 +85,8 @@ static EZConfiguration *_instance;
 }
 
 - (void)setup {
+    self.appDelegate = (AppDelegate *)[NSApp delegate];
+    
     EZLanguage defaultFirstLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][0];
     self.firstLanguage = [NSUserDefaults mm_readString:kFirstLanguageKey defaultValue:defaultFirstLanguage];
     EZLanguage defaultSecondLanguage = [EZLanguageManager.shared systemPreferredTwoLanguages][1];
@@ -123,7 +132,7 @@ static EZConfiguration *_instance;
 }
 
 - (BOOL)automaticallyChecksForUpdates {
-    return [SUUpdater sharedUpdater].automaticallyChecksForUpdates;
+    return self.appDelegate.updaterController.updater.automaticallyChecksForUpdates;
 }
 
 #pragma mark - setter
@@ -210,7 +219,7 @@ static EZConfiguration *_instance;
 - (void)setAutomaticallyChecksForUpdates:(BOOL)automaticallyChecksForUpdates {
     [NSUserDefaults mm_write:@(automaticallyChecksForUpdates) forKey:kAutomaticallyChecksForUpdatesKey];
     
-    [[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:automaticallyChecksForUpdates];
+    self.appDelegate.updaterController.updater.automaticallyChecksForUpdates = automaticallyChecksForUpdates;
     
     [self logSettings:@{@"automatically_checks_for_updates" : @(automaticallyChecksForUpdates)}];
 }
