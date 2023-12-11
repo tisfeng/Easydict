@@ -11,8 +11,6 @@
 #import "FWEncryptorAES.h"
 #import "EZDeviceSystemInfo.h"
 
-@import FirebaseCore;
-@import FirebaseAnalytics;
 @import AppCenter;
 @import AppCenterAnalytics;
 @import AppCenterCrashes;
@@ -27,9 +25,6 @@
         [MSACAnalytics class],
         [MSACCrashes class]
     ]];
-    
-    // Firebase
-    [FIRApp configure];
 #endif
 }
 
@@ -54,7 +49,6 @@
     
 #if !DEBUG
         [MSACAnalytics trackEvent:name withProperties:dict];
-        [FIRAnalytics logEventWithName:name parameters:dict];
 #endif
 }
 
