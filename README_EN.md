@@ -57,6 +57,7 @@
   - [1. Manual Installation](#1-manual-installation)
   - [2. Homebrew](#2-homebrew)
   - [Developer Build](#developer-build)
+    - [Build Environment](#build-environment)
   - [Signature Problem ⚠️](#signature-problem-️)
 - [Usage](#usage)
   - [Select text by Mouse](#select-text-by-mouse)
@@ -114,26 +115,28 @@ brew install easydict
 
 If you are a developer, or you are interested in this project, you can also try to build and run it manually. The whole process is very simple, even without knowing macOS development knowledge.
 
-<details> <summary> Build Steps: </summary>
+<details> <summary> Build Steps </summary>
 
 <p>
 
-1. Download this Repo, and then open the `Easydict.xcworkspace` file with [Xcode](https://developer.apple.com/xcode/) (note that it is not `Easydict.xcodeproj`).
+1. Download this Repo, and then open the `Easydict.xcworkspace` file with [Xcode](https://developer.apple.com/xcode/) (note that it is not `Easydict.xcodeproj` ⚠️⚠️⚠️).
 2. Use `Cmd + R` to compile and run.
 
+![image-20231212125308372](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231212125308372-1702356789.png)
 
+The following steps are optional and intended for development collaborators only.
 
-For development collaborators who want to run under their own Apple account, change DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging in to the Apple developer website) and CODE_SIGN_IDENTITY to Apple Development.
+If you often need to debug permission-related features, such as word fetching or OCR, you can choose to run it with your own Apple account, change DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging in to the Apple developer website) and CODE_SIGN_IDENTITY to Apple Development.
 
-Be careful not to commit the Easydict-debug.xcconfig file; you can ignore local changes to this file with the following git command
+⚠️ Be careful not to commit the Easydict-debug.xcconfig file; you can ignore local changes to this file with the following git command
 
 ```bash
 git update-index --skip-worktree Easydict-debug.xcconfig
 ```
 
-
-
-Build environment: Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
+#### Build Environment
+ 
+ Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
 > [!NOTE]
 > Since the latest code uses the String Catalog feature, Xcode 15+ is required to compile.
