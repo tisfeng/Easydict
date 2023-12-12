@@ -120,7 +120,7 @@ brew install easydict
 
 <p>
 
-1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（注意不是 `Easydict.xcodeproj`⚠️⚠️⚠️）。
+1. 下载这个 Repo，然后使用 [Xcode](https://developer.apple.com/xcode/) 打开 `Easydict.xcworkspace` 文件（⚠️⚠️⚠️ 注意不是 `Easydict.xcodeproj` ⚠️⚠️⚠️）。
 2. 使用 `Cmd + R` 编译运行即可。
 
 ![image-20231212125308372](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231212125308372-1702356789.png)
@@ -129,7 +129,7 @@ brew install easydict
 
 如果经常需要调试一些权限相关的功能，例如取词或 OCR，可选择使用自己的苹果账号运行，请修改 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），CODE_SIGN_IDENTITY 改为 Apple Development。
 
-⚠️ 注意不要提交 Easydict-debug.xcconfig 文件，你可以使用下面 git 命令忽略这个文件的本地修改
+注意不要提交 Easydict-debug.xcconfig 文件，你可以使用下面 git 命令忽略这个文件的本地修改
 
 ```bash
 git update-index --skip-worktree Easydict-debug.xcconfig
