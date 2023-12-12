@@ -1,0 +1,171 @@
+/*
+  Localizable.strings
+  Easydict
+
+  Created by tisfeng on 2022/12/18.
+  Copyright © 2022 izual. All rights reserved.
+*/
+
+
+// setting
+"setting" = "设置";
+
+"input_translate" = "输入翻译:";
+"snip_translate" = "截图翻译:";
+"select_translate" = "划词翻译:";
+"show_mini_window" = "显示迷你窗口:";
+"silent_screenshot_ocr" = "静默截图 OCR:";
+
+"first_language" = "第一语言:";
+"second_language" = "第二语言:";
+"equal_first_and_second_language" = "第一语言和第二语言不能相同";
+
+"auto_get_selected_text" = "鼠标自动划词:";
+"auto_show_query_icon" = "划词后自动显示查询图标";
+"force_auto_get_selected_text" = "自动划词失败时，强制划词（实验功能）";
+"force_auto_get_selected_text_title" = "强制划词";
+"force_auto_get_selected_text_msg" = "注意：在某些应用中，强制划词可能会导致空复制提示音，影响剪贴板内容等异常情况。";
+
+"disable_empty_copy_beep" = "禁用空复制提示音:";
+"disable_empty_copy_beep_msg" = "划词内容为空时生效";
+
+"click_icon_query" = "点击查询:";
+"click_icon_query_info" = "点击图标时才查询（需隐藏主窗口）";
+
+"adjust_pop_button_origin" = "调整查询图标位置:";
+"avoid_conflict_with_PopClip_display" = "避免和 PopClip 显示冲突";
+
+"language_detect_optimize"= "语种识别:";
+"language_detect_optimize_none" = "仅使用系统语种识别";
+"language_detect_optimize_baidu" = "使用百度语种识别进行优化";
+"language_detect_optimize_google" = "使用 Google 语种识别进行优化";
+
+"default_tts_service" = "默认TTS服务:";
+
+"fixed_window_position" = "悬浮窗口位置:";
+"fixed_window_position_right" = "屏幕右侧";
+"fixed_window_position_mouse" = "鼠标位置";
+"fixed_window_position_former" = "上次位置";
+"fixed_window_position_center" = "屏幕中间";
+
+"play_word_audio" = "播放单词发音:";
+"auto_play_word_audio" = "查询英语单词后自动播放发音";
+
+"clear_input" = "清空查询内容:";
+"clear_input_when_translating" = "输入翻译时，清空查询内容";
+
+"auto_query" = "自动查询:";
+"auto_query_ocr_text" = "截图 OCR 后自动查询";
+"auto_query_selected_text" = "划词后自动查询";
+"auto_query_pasted_text" = "粘贴后自动查询";
+
+"auto_copy_text" = "自动复制:";
+"auto_copy_ocr_text" = "自动复制截图 OCR 结果";
+"auto_copy_selected_text" = "自动复制划词文本";
+"auto_copy_first_translated_text" = "自动复制第一个翻译结果";
+
+"quick_link" = "快捷功能:";
+"show_google_quick_link" = "显示 Google 快捷图标";
+"show_eudic_quick_link" = "显示欧路词典快捷图标（若有安装）";
+"show_apple_dictionary_quick_link" = "显示苹果词典快捷图标";
+
+
+"show_main_window" = "主窗口:";
+"hide_main_window" = "启动后隐藏主窗口";
+
+"launch" = "启动:";
+"launch_at_startup" = "开机自启动";
+
+"menu_bar_icon" = "菜单栏图标:";
+"hide_menu_bar_icon" = "隐藏菜单栏图标";
+"hide_menu_bar_icon_msg" = "如需恢复，请在查词窗口使用快捷键 `Cmd + ,` 打开设置页，然后取消【隐藏菜单栏图标】选项。";
+
+
+// service
+"service" = "服务";
+
+"main_window" = "主窗口";
+"mini_window" = "迷你窗口";
+"fixed_window" = "侧悬浮窗口";
+
+"google_translate" = "Google 翻译";
+"baidu_translate" = "百度翻译";
+"youdao_dict" = "有道词典";
+"deepL_translate" = "DeepL 翻译";
+"apple_translate" = "苹果翻译";
+"volcano_translate" = "火山翻译";
+"openai_translate" = "OpenAI 翻译";
+"apple_dictionary" = "苹果词典";
+"bing_translate" = "Bing 翻译";
+
+// disabled app list
+"disabled_app_list" = "禁止名单";
+"disabled_title" = "如果 App 在“禁止名单”中，则不会触发鼠标自动划词。";
+
+// about
+"about" = "关于";
+"current_version" = "版本";
+"auto_check_update" = "自动检查应用程序更新";
+"lastest_version" = "最新版本";
+"author" = "开发者:";
+
+// privacy
+"privacy" = "隐私";
+"privacy_statement" = "隐私声明";
+"privacy_statement_content" = "Easydict 使用了 AppCenter 和 Firebase，它们会收集用户的崩溃日志（用于修复 bug）和匿名统计数据，但这些数据都不会关联到您的身份，仅用于改进用户体验，绝不会分享给其他平台。\n\nEasydict 是开源软件，如果你感兴趣，可以查看代码。";
+"crash_log" = "崩溃日志:";
+"allow_collect_crash_log" = "允许收集应用崩溃日志";
+"analytics" = "匿名统计:";
+"allow_collect_analytics" = "允许收集匿名统计数据";
+"disable_crash_log_warning" = "⚠️ 注意：如果关闭该选项，Easydict 将不能获取应用崩溃日志，这可能会导致应用的 bug 无法即时修复。";
+"ok" = "确定";
+"cancel" = "取消";
+
+
+// error msg
+"error_parameter" = "参数异常";
+"error_network" = "网络异常";
+"error_api" = "接口异常";
+"error_unsupport_language" = "不支持的语言";
+"error_unknown" = "未知错误";
+"query_failed" = "查询失败";
+"ocr_result_is_empty" = "⚠️ OCR 结果为空。\n⚠️ 请手动选择识别语言再次尝试。";
+"no_results_found" = "⚠ 未查询到结果";
+
+"placeholder" = "输入内容，Enter 查询，Shift + Enter 换行";
+
+
+// query window
+"detected" = "识别为 ";
+
+"explain" = "释义:";
+"etymology" = "词源:";
+"tag" = "标签:";
+"please_look" = "请看👉";
+"us_phonetic" = "美:";
+"uk_phonetic" = "英:";
+"chinese_phonetic" = "发音";
+
+"singular" = "第三人称单数";
+"plural" = "复数";
+"comparative" = "比较级";
+"superlative" = "最高级";
+"past" = "过去式";
+"past_participle" = "过去分词";
+"present_participle" = "现在分词";
+"root" = "词根";
+
+"toggle_languages" = "交换翻译语言";
+"play_audio" = "播放音频";
+"stop_play_audio" = "停止播放音频";
+"copy_text" = "拷贝文本";
+"open_web_link" = "在网页中打开";
+"clear_all" = "清空";
+"unpin" = "取消钉住";
+"pin" = "钉住窗口";
+"retry" = "重试";
+"hide" = "隐藏";
+"show"= "显示";
+"open_in_google" = "通过 Google 搜索";
+"open_in_eudic" = "在欧路词典中打开";
+"open_in_apple_dictionary" = "在苹果词典中打开";

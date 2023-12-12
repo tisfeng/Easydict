@@ -1,0 +1,172 @@
+/*
+  Localizable.strings
+  Easydict
+
+  Created by tisfeng on 2022/12/18.
+  Copyright © 2022 izual. All rights reserved.
+*/
+
+
+// setting
+"setting" = "Settings";
+
+"input_translate" = "Input Translate:";
+"snip_translate" = "Sinp Translate:";
+"select_translate" = "Select Text Translate:";
+"show_mini_window" = "Show Mini Window:";
+"silent_screenshot_ocr" = "Silent Screenshot OCR:";
+
+"first_language" = "First Language:";
+"second_language" = "Second Language:";
+"equal_first_and_second_language" = "First and second languages cannot be the same";
+
+"auto_get_selected_text" = "Auto Get Selected Text:";
+"auto_show_query_icon" = "Auto show query icon after selecting text";
+"force_auto_get_selected_text" = "Force get selected text when auto get selected text failed (Experimental)";
+"force_auto_get_selected_text_title" = "Force Auto Get Selected Text";
+"force_auto_get_selected_text_msg" = "Note: In some applications, forced word retrieval may cause empty copy prompt tones, abnormal clipboard content, etc.";
+
+"disable_empty_copy_beep" = "Disable Empty Copy Beep:";
+"disable_empty_copy_beep_msg" = "Activated when selected text is empty";
+
+"click_icon_query" = "Click to Query:";
+"click_icon_query_info" = "Query only when clicking query icon (When main window hidden)";
+
+"adjust_pop_button_origin" = "Adjust Query Icon Position:";
+"avoid_conflict_with_PopClip_display" = "Avoid conflict with PopClip";
+
+"language_detect_optimize"= "Language Detection:";
+"language_detect_optimize_none" = "Only use System language detection";
+"language_detect_optimize_baidu" = "Use Baidu language detection for optimization";
+"language_detect_optimize_google" = "Use Google language detection for optimization";
+
+"default_tts_service" = "Default TTS Service:";
+
+"fixed_window_position" = "Floating Window Position:";
+"fixed_window_position_right" = "Right Side of Screen";
+"fixed_window_position_mouse" = "Mouse Position";
+"fixed_window_position_former" = "Last position";
+"fixed_window_position_center" = "Center of Screen";
+
+"play_word_audio" = "Play Word Pronunciation:";
+"auto_play_word_audio" = "Auto play pronunciation after querying English words";
+
+"clear_input" = "Clear Input:";
+"clear_input_when_translating" = "Clear input when translating";
+
+"auto_query" = "Auto Query:";
+"auto_query_ocr_text" = "Auto query after OCR";
+"auto_query_selected_text" = "Auto query after selecting text";
+"auto_query_pasted_text" = "Auto query after pasting text";
+
+
+"auto_copy_text" = "Auto Copy:";
+"auto_copy_ocr_text" = "Auto copy OCR text after OCR";
+"auto_copy_selected_text" = "Auto copy selected text";
+"auto_copy_first_translated_text" = "Auto copy first translated text";
+
+"quick_link" = "Quick Link:";
+"show_google_quick_link" = "Show Google quick link icon";
+"show_eudic_quick_link" = "Show Eudic quick link icon (if installed)";
+"show_apple_dictionary_quick_link" = "Show Apple Dictionary quick link icon";
+
+
+"show_main_window" = "Main Window:";
+"hide_main_window" = "Hide main window at startup";
+
+"launch" = "Launch:";
+"launch_at_startup" = "Launch at login";
+
+"menu_bar_icon" = "Menu bar icon:";
+"hide_menu_bar_icon" = "Hide Menu Bar Icon";
+"hide_menu_bar_icon_msg" = "If you need to restore, open the settings page in the query window using the shortcut `Cmd + ,`, then cancel the [Hide Status Bar Icon] option.";
+
+
+// service
+"service" = "Service";
+
+"main_window" = "Main window";
+"mini_window" = "Mini window";
+"fixed_window" = "Fixed float window";
+
+"google_translate" = "Google Translate";
+"baidu_translate" = "Baidu Translate";
+"youdao_dict" = "Youdao Dictionary";
+"deepL_translate" = "DeepL Translate";
+"apple_translate" = "System Translation";
+"volcano_translate" = "Volcano Translate";
+"openai_translate" = "OpenAI Translate";
+"apple_dictionary" = "System Dictionary";
+"bing_translate" = "Bing Translate";
+
+
+// disabled app list
+"disabled_app_list" = "Disabled";
+"disabled_title" = "If the App is in the \"Disabled App List\", the mouse will not trigger the automatic word retrieval.";
+
+// about
+"about" = "About";
+"current_version" = "Version";
+"auto_check_update" = "Automatically check for application updates";
+"lastest_version" = "Latest version";
+"author" = "Developer:";
+
+// privacy
+"privacy" = "Privacy";
+"privacy_statement" = "Privacy Statement";
+"privacy_statement_content" = "Easydict uses AppCenter and Firebase to collect crash logs (for bug fixes) and anonymous analytics data, but these data will not be associated with your identity, only for improving user experience, and will never be shared with other platforms.\n\nEasydict is open source software, if you are interested, you can check the code.";
+"crash_log" = "Crash Log:";
+"allow_collect_crash_log" = "Allow collection of crash logs";
+"analytics" = "Analytics:";
+"allow_collect_analytics" = "Allow collection of analytics";
+"disable_crash_log_warning" = "⚠️ Note: If you disable this option, Easydict will not be able to get the crash logs of the application, which may cause the bugs of the application to be unable to be fixed in time.";
+"ok" = "Ok";
+"cancel" = "Cancel";
+
+
+// error msg
+"error_parameter" = "Parameter Exception";
+"error_network" = "Network Exception";
+"error_api" = "Interface Exception";
+"error_unsupport_language" = "Unsupported Language";
+"error_unknown" = "Unknown Error";
+"query_failed" = "Query failed";
+"ocr_result_is_empty" = "⚠️ OCR result is empty.\n⚠️ Please manually select language and try again.";
+"no_results_found" = "⚠ No results found";
+
+"placeholder" = "`Enter` to query, `Shift + Enter` to newline";
+
+// query window
+"detected" = "Detected ";
+
+"explain" = "Explanation:";
+"etymology" = "Etymology:";
+"tag" = "Tag:";
+"please_look" = "Please see 👉";
+"us_phonetic" = "US:";
+"uk_phonetic" = "UK:";
+"chinese_phonetic" = "Pronunciation";
+
+"singular" = "Third person singular";
+"plural" = "Plural";
+"comparative" = "Comparative";
+"superlative" = "Superlative";
+"past" = "Past tense";
+"past_participle" = "Past participle";
+"present_participle" = "Present participle";
+"root" = "Root";
+
+"toggle_languages" = "Toggle Languages";
+"play_audio" = "Play Audio";
+"stop_play_audio" = "Stop Playing Audio";
+"copy_text" = "Copy Text";
+"open_web_link" = "Open Web Link";
+"clear_all" = "Clear All";
+"unpin" = "Unpin";
+"pin" = "Pin";
+"retry" = "Retry";
+"hide" = "Hide";
+"show"= "Show";
+"open_in_google" = "Open in Google";
+"open_in_eudic" = "Open in Eudic";
+"open_in_apple_dictionary" = "Open in Apple Dictionary";
