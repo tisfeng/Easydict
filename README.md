@@ -127,9 +127,9 @@ brew install easydict
 
 以下是可选步骤，仅面向开发协作者。
 
-如果经常需要调试一些权限相关的功能，例如取词或 OCR，可选择使用自己的苹果账号运行，请修改 Easydict-debug.xcconfig 文件中的 DEVELOPMENT_TEAM 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），CODE_SIGN_IDENTITY 改为 Apple Development。
+如果经常需要调试一些权限相关的功能，例如取词或 OCR，可选择使用自己的苹果账号运行，请修改 `Easydict-debug.xcconfig` 文件中的 `DEVELOPMENT_TEAM` 为你自己的 Apple Team ID（你可以登录苹果开发者网站找到它），`CODE_SIGN_IDENTITY` 改为 Apple Development。
 
-注意不要提交 Easydict-debug.xcconfig 文件，你可以使用下面 git 命令忽略这个文件的本地修改
+注意不要提交 `Easydict-debug.xcconfig` 文件，你可以使用下面 git 命令忽略这个文件的本地修改
 
 ```bash
 git update-index --skip-worktree Easydict-debug.xcconfig
