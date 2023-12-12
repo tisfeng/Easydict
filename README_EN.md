@@ -126,9 +126,9 @@ If you are a developer, or you are interested in this project, you can also try 
 
 The following steps are optional and intended for development collaborators only.
 
-If you often need to debug permission-related features, such as word fetching or OCR, you can choose to run it with your own Apple account, change DEVELOPMENT_TEAM in the Easydict-debug.xcconfig file to your own Apple Team ID (you can find it by logging in to the Apple developer website) and CODE_SIGN_IDENTITY to Apple Development.
+If you often need to debug permission-related features, such as word fetching or OCR, you can choose to run it with your own Apple account, change `DEVELOPMENT_TEAM`` in the `Easydict-debug.xcconfig`` file to your own Apple Team ID (you can find it by logging in to the Apple developer website) and `CODE_SIGN_IDENTITY`` to Apple Development.
 
-Be careful not to commit the Easydict-debug.xcconfig file; you can ignore local changes to this file with the following git command
+Be careful not to commit the `Easydict-debug.xcconfig`` file; you can ignore local changes to this file with the following git command
 
 ```bash
 git update-index --skip-worktree Easydict-debug.xcconfig
