@@ -169,6 +169,15 @@ userInfo:nil]
         return YES;
     }
     
+    // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
+    if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared isNewUserQuerySerive:self]) {
+        NSError *error = [EZTranslateError errorWithType:EZErrorTypeInsufficientQuota message:nil request:nil];
+        self.result.errorMessage = NSLocalizedString(@"insufficient_quota_prompt", nil);
+        self.result.promptURL = self.link;
+        completion(self.result, error);
+        return YES;
+    }
+    
     return NO;
 }
 
@@ -239,6 +248,9 @@ userInfo:nil]
     return NO;
 }
 
+- (BOOL)needPrivateAPIKey {
+    return NO;
+}
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {
     MethodNotImplemented();

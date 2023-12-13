@@ -16,7 +16,14 @@ static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
 static NSString *const kAppModelTriggerListKey = @"kAppModelTriggerListKey";
 
+static NSString *const kQueryServiceCountKey = @"kQueryServiceCountKey";
+
+
 @interface EZLocalStorage ()
+
+@property (nonatomic, assign) NSInteger queryCount;
+@property (nonatomic, assign) NSInteger queryCharacterCount;
+@property (nonatomic, copy) NSDictionary *queryServiceCountDict;
 
 @end
 
@@ -58,7 +65,7 @@ static EZLocalStorage *_instance;
                 serviceInfo.type = serviceType;
                 serviceInfo.enabled = YES;
 
-                // Mini type should keep concise, services <= 4 
+                // Mini type should keep concise, services <= 4
                 if (windowType == EZWindowTypeMini) {
                     NSArray *defaultEnabledServices = @[
                         EZServiceTypeAppleDictionary,
@@ -170,24 +177,35 @@ static EZLocalStorage *_instance;
         [EZLog logEventWithName:@"query_count" parameters:dict];
     }
 
-    [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCountKey];
+    self.queryCount = count;
 
     NSInteger queryCharacterCount = [self queryCharacterCount];
     queryCharacterCount += queryText.length;
-    [self saveQueryCharacterCount:queryCharacterCount];
+    self.queryCharacterCount = queryCharacterCount;
 }
 
-- (NSInteger)queryCount {
-    return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCountKey];
+- (void)increaseQueryService:(EZQueryService *)service {
+    NSMutableDictionary *mdict = self.queryServiceCountDict.mutableCopy;
+    NSInteger count = [mdict[service.serviceType] integerValue];
+    mdict[service.serviceType] = @(count + 1);
+    self.queryServiceCountDict = mdict;
+    
+    [EZLog logQueryService:service];
 }
 
-- (void)resetQueryCount {
-    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kQueryCountKey];
+- (BOOL)isNewUserQuerySerive:(EZQueryService *)service {
+    NSInteger count = [self.queryServiceCountDict[service.serviceType] integerValue];
+    return count < 100;
+}
+
+/// New user means query count<100
+- (BOOL)isNewUser {
+    return self.queryCount < 100;
 }
 
 #pragma mark - Query character count
 
-- (void)saveQueryCharacterCount:(NSInteger)count {
+- (void)setQueryCharacterCount:(NSInteger)count {
     [[NSUserDefaults standardUserDefaults] setInteger:count forKey:kQueryCharacterCountKey];
 }
 
@@ -195,10 +213,35 @@ static EZLocalStorage *_instance;
     return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCharacterCountKey];
 }
 
-/// New user means query count < 100
-- (BOOL)isNewUser {
-    return self.queryCount < 100;
+#pragma mark - Query count
+
+- (NSInteger)queryCount {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCountKey];
 }
+
+- (void)setQueryCount:(NSInteger)queryCount {
+    [[NSUserDefaults standardUserDefaults] setInteger:queryCount forKey:kQueryCountKey];
+}
+
+#pragma mark - Query service count
+
+- (NSDictionary *)queryServiceCountDict {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kQueryServiceCountKey];
+    if (!dict) {
+        dict = [NSDictionary dictionary];
+    }
+    return dict;
+}
+
+- (void)setQueryServiceCountDict:(NSDictionary *)queryServiceCountDict {
+    /**
+     <Servicey Key> : <Count>
+     Google:100
+     DeepL:200
+     */
+    [[NSUserDefaults standardUserDefaults] setObject:queryServiceCountDict forKey:kQueryServiceCountKey];
+}
+
 
 #pragma mark -
 

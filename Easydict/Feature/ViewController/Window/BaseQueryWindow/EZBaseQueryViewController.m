@@ -670,7 +670,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
-    [EZLog logQuery:queryModel];
     
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
@@ -685,6 +684,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         }
         result.error = error;
         
+        // Auto convert to traditional Chinese if needed.
         if (service.autoConvertTraditionalChinese &&
             [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             [service.result convertToTraditionalChineseResult];
@@ -729,7 +729,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [service startQuery:queryModel completion:completion];
     
-    [EZLog logQueryService:service];
+    [EZLocalStorage.shared increaseQueryService:service];
 }
 
 - (void)updateResultLoadingAnimation:(EZQueryResult *)result {

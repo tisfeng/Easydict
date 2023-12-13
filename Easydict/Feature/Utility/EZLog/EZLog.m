@@ -78,19 +78,6 @@
     [self logEventWithName:name parameters:dict];
 }
 
-// Query with queryModel
-+ (void)logQuery:(EZQueryModel *)model {
-    NSString *name = @"query";
-    NSString *textLengthRange = [self textLengthRange:model.queryText];
-    NSDictionary *dict = @{
-        @"actionType" : model.actionType,
-        @"fromLanguage" : model.queryFromLanguage,
-        @"toLanguage" : model.queryTargetLanguage,
-        @"textLength" : textLengthRange,
-    };
-    [self logEventWithName:name parameters:dict];
-}
-
 /// Get text length range, 1-10, 10-50, 50-200, 200-1000, 1000-5000
 + (NSString *)textLengthRange:(NSString *)text {
     NSInteger length = text.length;

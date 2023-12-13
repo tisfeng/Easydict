@@ -814,6 +814,22 @@
         }
       }
     },
+    "error_insufficient_quota" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insufficient built-in API Key quota."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内置的 API key 额度不足。"
+          }
+        }
+      }
+    },
     "error_network" : {
       "localizations" : {
         "en" : {
@@ -1237,8 +1253,24 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "请前往服务官网申请个人的 API key"
+          }
+        }
+      }
+    },
+    "insufficient_quota_prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
             "state" : "translated",
-            "value" : ""
+            "value" : "Please go to the service official website to apply for a personal API key."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "请前往服务官网申请个人的 API key。"
           }
         }
       }
@@ -1692,7 +1724,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请看👉"
+            "value" : "参见 👉"
           }
         }
       }
