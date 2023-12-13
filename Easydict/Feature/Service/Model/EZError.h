@@ -12,8 +12,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define EZError(type, msg, req) [EZError errorWithType:(type) message:(msg) request:(req)]
-
 /// 报错时的请求信息
 extern NSString *const EZTranslateErrorRequestKey;
 extern NSString *const EZTranslateErrorRequestURLKey;
