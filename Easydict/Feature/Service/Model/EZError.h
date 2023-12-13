@@ -1,9 +1,9 @@
 //
-//  EZError.h
+//  EZTranslateError.h
 //  Easydict
 //
-//  Created by tisfeng on 2023/5/7.
-//  Copyright © 2023 izual. All rights reserved.
+//  Created by tisfeng on 2022/12/1.
+//  Copyright © 2022 izual. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,6 +11,15 @@
 @class EZQueryService;
 
 NS_ASSUME_NONNULL_BEGIN
+
+#define EZError(type, msg, req) [EZError errorWithType:(type) message:(msg) request:(req)]
+
+/// 报错时的请求信息
+extern NSString *const EZTranslateErrorRequestKey;
+extern NSString *const EZTranslateErrorRequestURLKey;
+extern NSString *const EZTranslateErrorRequestParamKey;
+extern NSString *const EZTranslateErrorRequestResponseKey;
+extern NSString *const EZTranslateErrorRequestErrorKey;
 
 typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeNone,
@@ -20,25 +29,22 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeTimeout, // 超时
     EZErrorTypeUnsupportedLanguage, // 不支持的语言
     EZErrorTypeNoResultsFound, // 未查询到结果
-    EZErrorTypeInsufficientQuota, // 免费 API key 额度不足
+    EZErrorTypeInsufficientQuota, // 内置 API key 额度不足
 };
 
+/// 错误，不支持的语言
+FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *service);
 
-@interface EZError : NSError
 
-@property (nonatomic, assign) EZErrorType errorType;
+@interface EZError : NSObject
 
-/// supplementary error message, from API response data.
-@property (nonatomic, copy, nullable) NSString *errorMessage;
++ (NSError *)errorWithType:(EZErrorType)type
+                   message:(NSString *_Nullable)message
+                   request:(id _Nullable)request;
 
-+ (instancetype)errorWithType:(EZErrorType)type
-                      message:(NSString *_Nullable)message;
++ (NSError *)timeoutError;
 
-+ (instancetype)errorWithType:(EZErrorType)type;
-
-+ (instancetype)errorWithString:(NSString *)string;
-
-+ (instancetype)errorWithUnsupportedLanguageService:(EZQueryService *)service;
++ (NSError *)errorWithString:(NSString *)string;
 
 @end
 

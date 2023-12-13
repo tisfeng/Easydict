@@ -7,7 +7,7 @@
 //
 
 #import "EZScriptExecutor.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZToast.h"
 
 @implementation EZScriptExecutor
@@ -72,7 +72,7 @@
             NSArray *array = [errorString componentsSeparatedByString:@"execution error: "];
             if (array.count > 1) {
                 errorString = [array[1] trim];
-                error = [EZTranslateError errorWithString:errorString];
+                error = [EZError errorWithString:errorString];
             }
         }
         
@@ -102,7 +102,7 @@
             if (errorInfo) {
                 MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
                 NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
-                error = [EZTranslateError errorWithString:errorString];
+                error = [EZError errorWithString:errorString];
             }
             
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();

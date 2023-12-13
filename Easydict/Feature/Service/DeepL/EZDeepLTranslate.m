@@ -8,7 +8,7 @@
 
 #import "EZDeepLTranslate.h"
 #import "EZWebViewTranslator.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 
 static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";

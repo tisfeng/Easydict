@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryResult.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
-#import "EZError.h"
 #import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN

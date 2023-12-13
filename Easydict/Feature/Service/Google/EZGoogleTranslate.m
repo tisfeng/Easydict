@@ -218,7 +218,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
        fromLanguage:(EZLanguage)from
          completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, EZTranslateError(EZErrorTypeParam, @"获取音频的文本为空", nil));
+        completion(nil, EZError(EZErrorTypeParam, @"获取音频的文本为空", nil));
         return;
     }
     
@@ -275,7 +275,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
          to:(EZLanguage)to
  completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
     if (!image) {
-        completion(nil, EZTranslateError(EZErrorTypeParam, @"图片为空", nil));
+        completion(nil, EZError(EZErrorTypeParam, @"图片为空", nil));
         return;
     }
     
@@ -292,7 +292,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
                                   EZQueryResult *_Nullable,
                                   NSError *_Nullable))completion {
     if (!image) {
-        completion(nil, nil, EZTranslateError(EZErrorTypeParam, @"图片为空", nil));
+        completion(nil, nil, EZError(EZErrorTypeParam, @"图片为空", nil));
         return;
     }
     
@@ -323,7 +323,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 /// This API can get word info, like pronunciation, but transaltion may be inaccurate, compare to web transaltion.
 - (void)webApptranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(self.result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
+        completion(self.result, EZError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
     
@@ -500,14 +500,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         if (responseObject) {
             completion(responseObject, sign, reqDict, nil);
         } else {
-            completion(nil, nil, nil, EZTranslateError(EZErrorTypeAPI, nil, reqDict));
+            completion(nil, nil, nil, EZError(EZErrorTypeAPI, nil, reqDict));
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
         }
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, EZTranslateError(EZErrorTypeNetwork, nil, reqDict));
+        completion(nil, nil, nil, EZError(EZErrorTypeNetwork, nil, reqDict));
     }];
     
     [self.queryModel setStopBlock:^{
@@ -559,12 +559,12 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             
             [reqDict setObject:responseObject ?: [NSNull null]
                         forKey:EZTranslateErrorRequestResponseKey];
-            completion(nil, EZTranslateError(EZErrorTypeAPI, @"谷歌翻译获取 tkk 失败", reqDict));
+            completion(nil, EZError(EZErrorTypeAPI, @"谷歌翻译获取 tkk 失败", reqDict));
         }
     }
                   failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, EZTranslateError(EZErrorTypeAPI, @"谷歌翻译获取 tkk 失败", reqDict));
+        completion(nil, EZError(EZErrorTypeAPI, @"谷歌翻译获取 tkk 失败", reqDict));
     }];
 }
 
@@ -636,14 +636,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         if (responseObject) {
             completion(responseObject, sign, reqDict, nil);
         } else {
-            completion(nil, nil, nil, EZTranslateError(EZErrorTypeAPI, nil, reqDict));
+            completion(nil, nil, nil, EZError(EZErrorTypeAPI, nil, reqDict));
         }
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
         }
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, nil, nil, EZTranslateError(EZErrorTypeNetwork, nil, reqDict));
+        completion(nil, nil, nil, EZError(EZErrorTypeNetwork, nil, reqDict));
     }];
     
     [self.queryModel setStopBlock:^{
@@ -658,7 +658,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     EZQueryResult *result = self.result;
     
     if (!text.length) {
-        completion(result, EZTranslateError(EZErrorTypeParam, @"翻译的文本为空", nil));
+        completion(result, EZError(EZErrorTypeParam, @"翻译的文本为空", nil));
         return;
     }
     
@@ -735,14 +735,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(result, EZTranslateError(EZErrorTypeAPI, message ?: nil, reqDict));
+        completion(result, EZError(EZErrorTypeAPI, message ?: nil, reqDict));
     }];
 }
 
 - (void)gtxDetectText:(NSString *)text
            completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(EZLanguageAuto, EZTranslateError(EZErrorTypeParam, @"识别语言的文本为空", nil));
+        completion(EZLanguageAuto, EZError(EZErrorTypeParam, @"识别语言的文本为空", nil));
         return;
     }
     
@@ -782,14 +782,14 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
         }
         [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
         completion(EZLanguageAuto,
-                   EZTranslateError(EZErrorTypeAPI, message ?: @"识别语言失败", reqDict));
+                   EZError(EZErrorTypeAPI, message ?: @"识别语言失败", reqDict));
     }];
 }
 
 - (void)webAppDetectText:(NSString *)text completion:(nonnull void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
         completion(EZLanguageAuto,
-                   EZTranslateError(EZErrorTypeParam, @"识别语言的文本为空", nil));
+                   EZError(EZErrorTypeParam, @"识别语言的文本为空", nil));
         return;
     }
     
@@ -852,7 +852,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
             MMLogInfo(@"谷歌翻译接口语言解析失败 %@", exception);
         }
         [reqDict setObject:responseObject forKey:EZTranslateErrorRequestResponseKey];
-        completion(EZLanguageAuto, EZTranslateError(EZErrorTypeAPI, message ?: @"识别语言失败", reqDict));
+        completion(EZLanguageAuto, EZError(EZErrorTypeAPI, message ?: @"识别语言失败", reqDict));
     }];
 }
 
