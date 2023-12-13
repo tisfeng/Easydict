@@ -37,6 +37,10 @@ public final class TencentService: QueryService {
         throw QueryServiceError.notSupported
     }
     
+    public override func needPrivateAPIKey() -> Bool {
+        true
+    }
+    
     override public func hasPrivateAPIKey() -> Bool {
         if secretId == defaultSecretId, secretKey == defaultSecretKey {
             return false

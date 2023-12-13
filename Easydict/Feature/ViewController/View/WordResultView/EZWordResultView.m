@@ -214,7 +214,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             lastView = resultLabel;
         }
         
-        if (result.promptTitle.length && result.promptURL.length) {
+        if (result.promptURL.length) {
             NSTextField *promptTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
                 textField.stringValue = NSLocalizedString(@"please_look", nil);
@@ -241,7 +241,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             
             EZBlueTextButton *promptButton = [[EZBlueTextButton alloc] init];
             [self addSubview:promptButton];
-            [promptButton setTitle:result.promptTitle];
+            
+            NSString *title = result.promptTitle.length ? result.promptTitle : result.promptURL;
+            [promptButton setTitle:title];
             promptButton.openURL = result.promptURL;
             
             [promptButton mas_makeConstraints:^(MASConstraintMaker *make) {

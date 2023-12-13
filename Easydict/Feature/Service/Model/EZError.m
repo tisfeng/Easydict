@@ -26,6 +26,9 @@
         case EZErrorTypeTimeout:
             localizedDescription = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
             break;
+        case EZErrorTypeInsufficientQuota:
+            localizedDescription = NSLocalizedString(@"error_insufficient_quota", nil);
+            break;
         case EZErrorTypeUnsupportedLanguage:
             localizedDescription = NSLocalizedString(@"error_unsupport_language", nil);
             break;
@@ -62,11 +65,9 @@
     }
     
     NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
-    
     EZError *error = [self errorWithType:EZErrorTypeUnsupportedLanguage message:showUnsupportLanguage];
     
     return error;
 }
-
 
 @end

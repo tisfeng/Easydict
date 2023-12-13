@@ -22,7 +22,6 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     }
     
     NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
-    
     NSError *error = EZTranslateError(EZErrorTypeUnsupportedLanguage, showUnsupportLanguage, nil);
     return error;
 }
@@ -46,6 +45,9 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
             break;
         case EZErrorTypeUnsupportedLanguage:
             errorString = NSLocalizedString(@"error_unsupport_language", nil);
+            break;
+        case EZErrorTypeInsufficientQuota:
+            errorString = NSLocalizedString(@"error_insufficient_quota", nil);
             break;
         default:
             errorString = NSLocalizedString(@"error_unknown", nil);

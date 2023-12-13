@@ -20,6 +20,7 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeTimeout, // 超时
     EZErrorTypeUnsupportedLanguage, // 不支持的语言
     EZErrorTypeNoResultsFound, // 未查询到结果
+    EZErrorTypeInsufficientQuota, // 免费 API key 额度不足
 };
 
 

@@ -111,6 +111,8 @@ NS_SWIFT_NAME(QueryService)
 /// Check if user has private API key.
 - (BOOL)hasPrivateAPIKey;
 
+- (BOOL)needPrivateAPIKey;
+
 
 /// 获取文本的语言
 /// @param text 文本
