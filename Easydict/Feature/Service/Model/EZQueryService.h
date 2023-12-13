@@ -107,6 +107,9 @@ NS_SWIFT_NAME(QueryService)
 /// Intelligent query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
 - (EZQueryTextType)intelligentQueryTextType;
 
+/// Check if user has private API key.
+- (BOOL)hasPrivateAPIKey;
+
 
 /// 获取文本的语言
 /// @param text 文本
