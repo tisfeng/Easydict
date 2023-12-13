@@ -14,7 +14,7 @@
 
 /// Run translate shortcut with parameters.
 - (NSTask *)runTranslateShortcut:(NSDictionary *)parameters completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
-    return [self runShortcut:@"Easydict-Translate-V1.2.0" parameters:parameters completionHandler:completionHandler];;
+    return [self runShortcut:@"Easydict-Translate-V1.2.0" parameters:parameters completionHandler:completionHandler];
 }
 
 /// Run shortcut with parameters.

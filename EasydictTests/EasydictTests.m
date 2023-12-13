@@ -43,7 +43,7 @@
     
     for (NSString *word in words) {
         if (!word.length) {
-            continue;;
+            continue;
         }
         
         EZLanguage language = [self.appleService detectText:word];
