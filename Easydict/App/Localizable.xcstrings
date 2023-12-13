@@ -1253,8 +1253,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "请前往服务官网申请个人的 API key"
+            "state" : "translated",
+            "value" : ""
           }
         }
       }
@@ -1264,13 +1264,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please go to the service official website to apply for a personal API key."
+            "value" : "Please go to the official service website to register and apply for a personal API key."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "请前往服务官网申请个人的 API key。"
+            "value" : "请前往服务官网注册申请个人的 API key。"
           }
         }
       }
