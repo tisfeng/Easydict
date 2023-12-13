@@ -172,6 +172,22 @@ userInfo:nil]
     return NO;
 }
 
+- (void)startQuery:(EZQueryModel *)queryModel
+        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+    NSString *queryText = queryModel.queryText;
+    EZLanguage from = queryModel.queryFromLanguage;
+    EZLanguage to = queryModel.queryTargetLanguage;
+    
+    if ([self prehandleQueryTextLanguage:queryText
+                                    from:from
+                                      to:to
+                              completion:completion]) {
+        return;
+    }
+    
+    [self translate:queryText from:from to:to completion:completion];
+}
+
 #pragma mark - 必须重写的子类方法
 
 - (EZServiceType)serviceType {
@@ -200,7 +216,6 @@ userInfo:nil]
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     MethodNotImplemented();
 }
-
 
 #pragma mark - 可选重写的子类方法
 

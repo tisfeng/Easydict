@@ -62,6 +62,8 @@ NS_SWIFT_NAME(QueryService)
 /// Get TTS langauge code.
 - (NSString *)getTTSLanguageCode:(EZLanguage)language;
 
+- (void)startQuery:(EZQueryModel *)queryModel completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
+
 @end
 
 
@@ -83,7 +85,6 @@ NS_SWIFT_NAME(QueryService)
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;
-
 
 /// 文本翻译
 /// @param text 查询文本

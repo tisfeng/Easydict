@@ -57,10 +57,6 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.
         

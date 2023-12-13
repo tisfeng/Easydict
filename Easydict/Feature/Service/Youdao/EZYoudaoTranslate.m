@@ -288,10 +288,6 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         return;
     }
     
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     [self queryYoudaoDictAndTranslation:text from:from to:to completion:completion];
 }
 

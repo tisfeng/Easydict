@@ -727,10 +727,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [self updateResultLoadingAnimation:result];
     
-    [service translate:queryModel.queryText
-                  from:queryModel.queryFromLanguage
-                    to:queryModel.queryTargetLanguage
-            completion:completion];
+    [service startQuery:queryModel completion:completion];
     
     [EZLog logQueryService:service];
 }
