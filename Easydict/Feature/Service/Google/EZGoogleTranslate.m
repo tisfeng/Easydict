@@ -197,10 +197,6 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
              from:(EZLanguage)from
                to:(EZLanguage)to
        completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     text = [self maxTextLength:text fromLanguage:from];
     
     // TODO: We should the Google web translate API instead.

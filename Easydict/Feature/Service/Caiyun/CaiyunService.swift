@@ -56,10 +56,7 @@ public final class CaiyunService: QueryService {
         return true
     }
 
-    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {        
-        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
-            return
-        }
+    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             result.errorType = .unsupportedLanguage

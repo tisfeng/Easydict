@@ -129,10 +129,6 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     if (self.apiType == EZDeepLTranslationAPIWebFirst) {
         [self deepLWebTranslate:text from:from to:to completion:completion];
     } else {

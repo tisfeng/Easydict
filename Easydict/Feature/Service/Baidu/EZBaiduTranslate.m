@@ -216,10 +216,6 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         return;
     }
     
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     text = [text trimToMaxLength:5000];
     
     void (^request)(void) = ^(void) {
