@@ -801,7 +801,7 @@ static EZAppleService *_instance;
                     [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
                     return;
                 } else {
-                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                    error = [EZError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
                     
                     // We try to use Japanese before, but failed, so need to reset to auto.
                     ocrResult.from = EZLanguageAuto;

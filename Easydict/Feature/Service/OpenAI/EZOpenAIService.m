@@ -7,7 +7,7 @@
 //
 
 #import "EZOpenAIService.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
@@ -619,7 +619,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      */
     NSArray *choices = json[@"choices"];
     if (choices.count == 0) {
-        NSError *error = [EZTranslateError errorWithString:@"no result."];
+        NSError *error = [EZError errorWithString:@"no result."];
         /**
          may be return error json
          {
@@ -633,7 +633,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
          */
         
         if (json[@"error"]) {
-            error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
+            error = [EZError errorWithString:[self getJsonErrorMessageWithJson:json]];
         }
         
         return nil;
@@ -683,7 +683,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSArray *choices = json[@"choices"];
         if (choices.count == 0) {
-            NSError *error = [EZTranslateError errorWithString:@"no result."];
+            NSError *error = [EZError errorWithString:@"no result."];
             /**
              may be return error json
              {
@@ -696,7 +696,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
              }
              */
             if (json[@"error"]) {
-                error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
+                error = [EZError errorWithString:[self getJsonErrorMessageWithJson:json]];
             }
             
             completion(nil, error);

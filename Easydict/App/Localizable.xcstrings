@@ -825,7 +825,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内置的 API key 额度不足。"
+            "value" : "内置 API key 额度不足。"
           }
         }
       }

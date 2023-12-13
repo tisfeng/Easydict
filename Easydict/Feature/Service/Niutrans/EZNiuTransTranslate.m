@@ -157,7 +157,7 @@
                 if (errorMsg) {
                     message = [NSString stringWithFormat:@"%@, %@", errorCode, errorMsg];
                 }
-                NSError *error = [EZTranslateError errorWithType:EZErrorTypeAPI
+                NSError *error = [EZError errorWithType:EZErrorTypeAPI
                                                          message:message
                                                          request:task.currentRequest];
                 completion(self.result, error);
