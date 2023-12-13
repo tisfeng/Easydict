@@ -233,7 +233,7 @@
         
     ];
     
-    return actionKeys;;
+    return actionKeys;
 }
 
 - (void)restartApplication {

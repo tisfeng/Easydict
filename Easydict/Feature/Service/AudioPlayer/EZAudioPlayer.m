@@ -239,7 +239,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
             NSLog(@"get audio url error: %@", error);
             
             // e.g. if service get audio url failed, try to use default tts, such as Google.
-            [self playFallbackTTSWithFailedServiceType:service.serviceType];;
+            [self playFallbackTTSWithFailedServiceType:service.serviceType];
         }
     }];
 }
@@ -411,7 +411,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
         // If local audio file is broke, we need to remove it.
         [fileManager removeItemAtPath:filePath error:nil];
         
-        [self playFallbackTTSWithFailedServiceType:self.currentServiceType];;
+        [self playFallbackTTSWithFailedServiceType:self.currentServiceType];
     }
 }
 
@@ -455,7 +455,7 @@ static NSString *const kItemWhereFroms = @"com.apple.metadata:kMDItemWhereFroms"
             AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
             [self playWithPlayerItem:playerItem];
         } else {
-            [self playFallbackTTSWithFailedServiceType:self.currentServiceType];;
+            [self playFallbackTTSWithFailedServiceType:self.currentServiceType];
         }
     }];
 }
