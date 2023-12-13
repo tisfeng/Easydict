@@ -36,11 +36,23 @@ public final class TencentService: QueryService {
         NSLog("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
     }
+    
+    override public func hasPrivateAPIKey() -> Bool {
+        if secretId == defaultSecretId, secretKey == defaultSecretKey {
+            return false
+        }
+        return true
+    }
 
-    // MARK: API Request
-    private static let defaultSecretId = ""
-    private static let defaultSecretKey = ""
-
+    /**
+     For convenience, we provide a default key for users to try out the service.
+     
+     Please do not abuse it, otherwise it may be revoked.
+     
+     For better experience, please register your own key at https://cloud.tencent.com
+     */
+    private let defaultSecretId = "7ZdGkHHIx4Nozm4RHib5Jjye5yCefYoxxfSWzMRbKRrHrnSEJaqpypL1yRMoN0E5".decryptAES()
+    private let defaultSecretKey = "OLvQKqJoBfrfLLg95ezIQsWymT+2irYbuMLov1cxrtc3a/M2YXCDQ2rpyy/raQ8r".decryptAES()
 
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
@@ -48,7 +60,7 @@ public final class TencentService: QueryService {
         if let secretId, !secretId.isEmpty {
             return secretId
         } else {
-            return TencentService.defaultSecretId
+            return defaultSecretId
         }
     }
 
@@ -58,7 +70,7 @@ public final class TencentService: QueryService {
         if let secretKey, !secretKey.isEmpty {
             return secretKey
         } else {
-            return TencentService.defaultSecretKey
+            return defaultSecretKey
         }
     }
 

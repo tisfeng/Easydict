@@ -195,6 +195,11 @@ static EZLocalStorage *_instance;
     return [[NSUserDefaults standardUserDefaults] integerForKey:kQueryCharacterCountKey];
 }
 
+/// New user means query count < 100
+- (BOOL)isNewUser {
+    return self.queryCount < 100;
+}
+
 #pragma mark -
 
 /**

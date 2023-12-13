@@ -208,6 +208,10 @@ userInfo:nil]
     return NO;
 }
 
+- (EZServiceUsageStatus)serviceUsageStatus {
+    return EZServiceUsageStatusDefault;
+}
+
 - (EZQueryTextType)queryTextType {
     return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
 }
@@ -216,8 +220,8 @@ userInfo:nil]
     return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
 }
 
-- (EZServiceUsageStatus)serviceUsageStatus {
-    return EZServiceUsageStatusDefault;
+- (BOOL)hasPrivateAPIKey {
+    return NO;
 }
 
 
