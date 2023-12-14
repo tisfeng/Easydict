@@ -112,6 +112,7 @@ NS_SWIFT_NAME(QueryService)
 
 - (BOOL)needPrivateAPIKey;
 
+- (NSInteger)totalFreeQueryCharacterCount;
 
 /// 获取文本的语言
 /// @param text 文本

@@ -8,6 +8,7 @@
 
 #import "EZLocalStorage.h"
 #import "EZLog.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kServiceInfoStorageKey = @"kServiceInfoStorageKey";
 static NSString *const kAllServiceTypesKey = @"kAllServiceTypesKey";
@@ -16,14 +17,15 @@ static NSString *const kQueryCharacterCountKey = @"kQueryCharacterCountKey";
 
 static NSString *const kAppModelTriggerListKey = @"kAppModelTriggerListKey";
 
-static NSString *const kQueryServiceCountKey = @"kQueryServiceCountKey";
+static NSString *const kQueryServiceRecordKey = @"kQueryServiceRecordKey";
 
+static NSInteger const kTotalUserCount = 1000;
 
 @interface EZLocalStorage ()
 
 @property (nonatomic, assign) NSInteger queryCount;
 @property (nonatomic, assign) NSInteger queryCharacterCount;
-@property (nonatomic, copy) NSDictionary *queryServiceCountDict;
+@property (nonatomic, copy) NSDictionary *queryServiceRecordDict;
 
 @end
 
@@ -185,17 +187,22 @@ static EZLocalStorage *_instance;
 }
 
 - (void)increaseQueryService:(EZQueryService *)service {
-    NSMutableDictionary *mdict = self.queryServiceCountDict.mutableCopy;
-    NSInteger count = [mdict[service.serviceType] integerValue];
-    mdict[service.serviceType] = @(count + 1);
-    self.queryServiceCountDict = mdict;
-    
+    EZServiceType serviceType = service.serviceType;
+    EZQueryServiceRecord *serviceRecord = [self recordWithServiceType:serviceType];;
+    serviceRecord.queryCount += 1;
+    serviceRecord.queryCharacterCount += service.queryModel.queryText.length;
+    [self setQueryServiceRecord:serviceRecord serviceType:serviceType];
+
     [EZLog logQueryService:service];
 }
 
-- (BOOL)isNewUserQuerySerive:(EZQueryService *)service {
-    NSInteger count = [self.queryServiceCountDict[service.serviceType] integerValue];
-    return count < 100;
+- (BOOL)hasFreeQuotaLeft:(EZQueryService *)service {
+    EZQueryServiceRecord *record = [self recordWithServiceType:service.serviceType];
+    /**
+     例如腾讯翻译每月有500万免费字符，假如当前有1000个用户，则每人可以使用字符数为：500万/1000 = 5千
+     */
+    CGFloat freeCount = [service totalFreeQueryCharacterCount] / kTotalUserCount;
+    return record.queryCharacterCount < freeCount;
 }
 
 /// New user means query count<100
@@ -225,21 +232,37 @@ static EZLocalStorage *_instance;
 
 #pragma mark - Query service count
 
-- (NSDictionary *)queryServiceCountDict {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kQueryServiceCountKey];
-    if (!dict) {
-        dict = [NSDictionary dictionary];
+- (EZQueryServiceRecord *)recordWithServiceType:(EZServiceType)serviceType {
+    NSMutableDictionary *mdict = [self.queryServiceRecordDict mutableCopy];
+    if (!mdict) {
+        mdict = [NSMutableDictionary dictionary];
     }
+
+    EZQueryServiceRecord *record = [EZQueryServiceRecord mj_objectWithKeyValues:mdict[serviceType]];
+    if (!record) {
+        record = [[EZQueryServiceRecord alloc] initWithServiceType:serviceType queryCount:0 queryCharacterCount:0];
+        [self setQueryServiceRecord:record serviceType:serviceType];
+    }
+    
+    return record;
+}
+
+- (void)setQueryServiceRecord:(EZQueryServiceRecord *)record serviceType:(EZServiceType)serviceType {
+    NSMutableDictionary *mdict = [self.queryServiceRecordDict mutableCopy];
+    if (!mdict) {
+        mdict = [NSMutableDictionary dictionary];
+    }
+    mdict[serviceType] = [record mj_keyValues];
+    self.queryServiceRecordDict = mdict;
+}
+
+- (NSDictionary *)queryServiceRecordDict {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:kQueryServiceRecordKey];
     return dict;
 }
 
-- (void)setQueryServiceCountDict:(NSDictionary *)queryServiceCountDict {
-    /**
-     <Servicey Key> : <Count>
-     Google:100
-     DeepL:200
-     */
-    [[NSUserDefaults standardUserDefaults] setObject:queryServiceCountDict forKey:kQueryServiceCountKey];
+- (void)setQueryServiceRecordDict:(NSDictionary *)queryServiceRecordDict {
+    [[NSUserDefaults standardUserDefaults] setObject:queryServiceRecordDict forKey:kQueryServiceRecordKey];
 }
 
 

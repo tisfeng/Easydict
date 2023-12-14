@@ -47,6 +47,10 @@ public final class TencentService: QueryService {
         }
         return true
     }
+    
+    public override func totalFreeQueryCharacterCount() -> Int {
+        500 * 10000
+    }
 
     /**
      For convenience, we provide a default key for users to try out the service.
