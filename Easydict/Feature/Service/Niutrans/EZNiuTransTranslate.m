@@ -48,7 +48,7 @@
 }
 
 - (NSString *)link {
-    return @"https://niutrans.com/trans?type=text";
+    return @"https://niutrans.com";
 }
 
 // Supported languages: https://niutrans.com/documents/contents/trans_text#languageList
@@ -117,6 +117,10 @@
 
 - (BOOL)hasPrivateAPIKey {
     return ![self.apiKey isEqualToString:self.defaultAPIKey];
+}
+
+- (NSInteger)totalFreeQueryCharacterCount {
+    return 200 * 10000;
 }
 
 #pragma mark - NiuTrans API

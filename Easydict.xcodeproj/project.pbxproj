@@ -18,6 +18,7 @@
 		0310C8272A94F5DF00B1D81E /* apple-dictionary.html in Resources */ = {isa = PBXBuildFile; fileRef = 0310C8262A94EFA100B1D81E /* apple-dictionary.html */; };
 		0313F8702AD5577400A5CFB0 /* EasydictTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0313F86F2AD5577400A5CFB0 /* EasydictTests.m */; };
 		031DBD792AE01E130071CF85 /* easydict in Resources */ = {isa = PBXBuildFile; fileRef = 031DBD782AE01E130071CF85 /* easydict */; };
+		0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320C5862B29F35700861B3D /* QueryServiceRecord.swift */; };
 		03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E352968158B00AFCD67 /* EZScriptExecutor.m */; };
 		03247E3A296AE8EC00AFCD67 /* EZLoadingAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 03247E39296AE8EC00AFCD67 /* EZLoadingAnimationView.m */; };
 		03262C1C29EEE91700EFECA0 /* EZEnumTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 03262C1B29EEE91700EFECA0 /* EZEnumTypes.m */; };
@@ -276,6 +277,7 @@
 		0313F86D2AD5577400A5CFB0 /* EasydictTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasydictTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0313F86F2AD5577400A5CFB0 /* EasydictTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EasydictTests.m; sourceTree = "<group>"; };
 		031DBD782AE01E130071CF85 /* easydict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = easydict; sourceTree = "<group>"; };
+		0320C5862B29F35700861B3D /* QueryServiceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryServiceRecord.swift; sourceTree = "<group>"; };
 		03247E342968158B00AFCD67 /* EZScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZScriptExecutor.h; sourceTree = "<group>"; };
 		03247E352968158B00AFCD67 /* EZScriptExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZScriptExecutor.m; sourceTree = "<group>"; };
 		03247E38296AE8EC00AFCD67 /* EZLoadingAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLoadingAnimationView.h; sourceTree = "<group>"; };
@@ -1071,6 +1073,7 @@
 			children = (
 				0396D613292CC4C3006A11D9 /* EZLocalStorage.h */,
 				0396D614292CC4C3006A11D9 /* EZLocalStorage.m */,
+				0320C5862B29F35700861B3D /* QueryServiceRecord.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -2388,6 +2391,7 @@
 				03262C2529EFE97B00EFECA0 /* NSViewController+EZWindow.m in Sources */,
 				03008B2729408BF50062B821 /* NSObject+EZDarkMode.m in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
+				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
