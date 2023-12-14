@@ -66,12 +66,12 @@ static EZAppleDictionary *_instance;
                                                      inDictionaries:dictionaries];
         self.result.HTMLString = htmlString;
         
+        EZError *error = nil;
         if (htmlString.length == 0) {
-            self.result.noResultsFound = YES;
-            self.result.errorType = EZErrorTypeNoResultsFound;
+            error = [EZError errorWithType:EZErrorTypeNoResultsFound message:nil];
         }
         
-        completion(self.result, nil);
+        completion(self.result, error);
     });
 }
 

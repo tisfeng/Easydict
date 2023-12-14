@@ -85,10 +85,10 @@ public final class TencentService: QueryService {
     public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
-            result.errorType = .unsupportedLanguage
-            let unsupportedType = NSLocalizedString("unsupported_translation_type", comment: "")
-            result.errorMessage = "\(unsupportedType): \(from.rawValue) --> \(to.rawValue)"
-            completion(result, nil)
+            let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
+            let showingTo = EZLanguageManager.shared().showingLanguageName(to)
+            let error = EZError.init(type: .unsupportedLanguage, message: "\(showingFrom) ——> \(showingTo)")
+            completion(result, error)
             return
         }
 

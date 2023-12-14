@@ -34,15 +34,18 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
 FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *service);
 
 
-@interface EZError : NSObject
+@interface EZError : NSError
 
-+ (NSError *)errorWithType:(EZErrorType)type
-                   message:(NSString *_Nullable)message
-                   request:(id _Nullable)request;
+@property (nonatomic, assign) EZErrorType type;
 
-+ (NSError *)timeoutError;
++ (instancetype)errorWithType:(EZErrorType)type
+                      message:(NSString *_Nullable)message;
 
-+ (NSError *)errorWithString:(NSString *)string;
++ (instancetype)errorWithType:(EZErrorType)type
+                      message:(NSString *_Nullable)message
+                      request:(id _Nullable)request;
+
++ (instancetype)timeoutError;
 
 @end
 

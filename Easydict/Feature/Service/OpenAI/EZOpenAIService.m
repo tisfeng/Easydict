@@ -619,7 +619,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      */
     NSArray *choices = json[@"choices"];
     if (choices.count == 0) {
-        NSError *error = [EZError errorWithString:@"no result."];
+        NSError *error = [EZError errorWithType:EZErrorTypeAPI message:@"no result."];
         /**
          may be return error json
          {
@@ -633,7 +633,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
          */
         
         if (json[@"error"]) {
-            error = [EZError errorWithString:[self getJsonErrorMessageWithJson:json]];
+            error = [EZError errorWithType:EZErrorTypeAPI message:[self getJsonErrorMessageWithJson:json]];
         }
         
         return nil;
@@ -683,7 +683,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSArray *choices = json[@"choices"];
         if (choices.count == 0) {
-            NSError *error = [EZError errorWithString:@"no result."];
+            NSError *error = [EZError errorWithType:EZErrorTypeAPI message:@"no result."];
             /**
              may be return error json
              {
@@ -696,7 +696,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
              }
              */
             if (json[@"error"]) {
-                error = [EZError errorWithString:[self getJsonErrorMessageWithJson:json]];
+                error = [EZError errorWithType:EZErrorTypeAPI message:[self getJsonErrorMessageWithJson:json]];
             }
             
             completion(nil, error);

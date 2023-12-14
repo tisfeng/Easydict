@@ -243,7 +243,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
             mm_strongify(self)
             NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
-                error = [EZError errorWithString:@"Get token failed."];
+                error = [EZError errorWithType:EZErrorTypeAPI message:@"Get token failed."];
             }
             if (error) {
                 completion(self.result, error);
@@ -801,7 +801,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
         [self sendGetTokenAndGtkRequestWithCompletion:^(NSString *token, NSString *gtk, NSError *error) {
             NSLog(@"Baidu token: %@, gtk: %@", token, gtk);
             if (!error && (!token || !gtk)) {
-                error = [EZError errorWithString:@"Get token failed."];
+                error = [EZError errorWithType:EZErrorTypeAPI message:@"Get token failed."];
             }
 
             self.token = token;

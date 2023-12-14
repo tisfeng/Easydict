@@ -95,7 +95,7 @@
     if (queryText.length == 0) {
         NSString *errorString = @"detectText cannot be nil";
         NSLog(@"%@", errorString);
-        completion(self.queryModel, [EZError errorWithString:errorString]);
+        completion(self.queryModel, [EZError errorWithType:EZErrorTypeParam message:errorString]);
         return;
     }
     
