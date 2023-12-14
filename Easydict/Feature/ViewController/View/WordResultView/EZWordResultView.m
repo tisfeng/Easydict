@@ -118,7 +118,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         lastView = bigWordLabel;
     }
     
-    if (result.translatedResults.count || errorDescription.length > 0 || result.noResultsFound) {
+    if (result.translatedResults.count || errorDescription.length > 0) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = 9;

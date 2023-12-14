@@ -2295,6 +2295,7 @@
       }
     },
     "unsupported_translation_type" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
