@@ -68,7 +68,7 @@ static EZAppleDictionary *_instance;
         
         EZError *error = nil;
         if (htmlString.length == 0) {
-            error = [EZError errorWithType:EZErrorTypeNoResultsFound message:nil];
+            error = [EZError errorWithType:EZErrorTypeNoResultsFound description:nil];
         }
         
         completion(self.result, error);

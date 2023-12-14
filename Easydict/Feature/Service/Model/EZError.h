@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeUnsupportedLanguage, // 不支持的语言
     EZErrorTypeNoResultsFound, // 未查询到结果
     EZErrorTypeInsufficientQuota, // 内置 API key 额度不足
-    EZErrorTypeWarppedNSError, // warp NSError
+    EZErrorTypeWarppedNSError, // Warp NSError
 };
 
 /// 错误，不支持的语言
@@ -38,17 +38,33 @@ FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *servi
 @interface EZError : NSError
 
 @property (nonatomic, assign) EZErrorType type;
+@property (nonatomic, copy, nullable) NSString *errorDataMessage;
+
++ (instancetype)errorWithType:(EZErrorType)type;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                      message:(NSString *_Nullable)message;
+                  description:(nullable NSString *)description;
 
 + (instancetype)errorWithType:(EZErrorType)type
-                      message:(NSString *_Nullable)message
+                  description:(nullable NSString *)description
+             errorDataMessage:(nullable NSString *)errorDataMessage;
+
++ (instancetype)errorWithType:(EZErrorType)type
+                  description:(nullable NSString *)description
+                      request:(id _Nullable)request;
+
++ (instancetype)errorWithType:(EZErrorType)type
+                  description:(nullable NSString *)description
+             errorDataMessage:(nullable NSString *)errorDataMessage
                       request:(id _Nullable)request;
 
 + (instancetype)timeoutError;
 
+
+#pragma mark - Wrap NSError
+
 + (nullable EZError *)errorWithNSError:(nullable NSError *)error;
++ (nullable EZError *)errorWithNSError:(nullable NSError *)error errorDataMessage:(nullable NSString *)errorMessage;
 
 @end
 

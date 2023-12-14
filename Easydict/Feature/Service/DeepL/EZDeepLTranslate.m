@@ -233,6 +233,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
         
         if (error) {
             NSLog(@"deepLWebTranslate error: %@", error);
+            EZError *ezError = [EZError errorWithNSError:error];
             
             BOOL useOfficialAPI = (self.authKey.length > 0) && (self.apiType == EZDeepLTranslationAPIWebFirst);
             if (useOfficialAPI) {
@@ -256,12 +257,12 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
                 if (!jsonError) {
                     NSString *errorMessage = json[@"error"][@"message"];
                     if (errorMessage.length) {
-                        self.result.errorMessage = errorMessage;
+                        ezError.errorDataMessage = errorMessage;
                     }
                 }
             }
 
-            completion(self.result, error);
+            completion(self.result, ezError);
             return;
         }
         

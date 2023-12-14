@@ -410,6 +410,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             return;
         }
         
+        EZError *ezError = [EZError errorWithNSError:error];
         NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
         if (errorData) {
             /**
@@ -425,10 +426,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             NSError *jsonError;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
             if (!jsonError) {
-                self.result.errorMessage = [self getJsonErrorMessageWithJson:json];
+                ezError.errorDataMessage = [self getJsonErrorMessageWithJson:json];
             }
         }
-        completion(nil, error);
+        completion(nil, ezError);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -619,7 +620,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      */
     NSArray *choices = json[@"choices"];
     if (choices.count == 0) {
-        NSError *error = [EZError errorWithType:EZErrorTypeAPI message:@"no result."];
+        NSError *error = [EZError errorWithType:EZErrorTypeAPI description:@"no result."];
         /**
          may be return error json
          {
@@ -633,7 +634,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
          */
         
         if (json[@"error"]) {
-            error = [EZError errorWithType:EZErrorTypeAPI message:[self getJsonErrorMessageWithJson:json]];
+            error = [EZError errorWithType:EZErrorTypeAPI description:[self getJsonErrorMessageWithJson:json]];
         }
         
         return nil;
@@ -683,7 +684,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSArray *choices = json[@"choices"];
         if (choices.count == 0) {
-            NSError *error = [EZError errorWithType:EZErrorTypeAPI message:@"no result."];
+            NSError *error = [EZError errorWithType:EZErrorTypeAPI description:@"no result."];
             /**
              may be return error json
              {
@@ -696,7 +697,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
              }
              */
             if (json[@"error"]) {
-                error = [EZError errorWithType:EZErrorTypeAPI message:[self getJsonErrorMessageWithJson:json]];
+                error = [EZError errorWithType:EZErrorTypeAPI description:[self getJsonErrorMessageWithJson:json]];
             }
             
             completion(nil, error);

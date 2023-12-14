@@ -79,11 +79,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSFont *typeTextFont = [NSFont systemFontOfSize:13 weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
-    NSString *errorDescription = result.error.localizedDescription;
-    if (result.errorMessage.length) {
-        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", result.errorMessage];
+    EZError *error = result.error;
+    NSString *errorDescription = error.localizedDescription;
+    NSString *errorDataMessage = error.errorDataMessage;
+    if (errorDataMessage) {
+        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", errorDataMessage];
         if (!errorDescription && !result.hasTranslatedResult) {
-            errorDescription = result.errorMessage;
+            errorDescription = errorDataMessage;
         }
     }
     

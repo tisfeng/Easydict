@@ -135,8 +135,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *translatedText;
 
 @property (nonatomic, strong, nullable) EZError *error;
-@property (nonatomic, copy, nullable) NSString *errorMessage;
-//@property (nonatomic, assign) EZErrorType errorType;
 
 @property (nonatomic, assign) BOOL manulShow;
 
