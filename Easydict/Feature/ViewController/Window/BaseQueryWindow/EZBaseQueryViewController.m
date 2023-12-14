@@ -682,7 +682,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (error) {
             NSLog(@"query error: %@", error);
         }
-        result.error = error;
+        result.error = [EZError errorWithNSError:error];
         
         // Auto convert to traditional Chinese if needed.
         if (service.autoConvertTraditionalChinese &&

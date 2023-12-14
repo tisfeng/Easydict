@@ -28,6 +28,7 @@ typedef NS_ENUM(NSUInteger, EZErrorType) {
     EZErrorTypeUnsupportedLanguage, // 不支持的语言
     EZErrorTypeNoResultsFound, // 未查询到结果
     EZErrorTypeInsufficientQuota, // 内置 API key 额度不足
+    EZErrorTypeWarppedNSError, // warp NSError
 };
 
 /// 错误，不支持的语言
@@ -46,6 +47,8 @@ FOUNDATION_EXPORT NSError *EZQueryUnsupportedLanguageError(EZQueryService *servi
                       request:(id _Nullable)request;
 
 + (instancetype)timeoutError;
+
++ (nullable EZError *)errorWithNSError:(nullable NSError *)error;
 
 @end
 

@@ -130,7 +130,7 @@
         mm_strongify(self)
         @try {
             if (translateError) {
-                self.result.error = translateError;
+                self.result.error = [EZError errorWithNSError:translateError];
                 NSLog(@"bing translate error %@", translateError);
             } else {
                 BOOL needRetry;
@@ -143,7 +143,7 @@
                 }
                 self.canRetry = YES;
                 if (error) {
-                    self.result.error = error;
+                    self.result.error = [EZError errorWithNSError:error];
                     completion(self.result, error);
                     return;
                 }

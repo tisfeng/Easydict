@@ -21,7 +21,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     if (!to) {
         unsupportLanguage = service.queryModel.queryTargetLanguage;
     }
-    
+
     NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
     NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage message:showUnsupportLanguage request:nil];
     return error;
@@ -35,6 +35,9 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
                       request:(id _Nullable)request {
     NSString *errorString = nil;
     switch (type) {
+        case EZErrorTypeNone:
+            errorString = @"";
+            break;
         case EZErrorTypeParam:
             errorString = NSLocalizedString(@"error_parameter", nil);
             break;
@@ -53,25 +56,35 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
         case EZErrorTypeInsufficientQuota:
             errorString = NSLocalizedString(@"error_insufficient_quota", nil);
             break;
+            
         default:
             errorString = NSLocalizedString(@"error_unknown", nil);
             break;
     }
+
+    if (errorString.length) {
+        errorString = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"query_failed", nil), errorString];
+    }
     
-    errorString = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"query_failed", nil), errorString];
     if (message.length) {
         errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
     }
     
+    if (type == EZErrorTypeWarppedNSError) {
+        errorString = message;
+    }
+
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
+    if (errorString) {
+        [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
+    }
     if (request) {
         [userInfo setObject:request forKey:EZTranslateErrorRequestKey];
     }
-    
+
     EZError *error = [EZError errorWithDomain:EZBundleId code:type userInfo:userInfo.copy];
     error.type = type;
-    
+
     return error;
 }
 
@@ -82,6 +95,19 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 + (instancetype)timeoutError {
     NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
     return [self errorWithType:EZErrorTypeTimeout message:errorString request:nil];
+}
+
++ (nullable EZError *)errorWithNSError:(nullable NSError *)error {
+    if (!error) {
+        return nil;
+    }
+    
+    if ([error isKindOfClass:EZError.class]) {
+        return (EZError *)error;
+    }
+    
+    EZError *ezError = [EZError errorWithType:EZErrorTypeWarppedNSError message:error.localizedDescription request:nil];
+    return ezError;
 }
 
 @end
