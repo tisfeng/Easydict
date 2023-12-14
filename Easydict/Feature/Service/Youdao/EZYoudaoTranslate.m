@@ -466,7 +466,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         [self webTranslate:text from:from to:to completion:^(EZQueryResult *_Nullable result, NSError *_Nullable error) {
             if (error) {
                 NSLog(@"translateYoudaoAPI error: %@", error);
-                self.result.error = error;
+                self.result.error = [EZError errorWithNSError:error];
             }
             dispatch_group_leave(group);
         }];
