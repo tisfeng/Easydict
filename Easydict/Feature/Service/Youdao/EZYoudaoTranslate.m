@@ -284,7 +284,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
         return;
     }
     
@@ -293,7 +293,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeParam message:@"识别语言的文本为空" request:nil]);
+        completion(EZLanguageAuto, [EZError errorWithType:EZErrorTypeParam description:@"识别语言的文本为空" request:nil]);
         return;
     }
     
@@ -311,7 +311,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)textToAudio:(NSString *)text fromLanguage:(EZLanguage)from completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     if (!text.length) {
-        completion(nil, [EZError errorWithType:EZErrorTypeParam message:@"获取音频的文本为空" request:nil]);
+        completion(nil, [EZError errorWithType:EZErrorTypeParam description:@"获取音频的文本为空" request:nil]);
         return;
     }
     
@@ -336,7 +336,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)ocr:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZOCRResult *_Nullable result, NSError *_Nullable error))completion {
     if (!image) {
-        completion(nil, [EZError errorWithType:EZErrorTypeParam message:@"图片为空" request:nil]);
+        completion(nil, [EZError errorWithType:EZErrorTypeParam description:@"图片为空" request:nil]);
         return;
     }
     
@@ -389,16 +389,16 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeAPI message: message ?: @"图片翻译失败" request:reqDict]);
+        completion(nil, [EZError errorWithType:EZErrorTypeAPI description: message ?: @"图片翻译失败" request:reqDict]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(nil, [EZError errorWithType:EZErrorTypeNetwork message:@"图片翻译失败" request:reqDict]);
+        completion(nil, [EZError errorWithType:EZErrorTypeNetwork description:@"图片翻译失败" request:reqDict]);
     }];
 }
 
 - (void)ocrAndTranslate:(NSImage *)image from:(EZLanguage)from to:(EZLanguage)to ocrSuccess:(void (^)(EZOCRResult *_Nonnull, BOOL))ocrSuccess completion:(void (^)(EZOCRResult *_Nullable, EZQueryResult *_Nullable, NSError *_Nullable))completion {
     if (!image) {
-        completion(nil, nil, [EZError errorWithType:EZErrorTypeParam message:@"图片为空" request:nil]);
+        completion(nil, nil, [EZError errorWithType:EZErrorTypeParam description:@"图片为空" request:nil]);
         return;
     }
     
@@ -438,13 +438,12 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 
 - (void)queryYoudaoDictAndTranslation:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
         return;
     }
     
     if (self.queryTextType == EZQueryTextTypeNone) {
-        self.result.errorMessage = NSLocalizedString(@"no_results_found", nil);
-        completion(self.result, nil);
+        completion(self.result, [EZError errorWithType:EZErrorTypeNoResultsFound description:nil]);
         return;
     }
     
@@ -480,7 +479,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 /// Query Youdao dict, unofficial API
 - (void)queryYoudaoDict:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
         return;
     }
     
@@ -499,8 +498,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     
     // If Youdao Dictionary does not support the language, try querying translate API.
     if (!enableDictionary || !supportQueryDictionaryLanguage || !shouldQueryDictionary) {
-        self.result.errorMessage = NSLocalizedString(@"no_results_found", nil);
-        completion(self.result, nil);
+        completion(self.result, [EZError errorWithType:EZErrorTypeNoResultsFound]);
         return;
     }
     
@@ -537,7 +535,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        self.result.error = [EZError errorWithType:EZErrorTypeAPI message: message  request:reqDict];
+        self.result.error = [EZError errorWithType:EZErrorTypeAPI description: message  request:reqDict];
         completion(self.result, self.result.error);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
@@ -545,7 +543,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
         }
         
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        self.result.error = [EZError errorWithType:EZErrorTypeNetwork message: nil request:reqDict];
+        self.result.error = [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict];
         completion(self.result, self.result.error);
     }];
     
@@ -611,12 +609,12 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
                 return;
             }
         }
-        completion(self.result, [EZError errorWithType:EZErrorTypeAPI message:@"翻译失败" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"翻译失败" request:nil]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
         }
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork message:@"翻译失败" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description:@"翻译失败" request:nil]);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -632,7 +630,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 // TODO: Use a stable Youdao translation API.
 - (void)youdaoAIDemoTranslate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
     if (!text.length) {
-        completion(self.result, [EZError errorWithType:EZErrorTypeParam message:@"翻译的文本为空" request:nil]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeParam description:@"翻译的文本为空" request:nil]);
         return;
     }
     
@@ -799,10 +797,10 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
             }
         }
         [reqDict setObject:responseObject ?: [NSNull null] forKey:EZTranslateErrorRequestResponseKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeAPI message: message request:reqDict]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description: message request:reqDict]);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         [reqDict setObject:error forKey:EZTranslateErrorRequestErrorKey];
-        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork message: nil request:reqDict]);
+        completion(self.result, [EZError errorWithType:EZErrorTypeNetwork description: nil request:reqDict]);
     }];
 }
 
@@ -822,7 +820,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 - (void)webViewTranslate:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     NSString *wordLink = [self wordLink:self.queryModel];
     if ([wordLink isEqualToString:kYoudaoTranslatetURL]) {
-        NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage message:nil request:nil];
+        NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage description:nil request:nil];
         completion(self.result, error);
         return;
     }

@@ -61,7 +61,7 @@ public final class CaiyunService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError.init(type: .unsupportedLanguage, message: "\(showingFrom) ——> \(showingTo)")
+            let error = EZError.init(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -96,11 +96,12 @@ public final class CaiyunService: QueryService {
                     result.translatedResults = value.target
                     completion(result, nil)
                 case let .failure(error):
+                    let ezError = EZError.init(nsError: error)
                     if let data = response.data {
-                        result.errorMessage = String(data: data, encoding: .utf8)
+                        ezError?.errorDataMessage = String(data: data, encoding: .utf8);
                     }
                     NSLog("Caiyun lookup error \(error)")
-                    completion(result, error)
+                    completion(result, ezError)
                 }
             }
         queryModel.setStop({

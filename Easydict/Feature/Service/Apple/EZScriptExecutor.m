@@ -72,7 +72,7 @@
             NSArray *array = [errorString componentsSeparatedByString:@"execution error: "];
             if (array.count > 1) {
                 errorString = [array[1] trim];
-                error = [EZError errorWithType:EZErrorTypeAPI message:errorString];
+                error = [EZError errorWithType:EZErrorTypeAPI description:errorString];
             }
         }
         
@@ -102,7 +102,7 @@
             if (errorInfo) {
                 MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
                 NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
-                error = [EZError errorWithType:EZErrorTypeAPI message:errorString];
+                error = [EZError errorWithType:EZErrorTypeAPI description:errorString];
             }
             
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();

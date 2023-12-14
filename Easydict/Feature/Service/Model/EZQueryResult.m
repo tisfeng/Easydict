@@ -205,7 +205,7 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (BOOL)hasShowingResult {
-    if (self.hasTranslatedResult || self.error || self.errorMessage.length || self.HTMLString.length) {
+    if (self.hasTranslatedResult || self.error || self.HTMLString.length) {
         return YES;
     }
     return NO;
@@ -258,7 +258,6 @@ NSString *getPartAbbreviation(NSString *part) {
     self.promptURL = nil;
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
-    self.errorMessage = nil;
     self.isFinished = YES;
     self.manulShow = NO;
     self.HTMLString = nil;

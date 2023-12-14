@@ -87,7 +87,7 @@ public final class TencentService: QueryService {
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError.init(type: .unsupportedLanguage, message: "\(showingFrom) ——> \(showingTo)")
+            let error = EZError.init(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -125,15 +125,17 @@ public final class TencentService: QueryService {
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Tencent lookup error \(error)")
+                    let ezError = EZError.init(nsError: error)
+
                     if let data = response.data {
                         do {
                             let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
-                            result.errorMessage = errorResponse.response.error.message
+                            ezError?.errorDataMessage = errorResponse.response.error.message
                         } catch {
                             NSLog("Failed to decode error response: \(error)")
                         }
                     }
-                    completion(result, error)
+                    completion(result, ezError)
                 }
             }
         queryModel.setStop({

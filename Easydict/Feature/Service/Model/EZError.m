@@ -21,18 +21,40 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     if (!to) {
         unsupportLanguage = service.queryModel.queryTargetLanguage;
     }
-
+    
     NSString *showUnsupportLanguage = [EZLanguageManager.shared showingLanguageName:unsupportLanguage];
-    NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage message:showUnsupportLanguage request:nil];
+    NSError *error = [EZError errorWithType:EZErrorTypeUnsupportedLanguage description:showUnsupportLanguage request:nil];
     return error;
 }
 
 
 @implementation EZError
 
++ (instancetype)errorWithType:(EZErrorType)type {
+    return [self errorWithType:type description:nil];
+}
+
 + (instancetype)errorWithType:(EZErrorType)type
-                      message:(NSString *_Nullable)message
+                  description:(nullable NSString *)description
                       request:(id _Nullable)request {
+    return [self errorWithType:type description:description errorDataMessage:nil request:request];
+}
+
++ (instancetype)errorWithType:(EZErrorType)type
+                  description:(nullable NSString *)description {
+    return [self errorWithType:type description:description request:nil];
+}
+
++ (instancetype)errorWithType:(EZErrorType)type
+                  description:(nullable NSString *)description
+             errorDataMessage:(nullable NSString *)errorDataMessage {
+    return [self errorWithType:type description:description errorDataMessage:errorDataMessage request:nil];
+}
+
++ (instancetype)errorWithType:(EZErrorType)type
+                  description:(nullable NSString *)description
+             errorDataMessage:(nullable NSString *)errorDataMessage
+                      request:(id)request {
     NSString *errorString = nil;
     switch (type) {
         case EZErrorTypeNone:
@@ -61,19 +83,19 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
             errorString = NSLocalizedString(@"error_unknown", nil);
             break;
     }
-
-    if (errorString.length) {
-        errorString = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"query_failed", nil), errorString];
-    }
     
-    if (message.length) {
-        errorString = [NSString stringWithFormat:@"%@: %@", errorString, message];
+    NSString *queryFailedString = NSLocalizedString(@"query_failed", nil);
+    if (errorString.length) {
+        errorString = [NSString stringWithFormat:@"%@, %@", queryFailedString, errorString];
+    }
+    if (description.length) {
+        errorString = [NSString stringWithFormat:@"%@: %@", errorString, description];
     }
     
     if (type == EZErrorTypeWarppedNSError) {
-        errorString = message;
+        errorString = [NSString stringWithFormat:@"%@: %@", queryFailedString, description];
     }
-
+    
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     if (errorString) {
         [userInfo setObject:errorString forKey:NSLocalizedDescriptionKey];
@@ -81,32 +103,33 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     if (request) {
         [userInfo setObject:request forKey:EZTranslateErrorRequestKey];
     }
-
-    EZError *error = [EZError errorWithDomain:EZBundleId code:type userInfo:userInfo.copy];
+    
+    EZError *error = [self errorWithDomain:EZBundleId code:type userInfo:userInfo.copy];
     error.type = type;
-
+    error.errorDataMessage = errorDataMessage;
+    
     return error;
 }
 
-+ (instancetype)errorWithType:(EZErrorType)type message:(NSString *)message {
-    return [self errorWithType:type message:message request:nil];
++ (instancetype)timeoutError {
+    NSString *description = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
+    return [self errorWithType:EZErrorTypeTimeout description:description];
 }
 
-+ (instancetype)timeoutError {
-    NSString *errorString = [NSString stringWithFormat:@"Timeout of %.1f exceeded", EZNetWorkTimeoutInterval];
-    return [self errorWithType:EZErrorTypeTimeout message:errorString request:nil];
-}
+
+#pragma mark - Wrap NSError
 
 + (nullable EZError *)errorWithNSError:(nullable NSError *)error {
-    if (!error) {
-        return nil;
-    }
-    
-    if ([error isKindOfClass:EZError.class]) {
+    return [self errorWithNSError:error errorDataMessage:nil];
+}
+
++ (nullable EZError *)errorWithNSError:(nullable NSError *)error
+                      errorDataMessage:(nullable NSString *)errorDataMessage {
+    if (!error || [error isKindOfClass:EZError.class]) {
         return (EZError *)error;
     }
     
-    EZError *ezError = [EZError errorWithType:EZErrorTypeWarppedNSError message:error.localizedDescription request:nil];
+    EZError *ezError = [self errorWithType:EZErrorTypeWarppedNSError description:error.localizedDescription errorDataMessage:errorDataMessage];
     return ezError;
 }
 
