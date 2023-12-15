@@ -28,6 +28,10 @@
 }
 
 + (void)postPasteEvent {
+    // Disable local keyboard events while pasting.
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateCombinedSessionState);
+    CGEventSourceSetLocalEventsFilterDuringSuppressionState(source, kCGEventFilterMaskPermitLocalMouseEvents | kCGEventFilterMaskPermitSystemDefinedEvents, kCGEventSuppressionStateSuppressionInterval);
+
     [self postKeyboardEvent:kCGEventFlagMaskCommand virtualKey:kVK_ANSI_V keyDown:true];
     [self postKeyboardEvent:kCGEventFlagMaskCommand virtualKey:kVK_ANSI_V keyDown:false];
 }

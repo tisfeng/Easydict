@@ -1,6 +1,6 @@
 //
 //  EZReplaceTextButton.m
-//  
+//
 //
 //  Created by tisfeng on 2023/10/13.
 //
@@ -40,7 +40,7 @@
     NSRunningApplication *app = NSWorkspace.sharedWorkspace.frontmostApplication;
     NSString *bundleID = app.bundleIdentifier;
     NSString *textLengthRange = [EZLog textLengthRange:replacementString];
-
+    
     NSDictionary *parameters = @{
         @"floating_window_type" : @(EZWindowManager.shared.floatingWindowType),
         @"app_name" : app.localizedName,
@@ -51,11 +51,8 @@
     
     EZAppleScriptManager *appleScriptManager = [EZAppleScriptManager shared];
     if ([appleScriptManager isKnownBrowser:bundleID]) {
-        [appleScriptManager replaceBrowserSelectedText:replacementString bundleID:bundleID completion:^(NSString * _Nullable result, NSError * _Nullable error) {
-            if (error) {
-                [self replaceSelectedTextByKey:replacementString];
-            }
-        }];
+        // Since browser environment is complex, use AppleScript to replace text may fail, so use key event to replace text.
+        [self replaceSelectedTextByKey:replacementString];
     } else {
         [self replaceSelectedTextByAccessibility:replacementString];
     }
@@ -87,11 +84,15 @@
     MMLogInfo(@"Use Cmd+V to replace selected text, App: %@", app.localizedName);
     
     NSString *lastText = [EZSystemUtility getLastPasteboardText];
-
-    [replacementString copyToPasteboard];    
-    [EZSystemUtility postPasteEvent];
+    [replacementString copyToPasteboard];
     
-    [lastText copyToPasteboard];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [EZSystemUtility postPasteEvent];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(EZGetClipboardTextDelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [lastText copyToPasteboard];
+        });
+    });
 }
 
 @end
