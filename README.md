@@ -543,45 +543,22 @@ Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 `eas
 
 ## 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（感谢 **[liziqiang](https://github.com/liziqiang)**）
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。
 
 ```shell
-#! /bin/zsh
-# #popclip
-# name: Easydict
-# icon: iconify:ri:translate
-checkAppRunning() {
-  result=$(ps aux | grep Easydict.app | wc -l)
-  echo $result
-}
-# Open Easydict.app, it takes about 1s
-openApp() {
-  open /Applications/Easydict.app
-}
-# Loop wait until Easydict.app is opened
-waitAppOpen() {
-  while true; do
-    result=$(checkAppRunning)
-    if [[ $result -ge 2 ]]; then
-      break
-    fi
-    sleep 0.2  # wait 0.2s at a time
-  done
-}
-# Check if Easydict.app is running
-appResult=$(checkAppRunning)
-if [[ $appResult -lt 2 ]]; then
-  openApp
-  waitAppOpen
-fi
-
-# Use URL scheme to send query text to Easydict.app
-open "easydict://query?text=$POPCLIP_TEXT"
+-- #popclip
+-- name: Easydict
+-- icon: iconify:ri:translate
+-- language: applescript
+tell application "Easydict"
+  launch
+  open location "easydict://query?text={popclip text}"
+end tell
 ```
 
 ![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
 
-> 参考：https://www.popclip.app/dev/shell-script-actions
+> 参考：https://www.popclip.app/dev/applescript-actions
 
 ## 设置
 
