@@ -541,7 +541,7 @@ If the query content xxx contains special characters, URL encoding is needed, su
 
 ## Use with PopClip
 
-You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (Thanks [liziqiang](https://github.com/liziqiang))
+You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it.
 
 ```shell
 -- #popclip
