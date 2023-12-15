@@ -285,7 +285,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     // Run this script early to avoid conflict with selected text scripts, otherwise the selected text may be empty in first time.
     [self recordSelectTextInfo];
     
-    self.isTextEditable = NO;
+    self.selectedTextEditable = NO;
         
     // Use Accessibility first
     [self getSelectedTextByAccessibility:^(NSString *_Nullable text, AXError error) {
@@ -304,7 +304,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             // Monitor CGEventTap must be required after using Accessibility successfully.
             [self monitorCGEventTap];
             
-            self.isTextEditable = [EZSystemUtility isSelectedTextEditable];
+            self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
 
             completion(text);
             return;
@@ -364,6 +364,10 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         
         completion(nil);
     }];
+}
+
+- (void)updateSelectedTextEditableState {
+    self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
 }
 
 - (BOOL)useAccessibilityForFirstTime {
