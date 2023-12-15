@@ -135,7 +135,7 @@ git update-index --skip-worktree Easydict-debug.xcconfig
 ```
 
 #### Build Environment
- 
+
  Xcode 13+, macOS Big Sur 11.3+. To avoid unnecessary problems, it is recommended to use the latest Xcode and macOS version https://github.com/tisfeng/Easydict/issues/79
 
 > [!NOTE]
@@ -554,7 +554,7 @@ tell application "Easydict"
 end tell
 ```
 
-![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
+![image-20231215193814591](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231215193814591-1702640294.png)
 
 > Refer: https://www.popclip.app/dev/applescript-actions
 

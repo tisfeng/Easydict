@@ -556,7 +556,7 @@ tell application "Easydict"
 end tell
 ```
 
-![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
+![image-20231215193536900](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231215193536900-1702640137.png)
 
 > 参考：https://www.popclip.app/dev/applescript-actions
 
