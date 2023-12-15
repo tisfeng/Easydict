@@ -91,7 +91,7 @@ static EZAppleScriptManager *_instance = nil;
                         bundleID];
     
     // runAppleScript is faster ~0.1s than runAppleScriptWithTask
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSLog(@"Safari selected text: %@", result);
         completion(result, error);
     }];
@@ -107,7 +107,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell\n",
                         bundleID];
     
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSLog(@"Chrome Browser selected text: %@", result);
         completion(result, error);
     }];
@@ -139,7 +139,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell\n",
                         bundleID];
     
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSLog(@"Chrome current tab URL: %@", result);
         completion(result);
     }];
@@ -158,7 +158,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell\n",
                         bundleID];
     
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSLog(@"Safari current tab URL: %@", result);
         completion(result);
     }];
@@ -187,7 +187,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell\n",
                         bundleID, selectedText];
     
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         // If success, result is nil.
         NSLog(@"Safari replace selected text result: %@", result);
         completion(result, error);
@@ -204,7 +204,7 @@ static EZAppleScriptManager *_instance = nil;
                         "end tell\n",
                         bundleID, selectedText];
     
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         // If success, result is true.
         NSLog(@"Chrome replace selected text result: %@", result);
         completion(result, error);
@@ -319,14 +319,14 @@ static EZAppleScriptManager *_instance = nil;
     NSDate *startTime = [NSDate date];
     
     // NSTask cost 0.18s
-    [self.scriptExecutor runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScriptWithTask:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
         NSLog(@"NSTask cost: %f seconds", elapsedTime);
         NSLog(@"--> supportCopy: %@", @([result boolValue]));
     }];
     
     // NSAppleScript cost 0.06 ~ 0.12s
-    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, NSError *_Nonnull error) {
+    [self.scriptExecutor runAppleScript:script completionHandler:^(NSString *_Nonnull result, EZError *_Nonnull error) {
         BOOL supportCopy = [result boolValue];
         
         NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:startTime];
