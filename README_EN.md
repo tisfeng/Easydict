@@ -544,42 +544,19 @@ If the query content xxx contains special characters, URL encoding is needed, su
 You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it. (Thanks [liziqiang](https://github.com/liziqiang))
 
 ```shell
-#! /bin/zsh
-# #popclip
-# name: Easydict
-# icon: iconify:ri:translate
-checkAppRunning() {
-  result=$(ps aux | grep Easydict.app | wc -l)
-  echo $result
-}
-# Open Easydict.app, it takes about 1s
-openApp() {
-  open /Applications/Easydict.app
-}
-# Loop wait until Easydict.app is opened
-waitAppOpen() {
-  while true; do
-    result=$(checkAppRunning)
-    if [[ $result -ge 2 ]]; then
-      break
-    fi
-    sleep 0.2  # wait 0.2s at a time
-  done
-}
-# Check if Easydict.app is running
-appResult=$(checkAppRunning)
-if [[ $appResult -lt 2 ]]; then
-  openApp
-  waitAppOpen
-fi
-
-# Use URL scheme to send query text to Easydict.app
-open "easydict://query?text=$POPCLIP_TEXT"
+-- #popclip
+-- name: Easydict
+-- icon: iconify:ri:translate
+-- language: applescript
+tell application "Easydict"
+  launch
+  open location "easydict://query?text={popclip text}"
+end tell
 ```
 
-![image-20231206111101898](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206111101898-1701832262.png)
+![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
 
-> Ref: https://www.popclip.app/dev/shell-script-actions
+> Refer: https://www.popclip.app/dev/applescript-actions
 
 ## Settings
 
