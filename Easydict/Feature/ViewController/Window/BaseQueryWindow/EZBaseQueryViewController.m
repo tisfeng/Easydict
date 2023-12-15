@@ -1027,9 +1027,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSArray *enabledReplaceTypes = @[
         EZActionTypeAutoSelectQuery,
         EZActionTypeShortcutQuery,
+        EZActionTypeInvokeQuery,
     ];
     if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
-        result.showReplaceButton = EZEventMonitor.shared.isTextEditable;
+        result.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable;
     } else {
         result.showReplaceButton = NO;
     }
