@@ -317,15 +317,17 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         // 部分没有音标文本
         EZLabel *phoneticLabel = nil;
-        if (obj.value.length) {
+        
+        // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x7ff85c514b40
+        NSString *phonetic = obj.value;
+        if ([phonetic isKindOfClass:NSString.class] && phonetic.length) {
             phoneticLabel = [[EZLabel alloc] init];
             [self addSubview:phoneticLabel];
             phoneticLabel.textContainer.lineFragmentPadding = 0;
             phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize];
             
             // ???: WTF, why Baidu phonetic contain '\n', e.g. ceil "siːl\n"
-            NSString *phonetic = [obj.value trim];
-            phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic];
+            phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic.trim];
             [phoneticLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(phoneticTagLabel.mas_right).offset(kHorizontalMargin_8);
                 make.centerY.equalTo(phoneticTagLabel);
