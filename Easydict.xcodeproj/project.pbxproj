@@ -2505,7 +2505,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A230E9A2358C7FBC7FB26189 /* Pods-EasydictTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;
@@ -2529,7 +2529,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 357E179B303EF855EF4561FB /* Pods-EasydictTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = $CODE_SIGN_IDENTITY;

@@ -107,6 +107,7 @@ PODS:
   - Sparkle (2.5.1)
   - SSZipArchive (2.2.3)
   - SwiftFormat/CLI (0.52.11)
+  - SwiftLint (0.54.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.2.1)
@@ -123,6 +124,7 @@ DEPENDENCIES:
   - Sparkle (~> 2.5.1)
   - SSZipArchive (~> 2.2.2)
   - SwiftFormat/CLI (~> 0.49)
+  - SwiftLint (~> 0.54.0)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -147,6 +149,7 @@ SPEC REPOS:
     - Sparkle
     - SSZipArchive
     - SwiftFormat
+    - SwiftLint
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
@@ -170,7 +173,8 @@ SPEC CHECKSUMS:
   Sparkle: ce9957501a2655dd4c8264312c6134ff478a777c
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: c04da914c803b66a64efd5a0156a0dfbf293efae
+PODFILE CHECKSUM: eb598aefb0982ca8d86c7cc0e3f3e9590f01e374
 
 COCOAPODS: 1.14.2
