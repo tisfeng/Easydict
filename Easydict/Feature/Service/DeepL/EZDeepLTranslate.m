@@ -367,9 +367,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
             return;
         }
         
-        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-        NSString *errorMessage = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
-        EZError *ezError = [EZError errorWithNSError:error errorDataMessage:errorMessage];
+        EZError *ezError = [EZError errorWithNSError:error];
         
         completion(self.result, ezError);
     }];

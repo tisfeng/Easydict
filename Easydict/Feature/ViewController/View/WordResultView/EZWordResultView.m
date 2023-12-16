@@ -82,7 +82,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     EZError *error = result.error;
     NSString *errorDescription = error.localizedDescription;
     NSString *errorDataMessage = error.errorDataMessage;
-    if (errorDataMessage) {
+    if (errorDataMessage.length) {
         errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", errorDataMessage];
         if (!errorDescription && !result.hasTranslatedResult) {
             errorDescription = errorDataMessage;

@@ -54,7 +54,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 + (instancetype)errorWithType:(EZErrorType)type
                   description:(nullable NSString *)description
              errorDataMessage:(nullable NSString *)errorDataMessage
-                      request:(id)request {
+                      request:(nullable id)request {
     NSString *errorString = nil;
     switch (type) {
         case EZErrorTypeNone:
@@ -120,7 +120,16 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
 #pragma mark - Wrap NSError
 
 + (nullable EZError *)errorWithNSError:(nullable NSError *)error {
-    return [self errorWithNSError:error errorDataMessage:nil];
+    NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+    NSString *errorDataMessage = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+    return [self errorWithNSError:error errorDataMessage:errorDataMessage];
+}
+
++ (nullable EZError *)errorWithNSError:(nullable NSError *)error
+                     errorResponseData:(nullable NSData *)errorResponseData {
+    NSString *errorDataMessage = [[NSString alloc] initWithData:errorResponseData encoding:NSUTF8StringEncoding];
+    EZError *ezError = [self errorWithNSError:error errorDataMessage:errorDataMessage];
+    return ezError;
 }
 
 + (nullable EZError *)errorWithNSError:(nullable NSError *)error
