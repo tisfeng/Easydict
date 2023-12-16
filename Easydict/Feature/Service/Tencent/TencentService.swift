@@ -36,27 +36,27 @@ public final class TencentService: QueryService {
         NSLog("Tencent Translate currently does not support OCR")
         throw QueryServiceError.notSupported
     }
-    
-    public override func needPrivateAPIKey() -> Bool {
+
+    override public func needPrivateAPIKey() -> Bool {
         true
     }
-    
+
     override public func hasPrivateAPIKey() -> Bool {
         if secretId == defaultSecretId, secretKey == defaultSecretKey {
             return false
         }
         return true
     }
-    
-    public override func totalFreeQueryCharacterCount() -> Int {
+
+    override public func totalFreeQueryCharacterCount() -> Int {
         500 * 10000
     }
 
     /**
      For convenience, we provide a default key for users to try out the service.
-     
+
      Please do not abuse it, otherwise it may be revoked.
-     
+
      For better experience, please register your own key at https://cloud.tencent.com
      */
     private let defaultSecretId = "7ZdGkHHIx4Nozm4RHib5Jjye5yCefYoxxfSWzMRbKRrHrnSEJaqpypL1yRMoN0E5".decryptAES()
@@ -82,12 +82,12 @@ public final class TencentService: QueryService {
         }
     }
 
-    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
-            let error = EZError.init(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
+            let error = EZError(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
             completion(result, error)
             return
         }
@@ -96,7 +96,7 @@ public final class TencentService: QueryService {
             "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
-            "ProjectId": 0
+            "ProjectId": 0,
         ]
 
         let endpoint = "https://tmt.tencentcloudapi.com"
@@ -125,7 +125,7 @@ public final class TencentService: QueryService {
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Tencent lookup error \(error)")
-                    let ezError = EZError.init(nsError: error)
+                    let ezError = EZError(nsError: error)
 
                     if let data = response.data {
                         do {
