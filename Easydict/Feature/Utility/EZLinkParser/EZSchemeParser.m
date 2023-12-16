@@ -209,6 +209,7 @@
         EZYoudaoDictionaryKey,
         
         EZDeepLAuthKey,
+        EZDeepLEndPointKey,
         EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,

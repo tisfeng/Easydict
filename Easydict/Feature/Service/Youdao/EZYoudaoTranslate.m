@@ -884,8 +884,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     };
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-    manager.requestSerializer = requestSerializer;
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     AFHTTPResponseSerializer *serializer = [AFHTTPResponseSerializer serializer];
     // default is AFJSONResponseSerializer
     manager.responseSerializer = serializer;
