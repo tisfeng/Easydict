@@ -76,7 +76,7 @@ struct TencentTranslateType: Equatable {
     }
 }
 
-extension Array where Element == Language {
+extension [Language] {
     // Contains Chinese language
     func containsChinese() -> Bool {
         contains { $0.isKindOfChinese() }

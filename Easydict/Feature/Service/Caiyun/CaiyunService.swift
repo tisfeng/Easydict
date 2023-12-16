@@ -53,7 +53,7 @@ public final class CaiyunService: QueryService {
     }
 
     override public func autoConvertTraditionalChinese() -> Bool {
-        return true
+        true
     }
 
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
@@ -87,7 +87,6 @@ public final class CaiyunService: QueryService {
             .validate()
             .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
                 guard let self else { return }
-                let result = self.result
                 switch response.result {
                 case let .success(value):
                     result.from = from
