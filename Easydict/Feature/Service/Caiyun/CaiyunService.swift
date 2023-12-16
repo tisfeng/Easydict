@@ -95,11 +95,8 @@ public final class CaiyunService: QueryService {
                     result.translatedResults = value.target
                     completion(result, nil)
                 case let .failure(error):
-                    let ezError = EZError(nsError: error)
-                    if let data = response.data {
-                        ezError?.errorDataMessage = String(data: data, encoding: .utf8)
-                    }
                     NSLog("Caiyun lookup error \(error)")
+                    let ezError = EZError(nsError: error, errorResponseData: response.data)
                     completion(result, ezError)
                 }
             }
