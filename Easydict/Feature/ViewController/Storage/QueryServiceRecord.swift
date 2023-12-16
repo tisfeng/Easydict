@@ -13,11 +13,9 @@ public class QueryServiceRecord: NSObject {
     @objc var serviceType: ServiceType = .apple
     @objc var queryCount = 0
     @objc var queryCharacterCount = 0
-    
-    @objc public override init() {
-        
-    }
-    
+
+    @objc override public init() {}
+
     @objc init(serviceType: ServiceType = .apple, queryCount: Int = 0, queryCharacterCount: Int = 0) {
         self.serviceType = serviceType
         self.queryCount = queryCount
