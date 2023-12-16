@@ -265,7 +265,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
     NSString *audioURL = [NSString stringWithFormat:@"%@/"
                           @"translate_tts?ie=UTF-8&q=%@&tl=%@&total=1&idx=0&"
                           @"textlen=%zd&tk=%@&client=webapp&prev=input",
-                          kGoogleTranslateURL, text.mm_urlencode, language,
+                          kGoogleTranslateURL, text.encode, language,
                           text.length, sign];
     return audioURL;
 }

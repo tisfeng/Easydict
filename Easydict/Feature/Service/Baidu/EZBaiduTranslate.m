@@ -324,7 +324,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
      */
     
     text = [text trimToMaxLength:1000];
-    text = [text mm_urlencode]; // text.mm_urlencode
+    text = [text encode]; // text.mm_urlencode
     
     // Refer to Baidu web.
     NSInteger speed = [ttsLangCode isEqualToString:@"zh"] ? 5 : 3;
@@ -343,7 +343,7 @@ static NSString *const kBaiduTranslateURL = @"https://fanyi.baidu.com";
 //     */
 //
 //    text = [text trimToMaxLength:1000];
-//    text = [text mm_urlencode]; // text.mm_urlencode
+//    text = [text encode]; // text.mm_urlencode
 //
 //    NSString *ttsLangCode = [self getTTSLanguageCode:language];
 //

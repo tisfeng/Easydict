@@ -326,7 +326,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
     NSString *language = [self getTTSLanguageCode:from];
     
     //    text = [text trimToMaxLength:1000];
-    text = [text mm_urlencode]; // text.mm_urlencode
+    text = [text encode]; // text.mm_urlencode
     
     NSString *audioURL = [NSString stringWithFormat:@"%@/dictvoice?audio=%@&le=%@", kYoudaoDictURL, text, language];
     //    audioURL = [NSString stringWithFormat:@"https://fanyi.sogou.com/reventondc/synthesis?text=%@&speed=1&lang=%@&from=translateweb&speaker=6", text, language];
