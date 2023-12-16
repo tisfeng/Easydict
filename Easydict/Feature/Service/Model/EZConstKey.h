@@ -28,7 +28,7 @@ static NSString *const EZOpenAIModelKey = @"EZOpenAIModelKey";
 
 
 static NSString *const EZDeepLAuthKey = @"EZDeepLAuthKey";
-static NSString *const EZDeepLEndPointKey = @"EZDeepLEndPointKey";
+static NSString *const EZDeepLTranslateEndPointKey = @"EZDeepLTranslateEndPointKey";
 
 static NSString *const EZBingCookieKey = @"EZBingCookieKey";
 static NSString *const EZNiuTransAPIKey = @"EZNiuTransAPIKey";

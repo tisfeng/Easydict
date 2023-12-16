@@ -18,7 +18,7 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
 @property (nonatomic, strong) EZWebViewTranslator *webViewTranslator;
 
 @property (nonatomic, copy) NSString *authKey;
-@property (nonatomic, copy) NSString *deepLEndPointKey;
+@property (nonatomic, copy) NSString *deepLTranslateEndPointKey;
 @property (nonatomic, assign) EZDeepLTranslationAPI apiType;
 
 @end
@@ -54,10 +54,10 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     return type;
 }
 
-- (NSString *)deepLEndPointKey {
-    // easydict://writeKeyValue?EZDeepLEndPointKey=xxx
-    NSString *authKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZDeepLEndPointKey] ?: @"";
-    return authKey;
+- (NSString *)deepLTranslateEndPointKey {
+    // easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
+    NSString *endPointURL = [[NSUserDefaults standardUserDefaults] stringForKey:EZDeepLTranslateEndPointKey] ?: @"";
+    return endPointURL;
 }
 
 #pragma mark - 重写父类方法
@@ -326,14 +326,16 @@ static NSString *kDeepLTranslateURL = @"https://www.deepl.com/translator";
     NSString *host = isFreeKey ? @"https://api-free.deepl.com": @"https://api.deepl.com";
     NSString *url = [NSString stringWithFormat:@"%@/v2/translate", host];
     
+    if (self.deepLTranslateEndPointKey.length) {
+        url = self.deepLTranslateEndPointKey;
+    }
+    
     NSDictionary *params = @{
         @"text": text,
         @"source_lang": souceLangCode,
         @"target_lang": targetLangCode
     };
-    
-//    [self translateText];
-            
+                
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.session.configuration.timeoutIntervalForRequest = EZNetWorkTimeoutInterval;
     

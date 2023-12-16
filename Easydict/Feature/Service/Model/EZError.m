@@ -129,7 +129,9 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
         return (EZError *)error;
     }
     
-    EZError *ezError = [self errorWithType:EZErrorTypeWarppedNSError description:error.localizedDescription errorDataMessage:errorDataMessage];
+    EZError *ezError = [self errorWithType:EZErrorTypeWarppedNSError 
+                               description:error.localizedDescription
+                          errorDataMessage:errorDataMessage];
     return ezError;
 }
 
