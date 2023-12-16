@@ -2030,6 +2030,7 @@
 			buildConfigurationList = C99EEB2C2385796900FEE666 /* Build configuration list for PBXNativeTarget "Easydict" */;
 			buildPhases = (
 				21D768ECC6D11E109E6EB73A /* [CP] Check Pods Manifest.lock */,
+				03B04B582B2D4B8E00E30823 /* ShellScript */,
 				C99EEB142385796700FEE666 /* Sources */,
 				C99EEB152385796700FEE666 /* Frameworks */,
 				C99EEB162385796700FEE666 /* Resources */,
@@ -2151,6 +2152,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		03B04B582B2D4B8E00E30823 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"$SRCROOT/$TARGET_NAME\" --swiftversion $SWIFT_VERSION\n";
+		};
 		124D690EE7236D6430CF945E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2643,6 +2662,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2702,6 +2722,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
