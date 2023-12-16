@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension Array where Element == String {
+extension [String] {
     func toTraditionalChineseTexts() -> [String] {
-        return map { text in
+        map { text in
             let nsStringText = text as NSString
             return nsStringText.toTraditionalChineseText()
         }
@@ -20,7 +20,7 @@ extension Array where Element == String {
 @objc extension NSArray {
     /// Trim to max count
     func trim(toMaxCount maxCount: Int) -> NSArray {
-        guard maxCount > 0 && maxCount < count else { return self }
+        guard maxCount > 0, maxCount < count else { return self }
         let array = subarray(with: NSRange(location: 0, length: maxCount)) as NSArray
         return array
     }
