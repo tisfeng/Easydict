@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯翻译](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -74,6 +74,7 @@
     - [自定义设置](#自定义设置)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
+    - [自定义 DeepL 接口](#自定义-deepl-接口)
     - [配置 API 调用方式](#配置-api-调用方式)
   - [腾讯翻译](#腾讯翻译)
   - [Bing 翻译](#bing-翻译)
@@ -415,6 +416,17 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 ```
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
+
+#### 自定义 DeepL 接口
+
+```
+easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
+```
+借助下面开源项目，可以在自己的服务器或者 Cloudflare 上部署支持 DeepL 翻译的接口服务：
+
+- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
+- [DeepLX](https://github.com/OwO-Network/DeepLX)
+
 
 #### 配置 API 调用方式
 

@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent Translate](https://fanyi.qq.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -73,6 +73,7 @@
     - [Customizations](#customizations)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
+    - [Configure API endpoint](#configure-api-endpoint)
     - [Configure API call method](#configure-api-call-method)
   - [腾讯翻译](#腾讯翻译)
   - [Tencent Translate](#tencent-translate)
@@ -415,6 +416,17 @@ Enter the following code in the input box, xxx is your DeepL AuthKey, and then E
 ```
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
+
+#### Configure API endpoint
+
+```
+easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
+```
+
+With the help of the following open source projects, you can deploy a DeepL translation interface service that supports DeepL translation on your own server or Cloudflare:
+
+- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
+- [DeepLX](https://github.com/OwO-Network/DeepLX)
 
 #### Configure API call method
 
