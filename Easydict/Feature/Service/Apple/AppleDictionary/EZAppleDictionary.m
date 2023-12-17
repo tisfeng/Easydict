@@ -551,10 +551,9 @@ static EZAppleDictionary *_instance;
 }
 
 - (BOOL)isValidHeadword:(NSString *)headword queryWord:(NSString *)word {
-    NSStringCompareOptions options = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
-    // 将文本和子字符串转换为不区分大小写和重音的标准化字符串
-    NSString *normalizedWord = [word stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
-    NSString *normalizedHeadword = [headword stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+    // 转换为不区分大小写和重音的标准化字符串
+    NSString *normalizedWord = [word foldedString];
+    NSString *normalizedHeadword = [headword foldedString];
         
     /**
      hoped --> hope

@@ -165,6 +165,11 @@
 
 #pragma mark -
 
-
+- (NSString *)foldedString {
+    // 将文本转换为不区分大小写和重音的标准化字符串，gēnjù --> genju
+    NSStringCompareOptions options = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+    NSString *foldedString = [self stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+    return foldedString;
+}
 
 @end
