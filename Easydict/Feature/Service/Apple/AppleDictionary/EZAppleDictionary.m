@@ -243,8 +243,8 @@ static EZAppleDictionary *_instance;
         NSString *headword = entry.headword;
         
         // LOG --> log,  根据 genju--> 根据  gēnjù
-        BOOL isTheSameHeadword = [self containsSubstring:word inString:headword];
-        if (html.length && isTheSameHeadword) {
+        BOOL isValid = [self isValidHeadword:headword queryWord:word];
+        if (html.length && isValid) {
             [entryHTMLs addObject:html];
         }
     }
@@ -550,31 +550,32 @@ static EZAppleDictionary *_instance;
     }
 }
 
-- (BOOL)containsSubstring:(NSString *)substring inString:(NSString *)string {
+- (BOOL)isValidHeadword:(NSString *)headword queryWord:(NSString *)word {
     NSStringCompareOptions options = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
-    
     // 将文本和子字符串转换为不区分大小写和重音的标准化字符串
-    NSString *normalizedString = [string stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
-    NSString *normalizedSubstring = [substring stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
-    
-    BOOL isContained = [normalizedString containsString:normalizedSubstring];
-    //    isContain = [normalizedString isEqualToString:normalizedSubstring];
-    
+    NSString *normalizedWord = [word stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+    NSString *normalizedHeadword = [headword stringByFoldingWithOptions:options locale:[NSLocale currentLocale]];
+        
+    /**
+     hoped --> hope
+     knives --> knives, knife
+     
+     Fix: https://github.com/tisfeng/Easydict/issues/252
+     */
+    BOOL isValid = YES;
+        
     /**
      Since some user dict word result is too redundant, we need to remove some useless words.
      
      Such as 简明英汉词典, when look up "log", the results are: -log, log-, log, we should filter the first two.
      */
     
-    if (isContained) {
-        // remove substring
-        NSString *remainedText = [normalizedString stringByReplacingOccurrencesOfString:normalizedSubstring withString:@""];
-        if ([remainedText isEqualToString:@"-"]) {
-            isContained = NO;
-        }
+    NSString *remainedText = [normalizedHeadword stringByReplacingOccurrencesOfString:normalizedWord withString:@""];
+    if ([remainedText isEqualToString:@"-"]) {
+        isValid = NO;
     }
     
-    return isContained;
+    return isValid;
 }
 
 @end
