@@ -23,7 +23,7 @@ target 'Easydict' do
   pod 'AppCenter', '~> 5.0.4'
   
   # Swift format
-  pod 'SwiftFormat/CLI', '~> 0.49'
+  pod 'SwiftFormat/CLI', '~> 0.52.11'
   
 end
 
