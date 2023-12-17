@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent Translate](https://fanyi.qq.com/), [Bing Translate](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,7 +41,7 @@
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
 - [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Google, Bing, Baidu, Niutrans, Lingocloud and Volcano Translate.
+- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Google, Tencent, Bing, Baidu, Niutrans, Lingocloud and Volcano Translate.
 - [x] Support for 48 languages.
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
@@ -74,6 +74,8 @@
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API call method](#configure-api-call-method)
+  - [腾讯翻译](#腾讯翻译)
+  - [Tencent Translate](#tencent-translate)
   - [Bing Translate](#bing-translate)
   - [Niutrans](#niutrans)
   - [Lingocloud](#lingocloud)
@@ -434,6 +436,34 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
 
+### 腾讯翻译
+
+[腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+
+建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
+
+```
+// xxx 腾讯翻译的 SecretId
+easydict://writeKeyValue?EZTencentSecretId=xxx
+
+// xxx 腾讯翻译的 SecretKey
+easydict://writeKeyValue?EZTencentSecretKey=xxx
+```
+
+### Tencent Translate
+
+[Tencent Translate](https://fanyi.qq.com/) requires an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+
+It is recommended to use your own APIKey, each registered user of Tencent Translate is given 5 million characters of traffic per month, which is enough for daily use.
+
+```
+// xxx is the SecretId of Tencent Translate
+easydict://writeKeyValue?EZTencentSecretId=xxx
+
+// xxx is the SecretKey of Tencent Translate
+easydict://writeKeyValue?EZTencentSecretKey=xxx
+```
+
 ### Bing Translate
 
 At present, Bing Translator uses a web interface. When encountering a 429 error due to triggering rate limits, you can extend the usage by manually setting request cookies, aside from switching proxies. The exact duration of the time extension is currently unclear.
@@ -455,9 +485,9 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 ### Niutrans
 
-[Niutrans](https://niutrans.com/) requires an APIKey, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+[Niutrans](https://niutrans.com/) requires an API key, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
 
-It is recommended to use your own APIKey, each registered user of Niutrans is given 200,000 characters of traffic per day, which is enough for daily use.
+It is recommended to use your own API key, each registered user of Niutrans is given 200,000 characters of traffic per day, which is enough for daily use.
 
 ```
 // xxx is the APIKey of Niutrans
