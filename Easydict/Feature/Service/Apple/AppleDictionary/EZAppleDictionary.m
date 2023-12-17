@@ -9,6 +9,7 @@
 #import "EZAppleDictionary.h"
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
+#import "NSString+EZUtils.h"
 
 @implementation EZAppleDictionary
 
@@ -57,6 +58,15 @@ static EZAppleDictionary *_instance;
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
+    EZError *noResultError = [EZError errorWithType:EZErrorTypeNoResultsFound description:nil];
+
+    // Only query word or sentence in dictionary.
+    EZQueryTextType queryType = [text queryTypeWithLanguage:from maxWordCount:1];
+    if (queryType == EZQueryTextTypeTranslation) {
+        completion(self.result, noResultError);
+        return;
+    }
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Note: this method may cost long time(>1.0s), if the html is very large.
         
@@ -68,7 +78,7 @@ static EZAppleDictionary *_instance;
         
         EZError *error = nil;
         if (htmlString.length == 0) {
-            error = [EZError errorWithType:EZErrorTypeNoResultsFound description:nil];
+            error = noResultError;
         }
         
         completion(self.result, error);
@@ -95,7 +105,9 @@ static EZAppleDictionary *_instance;
 - (BOOL)queryDictionaryForText:(NSString *)text language:(EZLanguage)language {
     MMOrderedDictionary *languageDict = [TTTDictionary languageToDictionaryNameMap];
     NSString *dictName = [languageDict objectForKey:language];
-    if ([self queryEntryHTMLsOfWord:text inDictionaryName:dictName].count > 0) {
+    
+    NSArray *entries = [self queryEntryHTMLsOfWord:text inDictionaryName:dictName language:language];
+    if (entries.count > 0) {
         return YES;
     }
     return NO;
@@ -127,6 +139,8 @@ static EZAppleDictionary *_instance;
     //    NSLog(@"query dictionaries: %@", [dictionaries debugDescription]);
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    
+    EZLanguage fromLanguage = languages.count ? languages.firstObject : nil;
     
     NSString *baseHtmlPath = [[NSBundle mainBundle] pathForResource:@"apple-dictionary" ofType:@"html"];
     NSString *baseHtmlString = [NSString stringWithContentsOfFile:baseHtmlPath encoding:NSUTF8StringEncoding error:nil];
@@ -165,7 +179,8 @@ static EZAppleDictionary *_instance;
         
         //  ~/Library/Dictionaries/Apple.dictionary/Contents/
         NSURL *contentsURL = [dictionary.dictionaryURL URLByAppendingPathComponent:@"Contents"];
-        NSArray *entryHTMLs = [self queryEntryHTMLsOfWord:word inDictionary:dictionary];
+        
+        NSArray *entryHTMLs = [self queryEntryHTMLsOfWord:word inDictionary:dictionary language:fromLanguage];
         
         for (NSString *html in entryHTMLs) {
             NSString *absolutePathHTML = [self replacedAudioPathOfHTML:html withBasePath:contentsURL.path];
@@ -227,12 +242,16 @@ static EZAppleDictionary *_instance;
     return htmlString;
 }
 
-- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word inDictionaryName:(NSString *)name {
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word 
+                              inDictionaryName:(NSString *)name
+                                      language:(nullable EZLanguage)language {
     TTTDictionary *dictionary = [TTTDictionary dictionaryNamed:name];
-    return [self queryEntryHTMLsOfWord:word inDictionary:dictionary];
+    return [self queryEntryHTMLsOfWord:word inDictionary:dictionary language:language];
 }
 
-- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word inDictionary:(TTTDictionary *)dictionary {
+- (NSArray<NSString *> *)queryEntryHTMLsOfWord:(NSString *)word 
+                                  inDictionary:(TTTDictionary *)dictionary
+                                      language:(nullable EZLanguage)language {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSMutableArray *entryHTMLs = [NSMutableArray array];
     
@@ -243,7 +262,7 @@ static EZAppleDictionary *_instance;
         NSString *headword = entry.headword;
         
         // LOG --> log,  根据 genju--> 根据  gēnjù
-        BOOL isValid = [self isValidHeadword:headword queryWord:word];
+        BOOL isValid = [self isValidHeadword:headword queryWord:word language:language];
         if (html.length && isValid) {
             [entryHTMLs addObject:html];
         }
@@ -550,7 +569,9 @@ static EZAppleDictionary *_instance;
     }
 }
 
-- (BOOL)isValidHeadword:(NSString *)headword queryWord:(NSString *)word {
+- (BOOL)isValidHeadword:(NSString *)headword 
+              queryWord:(NSString *)word
+               language:(nullable EZLanguage)language {
     // 转换为不区分大小写和重音的标准化字符串
     NSString *normalizedWord = [word foldedString];
     NSString *normalizedHeadword = [headword foldedString];
@@ -561,7 +582,6 @@ static EZAppleDictionary *_instance;
      
      Fix: https://github.com/tisfeng/Easydict/issues/252
      */
-    BOOL isValid = YES;
         
     /**
      Since some user dict word result is too redundant, we need to remove some useless words.
@@ -571,10 +591,57 @@ static EZAppleDictionary *_instance;
     
     NSString *remainedText = [normalizedHeadword stringByReplacingOccurrencesOfString:normalizedWord withString:@""];
     if ([remainedText isEqualToString:@"-"]) {
-        isValid = NO;
+        return NO;
     }
     
-    return isValid;
+    /**
+     Since the dictionary API tries to look up long sentences in words, sometimes the results returned are not what we want, so we need to filter them.
+     
+     浮云终日行
+     Ukraine may get another Patriot battery.
+     Four score and seven years ago
+     */
+        
+    // If text is Chinese
+    if ([EZLanguageManager.shared isChineseLanguage:language]) {
+        
+        /**
+         開 --> 开
+         門 --> 门 mén
+         開門 --> nil
+         開始 --> 開始 kāishǐ
+         国色天香 --> 国色天香  guósè-tiānxiāng, 国色天香  guó sè tiān xiāng, 天香国色  tiān xiāng guó sè
+         浮云终日行 --> 浮  fú  xxx
+         */
+        
+        if (word.length == 1) {
+            return YES;
+        }
+        
+        BOOL hasWordSubstring = [normalizedHeadword containsString:normalizedWord];
+        BOOL hasSameWordParts = [normalizedWord wordsInText].count == [normalizedHeadword wordsInText].count;
+        if (hasWordSubstring || hasSameWordParts) {
+            return YES;
+        }
+        
+        return NO;
+    }
+    
+    // If text is not Chinese
+    /**
+     make up
+     made up --> made-up ?
+     */
+    BOOL isQueryDictionary = [word shouldQueryDictionaryWithLanguage:language maxWordCount:1];
+    if (isQueryDictionary) {
+        return YES;
+    } else {
+        if ([normalizedHeadword containsString:normalizedWord]) {
+            return YES;
+        }
+    }
+        
+    return NO;
 }
 
 @end
