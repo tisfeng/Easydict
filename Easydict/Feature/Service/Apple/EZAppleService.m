@@ -505,10 +505,19 @@ static EZAppleService *_instance;
     
     // TODO: Maybe we can use this way to detect other language.
     
-    NSArray *needCorrectedLanguages = @[
+    NSMutableArray *needCorrectedLanguages = @[
         EZLanguageEnglish, // si
-        EZLanguageSimplifiedChinese, // 浦
-    ];
+    ].mutableCopy;
+    
+    /**
+     Fix: cuda was detectde as SimplifiedChinese, --> 粗大 cuda
+     
+     Apple spell check 'cuda' as English, but sometimes Spanish 🥲
+     */
+    if (![text isEnglishPhrase]) {
+        // 浦 was detected as Japanese, we need to correct it.
+        [needCorrectedLanguages addObject:EZLanguageSimplifiedChinese];
+    }
     
     BOOL isWordLength = text.length <= EZEnglishWordMaxLength;
     
