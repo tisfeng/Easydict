@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯翻译](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，百度，小牛，彩云和火山翻译。
+- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，腾讯，百度，小牛，彩云和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -75,6 +75,7 @@
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [配置 API 调用方式](#配置-api-调用方式)
+  - [腾讯翻译](#腾讯翻译)
   - [Bing 翻译](#bing-翻译)
   - [小牛翻译](#小牛翻译)
   - [彩云小译](#彩云小译)
@@ -435,6 +436,20 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
 
+### 腾讯翻译
+
+[腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+
+建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
+
+```
+// xxx 腾讯翻译的 SecretId
+easydict://writeKeyValue?EZTencentSecretId=xxx
+
+// xxx 腾讯翻译的 SecretKey
+easydict://writeKeyValue?EZTencentSecretKey=xxx
+```
+
 ### Bing 翻译
 
 目前 Bing 翻译使用的是网页接口，当触发频率限制 429 报错时，除了切换代理，还可以通过手动设置请求 cookie 来续命，具体续命多久暂时不清楚。
@@ -456,9 +471,9 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 ### 小牛翻译
 
-[小牛翻译](https://niutrans.com/) 需要 APIKey，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+[小牛翻译](https://niutrans.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
 
-建议使用自己的 APIKey，每个注册用户小牛翻译每日赠送 20 万字符流量，足以日常使用了。
+建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量，足以日常使用了。
 
 ```
 // xxx 小牛翻译的 APIKey
