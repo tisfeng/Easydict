@@ -379,7 +379,7 @@ outer:
                     EZWordPhonetic *phonetic = [EZWordPhonetic new];
                     phonetic.word = word;
                     phonetic.language = EZLanguageEnglish;
-                    phonetic.name = [name isEqualToString:@"US"] ? @"美" : @"英";
+                    phonetic.name = [name isEqualToString:@"US"] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"uk_phonetic", nil);
                     phonetic.value = fragments.firstObject[@"text"];
                     phonetic.speakURL = [name isEqualToString:@"US"] ? usAudioUrl : [usAudioUrl stringByReplacingOccurrencesOfString:@"tom" withString:@"george"];
                     phonetic.accent = name;
