@@ -156,8 +156,6 @@ static NSDictionary *const kQuotesDict = @{
     return isList;
 }
 
-#pragma mark -
-
 #pragma mark - Check if text is a word, or phrase
 
 - (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount {
