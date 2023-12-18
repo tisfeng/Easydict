@@ -585,7 +585,7 @@ If the query content xxx contains special characters, URL encoding is needed, su
 
 You need to install [PopClip](https://pilotmoon.com/popclip/) first, then select the following code block, `PopClip` will show "Install Extension Easydict", just click it.
 
-```shell
+```applescript
 -- #popclip
 -- name: Easydict
 -- icon: iconify:ri:translate
