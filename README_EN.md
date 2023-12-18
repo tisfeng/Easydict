@@ -419,6 +419,12 @@ easydict://writeKeyValue?EZDeepLAuthKey=xxx
 
 #### Configure API endpoint
 
+If you don't have your own AuthKey and need to use DeepL translation a lot, you can consider deploying your own interface service that supports DeepL, or using a third-party service that supports DeepL.
+
+In this case, you need to set a custom DeepL interface address, where the value of EZDeepLTranslateEndPointKey should be the complete request URL, for example, the DeepL official interface is https://api-free.deepl.com/v2/translate. If the custom interface requires AuthKey, the configuration method is the same as before, and the interface parameters are consistent with the DeepL official.
+
+The way to customize the DeepL interface address is equivalent to the DeepL official AuthKey API form in the Easydict program.
+
 ```
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
