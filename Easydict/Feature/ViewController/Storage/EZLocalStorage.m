@@ -201,7 +201,7 @@ static EZLocalStorage *_instance;
     /**
      例如腾讯翻译每月有500万免费字符，假如当前有1000个用户，则每人可以使用字符数为：500万/1000 = 5千
      */
-    CGFloat freeCount = [service totalFreeQueryCharacterCount] / kTotalUserCount;
+    CGFloat freeCount = [service totalFreeQueryCharacterCount] * 0.9 / kTotalUserCount;
     return record.queryCharacterCount < freeCount;
 }
 
