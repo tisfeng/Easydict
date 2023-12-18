@@ -758,7 +758,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSLog(@"tableView for row: %ld", row);
+//    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
