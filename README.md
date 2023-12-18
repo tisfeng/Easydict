@@ -74,7 +74,7 @@
     - [自定义设置](#自定义设置)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
-    - [自定义 DeepL 接口](#自定义-deepl-接口)
+    - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
     - [配置 API 调用方式](#配置-api-调用方式)
   - [腾讯翻译](#腾讯翻译)
   - [Bing 翻译](#bing-翻译)
@@ -417,7 +417,13 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
 
-#### 自定义 DeepL 接口
+#### 自定义 DeepL 接口地址
+
+如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
+
+这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate。如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
+
+自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
 
 ```
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
