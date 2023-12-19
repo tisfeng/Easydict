@@ -483,13 +483,13 @@
     [self.contentView addSubview:fontSizeLabel];
     self.fontSizeLabel = fontSizeLabel;
     
-    NSInteger fontIndex = [self.config.fontSizes indexOfObject:@(self.config.currentFontSizeRatio)];
+    NSInteger fontIndex = [self.config.fontSizes indexOfObject:@(self.config.fontSizeRatio)];
     ChangeFontSizeView *changeFontSizeView = [[ChangeFontSizeView alloc]initWithFontSizes:self.config.fontSizes initialIndex:fontIndex];
     
     mm_weakify(self);
     changeFontSizeView.didSelectFontSizeRatio = ^(CGFloat ratio) {
         mm_strongify(self);
-        self.config.currentFontSizeRatio = ratio;
+        self.config.fontSizeRatio = ratio;
     };
     
     [self.contentView addSubview:changeFontSizeView];

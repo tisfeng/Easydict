@@ -240,7 +240,7 @@
     EZServiceType serviceType = result.serviceType;
     self.serviceIcon.image = [NSImage imageNamed:serviceType];
 
-    self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13 * EZConfiguration.shared.currentFontSizeRatio]];
+    self.serviceNameLabel.attributedStringValue = [NSAttributedString mm_attributedStringWithString:result.service.name font:[NSFont systemFontOfSize:13 * EZConfiguration.shared.fontSizeRatio]];
     
     [self.wordResultView refreshWithResult:result];
         

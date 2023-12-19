@@ -64,7 +64,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL isRecordingSelectTextShortcutKey;
 
 @property (nonatomic, copy) NSArray <NSNumber *>*fontSizes;
-@property (nonatomic, assign) CGFloat currentFontSizeRatio;
+@property (nonatomic, assign) CGFloat fontSizeRatio;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;
