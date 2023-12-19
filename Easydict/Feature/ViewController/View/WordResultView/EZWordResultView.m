@@ -492,7 +492,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         }
         
         EZLabel *meanLabel = [[EZLabel alloc] init];
-        meanLabel.font = typeTextFont;
+        meanLabel.font = [NSFont systemFontOfSize:14 * self.fontSizeRatio];
         [self addSubview:meanLabel];
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
