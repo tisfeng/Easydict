@@ -952,6 +952,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         self.dismissPopButtonBlock();
     }
     self.isPopButtonVisible = NO;
+    
+    [self stopCGEventTap];
 }
 
 
