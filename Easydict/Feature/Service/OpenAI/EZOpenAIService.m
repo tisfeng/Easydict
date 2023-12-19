@@ -469,7 +469,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    //    NSLog(@"jsonDataString: %@", jsonDataString);
+//        NSLog(@"jsonDataString: %@", jsonDataString);
     
     // split string to array
     NSString *dataKey = @"data:";
@@ -513,13 +513,40 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 }
             }
             
+            /**
+             gemini-pro
+             
+             {
+               "choices" : [
+                 {
+                   "delta" : {
+                     "content" : "乌克兰可能再获一套爱国者反导系统。"
+                   },
+                   "finish_reason" : "stop"
+                 }
+               ],
+               "created" : 1702957216,
+               "id" : "chatcmpl-0ddd85aae7fe49af9444ced85875decf",
+               "model" : "gemini",
+               "object" : "chat.completion.chunk"
+             }
+             */
+            
+            // TODO: We need to optimize this code.
             if (json[@"choices"]) {
                 NSArray *choices = json[@"choices"];
                 if (choices.count == 0) {
                     continue;
                 }
                 NSDictionary *choice = choices[0];
-                if (choice[@"delta"]) {
+                NSDictionary *delta = choice[@"delta"];
+                if (delta) {
+                    if (delta[@"content"]) {
+                        NSString *content = delta[@"content"];
+//                        NSLog(@"content: %@", content);
+                        [mutableString appendString:content];
+                    }
+                    
                     // finish_reason is NSNull if not stop
                     NSString *finishReason = choice[@"finish_reason"];
                     if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
@@ -528,12 +555,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                             *isFinished = YES;
                         }
                         break;
-                    }
-                    
-                    NSDictionary *delta = choice[@"delta"];
-                    if (delta[@"content"]) {
-                        NSString *content = delta[@"content"];
-                        [mutableString appendString:content];
                     }
                 }
             }
