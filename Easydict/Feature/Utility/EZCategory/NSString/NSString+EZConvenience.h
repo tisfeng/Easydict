@@ -34,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)encode;
 - (NSString *)decode;
 
+/// Only encode if text has not been encoded.
+- (NSString *)encodeSafely;
+
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString;
 
