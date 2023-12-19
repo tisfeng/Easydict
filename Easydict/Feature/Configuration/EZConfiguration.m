@@ -123,8 +123,8 @@ static EZConfiguration *_instance;
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
     self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
     
-    self.fontSizes = @[@(0.75), @(1), @(1.25), @(1.5), @(1.75), @(2)];
-    [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: self.fontSizes[1]}];
+    self.fontSizes = @[@(1), @(1.1), @(1.2), @(1.3), @(1.4)];
+    [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: self.fontSizes.firstObject}];
     
     self.currentFontSizeRatio = [[NSUserDefaults standardUserDefaults]floatForKey:kTranslationControllerFontKey];
 }
