@@ -957,6 +957,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSArray *showingMeans = [obj.means trimToMaxCount:EZMaxFiveWordSynonymCount];
         [showingMeans enumerateObjectsUsingBlock:^(NSString * _Nonnull mean, NSUInteger idx, BOOL * _Nonnull stop) {
             EZBlueTextButton *wordButton = [[EZBlueTextButton alloc] init];
+            wordButton.fontSize = 14 * EZConfiguration.shared.currentFontSizeRatio;
             [wordButton setTitle:mean];
             [wrapView addSubview:wordButton];
             [wordButton setClickBlock:^(EZButton *_Nonnull button) {
