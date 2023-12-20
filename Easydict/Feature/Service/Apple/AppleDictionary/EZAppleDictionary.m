@@ -10,6 +10,7 @@
 #import "EZConfiguration.h"
 #import "EZWindowManager.h"
 #import "NSString+EZUtils.h"
+#import "NSString+EZHandleInputText.h"
 
 @implementation EZAppleDictionary
 
@@ -634,6 +635,24 @@ static EZAppleDictionary *_instance;
      */
     BOOL isQueryDictionary = [word shouldQueryDictionaryWithLanguage:language maxWordCount:1];
     if (isQueryDictionary) {
+        // LaTeX == latex
+        if ([normalizedWord caseInsensitiveCompare:normalizedHeadword] == NSOrderedSame) {
+            return YES;
+        }
+        
+        /**
+         We need to filter it
+         
+         queryViewController --> query
+         */
+        if ([word isEnglishWord]) {
+            NSString *splitWord = [word splitCodeText];
+            NSString *splitHeadword = [headword splitCodeText];
+            if (splitWord.wordCount != splitHeadword.wordCount && [splitWord containsString:splitHeadword]) {
+                return NO;
+            }
+        }
+        
         return YES;
     } else {
         if ([normalizedHeadword containsString:normalizedWord]) {
