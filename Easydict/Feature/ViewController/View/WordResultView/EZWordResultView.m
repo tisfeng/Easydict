@@ -891,6 +891,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     EZReplaceTextButton *replaceTextButton = [[EZReplaceTextButton alloc] init];
     [self addSubview:replaceTextButton];
     replaceTextButton.hidden = !result.showReplaceButton;
+    replaceTextButton.enabled = hasTranslatedText;
     self.replaceTextButton = replaceTextButton;
     
     [replaceTextButton setClickBlock:^(EZButton *button) {
