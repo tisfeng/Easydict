@@ -9,7 +9,6 @@
 import Foundation
 
 struct TencentTranslateType: Equatable {
-
     var sourceLanguage: String
     var targetLanguage: String
 
@@ -34,7 +33,7 @@ struct TencentTranslateType: Equatable {
         .thai: [.simplifiedChinese, .english],
         .malay: [.simplifiedChinese, .english],
         .arabic: [.english],
-        .hindi: [.english]
+        .hindi: [.english],
     ]
 
     static let supportLanguagesDictionary: [Language: String] = [
@@ -56,27 +55,28 @@ struct TencentTranslateType: Equatable {
         .thai: "th",
         .malay: "ms",
         .arabic: "ar",
-        .hindi: "hi"
+        .hindi: "hi",
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
         // !!!: Tencent translate support traditionalChinese as target language if target languages contain simplifiedChinese.
         guard let targetLanguages = supportedTypes[from],
-              (targetLanguages.containsChinese() || targetLanguages.contains(to) || from == to || from.isKindOfChinese()) else {
+              targetLanguages.containsChinese() || targetLanguages.contains(to) || from == to || from.isKindOfChinese()
+        else {
             return .unsupported
         }
-        
+
         guard let fromLanguage = supportLanguagesDictionary[from],
-              let toLanguage = supportLanguagesDictionary[to] else {
+              let toLanguage = supportLanguagesDictionary[to]
+        else {
             return .unsupported
         }
-        
+
         return TencentTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
     }
 }
 
-
-extension Array where Element == Language {
+extension [Language] {
     // Contains Chinese language
     func containsChinese() -> Bool {
         contains { $0.isKindOfChinese() }

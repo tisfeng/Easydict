@@ -326,10 +326,6 @@ static EZAppleService *_instance;
         return;
     }
     
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     NSString *appleFromLangCode = [self languageCodeForLanguage:from];
     NSString *appleToLangCode = [self languageCodeForLanguage:to];
     
@@ -509,10 +505,19 @@ static EZAppleService *_instance;
     
     // TODO: Maybe we can use this way to detect other language.
     
-    NSArray *needCorrectedLanguages = @[
+    NSMutableArray *needCorrectedLanguages = @[
         EZLanguageEnglish, // si
-        EZLanguageSimplifiedChinese, // 浦
-    ];
+    ].mutableCopy;
+    
+    /**
+     Fix: cuda was detectde as SimplifiedChinese, --> 粗大 cuda
+     
+     Apple spell check 'cuda' as English, but sometimes Spanish 🥲
+     */
+    if (![text isEnglishPhrase]) {
+        // 浦 was detected as Japanese, we need to correct it.
+        [needCorrectedLanguages addObject:EZLanguageSimplifiedChinese];
+    }
     
     BOOL isWordLength = text.length <= EZEnglishWordMaxLength;
     
@@ -805,7 +810,7 @@ static EZAppleService *_instance;
                     [self ocrImage:image language:tryLanguage autoDetect:YES completion:completion];
                     return;
                 } else {
-                    error = [EZTranslateError errorWithString:NSLocalizedString(@"ocr_result_is_empty", nil)];
+                    error = [EZError errorWithType:EZErrorTypeAPI description:NSLocalizedString(@"ocr_result_is_empty", nil)];
                     
                     // We try to use Japanese before, but failed, so need to reset to auto.
                     ocrResult.from = EZLanguageAuto;

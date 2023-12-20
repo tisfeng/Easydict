@@ -134,7 +134,6 @@
         _enabledTTSServiceTypes = @[
             EZServiceTypeYoudao,
             EZServiceTypeBing,
-            EZServiceTypeCaiyun,
             EZServiceTypeGoogle,
             EZServiceTypeBaidu,
             EZServiceTypeApple,

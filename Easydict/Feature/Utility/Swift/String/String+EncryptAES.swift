@@ -6,8 +6,8 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-import Foundation
 import CryptoSwift
+import Foundation
 
 extension String {
     private var aes: AES {
@@ -16,13 +16,13 @@ extension String {
         let aes = try! AES(key: key, iv: key) // aes128
         return aes
     }
-    
+
     public func encryptAES() -> String {
-        let ciphertext = try! aes.encrypt(Array(self.utf8))
+        let ciphertext = try! aes.encrypt(Array(utf8))
         let encryptedString = ciphertext.toBase64()
         return encryptedString
     }
-    
+
     func decryptAES() -> String {
         let ciphertext = try! aes.decrypt(Array(base64: self))
         let decryptedString = String(bytes: ciphertext, encoding: .utf8)!
@@ -35,7 +35,7 @@ extension String {
         guard let str = self as String? else { return nil }
         return str.encryptAES() as NSString
     }
-    
+
     func decryptAES() -> NSString? {
         guard let str = self as String? else { return nil }
         return str.decryptAES() as NSString
@@ -56,10 +56,10 @@ extension String {
             return ""
         }
     }
-    
+
     func decryptAES(keyData: Data, ivData: Data) -> NSString {
         guard let str = self as String? else { return "" }
-        
+
         do {
             let aes = try AES(key: Array(keyData), blockMode: CBC(iv: Array(ivData)), padding: .pkcs7) // aes128
             let ciphertext = try aes.decrypt(Array(base64: str))

@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,7 +42,7 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，百度，小牛，彩云和火山翻译。
+- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，腾讯，百度，小牛，彩云和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
@@ -74,7 +74,9 @@
     - [自定义设置](#自定义设置)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
+    - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
     - [配置 API 调用方式](#配置-api-调用方式)
+  - [腾讯翻译](#腾讯翻译)
   - [Bing 翻译](#bing-翻译)
   - [小牛翻译](#小牛翻译)
   - [彩云小译](#彩云小译)
@@ -341,15 +343,17 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 #### 配置 APIKey
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
+
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
 </div>
 
 查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
-```
+
+```bash
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
@@ -365,11 +369,11 @@ easydict://readValueOfKey?EZOpenAIAPIKey
 
 考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后，OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
 ```
 
-```
+```bash
 // 关闭查单词
 easydict://writeKeyValue?EZOpenAIDictionaryKey=0
 
@@ -385,7 +389,7 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 
 支持设置自定义域名和模型
 
-```
+```bash
 //  xxx 是 host，默认是 api.openai.com
 easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 
@@ -411,28 +415,59 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 Enter
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
+
+#### 自定义 DeepL 接口地址
+
+如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
+
+这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate ,如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
+
+使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
+
+```bash
+easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
+```
+借助下面开源项目，可以在自己的服务器或者 Cloudflare 上部署支持 DeepL 翻译的接口服务：
+
+- [deeplx-for-cloudflare](https://github.com/ifyour/deeplx-for-cloudflare)
+- [DeepLX](https://github.com/OwO-Network/DeepLX)
+
 
 #### 配置 API 调用方式
 
 1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey（如果有）
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
 ```
 
 2. 优先使用个人的 AuthKey，失败时使用网页版 API。若高频率使用 DeepL，建议使用这种方式，能减少一次失败的请求，提高响应速度。
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 
 3. 只使用个人的 AuthKey
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
+```
+
+### 腾讯翻译
+
+[腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+
+建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
+
+```bash
+// xxx 腾讯翻译的 SecretId
+easydict://writeKeyValue?EZTencentSecretId=xxx
+
+// xxx 腾讯翻译的 SecretKey
+easydict://writeKeyValue?EZTencentSecretKey=xxx
 ```
 
 ### Bing 翻译
@@ -447,7 +482,7 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + 
 
 最后将 cookie 使用命令写入 Easydict
 
-```
+```bash
 // xxx 是前面获取的 cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
@@ -456,11 +491,11 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 ### 小牛翻译
 
-[小牛翻译](https://niutrans.com/) 需要 APIKey，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
+[小牛翻译](https://niutrans.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
 
-建议使用自己的 APIKey，每个注册用户小牛翻译每日赠送 20 万字符流量，足以日常使用了。
+建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量。
 
-```
+```bash
 // xxx 小牛翻译的 APIKey
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 ```
@@ -469,9 +504,9 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 [彩云小译](https://fanyi.caiyunapp.com/) 需要 Token，为使用方便，我们内置了一个 token，这个 token 有一定限制，不保证一直能用。
 
-建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
+建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度。
 
-```
+```bash
 // xxx 彩云小译的 Token
 easydict://writeKeyValue?EZCaiyunToken=xxx
 ```
@@ -497,19 +532,19 @@ Easydict 可以根据查询文本的内容，自动启用相应的查询服务�
 
 默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
 
-```
+```bash
 easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
 ```
 
 同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
 
-```
+```bash
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
 默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
 
-```
+```bash
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
@@ -543,45 +578,22 @@ Easydict 支持 URL scheme 快速查询：`easydict://query?text=xxx`，如 `eas
 
 ## 配合 PopClip 使用
 
-你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。（感谢 **[liziqiang](https://github.com/liziqiang)**）
+你需要先安装 [PopClip](https://pilotmoon.com/popclip/)，然后选中以下代码块，`PopClip` 会显示 "安装扩展 Easydict"，点击它即可。
 
-```shell
-#! /bin/zsh
-# #popclip
-# name: Easydict
-# icon: iconify:ri:translate
-checkAppRunning() {
-  result=$(ps aux | grep Easydict.app | wc -l)
-  echo $result
-}
-# Open Easydict.app, it takes about 1s
-openApp() {
-  open /Applications/Easydict.app
-}
-# Loop wait until Easydict.app is opened
-waitAppOpen() {
-  while true; do
-    result=$(checkAppRunning)
-    if [[ $result -ge 2 ]]; then
-      break
-    fi
-    sleep 0.2  # wait 0.2s at a time
-  done
-}
-# Check if Easydict.app is running
-appResult=$(checkAppRunning)
-if [[ $appResult -lt 2 ]]; then
-  openApp
-  waitAppOpen
-fi
-
-# Use URL scheme to send query text to Easydict.app
-open "easydict://query?text=$POPCLIP_TEXT"
+```applescript
+-- #popclip
+-- name: Easydict
+-- icon: iconify:ri:translate
+-- language: applescript
+tell application "Easydict"
+  launch
+  open location "easydict://query?text={popclip text}"
+end tell
 ```
 
-![image-20231206110523253](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231206110523253-1701831923.png)
+![image-20231215193536900](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231215193536900-1702640137.png)
 
-> 参考：https://www.popclip.app/dev/shell-script-actions
+> 参考：https://www.popclip.app/dev/applescript-actions
 
 ## 设置
 

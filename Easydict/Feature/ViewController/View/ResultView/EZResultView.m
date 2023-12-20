@@ -314,7 +314,7 @@
 
 - (void)updateErrorImage {
     BOOL hideWarningImage = YES;
-    if (!self.result.hasTranslatedResult && (self.result.error || self.result.errorType || self.result.errorMessage.length)) {
+    if (!self.result.hasTranslatedResult && self.result.error.type) {
         hideWarningImage = NO;
     }
     self.errorImageView.hidden = hideWarningImage;

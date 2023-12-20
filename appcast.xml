@@ -4,13 +4,23 @@
     <title>Easydict</title>
 
     <item>
+      <title>2.4.1</title>
+      <pubDate>Mon, 18 Dec 2023 21:40:00 +0800</pubDate>
+      <sparkle:version>30</sparkle:version>
+      <sparkle:shortVersionString>2.4.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.4.1</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.4.1/Easydict.zip" length="10032603" type="application/octet-stream" sparkle:edSignature="HTkkcpIveVKXbG2iLcbpFLxZeeLHvikPWmamU+yiOpeLRrAqzwd17hWR961QjqwvLOov76CY937K4aWRLVxODg=="/>
+    </item>
+
+    <item>
       <title>2.4.0</title>
-      <pubDate>Sun, 10 Dec 2023 19:30:00 +0800</pubDate>
+      <pubDate>Mon, 18 Dec 2023 20:00:00 +0800</pubDate>
       <sparkle:version>29</sparkle:version>
       <sparkle:shortVersionString>2.4.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.3.0</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.3.0/Easydict.zip" type="application/octet-stream" sparkle:edSignature="yjrKEXjTfKqC1YdJvPIIGK7G27jd4aK2CJ4j/ZqbaZBUC2hQyyKvgC1CPuuWOrk274Oz/N53L2G/aXHXt7H1CQ==" length="11153425" />
+      <sparkle:releaseNotesLink>https://github.com/tisfeng/easydict/releases/tag/2.4.0</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/tisfeng/Easydict/releases/download/2.4.0/Easydict.zip" length="10031590" type="application/octet-stream" sparkle:edSignature="uR3ZgsJRFNc8QUIRpGwzNE/kFns3j54BviQEnHL+a7rZEEjAG0V3c9r1Zg3Lte21Bl1CY3ds8uMVgB+QVTD8Ag=="/>
     </item>
 
     <item>

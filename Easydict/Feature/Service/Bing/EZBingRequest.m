@@ -7,7 +7,7 @@
 //
 
 #import "EZBingRequest.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZBingLanguageVoice.h"
 #import "NSString+EZRegex.h"
 
@@ -277,8 +277,10 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
     
     NSString *url = self.bingConfig.translatorURLString;
     [self.htmlSession GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+        NSError *error;
         if (![responseObject isKindOfClass:[NSData class]]) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing htmlSession responseObject is not NSData", nil));
+             error = [EZError errorWithType:EZErrorTypeAPI description: @"bing htmlSession responseObject is not NSData" request:nil];
+            failure(error);
             NSLog(@"bing html responseObject type is %@", [responseObject class]);
             return;
         }
@@ -287,31 +289,36 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
         
         NSString *IG = [self getIGValueFromHTML:responseString];
         if (IG.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing IG is empty", nil));
+            error = [EZError errorWithType:EZErrorTypeAPI description: @"bing IG is empty" request:nil];
+            failure(error);
             return;
         }
         NSLog(@"bing IG: %@", IG);
         
         NSString *IID = [self getValueOfDataIidFromHTML:responseString];
         if (IID.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing IID is empty", nil));
+            error = [EZError errorWithType:EZErrorTypeAPI description: @"bing IID is empty" request:nil];
+            failure(error);
             return;
         }
         NSLog(@"bing IID: %@", IID);
         
         NSArray *arr = [self getParamsAbusePreventionHelperArrayFromHTML:responseString];
         if (arr.count != 3) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing get key and token failed", nil));
+            error = [EZError errorWithType:EZErrorTypeAPI description: @"bing get key and token failed" request:nil];
+            failure(error);
             return;
         }
         NSString *key = arr[0];
         if (key.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing key is empey", nil));
+            error = [EZError errorWithType:EZErrorTypeAPI description: @"bing key is empey" request:nil];
+            failure(error);
             return;
         }
         NSString *token = arr[1];
         if (token.length == 0) {
-            failure(EZTranslateError(EZErrorTypeAPI, @"bing token is empey", nil));
+            error = [EZError errorWithType:EZErrorTypeAPI description: @"bing token is empey" request:nil];
+            failure(error);
             return;
         }
         NSLog(@"bing key: %@", key);
@@ -355,7 +362,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             [self.translateSession POST:self.bingConfig.ttranslatev3URLString parameters:translateParameters
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"bing translate responseObject is not NSData", nil);
+                    self.translateError = [EZError errorWithType:EZErrorTypeAPI description:@"bing translate responseObject is not NSData" request:nil];
                     NSLog(@"bing translate responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
@@ -368,7 +375,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
                 // if you use a VPN, you can try replacing nodes，or try adding `bing.com` into a direct rule
                 // https://immersivetranslate.com/docs/faq/#429-%E9%94%99%E8%AF%AF
                 if (response.statusCode == 429) {
-                    self.translateError = EZTranslateError(EZErrorTypeAPI, @"429 error, Bing translate too many requests", nil);
+                    self.translateError = [EZError errorWithType:EZErrorTypeAPI description:@"429 error, Bing translate too many requests" request:nil];
                 } else {
                     self.translateError = error;
                 }
@@ -384,7 +391,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             [self.translateSession POST:self.bingConfig.tlookupv3URLString parameters:dictParameters
                                progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (![responseObject isKindOfClass:[NSData class]]) {
-                    self.lookupError = EZTranslateError(EZErrorTypeAPI, @"bing lookup responseObject is not NSData", nil);
+                    self.lookupError = [EZError errorWithType:EZErrorTypeAPI description:@"bing translate responseObject is not NSData" request:nil];
                     NSLog(@"bing lookup responseObject type: %@", [responseObject class]);
                     [self executeCallback];
                     return;
@@ -446,7 +453,7 @@ static NSString *const kBingConfigKey = @"kBingConfigKey";
             @"q": text,
         } progress:nil  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if (![responseObject isKindOfClass:[NSDictionary class]]) {
-               completion(nil, EZTranslateError(EZErrorTypeAPI, @"bing dict translate json parse fail", nil));
+               completion(nil, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict translate json parse fail" request:nil]);
                 return;
             }
             completion(responseObject, nil);

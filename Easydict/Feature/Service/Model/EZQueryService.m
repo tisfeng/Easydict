@@ -164,12 +164,38 @@ userInfo:nil]
     }
     
     if (unsupportedLanguage) {
-        self.result.errorType = EZErrorTypeUnsupportedLanguage;
         completion(self.result, EZQueryUnsupportedLanguageError(self));
         return YES;
     }
     
+    // Some services need API Key, the built-in API key free quota may not be enough for all users to use, so it is provided to new users first.
+    if (self.needPrivateAPIKey && !self.hasPrivateAPIKey && ![EZLocalStorage.shared hasFreeQuotaLeft:self]) {
+        EZError *error = [EZError errorWithType:EZErrorTypeInsufficientQuota
+                                    description:nil
+                               errorDataMessage:NSLocalizedString(@"insufficient_quota_prompt", nil)];
+        
+        self.result.promptURL = self.link;
+        completion(self.result, error);
+        return YES;
+    }
+    
     return NO;
+}
+
+- (void)startQuery:(EZQueryModel *)queryModel
+        completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion {
+    NSString *queryText = queryModel.queryText;
+    EZLanguage from = queryModel.queryFromLanguage;
+    EZLanguage to = queryModel.queryTargetLanguage;
+    
+    if ([self prehandleQueryTextLanguage:queryText
+                                    from:from
+                                      to:to
+                              completion:completion]) {
+        return;
+    }
+    
+    [self translate:queryText from:from to:to completion:completion];
 }
 
 #pragma mark - 必须重写的子类方法
@@ -201,11 +227,14 @@ userInfo:nil]
     MethodNotImplemented();
 }
 
-
 #pragma mark - 可选重写的子类方法
 
 - (BOOL)autoConvertTraditionalChinese {
     return NO;
+}
+
+- (EZServiceUsageStatus)serviceUsageStatus {
+    return EZServiceUsageStatusDefault;
 }
 
 - (EZQueryTextType)queryTextType {
@@ -216,10 +245,17 @@ userInfo:nil]
     return EZQueryTextTypeTranslation | EZQueryTextTypeSentence;
 }
 
-- (EZServiceUsageStatus)serviceUsageStatus {
-    return EZServiceUsageStatusDefault;
+- (BOOL)hasPrivateAPIKey {
+    return NO;
 }
 
+- (BOOL)needPrivateAPIKey {
+    return NO;
+}
+
+- (NSInteger)totalFreeQueryCharacterCount {
+    return 100 * 10000;
+}
 
 - (void)detectText:(NSString *)text completion:(void (^)(EZLanguage language, NSError *_Nullable error))completion {
     MethodNotImplemented();

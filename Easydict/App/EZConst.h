@@ -42,7 +42,7 @@ static NSTimeInterval const EZUpdateTableViewRowHeightAnimationDuration = 0.2;
 static NSTimeInterval const EZNetWorkTimeoutInterval = 15.0;
 
 // !!!: This floating window level shouldn't be higher than kCGModalPanelWindowLevel, otherwise it will cover system modal alert window.
-static NSTimeInterval const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
+static CGFloat const EZFloatingWindowLevel = kCGModalPanelWindowLevel;
 
 static NSInteger const EZEnglishWordMaxLength = 20;
 
@@ -51,6 +51,8 @@ static NSInteger const EZMaxThreeWordPhraseCount = 3;
 
 /// Show word synonyms up to 5
 static NSInteger const EZMaxFiveWordSynonymCount = 5;
+
+static CGFloat const EZGetClipboardTextDelayTime = 0.1;
 
 
 #endif /* EZConst_h */

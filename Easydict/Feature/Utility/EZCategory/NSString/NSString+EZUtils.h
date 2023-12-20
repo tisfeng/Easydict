@@ -47,8 +47,8 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isListTypeFirstWord;
 
-#pragma mark -
 
+#pragma mark - Check if text is a word, or phrase
 
 - (EZQueryTextType)queryTypeWithLanguage:(EZLanguage)language maxWordCount:(NSInteger)maxWordCount;
 
@@ -101,6 +101,8 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isNumbers;
 
+#pragma mark - Handle extra quotes.
+
 - (BOOL)hasPrefixQuote;
 
 - (BOOL)hasSuffixQuote;
@@ -123,6 +125,7 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)hasQuotesPair;
 
+#pragma mark - Remove designated characters.
 
 - (NSString *)removeNonNormalCharacters;
 

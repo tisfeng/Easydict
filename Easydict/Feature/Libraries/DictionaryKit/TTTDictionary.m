@@ -338,7 +338,6 @@ extern CFArrayRef DCSCopyRecordsForSearchString(DCSDictionaryRef, CFStringRef, u
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term {
     return [self entriesForSearchTerm:term searchType:TTTDictionarySearchTypeExactMatch];
-    ;
 }
 
 - (NSArray<TTTDictionaryEntry *> *)entriesForSearchTerm:(NSString *)term searchType:(TTTDictionarySearchType)searchType {

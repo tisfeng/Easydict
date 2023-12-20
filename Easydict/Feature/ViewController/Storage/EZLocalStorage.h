@@ -44,6 +44,12 @@ static NSString *const EZWindowTypeKey = @"EZWindowTypeKey";
 - (NSInteger)queryCount;
 - (NSInteger)queryCharacterCount;
 
+- (void)increaseQueryService:(EZQueryService *)service;
+
+- (BOOL)hasFreeQuotaLeft:(EZQueryService *)service;
+
+- (BOOL)isNewUser;
+
 @end
 
 NS_ASSUME_NONNULL_END

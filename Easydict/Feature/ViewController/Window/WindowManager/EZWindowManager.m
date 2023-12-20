@@ -327,6 +327,11 @@ static EZWindowManager *_instance;
     self.selectedText = queryText;
     self.actionType = actionType;
     
+    // Update isTextEditable value when using invoke query, such as open URL Scheme by PopClip.
+    if (actionType == EZActionTypeInvokeQuery) {
+        [self.eventMonitor updateSelectedTextEditableState];
+    }
+    
     EZBaseQueryWindow *window = [self windowWithType:windowType];
     
     // If text is nil, means we don't need to query anything, just show the window.

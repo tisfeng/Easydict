@@ -22,6 +22,9 @@ target 'Easydict' do
   pod 'FirebaseAnalytics', '~> 10.19.0'
   pod 'AppCenter', '~> 5.0.4'
   
+  # Swift format
+  pod 'SwiftFormat/CLI', '~> 0.52.11'
+  
 end
 
 target 'EasydictTests' do

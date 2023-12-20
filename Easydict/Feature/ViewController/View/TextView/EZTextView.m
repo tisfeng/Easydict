@@ -113,6 +113,11 @@
     NSString *pasteboardString = [pasteboard stringForType:stringType];
     pasteboardString = [pasteboardString trim];
     
+    // pasteboardString may be nil
+    if (!pasteboardString) {
+        return;
+    }
+    
     BOOL enableModifyParagraphSpacing = NO;
     
     // Empty text.

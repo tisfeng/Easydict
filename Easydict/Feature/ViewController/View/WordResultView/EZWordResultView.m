@@ -84,11 +84,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSFont *typeTextFont = [NSFont systemFontOfSize:13 * self.fontSizeRatio weight:NSFontWeightMedium];
     NSFont *textFont = typeTextFont;
     
-    NSString *errorDescription = result.error.localizedDescription;
-    if (result.errorMessage.length) {
-        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", result.errorMessage];
+    EZError *error = result.error;
+    NSString *errorDescription = error.localizedDescription;
+    NSString *errorDataMessage = error.errorDataMessage;
+    if (errorDataMessage.length) {
+        errorDescription = [errorDescription stringByAppendingFormat:@"\n\n%@", errorDataMessage];
         if (!errorDescription && !result.hasTranslatedResult) {
-            errorDescription = result.errorMessage;
+            errorDescription = errorDataMessage;
         }
     }
     
@@ -123,7 +125,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         lastView = bigWordLabel;
     }
     
-    if (result.translatedResults.count || errorDescription.length > 0 || result.noResultsFound) {
+    if (result.translatedResults.count || errorDescription.length > 0) {
         EZLabel *explainLabel;
         __block CGFloat exceptedWidth = 0;
         CGFloat explainTextFieldTopOffset = 9;
@@ -220,7 +222,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             lastView = resultLabel;
         }
         
-        if (result.promptTitle.length && result.promptURL.length) {
+        if (result.promptURL.length) {
             NSTextField *promptTextField = [[NSTextField new] mm_put:^(NSTextField *_Nonnull textField) {
                 [self addSubview:textField];
                 textField.stringValue = NSLocalizedString(@"please_look", nil);
@@ -247,7 +249,9 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             
             EZBlueTextButton *promptButton = [[EZBlueTextButton alloc] init];
             [self addSubview:promptButton];
-            [promptButton setTitle:result.promptTitle];
+            
+            NSString *title = result.promptTitle.length ? result.promptTitle : result.promptURL;
+            [promptButton setTitle:title];
             promptButton.openURL = result.promptURL;
             
             [promptButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -274,7 +278,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             
             [self updateWebViewHeight:scrollHeight];
         }];
-            
+        
         
         [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat topOffset = 0;
@@ -323,15 +327,17 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         
         // 部分没有音标文本
         EZLabel *phoneticLabel = nil;
-        if (obj.value.length) {
+        
+        // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x7ff85c514b40
+        NSString *phonetic = obj.value;
+        if ([phonetic isKindOfClass:NSString.class] && phonetic.length) {
             phoneticLabel = [[EZLabel alloc] init];
             [self addSubview:phoneticLabel];
             phoneticLabel.textContainer.lineFragmentPadding = 0;
             phoneticLabel.font = [NSFont systemFontOfSize:textFont.pointSize * self.fontSizeRatio];
             
             // ???: WTF, why Baidu phonetic contain '\n', e.g. ceil "siːl\n"
-            NSString *phonetic = [obj.value trim];
-            phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic];
+            phoneticLabel.text = [NSString stringWithFormat:@"/ %@ /", phonetic.trim];
             [phoneticLabel mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.equalTo(phoneticTagLabel.mas_right).offset(kHorizontalMargin_8);
                 make.centerY.equalTo(phoneticTagLabel);
@@ -501,7 +507,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = [NSString mm_stringByCombineComponents:obj.means separatedString:@"; "];
         meanLabel.text = text;
         meanLabel.delegate = self;
-                
+        
         [meanLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self).offset(-kHorizontalMargin_8);
             exceptedWidth += kHorizontalMargin_8;
@@ -815,14 +821,14 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         NSString *text = result.copiedText;
         
         // For some special case, copied text language is not the queryTargetLanguage, like 龘, Youdao translate.
-        EZLanguage language = [EZAppleService.shared detectText:text];;
+        EZLanguage language = [EZAppleService.shared detectText:text];
         if ([result.serviceType isEqualToString:EZServiceTypeOpenAI]) {
             language = result.to;
         }
         
         EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
-                
+        
         [result.service.audioPlayer playTextAudio:text
                                          language:language
                                            accent:nil
@@ -881,7 +887,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         toolTip = NSLocalizedString(@"open_in_apple_dictionary", nil);
     }
     linkButton.toolTip = toolTip;
-
+    
     linkButton.link = [result.service wordLink:result.queryModel];
     
     [linkButton excuteLight:^(NSButton *linkButton) {
@@ -899,6 +905,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     EZReplaceTextButton *replaceTextButton = [[EZReplaceTextButton alloc] init];
     [self addSubview:replaceTextButton];
     replaceTextButton.hidden = !result.showReplaceButton;
+    replaceTextButton.enabled = hasTranslatedText;
     self.replaceTextButton = replaceTextButton;
     
     [replaceTextButton setClickBlock:^(EZButton *button) {
@@ -1075,13 +1082,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 /** 在收到响应后，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-//    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
-
+    //    NSLog(@"decidePolicyForNavigationResponse: %@", navigationResponse.response.URL.absoluteString);
+    
     // 这里可以查看页面内部的网络请求，并做出相应的处理
     // navigationResponse 包含了请求的相关信息，你可以通过它来获取请求的 URL、请求方法、请求头等信息
     // decisionHandler 是一个回调，你可以通过它来决定是否允许这个请求发送
-
-
+    
+    
     //允许跳转
     decisionHandler(WKNavigationResponsePolicyAllow);
     //不允许跳转
@@ -1090,14 +1097,14 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 /** 接收到服务器跳转请求即服务重定向时之后调用 */
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-//    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
+    //    NSLog(@"didReceiveServerRedirectForProvisionalNavigation: %@", webView.URL.absoluteURL);
 }
 
 /** 收到服务器响应后，在发送请求之前，决定是否跳转 */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSURL *navigationActionURL = navigationAction.request.URL;
-    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
-
+    //    NSLog(@"decidePolicyForNavigationAction URL: %@", navigationActionURL);
+    
     /**
      If URL has a prefix "x-dictionary", means this is a Apple Dictionary URI scheme. Docs: https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/DictionaryServicesProgGuide/schema/schema.html
      
@@ -1106,7 +1113,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      */
     if ([navigationActionURL.scheme isEqualToString:kAppleDictionaryURIScheme]) {
         NSLog(@"Open URI: %@", navigationActionURL);
-
+        
         NSString *hrefText = [navigationActionURL.absoluteString decode];
         
         [self getTextWithHref:hrefText completionHandler:^(NSString *text) {
@@ -1117,7 +1124,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             }
         }];
         
-//        [[NSWorkspace sharedWorkspace] openURL:navigationActionURL];
+        //        [[NSWorkspace sharedWorkspace] openURL:navigationActionURL];
         
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
@@ -1133,23 +1140,23 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)updateWebViewHeight:(CGFloat)scrollHeight {
     // Cost ~0.15s
-//    NSString *script = @"document.documentElement.scrollHeight;";
-
+    //    NSString *script = @"document.documentElement.scrollHeight;";
+    
     NSLog(@"scrollHeight: %.1f", scrollHeight);
     
     CGFloat visibleFrameHeight = EZLayoutManager.shared.screen.visibleFrame.size.height;
     CGFloat maxHeight = visibleFrameHeight * 0.55;
-
+    
     EZBaseQueryWindow *floatingWindow = EZWindowManager.shared.floatingWindow;
     EZBaseQueryViewController *queryViewController = floatingWindow.queryViewController;
     if (queryViewController.services.count == 1) {
         maxHeight = visibleFrameHeight - floatingWindow.height - self.bottomViewHeight;
     }
-            
+    
     // Fix strange white line
     CGFloat webViewHeight = ceil(MIN(maxHeight, scrollHeight));
     CGFloat viewHeight = self.bottomViewHeight + webViewHeight;
-                
+    
     /**
      Improve scrollable height:
      
@@ -1179,19 +1186,19 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
      take: 1971476
      */
     
-//            CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
-//            NSLog(@"Delay showing time: %.2f", delayShowingTime);
+    //            CGFloat delayShowingTime = self.result.HTMLString.length / 1000000.0;
+    //            NSLog(@"Delay showing time: %.2f", delayShowingTime);
     
     // !!!: Must update view height, then update cell height.
-
+    
     if (self.updateViewHeightBlock) {
         self.updateViewHeightBlock(viewHeight);
     }
-
+    
     
     // Notify tableView to update cell height.
     [queryViewController updateCellWithResult:self.result reloadData:NO];
-                
+    
     [self fetchWebViewAllIframeText:^(NSString *text) {
         self.result.copiedText = text;
         
@@ -1216,7 +1223,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     NSString *backgroundColorString = isDark ? darkBackgroundColorString : lightBackgroundColorString;
     
     NSString *updateBodyColorJSCode = [self jsCodeOfUpdateBodyTextColor:textColorString backgroundColor:backgroundColorString];
-   NSString *updateIframeColorJSCode = [self jsCodeOfUpdateAllIframeTextColor:textColorString backgroundColor:backgroundColorString];
+    NSString *updateIframeColorJSCode = [self jsCodeOfUpdateAllIframeTextColor:textColorString backgroundColor:backgroundColorString];
     
     NSString *jsCode = [NSString stringWithFormat:@"%@ %@", updateBodyColorJSCode, updateIframeColorJSCode];
     
@@ -1226,13 +1233,13 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (NSString *)jsCodeOfUpdateAllIframeTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
     NSString *jsCode = [NSString stringWithFormat:@""
-    "var iframes = document.querySelectorAll('iframe');"
-    "for (var i = 0; i < iframes.length; i++) {"
-    "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
-    "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
-    "};", color, backgroundColor];
+                        "var iframes = document.querySelectorAll('iframe');"
+                        "for (var i = 0; i < iframes.length; i++) {"
+                        "   iframes[i].contentDocument.body.style.webkitTextFillColor = '%@';"
+                        "   iframes[i].contentDocument.body.style.backgroundColor = '%@';"
+                        "};", color, backgroundColor];
     
-    return jsCode;;
+    return jsCode;
 }
 
 - (NSString *)jsCodeOfUpdateBodyTextColor:(NSString *)color backgroundColor:(NSString *)backgroundColor {
@@ -1241,7 +1248,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
                         @"document.body.style.backgroundColor='%@';"
                         , color, backgroundColor];
     
-    return jsCode;;
+    return jsCode;
 }
 
 - (NSString *)jsCodeOfUpdateStyleHeight:(CGFloat)height {
@@ -1296,21 +1303,21 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 
 - (void)getTextWithHref:(NSString *)href completionHandler:(void (^_Nullable)(NSString *text))completionHandler {
     NSString *jsCode = [NSString stringWithFormat:
-        @"var iframes = document.querySelectorAll('iframe');"
-        @"var linkText = '';"
-        @"for (var i = 0; i < iframes.length; i++) {"
-        @"    var iframe = iframes[i];"
-        @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
-        @"    if (linkElement) {"
-        @"        linkText = linkElement.innerText;"
-        @"        break;"
-        @"    }"
-        @"}"
-        @"linkText;", href];
+                        @"var iframes = document.querySelectorAll('iframe');"
+                        @"var linkText = '';"
+                        @"for (var i = 0; i < iframes.length; i++) {"
+                        @"    var iframe = iframes[i];"
+                        @"    var linkElement = iframe.contentWindow.document.querySelector('a[href=\"%@\"]');"
+                        @"    if (linkElement) {"
+                        @"        linkText = linkElement.innerText;"
+                        @"        break;"
+                        @"    }"
+                        @"}"
+                        @"linkText;", href];
     
     [self evaluateJavaScript:jsCode completionHandler:^(id result, NSError *error) {
         if (!error) {
-           NSString *linkText = (NSString *)result;
+            NSString *linkText = (NSString *)result;
             completionHandler(linkText);
         }
     }];

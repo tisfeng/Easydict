@@ -209,6 +209,7 @@
         EZYoudaoDictionaryKey,
         
         EZDeepLAuthKey,
+        EZDeepLTranslateEndPointKey,
         EZDeepLTranslationAPIKey,
         EZNiuTransAPIKey,
         EZCaiyunToken,
@@ -233,7 +234,7 @@
         
     ];
     
-    return actionKeys;;
+    return actionKeys;
 }
 
 - (void)restartApplication {

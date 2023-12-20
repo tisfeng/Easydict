@@ -134,9 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy, nullable) NSString *translatedText;
 
-@property (nonatomic, strong, nullable) NSError *error;
-@property (nonatomic, copy, nullable) NSString *errorMessage;
-@property (nonatomic, assign) EZErrorType errorType;
+@property (nonatomic, strong, nullable) EZError *error;
 
 @property (nonatomic, assign) BOOL manulShow;
 
@@ -165,7 +163,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *HTMLString;
 
 /// 未查询到结果，如系统词典查单词时，查询了句子
-@property (nonatomic, assign) BOOL noResultsFound;
+//@property (nonatomic, assign) BOOL noResultsFound;
 
 /// copiedText is translatedText, or webView innerText if has HTMLString
 @property (nonatomic, copy, nullable) NSString *copiedText;

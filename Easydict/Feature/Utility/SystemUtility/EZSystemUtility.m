@@ -28,6 +28,10 @@
 }
 
 + (void)postPasteEvent {
+    // Disable local keyboard events while pasting.
+    CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateCombinedSessionState);
+    CGEventSourceSetLocalEventsFilterDuringSuppressionState(source, kCGEventFilterMaskPermitLocalMouseEvents | kCGEventFilterMaskPermitSystemDefinedEvents, kCGEventSuppressionStateSuppressionInterval);
+
     [self postKeyboardEvent:kCGEventFlagMaskCommand virtualKey:kVK_ANSI_V keyDown:true];
     [self postKeyboardEvent:kCGEventFlagMaskCommand virtualKey:kVK_ANSI_V keyDown:false];
 }
@@ -58,14 +62,15 @@
 
 #pragma mark -
 
+/// Check if the current focused element is editable. Cost 0.1~0.2s
 + (BOOL)isSelectedTextEditable {
     AXUIElementRef systemWideElement = AXUIElementCreateSystemWide();
-    
+
     AXUIElementRef focusedElement = NULL;
     AXUIElementCopyAttributeValue(systemWideElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&focusedElement);
-    
+
     BOOL isEditable = NO;
-    
+
     // focusedElement may be NULL in Telegram App
     if (focusedElement != NULL) {
         CFTypeRef roleValue;
@@ -90,11 +95,10 @@
         }
         CFRelease(focusedElement);
     }
-    
-    NSLog(@"isEditable: %d", isEditable);
-    
     CFRelease(systemWideElement);
     
+    NSLog(@"isEditable: %d", isEditable);
+
     return isEditable;
 }
 

@@ -205,7 +205,7 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (BOOL)hasShowingResult {
-    if (self.hasTranslatedResult || self.error || self.errorMessage.length || self.HTMLString.length || self.noResultsFound) {
+    if (self.hasTranslatedResult || self.error || self.HTMLString.length) {
         return YES;
     }
     return NO;
@@ -219,7 +219,10 @@ NSString *getPartAbbreviation(NSString *part) {
 }
 
 - (BOOL)isWarningErrorType {
-    BOOL warningType = (self.errorType == EZErrorTypeUnsupportedLanguage) || (self.errorType == EZErrorTypeNoResultsFound);
+    EZErrorType errorType = self.error.type;
+    BOOL warningType = (errorType == EZErrorTypeUnsupportedLanguage)
+    || (errorType == EZErrorTypeNoResultsFound)
+    || (errorType == EZErrorTypeInsufficientQuota);
     return warningType;
 }
 
@@ -227,7 +230,6 @@ NSString *getPartAbbreviation(NSString *part) {
     if (!self.HTMLString.length) {
         return self.translatedText;
     }
-    
     return _copiedText;
 }
 
@@ -256,13 +258,9 @@ NSString *getPartAbbreviation(NSString *part) {
     self.promptURL = nil;
     self.showBigWord = NO;
     self.translateResultsTopInset = 0;
-    self.errorMessage = nil;
-    self.errorType = EZErrorTypeAPI;
     self.isFinished = YES;
-    self.errorType = EZErrorTypeNone;
     self.manulShow = NO;
     self.HTMLString = nil;
-    self.noResultsFound = NO;
     self.copiedText = nil;
     self.didFinishLoadingHTMLBlock = nil;
     [self.webViewManager reset];

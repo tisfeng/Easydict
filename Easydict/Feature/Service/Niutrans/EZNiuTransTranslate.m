@@ -12,6 +12,7 @@
 
 @interface EZNiuTransTranslate ()
 
+@property (nonatomic, copy) NSString *defaultAPIKey;
 @property (nonatomic, copy) NSString *apiKey;
 
 @end
@@ -20,18 +21,17 @@
 
 - (instancetype)init {
     if (self = [super init]) {
+        // This is a test APIKey, please do not abuse it. It is recommended to go to the official website to apply for a personal APIKey.
+        self.defaultAPIKey = [@"XOoEyjDMoM2MuMInzySOjGucFWXRj1wXQivVYDGTi6X7iDe7EkuHVVPOy2Op3RlD" decryptAES];
     }
     return self;
 }
 
 - (NSString *)apiKey {
-    // This is a test APIKey, please do not abuse it. It is recommended to go to the official website to apply for a personal APIKey.
-    NSString *defaultAPIKey = [@"XOoEyjDMoM2MuMInzySOjGucFWXRj1wXQivVYDGTi6X7iDe7EkuHVVPOy2Op3RlD" decryptAES];
-    
     // easydict://writeKeyValue?EZNiuTransAPIKey=
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZNiuTransAPIKey];
     if (apiKey.length == 0) {
-        apiKey = defaultAPIKey;
+        apiKey = self.defaultAPIKey;
     }
     return apiKey;
 }
@@ -48,7 +48,7 @@
 }
 
 - (NSString *)link {
-    return @"https://niutrans.com/trans?type=text";
+    return @"https://niutrans.com";
 }
 
 // Supported languages: https://niutrans.com/documents/contents/trans_text#languageList
@@ -108,15 +108,19 @@
 }
 
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     [self niuTransTranslate:text from:from to:to completion:completion];
 }
 
-- (void)ocr:(EZQueryModel *)queryModel completion:(void (^)(EZOCRResult *_Nullable, NSError *_Nullable))completion {
-    NSLog(@"NiuTrans not support ocr");
+- (BOOL)needPrivateAPIKey {
+    return YES;
+}
+
+- (BOOL)hasPrivateAPIKey {
+    return ![self.apiKey isEqualToString:self.defaultAPIKey];
+}
+
+- (NSInteger)totalFreeQueryCharacterCount {
+    return 300 * 10000;
 }
 
 #pragma mark - NiuTrans API
@@ -157,8 +161,8 @@
                 if (errorMsg) {
                     message = [NSString stringWithFormat:@"%@, %@", errorCode, errorMsg];
                 }
-                NSError *error = [EZTranslateError errorWithType:EZErrorTypeAPI
-                                                         message:message
+                NSError *error = [EZError errorWithType:EZErrorTypeAPI
+                                                         description:message
                                                          request:task.currentRequest];
                 completion(self.result, error);
             }

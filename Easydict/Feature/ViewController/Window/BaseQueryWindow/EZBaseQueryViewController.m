@@ -678,7 +678,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     }
     
     [[EZLocalStorage shared] increaseQueryCount:self.inputText];
-    [EZLog logQuery:queryModel];
     
     // Auto play query text if it is an English word.
     [self autoPlayEnglishWordAudio];
@@ -691,8 +690,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (error) {
             NSLog(@"query error: %@", error);
         }
-        result.error = error;
+        result.error = [EZError errorWithNSError:error];
         
+        // Auto convert to traditional Chinese if needed.
         if (service.autoConvertTraditionalChinese &&
             [self.queryModel.queryTargetLanguage isEqualToString:EZLanguageTraditionalChinese]) {
             [service.result convertToTraditionalChineseResult];
@@ -735,12 +735,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     
     [self updateResultLoadingAnimation:result];
     
-    [service translate:queryModel.queryText
-                  from:queryModel.queryFromLanguage
-                    to:queryModel.queryTargetLanguage
-            completion:completion];
+    [service startQuery:queryModel completion:completion];
     
-    [EZLog logQueryService:service];
+    [EZLocalStorage.shared increaseQueryService:service];
 }
 
 - (void)updateResultLoadingAnimation:(EZQueryResult *)result {
@@ -1038,9 +1035,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSArray *enabledReplaceTypes = @[
         EZActionTypeAutoSelectQuery,
         EZActionTypeShortcutQuery,
+        EZActionTypeInvokeQuery,
     ];
     if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
-        result.showReplaceButton = EZEventMonitor.shared.isTextEditable;
+        result.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable;
     } else {
         result.showReplaceButton = NO;
     }

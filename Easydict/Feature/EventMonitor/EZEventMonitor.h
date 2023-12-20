@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGPoint startPoint; // ⚠️ this may not selected text start point!
 @property (nonatomic, assign) CGPoint endPoint;
 
-@property (nonatomic, assign) BOOL isTextEditable;
+@property (nonatomic, assign, getter=isSelectedTextEditable) BOOL selectedTextEditable;
 
 @property (nonatomic, copy) void (^selectedTextBlock)(NSString *selectedText);
 @property (nonatomic, copy) void (^dismissPopButtonBlock)(void);
@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)stop;
 - (void)startMonitor;
 - (BOOL)isAccessibilityEnabled;
+
+- (void)updateSelectedTextEditableState;
 
 @end
 

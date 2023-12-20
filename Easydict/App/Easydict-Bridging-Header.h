@@ -7,3 +7,4 @@
 #import "EZQueryService.h"
 #import "EZConstKey.h"
 #import "NSString+EZChineseText.h"
+#import "EZError.h"

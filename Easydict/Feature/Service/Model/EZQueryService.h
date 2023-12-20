@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "EZQueryResult.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZOCRResult.h"
 #import "EZQueryModel.h"
 #import "EZLayoutManager.h"
 #import "EZAudioPlayer.h"
-#import "EZError.h"
 #import "MMOrderedDictionary.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -62,6 +61,8 @@ NS_SWIFT_NAME(QueryService)
 /// Get TTS langauge code.
 - (NSString *)getTTSLanguageCode:(EZLanguage)language;
 
+- (void)startQuery:(EZQueryModel *)queryModel completion:(void (^)(EZQueryResult *result, NSError *_Nullable error))completion;
+
 @end
 
 
@@ -83,7 +84,6 @@ NS_SWIFT_NAME(QueryService)
 
 /// 支持的语言字典
 - (MMOrderedDictionary *)supportLanguagesDictionary;
-
 
 /// 文本翻译
 /// @param text 查询文本
@@ -107,6 +107,12 @@ NS_SWIFT_NAME(QueryService)
 /// Intelligent query text type, default is EZQueryTextTypeTranslation | EZQueryTextTypeSentence
 - (EZQueryTextType)intelligentQueryTextType;
 
+/// Check if user has private API key.
+- (BOOL)hasPrivateAPIKey;
+
+- (BOOL)needPrivateAPIKey;
+
+- (NSInteger)totalFreeQueryCharacterCount;
 
 /// 获取文本的语言
 /// @param text 文本

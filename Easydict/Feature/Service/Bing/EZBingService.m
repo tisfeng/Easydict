@@ -92,7 +92,7 @@
 }
 
 - (void)translate:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    [self translate:text useDictQuery:[self isEnglishWordToChinese:text from:from to:to] from:from to:to completion:completion];
+    [self bingTranslate:text useDictQuery:[self isEnglishWordToChinese:text from:from to:to] from:from to:to completion:completion];
 }
 
 - (BOOL)isEnglishWordToChinese:(NSString *)text from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to {
@@ -102,7 +102,7 @@
     return NO;
 }
 
-- (void)translate:(NSString *)text useDictQuery:(BOOL)useDictQuery from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
+- (void)bingTranslate:(NSString *)text useDictQuery:(BOOL)useDictQuery from:(nonnull EZLanguage)from to:(nonnull EZLanguage)to completion:(nonnull void (^)(EZQueryResult *, NSError *_Nullable))completion {
     if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
         return;
     }
@@ -112,7 +112,7 @@
         [self.request translateTextFromDict:text completion:^(NSDictionary * _Nullable json, NSError * _Nullable error) {
             [self parseBingDictTranslate:json word:text completion:^(EZQueryResult *dictResult, NSError * _Nullable dictError) {
                 if (error) {
-                    [self translate:text useDictQuery:NO from:from to:to completion:completion];
+                    [self bingTranslate:text useDictQuery:NO from:from to:to completion:completion];
                 } else {
                     self.isDictQueryResult = YES;
                     completion(dictResult, nil);
@@ -130,7 +130,7 @@
         mm_strongify(self)
         @try {
             if (translateError) {
-                self.result.error = translateError;
+                self.result.error = [EZError errorWithNSError:translateError];
                 NSLog(@"bing translate error %@", translateError);
             } else {
                 BOOL needRetry;
@@ -143,7 +143,7 @@
                 }
                 self.canRetry = YES;
                 if (error) {
-                    self.result.error = error;
+                    self.result.error = [EZError errorWithNSError:error];
                     completion(self.result, error);
                     return;
                 }
@@ -156,7 +156,7 @@
             completion(self.result, translateError);
         } @catch (NSException *exception) {
             MMLogInfo(@"微软翻译接口数据解析异常 %@", exception);
-            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing translate data parse failed", exception));
+            completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing translate data parse failed" request:nil]);
         }
     }];
 }
@@ -229,7 +229,7 @@
 
 - (nullable NSError *)processTranslateResult:(NSData *)translateData text:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to needRetry:(BOOL *)needRetry {
     if (translateData.length == 0) {
-        return EZTranslateError(EZErrorTypeAPI, @"bing translate data is empty", nil);
+        return [EZError errorWithType:EZErrorTypeAPI description:@"bing translate data is empty" request:nil];
     }
     NSArray *json = [NSJSONSerialization JSONObjectWithData:translateData options:0 error:nil];
     if (![json isKindOfClass:[NSArray class]]) {
@@ -244,7 +244,7 @@
                 }
             }
         }
-        return EZTranslateError(EZErrorTypeAPI, msg, nil);
+        return [EZError errorWithType:EZErrorTypeAPI description:msg request:nil];
     }
     EZBingTranslateModel *translateModel = [EZBingTranslateModel mj_objectArrayWithKeyValuesArray:json].firstObject;
     self.result.from = translateModel.detectedLanguage.language ? [self languageEnumFromCode:translateModel.detectedLanguage.language] : from;
@@ -343,12 +343,12 @@ outer:
     @try {
         NSArray *value = json[@"value"];
         if (value.count == 0) {
-            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate value is empty", nil));
+            completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict value is empty" request:nil]);
             return;
         }
         NSArray *meaningGroups = value.firstObject[@"meaningGroups"];
         if (meaningGroups.count == 0) {
-            completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate meaning groups is empty", nil));
+            completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict translate meaning groups is empty" request:nil]);
             return;
         }
         
@@ -379,7 +379,7 @@ outer:
                     EZWordPhonetic *phonetic = [EZWordPhonetic new];
                     phonetic.word = word;
                     phonetic.language = EZLanguageEnglish;
-                    phonetic.name = [name isEqualToString:@"US"] ? @"美" : @"英";
+                    phonetic.name = [name isEqualToString:@"US"] ? NSLocalizedString(@"us_phonetic", nil) : NSLocalizedString(@"uk_phonetic", nil);
                     phonetic.value = fragments.firstObject[@"text"];
                     phonetic.speakURL = [name isEqualToString:@"US"] ? usAudioUrl : [usAudioUrl stringByReplacingOccurrencesOfString:@"tom" withString:@"george"];
                     phonetic.accent = name;
@@ -483,7 +483,7 @@ outer:
         completion(self.result, nil);
     } @catch (NSException *exception) {
         MMLogInfo(@"微软词典接口数据解析异常 %@", exception);
-        completion(self.result, EZTranslateError(EZErrorTypeAPI, @"bing dict translate data parse failed", exception));
+        completion(self.result, [EZError errorWithType:EZErrorTypeAPI description:@"bing dict translate data parse failed" request:nil]);
     }
 }
 

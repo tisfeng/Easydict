@@ -37,10 +37,30 @@ public final class TencentService: QueryService {
         throw QueryServiceError.notSupported
     }
 
-    // MARK: API Request
-    private static let defaultSecretId = ""
-    private static let defaultSecretKey = ""
+    override public func needPrivateAPIKey() -> Bool {
+        true
+    }
 
+    override public func hasPrivateAPIKey() -> Bool {
+        if secretId == defaultSecretId, secretKey == defaultSecretKey {
+            return false
+        }
+        return true
+    }
+
+    override public func totalFreeQueryCharacterCount() -> Int {
+        500 * 10000
+    }
+
+    /**
+     For convenience, we provide a default key for users to try out the service.
+
+     Please do not abuse it, otherwise it may be revoked.
+
+     For better experience, please register your own key at https://cloud.tencent.com
+     */
+    private let defaultSecretId = "7ZdGkHHIx4Nozm4RHib5Jjye5yCefYoxxfSWzMRbKRrHrnSEJaqpypL1yRMoN0E5".decryptAES()
+    private let defaultSecretKey = "OLvQKqJoBfrfLLg95ezIQsWymT+2irYbuMLov1cxrtc3a/M2YXCDQ2rpyy/raQ8r".decryptAES()
 
     // easydict://writeKeyValue?EZTencentSecretId=xxx
     private var secretId: String {
@@ -48,7 +68,7 @@ public final class TencentService: QueryService {
         if let secretId, !secretId.isEmpty {
             return secretId
         } else {
-            return TencentService.defaultSecretId
+            return defaultSecretId
         }
     }
 
@@ -58,25 +78,17 @@ public final class TencentService: QueryService {
         if let secretKey, !secretKey.isEmpty {
             return secretKey
         } else {
-            return TencentService.defaultSecretKey
+            return defaultSecretKey
         }
     }
 
-    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
-            return
-        }
-
-        translateText(text, from: from, to: to, completion: completion)
-    }
-
-    func translateText(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = TencentTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
-            result.errorType = .unsupportedLanguage
-            let unsupportedType = NSLocalizedString("unsupported_translation_type", comment: "")
-            result.errorMessage = "\(unsupportedType): \(from.rawValue) --> \(to.rawValue)"
-            completion(result, nil)
+            let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
+            let showingTo = EZLanguageManager.shared().showingLanguageName(to)
+            let error = EZError(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
+            completion(result, error)
             return
         }
 
@@ -84,7 +96,7 @@ public final class TencentService: QueryService {
             "SourceText": text,
             "Source": transType.sourceLanguage,
             "Target": transType.targetLanguage,
-            "ProjectId": 0
+            "ProjectId": 0,
         ]
 
         let endpoint = "https://tmt.tencentcloudapi.com"
@@ -104,6 +116,7 @@ public final class TencentService: QueryService {
             .responseDecodable(of: TencentResponse.self) { [weak self] response in
                 guard let self else { return }
                 let result = self.result
+
                 switch response.result {
                 case let .success(value):
                     result.from = from
@@ -113,15 +126,17 @@ public final class TencentService: QueryService {
                     completion(result, nil)
                 case let .failure(error):
                     NSLog("Tencent lookup error \(error)")
+                    let ezError = EZError(nsError: error)
+
                     if let data = response.data {
                         do {
                             let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
-                            result.errorMessage = errorResponse.response.error.message
+                            ezError?.errorDataMessage = errorResponse.response.error.message
                         } catch {
                             NSLog("Failed to decode error response: \(error)")
                         }
                     }
-                    completion(result, error)
+                    completion(result, ezError)
                 }
             }
         queryModel.setStop({

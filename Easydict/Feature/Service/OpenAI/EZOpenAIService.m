@@ -7,7 +7,7 @@
 //
 
 #import "EZOpenAIService.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
@@ -168,10 +168,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 /// Use OpenAI to translate text.
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
-    if ([self prehandleQueryTextLanguage:text from:from to:to completion:completion]) {
-        return;
-    }
-    
     text = [text removeInvisibleChar];
     
     NSString *sourceLanguage = [self languageCodeForLanguage:from];
@@ -414,6 +410,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             return;
         }
         
+        EZError *ezError = [EZError errorWithNSError:error];
         NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
         if (errorData) {
             /**
@@ -429,10 +426,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             NSError *jsonError;
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
             if (!jsonError) {
-                self.result.errorMessage = [self getJsonErrorMessageWithJson:json];
+                ezError.errorDataMessage = [self getJsonErrorMessageWithJson:json];
             }
         }
-        completion(nil, error);
+        completion(nil, ezError);
     }];
     
     [self.queryModel setStopBlock:^{
@@ -444,7 +441,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSString *)parseContentFromStreamData:(NSData *)data
                                 lastData:(NSData **)lastData
                                    error:(NSError **)error
-                              isFinished:(nullable BOOL *)isFinished {
+                              isFinished:(BOOL *)isFinished {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
      
@@ -472,10 +469,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    //    NSLog(@"jsonDataString: %@", jsonDataString);
+//        NSLog(@"jsonDataString: %@", jsonDataString);
+    
+    // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
     
     // split string to array
     NSString *dataKey = @"data:";
+    NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
     //    NSLog(@"jsonArray: %@", jsonArray);
     
@@ -489,6 +489,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSString *dataString = [jsonString trim];
         if (dataString.length) {
+            if ([dataString isEqualToString:terminationFlag]) {
+                if (isFinished) {
+                    *isFinished = YES;
+                }
+                break;
+            }
+            
             // parse string to json
             NSData *jsonData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
             NSError *jsonError;
@@ -516,27 +523,58 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 }
             }
             
+            /**
+             gemini-pro
+             
+             {
+               "choices" : [
+                 {
+                   "delta" : {
+                     "content" : "乌克兰可能再获一套爱国者反导系统。"
+                   },
+                   "finish_reason" : "stop"
+                 }
+               ],
+               "created" : 1702957216,
+               "id" : "chatcmpl-0ddd85aae7fe49af9444ced85875decf",
+               "model" : "gemini",
+               "object" : "chat.completion.chunk"
+             }
+             */
+            
+            // TODO: We need to optimize this code.
             if (json[@"choices"]) {
                 NSArray *choices = json[@"choices"];
                 if (choices.count == 0) {
                     continue;
                 }
                 NSDictionary *choice = choices[0];
-                if (choice[@"delta"]) {
-                    // finish_reason is NSNull if not stop
+                NSDictionary *delta = choice[@"delta"];
+                if (delta) {
+                    if (delta[@"content"]) {
+                        NSString *content = delta[@"content"];
+//                        NSLog(@"delta content: %@", content);
+                        [mutableString appendString:content];
+                    }
+                    
+                    // finish_reason is string or null
                     NSString *finishReason = choice[@"finish_reason"];
-                    if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
-                        //                        NSLog(@"finish reason: %@", finishReason);
+                    if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
+                        NSLog(@"finish reason: %@", finishReason);
+
+                        /**
+                         The reason the model stopped generating tokens. 
+                         
+                         This will be "stop" if the model hit a natural stop point or a provided stop sequence,
+                         "length" if the maximum number of tokens specified in the request was reached,
+                         "content_filter" if content was omitted due to a flag from our content filters,
+                         "tool_calls" if the model called a tool,
+                         or "function_call" (deprecated) if the model called a function.
+                         */
                         if (isFinished) {
                             *isFinished = YES;
                         }
                         break;
-                    }
-                    
-                    NSDictionary *delta = choice[@"delta"];
-                    if (delta[@"content"]) {
-                        NSString *content = delta[@"content"];
-                        [mutableString appendString:content];
                     }
                 }
             }
@@ -623,7 +661,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      */
     NSArray *choices = json[@"choices"];
     if (choices.count == 0) {
-        NSError *error = [EZTranslateError errorWithString:@"no result."];
+        NSError *error = [EZError errorWithType:EZErrorTypeAPI description:@"no result."];
         /**
          may be return error json
          {
@@ -637,7 +675,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
          */
         
         if (json[@"error"]) {
-            error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
+            error = [EZError errorWithType:EZErrorTypeAPI description:[self getJsonErrorMessageWithJson:json]];
         }
         
         return nil;
@@ -687,7 +725,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSArray *choices = json[@"choices"];
         if (choices.count == 0) {
-            NSError *error = [EZTranslateError errorWithString:@"no result."];
+            NSError *error = [EZError errorWithType:EZErrorTypeAPI description:@"no result."];
             /**
              may be return error json
              {
@@ -700,7 +738,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
              }
              */
             if (json[@"error"]) {
-                error = [EZTranslateError errorWithString:[self getJsonErrorMessageWithJson:json]];
+                error = [EZError errorWithType:EZErrorTypeAPI description:[self getJsonErrorMessageWithJson:json]];
             }
             
             completion(nil, error);

@@ -20,7 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)logWindowAppear:(EZWindowType)windowType;
 + (void)logQueryService:(EZQueryService *)service;
-+ (void)logQuery:(EZQueryModel *)model;
 
 + (void)logAppInfo;
 

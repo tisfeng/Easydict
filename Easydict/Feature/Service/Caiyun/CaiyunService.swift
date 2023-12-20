@@ -51,21 +51,18 @@ public final class CaiyunService: QueryService {
             return CaiyunService.defaultTestToken
         }
     }
-    
+
     override public func autoConvertTraditionalChinese() -> Bool {
-        return true
+        true
     }
 
-    public override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {        
-        if prehandleQueryTextLanguage(text, from: from, to: to, completion: completion) {
-            return
-        }
+    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = CaiyunTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
-            result.errorType = .unsupportedLanguage
-            let unsupportedType = NSLocalizedString("unsupported_translation_type", comment: "")
-            result.errorMessage = "\(unsupportedType): \(from.rawValue) --> \(to.rawValue)"
-            completion(result, nil)
+            let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
+            let showingTo = EZLanguageManager.shared().showingLanguageName(to)
+            let error = EZError(type: .unsupportedLanguage, description: "\(showingFrom) --> \(showingTo)")
+            completion(result, error)
             return
         }
 
@@ -83,14 +80,15 @@ public final class CaiyunService: QueryService {
         ]
 
         let request = AF.request(apiEndPoint,
-                   method: .post,
-                   parameters: parameters,
-                   encoding: JSONEncoding.default,
-                   headers: headers)
+                                 method: .post,
+                                 parameters: parameters,
+                                 encoding: JSONEncoding.default,
+                                 headers: headers)
             .validate()
             .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
                 guard let self else { return }
                 let result = self.result
+
                 switch response.result {
                 case let .success(value):
                     result.from = from
@@ -99,11 +97,9 @@ public final class CaiyunService: QueryService {
                     result.translatedResults = value.target
                     completion(result, nil)
                 case let .failure(error):
-                    if let data = response.data {
-                        result.errorMessage = String(data: data, encoding: .utf8)
-                    }
                     NSLog("Caiyun lookup error \(error)")
-                    completion(result, error)
+                    let ezError = EZError(nsError: error, errorResponseData: response.data)
+                    completion(result, ezError)
                 }
             }
         queryModel.setStop({

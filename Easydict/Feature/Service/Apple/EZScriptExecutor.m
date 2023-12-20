@@ -7,20 +7,22 @@
 //
 
 #import "EZScriptExecutor.h"
-#import "EZTranslateError.h"
+#import "EZError.h"
 #import "EZToast.h"
+
+static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2.0";
 
 @implementation EZScriptExecutor
 
 /// Run translate shortcut with parameters.
-- (NSTask *)runTranslateShortcut:(NSDictionary *)parameters completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
-    return [self runShortcut:@"Easydict-Translate-V1.2.0" parameters:parameters completionHandler:completionHandler];;
+- (NSTask *)runTranslateShortcut:(NSDictionary *)parameters completionHandler:(void (^)(NSString *result, EZError *error))completionHandler {
+    return [self runShortcut:kEasydictTranslatShortcutName parameters:parameters completionHandler:completionHandler];
 }
 
 /// Run shortcut with parameters.
 - (NSTask *)runShortcut:(NSString *)shortcutName
              parameters:(NSDictionary *)parameters
-      completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+      completionHandler:(void (^)(NSString *result, EZError *error))completionHandler {
     /**
      tell application "Shortcuts Events"
         run the shortcut named "Easydict-Translate-V1.2.0" with input "text=apple&from=en_US&to=zh_CN"
@@ -33,7 +35,7 @@
 }
 
 /// Use NSTask to run AppleScript.
-- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+- (NSTask *)runAppleScriptWithTask:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *error))completionHandler {
     NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/usr/bin/osascript";
     task.arguments = @[ @"-e", script ];
@@ -48,7 +50,7 @@
         
         NSString *result = @"";
         // This method can only catch errors inside the NSTask object, and the error of executing the task needs to be used with standardError.
-        NSError *error;
+        EZError *error;
         if ([task launchAndReturnError:&error]) {
             NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFileAndReturnError:&error];
             // ???: This method value may be incorrect, read bool "true" from pipe.
@@ -72,7 +74,11 @@
             NSArray *array = [errorString componentsSeparatedByString:@"execution error: "];
             if (array.count > 1) {
                 errorString = [array[1] trim];
-                error = [EZTranslateError errorWithString:errorString];
+                EZErrorType type = EZErrorTypeAPI;
+                if ([errorString containsString:kEasydictTranslatShortcutName]) {
+                    type = EZErrorTypeParam;
+                }
+                error = [EZError errorWithType:type description:errorString];
             }
         }
         
@@ -88,12 +94,12 @@
 
 /// Use NSAppleScript to run AppleScript, faster than NSTask.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, NSError *error))completionHandler {
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *error))completionHandler {
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         @try {
-            NSError *error = nil;
+            EZError *error = nil;
             NSDictionary *errorInfo = nil;
             // ???: Sometimes it will crash in this line
             NSAppleEventDescriptor *result = [appleScript executeAndReturnError:&errorInfo];
@@ -102,7 +108,11 @@
             if (errorInfo) {
                 MMLogInfo(@"runAppleScript errorInfo: %@", errorInfo);
                 NSString *errorString = errorInfo[NSAppleScriptErrorMessage];
-                error = [EZTranslateError errorWithString:errorString];
+                EZErrorType type = EZErrorTypeAPI;
+                if ([errorString containsString:kEasydictTranslatShortcutName]) {
+                    type = EZErrorTypeParam;
+                }
+                error = [EZError errorWithType:type description:errorString];
             }
             
             CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
