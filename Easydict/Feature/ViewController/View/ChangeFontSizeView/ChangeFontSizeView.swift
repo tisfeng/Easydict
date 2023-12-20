@@ -19,21 +19,7 @@ import AppKit
     
     @objc var didSelectFontSizeRatio: ((CGFloat)->Void)?
     
-    var selectedIndex = 1 {
-        didSet {
-            NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.3
-                self.selectedLine.animator().frame = self.selectedLineTargetFrame()
-            } completionHandler: {
-                self.updateSelectedLineFrame()
-            }
-            
-            let ratio = fontSizes[selectedIndex]
-            didSelectFontSizeRatio?(ratio)
-            
-            NotificationCenter.default.post(.init(name: .init(Self.changeFontSizeNotificationName), object: ratio))
-        }
-    }
+    private var selectedIndex = 1
     
     @objc public init(fontSizes: [CGFloat], initialIndex: Int) {
         self.fontSizes = fontSizes
@@ -100,13 +86,18 @@ import AppKit
     private func updateSelectedLineFrame() {
         
         selectedLine.frame = selectedLineTargetFrame()
+        
+//        print("[DEBUG] selectedLine.frame: ", selectedLine.frame)
     }
     
     private func selectedLineTargetFrame() -> NSRect {
         let y = bounds.height/2
         let width: CGFloat = 6
         let height: CGFloat = 16
-        let x = (bounds.width/CGFloat(verticalLines.count-1)) * CGFloat(selectedIndex)
+        
+        let index = max(0, min(selectedIndex, verticalLines.count - 1))
+        
+        let x = index == 0 ? 0 : (bounds.width/CGFloat(verticalLines.count-1)) * CGFloat(index)
         
         let frame = NSRect(x: round(x) - width/2, y: y - height/2, width: width, height: height)
         return frame
@@ -115,12 +106,51 @@ import AppKit
     public override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
         
+        handleEvent(event: event)
+    }
+    
+    public override func mouseDragged(with event: NSEvent) {
+        super.mouseDragged(with: event)
+        
+        handleEvent(event: event, animated: false)
+    }
+    
+    private func handleEvent(event: NSEvent, animated: Bool = true) {
         let location = event.locationInWindow
         let point = convert(location, from: nil)
         
         let index = point.x / (bounds.width/CGFloat(verticalLines.count-1))
         
-        selectedIndex = Int(round(index))
+        var targetIndex = Int(round(index))
+        targetIndex = max(0, targetIndex)
+        targetIndex = min(targetIndex, fontSizes.count - 1)
+        
+        if targetIndex != selectedIndex {
+            updateIndex(targetIndex, animated: animated)
+        }
+    }
+    
+    private func updateIndex(_ index: Int, animated: Bool) {
+        selectedIndex = index
+        
+        if animated {
+            
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.3
+                self.selectedLine.animator().frame = self.selectedLineTargetFrame()
+            } completionHandler: {
+                self.updateSelectedLineFrame()
+            }
+            
+        } else {
+            self.updateSelectedLineFrame()
+        }
+        
+        
+        let ratio = fontSizes[selectedIndex]
+        didSelectFontSizeRatio?(ratio)
+        
+        NotificationCenter.default.post(.init(name: .init(Self.changeFontSizeNotificationName), object: ratio))
     }
     
     private func createLine() -> NSView {
