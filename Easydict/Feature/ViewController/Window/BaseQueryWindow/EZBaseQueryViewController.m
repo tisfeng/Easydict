@@ -1257,19 +1257,19 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
         EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
         
-        webView = result.webViewManager.webView;
+        EZWebViewManager *webViewManager = result.webViewManager;
+        webView = webViewManager.webView;
         resultCell.wordResultView.webView = webView;
         
-        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !result.webViewManager.isLoaded;
+        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
-            result.webViewManager.isLoaded = YES;
+            webViewManager.isLoaded = YES;
             
             NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
             webView.navigationDelegate = resultCell.wordResultView;
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
-        } else if (result.webViewManager.needUpdateIframeHeight && result.webViewManager.isLoaded) {
-            NSString *script = @"updateAllIframeStyle();";
-            [webView evaluateJavaScript:script completionHandler:nil];
+        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            [webViewManager updateAllIframe];
         }
     }
     

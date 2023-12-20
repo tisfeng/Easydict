@@ -126,7 +126,7 @@ static EZConfiguration *_instance;
     self.fontSizes = @[@(1), @(1.1), @(1.2), @(1.3), @(1.4)];
     [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: self.fontSizes.firstObject}];
     
-    self.fontSizeRatio = [[NSUserDefaults standardUserDefaults]floatForKey:kTranslationControllerFontKey];
+    self.fontSizeRatio = [[NSUserDefaults standardUserDefaults] floatForKey:kTranslationControllerFontKey];
 }
 
 #pragma mark - getter
@@ -418,9 +418,9 @@ static EZConfiguration *_instance;
     [self logSettings:@{@"clear_input" : @(clearInput)}];
 }
 
-- (void)setFontSizeRatio:(CGFloat)currentFontSizeRatio {
-    _fontSizeRatio = currentFontSizeRatio;
-    [NSUserDefaults mm_write:@(currentFontSizeRatio) forKey:kTranslationControllerFontKey];
+- (void)setFontSizeRatio:(CGFloat)fontSizeRatio {
+    _fontSizeRatio = fontSizeRatio;
+    [NSUserDefaults mm_write:@(fontSizeRatio) forKey:kTranslationControllerFontKey];
 }
 
 #pragma mark - Window Frame

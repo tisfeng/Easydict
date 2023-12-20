@@ -331,6 +331,17 @@
         iframe.style.height = totalHeight + "px";
 
         // console.log(`${i}: frame totalHeight: ${totalHeight}`);
+        
+        
+        var scrollHeight = getScrollHeight();
+
+        if (window.webkit && window.webkit.messageHandlers) {
+          // 调用 objc 方法
+          window.webkit.messageHandlers.objcHandler.postMessage({
+            method: "noteToUpdateScrollHeight",
+            scrollHeight: scrollHeight,
+          });
+        }
       }
     }
 
@@ -372,8 +383,10 @@
         bigWordTitleHeight +
         allIframesHeight +
         dictionaryTitleHeight * iframesHeight.length;
-      console.log(`iframesHeight: [${iframesHeight}]`);
-      console.log(`scrollHeight: ${scrollHeight}`);
+        
+      // console.log(`iframesHeight: [${iframesHeight}]`);
+      // console.log(`scrollHeight: ${scrollHeight}`);
+      
       return scrollHeight;
     }
 
@@ -424,6 +437,19 @@
         iframe.style.borderColor = newBorderColor;
       }
     }
+      
+      // Change all iframes body font size
+      function changeIframeBodyFontSize(fontSize) {
+          console.log("fontSize: " + fontSize);
+          var iframes = document.getElementsByTagName('iframe');
+          for (var i = 0; i < iframes.length; i++) {
+              var iframe = iframes[i];
+              var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+              
+              // 修改 iframe 中 body 的字体大小
+              frameDoc.body.style.fontSize = fontSize;
+          }
+      }
 
     window.onload = function () {
       // 重写 console.log，以便在 Xcode 中输出日志
@@ -442,30 +468,11 @@
         };
       }
 
-      if (isDarkMode()) {
-        // updateAllIframeColor(true);
-        // updateBackgroundColor(true);
-      }
-
-      updateAllIframeStyle();
-
-      var scrollHeight = getScrollHeight();
-
-      if (window.webkit && window.webkit.messageHandlers) {
-        // 调用 Objective-C 方法
-        window.webkit.messageHandlers.objcHandler.postMessage({
-          method: "getScrollHeight",
-          scrollHeight: scrollHeight,
-        });
-      }
-
       var colorSchemeListener = window.matchMedia(
         `(prefers-color-scheme: dark)`
       );
       colorSchemeListener.addEventListener(`change`, function (event) {
         var isDarkMode = event.matches;
-        // updateAllIframeColor(isDarkMode);
-        // updateBackgroundColor(isDarkMode);
       });
     };
   </script>

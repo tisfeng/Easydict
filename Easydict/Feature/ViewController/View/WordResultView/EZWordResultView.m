@@ -265,6 +265,10 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (result.HTMLString.length) {
         [self addSubview:self.webView];
         
+        if (result.webViewManager.isLoaded) {
+            [result.webViewManager updateAllIframe];
+        }
+        
         [result.webViewManager setDidFinishUpdatingIframeHeightBlock:^(CGFloat scrollHeight) {
             mm_strongify(self);
             
@@ -1050,18 +1054,16 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSLog(@"webView didFinishNavigation");
 
+    [self.result.webViewManager updateAllIframe];
 }
-
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailNavigation: %@", error);
-    
 }
 
 /** 请求服务器发生错误 (如果是goBack时，当前页面也会回调这个方法，原因是NSURLErrorCancelled取消加载) */
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"didFailProvisionalNavigation: %@", error);
-
 }
 
 // 监听 JavaScript 代码是否执行
@@ -1310,6 +1312,24 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
         if (!error) {
            NSString *linkText = (NSString *)result;
             completionHandler(linkText);
+        }
+    }];
+}
+
+- (void)updateWebViewAllIframeFontSize {
+    CGFloat fontSize = EZConfiguration.shared.fontSizeRatio * 100;
+
+    NSString *jsCode = [NSString stringWithFormat:
+    @"var iframes = document.querySelectorAll('iframe');"
+    @"for (var i = 0; i < iframes.length; i++) {"
+    @"   var iframe = iframes[i];"
+    @"   var frameDoc = iframe.contentDocument || iframe.contentWindow.document;"
+    @"   frameDoc.body.style.fontSize = '%f%%';"
+    @"};", fontSize];
+    
+    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if (!error) {
+            
         }
     }];
 }
