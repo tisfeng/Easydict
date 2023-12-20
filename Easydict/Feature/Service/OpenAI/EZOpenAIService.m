@@ -441,7 +441,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSString *)parseContentFromStreamData:(NSData *)data
                                 lastData:(NSData **)lastData
                                    error:(NSError **)error
-                              isFinished:(nullable BOOL *)isFinished {
+                              isFinished:(BOOL *)isFinished {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
      
@@ -471,8 +471,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //        NSLog(@"jsonDataString: %@", jsonDataString);
     
+    // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
+    
     // split string to array
     NSString *dataKey = @"data:";
+    NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
     //    NSLog(@"jsonArray: %@", jsonArray);
     
@@ -486,6 +489,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSString *dataString = [jsonString trim];
         if (dataString.length) {
+            if ([dataString isEqualToString:terminationFlag]) {
+                if (isFinished) {
+                    *isFinished = YES;
+                }
+                break;
+            }
+            
             // parse string to json
             NSData *jsonData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
             NSError *jsonError;
