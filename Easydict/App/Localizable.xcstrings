@@ -34,6 +34,23 @@
         }
       }
     },
+    "ali_translate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ALi Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阿里翻译"
+          }
+        }
+      }
+    },
     "Alignment Error" : {
       "comment" : "Error description",
       "localizations" : {

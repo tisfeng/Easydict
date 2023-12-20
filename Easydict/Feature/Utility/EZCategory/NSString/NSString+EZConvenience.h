@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString;
 
+- (NSString *)unescapedXMLString;
+
 
 - (void)copyToPasteboard;
 - (void)copyToPasteboardSafely;
