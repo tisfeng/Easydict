@@ -477,7 +477,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *dataKey = @"data:";
     NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
-    //    NSLog(@"jsonArray: %@", jsonArray);
+//        NSLog(@"jsonArray: %@", jsonArray);
     
     NSMutableString *mutableString = [NSMutableString string];
     
@@ -849,7 +849,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: ```%@```.\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text literally, desired display format: \"%@:\n {literal_translation_result} \",\n\n", targetLanguage, literalTranslation];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text literally, keep the original format, and don’t miss any information, desired display format: \"%@:\n {literal_translation_result} \",\n\n", targetLanguage, literalTranslation];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -874,8 +874,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. Re-free translation according to the results of the first literal translation, to make the content more easy to understand on the premise of abiding by the original meaning, which is in line with the habit of %@ expression, desired display format: \"%@:\n {free_translation_result} \", \n\n", targetLanguage, freeTranslation];
-    prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
+    NSString *freeTranslationPrompt = [NSString stringWithFormat:@"3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with %@ expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the %@ expression habits, while keeping the original format unchanged, desired display format: \"%@:\n {free_translation_result} \", \n\n", targetLanguage, targetLanguage,  freeTranslation];
+    prompt = [prompt stringByAppendingString:freeTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
@@ -981,7 +981,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" : kTranslationSystemPrompt,
         },
     ];
-    NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
+    NSMutableArray *messages = [NSMutableArray array];
+    [messages addObjectsFromArray:systemMessages];
     
     if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         [messages addObjectsFromArray:chineseFewShot];
