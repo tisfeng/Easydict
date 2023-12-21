@@ -37,6 +37,14 @@ class AliService: QueryService {
         throw QueryServiceError.notSupported
     }
 
+    override public func autoConvertTraditionalChinese() -> Bool {
+        // If translate traditionalChinese <--> simplifiedChinese, use Ali API directly.
+        if EZLanguageManager.shared().onlyContainsChineseLanguages([queryModel.queryFromLanguage, queryModel.queryTargetLanguage]) {
+            return false
+        }
+        return true
+    }
+
     override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let transType = AliTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {

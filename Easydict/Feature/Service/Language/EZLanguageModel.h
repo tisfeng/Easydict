@@ -69,6 +69,8 @@ FOUNDATION_EXPORT EZLanguage const EZLanguageCroatian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageMongolian;
 FOUNDATION_EXPORT EZLanguage const EZLanguageHebrew;
 
+FOUNDATION_EXPORT EZLanguage const EZLanguageUnsupported;
+
 @interface EZLanguageModel : NSObject
 
 @property (nonatomic, copy) NSString *chineseName;

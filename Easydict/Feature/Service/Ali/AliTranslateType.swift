@@ -11,14 +11,18 @@ import Foundation
 struct AliTranslateType: Equatable {
     var sourceLanguage: String
     var targetLanguage: String
-
+    
     static let unsupported = AliTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
-
-    /// https://help.aliyun.com/document_detail/215387.html?spm=a2c4g.158269.0.0.48d54b8ab1Jeol#h2-url-1
+    
+    /// https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes#h2-url-1
     static let supportLanguagesDictionary: [Language: String] = [
         .auto: "auto",
         .simplifiedChinese: "zh",
-        .traditionalChinese: "zh-tw",
+        
+        /**
+         traditionalChinese code is "zh-tw", but Ali only support traditionalChinese <--> simplifiedChinese, so we convert traditionalChinese manually.
+         */
+        .traditionalChinese: "zh", // "zh-tw"
         .english: "en",
         .japanese: "ja",
         .korean: "ko",
@@ -63,25 +67,37 @@ struct AliTranslateType: Equatable {
         .mongolian: "mn",
         .hebrew: "he",
     ]
-
+    
     static func transType(from: Language, to: Language) -> AliTranslateType {
         /**
          文本翻译除繁体中文、蒙语、粤语外，其他212种语言，可支持任意两种语言之间互译。繁体中文、蒙语、粤语仅支持与中文之间的互译。文本翻译支持源语言的自动语言检测，语言代码为auto（粤语为源语言时，不支持使用auto作为语言代码）。
+         
+         https://help.aliyun.com/zh/machine-translation/support/supported-languages-and-codes
          */
-        if from == .traditionalChinese || from == .mongolian, to != .simplifiedChinese {
-            return .unsupported
-        } else if to == .traditionalChinese, from != .simplifiedChinese {
-            return .unsupported
-        } else if to == .mongolian, from != .simplifiedChinese {
+        
+        if from == .mongolian, !to.isKindOfChinese() || to == .mongolian, !from.isKindOfChinese() {
             return .unsupported
         }
-
-        guard let fromLanguage = supportLanguagesDictionary[from],
-              let toLanguage = supportLanguagesDictionary[to]
+        
+        guard var fromLanguage = supportLanguagesDictionary[from],
+              var toLanguage = supportLanguagesDictionary[to]
         else {
             return .unsupported
         }
-
+        
+        // If translate traditionalChinese <--> simplifiedChinese, use Ali API directly.
+        if EZLanguageManager.shared().onlyContainsChineseLanguages([from, to]) {
+            let traditionalLangaugeCode = "zh-tw"
+            
+            // Maybe traditionalChinese --> traditionalChinese
+            if from == .traditionalChinese {
+                fromLanguage = traditionalLangaugeCode
+            }
+            if to == .traditionalChinese {
+                toLanguage = traditionalLangaugeCode
+            }
+        }
+        
         return AliTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
     }
 }
