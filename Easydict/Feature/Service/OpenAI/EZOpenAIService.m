@@ -827,13 +827,16 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     self.result.to = answerLanguage;
     
     NSString *prompt = @"";
+    NSString *literalTranslation = @"Literal Translation";
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parsing";
-    NSString *inferenceTranslation = @"Inferential Translation";
+    NSString *freeTranslation = @"Free Translation";
+
     if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
+        literalTranslation = @"直译";
         keyWords = @"重点词汇";
         grammarParse = @"语法分析";
-        inferenceTranslation = @"推理翻译";
+        freeTranslation = @"意译";
     }
         
     /**
@@ -843,10 +846,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      
      So we need to use ``` wrap it.
      */
-    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: ```%@``` .\n", sourceLanguage, sentence];
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: ```%@```.\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" $(literal_translation) \",\n\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text literally, desired display format: \"%@:\n {literal_translation_result} \",\n\n", targetLanguage, literalTranslation];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -865,13 +868,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
-    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ $(inferential_translation) of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the $(inferential_translation) is different from the previous $(literal_translation). $(inferential_translation) only contains the final translation result. Display in this format: \"%@: $(inferential_translation) \", \n\n", targetLanguage, inferenceTranslation];
+    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. Re-free translation according to the results of the first literal translation, to make the content more easy to understand on the premise of abiding by the original meaning, which is in line with the habit of %@ expression, desired display format: \"%@:\n {free_translation_result} \", \n\n", targetLanguage, freeTranslation];
     prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
@@ -1052,7 +1055,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         exampleSentence = @"例句";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired format: \"%@: / xxx /\" \n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired display format: \"%@: / xxx /\" \n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
@@ -1066,26 +1069,26 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         //        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
-        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form, if has, show desired format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form, if has, show desired display format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
-        translationPrompt = [translationPrompt stringByAppendingFormat:@", desired format: \"%@: xxx \" ", translationTitle];
+        translationPrompt = [translationPrompt stringByAppendingFormat:@", desired display format: \"%@: xxx \" ", translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief <%@> explanation in clear and understandable way, desired format: \"%@: xxx \" \n", answerLanguage, explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief <%@> explanation in clear and understandable way, desired display format: \"%@: xxx \" \n", answerLanguage, explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. Desired format: \"%@: xxx \" . \n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. desired display format: \"%@: xxx \" . \n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired format: \"%@: xxx \" \n", howToRemember];
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired display format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
         
-        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired format: \"%@: xxx \" ", sourceLanguage, cognate];
+        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired display format: \"%@: xxx \" ", sourceLanguage, cognate];
         NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
         prompt = [prompt stringByAppendingString:cognatesPrompt];
     }
