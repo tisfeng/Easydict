@@ -69,8 +69,7 @@ class AliService: QueryService {
                                              result.translatedResults = [translateText.unescapedXML()]
                                              completion(result, nil)
                                          } else {
-                                             let ezError = EZError(type: value.httpStatusCode == 500 ? .unsupportedLanguage : .noResultsFound)
-                                             ezError.errorDataMessage = value.message ?? "ali translate failed"
+                                             let ezError = EZError(type: .API, description: value.code, errorDataMessage: value.message)
                                              completion(result, ezError)
                                          }
                                      case let .failure(error):

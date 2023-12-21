@@ -20,6 +20,16 @@ import Foundation
          "detectLanguage": "en"
      }
  }
+
+ error:
+ {
+     "requestId": "877D2097-6FE4-4B24-BAF1-41AB561C1E67",
+     "success": false,
+     "httpStatusCode": 500,
+     "code": "ParamError",
+     "message": "Query length limit exceeded",
+     "data": null
+ }
  */
 
 struct AliResponse: Codable {
