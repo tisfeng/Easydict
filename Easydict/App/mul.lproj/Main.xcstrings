@@ -970,19 +970,19 @@
       }
     },
     "eIi-Yp-9Iw.title" : {
-      "comment" : "Class = \"NSMenu\"; title = \"Shortcut\"; ObjectID = \"eIi-Yp-9Iw\";",
+      "comment" : "Class = \"NSMenu\"; title = \"Shortcuts\"; ObjectID = \"eIi-Yp-9Iw\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         }
       }
@@ -2840,19 +2840,19 @@
       }
     },
     "YF0-bI-c58.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Shortcut\"; ObjectID = \"YF0-bI-c58\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Shortcuts\"; ObjectID = \"YF0-bI-c58\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         }
       }
