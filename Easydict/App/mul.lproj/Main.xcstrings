@@ -384,6 +384,18 @@
         }
       }
     },
+    "525-TU-MBZ.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Increase Font Size\"; ObjectID = \"525-TU-MBZ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Increase Font Size"
+          }
+        }
+      }
+    },
     "a4o-M9-LLq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste Ruler\"; ObjectID = \"a4o-M9-LLq\";",
       "extractionState" : "extracted_with_value",
@@ -1471,6 +1483,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        }
+      }
+    },
+    "K7d-rE-hVh.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Decrease Font Size\"; ObjectID = \"K7d-rE-hVh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Decrease Font Size"
           }
         }
       }
