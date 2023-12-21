@@ -1,5 +1,5 @@
 //
-//  ALiService.swift
+//  AliService.swift
 //  Easydict
 //
 //  Created by choykarl on 2023/12/20.
@@ -9,8 +9,8 @@
 import Alamofire
 import Foundation
 
-@objc(EZALiService)
-class ALiService: QueryService {
+@objc(EZAliService)
+class AliService: QueryService {
     override func serviceType() -> ServiceType {
         .ali
     }
@@ -26,7 +26,7 @@ class ALiService: QueryService {
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary in the API
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        ALiTranslateType.supportLanguagesDictionary.forEach { key, value in
+        AliTranslateType.supportLanguagesDictionary.forEach { key, value in
             orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
         }
         return orderedDict
@@ -38,7 +38,7 @@ class ALiService: QueryService {
     }
 
     override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        let transType = ALiTranslateType.transType(from: from, to: to)
+        let transType = AliTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
             let showingTo = EZLanguageManager.shared().showingLanguageName(to)
@@ -56,7 +56,7 @@ class ALiService: QueryService {
                                      "query": text,
                                  ])
                                  .validate()
-                                 .responseDecodable(of: ALiResponse.self) { [weak self] response in
+                                 .responseDecodable(of: AliResponse.self) { [weak self] response in
                                      guard let self else { return }
                                      let result = self.result
 

@@ -1,5 +1,5 @@
 //
-//  ALiResponse.swift
+//  AliResponse.swift
 //  Easydict
 //
 //  Created by choykarl on 2023/12/20.
@@ -22,7 +22,7 @@ import Foundation
  }
  */
 
-struct ALiResponse: Codable {
+struct AliResponse: Codable {
     struct Data: Codable {
         var translateText: String?
         var detectLanguage: String?

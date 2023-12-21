@@ -1,5 +1,5 @@
 //
-//  ALiTranslateType.swift
+//  AliTranslateType.swift
 //  Easydict
 //
 //  Created by choykarl on 2023/12/20.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct ALiTranslateType: Equatable {
+struct AliTranslateType: Equatable {
     var sourceLanguage: String
     var targetLanguage: String
 
-    static let unsupported = ALiTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
+    static let unsupported = AliTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
     /// https://help.aliyun.com/document_detail/215387.html?spm=a2c4g.158269.0.0.48d54b8ab1Jeol#h2-url-1
     static let supportLanguagesDictionary: [Language: String] = [
@@ -64,9 +64,7 @@ struct ALiTranslateType: Equatable {
         .hebrew: "he",
     ]
 
-    static func transType(from: Language, to: Language) -> ALiTranslateType {
-        // !!!: Tencent translate support traditionalChinese as target language if target languages contain simplifiedChinese.
-
+    static func transType(from: Language, to: Language) -> AliTranslateType {
         /**
          文本翻译除繁体中文、蒙语、粤语外，其他212种语言，可支持任意两种语言之间互译。繁体中文、蒙语、粤语仅支持与中文之间的互译。文本翻译支持源语言的自动语言检测，语言代码为auto（粤语为源语言时，不支持使用auto作为语言代码）。
          */
@@ -84,6 +82,6 @@ struct ALiTranslateType: Equatable {
             return .unsupported
         }
 
-        return ALiTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
+        return AliTranslateType(sourceLanguage: fromLanguage, targetLanguage: toLanguage)
     }
 }
