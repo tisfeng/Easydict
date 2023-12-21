@@ -835,8 +835,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         grammarParse = @"语法分析";
         inferenceTranslation = @"推理翻译";
     }
-    
-    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
+        
+    /**
+     Fuck, Google Gemini cannot input this text, no result returned.
+     
+     "分析这个英语句子: \"\"\"Body cam shows man shot after attacking a police officer\"\"\""
+     
+     So we need to use ``` wrap it.
+     */
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: ```%@``` .\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
     NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" $(literal_translation) \",\n\n", targetLanguage];
