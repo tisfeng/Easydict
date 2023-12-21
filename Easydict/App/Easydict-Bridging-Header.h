@@ -9,3 +9,4 @@
 #import "NSString+EZChineseText.h"
 #import "EZError.h"
 #import "NSString+EZConvenience.h"
+#import "NSString+EZConvenience.h"

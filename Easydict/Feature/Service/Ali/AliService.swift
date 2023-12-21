@@ -66,14 +66,13 @@ class AliService: QueryService {
                                          result.to = to
                                          result.queryText = text
                                          if let data = value.data, let translateText = data.translateText {
-                                             result.translatedResults = [translateText]
+                                             result.translatedResults = [translateText.unescapedXML()]
                                              completion(result, nil)
                                          } else {
                                              let ezError = EZError(type: value.httpStatusCode == 500 ? .unsupportedLanguage : .noResultsFound)
                                              ezError.errorDataMessage = value.message ?? "ali translate failed"
                                              completion(result, ezError)
                                          }
-
                                      case let .failure(error):
                                          NSLog("ali lookup error \(error)")
                                          let ezError = EZError(nsError: error)
