@@ -11,6 +11,7 @@
 #import "EZWindowManager.h"
 #import "NSString+EZUtils.h"
 #import "NSString+EZHandleInputText.h"
+#import "NSString+EZChineseText.h"
 
 @implementation EZAppleDictionary
 
@@ -605,6 +606,9 @@ static EZAppleDictionary *_instance;
         
     // If text is Chinese
     if ([EZLanguageManager.shared isChineseLanguage:language]) {
+        if (word.length == 1) {
+            return YES;
+        }
         
         /**
          開 --> 开
@@ -613,15 +617,15 @@ static EZAppleDictionary *_instance;
          開始 --> 開始 kāishǐ
          国色天香 --> 国色天香  guósè-tiānxiāng, 国色天香  guó sè tiān xiāng, 天香国色  tiān xiāng guó sè
          浮云终日行 --> 浮  fú  xxx
+         奇怪字符 --> 奇怪 qiguai  xxx
          */
         
-        if (word.length == 1) {
-            return YES;
-        }
+        normalizedWord = [normalizedWord toSimplifiedChineseText];
+        normalizedHeadword = [normalizedHeadword toSimplifiedChineseText];
         
-        BOOL hasWordSubstring = [normalizedHeadword containsString:normalizedWord];
-        BOOL hasSameWordParts = [normalizedWord wordsInText].count == [normalizedHeadword wordsInText].count;
-        if (hasWordSubstring || hasSameWordParts) {
+        NSString *pureChineseHeadwords = [normalizedHeadword removeAlphabet].trim;
+        BOOL hasWordSubstring = [pureChineseHeadwords containsString:normalizedWord];
+        if (hasWordSubstring) {
             return YES;
         }
         
