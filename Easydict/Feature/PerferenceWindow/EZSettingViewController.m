@@ -102,6 +102,7 @@
 
 @property (nonatomic, strong) NSTextField *fontSizeLabel;
 @property (nonatomic, strong) ChangeFontSizeView *changeFontSizeView;
+@property (nonatomic, strong) FontSizeHintView *fontSizeHintView;
 
 @property (nonatomic, strong) NSArray<NSString *> *enabledTTSServiceTypes;
 
@@ -493,6 +494,9 @@
     [self.contentView addSubview:changeFontSizeView];
     self.changeFontSizeView = changeFontSizeView;
     
+    self.fontSizeHintView = [FontSizeHintView new];
+    [self.contentView addSubview:self.fontSizeHintView];
+    
     [self updatePreferredLanguagesPopUpButton];
     
     self.showQueryIconButton.mm_isOn = self.config.autoSelectText;
@@ -775,12 +779,18 @@
         make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.fontSizeLabel);
         make.width.mas_equalTo(200);
-        make.height.mas_equalTo(60);
+        make.height.mas_equalTo(30);
+    }];
+    
+    [self.fontSizeHintView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding);
+        make.top.equalTo(self.changeFontSizeView.mas_bottom).mas_offset(5);
+        make.width.mas_equalTo(300);
     }];
     
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.fontSizeLabel.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.fontSizeHintView.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
     
