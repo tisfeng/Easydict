@@ -7,6 +7,7 @@
 
 import AppKit
 import Foundation
+import Hue
 
 @objc public class ChangeFontSizeView: NSView {
     @objc static let changeFontSizeNotificationName = "changeFontSizeNotification"
@@ -43,7 +44,7 @@ import Foundation
         translatesAutoresizingMaskIntoConstraints = false
 
         let horizonLine = createLine()
-        horizonLine.layer?.backgroundColor = NSColor(red: 65 / 255, green: 65 / 255, blue: 65 / 255, alpha: 1).cgColor
+        horizonLine.layer?.backgroundColor = NSColor(hex: "CCCCCC").cgColor
         addSubview(horizonLine)
 
         NSLayoutConstraint.activate([
@@ -68,7 +69,7 @@ import Foundation
         ])
 
         verticalLines.enumerated().forEach { _, view in
-            view.layer?.backgroundColor = NSColor(red: 90 / 255, green: 90 / 255, blue: 90 / 255, alpha: 1).cgColor
+            view.layer?.backgroundColor = NSColor(hex: "B5B5B5").cgColor
             view.layer?.cornerRadius = 1
             NSLayoutConstraint.activate([
                 view.widthAnchor.constraint(equalToConstant: 3),
@@ -77,7 +78,7 @@ import Foundation
 
         addSubview(selectedLine)
         selectedLine.layer?.cornerRadius = 3
-        selectedLine.layer?.backgroundColor = NSColor(red: 130 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1).cgColor
+        selectedLine.layer?.backgroundColor = NSColor(hex: "D0D0D0").cgColor
     }
 
     override public func layout() {
