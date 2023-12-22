@@ -776,7 +776,7 @@
     }];
     
     [self.changeFontSizeView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding);
+        make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding + 2);
         make.centerY.equalTo(self.fontSizeLabel);
         make.width.mas_equalTo(200);
         make.height.mas_equalTo(30);
