@@ -17,6 +17,15 @@
         "revision" : "db51c407d3be4a051484a141bf0bff36c43d3b1e",
         "version" : "1.8.0"
       }
+    },
+    {
+      "identity" : "hue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zenangst/Hue",
+      "state" : {
+        "revision" : "b9d920cee4ba795fefb828d130744eee1e3d2feb",
+        "version" : "5.0.1"
+      }
     }
   ],
   "version" : 2

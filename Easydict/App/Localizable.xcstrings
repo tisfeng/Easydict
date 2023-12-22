@@ -1050,6 +1050,23 @@
         }
       }
     },
+    "font_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font Size:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小:"
+          }
+        }
+      }
+    },
     "force_auto_get_selected_text" : {
       "localizations" : {
         "en" : {
@@ -1199,6 +1216,23 @@
         }
       }
     },
+    "hints_keyboard_shortcuts_font_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持在翻译窗口通过快捷键 ⌘ +/- 修改字体大小"
+          }
+        }
+      }
+    },
     "Illegal parameter supplied to encryption/decryption algorithm" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -1335,6 +1369,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "仅使用系统语种识别"
+          }
+        }
+      }
+    },
+    "large" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大"
           }
         }
       }
@@ -2111,6 +2162,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第三人称单数"
+          }
+        }
+      }
+    },
+    "small" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小"
           }
         }
       }

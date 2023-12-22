@@ -16,6 +16,7 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "AppDelegate.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -53,6 +54,7 @@ static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopB
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
+static NSString *const kTranslationControllerFontKey = @"EZConfiguration_kTranslationControllerFontKey";
 
 
 @interface EZConfiguration ()
@@ -121,6 +123,12 @@ static EZConfiguration *_instance;
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
     self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
+    
+    self.fontSizes = @[@(1), @(1.1), @(1.2), @(1.3), @(1.4)];
+    [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: @(0)}];
+    
+    _fontSizeIndex = [[NSUserDefaults standardUserDefaults]integerForKey:kTranslationControllerFontKey];
+    
 }
 
 #pragma mark - getter
@@ -412,6 +420,23 @@ static EZConfiguration *_instance;
     [self logSettings:@{@"clear_input" : @(clearInput)}];
 }
 
+- (void)setFontSizeIndex:(NSInteger)fontSizeIndex {
+    NSInteger targetIndex = MIN(_fontSizes.count-1, MAX(fontSizeIndex, 0));
+    
+    if (_fontSizeIndex == targetIndex) {
+        return;
+    }
+    
+    _fontSizeIndex = targetIndex;
+    
+    [NSUserDefaults mm_write:@(targetIndex) forKey:kTranslationControllerFontKey];
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:ChangeFontSizeView.changeFontSizeNotificationName object:@(targetIndex)];
+}
+
+- (CGFloat)fontSizeRatio {
+    return _fontSizes[_fontSizeIndex].floatValue;
+}
 
 #pragma mark - Window Frame
 
