@@ -73,7 +73,7 @@ class AliService: QueryService {
         }
 
         if hasToken.has {
-            self.request(transType: transType, text: text, from: from, to: to, completion: completion)
+            request(transType: transType, text: text, from: from, to: to, completion: completion)
             return
         }
 
@@ -84,7 +84,7 @@ class AliService: QueryService {
                 guard let self else { return }
                 switch response.result {
                 case let .success(value):
-                    tokenResponse = value
+                    self.tokenResponse = value
                 case let .failure(error):
                     print("ali translate get token error: \(error)")
                 }
@@ -136,11 +136,11 @@ class AliService: QueryService {
                     // The result returned when the token expires is HTML.
                     if hasToken.has, error.isResponseSerializationError {
                         print("ali token invaild")
-                        tokenResponse = nil
-                        if canRetry {
-                            canRetry = false
+                        self.tokenResponse = nil
+                        if self.canRetry {
+                            self.canRetry = false
                             // Request token again.
-                            translate(text, from: from, to: to, completion: completion)
+                            self.translate(text, from: from, to: to, completion: completion)
                         } else {
                             self.request(transType: transType, text: text, from: from, to: to, completion: completion)
                         }
