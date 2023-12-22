@@ -9,6 +9,7 @@
 import Alamofire
 import Defaults
 import Foundation
+import GoogleGenerativeAI
 
 @objc(EZCaiyunService)
 public final class CaiyunService: QueryService {
@@ -106,6 +107,26 @@ public final class CaiyunService: QueryService {
         queryModel.setStop({
             request.cancel()
         }, serviceType: serviceType().rawValue)
+    }
+
+    @objc static func testGemini() async {
+        // https://github.com/google/generative-ai-swift
+        do {
+            let prompt = "你好"
+            let model = GenerativeModel(name: "gemini-pro", apiKey: "")
+            let outputContentStream = model.generateContentStream(prompt)
+
+            // stream response
+            for try await outputContent in outputContentStream {
+                guard let line = outputContent.text else {
+                    return
+                }
+
+                print("gemini: \(line)")
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }
 

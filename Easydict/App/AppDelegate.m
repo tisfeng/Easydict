@@ -46,6 +46,10 @@
     
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
+    
+    [EZCaiyunService testGeminiWithCompletionHandler:^{
+        
+    }];
 }
 
 /// Auto set up app language.
