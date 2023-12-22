@@ -1222,13 +1222,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation and OCR windows."
+            "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation windows."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "支持在翻译窗口和 OCR 窗口通过快捷键⌘ +/-修改字体大小"
+            "state" : "translated",
+            "value" : "支持在翻译窗口通过快捷键 ⌘ +/- 修改字体大小"
           }
         }
       }
