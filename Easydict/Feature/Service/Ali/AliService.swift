@@ -131,7 +131,7 @@ class AliService: QueryService {
                         let ezError = EZError(type: .API, description: value.code, errorDataMessage: value.message)
                         completion(result, ezError)
                     }
-                    canRetry = true
+                    self.canRetry = true
                 case let .failure(error):
                     // The result returned when the token expires is HTML.
                     if hasToken.has, error.isResponseSerializationError {
