@@ -57,6 +57,12 @@ class AliService: QueryService {
     }
 
     override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+        if text.count > 5000 {
+            let error = EZError(type: .none, description: "ali translate text length limit exceeded")
+            completion(result, error)
+            return
+        }
+
         let transType = AliTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
             let showingFrom = EZLanguageManager.shared().showingLanguageName(from)
