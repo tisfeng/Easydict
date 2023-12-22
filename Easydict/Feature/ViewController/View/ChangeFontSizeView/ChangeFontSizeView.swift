@@ -51,7 +51,7 @@ import Hue
             horizonLine.centerYAnchor.constraint(equalTo: centerYAnchor),
             horizonLine.leftAnchor.constraint(equalTo: leftAnchor),
             horizonLine.rightAnchor.constraint(equalTo: rightAnchor),
-            horizonLine.heightAnchor.constraint(equalToConstant: 5),
+            horizonLine.heightAnchor.constraint(equalToConstant: 4),
         ])
 
         let stackView = NSStackView(views: verticalLines)
@@ -72,7 +72,7 @@ import Hue
             view.layer?.backgroundColor = NSColor(hex: "B5B5B5").cgColor
             view.layer?.cornerRadius = 1
             NSLayoutConstraint.activate([
-                view.widthAnchor.constraint(equalToConstant: 3),
+                view.widthAnchor.constraint(equalToConstant: 2),
             ])
         }
 
@@ -95,7 +95,7 @@ import Hue
 
     private func selectedLineTargetFrame() -> NSRect {
         let y = bounds.height / 2
-        let width: CGFloat = 7
+        let width: CGFloat = 6
         let height: CGFloat = 20
 
         let index = max(0, min(selectedIndex, verticalLines.count - 1))
