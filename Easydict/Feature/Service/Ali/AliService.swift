@@ -82,16 +82,7 @@ class AliService: QueryService {
                                          }
                                      case let .failure(error):
                                          NSLog("ali lookup error \(error)")
-                                         let ezError = EZError(nsError: error)
-
-                                         if let data = response.data {
-                                             do {
-                                                 let errorResponse = try JSONDecoder().decode(TencentErrorResponse.self, from: data)
-                                                 ezError?.errorDataMessage = errorResponse.response.error.message
-                                             } catch {
-                                                 NSLog("Failed to decode error response: \(error)")
-                                             }
-                                         }
+                                         let ezError = EZError(nsError: error, errorResponseData: response.data)
                                          completion(result, ezError)
                                      }
                                  }
