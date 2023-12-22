@@ -45,3 +45,17 @@ struct AliResponse: Codable {
     var message: String?
     var data: Data?
 }
+
+/**
+ {
+     "token": "edda7f08-d74d-43b1-b8ff-cc2fdf2b5507",
+     "parameterName": "_csrf",
+     "headerName": "X-XSRF-TOKEN_PROPERTY_ITEM"
+ }
+ */
+
+struct AliTokenResponse: Codable {
+    var token: String?
+    var parameterName: String?
+    var headerName: String?
+}
