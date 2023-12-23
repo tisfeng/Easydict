@@ -65,7 +65,7 @@ static EZLocalStorage *_instance;
             if (!serviceInfo) {
                 serviceInfo = [[EZServiceInfo alloc] init];
                 serviceInfo.type = serviceType;
-                serviceInfo.enabled = YES;
+                serviceInfo.enabled = NO; // disable new service
 
                 // Mini type should keep concise, services <= 4
                 if (windowType == EZWindowTypeMini) {
@@ -100,8 +100,12 @@ static EZLocalStorage *_instance;
         NSMutableArray *array = [NSMutableArray arrayWithArray:allStoredServiceTypes];
         if (![allStoredServiceTypes isEqualToArray:allServiceTypes]) {
             for (EZServiceType type in allServiceTypes) {
+                /**
+                 If there is a new service, add it to the end of the array.
+                 Fix https://github.com/tisfeng/Easydict/issues/269
+                 */
                 if ([allStoredServiceTypes indexOfObject:type] == NSNotFound) {
-                    [array insertObject:type atIndex:0];
+                    [array addObject:type];
                 }
             }
         }
