@@ -20,7 +20,8 @@ extern NSString *const EZTranslateErrorRequestResponseKey;
 extern NSString *const EZTranslateErrorRequestErrorKey;
 
 typedef NS_ENUM(NSUInteger, EZErrorType) {
-    EZErrorTypeNone,
+    EZErrorTypeNone, // 预留参数，暂未使用
+    
     EZErrorTypeAPI, // 接口异常
     EZErrorTypeParam, // 参数异常
     EZErrorTypeNetwork, // 网络异常
