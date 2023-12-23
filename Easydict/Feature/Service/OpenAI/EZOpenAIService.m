@@ -553,12 +553,23 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 if (delta) {
                     if (delta[@"content"]) {
                         NSString *content = delta[@"content"];
-//                        NSLog(@"delta content: %@", content);
-                        [mutableString appendString:content];
+                        //  NSLog(@"delta content: %@", content);
+
+                        /**
+                         SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
+                         
+                         -[__NSCFString appendString:]
+                         -[EZOpenAIService parseContentFromStreamData:lastData:error:isFinished:] EZOpenAIService.m:536
+                         */
+                        if ([content isKindOfClass:NSString.class]) {
+                            [mutableString appendString:content];
+                        }
                     }
                     
                     // finish_reason is string or null
                     NSString *finishReason = choice[@"finish_reason"];
+                    
+                    // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
                     if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
                         NSLog(@"finish reason: %@", finishReason);
 
