@@ -775,7 +775,7 @@
         make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
     }];
     
-    CGFloat changeFontSizeViewWidth = 200;
+    CGFloat changeFontSizeViewWidth = 220;
     [self.changeFontSizeView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding + 2);
         make.centerY.equalTo(self.fontSizeLabel);

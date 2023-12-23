@@ -13,11 +13,22 @@ import Hue
     @objc static let changeFontSizeNotificationName = "changeFontSizeNotification"
 
     let fontSizes: [CGFloat]
-    lazy var verticalLines = fontSizes.map { _ in createLine() }
+    lazy var scaleLines = fontSizes.map { _ in createLine() }
 
-    lazy var selectedLine = createLine()
+    lazy var selectedScaleLine = createLine()
 
     @objc var didSelectIndex: ((Int) -> Void)?
+
+    private var horizonLineHeight = 5.0
+    private let horizonLineColor = NSColor(hex: "E1E1E1")
+
+    private var scaleLineWidth = 3.0
+    private var scaleLineHeight = 11.0
+    private let scaleLineColor = NSColor(hex: "CFCFCF")
+
+    private var selectedScaleLineWidth = 8.0
+    private var selectedScaleLineHeight = 23.0
+    private let selectedScaleLineColor = NSColor(hex: "CCCCCC")
 
     private var selectedIndex = 1
 
@@ -40,21 +51,20 @@ import Hue
         wantsLayer = true
         needsLayout = true
 
-//        layer?.backgroundColor = NSColor.purple.cgColor
         translatesAutoresizingMaskIntoConstraints = false
 
         let horizonLine = createLine()
-        horizonLine.layer?.backgroundColor = NSColor(hex: "CCCCCC").cgColor
+        horizonLine.layer?.backgroundColor = horizonLineColor.cgColor
         addSubview(horizonLine)
 
         NSLayoutConstraint.activate([
             horizonLine.centerYAnchor.constraint(equalTo: centerYAnchor),
             horizonLine.leftAnchor.constraint(equalTo: leftAnchor),
             horizonLine.rightAnchor.constraint(equalTo: rightAnchor),
-            horizonLine.heightAnchor.constraint(equalToConstant: 4),
+            horizonLine.heightAnchor.constraint(equalToConstant: horizonLineHeight),
         ])
 
-        let stackView = NSStackView(views: verticalLines)
+        let stackView = NSStackView(views: scaleLines)
         stackView.alignment = .height
         stackView.distribution = .equalSpacing
         stackView.orientation = .horizontal
@@ -65,20 +75,23 @@ import Hue
             stackView.leftAnchor.constraint(equalTo: leftAnchor),
             stackView.rightAnchor.constraint(equalTo: rightAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            stackView.heightAnchor.constraint(equalToConstant: 10),
+            stackView.heightAnchor.constraint(equalToConstant: scaleLineHeight),
         ])
 
-        verticalLines.enumerated().forEach { _, view in
-            view.layer?.backgroundColor = NSColor(hex: "B5B5B5").cgColor
-            view.layer?.cornerRadius = 1
+        scaleLines.enumerated().forEach { _, view in
+            view.layer?.cornerRadius = scaleLineWidth / 2
+            view.layer?.backgroundColor = scaleLineColor.cgColor
+
             NSLayoutConstraint.activate([
-                view.widthAnchor.constraint(equalToConstant: 2),
+                view.widthAnchor.constraint(equalToConstant: scaleLineWidth),
             ])
         }
 
-        addSubview(selectedLine)
-        selectedLine.layer?.cornerRadius = 3
-        selectedLine.layer?.backgroundColor = NSColor(hex: "D0D0D0").cgColor
+        addSubview(selectedScaleLine)
+        selectedScaleLine.layer?.cornerRadius = selectedScaleLineWidth / 2
+        selectedScaleLine.layer?.backgroundColor = selectedScaleLineColor.cgColor
+        selectedScaleLine.layer?.borderWidth = 0.5
+        selectedScaleLine.layer?.borderColor = NSColor(hex: "D7D8D8").cgColor
     }
 
     override public func layout() {
@@ -88,21 +101,16 @@ import Hue
     }
 
     private func updateSelectedLineFrame() {
-        selectedLine.frame = selectedLineTargetFrame()
+        selectedScaleLine.frame = selectedLineTargetFrame()
 
 //        print("[DEBUG] selectedLine.frame: ", selectedLine.frame)
     }
 
     private func selectedLineTargetFrame() -> NSRect {
         let y = bounds.height / 2
-        let width: CGFloat = 6
-        let height: CGFloat = 20
-
-        let index = max(0, min(selectedIndex, verticalLines.count - 1))
-
-        let x = index == 0 ? 0 : (bounds.width / CGFloat(verticalLines.count - 1)) * CGFloat(index)
-
-        let frame = NSRect(x: round(x) - width / 2, y: y - height / 2, width: width, height: height)
+        let index = max(0, min(selectedIndex, scaleLines.count - 1))
+        let x = index == 0 ? 0 : (bounds.width / CGFloat(scaleLines.count - 1)) * CGFloat(index)
+        let frame = NSRect(x: round(x) - selectedScaleLineWidth / 2, y: y - selectedScaleLineHeight / 2, width: selectedScaleLineWidth, height: selectedScaleLineHeight)
         return frame
     }
 
@@ -122,7 +130,7 @@ import Hue
         let location = event.locationInWindow
         let point = convert(location, from: nil)
 
-        let index = point.x / (bounds.width / CGFloat(verticalLines.count - 1))
+        let index = point.x / (bounds.width / CGFloat(scaleLines.count - 1))
 
         var targetIndex = Int(round(index))
         targetIndex = max(0, targetIndex)
@@ -145,7 +153,7 @@ import Hue
         if animated {
             NSAnimationContext.runAnimationGroup { context in
                 context.duration = 0.3
-                self.selectedLine.animator().frame = self.selectedLineTargetFrame()
+                self.selectedScaleLine.animator().frame = self.selectedLineTargetFrame()
             } completionHandler: {
                 self.updateSelectedLineFrame()
             }
