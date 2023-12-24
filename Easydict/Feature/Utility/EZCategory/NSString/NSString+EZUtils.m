@@ -231,8 +231,12 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (BOOL)isEnglishWord {
+    return [self isEnglishWordWithMaxWordLength:EZEnglishWordMaxLength];
+}
+
+- (BOOL)isEnglishWordWithMaxWordLength:(NSUInteger)maxWordLength {
     NSString *text = [self tryToRemoveQuotes];
-    if (text.length > EZEnglishWordMaxLength) {
+    if (text.length > maxWordLength) {
         return NO;
     }
     

@@ -645,18 +645,21 @@ static EZAppleDictionary *_instance;
         }
         
         /**
-         We need to filter it
+         We need to filter it.
          
          queryViewController --> query
          */
-        if ([word isEnglishWord]) {
-            NSString *splitWord = [word splitCodeText];
-            NSString *splitHeadword = [headword splitCodeText];
+        if ([word isEnglishWordWithMaxWordLength:30]) {
+            /**
+             ResultBaseModel --> result
+             Fix https://github.com/tisfeng/Easydict/issues/135#issuecomment-1868423368
+             */
+            NSString *splitWord = [word splitCodeText].lowercaseString;
+            NSString *splitHeadword = [headword splitCodeText].lowercaseString;
             if (splitWord.wordCount != splitHeadword.wordCount && [splitWord containsString:splitHeadword]) {
                 return NO;
             }
         }
-        
         return YES;
     } else {
         if ([normalizedHeadword containsString:normalizedWord]) {
