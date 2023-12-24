@@ -33,6 +33,15 @@
 
 }
 
+- (void)testSplitCode {
+    XCTAssert([[@"ResultBaseModel" splitCodeText] isEqualToString:@"Result Base Model"]);
+    XCTAssert([[@"getHTTP" splitCodeText] isEqualToString:@"get HTTP"]);
+    XCTAssert([[@"getHTTPCode" splitCodeText] isEqualToString:@"get HTTP Code"]);
+    
+    XCTAssert([[@"anchored_draggable_state" splitCodeText] isEqualToString:@"anchored draggable state"]);
+    XCTAssert([[@"anchored_Draggable_State" splitCodeText] isEqualToString:@"anchored Draggable State"]);
+}
+
 - (void)testRemoveQuotes {
     NSString *text = @"\"\"\"创造力就是让智慧尽情玩耍。——爱因斯坦\"\"\"";
     NSString *newText =  text.tryToRemoveQuotes;
