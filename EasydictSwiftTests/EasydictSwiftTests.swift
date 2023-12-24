@@ -32,19 +32,6 @@ final class EasydictSwiftTests: XCTestCase {
         let decryptedText = encryptedText.decryptAES()
         XCTAssert(decryptedText == text)
     }
-    
-//    func testRemoveQuotes() throws {
-//        let text =
-//                """
-//                \"\"\"
-//                创造力就是让智慧尽情玩耍。——爱因斯坦
-//                \"\"\"
-//                """ 
-//        let nsText = text as NSString
-//        
-//        let newText =  nsText.tryToRemoveQuotes().trim()
-//         XCTAssert(newText == "创造力就是让智慧尽情玩耍。——爱因斯坦")
-//    }
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
