@@ -296,8 +296,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // TODO: need to optimize.
     if (stream) {
-        __block NSMutableString *mutableString = [NSMutableString string];
-        __block BOOL isFirst = YES;
+        __block NSMutableString *mutableContent = [NSMutableString string];
+        __block BOOL isFirstContent = YES;
         __block BOOL isFinished = NO;
         __block NSData *lastData;
         __block NSString *appendSuffixQuote = nil;
@@ -321,21 +321,26 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 return;
             }
             
-            // NSLog(@"content: %@, isFinished: %d", content, isFinished);
+//            NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
-                if (isFirst && ![self.queryModel.queryText hasPrefixQuote]) {
+                if (isFirstContent && ![self.queryModel.queryText hasPrefixQuote]) {
                     appendContent = [content tryToRemovePrefixQuote];
+                    
+                    // Maybe there is only one content, it is the first stream content, and then finished.
+                    if (isFinished) {
+                        appendContent = [appendContent tryToRemoveSuffixQuote];
+                    }
                 }
                 
                 if (!isFinished) {
-                    if (!isFirst) {
+                    if (!isFirstContent) {
                         // Append last delayed suffix quote.
                         if (appendSuffixQuote) {
-                            [mutableString appendString:appendSuffixQuote];
+                            [mutableContent appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
                         
@@ -356,17 +361,34 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 
                 // Skip first emtpy content.
                 if (content.length) {
-                    isFirst = NO;
+                    isFirstContent = NO;
+                }
+                
+                // Maybe the content is a empty text @""
+                if (content.length == 0) {
+                    if (isFirstContent) {
+                        // Set isFirst = YES, this is a invalid content.
+                        isFirstContent = YES;
+                    }
+                    
+                    if (isFinished) {
+                        // Try to remove last suffix quotes.
+                        if (![self.queryModel.queryText hasSuffixQuote]) {
+                            appendContent = [appendContent tryToRemoveSuffixQuote];
+                        }
+                    }
+                } else {
+                    isFirstContent = NO;
                 }
             }
             
             if (appendContent) {
-                [mutableString appendString:appendContent];
+                [mutableContent appendString:appendContent];
             }
             
             // Do not callback when mutableString length is 0 when isFinished is NO, to avoid auto hide reuslt view.
-            if (isFinished || mutableString.length) {
-                completion(mutableString, nil);
+            if (isFinished || mutableContent.length) {
+                completion(mutableContent, nil);
             }
             
             //              NSLog(@"mutableString: %@", mutableString);
