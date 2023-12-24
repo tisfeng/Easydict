@@ -359,11 +359,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     }
                 }
                 
-                // Skip first emtpy content.
-                if (content.length) {
-                    isFirstContent = NO;
-                }
-                
                 // Maybe the content is a empty text @""
                 if (content.length == 0) {
                     if (isFirstContent) {
@@ -372,9 +367,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     }
                     
                     if (isFinished) {
-                        // Try to remove last suffix quotes.
+                        // If last conent is @"", try to remove mutableContent last suffix quotes.
                         if (![self.queryModel.queryText hasSuffixQuote]) {
-                            appendContent = [appendContent tryToRemoveSuffixQuote];
+                            completion([mutableContent tryToRemoveSuffixQuote], nil);
+                            return;
                         }
                     }
                 } else {
@@ -391,7 +387,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 completion(mutableContent, nil);
             }
             
-            //              NSLog(@"mutableString: %@", mutableString);
+//            NSLog(@"mutableContent: %@", mutableContent);
         }];
     }
     
@@ -422,7 +418,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                                                                 lastData:nil
                                                                    error:nil
                                                               isFinished:nil];
-                    NSLog(@"success content: %@", content);
+//                    NSLog(@"success content: %@", content);
                     completion(content, nil);
                 }
             }
