@@ -146,6 +146,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return NSLocalizedString(@"openai_translate", nil);
 }
 
+- (NSString *)link {
+    return @"https://chat.openai.com";
+}
+
 // Supported languages, key is EZLanguage, value is the same as the key.
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
