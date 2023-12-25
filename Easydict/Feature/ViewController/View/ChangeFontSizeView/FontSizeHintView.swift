@@ -8,6 +8,8 @@
 
 import AppKit
 import Foundation
+import Hue
+import SnapKit
 
 @objc public class FontSizeHintView: NSView {
     private lazy var minLabel: NSTextField = .init(labelWithString: NSLocalizedString("small", comment: ""))
@@ -21,42 +23,25 @@ import Foundation
 
         minLabel.font = .systemFont(ofSize: 10)
         maxLabel.font = .systemFont(ofSize: 14)
-
         hintLabel.font = .systemFont(ofSize: 11)
+        hintLabel.textColor = NSColor(hex: "7B7C7C")
 
-        let sizeLabelStackView: NSStackView = {
-            let stackView = NSStackView(views: [minLabel, maxLabel])
-            stackView.alignment = .centerY
-            stackView.distribution = .equalSpacing
-            stackView.orientation = .horizontal
-            return stackView
-        }()
+        addSubview(minLabel)
+        addSubview(maxLabel)
+        addSubview(hintLabel)
 
-        let verticalStackView: NSStackView = {
-            let stackView = NSStackView(views: [sizeLabelStackView, hintLabel])
-            stackView.alignment = .left
-            stackView.distribution = .fill
-            stackView.orientation = .vertical
-            stackView.spacing = 12
-            return stackView
-        }()
+        hintLabel.snp.makeConstraints { make in
+            make.left.bottom.equalTo(self)
+        }
 
-        addSubview(verticalStackView)
+        maxLabel.snp.makeConstraints { make in
+            make.right.top.equalTo(self)
+        }
 
-        NSLayoutConstraint.activate([
-            sizeLabelStackView.widthAnchor.constraint(equalToConstant: 205),
-            sizeLabelStackView.heightAnchor.constraint(equalToConstant: 20),
-        ])
-
-        NSLayoutConstraint.activate([
-            verticalStackView.leftAnchor.constraint(equalTo: leftAnchor),
-            verticalStackView.topAnchor.constraint(equalTo: topAnchor),
-            verticalStackView.rightAnchor.constraint(equalTo: rightAnchor),
-        ])
-
-        NSLayoutConstraint.activate([
-            bottomAnchor.constraint(equalTo: verticalStackView.bottomAnchor),
-        ])
+        minLabel.snp.makeConstraints { make in
+            make.left.equalTo(self)
+            make.centerY.equalTo(maxLabel)
+        }
     }
 
     @available(*, unavailable)

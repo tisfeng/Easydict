@@ -772,20 +772,22 @@
     
     [self.fontSizeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
     }];
     
+    CGFloat changeFontSizeViewWidth = 200;
     [self.changeFontSizeView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding + 2);
         make.centerY.equalTo(self.fontSizeLabel);
-        make.width.mas_equalTo(200);
+        make.width.mas_equalTo(changeFontSizeViewWidth);
         make.height.mas_equalTo(30);
     }];
     
     [self.fontSizeHintView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding);
-        make.top.equalTo(self.changeFontSizeView.mas_bottom).mas_offset(5);
-        make.width.mas_equalTo(300);
+        make.top.equalTo(self.changeFontSizeView.mas_bottom).mas_offset(8);
+        make.width.mas_equalTo(changeFontSizeViewWidth + 5);
+        make.height.mas_equalTo(45);
     }];
     
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
