@@ -28,9 +28,11 @@ body:
   - type: textarea
     id: feature_usecase
     attributes:
-      label: Use case (optional)
+      label: Use case
       description: Please describe the use case of the feature you're requesting, and whether there are any similar app features for reference.
       placeholder: Use case
+    validations:
+      required: true
 
   - type: textarea
     id: resolution
