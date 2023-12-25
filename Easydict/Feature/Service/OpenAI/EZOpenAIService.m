@@ -174,15 +174,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         sourceLanguageType = @"";
     }
     
+    BOOL stream = NO;
     NSMutableDictionary *parameters = @{
         @"model" : self.model,
         @"temperature" : @(0),
         @"top_p" : @(1.0),
         @"frequency_penalty" : @(1),
         @"presence_penalty" : @(1),
-        @"stream" : @(YES),
-    }
-        .mutableCopy;
+        @"stream" : @(stream),
+    }.mutableCopy;
     
     EZQueryTextType queryServiceType = EZQueryTextTypeTranslation;
     
@@ -220,7 +220,11 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     parameters[@"messages"] = messages;
     
     if (queryServiceType != EZQueryTextTypeNone) {
-        [self startStreamChat:parameters queryServiceType:queryServiceType completion:^(NSString *_Nullable result, NSError *_Nullable error) {
+        [self startChat:parameters
+                 stream:stream
+       queryServiceType:queryServiceType
+             completion:^(NSString *_Nullable result, NSError *_Nullable error)
+         {
             [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
         }];
     }
@@ -228,22 +232,21 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 
 #pragma mark - Stream chat
 
-- (void)startStreamChat:(NSDictionary *)parameters
-       queryServiceType:(EZQueryTextType)queryServiceType
-             completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
+- (void)startChat:(NSDictionary *)parameters
+           stream:(BOOL)stream
+ queryServiceType:(EZQueryTextType)queryServiceType
+       completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
     NSDictionary *header = [self requestHeader];
     //    NSLog(@"messages: %@", messages);
     
-    BOOL stream = YES;
-    
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    // Since content types is text/event-stream, we don't need AFJSONResponseSerializer.
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
-    NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:manager.responseSerializer.acceptableContentTypes];
-    [acceptableContentTypes addObject:@"text/event-stream"];
-    manager.responseSerializer.acceptableContentTypes = acceptableContentTypes;
-    
+    if (stream) {
+        // If stream = YES, We don't need AFJSONResponseSerializer by default, we need original AFHTTPResponseSerializer, and set text/event-stream for Content-Type manually.
+        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+        responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[ @"text/event-stream" ]];
+        manager.responseSerializer = responseSerializer;
+    }
+        
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = EZNetWorkTimeoutInterval;
     [header enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -359,13 +362,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         }
         
         if (!stream) {
-            NSError *jsonError;
-            NSString *result = [self parseContentFromJSONata:responseObject error:&jsonError] ?: @"";
-            if (jsonError) {
-                completion(nil, jsonError);
-            } else {
-                completion(result, nil);
-            }
+            EZOpenAIChatResponse *responseModel = [EZOpenAIChatResponse mj_objectWithKeyValues:responseObject];
+            EZOpenAIChoice *choice = responseModel.choices.firstObject;
+            NSString *content = choice.message.content;
+            completion(content, nil);
         } else {
             // 动人 --> "Touching" or "Moving".
             NSString *queryText = self.queryModel.queryText;
@@ -542,60 +542,6 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     }
     
     return mutableString;
-}
-
-
-/// Parse content from nsdata
-- (nullable NSString *)parseContentFromJSONata:(NSData *)data
-                                         error:(NSError **)error {
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
-    if (*error) {
-        return nil;
-    }
-    
-    /**
-     {
-       "id": "chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve",
-       "object": "chat.completion",
-       "created": 1677649420,
-       "model": "gpt-3.5-turbo",
-       "usage": { "prompt_tokens": 56, "completion_tokens": 31, "total_tokens": 87 },
-       "choices": [
-         {
-           "message": {
-             "role": "assistant",
-             "content": "The 2020 World Series was played in Arlington, Texas at the Globe Life Field, which was the new home stadium for the Texas Rangers."
-           },
-           "finish_reason": "stop",
-           "index": 0
-         }
-       ]
-     }
-     */
-    NSArray *choices = json[@"choices"];
-    if (choices.count == 0) {
-        NSError *error = [EZError errorWithType:EZErrorTypeAPI description:@"no result."];
-        /**
-         may be return error json
-         {
-           "error": {
-             "code": "invalid_api_key",
-             "message": "Incorrect API key provided: sk-5DJ2bQxdT. You can find your API key at https://platform.openai.com/account/api-keys.",
-             "param": null,
-             "type": "invalid_request_error"
-           }
-         }
-         */
-        
-        if (json[@"error"]) {
-            error = [EZError errorWithType:EZErrorTypeAPI description:[self getJsonErrorMessageWithJson:json]];
-        }
-        
-        return nil;
-    }
-    
-    NSString *result = [choices[0][@"message"][@"content"] trim];
-    return result;
 }
 
 - (void)handleResultText:(NSString *)resultText
@@ -1009,7 +955,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     NSString *disableNotePrompt = @"Do not display additional information or notes.";
     prompt = [prompt stringByAppendingString:disableNotePrompt];
     
-    NSLog(@"dict prompt: %@", prompt);
+//    NSLog(@"dict prompt: %@", prompt);
     
     
     // Few-shot, Ref: https://github.com/openai/openai-cookbook/blob/main/techniques_to_improve_reliability.md#few-shot-examples
