@@ -11,6 +11,7 @@
 #import "EZQueryResult+EZDeepLTranslateResponse.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
+#import "EZOpenAIChatResponse.h"
 
 static NSString *const kEZLanguageWenYanWen = @"文言文";
 
@@ -501,71 +502,41 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 }
             }
             
+            EZOpenAIChatResponse *responseModel = [EZOpenAIChatResponse mj_objectWithKeyValues:json];
+            EZOpenAIChoice *choice = responseModel.choices.firstObject;
+            NSString *content = choice.delta.content;
+            //  NSLog(@"delta content: %@", content);
+
             /**
-             gemini-pro
+             SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
              
-             {
-               "choices" : [
-                 {
-                   "delta" : {
-                     "content" : "乌克兰可能再获一套爱国者反导系统。"
-                   },
-                   "finish_reason" : "stop"
-                 }
-               ],
-               "created" : 1702957216,
-               "id" : "chatcmpl-0ddd85aae7fe49af9444ced85875decf",
-               "model" : "gemini",
-               "object" : "chat.completion.chunk"
-             }
+             -[__NSCFString appendString:]
+             -[EZOpenAIService parseContentFromStreamData:lastData:error:isFinished:] EZOpenAIService.m:536
              */
+            if ([content isKindOfClass:NSString.class]) {
+                [mutableString appendString:content];
+            }
             
-            // TODO: We need to optimize this code.
-            if (json[@"choices"]) {
-                NSArray *choices = json[@"choices"];
-                if (choices.count == 0) {
-                    continue;
-                }
-                NSDictionary *choice = choices[0];
-                NSDictionary *delta = choice[@"delta"];
-                if (delta) {
-                    if (delta[@"content"]) {
-                        NSString *content = delta[@"content"];
-                        //  NSLog(@"delta content: %@", content);
+            // finish_reason is string or null
+            NSString *finishReason = choice.finishReason;
+            
+            // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
+            if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
+                NSLog(@"finish reason: %@", finishReason);
 
-                        /**
-                         SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
-                         
-                         -[__NSCFString appendString:]
-                         -[EZOpenAIService parseContentFromStreamData:lastData:error:isFinished:] EZOpenAIService.m:536
-                         */
-                        if ([content isKindOfClass:NSString.class]) {
-                            [mutableString appendString:content];
-                        }
-                    }
-                    
-                    // finish_reason is string or null
-                    NSString *finishReason = choice[@"finish_reason"];
-                    
-                    // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
-                    if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
-                        NSLog(@"finish reason: %@", finishReason);
-
-                        /**
-                         The reason the model stopped generating tokens.
-                         
-                         This will be "stop" if the model hit a natural stop point or a provided stop sequence,
-                         "length" if the maximum number of tokens specified in the request was reached,
-                         "content_filter" if content was omitted due to a flag from our content filters,
-                         "tool_calls" if the model called a tool,
-                         or "function_call" (deprecated) if the model called a function.
-                         */
-                        if (isFinished) {
-                            *isFinished = YES;
-                        }
-                        break;
-                    }
+                /**
+                 The reason the model stopped generating tokens.
+                 
+                 This will be "stop" if the model hit a natural stop point or a provided stop sequence,
+                 "length" if the maximum number of tokens specified in the request was reached,
+                 "content_filter" if content was omitted due to a flag from our content filters,
+                 "tool_calls" if the model called a tool,
+                 or "function_call" (deprecated) if the model called a function.
+                 */
+                if (isFinished) {
+                    *isFinished = YES;
                 }
+                break;
             }
         }
     }
