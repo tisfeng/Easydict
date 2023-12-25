@@ -361,29 +361,17 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             return;
         }
         
+        NSString *result = self.result.translatedText;
         if (!stream) {
             EZOpenAIChatResponse *responseModel = [EZOpenAIChatResponse mj_objectWithKeyValues:responseObject];
             EZOpenAIChoice *choice = responseModel.choices.firstObject;
-            NSString *content = choice.message.content;
-            completion(content, nil);
-        } else {
-            // 动人 --> "Touching" or "Moving".
-            NSString *queryText = self.queryModel.queryText;
-            
-            // Count quote may cost much time, so only count when query text is short.
-            if (shouldHandleQuote && queryText.length < 100) {
-                NSInteger queryTextQuoteCount = [queryText countQuoteNumberInText];
-                NSInteger translatedTextQuoteCount = [self.result.translatedText countQuoteNumberInText];
-                if (queryTextQuoteCount % 2 == 0 && translatedTextQuoteCount % 2 != 0) {
-                    NSString *content = [self parseContentFromStreamData:responseObject
-                                                                lastData:nil
-                                                                   error:nil
-                                                              isFinished:nil];
-//                    NSLog(@"success content: %@", content);
-                    completion(content, nil);
-                }
-            }
+            result = choice.message.content;
         }
+        
+        if (![self.queryModel.queryText hasQuotesPair] && [result hasQuotesPair]) {
+            result = [result tryToRemoveQuotes];
+        }
+        completion(result, nil);
     } failure:^(NSURLSessionDataTask *_Nullable task, NSError *_Nonnull error) {
         if (error.code == NSURLErrorCancelled) {
             return;
