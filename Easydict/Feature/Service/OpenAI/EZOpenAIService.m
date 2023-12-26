@@ -16,8 +16,10 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 @interface EZOpenAIService ()
 
-@property (nonatomic, copy) NSString *domain;
+@property (nonatomic, copy) NSString *apiKey;
+@property (nonatomic, copy) NSString *endPoint;
 @property (nonatomic, copy) NSString *model;
+@property (nonatomic, copy) NSString *domain;
 
 @end
 
@@ -29,16 +31,26 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     return self;
 }
 
-- (NSString *)domain {
-    NSString *defaultDomain = @"api.openai.com";
-    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:defaultDomain];
-    if (domain.length == 0) {
-        domain = defaultDomain;
+- (NSString *)apiKey {
+    // easydict://writeKeyValue?EZOpenAIAPIKey=
+    
+    NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
+    return apiKey;
+}
+
+- (NSString *)endPoint {
+    // easydict://writeKeyValue?EZOpenAIEndPointKey=
+    
+    NSString *endPoint = [NSUserDefaults mm_readString:EZOpenAIEndPointKey defaultValue:@""];
+    if (endPoint.length == 0) {
+        endPoint = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
     }
-    return domain;
+    return endPoint;
 }
 
 - (NSString *)model {
+    // easydict://writeKeyValue?EZOpenAIDomainKey=
+    
     NSString *defautModel = @"gpt-3.5-turbo";
     NSString *model = [NSUserDefaults mm_readString:EZOpenAIModelKey defaultValue:defautModel];
     if (model.length == 0) {
@@ -47,46 +59,15 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     return model;
 }
 
-- (NSString *)requestOpenAIEndPoint:(nullable NSString *)formatURLString {
-    NSString *url = [NSUserDefaults mm_readString:EZOpenAIEndPointKey defaultValue:@""];
-    if (url.length == 0) {
-        if (formatURLString.length == 0) {
-            formatURLString = @"https://%@/v1/chat/completions";
-        }
-        url = [NSString stringWithFormat:formatURLString, self.domain];
-    }
-    return url;
-}
-
-- (NSDictionary *)requestHeader {
-    // Docs: https://platform.openai.com/docs/guides/chat/chat-vs-completions
+- (NSString *)domain {
+    // easydict://writeKeyValue?EZOpenAIDomainKey=
     
-    // Read openai key from NSUserDefaults
-    NSString *openaiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
-    NSDictionary *header = @{
-        @"Content-Type" : @"application/json",
-        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
-        // support azure open ai, Ref: https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/chatgpt-quickstart?tabs=bash&pivots=rest-api
-        @"api-key" : openaiKey,
-    };
-    return header;
-}
-
-- (nullable NSString *)getJsonErrorMessageWithJson:(NSDictionary *)json {
-    if (![json isKindOfClass:[NSDictionary class]]) {
-        return nil;
+    NSString *defaultDomain = @"api.openai.com";
+    NSString *domain = [NSUserDefaults mm_readString:EZOpenAIDomainKey defaultValue:defaultDomain];
+    if (domain.length == 0) {
+        domain = defaultDomain;
     }
-    
-    NSDictionary *error = json[@"error"];
-    // if the domain is incorrect, then json.error is not a dictionary.
-    if ([error isKindOfClass:[NSDictionary class]]) {
-        NSString *errorMessage = error[@"message"];
-        // in theory, message is a string. The code ensures its robustness here.
-        if ([errorMessage isKindOfClass:[NSString class]] && errorMessage.length) {
-            return errorMessage;
-        }
-    }
-    return nil;
+    return domain;
 }
 
 #pragma mark - 重写父类方法
@@ -218,21 +199,27 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         [self startChat:parameters
                  stream:stream
        queryServiceType:queryServiceType
-             completion:^(NSString *_Nullable result, NSError *_Nullable error)
-         {
+             completion:^(NSString *_Nullable result, NSError *_Nullable error) {
             [self handleResultText:result error:error queryServiceType:queryServiceType completion:completion];
         }];
     }
 }
 
-#pragma mark - Stream chat
+#pragma mark - Start chat
 
 - (void)startChat:(NSDictionary *)parameters
            stream:(BOOL)stream
  queryServiceType:(EZQueryTextType)queryServiceType
-       completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion {
-    NSDictionary *header = [self requestHeader];
-    //    NSLog(@"messages: %@", messages);
+       completion:(void (^)(NSString *_Nullable, NSError *_Nullable))completion
+{
+    NSString *openaiKey = self.apiKey;
+    NSDictionary *header = @{
+        // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
+        @"Content-Type" : @"application/json",
+        @"Authorization" : [NSString stringWithFormat:@"Bearer %@", openaiKey],
+        // support azure open ai, Ref: https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/chatgpt-quickstart?tabs=bash&pivots=rest-api
+        @"api-key" : openaiKey,
+    };
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     if (stream) {
@@ -241,7 +228,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[ @"text/event-stream" ]];
         manager.responseSerializer = responseSerializer;
     }
-        
+    
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = EZNetWorkTimeoutInterval;
     [header enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -280,7 +267,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 return;
             }
             
-//            NSLog(@"content: %@, isFinished: %d", content, isFinished);
+            //            NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
@@ -346,12 +333,11 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 completion(mutableContent, nil);
             }
             
-//            NSLog(@"mutableContent: %@", mutableContent);
+            //            NSLog(@"mutableContent: %@", mutableContent);
         }];
     }
     
-    NSString *url = [self requestOpenAIEndPoint:nil];
-    NSURLSessionTask *task = [manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
+    NSURLSessionTask *task = [manager POST:self.endPoint parameters:parameters progress:nil success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
         if ([self.queryModel isServiceStopped:self.serviceType]) {
             return;
         }
@@ -431,7 +417,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//        NSLog(@"jsonDataString: %@", jsonDataString);
+    //        NSLog(@"jsonDataString: %@", jsonDataString);
     
     // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
     
@@ -439,7 +425,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     NSString *dataKey = @"data:";
     NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
-//        NSLog(@"jsonArray: %@", jsonArray);
+    //        NSLog(@"jsonArray: %@", jsonArray);
     
     NSMutableString *mutableString = [NSMutableString string];
     
@@ -489,7 +475,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             EZOpenAIChoice *choice = responseModel.choices.firstObject;
             NSString *content = choice.delta.content;
             //  NSLog(@"delta content: %@", content);
-
+            
             /**
              SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
              
@@ -506,7 +492,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
             if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
                 NSLog(@"finish reason: %@", finishReason);
-
+                
                 /**
                  The reason the model stopped generating tokens.
                  
@@ -559,6 +545,23 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             completion(self.result, nil);
             break;
     }
+}
+
+- (nullable NSString *)getJsonErrorMessageWithJson:(NSDictionary *)json {
+    if (![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    
+    NSDictionary *error = json[@"error"];
+    // if the domain is incorrect, then json.error is not a dictionary.
+    if ([error isKindOfClass:[NSDictionary class]]) {
+        NSString *errorMessage = error[@"message"];
+        // in theory, message is a string. The code ensures its robustness here.
+        if ([errorMessage isKindOfClass:[NSString class]] && errorMessage.length) {
+            return errorMessage;
+        }
+    }
+    return nil;
 }
 
 #pragma mark -
