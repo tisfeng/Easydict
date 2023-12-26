@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
+static NSString *const EZFontSizeUpdateNotification = @"EZFontSizeUpdateNotification";
+
 static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
 
 typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
@@ -63,6 +65,9 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL disabledAutoSelect;
 @property (nonatomic, assign) BOOL isRecordingSelectTextShortcutKey;
 
+@property (nonatomic, copy) NSArray <NSNumber *>*fontSizes;
+@property (nonatomic, assign, readonly) CGFloat fontSizeRatio;
+@property (nonatomic, assign) NSInteger fontSizeIndex;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;

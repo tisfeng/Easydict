@@ -27,6 +27,7 @@
 #import "EZAppleDictionary.h"
 #import "NSString+EZUtils.h"
 #import "EZEventMonitor.h"
+#import "Easydict-Swift.h"
 
 static NSString *const EZQueryViewId = @"EZQueryViewId";
 static NSString *const EZSelectLanguageCellId = @"EZSelectLanguageCellId";
@@ -176,6 +177,13 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                       selector:@selector(activeDictionariesChanged:)
                           name:kDCSActiveDictionariesChangedDistributedNotification
                         object:nil];
+    
+    [defaultCenter addObserverForName:ChangeFontSizeView.changeFontSizeNotificationName object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull notification) {
+        mm_strongify(self);
+        [self reloadTableViewData:^{
+            [self updateAllResultCellHeight];
+        }];
+    }];
 }
 
 
@@ -747,7 +755,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 // View-base 设置某个元素的具体视图
 - (nullable NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(nullable NSTableColumn *)tableColumn row:(NSInteger)row {
-    //        NSLog(@"tableView for row: %ld", row);
+//    NSLog(@"tableView for row: %ld", row);
     
     if (row == 0) {
         self.queryView = [self createQueryView];
@@ -1247,19 +1255,19 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     if ([service.serviceType isEqualToString:EZServiceTypeAppleDictionary]) {
         EZAppleDictionary *appleDictService = (EZAppleDictionary *)service;
         
-        webView = result.webViewManager.webView;
+        EZWebViewManager *webViewManager = result.webViewManager;
+        webView = webViewManager.webView;
         resultCell.wordResultView.webView = webView;
         
-        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !result.webViewManager.isLoaded;
+        BOOL needLoadHTML = result.isShowing && result.HTMLString.length && !webViewManager.isLoaded;
         if (needLoadHTML) {
-            result.webViewManager.isLoaded = YES;
+            webViewManager.isLoaded = YES;
             
             NSURL *htmlFileURL = [NSURL fileURLWithPath:appleDictService.htmlFilePath];
             webView.navigationDelegate = resultCell.wordResultView;
             [webView loadFileURL:htmlFileURL allowingReadAccessToURL:TTTDictionary.userDictionaryDirectoryURL];
-        } else if (result.webViewManager.needUpdateIframeHeight && result.webViewManager.isLoaded) {
-            NSString *script = @"updateAllIframeStyle();";
-            [webView evaluateJavaScript:script completionHandler:nil];
+        } else if (webViewManager.needUpdateIframeHeight && webViewManager.isLoaded) {
+            [webViewManager updateAllIframe];
         }
     }
     

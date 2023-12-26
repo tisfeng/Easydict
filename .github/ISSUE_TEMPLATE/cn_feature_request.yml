@@ -28,9 +28,11 @@ body:
   - type: textarea
     id: feature_usecase
     attributes:
-      label: 使用场景（可选）
+      label: 使用场景
       description: 请描述你希望功能的使用场景，有无其他类似可供参考的 App 功能等。
       placeholder: 使用场景
+    validations:
+      required: true
 
   - type: textarea
     id: resolution

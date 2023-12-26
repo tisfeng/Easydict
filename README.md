@@ -343,15 +343,17 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 #### 配置 APIKey
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
+
 <div>
   <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231104131750966-1699075071.png" width="50%" />
 </div>
 
 查看 APIKey (其他 key 类似)，如果查询成功，会将结果写到剪贴板。
-```
+
+```bash
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
@@ -367,11 +369,11 @@ easydict://readValueOfKey?EZOpenAIAPIKey
 
 考虑到 OpenAI 的 token 费用因素，因此提供默认关闭选项，写入下面命令后，OpenAI 将默认关闭查询，仅在用户手动点击展开按钮时才查询
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
 ```
 
-```
+```bash
 // 关闭查单词
 easydict://writeKeyValue?EZOpenAIDictionaryKey=0
 
@@ -387,7 +389,7 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 
 支持设置自定义域名和模型
 
-```
+```bash
 //  xxx 是 host，默认是 api.openai.com
 easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 
@@ -413,7 +415,7 @@ DeepL 免费版网页 API 对用户单个 IP 有频率限制，频繁使用会�
 
 在输入框输入下面代码，xxx 是你的 DeepL AuthKey，然后 Enter
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
 
@@ -421,11 +423,11 @@ easydict://writeKeyValue?EZDeepLAuthKey=xxx
 
 如果没有自己的 AuthKey，又需要大量使用 DeepL 翻译，那么可以考虑自己部署支持 DeepL 的接口服务，或者使用支持 DeepL 的第三方服务。
 
-这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate。如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
+这种情况需要设置自定义 DeepL 接口地址，其中 EZDeepLTranslateEndPointKey 的值应该是完整的请求 URL，例如 DeepL 官方接口是 https://api-free.deepl.com/v2/translate ,如果自定义接口需要 AuthKey，配置方式和前面一样，接口参数和 DeepL 官方保持一致。
 
-自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
+使用自定义 DeepL 接口地址的方式，在 Easydict 程序中等同于 DeepL 官方 AuthKey API 形式。
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
 借助下面开源项目，可以在自己的服务器或者 Cloudflare 上部署支持 DeepL 翻译的接口服务：
@@ -438,19 +440,19 @@ easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 
 1. 默认优先使用网页版 API，在网页版 API 失败时会使用个人的 AuthKey（如果有）
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
 ```
 
 2. 优先使用个人的 AuthKey，失败时使用网页版 API。若高频率使用 DeepL，建议使用这种方式，能减少一次失败的请求，提高响应速度。
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 
 3. 只使用个人的 AuthKey
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 ```
 
@@ -460,7 +462,7 @@ easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
 
 建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
 
-```
+```bash
 // xxx 腾讯翻译的 SecretId
 easydict://writeKeyValue?EZTencentSecretId=xxx
 
@@ -480,7 +482,7 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" + 
 
 最后将 cookie 使用命令写入 Easydict
 
-```
+```bash
 // xxx 是前面获取的 cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
@@ -491,9 +493,9 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 [小牛翻译](https://niutrans.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
 
-建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量，足以日常使用了。
+建议使用自己的 API key，每个注册用户小牛翻译每日赠送 20 万字符流量。
 
-```
+```bash
 // xxx 小牛翻译的 APIKey
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 ```
@@ -502,9 +504,9 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 [彩云小译](https://fanyi.caiyunapp.com/) 需要 Token，为使用方便，我们内置了一个 token，这个 token 有一定限制，不保证一直能用。
 
-建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度，足以日常使用了。
+建议使用自己的 Token，新用户注册会获得 100 万字的免费翻译额度。
 
-```
+```bash
 // xxx 彩云小译的 Token
 easydict://writeKeyValue?EZCaiyunToken=xxx
 ```
@@ -530,19 +532,19 @@ Easydict 可以根据查询文本的内容，自动启用相应的查询服务�
 
 默认情况下，所有的翻译服务都支持单词查询（单词也属于文本的一种），用户可以手动调整，如设置 Google 智能模式只翻译文本，只需要使用下面命令修改为 `translation | sentence` 即可。
 
-```
+```bash
 easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
 ```
 
 同样，对于一些同时支持查询单词和翻译文本的服务，如有道词典，也可以设置它智能模式只查询单词，设置类型为 `dictionary`
 
-```
+```bash
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
 默认情况下，只有【迷你窗口】启用了智能查询模式，用户也可以手动对【侧悬浮窗口】启用智能查询模式：
 
-```
+```bash
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 代表迷你窗口，window2 代表侧悬浮窗口，赋值 0 表示关闭，1 表示开启。
@@ -698,9 +700,20 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 ## 致谢
 
-- 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
+- /是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
 - 截图功能是基于 [isee15](https://github.com/isee15) 的 [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac)，并在此基础上进行了优化。
 - 鼠标划词功能参考了 [PopClip](https://pilotmoon.com/popclip/)。
+
+<table border="1">
+  <tr>
+    <th>Bob 初始版本</th>
+    <th>Easydict 新版</th>
+  </tr>
+  <tr>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231224230524141-1703430324.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231224230545900-1703430346.png">
+  </tr>
+</table>
 
 ## 声明
 

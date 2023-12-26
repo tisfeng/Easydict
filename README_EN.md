@@ -75,7 +75,6 @@
     - [Configure AuthKey](#configure-authkey)
     - [Configure API endpoint](#configure-api-endpoint)
     - [Configure API call method](#configure-api-call-method)
-  - [腾讯翻译](#腾讯翻译)
   - [Tencent Translate](#tencent-translate)
   - [Bing Translate](#bing-translate)
   - [Niutrans](#niutrans)
@@ -342,7 +341,7 @@ Please make sure you have an APIKey.
 
 #### Configure APIKey
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 ```
 
@@ -351,7 +350,8 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 </div>
 
 Lookup for APIKey (similar to other keys), if the query succeeds, the result will be written to the clipboard.
-```
+
+```bash
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
@@ -367,11 +367,11 @@ Currently, OpenAI translation supports three query modes: word lookup, sentence 
 
 Considering the token cost associated with OpenAI, a default 'Close' option has been implemented. After executing the following command, OpenAI will automatically stop the queries by default, and it will only be queried when the user manually clicks the 'Expand' button.
 
-```
+```bash
 easydict://writeKeyValue?EZOpenAIServiceUsageStatusKey=1
 ```
 
-```
+```bash
 // Disable word lookup
 easydict://writeKeyValue?EZOpenAIDictionaryKey=0
 
@@ -387,7 +387,7 @@ A quick tip: If you only want to exclude occasional sentence analysis without tu
 
 Support custom domains and models
 
-```
+```bash
 //  xxx is the host, the default one is api.openai.com
 easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 
@@ -413,7 +413,7 @@ If you have DeepL AuthKey, it is recommended to use personal AuthKey, so as to a
 
 Enter the following code in the input box, xxx is your DeepL AuthKey, and then Enter
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLAuthKey=xxx
 ```
 
@@ -425,7 +425,7 @@ In this case, you need to set a custom DeepL interface address, where the value 
 
 The way to customize the DeepL interface address is equivalent to the DeepL official AuthKey API form in the Easydict program.
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslateEndPointKey=xxx
 ```
 
@@ -438,34 +438,20 @@ With the help of the following open source projects, you can deploy a DeepL tran
 
 1. The web version API is used by default, and the personal AuthKey will be used when the web version API fails (if any)
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=0
 ```
 
 2. Use personal AuthKey first, and use web version API when it fails. If you use DeepL frequently, it is recommended to use this method, which can reduce one failed request and improve response speed.
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=1
 ```
 
 3. Only use personal AuthKey
 
-```
+```bash
 easydict://writeKeyValue?EZDeepLTranslationAPIKey=2
-```
-
-### 腾讯翻译
-
-[腾讯翻译](https://fanyi.qq.com/) 需要 API key，为使用方便，我们内置了一个 key，这个 key 有额度限制，不保证一直能用。
-
-建议使用自己的 API key，每个注册用户腾讯翻译每月赠送 500 万字符流量，足以日常使用了。
-
-```
-// xxx 腾讯翻译的 SecretId
-easydict://writeKeyValue?EZTencentSecretId=xxx
-
-// xxx 腾讯翻译的 SecretKey
-easydict://writeKeyValue?EZTencentSecretKey=xxx
 ```
 
 ### Tencent Translate
@@ -474,7 +460,7 @@ easydict://writeKeyValue?EZTencentSecretKey=xxx
 
 It is recommended to use your own APIKey, each registered user of Tencent Translate is given 5 million characters of traffic per month, which is enough for daily use.
 
-```
+```bash
 // xxx is the SecretId of Tencent Translate
 easydict://writeKeyValue?EZTencentSecretId=xxx
 
@@ -494,7 +480,7 @@ cookieStore.get("MUID").then(result => console.log(encodeURIComponent("MUID=" +r
 
 Finally, use the command to write the cookie in Easydict
 
-```
+```bash
 // xxx is the obtained cookie
 easydict://writeKeyValue?EZBingCookieKey=xxx
 ```
@@ -505,9 +491,9 @@ easydict://writeKeyValue?EZBingCookieKey=xxx
 
 [Niutrans](https://niutrans.com/) requires an API key, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
 
-It is recommended to use your own API key, each registered user of Niutrans is given 200,000 characters of traffic per day, which is enough for daily use.
+It is recommended to use your own API key, each registered user of Niutrans is given 200,000 characters of traffic per day.
 
-```
+```bash
 // xxx is the APIKey of Niutrans
 easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 ```
@@ -516,9 +502,9 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 
 [Lingocloud](https://fanyi.caiyunapp.com/#/) needs an Token, for ease of use, we have built-in a token, this token has a limit on the amount, not guaranteed to be available all the time.
 
-It is recommended to use your own Token, each registered user of Lingocloud is given 100,000 characters of traffic per day, which is enough for daily use.
+It is recommended to use your own Token, each registered user of Lingocloud is given 100,000 characters of traffic per day.
 
-```
+```bash
 // xxx is the Token of Lingocloud
 easydict://writeKeyValue?EZCaiyunToken=xxx
 ```
@@ -544,19 +530,19 @@ For vocabularies, services that support vocabularies lookup work significantly b
 
 By default, all translation services support vocabularies lookup (vocabularies are also a kind of text), users can adjust it manually. For example, to set Google to translate text only, just use the following command to change the property to `translation | sentence`.
 
-```
+```bash
 easydict://writeKeyValue?Google-IntelligentQueryTextType=5  
 ```
 
 Similarly, for some services that support looking up vocabulary and translating text at the same time, such as Youdao Dictionary, you can set its query mode to look up only vocabulary by setting the type to `dictionary`.
 
-```
+```bash
 easydict://writeKeyValue?Youdao-IntelligentQueryTextType=2
 ```
 
 By default, only [Mini Window] is enabled for Smart Query Mode, users can also enable Smart Query Mode manually for [Hover Window]:
 
-```
+```bash
 easydict://writeKeyValue?IntelligentQueryMode-window2=1
 ```
 window1 represents the mini window, while window2 represents hover window, value 0 represents disabled, while 1 represents enabled.
@@ -715,6 +701,17 @@ If the PR is about a new feature or involves major changes to the UI, it is reco
 - This project was inspired by [saladict](https://github.com/crimx/ext-saladict) and [Bob](https://github.com/ripperhe/Bob), and the initial version was made based on [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob). [Easydict](https://github.com/tisfeng/Easydict) has made many improvements and optimizations on the original project, and many features and UI are referenced from Bob.
 - Screenshot feature is based on [isee15](https://github.com/isee15) 's [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac), and optimized on this project.
 - Select text feature is referenced from [PopClip](https://pilotmoon.com/popclip/).
+
+<table border="1">
+  <tr>
+    <th>Bob Initial Version </th>
+    <th>Easydict New Version </th>
+  </tr>
+  <tr>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231224230524141-1703430324.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231224230545900-1703430346.png">
+  </tr>
+</table>
 
 ## Statement
 

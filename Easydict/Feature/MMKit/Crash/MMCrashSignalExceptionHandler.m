@@ -112,6 +112,20 @@ static void MMSignalRegister(int signal) {
 static void MMSignalHandler(int signal, siginfo_t *info, void *context) {
     NSMutableString *mstr = [[NSMutableString alloc] init];
     [mstr appendString:@"Signal Exception:\n"];
+    /**
+     Very strange crash log from AppCenter:
+     
+     MMCrashSignalExceptionHandler.m, line 115
+     
+     MAIN THREAD - CRASHED
+     libsystem_pthread.dylib    ___chkstk_darwin
+     CoreFoundation             0x7ff818dd0000 + 1443179
+     CoreFoundation             0x7ff818dd0000 + 185932
+     Foundation                 -[NSPlaceholderString initWithFormat:locale:arguments:]
+     Foundation                 +[NSString stringWithFormat:]
+     Easydict                   MMSignalHandler MMCrashSignalExceptionHandler.m:115
+     libsystem_platform.dylib   _sigtramp
+     */
     [mstr appendString:[NSString stringWithFormat:@"Signal %@ was raised.\n", signalName(signal)]];
     [mstr appendString:@"Call Stack:\n"];
 
@@ -172,7 +186,9 @@ static NSString *signalName(int signal) {
         case SIGTRAP:
             signalName = @"SIGTRAP";
             break;
+            
         default:
+            signalName = @"Unknown Signal";
             break;
     }
     return signalName;

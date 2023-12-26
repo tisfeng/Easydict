@@ -21,6 +21,9 @@
       --iframe-right-margin: 6px;
       --iframe-bottom-margin: 12px;
       --iframe-left-margin: 6px;
+
+      --big-word-title-font-size: 24px;
+      --details-summary-font-size: 18px;
     }
 
     body {
@@ -33,7 +36,7 @@
     .big-word-title {
       margin: 8px 0px 0px 8px;
       font-weight: 550;
-      font-size: 24px;
+      font-size: var(--big-word-title-font-size);
     }
 
     .custom-iframe-container {
@@ -58,7 +61,7 @@
   <style>
     details summary {
       font-weight: 400;
-      font-size: 18px;
+      font-size: var(--details-summary-font-size);
       margin: 5px 0;
       text-align: center;
     }
@@ -293,7 +296,7 @@
         // var bodyHeight = iframeDocument.body.getBoundingClientRect().height;
         // console.log("bodyHeight: " + bodyHeight);
 
-        // 获取body元素的外边距
+        // 获取 body 元素的外边距
         var marginTop = parseInt(bodyStyle.getPropertyValue("margin-top"));
         var marginBottom = parseInt(
           bodyStyle.getPropertyValue("margin-bottom")
@@ -302,7 +305,7 @@
         var marginHeight = marginTop + marginBottom;
         // console.log("marginHeight: " + marginHeight); // 16
 
-        // 获取iframe元素的边框
+        // 获取 iframe 元素的边框
         var borderTop = parseInt(
           iframeStyle.getPropertyValue("border-top-width")
         );
@@ -320,17 +323,28 @@
         var totalHeight = scrollHeight + marginHeight + borderHeight;
 
         // 我也不知道为什么要加这个判断，但是不加的话，有些页面会出现滚动条 😢
-        // 但 documentScollHeight 最小值是 150，所以这里判断一下. hackathon
+        // 但 documentScollHeight 最小值是 150，所以这里判断一下。hackathon
         // if (totalHeight <= documentScollHeight && documentScollHeight > 150) {
         //   totalHeight = documentScollHeight + borderHeight;
         // }
 
         totalHeight = documentElementScrollHeight;
 
-        // 设置iframe的高度
+        // 设置 iframe 的高度
         iframe.style.height = totalHeight + "px";
 
         // console.log(`${i}: frame totalHeight: ${totalHeight}`);
+
+
+        var scrollHeight = getScrollHeight();
+
+        if (window.webkit && window.webkit.messageHandlers) {
+          // 调用 objc 方法
+          window.webkit.messageHandlers.objcHandler.postMessage({
+            method: "noteToUpdateScrollHeight",
+            scrollHeight: scrollHeight,
+          });
+        }
       }
     }
 
@@ -372,8 +386,10 @@
         bigWordTitleHeight +
         allIframesHeight +
         dictionaryTitleHeight * iframesHeight.length;
-      console.log(`iframesHeight: [${iframesHeight}]`);
-      console.log(`scrollHeight: ${scrollHeight}`);
+
+      // console.log(`iframesHeight: [${iframesHeight}]`);
+      // console.log(`scrollHeight: ${scrollHeight}`);
+
       return scrollHeight;
     }
 
@@ -425,6 +441,50 @@
       }
     }
 
+    // Change font size
+    function changeIframeBodyFontSize(fontSizeRatio) {
+      var percentFontSize = fontSizeRatio * 100 + "%";
+      console.log("fontSize: " + fontSizeRatio);
+
+      // change body font size
+      document.body.style.fontSize = percentFontSize;
+
+      // change .big-word-title font size
+      var rootStyles = getComputedStyle(document.documentElement);
+      var originalBigWordTitleFontSize = rootStyles.getPropertyValue(
+        "--big-word-title-font-size"
+      );
+      var bigWordTitle = document.querySelector(".big-word-title");
+      changeElementFontSize(bigWordTitle, originalBigWordTitleFontSize, fontSizeRatio);
+
+      // change details summary font size
+      var detailsSummaryList = document.querySelectorAll("details summary");
+      for (var i = 0; i < detailsSummaryList.length; i++) {
+        var summary = detailsSummaryList[i];
+        var originalDetailsSummaryFontSize = rootStyles.getPropertyValue(
+          "--details-summary-font-size"
+        );
+        changeElementFontSize(summary, originalDetailsSummaryFontSize, fontSizeRatio);
+      }
+
+      // change all iframe body font size
+      var iframes = document.getElementsByTagName('iframe');
+      for (var i = 0; i < iframes.length; i++) {
+        var iframe = iframes[i];
+        var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        // 修改 iframe 中 body 的字体大小
+        frameDoc.body.style.fontSize = percentFontSize;
+      }
+    }
+
+    function changeElementFontSize(element, originalFontSize, fontSizeRatio) {
+      // console.log(`originalFontSize: ${originalFontSize}`);
+      var newFontSize = parseFloat(originalFontSize) * fontSizeRatio;
+      // console.log(`newFontSize: ${newFontSize}`);
+      element.style.fontSize = newFontSize + 'px';
+    }
+
     window.onload = function () {
       // 重写 console.log，以便在 Xcode 中输出日志
       if (
@@ -442,30 +502,11 @@
         };
       }
 
-      if (isDarkMode()) {
-        // updateAllIframeColor(true);
-        // updateBackgroundColor(true);
-      }
-
-      updateAllIframeStyle();
-
-      var scrollHeight = getScrollHeight();
-
-      if (window.webkit && window.webkit.messageHandlers) {
-        // 调用 Objective-C 方法
-        window.webkit.messageHandlers.objcHandler.postMessage({
-          method: "getScrollHeight",
-          scrollHeight: scrollHeight,
-        });
-      }
-
       var colorSchemeListener = window.matchMedia(
         `(prefers-color-scheme: dark)`
       );
       colorSchemeListener.addEventListener(`change`, function (event) {
         var isDarkMode = event.matches;
-        // updateAllIframeColor(isDarkMode);
-        // updateBackgroundColor(isDarkMode);
       });
     };
   </script>

@@ -146,6 +146,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     return NSLocalizedString(@"openai_translate", nil);
 }
 
+- (NSString *)link {
+    return @"https://chat.openai.com";
+}
+
 // Supported languages, key is EZLanguage, value is the same as the key.
 - (MMOrderedDictionary<EZLanguage, NSString *> *)supportLanguagesDictionary {
     MMOrderedDictionary *orderedDict = [[MMOrderedDictionary alloc] init];
@@ -296,8 +300,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // TODO: need to optimize.
     if (stream) {
-        __block NSMutableString *mutableString = [NSMutableString string];
-        __block BOOL isFirst = YES;
+        __block NSMutableString *mutableContent = [NSMutableString string];
+        __block BOOL isFirstContent = YES;
         __block BOOL isFinished = NO;
         __block NSData *lastData;
         __block NSString *appendSuffixQuote = nil;
@@ -321,21 +325,26 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 return;
             }
             
-            // NSLog(@"content: %@, isFinished: %d", content, isFinished);
+//            NSLog(@"content: %@, isFinished: %d", content, isFinished);
             
             NSString *appendContent = content;
             
             // It's strange that sometimes the `first` char and the `last` char is empty @"" 😢
             if (shouldHandleQuote) {
-                if (isFirst && ![self.queryModel.queryText hasPrefixQuote]) {
+                if (isFirstContent && ![self.queryModel.queryText hasPrefixQuote]) {
                     appendContent = [content tryToRemovePrefixQuote];
+                    
+                    // Maybe there is only one content, it is the first stream content, and then finished.
+                    if (isFinished) {
+                        appendContent = [appendContent tryToRemoveSuffixQuote];
+                    }
                 }
                 
                 if (!isFinished) {
-                    if (!isFirst) {
+                    if (!isFirstContent) {
                         // Append last delayed suffix quote.
                         if (appendSuffixQuote) {
-                            [mutableString appendString:appendSuffixQuote];
+                            [mutableContent appendString:appendSuffixQuote];
                             appendSuffixQuote = nil;
                         }
                         
@@ -354,22 +363,35 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                     }
                 }
                 
-                // Skip first emtpy content.
-                if (content.length) {
-                    isFirst = NO;
+                // Maybe the content is a empty text @""
+                if (content.length == 0) {
+                    if (isFirstContent) {
+                        // Set isFirst = YES, this is a invalid content.
+                        isFirstContent = YES;
+                    }
+                    
+                    if (isFinished) {
+                        // If last conent is @"", try to remove mutableContent last suffix quotes.
+                        if (![self.queryModel.queryText hasSuffixQuote]) {
+                            completion([mutableContent tryToRemoveSuffixQuote], nil);
+                            return;
+                        }
+                    }
+                } else {
+                    isFirstContent = NO;
                 }
             }
             
             if (appendContent) {
-                [mutableString appendString:appendContent];
+                [mutableContent appendString:appendContent];
             }
             
             // Do not callback when mutableString length is 0 when isFinished is NO, to avoid auto hide reuslt view.
-            if (isFinished || mutableString.length) {
-                completion(mutableString, nil);
+            if (isFinished || mutableContent.length) {
+                completion(mutableContent, nil);
             }
             
-            //              NSLog(@"mutableString: %@", mutableString);
+//            NSLog(@"mutableContent: %@", mutableContent);
         }];
     }
     
@@ -400,7 +422,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                                                                 lastData:nil
                                                                    error:nil
                                                               isFinished:nil];
-                    NSLog(@"success content: %@", content);
+//                    NSLog(@"success content: %@", content);
                     completion(content, nil);
                 }
             }
@@ -441,7 +463,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
 - (NSString *)parseContentFromStreamData:(NSData *)data
                                 lastData:(NSData **)lastData
                                    error:(NSError **)error
-                              isFinished:(nullable BOOL *)isFinished {
+                              isFinished:(BOOL *)isFinished {
     /**
      data: {"id":"chatcmpl-6uN6CP9w98STOanV3GidjEr9eNrJ7","object":"chat.completion.chunk","created":1678893180,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
      
@@ -469,12 +491,15 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     
     // Convert data to string
     NSString *jsonDataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    //    NSLog(@"jsonDataString: %@", jsonDataString);
+//        NSLog(@"jsonDataString: %@", jsonDataString);
+    
+    // OpenAI docs: https://platform.openai.com/docs/api-reference/chat/create
     
     // split string to array
     NSString *dataKey = @"data:";
+    NSString *terminationFlag = @"[DONE]";
     NSArray *jsonArray = [jsonDataString componentsSeparatedByString:dataKey];
-    //    NSLog(@"jsonArray: %@", jsonArray);
+//        NSLog(@"jsonArray: %@", jsonArray);
     
     NSMutableString *mutableString = [NSMutableString string];
     
@@ -486,6 +511,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         
         NSString *dataString = [jsonString trim];
         if (dataString.length) {
+            if ([dataString isEqualToString:terminationFlag]) {
+                if (isFinished) {
+                    *isFinished = YES;
+                }
+                break;
+            }
+            
             // parse string to json
             NSData *jsonData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
             NSError *jsonError;
@@ -513,27 +545,69 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
                 }
             }
             
+            /**
+             gemini-pro
+             
+             {
+               "choices" : [
+                 {
+                   "delta" : {
+                     "content" : "乌克兰可能再获一套爱国者反导系统。"
+                   },
+                   "finish_reason" : "stop"
+                 }
+               ],
+               "created" : 1702957216,
+               "id" : "chatcmpl-0ddd85aae7fe49af9444ced85875decf",
+               "model" : "gemini",
+               "object" : "chat.completion.chunk"
+             }
+             */
+            
+            // TODO: We need to optimize this code.
             if (json[@"choices"]) {
                 NSArray *choices = json[@"choices"];
                 if (choices.count == 0) {
                     continue;
                 }
                 NSDictionary *choice = choices[0];
-                if (choice[@"delta"]) {
-                    // finish_reason is NSNull if not stop
+                NSDictionary *delta = choice[@"delta"];
+                if (delta) {
+                    if (delta[@"content"]) {
+                        NSString *content = delta[@"content"];
+                        //  NSLog(@"delta content: %@", content);
+
+                        /**
+                         SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
+                         
+                         -[__NSCFString appendString:]
+                         -[EZOpenAIService parseContentFromStreamData:lastData:error:isFinished:] EZOpenAIService.m:536
+                         */
+                        if ([content isKindOfClass:NSString.class]) {
+                            [mutableString appendString:content];
+                        }
+                    }
+                    
+                    // finish_reason is string or null
                     NSString *finishReason = choice[@"finish_reason"];
-                    if ([finishReason isKindOfClass:NSString.class] && [finishReason isEqualToString:@"stop"]) {
-                        //                        NSLog(@"finish reason: %@", finishReason);
+                    
+                    // Fix: SIGABRT: -[NSNull length]: unrecognized selector sent to instance 0x1dff03ce0
+                    if ([finishReason isKindOfClass:NSString.class] && finishReason.length) {
+                        NSLog(@"finish reason: %@", finishReason);
+
+                        /**
+                         The reason the model stopped generating tokens. 
+                         
+                         This will be "stop" if the model hit a natural stop point or a provided stop sequence,
+                         "length" if the maximum number of tokens specified in the request was reached,
+                         "content_filter" if content was omitted due to a flag from our content filters,
+                         "tool_calls" if the model called a tool,
+                         or "function_call" (deprecated) if the model called a function.
+                         */
                         if (isFinished) {
                             *isFinished = YES;
                         }
                         break;
-                    }
-                    
-                    NSDictionary *delta = choice[@"delta"];
-                    if (delta[@"content"]) {
-                        NSString *content = delta[@"content"];
-                        [mutableString appendString:content];
                     }
                 }
             }
@@ -786,19 +860,29 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
     self.result.to = answerLanguage;
     
     NSString *prompt = @"";
+    NSString *literalTranslation = @"Literal Translation";
     NSString *keyWords = @"Key Words";
     NSString *grammarParse = @"Grammar Parsing";
-    NSString *inferenceTranslation = @"Inferential Translation";
+    NSString *freeTranslation = @"Free Translation";
+
     if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
+        literalTranslation = @"直译";
         keyWords = @"重点词汇";
         grammarParse = @"语法分析";
-        inferenceTranslation = @"推理翻译";
+        freeTranslation = @"意译";
     }
-    
-    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: \"\"\"%@\"\"\" .\n", sourceLanguage, sentence];
+        
+    /**
+     Fuck, Google Gemini cannot input this text, no result returned.
+     
+     "分析这个英语句子: \"\"\"Body cam shows man shot after attacking a police officer\"\"\""
+     
+     So we need to use ``` wrap it.
+     */
+    NSString *sentencePrompt = [NSString stringWithFormat:@"Here is a %@ sentence: ```%@```.\n", sourceLanguage, sentence];
     prompt = [prompt stringByAppendingString:sentencePrompt];
     
-    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text, desired format: \" $(literal_translation) \",\n\n", targetLanguage];
+    NSString *directTransaltionPrompt = [NSString stringWithFormat:@"First, translate the sentence into %@ text literally, keep the original format, and don’t miss any information, desired display format: \"%@:\n {literal_translation_result} \",\n\n", targetLanguage, literalTranslation];
     prompt = [prompt stringByAppendingString:directTransaltionPrompt];
     
     
@@ -817,14 +901,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired format: \"%@:\n xxx \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"%@:\n xxx \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
-    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired format: \"%@:\n xxx \", \n\n", grammarParse];
+    NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired display format: \"%@:\n xxx \", \n\n", grammarParse];
     prompt = [prompt stringByAppendingString:grammarParsePrompt];
     
-    NSString *inferentialTranslationPrompt = [NSString stringWithFormat:@"3. You are a translation expert who is proficient in step-by-step analysis and reasoning. Generate an %@ $(inferential_translation) of the sentence based on the actual meaning of the keywords listed earlier as well as contextual. Note that the $(inferential_translation) is different from the previous $(literal_translation). $(inferential_translation) only contains the final translation result. Display in this format: \"%@: $(inferential_translation) \", \n\n", targetLanguage, inferenceTranslation];
-    prompt = [prompt stringByAppendingString:inferentialTranslationPrompt];
+    NSString *freeTranslationPrompt = [NSString stringWithFormat:@"3. According to the results of literal translation, find out the existing problems, including not limited to: not in line with %@ expression habits, sentence is not smooth, obscure, difficult to understand, and then re-free translation, on the basis of ensuring the original meaning of the content, make it easier to understand, more in line with the %@ expression habits, while keeping the original format unchanged, desired display format: \"%@:\n {free_translation_result} \", \n\n", targetLanguage, targetLanguage,  freeTranslation];
+    prompt = [prompt stringByAppendingString:freeTranslationPrompt];
     
     NSString *answerLanguagePrompt = [NSString stringWithFormat:@"Answer in %@. \n", answerLanguage];
     prompt = [prompt stringByAppendingString:answerLanguagePrompt];
@@ -930,7 +1014,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" : kTranslationSystemPrompt,
         },
     ];
-    NSMutableArray *messages = [NSMutableArray arrayWithArray:systemMessages];
+    NSMutableArray *messages = [NSMutableArray array];
+    [messages addObjectsFromArray:systemMessages];
     
     if ([EZLanguageManager.shared isChineseLanguage:answerLanguage]) {
         [messages addObjectsFromArray:chineseFewShot];
@@ -1004,7 +1089,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         exampleSentence = @"例句";
     }
     
-    NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired format: \"%@: / xxx /\" \n", pronunciation];
+    NSString *pronunciationPrompt = [NSString stringWithFormat:@"Look up its pronunciation, desired display format: \"%@: / xxx /\" \n", pronunciation];
     prompt = [prompt stringByAppendingString:pronunciationPrompt];
     
     if (isEnglishWord) {
@@ -1018,26 +1103,26 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         //        prompt = [prompt stringByAppendingString:examPrompt];
         
         //  <tense or form>xxx: <word>xxx
-        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form, if has, show desired format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
+        NSString *tensePrompt = @"Look up its all tenses and forms, each line only display one tense or form, if has, show desired display format: \" xxx \" . \n"; // 复数 looks   第三人称单数 looks   现在分词 looking   过去式 looked   过去分词 looked
         prompt = [prompt stringByAppendingString:tensePrompt];
     } else {
         NSString *translationPrompt = [self translationPrompt:word from:sourceLanguage to:targetLanguage];
-        translationPrompt = [translationPrompt stringByAppendingFormat:@", desired format: \"%@: xxx \" ", translationTitle];
+        translationPrompt = [translationPrompt stringByAppendingFormat:@", desired display format: \"%@: xxx \" ", translationTitle];
         prompt = [prompt stringByAppendingString:translationPrompt];
     }
     
-    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief <%@> explanation in clear and understandable way, desired format: \"%@: xxx \" \n", answerLanguage, explanation];
+    NSString *explanationPrompt = [NSString stringWithFormat:@"\nLook up its brief <%@> explanation in clear and understandable way, desired display format: \"%@: xxx \" \n", answerLanguage, explanation];
     prompt = [prompt stringByAppendingString:explanationPrompt];
     
     // !!!: This shoud use "词源学" instead of etymology when look up Chinese words.
-    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. Desired format: \"%@: xxx \" . \n", etymology, etymology];
+    NSString *etymologyPrompt = [NSString stringWithFormat:@"Look up its detailed %@, including but not limited to the original origin of the word, how the word's meaning has changed, and the current common meaning. desired display format: \"%@: xxx \" . \n", etymology, etymology];
     prompt = [prompt stringByAppendingString:etymologyPrompt];
     
     if (isEnglishWord) {
-        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired format: \"%@: xxx \" \n", howToRemember];
+        NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired display format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
         
-        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired format: \"%@: xxx \" ", sourceLanguage, cognate];
+        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired display format: \"%@: xxx \" ", sourceLanguage, cognate];
         NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
         prompt = [prompt stringByAppendingString:cognatesPrompt];
     }

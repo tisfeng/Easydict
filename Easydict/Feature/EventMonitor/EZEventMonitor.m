@@ -194,8 +194,6 @@ static EZEventMonitor *_instance = nil;
 
 // Monitor global events, Ref: https://blog.csdn.net/ch_soft/article/details/7371136
 - (void)startMonitor {
-    [self monitorCGEventTap];
-    
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *_Nullable(NSEvent *_Nonnull event) {
         if (event.keyCode == kVK_Escape) { // escape
             NSLog(@"escape");
@@ -302,7 +300,9 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             self.selectTextType = EZSelectTextTypeAccessibility;
             
             // Monitor CGEventTap must be required after using Accessibility successfully.
-            [self monitorCGEventTap];
+            if (EZConfiguration.shared.autoSelectText) {
+                [self monitorCGEventTap];
+            }
             
             self.selectedTextEditable = [EZSystemUtility isSelectedTextEditable];
 
@@ -952,6 +952,8 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
         self.dismissPopButtonBlock();
     }
     self.isPopButtonVisible = NO;
+    
+    [self stopCGEventTap];
 }
 
 

@@ -18,14 +18,14 @@ extension String {
     }
 
     public func encryptAES() -> String {
-        let ciphertext = try! aes.encrypt(Array(utf8))
-        let encryptedString = ciphertext.toBase64()
-        return encryptedString
+        let ciphertext = try? aes.encrypt(Array(utf8))
+        let encryptedString = ciphertext?.toBase64()
+        return encryptedString ?? ""
     }
 
     func decryptAES() -> String {
-        let ciphertext = try! aes.decrypt(Array(base64: self))
-        let decryptedString = String(bytes: ciphertext, encoding: .utf8)!
+        let ciphertext = try? aes.decrypt(Array(base64: self))
+        let decryptedString = String(bytes: ciphertext ?? [], encoding: .utf8)!
         return decryptedString
     }
 }

@@ -15,12 +15,14 @@ body:
           required: true
         - label: Easydict 已升级到 [最新版本](https://github.com/tisfeng/Easydict/releases)
           required: true
+        - label: 我理解并认可上述内容，并理解项目维护者精力有限，**不遵循规则的 issue 可能会被无视或直接关闭**
+          required: true
 
   - type: textarea
     id: description
     attributes:
       label: 问题描述
-      description: 请详细描述你遇到的问题。
+      description: 请详细描述你所遇到的问题，确保开发者能够理解、重现该问题。如果上下文信息不足，开发者无法定位，问题会被降低优先级或忽略。
       placeholder: 问题描述
     validations:
       required: true
@@ -31,7 +33,7 @@ body:
       label: 重现步骤
       description: |
         请描述如何重现该问题。如果该问题是偶发性的，或者需要特定的操作步骤才能重现，请一定要详细提供重现步骤，否则开发者无法定位问题。
-        （如果遇到一些很奇怪的问题，可以先尝试重启应用，重启电脑，或卸载重装应用，看能否解决问题 🤔）
+        （如果遇到一些很奇怪的问题，可以先尝试重启 Easydict，重启电脑，或卸载重装应用，看能否解决问题 🤔）
       placeholder: 重现步骤
     validations:
       required: true

@@ -89,11 +89,17 @@
     /**
      hello, #girl, good
      
-     We need to encode the URL to avoid JLRoutes routing failures.
+     We need to encode the URL to avoid JLRoutes routing failures. PopClip
+     
+     ---
+     
+     urlString may have been encoded, so we need to check it.
+     
+     https://github.com/tisfeng/Easydict/issues/78#issuecomment-1862752708
      */
-    NSURL *URL = [NSURL URLWithString:urlString.encode];
+    NSURL *URL = [NSURL URLWithString:urlString.encodeSafely];
     
-    // easydict://query?text=good
+    // easydict://query?text=good, easydict://query?text=你好
     if ([URL.scheme containsString:EZEasydictScheme]) {
         NSLog(@"handle URL: %@", URL);
     }

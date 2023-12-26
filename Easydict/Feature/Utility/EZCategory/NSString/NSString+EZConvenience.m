@@ -74,6 +74,14 @@
     return decodedText;
 }
 
+- (NSString *)encodeSafely {
+    BOOL hasEncoded = ![self.decode isEqualToString:self];
+    if (hasEncoded) {
+        return self;
+    }
+    return self.encode;
+}
+
 /// Replace \" with &quot;
 - (NSString *)escapedXMLString {
     NSString *escapedXMLText = CFBridgingRelease(CFXMLCreateStringByEscapingEntities(NULL, (__bridge CFStringRef)self, NULL));

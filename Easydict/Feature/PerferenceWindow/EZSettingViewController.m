@@ -13,6 +13,7 @@
 #import "EZMenuItemManager.h"
 #import "EZEnumTypes.h"
 #import <KVOController/NSObject+FBKVOController.h>
+#import "Easydict-Swift.h"
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
@@ -98,6 +99,10 @@
 
 @property (nonatomic, strong) NSTextField *menuBarIconLabel;
 @property (nonatomic, strong) NSButton *hideMenuBarIconButton;
+
+@property (nonatomic, strong) NSTextField *fontSizeLabel;
+@property (nonatomic, strong) ChangeFontSizeView *changeFontSizeView;
+@property (nonatomic, strong) FontSizeHintView *fontSizeHintView;
 
 @property (nonatomic, strong) NSArray<NSString *> *enabledTTSServiceTypes;
 
@@ -473,6 +478,24 @@
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
     
+    NSTextField *fontSizeLabel = [NSTextField labelWithString:NSLocalizedString(@"font_size", nil)];
+    fontSizeLabel.font = font;
+    [self.contentView addSubview:fontSizeLabel];
+    self.fontSizeLabel = fontSizeLabel;
+    
+    ChangeFontSizeView *changeFontSizeView = [[ChangeFontSizeView alloc]initWithFontSizes:self.config.fontSizes initialIndex:self.config.fontSizeIndex];
+    
+    mm_weakify(self);
+    changeFontSizeView.didSelectIndex = ^(NSInteger index) {
+        mm_strongify(self);
+        self.config.fontSizeIndex = index;
+    };
+    
+    [self.contentView addSubview:changeFontSizeView];
+    self.changeFontSizeView = changeFontSizeView;
+    
+    self.fontSizeHintView = [FontSizeHintView new];
+    [self.contentView addSubview:self.fontSizeHintView];
     
     [self updatePreferredLanguagesPopUpButton];
     
@@ -747,9 +770,29 @@
         make.top.equalTo(self.showEudicQuickLinkButton.mas_bottom).offset(self.verticalPadding);
     }];
     
+    [self.fontSizeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.autoGetSelectedTextLabel);
+        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(20);
+    }];
+    
+    CGFloat changeFontSizeViewWidth = 220;
+    [self.changeFontSizeView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding + 2);
+        make.centerY.equalTo(self.fontSizeLabel);
+        make.width.mas_equalTo(changeFontSizeViewWidth);
+        make.height.mas_equalTo(30);
+    }];
+    
+    [self.fontSizeHintView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.fontSizeLabel.mas_right).offset(self.horizontalPadding);
+        make.top.equalTo(self.changeFontSizeView.mas_bottom).mas_offset(8);
+        make.width.mas_equalTo(changeFontSizeViewWidth + 5);
+        make.height.mas_equalTo(45);
+    }];
+    
     [self.separatorView2 mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.separatorView);
-        make.top.equalTo(self.showAppleDictionaryQuickLinkButton.mas_bottom).offset(1.5 * self.verticalPadding);
+        make.top.equalTo(self.fontSizeHintView.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.equalTo(self.separatorView);
     }];
     
