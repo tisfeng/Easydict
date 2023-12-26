@@ -71,6 +71,9 @@
 - (instancetype)initWithKeyCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags;
 + (instancetype)shortcutWithKeyCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags;
 
+- (nonnull instancetype)initDoubleModifierKeyWithCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags;
++ (nonnull instancetype)shortcutDoubleModifierKeyWithCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags;
+
 /**
  Creates a new shortcut from an `NSEvent` object.
 

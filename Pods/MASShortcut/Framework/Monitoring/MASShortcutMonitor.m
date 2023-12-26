@@ -7,7 +7,7 @@
 @end
 
 static OSStatus MASCarbonEventCallback(EventHandlerCallRef, EventRef, void*);
-
+static NSUInteger MAShortcutDoubleModifierCode = 100000;
 @implementation MASShortcutMonitor
 
 #pragma mark Initialization
@@ -22,6 +22,8 @@ static OSStatus MASCarbonEventCallback(EventHandlerCallRef, EventRef, void*);
     if (status != noErr) {
         return nil;
     }
+    
+    [self addModifierDoubleClickListener];
     return self;
 }
 
@@ -74,10 +76,91 @@ static OSStatus MASCarbonEventCallback(EventHandlerCallRef, EventRef, void*);
     return !![_hotKeys objectForKey:shortcut];
 }
 
-#pragma mark Event Handling
+- (void)addModifierDoubleClickListener {
+    __block NSUInteger preFlag = -1;
+    __weak typeof(self) weakSelf = self;
+    // event Monitor
+    [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskFlagsChanged handler:^NSEvent * _Nullable(NSEvent * event) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        NSUInteger flags = [event modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask;
+        if (flags == NSEventModifierFlagCommand ||
+            flags == NSEventModifierFlagOption  ||
+            flags == NSEventModifierFlagShift   ||
+            flags == NSEventModifierFlagControl) {
+            if (preFlag != -1 && flags == preFlag) {
+                NSUInteger modifierFlag = MASPickCocoaModifiers(flags);
+//                NSString *eventKey = [strongSelf modifierFlagsString:modifierFlag];
+                [strongSelf doubleClickHandleEventWithModifier:modifierFlag];
+                preFlag = -1;
+            } else {
+                preFlag = flags;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    preFlag = -1;
+                });
+            }
+        }
+        return event;
+    }];
+    
+    [NSEvent addGlobalMonitorForEventsMatchingMask:NSEventMaskFlagsChanged handler:^(NSEvent *event) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        NSUInteger flags = [event modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask;
+        if (flags == NSEventModifierFlagCommand ||
+            flags == NSEventModifierFlagOption  ||
+            flags == NSEventModifierFlagShift   ||
+            flags == NSEventModifierFlagControl) {
+            if (preFlag != -1 && flags == preFlag) {
+                NSUInteger modifierFlag = MASPickCocoaModifiers(flags);
+//                NSString *eventKey = [strongSelf modifierFlagsString:modifierFlag];
+                [strongSelf doubleClickHandleEventWithModifier:modifierFlag];
+                preFlag = -1;
+                
+            } else {
+                preFlag = flags;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    preFlag = -1;
+                });
+            }
+        }
+    }];
+    
+}
 
-- (void) handleEvent: (EventRef) event
-{
+#pragma mark Event Handling
+- (void)doubleClickHandleEventWithModifier:(NSUInteger)modifierFlag {
+    __block BOOL flag = NO;
+    [_hotKeys enumerateKeysAndObjectsUsingBlock:^(MASShortcut *shortcut, MASHotKey *hotKey, BOOL *stop) {
+        if (shortcut.modifierFlags == modifierFlag && shortcut.keyCode == MAShortcutDoubleModifierCode)  {
+            flag = YES;
+            *stop = YES;
+        } else if (shortcut.modifierFlags == modifierFlag && shortcut.keyCode == MAShortcutDoubleModifierCode) {
+            flag = YES;
+            *stop = YES;
+        } else if (shortcut.modifierFlags == modifierFlag && shortcut.keyCode == MAShortcutDoubleModifierCode) {
+            flag = YES;
+            *stop = YES;
+        } else if (shortcut.modifierFlags == modifierFlag && shortcut.keyCode == MAShortcutDoubleModifierCode) {
+            flag = YES;
+            *stop = YES;
+        }
+        if (flag && [hotKey action]) {
+            dispatch_async(dispatch_get_main_queue(), [hotKey action]);
+        }
+    }];
+}
+
+- (NSString *)modifierFlagsString:(NSUInteger)modifierFlags {
+    unichar chars[4];
+    NSUInteger count = 0;
+    // These are in the same order as the menu manager shows them
+    if (modifierFlags & NSEventModifierFlagControl) chars[count++] = kControlUnicode;
+    if (modifierFlags & NSEventModifierFlagOption) chars[count++] = kOptionUnicode;
+    if (modifierFlags & NSEventModifierFlagShift) chars[count++] = kShiftUnicode;
+    if (modifierFlags & NSEventModifierFlagCommand) chars[count++] = kCommandUnicode;
+    return (count ? [NSString stringWithCharacters:chars length:count] : @"");
+}
+
+- (void) handleEvent: (EventRef) event {
     if (GetEventClass(event) != kEventClassKeyboard) {
         return;
     }
