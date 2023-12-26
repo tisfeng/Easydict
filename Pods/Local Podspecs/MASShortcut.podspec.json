@@ -1,0 +1,32 @@
+{
+  "name": "MASShortcut",
+  "version": "2.4.0",
+  "summary": "Modern framework for managing global keyboard shortcuts compatible with Mac App Store",
+  "homepage": "https://github.com/shpakovski/MASShortcut",
+  "license": "BSD 2-clause",
+  "authors": {
+    "Vadim Shpakovski": "vadim@shpakovski.com",
+    "Tomáš Znamenáček": "tomas.znamenacek@gmail.com"
+  },
+  "platforms": {
+    "osx": "10.10"
+  },
+  "source": {
+    "git": "https://github.com/shpakovski/MASShortcut.git",
+    "tag": "2.4.0"
+  },
+  "source_files": "Framework/**/*.{h,m}",
+  "exclude_files": "Framework/**/*Tests.m",
+  "osx": {
+    "frameworks": [
+      "Carbon",
+      "AppKit"
+    ],
+    "resource_bundles": {
+      "MASShortcut": [
+        "Resources/*.lproj"
+      ]
+    }
+  },
+  "requires_arc": true
+}

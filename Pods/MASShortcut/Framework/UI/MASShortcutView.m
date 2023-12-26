@@ -430,7 +430,7 @@ void *kUserDataHint = &kUserDataHint;
     static BOOL isActive = NO;
     if (isActive == shouldActivate) return;
     isActive = shouldActivate;
-    
+    __block MASShortcut *preModifierFlags;
     static id eventMonitor = nil;
     if (shouldActivate) {
         __unsafe_unretained MASShortcutView *weakSelf = self;
@@ -460,6 +460,16 @@ void *kUserDataHint = &kUserDataHint;
 
             // If the shortcut is Cmd-W or Cmd-Q, cancel recording and pass the event through
             else if ((shortcut.modifierFlags == NSCommandKeyMask) && (shortcut.keyCode == kVK_ANSI_W || shortcut.keyCode == kVK_ANSI_Q)) {
+                weakSelf.recording = NO;
+            }
+            else if ((shortcut.modifierFlags == NSEventModifierFlagCommand ||
+                     shortcut.modifierFlags == NSEventModifierFlagOption  ||
+                     shortcut.modifierFlags == NSEventModifierFlagControl ||
+                     shortcut.modifierFlags == NSEventModifierFlagShift) && 
+                     preModifierFlags.keyCode == shortcut.keyCode) {
+                weakSelf.shortcutPlaceholder = shortcut.modifierFlagsString;
+                MASShortcut *doubleModifierKey = [MASShortcut shortcutDoubleModifierKeyWithCode:shortcut.keyCode modifierFlags:shortcut.modifierFlags];
+                weakSelf.shortcutValue = doubleModifierKey;
                 weakSelf.recording = NO;
             }
 
@@ -499,6 +509,9 @@ void *kUserDataHint = &kUserDataHint;
                 else {
                     // User is playing with modifier keys
                     weakSelf.shortcutPlaceholder = shortcut.modifierFlagsString;
+                    if (shortcut.modifierFlags != 0) {
+                        preModifierFlags = shortcut;
+                    }
                 }
                 event = nil;
             }
