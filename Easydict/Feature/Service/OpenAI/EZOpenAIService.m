@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "EZOpenAIChatResponse.h"
 #import "EZOpenAIService+EZPromptMessages.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kEZLanguageWenYanWen = @"文言文";
 
@@ -21,12 +22,28 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 @property (nonatomic, copy) NSString *model;
 @property (nonatomic, copy) NSString *domain;
 
+@property (nonatomic, copy) NSString *defaultAPIKey;
+@property (nonatomic, copy) NSString *defaultEndPoint;
+@property (nonatomic, copy) NSString *defaultModel;
+
+
 @end
 
 @implementation EZOpenAIService
 
 - (instancetype)init {
     if (self = [super init]) {
+        /**
+         For convenience, we provide a default key for users to try out the service.
+
+         Please do not abuse it, otherwise it may be revoked.
+
+         For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
+         */
+        
+        self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==" decryptAES];
+        self.defaultEndPoint = [@"gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2" decryptAES];
+        self.defaultModel = [self hasPrivateAPIKey] ? @"gpt-3.5-turbo" : @"gemini-pro";
     }
     return self;
 }
@@ -35,6 +52,9 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     // easydict://writeKeyValue?EZOpenAIAPIKey=
     
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
+    if (apiKey.length == 0 && EZConfiguration.shared.isBeta) {
+        apiKey = self.defaultAPIKey;
+    }
     return apiKey;
 }
 
@@ -45,16 +65,18 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     if (endPoint.length == 0) {
         endPoint = [NSString stringWithFormat:@"https://%@/v1/chat/completions", self.domain];
     }
+    if (![self hasPrivateAPIKey]) {
+        endPoint = self.defaultEndPoint;
+    }
     return endPoint;
 }
 
 - (NSString *)model {
     // easydict://writeKeyValue?EZOpenAIDomainKey=
     
-    NSString *defautModel = @"gpt-3.5-turbo";
-    NSString *model = [NSUserDefaults mm_readString:EZOpenAIModelKey defaultValue:defautModel];
+    NSString *model = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIModelKey];
     if (model.length == 0) {
-        model = defautModel;
+        model = self.defaultModel;
     }
     return model;
 }
@@ -135,6 +157,10 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     return orderedDict;
 }
 
+- (BOOL)hasPrivateAPIKey {
+    return ![self.apiKey isEqualToString:self.defaultAPIKey];
+}
+
 /// Use OpenAI to translate text.
 - (void)translate:(NSString *)text from:(EZLanguage)from to:(EZLanguage)to completion:(void (^)(EZQueryResult *, NSError *_Nullable))completion {
     text = [text removeInvisibleChar];
@@ -150,7 +176,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         sourceLanguageType = @"";
     }
     
-    BOOL stream = NO;
+    BOOL stream = YES;
     NSMutableDictionary *parameters = @{
         @"model" : self.model,
         @"temperature" : @(0),

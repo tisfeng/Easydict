@@ -57,7 +57,7 @@ public final class TencentService: QueryService {
 
      Please do not abuse it, otherwise it may be revoked.
 
-     For better experience, please register your own key at https://cloud.tencent.com
+     For better experience, please apply for your personal key at https://cloud.tencent.com
      */
     private let defaultSecretId = "7ZdGkHHIx4Nozm4RHib5Jjye5yCefYoxxfSWzMRbKRrHrnSEJaqpypL1yRMoN0E5".decryptAES()
     private let defaultSecretKey = "OLvQKqJoBfrfLLg95ezIQsWymT+2irYbuMLov1cxrtc3a/M2YXCDQ2rpyy/raQ8r".decryptAES()
