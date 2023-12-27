@@ -48,23 +48,29 @@
      [[MASShortcutBinder sharedBinder] setBindingOptions:@{NSValueTransformerNameBindingOption: NSSecureUnarchiveFromDataTransformerName}];
      */
 
+    // hidden pop button when user playing shortcut
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
+        [windowManager.popButtonWindow close];
         [windowManager selectTextTranslate];
     }];
     
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
+        [windowManager.popButtonWindow close];
         [windowManager snipTranslate];
     }];
     
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
+        [windowManager.popButtonWindow close];
         [windowManager inputTranslate];
     }];
     
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
+        [windowManager.popButtonWindow close];
         [windowManager showMiniFloatingWindow];
     }];
     
     [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
+        [windowManager.popButtonWindow close];
         [windowManager screenshotOCR];
     }];
     
