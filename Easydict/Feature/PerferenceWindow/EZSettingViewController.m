@@ -35,6 +35,9 @@
 
 @property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageDict;
 
+@property (nonatomic, strong) NSTextField *apperanceLabel;
+@property (nonatomic, strong) NSPopUpButton *apperancePopUpButton;
+
 @property (nonatomic, strong) NSTextField *firstLanguageLabel;
 @property (nonatomic, strong) NSPopUpButton *firstLanguagePopUpButton;
 @property (nonatomic, strong) NSTextField *secondLanguageLabel;
@@ -143,6 +146,24 @@
     return _enabledTTSServiceTypes;
 }
 
+//- (MMOrderedDictionary<AppearenceType, NSString *> *)appearanceTypes {
+//    if (!_allLanguageDict) {
+//        MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
+//        for (EZLanguage language in EZLanguageManager.shared.allLanguages) {
+//            NSArray *disableLanguages = @[
+//                EZLanguageAuto,
+//                EZLanguageClassicalChinese,
+//            ];
+//            if (![disableLanguages containsObject:language]) {
+//                NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageNameWithFlag:language];
+//                [languageDict setObject:showingLanguageName forKey:language];
+//            }
+//        }
+//        _allLanguageDict = languageDict;
+//    }
+//    return _allLanguageDict;
+//}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -237,6 +258,18 @@
     [self.firstLanguagePopUpButton addItemsWithTitles:[self.allLanguageDict sortedValues]];
     self.firstLanguagePopUpButton.target = self;
     self.firstLanguagePopUpButton.action = @selector(firstLangaugePopUpButtonClicked:);
+    
+    NSTextField *apperanceLabel = [NSTextField labelWithString:NSLocalizedString(@"app_appearance", nil)];
+    apperanceLabel.font = font;
+    [self.contentView addSubview:apperanceLabel];
+    self.apperanceLabel = apperanceLabel;
+    
+    self.apperancePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.apperancePopUpButton];
+    [self.apperancePopUpButton addItemsWithTitles:[AppearenceHelper shared].titles];
+    [self.apperancePopUpButton selectItemAtIndex:self.config.appearance];
+    self.apperancePopUpButton.target = self;
+    self.apperancePopUpButton.action = @selector(appearancePopUpButtonClicked:);
     
     NSTextField *secondLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"second_language", nil)];
     secondLanguageLabel.font = font;
@@ -592,9 +625,18 @@
         make.height.mas_equalTo(1);
     }];
     
-    [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.apperanceLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
+    }];
+    [self.apperancePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.apperanceLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.apperanceLabel);
+    }];
+    
+    [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectLabel);
+        make.top.equalTo(self.apperanceLabel.mas_bottom).offset(self.verticalPadding);
     }];
     [self.firstLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.firstLanguageLabel.mas_right).offset(self.horizontalPadding);
@@ -1040,6 +1082,12 @@
     
     NSInteger secondLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:self.config.secondLanguage];
     [self.secondLanguagePopUpButton selectItemAtIndex:secondLanguageIndex];
+}
+
+#pragma mark - Appearance
+- (void)appearancePopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    self.config.appearance = selectedIndex;
 }
 
 #pragma mark - MASPreferencesViewController

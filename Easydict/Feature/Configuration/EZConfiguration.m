@@ -55,6 +55,7 @@ static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 static NSString *const kTranslationControllerFontKey = @"EZConfiguration_kTranslationControllerFontKey";
+static NSString *const kApperanceKey = @"EZConfiguration_kApperanceKey";
 
 
 @interface EZConfiguration ()
@@ -129,6 +130,7 @@ static EZConfiguration *_instance;
     
     _fontSizeIndex = [[NSUserDefaults standardUserDefaults]integerForKey:kTranslationControllerFontKey];
     
+    self.appearance = [NSUserDefaults mm_readInteger:kApperanceKey defaultValue:AppearenceTypeFollowSystem];
 }
 
 #pragma mark - getter
@@ -436,6 +438,14 @@ static EZConfiguration *_instance;
 
 - (CGFloat)fontSizeRatio {
     return _fontSizes[_fontSizeIndex].floatValue;
+}
+
+- (void)setAppearance:(AppearenceType)appearance {
+    _appearance = appearance;
+    
+    [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
+    
+    [[AppearenceHelper shared]updateAppApperance:appearance];
 }
 
 #pragma mark - Window Frame
