@@ -12,14 +12,17 @@
 @class EZOpenAIChoice;
 @class EZOpenAIDelta;
 @class EZOpenAIMessage;
+@class EZOpenAIError;
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Object interfaces
 
 /**
+ Chat stream response
+
  https://platform.openai.com/docs/api-reference/chat/streaming
- 
+
  {
      "id": "chatcmpl-8XWvKM0CJ0oQwpfxw9F0a2FradxZK",
      "object": "chat.completion.chunk",
@@ -75,6 +78,30 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger promptTokens;
 @property (nonatomic, assign) NSInteger completionTokens;
 @property (nonatomic, assign) NSInteger totalTokens;
+@end
+
+/**
+ error response data
+
+ {
+   "error": {
+     "code": "invalid_api_key",
+     "message": "Incorrect API key provided: sk-5DJ2b***************************************7ckC. You can find your API key at https://platform.openai.com/account/api-keys.",
+     "param": null,
+     "type": "invalid_request_error"
+   }
+ }
+ */
+
+@interface EZOpenAIErrorResponse : NSObject
+@property (nonatomic, strong) EZOpenAIError *error;
+@end
+
+@interface EZOpenAIError : NSObject
+@property (nonatomic, copy) NSString *code;
+@property (nonatomic, copy) NSString *message;
+@property (nonatomic, nullable, copy) id param;
+@property (nonatomic, copy) NSString *type;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -37,12 +37,10 @@
 @end
 
 @implementation EZOpenAIDelta
-
 @end
 
 
 @implementation EZOpenAIMessage
-
 @end
 
 @implementation EZOpenAIUsage
@@ -55,4 +53,10 @@
     };
 }
 
+@end
+
+@implementation EZOpenAIErrorResponse
+@end
+
+@implementation EZOpenAIError
 @end

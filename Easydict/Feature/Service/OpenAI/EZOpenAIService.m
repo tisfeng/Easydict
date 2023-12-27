@@ -358,25 +358,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
             return;
         }
         
-        EZError *ezError = [EZError errorWithNSError:error];
-        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-        if (errorData) {
-            /**
-             {
-             "error" : {
-             "code" : "invalid_api_key",
-             "message" : "Incorrect API key provided: sk-5DJ2b***************************************7ckC. You can find your API key at https:\/\/platform.openai.com\/account\/api-keys.",
-             "param" : null,
-             "type" : "invalid_request_error"
-             }
-             }
-             */
-            NSError *jsonError;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:errorData options:kNilOptions error:&jsonError];
-            if (!jsonError) {
-                ezError.errorDataMessage = [self getJsonErrorMessageWithJson:json];
-            }
-        }
+        EZError *ezError = [self getEZErrorMessageWithError:error];
         completion(nil, ezError);
     }];
     
@@ -547,21 +529,18 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     }
 }
 
-- (nullable NSString *)getJsonErrorMessageWithJson:(NSDictionary *)json {
-    if (![json isKindOfClass:[NSDictionary class]]) {
-        return nil;
+- (EZError *)getEZErrorMessageWithError:(NSError *)error {
+    EZError *ezError = [EZError errorWithNSError:error];
+    NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+    EZOpenAIErrorResponse *errorResponse = [EZOpenAIErrorResponse mj_objectWithKeyValues:errorData.mj_JSONObject];
+    NSString *errorMessage = errorResponse.error.message;
+    
+    // in theory, message is a string. The code ensures its robustness here.
+    if ([errorMessage isKindOfClass:NSString.class] && errorMessage.length) {
+        ezError.errorDataMessage = errorMessage;
     }
     
-    NSDictionary *error = json[@"error"];
-    // if the domain is incorrect, then json.error is not a dictionary.
-    if ([error isKindOfClass:[NSDictionary class]]) {
-        NSString *errorMessage = error[@"message"];
-        // in theory, message is a string. The code ensures its robustness here.
-        if ([errorMessage isKindOfClass:[NSString class]] && errorMessage.length) {
-            return errorMessage;
-        }
-    }
-    return nil;
+    return ezError;
 }
 
 #pragma mark -
