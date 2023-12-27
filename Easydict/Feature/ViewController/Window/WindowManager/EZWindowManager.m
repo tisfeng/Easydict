@@ -149,7 +149,8 @@ static EZWindowManager *_instance;
         // TODO: Let users customize double-click shortcuts later on
 #if DEBUG
         mm_strongify(self);
-        [self showMiniFloatingWindow];
+        // add double click as shortcuts feat in MAShortCut
+//        [self showMiniFloatingWindow];
 #endif
     }];
 }
