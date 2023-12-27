@@ -783,6 +783,7 @@ If you don't want your username to be displayed in the list, please choose anony
 | 2023-12-05 | ㅤ hiuxia  | 100 | 感谢这么优秀的软件！|
 | 2023-12-05 | ㅤ——  | 20 |  |
 | 2023-12-07 | 小逗。🎈 | 5 |  |
+| 2023-12-26 | ㅤ Yee  | 5 | 感谢开源 |
 
 </p>
 
