@@ -26,7 +26,6 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 @property (nonatomic, copy) NSString *defaultEndPoint;
 @property (nonatomic, copy) NSString *defaultModel;
 
-
 @end
 
 @implementation EZOpenAIService
@@ -72,12 +71,22 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 }
 
 - (NSString *)model {
-    // easydict://writeKeyValue?EZOpenAIDomainKey=
+    // easydict://writeKeyValue?EZOpenAIModelKey=
     
     NSString *model = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIModelKey];
+    
+    // If there is no own key, only the default model is allowed to be used, such as gemini-pro
+    if (![self hasPrivateAPIKey]) {
+    // In development mode, the default model is allowed to be modified.
+#if !DEBUG
+        model = self.defaultModel;
+#endif
+    }
+    
     if (model.length == 0) {
         model = self.defaultModel;
     }
+    
     return model;
 }
 
@@ -359,7 +368,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
                 completion(mutableContent, nil);
             }
             
-            //            NSLog(@"mutableContent: %@", mutableContent);
+//              NSLog(@"mutableContent: %@", mutableContent);
         }];
     }
     
