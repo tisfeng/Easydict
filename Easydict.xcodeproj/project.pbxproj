@@ -186,6 +186,8 @@
 		03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC6D295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m */; };
 		03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BFFC7029612E10004E033E /* NSString+EZConvenience.m */; };
 		03CAB9552ADBF0FF00DA94A3 /* EZSystemUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */; };
+		03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FD2B3DA7D500E19B57 /* Realm */; };
+		03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03CF27FF2B3DA7D500E19B57 /* RealmSwift */; };
 		03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF88622B137F650030C199 /* Array+Convenience.swift */; };
 		03D0434E292886D200E7559E /* EZMiniQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D0434D292886D200E7559E /* EZMiniQueryWindow.m */; };
 		03D043522928935300E7559E /* EZMainQueryWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 03D043512928935300E7559E /* EZMainQueryWindow.m */; };
@@ -727,9 +729,11 @@
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
+				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
+				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2114,6 +2118,8 @@
 				03022F1B2B35DEBA00B63209 /* Hue */,
 				03022F1E2B36CF3100B63209 /* SwiftShell */,
 				03022F212B36D1A400B63209 /* SnapKit */,
+				03CF27FD2B3DA7D500E19B57 /* Realm */,
+				03CF27FF2B3DA7D500E19B57 /* RealmSwift */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2165,6 +2171,7 @@
 				03022F1A2B35DEBA00B63209 /* XCRemoteSwiftPackageReference "Hue" */,
 				03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */,
 				03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3028,6 +3035,14 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.45.2;
+			};
+		};
 		03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
@@ -3061,6 +3076,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		03CF27FD2B3DA7D500E19B57 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		03CF27FF2B3DA7D500E19B57 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		03FD68BA2B1DC59600FD388E /* CryptoSwift */ = {
 			isa = XCSwiftPackageProductDependency;
