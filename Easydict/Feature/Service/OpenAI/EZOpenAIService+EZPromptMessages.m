@@ -350,8 +350,8 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         NSString *rememberWordPrompt = [NSString stringWithFormat:@"Look up disassembly and association methods to remember it, desired display format: \"%@: xxx \" \n", howToRemember];
         prompt = [prompt stringByAppendingString:rememberWordPrompt];
         
-        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 6, desired display format: \"%@: xxx \" ", sourceLanguage, cognate];
-        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 6, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
+        //        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up its most commonly used <%@> cognates, no more than 4, desired display format: \"%@: xxx \" ", sourceLanguage, cognate];
+        NSString *cognatesPrompt = [NSString stringWithFormat:@"\nLook up main <%@> words with the same root word as \"%@\", no more than 4, excluding phrases, display all parts of speech and meanings of the same root word, pos always displays its English abbreviation. If there are words with the same root, show format: \"%@: xxx \", otherwise don't display it. ", sourceLanguage, word, cognate];
         prompt = [prompt stringByAppendingString:cognatesPrompt];
     }
     
@@ -362,7 +362,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         NSString *antonymsPrompt = [NSString stringWithFormat:@"\nLook up its main <%@> near antonyms, no more than 3, If it has antonyms, show format: \"%@: xxx \" \n", sourceLanguage, antonym];
         prompt = [prompt stringByAppendingString:antonymsPrompt];
         
-        NSString *phrasePrompt = [NSString stringWithFormat:@"\nLook up its main <%@> phrases, no more than 5, If it has phrases, show format: \"%@: xxx \" \n", sourceLanguage, commonPhrases];
+        NSString *phrasePrompt = [NSString stringWithFormat:@"\nLook up its main <%@> phrases, no more than 3, If it has phrases, show format: \"%@: xxx \" \n", sourceLanguage, commonPhrases];
         prompt = [prompt stringByAppendingString:phrasePrompt];
     }
     
