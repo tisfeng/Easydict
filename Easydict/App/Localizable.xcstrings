@@ -404,6 +404,16 @@
         }
       }
     },
+    "beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Beta] SwiftUI App模式"
+          }
+        }
+      }
+    },
     "bing_translate" : {
       "localizations" : {
         "en" : {
@@ -785,6 +795,19 @@
     "Easydict" : {
 
     },
+    "Easydict 🍃" : {
+
+    },
+    "enable_beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 SwiftUI App模式启动，重启App生效"
+          }
+        }
+      }
+    },
     "equal_first_and_second_language" : {
       "localizations" : {
         "en" : {
@@ -1129,6 +1152,9 @@
         }
       }
     },
+    "Github:" : {
+
+    },
     "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1311,6 +1337,9 @@
           }
         }
       }
+    },
+    "Key" : {
+      "extractionState" : "manual"
     },
     "language_detect_optimize" : {
       "localizations" : {
@@ -2025,6 +2054,9 @@
         }
       }
     },
+    "Settings..." : {
+
+    },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
         "en" : {
@@ -2294,6 +2326,9 @@
           }
         }
       }
+    },
+    "Tisfeng" : {
+
     },
     "toggle_languages" : {
       "localizations" : {

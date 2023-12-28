@@ -184,7 +184,7 @@ static EZMenuItemManager *_instance;
     if (Snip.shared.isSnapshotting) {
         [Snip.shared stop];
     }
-    [EZMenuItemManagerHelper.shared show];
+    [EZPreferencesWindowController.shared show];
 }
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {

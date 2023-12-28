@@ -1,27 +1,15 @@
 //
-//  AboutViewController.swift
+//  AboutTab.swift
 //  Easydict
 //
 //  Created by Kyle on 2023/10/29.
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-import Foundation
-import Settings
 import SwiftUI
 
-let AboutViewController: () -> SettingsPane = {
-    let panelView = Settings.Pane(
-        identifier: .init("About"),
-        title: NSLocalizedString("about", comment: "about"),
-        toolbarIcon: .toolbarAbout
-    ) {
-        AboutPanelView()
-    }
-    return Settings.PaneHostingController(pane: panelView)
-}
-
-struct AboutPanelView: View {
+@available(macOS 13, *)
+struct AboutTab: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 15) {
@@ -47,13 +35,10 @@ struct AboutPanelView: View {
             .padding(.horizontal, 50)
             .padding(.vertical, 30)
         }
-        .frame(idealWidth: 500, idealHeight: 400)
-        .onAppear { // FIXME: Use task when update to macOS 12
-            Task.detached {
-                let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
-                await MainActor.run {
-                    lastestVersion = version
-                }
+        .task {
+            let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
+            await MainActor.run {
+                lastestVersion = version
             }
         }
     }
@@ -71,6 +56,7 @@ struct AboutPanelView: View {
     }
 }
 
+@available(macOS 13, *)
 #Preview {
-    AboutPanelView()
+    AboutTab()
 }

@@ -17,3 +17,7 @@
 #import "EZMenuItemManager.h"
 #import "NSImage+MM.h"
 #import "NSColor+MyColors.h"
+
+#import "entry.h"
+#import "AppDelegate.h"
+#import "EZConfiguration.h"

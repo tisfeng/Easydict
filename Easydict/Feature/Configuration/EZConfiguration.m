@@ -45,7 +45,8 @@ static NSString *const kDefaultTTSServiceTypeKey = @"EZConfiguration_kDefaultTTS
 static NSString *const kShowGoogleLinkKey = @"EZConfiguration_kShowGoogleLinkKey";
 static NSString *const kShowEudicLinkKey = @"EZConfiguration_kShowEudicLinkKey";
 static NSString *const kShowAppleDictionaryLinkKey = @"EZConfiguration_kShowAppleDictionaryLinkKey";
-static NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
+NSString *const kHideMenuBarIconKey = @"EZConfiguration_kHideMenuBarIconKey";
+NSString *const kEnableBetaNewApp = @"EZConfiguration_kEnableBetaNewApp";
 static NSString *const kShowFixedWindowPositionKey = @"EZConfiguration_kShowFixedWindowPositionKey";
 static NSString *const kShortcutSelectTranslateWindowTypeKey = @"EZConfiguration_kShortcutSelectTranslateWindowTypeKey";
 static NSString *const kMouseSelectTranslateWindowTypeKey = @"EZConfiguration_kMouseSelectTranslateWindowTypeKey";
@@ -357,9 +358,17 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(hideMenuBarIcon) forKey:kHideMenuBarIconKey];
     
-    [self hideMenuBarIcon:hideMenuBarIcon];
+    if (!EasydictNewAppManager.shared.enable) {
+        [self hideMenuBarIcon:hideMenuBarIcon];
+    }
     
     [self logSettings:@{@"hide_menu_bar_icon" : @(hideMenuBarIcon)}];
+}
+
+- (void)setEnableBetaNewApp:(BOOL)enableBetaNewApp {
+    _enableBetaNewApp = enableBetaNewApp;
+    [NSUserDefaults mm_write:@(enableBetaNewApp) forKey:kEnableBetaNewApp];
+    [self logSettings:@{@"enable_beta_new_app" : @(enableBetaNewApp)}];
 }
 
 - (void)setFixedWindowPosition:(EZShowWindowPosition)showFixedWindowPosition {
