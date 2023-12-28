@@ -40,7 +40,12 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
          For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
          */
         
+        // Only use Google Gemini-pro channel
         self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==" decryptAES];
+        
+#if DEBUG
+        self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==" decryptAES];
+#endif
         self.defaultEndPoint = [@"gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2" decryptAES];
         self.defaultModel = [self hasPrivateAPIKey] ? @"gpt-3.5-turbo" : @"gemini-pro";
     }
