@@ -474,6 +474,16 @@
         }
       }
     },
+    "check_updates" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
+    },
     "chinese_phonetic" : {
       "localizations" : {
         "en" : {
@@ -1945,6 +1955,16 @@
         }
       }
     },
+    "quit" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        }
+      }
+    },
     "replace_text" : {
       "localizations" : {
         "en" : {
@@ -2059,7 +2079,14 @@
       }
     },
     "Settings..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置..."
+          }
+        }
+      }
     },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
