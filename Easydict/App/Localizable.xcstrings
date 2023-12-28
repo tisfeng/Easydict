@@ -1152,9 +1152,6 @@
         }
       }
     },
-    "Github:" : {
-
-    },
     "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1337,9 +1334,6 @@
           }
         }
       }
-    },
-    "Key" : {
-      "extractionState" : "manual"
     },
     "language_detect_optimize" : {
       "localizations" : {

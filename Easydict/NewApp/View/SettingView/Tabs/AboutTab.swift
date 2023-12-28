@@ -28,7 +28,7 @@ struct AboutTab: View {
                     Link("Tisfeng", destination: URL(string: EZGithubRepoEasydictURL)!.deletingLastPathComponent())
                 }
                 HStack {
-                    Text("Github:")
+                    Text("GitHub:")
                     Link("Easydict", destination: URL(string: EZGithubRepoEasydictURL)!)
                 }
             }
