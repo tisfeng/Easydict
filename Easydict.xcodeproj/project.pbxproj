@@ -226,6 +226,7 @@
 		276742092B3DC230002A2C75 /* AboutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276742052B3DC230002A2C75 /* AboutTab.swift */; };
 		278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */; };
 		278322622B0FB8EF0026644C /* CaiyunTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */; };
+		278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278540332B3DE04F004E9488 /* GeneralTab.swift */; };
 		27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE95262B3DC55F000AD654 /* EasydictApp.swift */; };
 		27FE98052B3DCB09000AD654 /* NewAppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98042B3DCB09000AD654 /* NewAppManager.swift */; };
 		27FE98092B3DD536000AD654 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FE98082B3DD536000AD654 /* SettingView.swift */; };
@@ -678,6 +679,7 @@
 		276742052B3DC230002A2C75 /* AboutTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutTab.swift; sourceTree = "<group>"; };
 		2783225F2B0FB0EA0026644C /* CaiyunResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunResponse.swift; sourceTree = "<group>"; };
 		278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaiyunTranslateType.swift; sourceTree = "<group>"; };
+		278540332B3DE04F004E9488 /* GeneralTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralTab.swift; sourceTree = "<group>"; };
 		27B7919C2AEC36A1006E07C6 /* Easydict.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Easydict.xcconfig; sourceTree = "<group>"; };
 		27B7919D2AEC36A1006E07C6 /* Easydict-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Easydict-debug.xcconfig"; sourceTree = "<group>"; };
 		27B791A02AEC3A5C006E07C6 /* Easydict-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "Easydict-debug.entitlements"; sourceTree = "<group>"; };
@@ -1987,6 +1989,7 @@
 		27FE980C2B3DD749000AD654 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
+				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
 			);
@@ -2503,6 +2506,7 @@
 				03CF88632B137F650030C199 /* Array+Convenience.swift in Sources */,
 				03B0231229231FA6001C7E63 /* NSObject+DarkMode.m in Sources */,
 				03B0233829231FA6001C7E63 /* MMOrderedDictionary.m in Sources */,
+				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,
 				0399C6A529A747E600B4AFCC /* EZDeepLTranslateResponse.m in Sources */,

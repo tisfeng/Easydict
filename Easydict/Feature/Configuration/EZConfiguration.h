@@ -12,8 +12,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXPORT NSString *const kHideMainWindowKey;
+FOUNDATION_EXPORT NSString *const kLaunchAtStartupKey;
 FOUNDATION_EXPORT NSString *const kHideMenuBarIconKey;
-FOUNDATION_EXPORT NSString *const kEnableBetaNewApp;
+FOUNDATION_EXPORT NSString *const kEnableBetaNewAppKey;
 
 static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 

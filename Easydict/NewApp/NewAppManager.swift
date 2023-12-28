@@ -15,7 +15,7 @@ public final class NewAppManager: NSObject {
 
     override private init() { super.init() }
 
-    private static var enableKey: String { kEnableBetaNewApp }
+    private static var enableKey: String { kEnableBetaNewAppKey }
 
     /// 新的 MenuBarExtra 对齐 EZStatusItem & 可以放弃 macOS 13- 支持后全量
     @objc

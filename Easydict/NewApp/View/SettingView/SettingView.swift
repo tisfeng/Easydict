@@ -12,6 +12,9 @@ import SwiftUI
 struct SettingView: View {
     var body: some View {
         TabView {
+            GeneralTab()
+                .tabItem { Label("setting_general", systemImage: "gear") }
+                .frame(width: 500, height: 400)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .frame(width: 500, height: 400)
