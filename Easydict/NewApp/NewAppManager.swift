@@ -22,4 +22,13 @@ public final class NewAppManager: NSObject {
     public var enable: Bool {
         UserDefaults.standard.bool(forKey: Self.enableKey)
     }
+    
+    @objc
+    public var showEnableToggleUI: Bool {
+        #if DEBUG
+        true
+        #else
+        false
+        #endif
+    }
 }

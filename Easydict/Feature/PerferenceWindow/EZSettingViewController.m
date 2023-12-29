@@ -481,14 +481,16 @@
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
     
-    NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
-    betaNewAppLabel.font = font;
-    [self.contentView addSubview:betaNewAppLabel];
-    self.betaNewAppLabel = betaNewAppLabel;
-    
-    NSString *enableBetaNewApp = NSLocalizedString(@"enable_beta_new_app", nil);
-    self.enableBetaNewAppButton = [NSButton checkboxWithTitle:enableBetaNewApp target:self action:@selector(enableBetaNewAppButtonClicked:)];
-    [self.contentView addSubview:self.enableBetaNewAppButton];
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
+        betaNewAppLabel.font = font;
+        [self.contentView addSubview:betaNewAppLabel];
+        self.betaNewAppLabel = betaNewAppLabel;
+        
+        NSString *enableBetaNewApp = NSLocalizedString(@"enable_beta_new_app", nil);
+        self.enableBetaNewAppButton = [NSButton checkboxWithTitle:enableBetaNewApp target:self action:@selector(enableBetaNewAppButtonClicked:)];
+        [self.contentView addSubview:self.enableBetaNewAppButton];
+    }
     
     NSTextField *fontSizeLabel = [NSTextField labelWithString:NSLocalizedString(@"font_size", nil)];
     fontSizeLabel.font = font;
@@ -835,17 +837,23 @@
         make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
-    [self.betaNewAppLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(self.verticalPadding);
-    }];
-    [self.enableBetaNewAppButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.betaNewAppLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.betaNewAppLabel);
-    }];
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        [self.betaNewAppLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.autoGetSelectedTextLabel);
+            make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(self.verticalPadding);
+        }];
+        [self.enableBetaNewAppButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.betaNewAppLabel.mas_right).offset(self.horizontalPadding);
+            make.centerY.equalTo(self.betaNewAppLabel);
+        }];
+    }
     
     self.topmostView = self.inputLabel;
-    self.bottommostView = self.enableBetaNewAppButton;
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        self.bottommostView = self.enableBetaNewAppButton;
+    } else {
+        self.bottommostView = self.hideMenuBarIconButton;
+    }
     
     if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
