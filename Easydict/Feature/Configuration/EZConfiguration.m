@@ -17,6 +17,7 @@
 #import "EZLanguageManager.h"
 #import "AppDelegate.h"
 #import "Easydict-Swift.h"
+#import "DarkModeManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -52,6 +53,7 @@ static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
 static NSString *const kTranslationControllerFontKey = @"EZConfiguration_kTranslationControllerFontKey";
+static NSString *const kApperanceKey = @"EZConfiguration_kApperanceKey";
 
 NSString *const kHideMainWindowKey = @"EZConfiguration_kHideMainWindowKey";
 NSString *const kLaunchAtStartupKey = @"EZConfiguration_kLaunchAtStartupKey";
@@ -130,6 +132,7 @@ static EZConfiguration *_instance;
     
     _fontSizeIndex = [[NSUserDefaults standardUserDefaults]integerForKey:kTranslationControllerFontKey];
     
+    self.appearance = [NSUserDefaults mm_readInteger:kApperanceKey defaultValue:AppearenceTypeFollowSystem];
 }
 
 #pragma mark - getter
@@ -445,6 +448,15 @@ static EZConfiguration *_instance;
 
 - (CGFloat)fontSizeRatio {
     return _fontSizes[_fontSizeIndex].floatValue;
+}
+
+- (void)setAppearance:(AppearenceType)appearance {
+    _appearance = appearance;
+    
+    [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
+    
+    [[DarkModeManager manager] updateDarkMode];
+    
 }
 
 #pragma mark - Window Frame
