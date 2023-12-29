@@ -81,6 +81,9 @@ public final class CaiyunService: QueryService {
             "x-authorization": "token " + token,
         ]
 
+        geminiTranslate(text, from: from, to: to, completion: completion)
+        return
+
         let request = AF.request(apiEndPoint,
                                  method: .post,
                                  parameters: parameters,
@@ -109,23 +112,31 @@ public final class CaiyunService: QueryService {
         }, serviceType: serviceType().rawValue)
     }
 
-    @objc static func testGemini() async {
-        // https://github.com/google/generative-ai-swift
-        do {
-            let prompt = "你好"
-            let model = GenerativeModel(name: "gemini-pro", apiKey: "")
-            let outputContentStream = model.generateContentStream(prompt)
+    public func geminiTranslate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+        Task {
+            // https://github.com/google/generative-ai-swift
+            do {
+                var resultString = ""
+                let prompt = "translate this \(from.rawValue) text into \(to.rawValue): \(text)"
+                print("gemini prompt: \(prompt)")
+                let model = GenerativeModel(name: "gemini-pro", apiKey: "")
+                let outputContentStream = model.generateContentStream(prompt)
 
-            // stream response
-            for try await outputContent in outputContentStream {
-                guard let line = outputContent.text else {
-                    return
+                // stream response
+                for try await outputContent in outputContentStream {
+                    guard let line = outputContent.text else {
+                        return
+                    }
+
+                    print("gemini response: \(line)")
+                    resultString += line
+                    result.translatedResults = [resultString]
+                    completion(result, nil)
                 }
-
-                print("gemini: \(line)")
+            } catch {
+                print(error.localizedDescription)
+                completion(result, error)
             }
-        } catch {
-            print(error.localizedDescription)
         }
     }
 }
