@@ -146,25 +146,6 @@
     return _enabledTTSServiceTypes;
 }
 
-//- (MMOrderedDictionary<AppearenceType, NSString *> *)appearanceTypes {
-//    if (!_allLanguageDict) {
-//        MMOrderedDictionary *languageDict = [[MMOrderedDictionary alloc] init];
-//        for (EZLanguage language in EZLanguageManager.shared.allLanguages) {
-//            NSArray *disableLanguages = @[
-//                EZLanguageAuto,
-//                EZLanguageClassicalChinese,
-//            ];
-//            if (![disableLanguages containsObject:language]) {
-//                NSString *showingLanguageName = [EZLanguageManager.shared showingLanguageNameWithFlag:language];
-//                [languageDict setObject:showingLanguageName forKey:language];
-//            }
-//        }
-//        _allLanguageDict = languageDict;
-//    }
-//    return _allLanguageDict;
-//}
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
