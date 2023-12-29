@@ -13,6 +13,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+FOUNDATION_EXPORT NSString *const kHideMainWindowKey;
+FOUNDATION_EXPORT NSString *const kLaunchAtStartupKey;
+FOUNDATION_EXPORT NSString *const kHideMenuBarIconKey;
+FOUNDATION_EXPORT NSString *const kEnableBetaNewAppKey;
+
 static NSString *const EZQuickLinkButtonUpdateNotification = @"EZQuickLinkButtonUpdateNotification";
 
 static NSString *const EZFontSizeUpdateNotification = @"EZFontSizeUpdateNotification";
@@ -53,6 +58,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign) BOOL showEudicQuickLink;
 @property (nonatomic, assign) BOOL showAppleDictionaryQuickLink;
 @property (nonatomic, assign) BOOL hideMenuBarIcon;
+@property (nonatomic, assign) BOOL enableBetaNewApp;
 @property (nonatomic, assign) EZShowWindowPosition fixedWindowPosition;
 @property (nonatomic, assign) EZWindowType mouseSelectTranslateWindowType;
 @property (nonatomic, assign) EZWindowType shortcutSelectTranslateWindowType;

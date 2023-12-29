@@ -103,6 +103,9 @@
 @property (nonatomic, strong) NSTextField *menuBarIconLabel;
 @property (nonatomic, strong) NSButton *hideMenuBarIconButton;
 
+@property (nonatomic, strong) NSTextField *betaNewAppLabel;
+@property (nonatomic, strong) NSButton *enableBetaNewAppButton;
+
 @property (nonatomic, strong) NSTextField *fontSizeLabel;
 @property (nonatomic, strong) ChangeFontSizeView *changeFontSizeView;
 @property (nonatomic, strong) FontSizeHintView *fontSizeHintView;
@@ -492,6 +495,17 @@
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
     
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
+        betaNewAppLabel.font = font;
+        [self.contentView addSubview:betaNewAppLabel];
+        self.betaNewAppLabel = betaNewAppLabel;
+        
+        NSString *enableBetaNewApp = NSLocalizedString(@"enable_beta_new_app", nil);
+        self.enableBetaNewAppButton = [NSButton checkboxWithTitle:enableBetaNewApp target:self action:@selector(enableBetaNewAppButtonClicked:)];
+        [self.contentView addSubview:self.enableBetaNewAppButton];
+    }
+    
     NSTextField *fontSizeLabel = [NSTextField labelWithString:NSLocalizedString(@"font_size", nil)];
     fontSizeLabel.font = font;
     [self.contentView addSubview:fontSizeLabel];
@@ -544,6 +558,7 @@
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
+    self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
 }
 
 - (void)updateViewConstraints {
@@ -845,9 +860,23 @@
         make.left.equalTo(self.menuBarIconLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        [self.betaNewAppLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.autoGetSelectedTextLabel);
+            make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(self.verticalPadding);
+        }];
+        [self.enableBetaNewAppButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.betaNewAppLabel.mas_right).offset(self.horizontalPadding);
+            make.centerY.equalTo(self.betaNewAppLabel);
+        }];
+    }
     
     self.topmostView = self.inputLabel;
-    self.bottommostView = self.hideMenuBarIconButton;
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        self.bottommostView = self.enableBetaNewAppButton;
+    } else {
+        self.bottommostView = self.hideMenuBarIconButton;
+    }
     
     if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
@@ -977,6 +1006,10 @@
     } else {
         self.config.hideMenuBarIcon = NO;
     }
+}
+
+- (void)enableBetaNewAppButtonClicked:(NSButton *)sender {
+    self.config.enableBetaNewApp = sender.mm_isOn;
 }
 
 - (void)mouseSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {

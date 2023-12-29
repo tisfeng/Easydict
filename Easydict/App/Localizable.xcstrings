@@ -468,6 +468,16 @@
         }
       }
     },
+    "beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Beta] SwiftUI App模式"
+          }
+        }
+      }
+    },
     "bing_translate" : {
       "localizations" : {
         "en" : {
@@ -524,6 +534,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "check_updates" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
           }
         }
       }
@@ -842,6 +862,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果 App 在“禁止名单”中，则不会触发鼠标自动划词。"
+          }
+        }
+      }
+    },
+    "Easydict" : {
+
+    },
+    "Easydict 🍃" : {
+
+    },
+    "enable_beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 SwiftUI App模式启动，重启App生效"
           }
         }
       }
@@ -1721,6 +1757,16 @@
         }
       }
     },
+    "other" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
+          }
+        }
+      }
+    },
     "Parameter Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -1973,6 +2019,16 @@
         }
       }
     },
+    "quit" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        }
+      }
+    },
     "replace_text" : {
       "localizations" : {
         "en" : {
@@ -2082,6 +2138,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "Settings..." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置..."
           }
         }
       }
@@ -2355,6 +2421,9 @@
           }
         }
       }
+    },
+    "Tisfeng" : {
+
     },
     "toggle_languages" : {
       "localizations" : {
