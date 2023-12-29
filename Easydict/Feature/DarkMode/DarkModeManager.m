@@ -8,6 +8,7 @@
 
 #import "DarkModeManager.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface DarkModeManager ()
 
@@ -48,7 +49,8 @@ singleton_m(DarkModeManager);
     BOOL isDarkMode = [self isDarkMode];
     NSLog(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     
-    switch (EZConfiguration.shared.appearance) {
+    AppearenceType type = (AppearenceType)EZConfiguration.shared.appearance;
+    switch (type) {
         case AppearenceTypeDark:
             self.systemDarkMode = true;
             break;
@@ -61,8 +63,8 @@ singleton_m(DarkModeManager);
         default:
             break;
     }
-    [AppearenceHelper.shared updateAppApperance:EZConfiguration.shared.appearance];
-
+    
+    [AppearenceHelper.shared updateAppApperance:type];
 }
 
 - (BOOL)isDarkMode {
