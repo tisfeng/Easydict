@@ -17,6 +17,7 @@
 #import "EZLanguageManager.h"
 #import "AppDelegate.h"
 #import "Easydict-Swift.h"
+#import "DarkModeManager.h"
 
 static NSString *const kEasydictHelperBundleId = @"com.izual.EasydictHelper";
 
@@ -445,7 +446,8 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
     
-    [[AppearenceHelper shared]updateAppApperance:appearance];
+    [[DarkModeManager manager]updateDarkMode];
+    
 }
 
 #pragma mark - Window Frame
