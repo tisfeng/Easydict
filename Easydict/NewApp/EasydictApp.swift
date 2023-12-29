@@ -37,7 +37,7 @@ struct EasydictApp: App {
 
     var body: some Scene {
         if #available(macOS 13, *) {
-            MenuBarExtra(isInserted: .constant(true)) {
+            MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
                 MenuItemView()
             } label: {
                 Label {
@@ -54,5 +54,12 @@ struct EasydictApp: App {
                 SettingView()
             }
         }
+    }
+}
+
+extension Bool {
+    var toggledValue: Bool {
+        get { !self }
+        mutating set { self = newValue.toggledValue }
     }
 }
