@@ -438,7 +438,6 @@ static EZWindowManager *_instance;
     // mainWindow has been ordered out before, so we need to order back.
     if ([EZMainQueryWindow isAlive]) {
         [self.mainWindow orderBack:nil];
-        [self.mainWindow close];
     }
 }
 
