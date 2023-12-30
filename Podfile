@@ -17,9 +17,6 @@ target 'Easydict' do
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
-  # Firebase and AppCenter
-  pod 'FirebaseAnalytics', '~> 10.19.0'
-  
   # Swift format
   pod 'SwiftFormat/CLI', '~> 0.52.11'
   
