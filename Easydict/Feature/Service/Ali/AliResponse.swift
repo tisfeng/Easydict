@@ -32,7 +32,7 @@ import Foundation
  }
  */
 
-struct AliResponse: Codable {
+struct AliWebResponse: Codable {
     struct Data: Codable {
         var translateText: String?
         var detectLanguage: String?
@@ -44,6 +44,39 @@ struct AliResponse: Codable {
     var code: String?
     var message: String?
     var data: Data?
+}
+
+/**
+ {
+   "Code" : "200",
+   "Data" : {
+     "Translated" : "你好",
+     "WordCount" : "5"
+   },
+   "RequestId" : "xxxxx"
+ }
+
+ {
+   "Code" : "InvalidAccessKeyId.NotFound",
+   "HostId" : "mt.aliyuncs.com",
+   "Message" : "Specified access key is not found.",
+   "Recommend" : "https:\/\/api.aliyun.com\/troubleshoot?q=InvalidAccessKeyId.NotFound&product=alimt&requestId=xxxxx",
+   "RequestId" : "xxxxx"
+ }
+
+ */
+struct AliAPIResponse: Codable {
+    struct Data: Codable {
+        var Translated: String?
+        var WordCount: String?
+    }
+
+    var Code: String?
+    var Data: Data?
+    var RequestId: String?
+    var Message: String?
+    var HostId: String?
+    var Recommend: String?
 }
 
 /**
