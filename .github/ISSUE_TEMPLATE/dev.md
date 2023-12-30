@@ -1,7 +1,7 @@
 ---
-name: dev
-about: dev
-title: dev: 
+name: dev issue
+about: Use this template for tracking dev issue
+title: "dev: "
 labels: dev
 ---
 
