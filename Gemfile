@@ -1,3 +1,2 @@
-source 'https://rubygems.org' do
-  gem 'cocoapods', '1.14.2'
-end
+source 'https://rubygems.org'
+gem 'cocoapods', '1.14.2'
