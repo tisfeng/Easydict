@@ -12,14 +12,6 @@ PODS:
   - AFNetworking/Reachability (3.2.1)
   - AFNetworking/Security (3.2.1)
   - AFNetworking/Serialization (3.2.1)
-  - AppCenter (5.0.4):
-    - AppCenter/Analytics (= 5.0.4)
-    - AppCenter/Crashes (= 5.0.4)
-  - AppCenter/Analytics (5.0.4):
-    - AppCenter/Core
-  - AppCenter/Core (5.0.4)
-  - AppCenter/Crashes (5.0.4):
-    - AppCenter/Core
   - CocoaLumberjack/Core (3.6.2)
   - CocoaLumberjack/Swift (3.6.2):
     - CocoaLumberjack/Core
@@ -109,7 +101,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 3.2.1)
-  - AppCenter (~> 5.0.4)
   - CocoaLumberjack/Swift (~> 3.6.0)
   - FirebaseAnalytics (~> 10.19.0)
   - JLRoutes (~> 2.1)
@@ -125,7 +116,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
-    - AppCenter
     - CocoaLumberjack
     - FirebaseAnalytics
     - FirebaseCore
@@ -156,7 +146,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
-  AppCenter: 85c92db0759d2792a65eb61d6842d2e86611a49a
   CocoaLumberjack: bd155f2dd06c0e0b03f876f7a3ee55693122ec94
   FirebaseAnalytics: 87513010b13b7c8610164d3602ea10571f76afc1
   FirebaseCore: dc5c7badf99d47613c52b2e3a57a64cd187f8554
@@ -176,6 +165,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
 
-PODFILE CHECKSUM: f40ab9f504bd3624478acda6ba9982bd089edb96
+PODFILE CHECKSUM: b6172c900b293e9ec5e0b4f1218b6b4a9955d65f
 
 COCOAPODS: 1.14.2
