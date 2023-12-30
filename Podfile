@@ -14,7 +14,6 @@ target 'Easydict' do
   pod 'MASPreferences', '~> 1.4.1'
   pod 'CocoaLumberjack/Swift', '~> 3.6.0'
   pod 'SSZipArchive', '~> 2.2.2'
-  pod 'Sparkle', '~> 2.5.1'
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   

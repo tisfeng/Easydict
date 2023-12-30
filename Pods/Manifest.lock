@@ -104,7 +104,6 @@ PODS:
   - nanopb/encode (2.30909.1)
   - PromisesObjC (2.3.1)
   - ReactiveObjC (3.1.1)
-  - Sparkle (2.5.1)
   - SSZipArchive (2.2.3)
   - SwiftFormat/CLI (0.52.11)
 
@@ -120,7 +119,6 @@ DEPENDENCIES:
   - "MASShortcut (from `git@github.com:AkaShark/MASShortcut.git`, branch `double_click_modifier`)"
   - MJExtension (~> 3.2.1)
   - ReactiveObjC (~> 3.1.1)
-  - Sparkle (~> 2.5.1)
   - SSZipArchive (~> 2.2.2)
   - SwiftFormat/CLI (~> 0.52.11)
 
@@ -143,7 +141,6 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - ReactiveObjC
-    - Sparkle
     - SSZipArchive
     - SwiftFormat
 
@@ -176,10 +173,9 @@ SPEC CHECKSUMS:
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  Sparkle: ce9957501a2655dd4c8264312c6134ff478a777c
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
 
-PODFILE CHECKSUM: 597cd2d7aa9ead11dfe63d03ada0bdffc6ee7ad8
+PODFILE CHECKSUM: f40ab9f504bd3624478acda6ba9982bd089edb96
 
 COCOAPODS: 1.14.2
