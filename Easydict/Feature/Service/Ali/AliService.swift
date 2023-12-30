@@ -73,8 +73,8 @@ class AliService: QueryService {
 
         /**
          use user's access key id and secret
-         easydict://writeKeyValue?EZAliAccessKeyId=xxx
-         easydict://writeKeyValue?EZAliAccessKeySecret=xxx
+         easydict://writeKeyValue?EZAliAccessKeyId=LTAI5tRxhkyLkhMhBo9wMZWt
+         easydict://writeKeyValue?EZAliAccessKeySecret=BSpVWkbmU1QbJVofJYFpPtKkDrTmaN
          */
         if let id = UserDefaults.standard.string(forKey: EZAliAccessKeyId),
            let secret = UserDefaults.standard.string(forKey: EZAliAccessKeySecret), !id.isEmpty, !secret.isEmpty
@@ -121,7 +121,6 @@ class AliService: QueryService {
             return mac.base64EncodedString()
         }
 
-        
         /// https://help.aliyun.com/zh/sdk/product-overview/rpc-mechanism?spm=a2c4g.11186623.0.i20#sectiondiv-6jf-89b-wfa
         var param = [
             "FormatType": "text",
@@ -198,12 +197,13 @@ class AliService: QueryService {
                         completion(result, nil)
                         print("ali api translate success")
                     } else {
-                        let ezError = EZError(type: .API, description: value.Code, errorDataMessage: value.Message)
-                        completion(result, ezError)
+                        completion(result, EZError(type: .API, description: value.Code?.stringValue, errorDataMessage: value.Message))
                     }
                 case let .failure(error):
-                    print("ali api translate error \(error)")
-                    let ezError = EZError(nsError: error, errorResponseData: response.data)
+                    print("ali api translate error: \(error.errorDescription ?? "")")
+
+                    let ezError = EZError(nsError: error, errorDataMessage: error.errorDescription)
+
                     completion(result, ezError)
                 }
             }
@@ -240,12 +240,12 @@ class AliService: QueryService {
                     result.from = from
                     result.to = to
                     result.queryText = text
-                    if let data = value.data, let translateText = data.translateText {
+                    if value.success, let translateText = value.data?.translateText {
                         result.translatedResults = [translateText.unescapedXML()]
                         completion(result, nil)
                         print("ali web translate success")
                     } else {
-                        let ezError = EZError(type: .API, description: value.code, errorDataMessage: value.message)
+                        let ezError = EZError(type: .API, description: value.code?.stringValue, errorDataMessage: value.message)
                         completion(result, ezError)
                     }
                     self.canWebRetry = true
@@ -263,8 +263,8 @@ class AliService: QueryService {
                         }
 
                     } else {
-                        print("ali web translate error \(error)")
-                        let ezError = EZError(nsError: error, errorResponseData: response.data)
+                        print("ali web translate error: \(error.errorDescription ?? "")")
+                        let ezError = EZError(nsError: error, errorDataMessage: error.errorDescription)
                         completion(result, ezError)
                     }
                 }

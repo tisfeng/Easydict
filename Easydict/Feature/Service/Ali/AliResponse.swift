@@ -39,9 +39,9 @@ struct AliWebResponse: Codable {
     }
 
     var requestId: String?
-    var success: Bool?
+    var success: Bool
     var httpStatusCode: Int?
-    var code: String?
+    var code: AnyCodable?
     var message: String?
     var data: Data?
 }
@@ -71,7 +71,7 @@ struct AliAPIResponse: Codable {
         var WordCount: String?
     }
 
-    var Code: String?
+    var Code: AnyCodable?
     var Data: Data?
     var RequestId: String?
     var Message: String?
@@ -91,4 +91,38 @@ struct AliTokenResponse: Codable {
     var token: String?
     var parameterName: String?
     var headerName: String?
+}
+
+enum AnyCodable: Codable {
+    case string(String)
+    case int(Int)
+
+    init(from decoder: Decoder) throws {
+        if let intValue = try? decoder.singleValueContainer().decode(Int.self) {
+            self = .int(intValue)
+        } else if let stringValue = try? decoder.singleValueContainer().decode(String.self) {
+            self = .string(stringValue)
+        } else {
+            throw try DecodingError.dataCorruptedError(in: decoder.singleValueContainer(), debugDescription: "Code is neither Int nor String")
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case let .string(stringValue):
+            try container.encode(stringValue)
+        case let .int(intValue):
+            try container.encode(intValue)
+        }
+    }
+
+    var stringValue: String? {
+        switch self {
+        case let .int(i):
+            return String(i)
+        case let .string(s):
+            return s
+        }
+    }
 }
