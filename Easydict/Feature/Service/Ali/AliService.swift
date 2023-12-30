@@ -200,11 +200,16 @@ class AliService: QueryService {
                         completion(result, EZError(type: .API, description: value.Code?.stringValue, errorDataMessage: value.Message))
                     }
                 case let .failure(error):
-                    print("ali api translate error: \(error.errorDescription ?? "")")
+                    var msg: String?
+                    if let data = response.data {
+                        let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
+                        msg = res?.Message
+                    } else {
+                        msg = error.errorDescription
+                    }
 
-                    let ezError = EZError(nsError: error, errorDataMessage: error.errorDescription)
-
-                    completion(result, ezError)
+                    print("ali api translate error: \(msg ?? "")")
+                    completion(result, EZError(nsError: error, errorDataMessage: msg))
                 }
             }
 
@@ -263,9 +268,16 @@ class AliService: QueryService {
                         }
 
                     } else {
-                        print("ali web translate error: \(error.errorDescription ?? "")")
-                        let ezError = EZError(nsError: error, errorDataMessage: error.errorDescription)
-                        completion(result, ezError)
+                        var msg: String?
+                        if let data = response.data {
+                            let res = try? JSONDecoder().decode(AliWebResponse.self, from: data)
+                            msg = res?.message
+                        } else {
+                            msg = error.errorDescription
+                        }
+
+                        print("ali web translate error: \(msg ?? "")")
+                        completion(result, EZError(nsError: error, errorDataMessage: msg))
                     }
                 }
             }
