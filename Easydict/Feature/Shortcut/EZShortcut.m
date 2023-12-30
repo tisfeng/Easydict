@@ -8,6 +8,7 @@
 
 #import "EZShortcut.h"
 #import "EZWindowManager.h"
+#import "MASShortcutBinder+EZMASShortcutBinder.h"
 
 @implementation EZShortcut
 
@@ -48,23 +49,23 @@
      [[MASShortcutBinder sharedBinder] setBindingOptions:@{NSValueTransformerNameBindingOption: NSSecureUnarchiveFromDataTransformerName}];
      */
 
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
         [windowManager selectTextTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
         [windowManager snipTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
         [windowManager inputTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
         [windowManager showMiniFloatingWindow];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
         [windowManager screenshotOCR];
     }];
     

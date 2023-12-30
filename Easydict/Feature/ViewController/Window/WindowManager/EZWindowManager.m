@@ -144,13 +144,7 @@ static EZWindowManager *_instance;
     }];
     
     [self.eventMonitor setDoubleCommandBlock:^{
-        NSLog(@"double command");
-        
-        // TODO: Let users customize double-click shortcuts later on
-#if DEBUG
-        mm_strongify(self);
-        [self showMiniFloatingWindow];
-#endif
+        NSLog(@"double command block");
     }];
 }
 
