@@ -67,6 +67,7 @@
 		037852B629588EDE00D0E2CF /* EZCustomTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */; };
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		037BEFCD2A98FDF700D0F17F /* EZBingLanguageVoice.m in Sources */ = {isa = PBXBuildFile; fileRef = 037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */; };
+		037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -216,6 +217,7 @@
 		03F25CB329327BC200E66A12 /* EZShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F25CB229327BC200E66A12 /* EZShortcut.m */; };
 		03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F639942AA6CFBB009B9914 /* EZBingConfig.m */; };
 		03FB3EDD2B1B405B004C3238 /* TencentSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */; };
+		03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
@@ -619,6 +621,8 @@
 		03CAB9532ADBF0FF00DA94A3 /* EZSystemUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSystemUtility.h; sourceTree = "<group>"; };
 		03CAB9542ADBF0FF00DA94A3 /* EZSystemUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSystemUtility.m; sourceTree = "<group>"; };
 		03CC6C092B21B0DC0049ED29 /* Info-debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-debug.plist"; sourceTree = "<group>"; };
+		03CF27F92B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EZOpenAIService+EZPromptMessages.h"; sourceTree = "<group>"; };
+		03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "EZOpenAIService+EZPromptMessages.m"; sourceTree = "<group>"; };
 		03CF88622B137F650030C199 /* Array+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Convenience.swift"; sourceTree = "<group>"; };
 		03D0434C292886D200E7559E /* EZMiniQueryWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZMiniQueryWindow.h; sourceTree = "<group>"; };
 		03D0434D292886D200E7559E /* EZMiniQueryWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZMiniQueryWindow.m; sourceTree = "<group>"; };
@@ -669,6 +673,8 @@
 		03F639932AA6CFBB009B9914 /* EZBingConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZBingConfig.h; sourceTree = "<group>"; };
 		03F639942AA6CFBB009B9914 /* EZBingConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZBingConfig.m; sourceTree = "<group>"; };
 		03FB3EDC2B1B405B004C3238 /* TencentSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentSigning.swift; sourceTree = "<group>"; };
+		03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZOpenAIChatResponse.h; sourceTree = "<group>"; };
+		03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZOpenAIChatResponse.m; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
@@ -1152,6 +1158,10 @@
 			children = (
 				0399C6AA29A860AA00B4AFCC /* EZOpenAIService.h */,
 				0399C6AB29A860AA00B4AFCC /* EZOpenAIService.m */,
+				03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */,
+				03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */,
+				03CF27F92B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.h */,
+				03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */,
 			);
 			path = OpenAI;
 			sourceTree = "<group>";
@@ -2585,6 +2595,7 @@
 				27FE98052B3DCB09000AD654 /* NewAppManager.swift in Sources */,
 				0399116A292AA2EF00E1B06D /* EZLayoutManager.m in Sources */,
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
+				03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
@@ -2592,6 +2603,7 @@
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */,
 				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
+				037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */,
 				03B022E929231FA6001C7E63 /* AppDelegate.m in Sources */,
 				03B0232729231FA6001C7E63 /* NSColor+MM.m in Sources */,
 				03B0233529231FA6001C7E63 /* MMFileLogFormatter.m in Sources */,
