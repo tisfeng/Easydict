@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZLayoutManager.h"
-#import "Easydict-Swift.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,6 +27,12 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
     EZLanguageDetectOptimizeNone = 0,
     EZLanguageDetectOptimizeBaidu = 1,
     EZLanguageDetectOptimizeGoogle = 2,
+};
+
+typedef NS_ENUM(NSUInteger, EZAppearenceType) {
+    EZAppearenceTypeSystem = 0,
+    EZAppearenceTypeLight = 1,
+    EZAppearenceTypeDark = 2,
 };
 
 @interface EZConfiguration : NSObject
@@ -76,7 +81,7 @@ typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
 @property (nonatomic, assign, readonly) CGFloat fontSizeRatio;
 @property (nonatomic, assign) NSInteger fontSizeIndex;
 
-@property (nonatomic, assign) AppearenceType appearance;
+@property (nonatomic, assign) EZAppearenceType appearance;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;

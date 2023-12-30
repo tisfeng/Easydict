@@ -450,13 +450,12 @@ static EZConfiguration *_instance;
     return _fontSizes[_fontSizeIndex].floatValue;
 }
 
-- (void)setAppearance:(AppearenceType)appearance {
+- (void)setAppearance:(EZAppearenceType)appearance {
     _appearance = appearance;
     
     [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
     
     [[DarkModeManager manager] updateDarkMode];
-    
 }
 
 #pragma mark - Window Frame
