@@ -14,5 +14,4 @@ ${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework
 ${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
 ${BUILT_PRODUCTS_DIR}/ReactiveObjC/ReactiveObjC.framework
 ${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework
-${PODS_ROOT}/Sparkle/Sparkle.framework
 ${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework
