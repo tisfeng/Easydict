@@ -456,7 +456,9 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         if (actionType == EZActionTypeScreenshotOCR) {
             [inputText copyToPasteboardSafely];
             
-            [EZToast showSuccessToast];
+            dispatch_block_on_main_safely(^{
+                [EZToast showSuccessToast];
+            });
             
             return;
         }
