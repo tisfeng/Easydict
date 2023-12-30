@@ -53,11 +53,11 @@
         [windowManager selectTextTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
         [windowManager snipTranslate];
     }];
-
-    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
+    
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
         [windowManager inputTranslate];
     }];
     

@@ -906,6 +906,7 @@ static EZWindowManager *_instance;
     
     if ([EZMainQueryWindow isAlive]) {
         [self.mainWindow orderBack:nil];
+        [self.mainWindow close];
     }
     
     // Move floating window type to second.
