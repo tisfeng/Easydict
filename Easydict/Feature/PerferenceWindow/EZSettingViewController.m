@@ -35,6 +35,9 @@
 
 @property (nonatomic, strong) MMOrderedDictionary<EZLanguage, NSString *> *allLanguageDict;
 
+@property (nonatomic, strong) NSTextField *apperanceLabel;
+@property (nonatomic, strong) NSPopUpButton *apperancePopUpButton;
+
 @property (nonatomic, strong) NSTextField *firstLanguageLabel;
 @property (nonatomic, strong) NSPopUpButton *firstLanguagePopUpButton;
 @property (nonatomic, strong) NSTextField *secondLanguageLabel;
@@ -100,6 +103,9 @@
 @property (nonatomic, strong) NSTextField *menuBarIconLabel;
 @property (nonatomic, strong) NSButton *hideMenuBarIconButton;
 
+@property (nonatomic, strong) NSTextField *betaNewAppLabel;
+@property (nonatomic, strong) NSButton *enableBetaNewAppButton;
+
 @property (nonatomic, strong) NSTextField *fontSizeLabel;
 @property (nonatomic, strong) ChangeFontSizeView *changeFontSizeView;
 @property (nonatomic, strong) FontSizeHintView *fontSizeHintView;
@@ -142,7 +148,6 @@
     }
     return _enabledTTSServiceTypes;
 }
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -238,6 +243,18 @@
     self.firstLanguagePopUpButton.target = self;
     self.firstLanguagePopUpButton.action = @selector(firstLangaugePopUpButtonClicked:);
 
+    NSTextField *apperanceLabel = [NSTextField labelWithString:NSLocalizedString(@"app_appearance", nil)];
+    apperanceLabel.font = font;
+    [self.contentView addSubview:apperanceLabel];
+    self.apperanceLabel = apperanceLabel;
+    
+    self.apperancePopUpButton = [[NSPopUpButton alloc] init];
+    [self.contentView addSubview:self.apperancePopUpButton];
+    [self.apperancePopUpButton addItemsWithTitles:[AppearenceHelper shared].titles];
+    [self.apperancePopUpButton selectItemAtIndex:self.config.appearance];
+    self.apperancePopUpButton.target = self;
+    self.apperancePopUpButton.action = @selector(appearancePopUpButtonClicked:);
+    
     NSTextField *secondLanguageLabel = [NSTextField labelWithString:NSLocalizedString(@"second_language", nil)];
     secondLanguageLabel.font = font;
     [self.contentView addSubview:secondLanguageLabel];
@@ -478,6 +495,17 @@
     self.hideMenuBarIconButton = [NSButton checkboxWithTitle:hideMenuBarIcon target:self action:@selector(hideMenuBarIconButtonClicked:)];
     [self.contentView addSubview:self.hideMenuBarIconButton];
 
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        NSTextField *betaNewAppLabel = [NSTextField labelWithString:NSLocalizedString(@"beta_new_app", nil)];
+        betaNewAppLabel.font = font;
+        [self.contentView addSubview:betaNewAppLabel];
+        self.betaNewAppLabel = betaNewAppLabel;
+        
+        NSString *enableBetaNewApp = NSLocalizedString(@"enable_beta_new_app", nil);
+        self.enableBetaNewAppButton = [NSButton checkboxWithTitle:enableBetaNewApp target:self action:@selector(enableBetaNewAppButtonClicked:)];
+        [self.contentView addSubview:self.enableBetaNewAppButton];
+    }
+    
     NSTextField *fontSizeLabel = [NSTextField labelWithString:NSLocalizedString(@"font_size", nil)];
     fontSizeLabel.font = font;
     [self.contentView addSubview:fontSizeLabel];
@@ -530,6 +558,7 @@
     self.showEudicQuickLinkButton.mm_isOn = self.config.showEudicQuickLink;
     self.showAppleDictionaryQuickLinkButton.mm_isOn = self.config.showAppleDictionaryQuickLink;
     self.hideMenuBarIconButton.mm_isOn = self.config.hideMenuBarIcon;
+    self.enableBetaNewAppButton.mm_isOn = self.config.enableBetaNewApp;
 }
 
 - (void)updateViewConstraints {
@@ -591,10 +620,19 @@
         make.top.equalTo(self.screenshotOCRLabel.mas_bottom).offset(1.5 * self.verticalPadding);
         make.height.mas_equalTo(1);
     }];
-
-    [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    
+    [self.apperanceLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.selectLabel);
         make.top.equalTo(self.separatorView.mas_bottom).offset(1.5 * self.verticalPadding);
+    }];
+    [self.apperancePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.apperanceLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.apperanceLabel);
+    }];
+    
+    [self.firstLanguageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.selectLabel);
+        make.top.equalTo(self.apperanceLabel.mas_bottom).offset(self.verticalPadding);
     }];
     [self.firstLanguagePopUpButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.firstLanguageLabel.mas_right).offset(self.horizontalPadding);
@@ -828,9 +866,24 @@
         make.centerY.equalTo(self.menuBarIconLabel);
     }];
 
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        [self.betaNewAppLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.autoGetSelectedTextLabel);
+            make.top.equalTo(self.hideMenuBarIconButton.mas_bottom).offset(self.verticalPadding);
+        }];
+        [self.enableBetaNewAppButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.betaNewAppLabel.mas_right).offset(self.horizontalPadding);
+            make.centerY.equalTo(self.betaNewAppLabel);
+        }];
+    }
+    
     self.topmostView = self.inputLabel;
-    self.bottommostView = self.hideMenuBarIconButton;
-
+    if (EasydictNewAppManager.shared.showEnableToggleUI) {
+        self.bottommostView = self.enableBetaNewAppButton;
+    } else {
+        self.bottommostView = self.hideMenuBarIconButton;
+    }
+    
     if ([EZLanguageManager.shared isSystemChineseFirstLanguage]) {
         self.leftmostView = self.adjustQueryIconPostionLabel;
         self.rightmostView = self.forceGetSelectedTextButton;
@@ -961,6 +1014,10 @@
     }
 }
 
+- (void)enableBetaNewAppButtonClicked:(NSButton *)sender {
+    self.config.enableBetaNewApp = sender.mm_isOn;
+}
+
 - (void)mouseSelectTranslateWindowTypePopUpButtonClicked:(NSPopUpButton *)button {
     NSInteger selectedIndex = button.indexOfSelectedItem;
     MMOrderedDictionary *translateWindowTypeDict = [EZEnumTypes translateWindowTypeDict];
@@ -1045,6 +1102,12 @@
 
     NSInteger secondLanguageIndex = [self.allLanguageDict.sortedKeys indexOfObject:self.config.secondLanguage];
     [self.secondLanguagePopUpButton selectItemAtIndex:secondLanguageIndex];
+}
+
+#pragma mark - Appearance
+- (void)appearancePopUpButtonClicked:(NSPopUpButton *)button {
+    NSInteger selectedIndex = button.indexOfSelectedItem;
+    self.config.appearance = selectedIndex;
 }
 
 #pragma mark - MASPreferencesViewController
