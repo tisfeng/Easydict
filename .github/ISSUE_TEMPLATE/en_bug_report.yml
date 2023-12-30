@@ -15,12 +15,14 @@ body:
           required: true
         - label: Easydict has been upgraded to the [latest version](https://github.com/tisfeng/Easydict/releases)
           required: true
+        - label: I understand and agree to the above, and understand that the project maintainer has limited energy, **issues that do not follow the rules may be ignored or closed directly**
+          required: true
 
   - type: textarea
     id: description
     attributes:
       label: Problem description
-      description: Please describe the problem as clearly and detailed as possible.
+      description: If the context information is insufficient, the developer will not be able to locate the problem, and the problem will be downgraded or ignored.
       placeholder: Problem description
     validations:
       required: true
@@ -31,7 +33,7 @@ body:
       label: Reproduction steps
       description: |
         Please describe how to reproduce the problem. If the problem is episodic or requires specific action steps to reproduce, please describe it in as much detail as possible, otherwise the developer will not be able to locate the problem.
-        (If the problem is episodic, try restarting the app, restarting the device, or uninstalling and reinstalling the app to see if that solves the problem 🤔)
+        (If the problem is episodic, try restarting Easydict, restarting the device, or uninstalling and reinstalling the app to see if that solves the problem 🤔)
       placeholder: Reproduction steps
     validations:
       required: true

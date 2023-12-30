@@ -72,27 +72,3 @@ void parseArmguments(void) {
         printf("  %s Query text\n", [[queryTextSig descriptionForHelpWithIndent:2 terminalWidth:(NSUInteger)ws.ws_col] UTF8String]);
     }
 }
-
-int main(int argc, const char *argv[]) {
-    @autoreleasepool {
-        // Setup code that might create autoreleased objects goes here.
-        
-        NSMutableArray<NSString *> *arguments = [NSMutableArray array];
-        
-        // easydict -query
-        for (int i = 0; i < argc; i++) {
-            NSString *argument = [NSString stringWithUTF8String:argv[i]];
-            [arguments addObject:argument];
-            //            printf("Argument %d: %s\n", i, argv[i]);
-        }
-        
-        NSLog(@"arguments: %@", arguments);
-        
-//        MyArgumentParser *argumentParser = [[MyArgumentParser alloc] init];
-//        [argumentParser runAndReturnError:nil];
-        
-        parseArmguments();
-    }
-    
-    return NSApplicationMain(argc, argv);
-}

@@ -60,6 +60,8 @@ static NSArray *const EZDashCharacterList = @[ @"—", @"-", @"–" ];
 
 - (BOOL)isEnglishWord;
 
+- (BOOL)isEnglishWordWithMaxWordLength:(NSUInteger)maxWordLength;
+
 - (BOOL)isEnglishPhrase;
 
 - (BOOL)isWord;

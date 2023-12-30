@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)manager;
 - (void)excuteLight:(void (^)(void))light dark:(void (^)(void))dark;
 
+- (void)updateDarkMode;
+
 @end
 
 NS_ASSUME_NONNULL_END

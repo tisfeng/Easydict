@@ -18,6 +18,7 @@
 #import "AppDelegate+EZURLScheme.h"
 #import <Sparkle/SPUUpdaterDelegate.h>
 #import <Sparkle/SPUStandardUserDriverDelegate.h>
+#import "Easydict-Swift.h"
 
 @interface AppDelegate () <SPUUpdaterDelegate, SPUStandardUserDriverDelegate>
 
@@ -35,7 +36,10 @@
 
     [self setupAppLanguage];
 
-    [EZMenuItemManager.shared setup];
+    if (!EasydictNewAppManager.shared.enable) {
+        [EZMenuItemManager.shared setup];
+    }
+    
     [EZShortcut setup];
 
     [EZWindowManager.shared showMainWindowIfNedded];

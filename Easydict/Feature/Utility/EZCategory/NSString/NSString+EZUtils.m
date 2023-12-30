@@ -231,8 +231,12 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (BOOL)isEnglishWord {
+    return [self isEnglishWordWithMaxWordLength:EZEnglishWordMaxLength];
+}
+
+- (BOOL)isEnglishWordWithMaxWordLength:(NSUInteger)maxWordLength {
     NSString *text = [self tryToRemoveQuotes];
-    if (text.length > EZEnglishWordMaxLength) {
+    if (text.length > maxWordLength) {
         return NO;
     }
     
@@ -418,38 +422,56 @@ static NSDictionary *const kQuotesDict = @{
 #pragma mark - Handle extra quotes.
 
 - (BOOL)hasPrefixQuote {
-    if ([self prefixQuote]) {
+    if ([self prefixQuote].length) {
         return YES;
     }
     return NO;
 }
 
 - (BOOL)hasSuffixQuote {
-    if ([self suffixQuote]) {
+    if ([self suffixQuote].length) {
         return YES;
     }
     return NO;
 }
 
 - (NSString *)prefixQuote {
+    /**
+     Creativity is intelligence having fun. Albert Einstein
+     
+     """
+     创造力是智力在玩耍。——阿尔伯特·爱因斯坦
+     """
+     */
     NSArray *leftQuotes = kQuotesDict.allKeys;
-    for (NSString *quote in leftQuotes) {
-        if ([self hasPrefix:quote]) {
-            return quote;
+    NSMutableString *quotes = [NSMutableString string];
+    for (int i = 0; i < self.length; i++) {
+        unichar character = [self characterAtIndex:i];
+        NSString *charString = [NSString stringWithFormat:@"%C", character];
+        if ([leftQuotes containsObject:charString]) {
+            [quotes appendString:charString];
+        } else {
+            break;
         }
     }
-    return nil;
+    return quotes;
 }
 
 - (NSString *)suffixQuote {
     NSArray *rightQuotes = kQuotesDict.allValues;
-    for (NSString *quote in rightQuotes) {
-        if ([self hasSuffix:quote]) {
-            return quote;
+    NSMutableString *quotes = [NSMutableString string];
+    for (int i = (int)self.length - 1; i >= 0; i--) {
+        unichar character = [self characterAtIndex:i];
+        NSString *charString = [NSString stringWithFormat:@"%C", character];
+        if ([rightQuotes containsObject:charString]) {
+            [quotes appendString:charString];
+        } else {
+            break;
         }
     }
-    return nil;
+    return quotes;
 }
+    
 
 - (NSString *)tryToRemovePrefixQuote {
     NSString *prefixQuote = [self prefixQuote];
@@ -500,11 +522,13 @@ static NSDictionary *const kQuotesDict = @{
 }
 
 - (NSString *)tryToRemoveQuotes {
-    NSArray *quotes = [kQuotesDict allKeys];
     NSString *text = self;
-    for (NSString *quote in quotes) {
-        text = [text removeStartAndEndWith:quote end:kQuotesDict[quote]];
+    NSString *prefixQuote = [self prefixQuote];
+    NSString *suffixQuote = [self suffixQuote];
+    if (prefixQuote.length == suffixQuote.length) {
+        text = [text removeStartAndEndWith:prefixQuote end:suffixQuote];
     }
+    
     return text;
 }
 

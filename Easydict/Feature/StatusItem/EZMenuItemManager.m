@@ -14,6 +14,7 @@
 #import <SSZipArchive/SSZipArchive.h>
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kImageMenuItemHeightRatio = 1.4;
 static CGFloat const kTitleMenuItemHeightRatio = 1.2;
@@ -277,6 +278,15 @@ static EZMenuItemManager *_instance;
     [window.titleBar.appleDictionaryButton openLink];
 }
 
+- (IBAction)increaseFontSizeAction:(NSMenuItem *)sender {
+    EZConfiguration.shared.fontSizeIndex += 1;
+    
+}
+
+- (IBAction)decreaseFontSizeAction:(NSMenuItem *)sender {
+    EZConfiguration.shared.fontSizeIndex -= 1;
+    
+}
 
 #pragma mark - NSMenuDelegate
 

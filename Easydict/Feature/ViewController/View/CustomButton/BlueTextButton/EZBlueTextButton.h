@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *openURL;
 @property (nonatomic, assign) BOOL closeWindowAfterOpeningURL;
 
+@property (nonatomic, assign) CGFloat fontSize;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -384,6 +384,18 @@
         }
       }
     },
+    "525-TU-MBZ.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Increase Font Size\"; ObjectID = \"525-TU-MBZ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Increase Font Size"
+          }
+        }
+      }
+    },
     "a4o-M9-LLq.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Paste Ruler\"; ObjectID = \"a4o-M9-LLq\";",
       "extractionState" : "extracted_with_value",
@@ -958,19 +970,19 @@
       }
     },
     "eIi-Yp-9Iw.title" : {
-      "comment" : "Class = \"NSMenu\"; title = \"Shortcut\"; ObjectID = \"eIi-Yp-9Iw\";",
+      "comment" : "Class = \"NSMenu\"; title = \"Shortcuts\"; ObjectID = \"eIi-Yp-9Iw\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         }
       }
@@ -1471,6 +1483,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出"
+          }
+        }
+      }
+    },
+    "K7d-rE-hVh.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Decrease Font Size\"; ObjectID = \"K7d-rE-hVh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Decrease Font Size"
           }
         }
       }
@@ -2816,19 +2840,19 @@
       }
     },
     "YF0-bI-c58.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Shortcut\"; ObjectID = \"YF0-bI-c58\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Shortcuts\"; ObjectID = \"YF0-bI-c58\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut"
+            "value" : "Shortcuts"
           }
         }
       }

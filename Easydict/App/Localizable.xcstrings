@@ -127,6 +127,70 @@
         }
       }
     },
+    "app_appearance" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观:"
+          }
+        }
+      }
+    },
+    "appearenceType_dark" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深色模式"
+          }
+        }
+      }
+    },
+    "appearenceType_followSystem" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow System"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随系统"
+          }
+        }
+      }
+    },
+    "appearenceType_light" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浅色模式"
+          }
+        }
+      }
+    },
     "Apple" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -421,6 +485,16 @@
         }
       }
     },
+    "beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Beta] SwiftUI App模式"
+          }
+        }
+      }
+    },
     "bing_translate" : {
       "localizations" : {
         "en" : {
@@ -477,6 +551,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "check_updates" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
           }
         }
       }
@@ -799,6 +883,22 @@
         }
       }
     },
+    "Easydict" : {
+
+    },
+    "Easydict 🍃" : {
+
+    },
+    "enable_beta_new_app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 SwiftUI App模式启动，重启App生效"
+          }
+        }
+      }
+    },
     "equal_first_and_second_language" : {
       "localizations" : {
         "en" : {
@@ -1067,6 +1167,23 @@
         }
       }
     },
+    "font_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font Size:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小:"
+          }
+        }
+      }
+    },
     "force_auto_get_selected_text" : {
       "localizations" : {
         "en" : {
@@ -1216,6 +1333,23 @@
         }
       }
     },
+    "hints_keyboard_shortcuts_font_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size can be changed using the ⌘ +/- shortcut in the Translation windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持在翻译窗口通过快捷键 ⌘ +/- 修改字体大小"
+          }
+        }
+      }
+    },
     "Illegal parameter supplied to encryption/decryption algorithm" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -1352,6 +1486,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "仅使用系统语种识别"
+          }
+        }
+      }
+    },
+    "large" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大"
           }
         }
       }
@@ -1623,6 +1774,16 @@
         }
       }
     },
+    "other" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
+          }
+        }
+      }
+    },
     "Parameter Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -1875,6 +2036,16 @@
         }
       }
     },
+    "quit" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        }
+      }
+    },
     "replace_text" : {
       "localizations" : {
         "en" : {
@@ -1984,6 +2155,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "Settings..." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置..."
           }
         }
       }
@@ -2132,6 +2313,23 @@
         }
       }
     },
+    "small" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小"
+          }
+        }
+      }
+    },
     "snip_translate" : {
       "localizations" : {
         "en" : {
@@ -2240,6 +2438,9 @@
           }
         }
       }
+    },
+    "Tisfeng" : {
+
     },
     "toggle_languages" : {
       "localizations" : {

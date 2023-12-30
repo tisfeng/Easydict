@@ -58,7 +58,7 @@ NSError *EZQueryUnsupportedLanguageError(EZQueryService *service) {
     NSString *errorString = nil;
     switch (type) {
         case EZErrorTypeNone:
-            errorString = @"";
+            errorString = @"None";
             break;
         case EZErrorTypeParam:
             errorString = NSLocalizedString(@"error_parameter", nil);

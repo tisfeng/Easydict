@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)reset;
 
+- (void)updateAllIframe;
+
 @end
 
 NS_ASSUME_NONNULL_END
