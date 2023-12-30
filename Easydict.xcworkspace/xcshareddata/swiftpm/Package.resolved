@@ -55,6 +55,15 @@
       }
     },
     {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "47d3d90aee3c52b6f61d04ceae426e607df62347",
+        "version" : "2.5.2"
+      }
+    },
+    {
       "identity" : "swiftshell",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kareman/SwiftShell",

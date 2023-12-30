@@ -98,6 +98,7 @@
 		039F5504294B6E29004AB940 /* EZPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F54FD294B6E29004AB940 /* EZPreferencesWindowController.m */; };
 		039F5506294B6E29004AB940 /* EZSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5501294B6E29004AB940 /* EZSettingViewController.m */; };
 		039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 039F5503294B6E29004AB940 /* EZAboutViewController.m */; };
+		03A8308D2B405F8E00112834 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 03A8308C2B405F8E00112834 /* Sparkle */; };
 		03B022E629231FA6001C7E63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221D29231FA6001C7E63 /* Assets.xcassets */; };
 		03B022E729231FA6001C7E63 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03B0221F29231FA6001C7E63 /* Main.storyboard */; };
 		03B022E829231FA6001C7E63 /* entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B0222129231FA6001C7E63 /* entry.m */; };
@@ -757,6 +758,7 @@
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
 				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
+				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
 				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
@@ -2201,6 +2203,7 @@
 				03022F212B36D1A400B63209 /* SnapKit */,
 				03CF27FD2B3DA7D500E19B57 /* Realm */,
 				03CF27FF2B3DA7D500E19B57 /* RealmSwift */,
+				03A8308C2B405F8E00112834 /* Sparkle */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2253,6 +2256,7 @@
 				03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */,
 				03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3129,6 +3133,14 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.2;
+			};
+		};
 		03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -3170,6 +3182,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		03A8308C2B405F8E00112834 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		03CF27FD2B3DA7D500E19B57 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
