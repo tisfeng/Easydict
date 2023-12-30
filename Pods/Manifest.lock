@@ -117,7 +117,7 @@ DEPENDENCIES:
   - KVOController (~> 1.2.0)
   - Masonry (~> 1.1.0)
   - MASPreferences (~> 1.4.1)
-  - MASShortcut (~> 2.4.0)
+  - "MASShortcut (from `git@github.com:AkaShark/MASShortcut.git`, branch `double_click_modifier`)"
   - MJExtension (~> 3.2.1)
   - ReactiveObjC (~> 3.1.1)
   - Sparkle (~> 2.5.1)
@@ -139,7 +139,6 @@ SPEC REPOS:
     - KVOController
     - Masonry
     - MASPreferences
-    - MASShortcut
     - MJExtension
     - nanopb
     - PromisesObjC
@@ -147,6 +146,16 @@ SPEC REPOS:
     - Sparkle
     - SSZipArchive
     - SwiftFormat
+
+EXTERNAL SOURCES:
+  MASShortcut:
+    :branch: double_click_modifier
+    :git: "git@github.com:AkaShark/MASShortcut.git"
+
+CHECKOUT OPTIONS:
+  MASShortcut:
+    :commit: 694922e088bc91eb70eff42ddaf7602c5b87f1f1
+    :git: "git@github.com:AkaShark/MASShortcut.git"
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
@@ -171,6 +180,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
 
-PODFILE CHECKSUM: a35287f08d36ebe90dd9f3362e15bf7aaeeaf0f5
+PODFILE CHECKSUM: 597cd2d7aa9ead11dfe63d03ada0bdffc6ee7ad8
 
 COCOAPODS: 1.14.2

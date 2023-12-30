@@ -3,7 +3,7 @@
 
 static NSString *const MASShortcutKeyCode = @"KeyCode";
 static NSString *const MASShortcutModifierFlags = @"ModifierFlags";
-
+static NSUInteger MAShortcutDoubleModifierCode = 100000;
 @implementation MASShortcut
 
 #pragma mark Initialization
@@ -23,6 +23,19 @@ static NSString *const MASShortcutModifierFlags = @"ModifierFlags";
     return [[self alloc] initWithKeyCode:code modifierFlags:flags];
 }
 
+- (nonnull instancetype)initDoubleModifierKeyWithCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags {
+    if (self = [super init]) {
+        // hard code special key
+        _keyCode = 100000;
+        _modifierFlags = MASPickCocoaModifiers(flags);
+    }
+    return self;
+}
+
++ (nonnull instancetype)shortcutDoubleModifierKeyWithCode:(NSInteger)code modifierFlags:(NSEventModifierFlags)flags {
+    return [[self alloc] initDoubleModifierKeyWithCode:code modifierFlags:flags];
+}
+
 + (instancetype)shortcutWithEvent:(NSEvent *)event
 {
     return [[self alloc] initWithKeyCode:event.keyCode modifierFlags:event.modifierFlags];
@@ -32,6 +45,9 @@ static NSString *const MASShortcutModifierFlags = @"ModifierFlags";
 
 - (UInt32)carbonKeyCode
 {
+    if (self.keyCode == MAShortcutDoubleModifierCode) {
+        return (UInt32)MAShortcutDoubleModifierCode;
+    }
     return (self.keyCode == NSNotFound ? 0 : (UInt32)self.keyCode);
 }
 
@@ -80,6 +96,9 @@ static NSString *const MASShortcutModifierFlags = @"ModifierFlags";
 
 - (NSString *)keyCodeString
 {
+    if (self.keyCode == MAShortcutDoubleModifierCode) {
+        return self.modifierFlagsString;
+    }
     // Some key codes don't have an equivalent
     switch (self.keyCode) {
         case NSNotFound: return @"";
@@ -202,8 +221,7 @@ static NSString *const MASShortcutModifierFlags = @"ModifierFlags";
         && (object.modifierFlags == self.modifierFlags);
 }
 
-- (NSUInteger) hash
-{
+- (NSUInteger) hash {
     return self.keyCode + self.modifierFlags;
 }
 
