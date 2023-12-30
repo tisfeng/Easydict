@@ -8,6 +8,7 @@
 
 #import "EZShortcut.h"
 #import "EZWindowManager.h"
+#import "MASShortcutBinder+EZMASShortcutBinder.h"
 
 @implementation EZShortcut
 
@@ -48,29 +49,23 @@
      [[MASShortcutBinder sharedBinder] setBindingOptions:@{NSValueTransformerNameBindingOption: NSSecureUnarchiveFromDataTransformerName}];
      */
 
-    // hidden pop button when user playing shortcut
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
-        [windowManager.popButtonWindow close];
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
         [windowManager selectTextTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZSnipShortcutKey toAction:^{
-        [windowManager.popButtonWindow close];
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
         [windowManager snipTranslate];
     }];
-    
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZInputShortcutKey toAction:^{
-        [windowManager.popButtonWindow close];
+
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZSelectionShortcutKey toAction:^{
         [windowManager inputTranslate];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
-        [windowManager.popButtonWindow close];
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZShowMiniShortcutKey toAction:^{
         [windowManager showMiniFloatingWindow];
     }];
     
-    [[MASShortcutBinder sharedBinder] bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
-        [windowManager.popButtonWindow close];
+    [[MASShortcutBinder sharedBinder] ez_bindShortcutWithDefaultsKey:EZScreenshotOCRShortcutKey toAction:^{
         [windowManager screenshotOCR];
     }];
     
