@@ -7,4 +7,3 @@ ${BUILT_PRODUCTS_DIR}/MASShortcut/MASShortcut.framework
 ${BUILT_PRODUCTS_DIR}/MJExtension/MJExtension.framework
 ${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework
 ${BUILT_PRODUCTS_DIR}/ReactiveObjC/ReactiveObjC.framework
-${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework

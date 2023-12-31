@@ -19,7 +19,6 @@ PODS:
   - MASShortcut (2.4.0)
   - MJExtension (3.2.4)
   - ReactiveObjC (3.1.1)
-  - SSZipArchive (2.2.3)
   - SwiftFormat/CLI (0.52.11)
 
 DEPENDENCIES:
@@ -31,7 +30,6 @@ DEPENDENCIES:
   - "MASShortcut (from `git@github.com:AkaShark/MASShortcut.git`, branch `double_click_modifier`)"
   - MJExtension (~> 3.2.1)
   - ReactiveObjC (~> 3.1.1)
-  - SSZipArchive (~> 2.2.2)
   - SwiftFormat/CLI (~> 0.52.11)
 
 SPEC REPOS:
@@ -43,7 +41,6 @@ SPEC REPOS:
     - MASPreferences
     - MJExtension
     - ReactiveObjC
-    - SSZipArchive
     - SwiftFormat
 
 EXTERNAL SOURCES:
@@ -65,9 +62,8 @@ SPEC CHECKSUMS:
   MASShortcut: d9e4909e878661cc42877cc9d6efbe638273ab57
   MJExtension: 88e0900751b6cac8de1cf724ca9838a0b28d5acb
   ReactiveObjC: 011caa393aa0383245f2dcf9bf02e86b80b36040
-  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
 
-PODFILE CHECKSUM: a2f28231837dae0e5fda551e03e6e303cd214e41
+PODFILE CHECKSUM: e9bdddca2d7cf15e00b0d57cb178bbfc2b1f43f9
 
 COCOAPODS: 1.14.2
