@@ -1221,7 +1221,6 @@
 		03B0222429231FA6001C7E63 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				276742012B3DC230002A2C75 /* SettingsWindow */,
 				03B0224F29231FA6001C7E63 /* ViewController */,
 				03B0222B29231FA6001C7E63 /* Service */,
 				03E02A2329250CED00A10260 /* EventMonitor */,
@@ -1979,13 +1978,6 @@
 				278322612B0FB8EF0026644C /* CaiyunTranslateType.swift */,
 			);
 			path = Caiyun;
-			sourceTree = "<group>";
-		};
-		276742012B3DC230002A2C75 /* SettingsWindow */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SettingsWindow;
 			sourceTree = "<group>";
 		};
 		27FE98032B3DCA9F000AD654 /* NewApp */ = {
