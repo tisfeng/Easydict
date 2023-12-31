@@ -83,6 +83,7 @@
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
+		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
 		0396D615292CC4C3006A11D9 /* EZLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D614292CC4C3006A11D9 /* EZLocalStorage.m */; };
 		03991158292927E000E1B06D /* EZTitlebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 03991157292927E000E1B06D /* EZTitlebar.m */; };
@@ -763,6 +764,7 @@
 				03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */,
 				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
+				038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */,
 				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
 				03A8308D2B405F8E00112834 /* Sparkle in Frameworks */,
@@ -2214,6 +2216,7 @@
 				038030942B4106800009230C /* CocoaLumberjack */,
 				038030962B4106800009230C /* CocoaLumberjackSwift */,
 				038EA1A92B41169C008A6DD1 /* ZipArchive */,
+				038EA1AC2B41282F008A6DD1 /* MJExtension */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2271,6 +2274,7 @@
 				03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */,
+				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3163,6 +3167,14 @@
 				minimumVersion = 2.5.5;
 			};
 		};
+		038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CoderMJLee/MJExtension";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.4.1;
+			};
+		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -3243,6 +3255,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */;
 			productName = ZipArchive;
+		};
+		038EA1AC2B41282F008A6DD1 /* MJExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */;
+			productName = MJExtension;
 		};
 		03A8308C2B405F8E00112834 /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

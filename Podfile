@@ -7,7 +7,6 @@ target 'Easydict' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
-  pod 'MJExtension', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
   pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'
@@ -24,7 +23,6 @@ target 'EasydictTests' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
-  pod 'MJExtension', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
   pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'

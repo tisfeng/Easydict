@@ -136,6 +136,15 @@
       }
     },
     {
+      "identity" : "mjextension",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CoderMJLee/MJExtension",
+      "state" : {
+        "revision" : "43dce6be9c91a7034d37ed171b3e60a7bb760857",
+        "version" : "3.4.1"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
