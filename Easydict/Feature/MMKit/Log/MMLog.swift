@@ -10,7 +10,7 @@
  ⚠️ 设置 dynamicLogLevel 会影响到日志输出
  */
 
-import CocoaLumberjack
+import CocoaLumberjackSwift
 
 @inlinable
 public func MMLogInfo(_ message: @autoclosure () -> String,

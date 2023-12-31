@@ -68,6 +68,8 @@
 		037852B9295D49F900D0E2CF /* EZTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 037852B8295D49F900D0E2CF /* EZTableRowView.m */; };
 		037BEFCD2A98FDF700D0F17F /* EZBingLanguageVoice.m in Sources */ = {isa = PBXBuildFile; fileRef = 037BEFCC2A98FDF700D0F17F /* EZBingLanguageVoice.m */; };
 		037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */; };
+		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
+		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -758,6 +760,7 @@
 			files = (
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */,
+				038030952B4106800009230C /* CocoaLumberjack in Frameworks */,
 				03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */,
 				03CF28002B3DA7D500E19B57 /* RealmSwift in Frameworks */,
 				03022F222B36D1A400B63209 /* SnapKit in Frameworks */,
@@ -769,6 +772,7 @@
 				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
+				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2213,6 +2217,8 @@
 				03A8308F2B4073E700112834 /* AppCenterAnalytics */,
 				03A830912B4073E700112834 /* AppCenterCrashes */,
 				03A830942B4076FC00112834 /* FirebaseAnalyticsSwift */,
+				038030942B4106800009230C /* CocoaLumberjack */,
+				038030962B4106800009230C /* CocoaLumberjackSwift */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2268,6 +2274,7 @@
 				03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				03A8308E2B4073E700112834 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				03A830932B4076FC00112834 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3144,6 +3151,14 @@
 				minimumVersion = 5.6.0;
 			};
 		};
+		038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.7.1;
+			};
+		};
 		03A8308B2B405F8E00112834 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -3209,6 +3224,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		038030942B4106800009230C /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		038030962B4106800009230C /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
 		};
 		03A8308C2B405F8E00112834 /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;

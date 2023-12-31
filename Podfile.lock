@@ -12,9 +12,6 @@ PODS:
   - AFNetworking/Reachability (3.2.1)
   - AFNetworking/Security (3.2.1)
   - AFNetworking/Serialization (3.2.1)
-  - CocoaLumberjack/Core (3.6.2)
-  - CocoaLumberjack/Swift (3.6.2):
-    - CocoaLumberjack/Core
   - JLRoutes (2.1)
   - KVOController (1.2.0)
   - Masonry (1.1.0)
@@ -27,7 +24,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 3.2.1)
-  - CocoaLumberjack/Swift (~> 3.6.0)
   - JLRoutes (~> 2.1)
   - KVOController (~> 1.2.0)
   - Masonry (~> 1.1.0)
@@ -41,7 +37,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
-    - CocoaLumberjack
     - JLRoutes
     - KVOController
     - Masonry
@@ -63,7 +58,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
-  CocoaLumberjack: bd155f2dd06c0e0b03f876f7a3ee55693122ec94
   JLRoutes: d755245322b94227662ea3e43492fdca94e05c5b
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
@@ -74,6 +68,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   SwiftFormat: 2ca3d0b75754193f0f3ba532291f25ae08dd1e42
 
-PODFILE CHECKSUM: 4a9bafcb4de50774b3485f4805313652c8592ad8
+PODFILE CHECKSUM: a2f28231837dae0e5fda551e03e6e303cd214e41
 
 COCOAPODS: 1.14.2

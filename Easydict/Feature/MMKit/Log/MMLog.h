@@ -24,8 +24,7 @@
  * MMDefaultLogAsyncEnabled: NO => 同步打印；YES => 异步输出
  */
 
-#import <CocoaLumberjack/CocoaLumberjack.h>
-
+@import CocoaLumberjack;
 
 @interface MMManagerForLog : NSObject
 
