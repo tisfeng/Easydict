@@ -2168,6 +2168,23 @@
         }
       }
     },
+    "shortcut_setting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut Setting"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键设置"
+          }
+        }
+      }
+    },
     "show" : {
       "localizations" : {
         "en" : {
