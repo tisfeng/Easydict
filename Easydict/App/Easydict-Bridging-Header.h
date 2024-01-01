@@ -22,3 +22,5 @@
 #import "AppDelegate.h"
 #import "EZConfiguration.h"
 #import "EZEnumTypes.h"
+
+#import "NSString+EZConvenience.h"

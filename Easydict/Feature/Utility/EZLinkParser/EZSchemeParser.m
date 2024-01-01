@@ -216,6 +216,9 @@
         EZTencentSecretId,
         EZTencentSecretKey,
         EZBingCookieKey,
+        
+        EZAliAccessKeyId,
+        EZAliAccessKeySecret,
 
         EZIntelligentQueryModeKey,
     ];
