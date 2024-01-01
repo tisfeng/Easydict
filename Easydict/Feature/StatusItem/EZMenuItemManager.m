@@ -11,7 +11,7 @@
 #import "EZWindowManager.h"
 #import "Snip.h"
 #import "EZShortcut.h"
-#import <SSZipArchive/SSZipArchive.h>
+#import <ZipArchive.h>
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"

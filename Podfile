@@ -7,19 +7,12 @@ target 'Easydict' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
-  pod 'MJExtension', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
   pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'
   pod 'MASPreferences', '~> 1.4.1'
-  pod 'CocoaLumberjack/Swift', '~> 3.6.0'
-  pod 'SSZipArchive', '~> 2.2.2'
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
-  
-  # Firebase and AppCenter
-  pod 'FirebaseAnalytics', '~> 10.19.0'
-  pod 'AppCenter', '~> 5.0.4'
   
   # Swift format
   pod 'SwiftFormat/CLI', '~> 0.52.11'
@@ -30,13 +23,10 @@ target 'EasydictTests' do
   use_frameworks!
   
   pod 'AFNetworking', '~> 3.2.1'
-  pod 'MJExtension', '~> 3.2.1'
   pod 'Masonry', '~> 1.1.0'
   pod 'ReactiveObjC', '~> 3.1.1'
   pod 'MASShortcut', :git => 'git@github.com:AkaShark/MASShortcut.git', :branch => 'double_click_modifier'
   pod 'MASPreferences', '~> 1.4.1'
-  pod 'CocoaLumberjack/Swift', '~> 3.6.0'
-  pod 'SSZipArchive', '~> 2.2.2'
   pod 'KVOController', '~> 1.2.0'
   pod 'JLRoutes', '~> 2.1'
   
