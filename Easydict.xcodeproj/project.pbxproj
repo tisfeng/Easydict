@@ -238,6 +238,7 @@
 		6295DE342A84EF76006145F4 /* EZBingLookupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6295DE332A84EF76006145F4 /* EZBingLookupModel.m */; };
 		62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A2D03E2A82967F007EEB01 /* EZBingRequest.m */; };
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
+		9632A9AC2B4297D900FC3F28 /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 9632A9AB2B4297D900FC3F28 /* KeyHolder */; };
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
 		A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
@@ -760,6 +761,7 @@
 				B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
 				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
+				9632A9AC2B4297D900FC3F28 /* KeyHolder in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2201,6 +2203,7 @@
 				03022F212B36D1A400B63209 /* SnapKit */,
 				03CF27FD2B3DA7D500E19B57 /* Realm */,
 				03CF27FF2B3DA7D500E19B57 /* RealmSwift */,
+				9632A9AB2B4297D900FC3F28 /* KeyHolder */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2253,6 +2256,7 @@
 				03022F1D2B36CF3100B63209 /* XCRemoteSwiftPackageReference "SwiftShell" */,
 				03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				03CF27FC2B3DA7D500E19B57 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				9632A9AA2B4297D900FC3F28 /* XCRemoteSwiftPackageReference "KeyHolder" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3153,6 +3157,14 @@
 				minimumVersion = 5.8.1;
 			};
 		};
+		9632A9AA2B4297D900FC3F28 /* XCRemoteSwiftPackageReference "KeyHolder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Clipy/KeyHolder.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3190,6 +3202,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		9632A9AB2B4297D900FC3F28 /* KeyHolder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9632A9AA2B4297D900FC3F28 /* XCRemoteSwiftPackageReference "KeyHolder" */;
+			productName = KeyHolder;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
