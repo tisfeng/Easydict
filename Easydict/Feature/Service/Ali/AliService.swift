@@ -60,7 +60,7 @@ class AliService: QueryService {
 
     override func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         let limit = 5000
-        let text = text.count > limit ? String(text[..<text.index(text.startIndex, offsetBy: limit)]) : text
+        let text = String(text.prefix(limit))
 
         let transType = AliTranslateType.transType(from: from, to: to)
         guard transType != .unsupported else {
