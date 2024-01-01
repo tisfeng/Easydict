@@ -67,16 +67,30 @@ struct AliWebResponse: Codable {
  */
 struct AliAPIResponse: Codable {
     struct Data: Codable {
-        var Translated: String?
-        var WordCount: String?
+        var translated: String?
+        var wordCount: String?
+
+        enum CodingKeys: String, CodingKey {
+            case translated = "Translated"
+            case wordCount = "WordCount"
+        }
     }
 
-    var Code: AnyCodable?
-    var Data: Data?
-    var RequestId: String?
-    var Message: String?
-    var HostId: String?
-    var Recommend: String?
+    var code: AnyCodable?
+    var data: Data?
+    var requestId: String?
+    var message: String?
+    var hostId: String?
+    var recommend: String?
+
+    enum CodingKeys: String, CodingKey {
+        case data = "Data"
+        case code = "Code"
+        case requestId = "RequestId"
+        case message = "Message"
+        case hostId = "HostId"
+        case recommend = "Recommend"
+    }
 }
 
 /**

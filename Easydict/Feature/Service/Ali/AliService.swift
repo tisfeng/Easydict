@@ -192,18 +192,18 @@ class AliService: QueryService {
                     result.from = from
                     result.to = to
                     result.queryText = text
-                    if let data = value.Data, let translateText = data.Translated {
+                    if let data = value.data, let translateText = data.translated {
                         result.translatedResults = [translateText]
                         completion(result, nil)
                         print("ali api translate success")
                     } else {
-                        completion(result, EZError(type: .API, description: value.Code?.stringValue, errorDataMessage: value.Message))
+                        completion(result, EZError(type: .API, description: value.code?.stringValue, errorDataMessage: value.message))
                     }
                 case let .failure(error):
                     var msg: String?
                     if let data = response.data {
                         let res = try? JSONDecoder().decode(AliAPIResponse.self, from: data)
-                        msg = res?.Message
+                        msg = res?.message
                     } else {
                         msg = error.errorDescription
                     }
