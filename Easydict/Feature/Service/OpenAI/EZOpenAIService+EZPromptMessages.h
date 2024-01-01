@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EZOpenAIService.h"
+#import "EZObjcOpenAIService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZOpenAIService (EZPromptMessages)
+@interface EZObjcOpenAIService (EZPromptMessages)
 
 /// Translation messages.
 - (NSArray *)translatioMessages:(NSString *)text from:(EZLanguage)sourceLanguage to:(EZLanguage)targetLanguage;

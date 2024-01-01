@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EZOpenAIService : EZQueryService
+@interface EZObjcOpenAIService : EZQueryService
 
 @end
 

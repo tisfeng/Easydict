@@ -21,3 +21,4 @@
 #import "entry.h"
 #import "AppDelegate.h"
 #import "EZConfiguration.h"
+#import "EZEnumTypes.h"

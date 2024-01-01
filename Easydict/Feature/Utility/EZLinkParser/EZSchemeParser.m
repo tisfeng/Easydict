@@ -7,7 +7,7 @@
 //
 
 #import "EZSchemeParser.h"
-#import "EZOpenAIService.h"
+//#import "EZOpenAIService2.h"
 #import "EZYoudaoTranslate.h"
 #import "EZServiceTypes.h"
 #import "EZDeepLTranslate.h"
