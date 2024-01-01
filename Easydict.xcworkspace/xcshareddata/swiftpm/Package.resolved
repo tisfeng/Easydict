@@ -154,6 +154,15 @@
       }
     },
     {
+      "identity" : "openai",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tisfeng/OpenAI",
+      "state" : {
+        "branch" : "dev",
+        "revision" : "71009401f8e469eb0770c5c8d83f747a1aa020a3"
+      }
+    },
+    {
       "identity" : "plcrashreporter",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/microsoft/PLCrashReporter.git",

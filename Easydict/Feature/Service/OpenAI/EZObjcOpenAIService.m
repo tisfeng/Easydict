@@ -6,7 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
-#import "EZOpenAIService.h"
+#import "EZObjcOpenAIService.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
 #import "EZOpenAIChatResponse.h"
@@ -15,7 +15,7 @@
 
 static NSString *const kEZLanguageWenYanWen = @"文言文";
 
-@interface EZOpenAIService ()
+@interface EZObjcOpenAIService ()
 
 @property (nonatomic, copy) NSString *apiKey;
 @property (nonatomic, copy) NSString *endPoint;
@@ -28,7 +28,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 @end
 
-@implementation EZOpenAIService
+@implementation EZObjcOpenAIService
 
 - (instancetype)init {
     if (self = [super init]) {
