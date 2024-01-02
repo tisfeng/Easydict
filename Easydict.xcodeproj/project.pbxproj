@@ -37,8 +37,8 @@
 		033C30FC2A7409C40095926A /* TTTDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FB2A7409C40095926A /* TTTDictionary.m */; };
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		0342801D2B41A01F002AF60D /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0342801C2B41A01F002AF60D /* OpenAIService.swift */; };
-		034280202B42587D002AF60D /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 0342801F2B42587D002AF60D /* OpenAI */; };
 		034280222B4308D2002AF60D /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034280212B4308D2002AF60D /* Prompt.swift */; };
+		034280252B441E9E002AF60D /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 034280242B441E9E002AF60D /* OpenAI */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		034749772B37279200FF679C /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
@@ -781,7 +781,7 @@
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
-				034280202B42587D002AF60D /* OpenAI in Frameworks */,
+				034280252B441E9E002AF60D /* OpenAI in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2225,7 +2225,7 @@
 				038030962B4106800009230C /* CocoaLumberjackSwift */,
 				038EA1A92B41169C008A6DD1 /* ZipArchive */,
 				038EA1AC2B41282F008A6DD1 /* MJExtension */,
-				0342801F2B42587D002AF60D /* OpenAI */,
+				034280242B441E9E002AF60D /* OpenAI */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2284,7 +2284,7 @@
 				038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
-				0342801E2B42587D002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */,
+				034280232B441E9E002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3163,12 +3163,12 @@
 				minimumVersion = 5.6.0;
 			};
 		};
-		0342801E2B42587D002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+		034280232B441E9E002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/MacPaw/OpenAI";
+			repositoryURL = "https://github.com/tisfeng/OpenAI";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.5;
+				branch = dev;
+				kind = branch;
 			};
 		};
 		038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
@@ -3261,9 +3261,9 @@
 			package = 03022F202B36D1A300B63209 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
-		0342801F2B42587D002AF60D /* OpenAI */ = {
+		034280242B441E9E002AF60D /* OpenAI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0342801E2B42587D002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */;
+			package = 034280232B441E9E002AF60D /* XCRemoteSwiftPackageReference "OpenAI" */;
 			productName = OpenAI;
 		};
 		038030942B4106800009230C /* CocoaLumberjack */ = {
