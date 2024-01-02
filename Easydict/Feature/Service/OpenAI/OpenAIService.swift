@@ -12,6 +12,14 @@ import OpenAI
 @objc(EZOpenAIService)
 public class OpenAIService: QueryService {
     private var defaultAPIKey: String {
+        /**
+         For convenience, we provide a default key for users to try out the service.
+
+         Please do not abuse it, otherwise it may be revoked.
+
+         For better experience, please apply for your personal key at https://makersuite.google.com/app/apikey
+         */
+
         var apiKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwVm8Sup83uzJjMANeEvyPcw==".decryptAES()
         #if DEBUG
             apiKey = "NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==".decryptAES()
@@ -20,6 +28,8 @@ public class OpenAIService: QueryService {
     }
 
     private var apiKey: String {
+        // easydict://writeKeyValue?EZOpenAIAPIKey=
+
         var apiKey = UserDefaults.standard.string(forKey: EZOpenAIAPIKey) ?? ""
         if apiKey.isEmpty, EZConfiguration.shared().isBeta {
             apiKey = defaultAPIKey
@@ -29,9 +39,11 @@ public class OpenAIService: QueryService {
     }
 
     private var endPoint: String {
+        // easydict://writeKeyValue?EZOpenAIEndPointKey=
+
         var endPoint = UserDefaults.standard.string(forKey: EZOpenAIEndPointKey) ?? ""
         if endPoint.isEmpty {
-            endPoint = "https://\(domain)/v1/chat/completions"
+            endPoint = "https://\(host)/v1/chat/completions"
         }
 
         if !hasPrivateAPIKey() {
@@ -41,7 +53,9 @@ public class OpenAIService: QueryService {
         return endPoint
     }
 
-    private var domain: String {
+    private var host: String {
+        // easydict://writeKeyValue?EZOpenAIDomainKey=
+
         var host = UserDefaults.standard.string(forKey: EZOpenAIDomainKey) ?? ""
         if host.isEmpty {
             host = "api.openai.com"
@@ -50,15 +64,17 @@ public class OpenAIService: QueryService {
     }
 
     private var defaultModel: String {
-        let defaultModel = hasPrivateAPIKey() ? "gpt.3.5-turbo" : "gemini-pro"
+        let defaultModel = hasPrivateAPIKey() ? "gpt-3.5-turbo" : "gemini-pro"
         return defaultModel
     }
 
     private var model: String {
         // easydict://writeKeyValue?EZOpenAIModelKey=
+
         var model = UserDefaults.standard.string(forKey: EZOpenAIModelKey) ?? ""
         if !hasPrivateAPIKey() {
-            #if DEBUG
+            // Do not allow to modify model if user has not personal key in non-debug env.
+            #if !DEBUG
                 model = defaultModel
             #endif
         }
@@ -130,31 +146,34 @@ public class OpenAIService: QueryService {
     }
 
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        let host = URL(string: endPoint)?.host ?? domain
+        let host = URL(string: endPoint)?.host ?? host
         let configuration = OpenAI.Configuration(token: apiKey, host: host)
         let openAI = OpenAI(configuration: configuration)
 
         let chats = chatMessages(text: text, from: from, to: to)
 
         let query = ChatQuery(model: model, messages: chats)
-        openAI.chats(query: query) { [weak self] res in
+        var resultText = ""
+
+        openAI.chatsStream(query: query) { [weak self] res in
             guard let self else { return }
             let result = self.result
-
             switch res {
             case let .success(chatResult):
-                if let content = chatResult.choices.first?.message.content {
-                    result.translatedResults = [content]
+                if let content = chatResult.choices.first?.delta.content {
+                    resultText += content
+                    result.translatedResults = [resultText]
                     completion(result, nil)
                 }
             case let .failure(error):
-                print(error)
                 completion(result, error)
+            }
+        } completion: { error in
+            if let error {
+                print("completion error: \(String(describing: error))")
             }
         }
     }
-
-    func starChat() {}
 }
 
 extension Language {
