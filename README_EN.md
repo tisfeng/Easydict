@@ -46,12 +46,17 @@
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
 
+## Swift Refactoring Plan
+
+We plan to refactor the project with Swift. If you are interested in this open source project, familiar with Swift/SwiftUI, welcome to join our development team to improve this project together [#194](https://github.com/tisfeng/Easydict/issues/194).
+
 ---
 
 ## Table of contents
 
 - [Easydict](#easydict)
 - [Features](#features)
+- [Swift Refactoring Plan](#swift-refactoring-plan)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
