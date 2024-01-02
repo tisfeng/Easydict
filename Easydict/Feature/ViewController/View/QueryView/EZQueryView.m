@@ -516,7 +516,8 @@
     if (self.clearButtonHidden && self.alertText.length) {
         [self.clearButton setAnimatedHidden:NO];
     }
-    
+    [self.audioButton setEnabled:text.length > 0];
+    [self.textCopyButton setEnabled:text.length > 0];
     [self updateDetectButton];
 }
 
