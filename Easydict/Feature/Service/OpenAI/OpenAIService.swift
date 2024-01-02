@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OpenAI
 
 @objc(EZOpenAIService)
 public class OpenAIService: QueryService {
@@ -20,37 +21,51 @@ public class OpenAIService: QueryService {
 
     private var apiKey: String {
         var apiKey = UserDefaults.standard.string(forKey: EZOpenAIAPIKey) ?? ""
-        if apiKey.count == 0, EZConfiguration.shared().isBeta {
+        if apiKey.isEmpty, EZConfiguration.shared().isBeta {
             apiKey = defaultAPIKey
         }
 
         return apiKey
     }
 
-    private var defaultEndPoint = "gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2".decryptAES()
     private var endPoint: String {
         var endPoint = UserDefaults.standard.string(forKey: EZOpenAIEndPointKey) ?? ""
-        if endPoint.count == 0 {
+        if endPoint.isEmpty {
             endPoint = "https://\(domain)/v1/chat/completions"
         }
 
         if !hasPrivateAPIKey() {
-            endPoint = defaultEndPoint
+            endPoint = "gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2".decryptAES()
         }
 
         return endPoint
     }
 
     private var domain: String {
-        var domain = UserDefaults.standard.string(forKey: EZOpenAIDomainKey) ?? ""
-        if domain.count == 0 {
-            domain = "api.openai.com"
+        var host = UserDefaults.standard.string(forKey: EZOpenAIDomainKey) ?? ""
+        if host.isEmpty {
+            host = "api.openai.com"
         }
-        return domain
+        return host
     }
 
     private var defaultModel: String {
-        let model = hasPrivateAPIKey() ? "gpt.3.5-turbo" : "gemini-pro"
+        let defaultModel = hasPrivateAPIKey() ? "gpt.3.5-turbo" : "gemini-pro"
+        return defaultModel
+    }
+
+    private var model: String {
+        // easydict://writeKeyValue?EZOpenAIModelKey=
+        var model = UserDefaults.standard.string(forKey: EZOpenAIModelKey) ?? ""
+        if !hasPrivateAPIKey() {
+            #if DEBUG
+                model = defaultModel
+            #endif
+        }
+
+        if model.isEmpty {
+            model = defaultModel
+        }
         return model
     }
 
@@ -114,12 +129,32 @@ public class OpenAIService: QueryService {
         return orderedDict
     }
 
-    override public func translate(_ text: String, from _: Language, to _: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
-        let result = result
-        result.translatedResults = [text]
+    override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
+        let host = URL(string: endPoint)?.host ?? domain
+        let configuration = OpenAI.Configuration(token: apiKey, host: host)
+        let openAI = OpenAI(configuration: configuration)
 
-        completion(result, nil)
+        let chats = chatMessages(text: text, from: from, to: to)
+
+        let query = ChatQuery(model: model, messages: chats)
+        openAI.chats(query: query) { [weak self] res in
+            guard let self else { return }
+            let result = self.result
+
+            switch res {
+            case let .success(chatResult):
+                if let content = chatResult.choices.first?.message.content {
+                    result.translatedResults = [content]
+                    completion(result, nil)
+                }
+            case let .failure(error):
+                print(error)
+                completion(result, error)
+            }
+        }
     }
+
+    func starChat() {}
 }
 
 extension Language {

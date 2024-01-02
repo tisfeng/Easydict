@@ -38,6 +38,7 @@
 		033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 033C30FF2A74CECE0095926A /* EZAppleDictionary.m */; };
 		0342801D2B41A01F002AF60D /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0342801C2B41A01F002AF60D /* OpenAIService.swift */; };
 		034280202B42587D002AF60D /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 0342801F2B42587D002AF60D /* OpenAI */; };
+		034280222B4308D2002AF60D /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034280212B4308D2002AF60D /* Prompt.swift */; };
 		0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0342A9802AD64924002A9F5F /* NSString+EZSplit.m */; };
 		034749772B37279200FF679C /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		03542A30293645DF00C34C33 /* EZAppleService.m in Sources */ = {isa = PBXBuildFile; fileRef = 03542A2F293645DF00C34C33 /* EZAppleService.m */; };
@@ -344,6 +345,7 @@
 		033C30FE2A74CECE0095926A /* EZAppleDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleDictionary.h; sourceTree = "<group>"; };
 		033C30FF2A74CECE0095926A /* EZAppleDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZAppleDictionary.m; sourceTree = "<group>"; };
 		0342801C2B41A01F002AF60D /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		034280212B4308D2002AF60D /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
 		0342A97F2AD64924002A9F5F /* NSString+EZSplit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+EZSplit.h"; sourceTree = "<group>"; };
 		0342A9802AD64924002A9F5F /* NSString+EZSplit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+EZSplit.m"; sourceTree = "<group>"; };
 		03542A2E293645DF00C34C33 /* EZAppleService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZAppleService.h; sourceTree = "<group>"; };
@@ -1180,6 +1182,7 @@
 			isa = PBXGroup;
 			children = (
 				0342801C2B41A01F002AF60D /* OpenAIService.swift */,
+				034280212B4308D2002AF60D /* Prompt.swift */,
 				0399C6AA29A860AA00B4AFCC /* EZObjcOpenAIService.h */,
 				0399C6AB29A860AA00B4AFCC /* EZObjcOpenAIService.m */,
 				03FC69962B399EF00035D2DA /* EZOpenAIChatResponse.h */,
@@ -2571,6 +2574,7 @@
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
+				034280222B4308D2002AF60D /* Prompt.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
