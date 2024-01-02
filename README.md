@@ -47,12 +47,17 @@
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
 
+## Swift 重构计划
+
+我们计划用 Swift 重构项目，如果你对这个开源项目感兴趣，熟悉 Swift/SwiftUI，欢迎加入我们的开发组，一起完善这个项目 [#194](https://github.com/tisfeng/Easydict/issues/194)。
+
 ---
 
 ## 目录
 
 - [Easydict](#easydict)
 - [功能](#功能)
+- [Swift 重构计划](#swift-重构计划)
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
