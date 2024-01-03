@@ -326,15 +326,9 @@ static EZMenuItemManager *_instance;
     NSFont *font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
     CGFloat fontLineHeight = (font.ascender + fabs(font.descender));
     CGFloat lineHeight = fontLineHeight * lineHeightRatio;
-    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    style.minimumLineHeight = lineHeight;
-    style.maximumLineHeight = lineHeight;
-    CGFloat baselineOffset = (lineHeight - fontLineHeight) / 2;
-    
-    item.attributedTitle = [[NSAttributedString alloc] initWithString:item.title attributes:@{
-        NSParagraphStyleAttributeName: style,
-        NSBaselineOffsetAttributeName: @(baselineOffset)
-    }];
+    // Ref stackoverflow: https://stackoverflow.com/a/18034142/8378840 
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(1, lineHeight)];
+    [item setImage:image];
 }
 
 - (void)increaseMenuItemsHeight:(NSArray<NSMenuItem *> *)itmes lineHeightRatio:(CGFloat)lineHeightRatio {
