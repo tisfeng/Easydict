@@ -129,7 +129,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
      Improving the country's economy is a political imperative for the new president.
      I must dash off this letter before the post is collected.
      */
-    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words and phrases in the sentence, no more than 6 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"%@:\n {key_words} \", \n\n", keyWords];
+    NSString *keyWordsPrompt = [NSString stringWithFormat:@"1. List the non-simple and key words, common phrases and common collocations in the sentence, no more than 5 key words, and look up all parts of speech and meanings of each key word, and point out its actual meaning in this sentence in detail, desired display format: \"%@:\n {key_words} \", \n\n", keyWords];
     prompt = [prompt stringByAppendingString:keyWordsPrompt];
     
     NSString *grammarParsePrompt = [NSString stringWithFormat:@"2. Analyze the grammatical structure of this sentence, desired display format: \"%@:\n {grammatical_analysis} \", \n\n", grammarParse];
@@ -165,7 +165,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"dynamic: adj. 有活力的；动态的。这里指强力的领导。\n"
             @"drift: n. 漂流；漂泊。这里是随波逐流的意思，和前面的 dynamic 做对比。\n\n"
             @"2. 语法分析: \n该句子为一个复合句。主句为 \"But...is hard to say.\"（但是这位新任总理是否能提供强力的领导还难以说），其中包含了一个 whether 引导的从句作宾语从句。\n\n"
-            @"3. 推理翻译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
+            @"3. 意译:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
 //                @{
 //                    @"role" : @"user", // The stock market has now reached a plateau.
@@ -191,23 +191,32 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         @{
             @"role" : @"user", // The book is simple homespun philosophy.
             @"content" :
-                @"Here is a English sentence: \"The book is simple homespun philosophy.\",\n"
-            @"First, display the Simplified-Chinese translation of this sentence.\n\n"
-            @"Then, follow the steps below step by step."
-            @"1. List the key vocabulary and phrases in the sentence, and look up its all parts of speech and meanings, and point out its actual meaning in this sentence in detail.\n\n"
-            @"2. Analyze the grammatical structure of this sentence.\n\n"
-            @"3. Show Simplified-Chinese inferred translation. \n\n"
-            @"Answer in Simplified-Chinese. \n",
+                @"\"The book is simple homespun philosophy.\""
         },
         @{
             @"role" : @"assistant",
             @"content" :
                 @"这本书是简单的乡土哲学。\n\n"
             @"1. 重点词汇: \n"
-            @"homespun: adj. 简朴的；手织的。这里是朴素的意思。\n"
-            @"philosophy: n. 哲学；哲理。这里指一种思想体系或观念。\n\n"
+            @"homespun: adj. 简朴的；手织的。\n"
+            @"philosophy: n. 哲学；哲理。\n\n"
             @"2. 该句子是一个简单的主语+谓语+宾语结构。主语为 \"The book\"（这本书），谓语动词为 \"is\"（是），宾语为 \"simple homespun philosophy\"（简单朴素的哲学）。 \n\n"
-            @"3. 推理翻译:\n这本书是简单朴素的哲学。\n\n"
+            @"3. 意译:\n这本书是简单朴素的哲学。\n\n"
+        },
+        
+        @{
+            @"role" : @"user", // You don't begin to understand what they mean.
+            @"content" :
+                @"\"You don't begin to understand what they mean.\""
+        },
+        @{
+            @"role" : @"assistant",
+            @"content" :
+                @"你不开始理解他们的意思。\n\n"
+            @"1. 重点词汇: \n"
+            @"don't begin to: 常用搭配句式，表示一点也不，完全不\n"
+            @"2. 该句为一个简单的否定句。主语为 \"You\"（你），谓语动词为 \"don't begin to\"（一点也不），宾语为 \"understand what they mean\"（理解他们的意思）。\n\n"
+            @"3. 意译:\n你根本不理解他们的意思。\n\n"
         },
     ];
     
@@ -232,7 +241,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"dynamic: adj. energetic; dynamic. Here it refers to strong leadership. \n"
             @"drift: n. To drift; to drift. Here it means to go with the flow, in contrast to the previous dynamic. \n\n"
             @"2. Grammar Parsing: \nThe sentence is a compound sentence. The main clause is \"But... . . is hard to say.\" (But it is hard to say whether the new prime minister can provide strong leadership), which contains a whether clause as the object clause. \n\n"
-            @"3. Inference Translation:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
+            @"3. Free Translation:\n但是这位新任总理是否能够提供强力的领导，而不是继续德国最近的随波逐流之势，还很难说。\n\n"
         },
     ];
     
@@ -411,9 +420,9 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             @"content" : @"发音: / ˈælbəm / \n\n"
             "n. 相册；唱片集；集邮簿 \n\n"
             "复数：albums \n\n"
-            "解释：xxx \n\n"
-            "词源学：xxx \n\n"
-            "记忆方法：xxx \n\n"
+            "解释：{explanation} \n\n"
+            "词源学：{etymology} \n\n"
+            "记忆方法：{how_to_remember} \n\n"
             "同根词: \n"
             "n. almanac 年历，历书 \n"
             "n. anthology 选集，文选 \n\n"
@@ -423,18 +432,13 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "1. White Album: 白色相簿\n"
             "2. photo album: 写真集；相册；相簿\n"
             "3. debut album: 首张专辑\n"
-            "4. album cover: 专辑封面\n\n"
             "例句：\n"
             "1. Their new album is dynamite.\n（他们的*新唱*引起轰动。）\n"
             "2. I stuck the photos into an album.\n（我把照片贴到*相册*上。）\n"
-            "3. Their new album is their doomiest.\n（他们的新*专辑*是他们最失败的作品。）\n"
         },
         @{
             @"role" : @"user", // raven
-            @"content" :
-                @"Using Simplified-Chinese: \n"
-            @"Here is a English word: \"raven\" \n"
-            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"content" : @"\"raven\"",
         },
         @{
             @"role" : @"assistant",
@@ -448,14 +452,14 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "现在分词: ravening \n"
             "过去式: ravened \n"
             "过去分词: ravened \n\n"
-            "解释：xxx \n\n"
-            "词源学：xxx \n\n"
-            "记忆方法：xxx \n\n"
+            "解释：{explanation} \n\n"
+            "词源学：{etymology} \n\n"
+            "记忆方法：{how_to_remember} \n\n"
             "同根词: \n"
-            "adj. ravenous 贪婪的；渴望的；狼吞虎咽的 \n"
             "n. ravage 蹂躏，破坏 \n"
             "vi. ravage 毁坏；掠夺 \n"
             "vt. ravage 毁坏；破坏；掠夺 \n\n"
+            "adj. ravenous 贪婪的；渴望的；狼吞虎咽的 \n"
             "近义词: seize, blackbird \n"
             "反义词：protect, guard, defend \n\n"
             "常用短语：\n"
@@ -466,12 +470,10 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
             "1. She has long raven hair.\n（她有一头*乌黑的*长头发。）\n"
             "2. The raven is often associated with death and the supernatural.\n（*乌鸦*常常与死亡和超自然现象联系在一起。）\n"
         },
-        @{                     //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
+        @{  
+            //  By default, only uppercase abbreviations are valid in JS, so we need to add a lowercase example.
             @"role" : @"user", // js
-            @"content" :
-                @"Using Simplified-Chinese: \n"
-            @"Here is a English word: \"js\" \n"
-            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"content" : @"\"js\"",
         },
         @{
             @"role" : @"assistant",
@@ -529,10 +531,7 @@ static NSString *kTranslationSystemPrompt = @"You are a translation expert profi
         },
         @{
             @"role" : @"user", // acg, This is a necessary few-shot for some special abbreviation.
-            @"content" :
-                @"Using English: \n"
-            @"Here is a English word abbreviation: \"acg\" \n"
-            @"Look up its pronunciation, pos and meanings, tenses and forms, explanation, etymology, how to remember, cognates, synonyms, antonyms, phrases, example sentences."
+            @"content" : @"\"acg\"",
         },
         @{
             @"role" : @"assistant",
