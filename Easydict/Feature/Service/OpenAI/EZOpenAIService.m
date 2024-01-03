@@ -47,7 +47,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
         self.defaultAPIKey = [@"NnZp/jV9prt5empCOJIM8LmzHmFdTiVa4i+mURU8t+uGpT+nDt/JTdf14JglJLEwpXkkSw+uGgiE8n5skqDdjQ==" decryptAES];
 #endif
         self.defaultEndPoint = [@"gTYTMVQTyMU0ogncqcMNRo/TDhten/V4TqX4IutuGNcYTLtxjgl/aXB/Y1NXAjz2" decryptAES];
-        self.defaultModel = [self hasPrivateAPIKey] ? @"gpt-3.5-turbo" : @"gemini-pro";
+        self.defaultModel = [self hasPrivateAPIKey] ? @"gpt-3.5-turbo-1106" : @"gemini-pro";
     }
     return self;
 }
