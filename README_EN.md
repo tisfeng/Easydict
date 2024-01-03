@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/) and [Volcano Translation](https://translate.volcengine.com/translate).
+`Easydict` is a concise and easy-to-use translation dictionary macOS App that allows you to easily and elegantly look up words or translate text. Easydict is ready to use out of the box, can automatically recognize the language of the input text, supports input translate, select translate, and OCR screenshot translate, and can query multiple translation services results at the same time. Currently, it supports [Youdao Dictionary](https://www.youdao.com/), [**🍎 Apple System Dictionary**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), [**🍎 macOS System Translation**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md), [OpenAI(ChatGPT)](https://chat.openai.com/), [DeepL](https://www.deepl.com/translator), [Google](https://translate.google.com/), [Tencent](https://fanyi.qq.com/), [Bing](https://www.bing.com/translator), [Baidu](https://fanyi.baidu.com/), [Niutrans](https://niutrans.com/), [Lingocloud](https://fanyi.caiyunapp.com/#/), [Ali Translate](https://translate.alibaba.com/) and [Volcano Translation](https://translate.volcengine.com/translate).
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -41,10 +41,14 @@
 - [x] Support system TTS, along with online services from Bing, Google, Youdao and Baidu Cloud.
 - [x] Support [🍎 Apple System Dictionary](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md), support third-party dictionaries with manual mdict dictionaries import functionalities.
 - [x] Support macOS system translation. (_Please see [How to use 🍎 macOS system translation in Easydict?](./docs/How-to-use-macOS-system-dictionary-in-Easydict-en.md)_)
-- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Google, Tencent, Bing, Baidu, Niutrans, Lingocloud and Volcano Translate.
+- [x] Support Youdao Dictionary, DeepL, OpenAI (ChatGPT), Google, Tencent, Bing, Baidu, Niutrans, Lingocloud, Ali and Volcano Translate.
 - [x] Support for 48 languages.
 
 **If you like this app, please consider giving it a [Star](https://github.com/tisfeng/Easydict) ⭐️, thanks! (^-^)**
+
+## Swift Refactoring Plan
+
+We plan to refactor the project with Swift. If you are interested in this open source project, familiar with Swift/SwiftUI, welcome to join our development team to improve this project together [#194](https://github.com/tisfeng/Easydict/issues/194).
 
 ---
 
@@ -52,6 +56,7 @@
 
 - [Easydict](#easydict)
 - [Features](#features)
+- [Swift Refactoring Plan](#swift-refactoring-plan)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [1. Manual Installation](#1-manual-installation)
@@ -79,6 +84,7 @@
   - [Bing Translate](#bing-translate)
   - [Niutrans](#niutrans)
   - [Lingocloud](#lingocloud)
+  - [Ali Translate](#ali-translate)
 - [Smart query mode](#smart-query-mode)
   - [Query in App](#query-in-app)
 - [URL Scheme](#url-scheme)
@@ -507,6 +513,16 @@ It is recommended to use your own Token, each registered user of Lingocloud is g
 ```bash
 // xxx is the Token of Lingocloud
 easydict://writeKeyValue?EZCaiyunToken=xxx
+```
+
+### Ali Translate
+[Ali Translate](https://translate.alibaba.com/) requires an API key, for ease of use, we have built-in a key, this key has a limit on the amount, not guaranteed to be available all the time.
+
+It is recommended to use your own API key, each registered user of Ali Translate is given 100,000 characters of traffic per day.
+
+```bash
+easydict://writeKeyValue?EZAliAccessKeyId=xxx
+easydict://writeKeyValue?EZAliAccessKeySecret=xxx
 ```
 
 ## Smart query mode
