@@ -326,7 +326,7 @@ static EZMenuItemManager *_instance;
     NSFont *font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
     CGFloat fontLineHeight = (font.ascender + fabs(font.descender));
     CGFloat lineHeight = fontLineHeight * lineHeightRatio;
-    NSImage *image= [[NSImage alloc] initWithSize:NSMakeSize(1, lineHeight)];
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(1, lineHeight)];
     [item setImage:image];
 }
 
