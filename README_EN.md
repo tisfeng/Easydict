@@ -73,9 +73,10 @@ We plan to refactor the project with Swift. If you are interested in this open s
 - [Translation Services](#translation-services)
   - [🍎 Apple System Dictionary](#-apple-system-dictionary)
   - [OpenAI (ChatGPT) Translation](#openai-chatgpt-translation)
-    - [Configure APIKey](#configure-apikey)
-    - [Query Mode](#query-mode)
-    - [Customizations](#customizations)
+    - [Use the built-in Gemini key](#use-the-built-in-gemini-key)
+    - [Configure Personal APIKey](#configure-personal-apikey)
+    - [OpenAI Query Mode](#openai-query-mode)
+    - [OpenAI Custom Settings](#openai-custom-settings)
   - [DeepL Translate](#deepl-translate)
     - [Configure AuthKey](#configure-authkey)
     - [Configure API endpoint](#configure-api-endpoint)
@@ -341,11 +342,27 @@ For detailed information, please see [How to use macOS system dictionary in Easy
 
 ### OpenAI (ChatGPT) Translation
 
-Version 1.3.0 starts to support OpenAI translation, also supports Azure OpenAI interface, the interface has not been written yet, you need to configure it in the input box of Easydict using the following command method.
+Version 1.3.0 adds support for OpenAI translation, as well as Azure OpenAI interfaces, which require the use of OpenAI API keys.
 
-Please make sure you have an APIKey.
+If you don't have your own OpenAI APIKey, you can use some open source projects to convert third-party LLM interfaces into standard OpenAI interfaces, so that you can use them directly in `Easydict`.
 
-#### Configure APIKey
+For example, [one-api](https://github.com/songquanpeng/one-api), one-api is a good open source project for OpenAI interface management, which supports multiple LLM interfaces, including Azure, Anthropic Claude, Google PaLM 2 & Gemini, Zhupu ChatGLM, Baidu Wenxin Yiyu, Xunfei Xinghuo cognition, Ali Tongyi Qianwen, 360 Zhinao and Tencent Hunyuan, etc., which can be used for secondary distribution management key, only single executable file, Docker image has been packaged, one-click deployment, out of the box.
+
+Currently, the GUI method of configuring API key is still under development [#227](https://github.com/tisfeng/Easydict/issues/227), so you need to configure it in the input box of Easydict in command mode for the time being.
+
+#### Use the built-in Gemini key
+
+Currently, Google's Gemini API is free, and the translation effect is good. Since the project's support for Gemini [#270](https://github.com/tisfeng/Easydict/issues/270), it may take some time, so I have built in a key to facilitate users to use the Gemini model directly for translation. However, please note that this key has certain usage restrictions and is unstable, so if you have the ability to deploy one-api, it is recommended to use your own APIKey first.
+
+In Beta mode, and no APIKey is set, so the built-in Gemini key will be used automatically.
+
+Write the following command to enable Beta mode
+
+```bash
+easydict://writeKeyValue?EZBetaFeatureKey=1
+```
+
+#### Configure Personal APIKey
 
 ```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
@@ -361,7 +378,7 @@ Lookup for APIKey (similar to other keys), if the query succeeds, the result wil
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
-#### Query Mode
+#### OpenAI Query Mode
 
 Currently, OpenAI translation supports three query modes: word lookup, sentence translation, and long-text translation. They are all enabled by default, while words and sentences can be disabled.
 
@@ -389,7 +406,7 @@ A quick tip: If you only want to exclude occasional sentence analysis without tu
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
-#### Customizations
+#### OpenAI Custom Settings
 
 Support custom domains and models
 
@@ -400,7 +417,7 @@ easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 // xxx is the complete address of the request; for example, https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx is set to default as gpt-3.5-turbo
+//  xxx is set to default as gpt-3.5-turbo-1106 (currently the cheapest and most practical model)
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
