@@ -74,9 +74,10 @@
 - [查询服务](#查询服务)
   - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
-    - [配置 APIKey](#配置-apikey)
-    - [查询模式](#查询模式)
-    - [自定义设置](#自定义设置)
+    - [使用内置 Gemini key](#使用内置-gemini-key)
+    - [配置个人的 APIKey](#配置个人的-apikey)
+    - [OpenAI 查询模式](#openai-查询模式)
+    - [OpenAI 自定义参数](#openai-自定义参数)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
@@ -343,11 +344,27 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### OpenAI（ChatGPT）翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还未写界面，需要在 Easydict 的输入框中使用如下命令方式配置。
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，需要使用 OpenAI API key。
 
-请先确保你有 APIKey。
+如果你没有自己的 OpenAI APIKey，可以借助一些开源项目将第三方的 LLM 接口转为标准的 OpenAI 接口，这样就能直接在 `Easydict` 中使用了。
 
-#### 配置 APIKey
+例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
+
+目前 GUI 方式配置 API key 功能还在开发中 [[#227](https://github.com/tisfeng/Easydict/issues/227)]，暂时需要在 Easydict 的输入框中使用命令方式配置。
+
+#### 使用内置 Gemini key
+
+目前 Google 的 Gemini API 免费，实测下来翻译效果不错，由于项目对 Gemini 支持 [#270](https://github.com/tisfeng/Easydict/issues/270) 还在开发中，可能需要一点时间，因此我内置了一个 key，方便用户直接使用 Gemini 模型来翻译。但请注意，这个 key 有一定使用限制且不稳定，因此如果有能力部署 one-api，建议优先使用自己的 APIKey。
+
+在 Beta 模式下，并且没有设置自己的 APIKey，这样就会自动使用内置的 Gemini key。
+
+写入以下命令可开启 Beta 模式
+
+```bash
+easydict://writeKeyValue?EZBetaFeatureKey=1
+```
+
+#### 配置个人的 APIKey
 
 ```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
@@ -363,7 +380,7 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
-#### 查询模式
+#### OpenAI 查询模式
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
@@ -391,7 +408,7 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
-#### 自定义设置
+#### OpenAI 自定义参数
 
 支持设置自定义域名和模型
 
@@ -402,7 +419,7 @@ easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 // xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx 默认是 gpt-3.5-turbo
+//  xxx 默认是 gpt-3.5-turbo-1106（目前最便宜实用的模型）
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
