@@ -60,6 +60,8 @@ public final class GeminiService: QueryService {
         }
     }
 
+    private static let translationPrompt = "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
+
     override public func autoConvertTraditionalChinese() -> Bool {
         true
     }
@@ -69,7 +71,7 @@ public final class GeminiService: QueryService {
             // https://github.com/google/generative-ai-swift
             do {
                 var resultString = ""
-                let prompt = "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes. Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
+                let prompt = GeminiService.translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
                 print("gemini prompt: \(prompt)")
                 let model = GenerativeModel(name: "gemini-pro", apiKey: apiKey)
                 let outputContentStream = model.generateContentStream(prompt)
