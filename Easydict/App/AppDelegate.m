@@ -34,8 +34,6 @@
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
 
-    [self setupAppLanguage];
-
     if (!EasydictNewAppManager.shared.enable) {
         [EZMenuItemManager.shared setup];
     }
