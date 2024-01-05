@@ -46,7 +46,7 @@ jobs:
     steps:
     - name: Setup Xcode Version
       uses: maxim-lobanov/setup-xcode@v1
-        with:
+      with:
           xcode-version: '15.1'
 
     - name: Checkout repository
