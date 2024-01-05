@@ -46,6 +46,9 @@ static EZLanguageManager *_instance;
 }
 
 - (void)setup {
+    // Ref: https://stackoverflow.com/a/25011408
+    // A workaround of `AppleLanguages` not refresh once inserted object
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"AppleLanguages"];
     NSArray *showingLanguages = [EZLanguageManager.shared allLanguages];
     self.allLanguageFlagDict = [[MMOrderedDictionary alloc] init];
     for (EZLanguage language in showingLanguages) {
