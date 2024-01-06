@@ -228,6 +228,9 @@
 		03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */; };
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
+		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
+		0A057D6F2B499A0B0025C51D /* ServiceItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6E2B499A0B0025C51D /* ServiceItemView.swift */; };
+		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -689,6 +692,9 @@
 		03FC69992B39D13A0035D2DA /* EZOpenAIChatResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZOpenAIChatResponse.m; sourceTree = "<group>"; };
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
+		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
+		0A057D6E2B499A0B0025C51D /* ServiceItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceItemView.swift; sourceTree = "<group>"; };
+		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
 		17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
 		17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
@@ -1792,6 +1798,7 @@
 		03CF88602B137ECB0030C199 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
+				0A2BA95E2B49A967002872A4 /* Binding */,
 				03FD68BC2B1E14B500FD388E /* String */,
 				03CF88612B137ED60030C199 /* Array */,
 			);
@@ -1970,6 +1977,14 @@
 			path = String;
 			sourceTree = "<group>";
 		};
+		0A2BA95E2B49A967002872A4 /* Binding */ = {
+			isa = PBXGroup;
+			children = (
+				0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */,
+			);
+			path = Binding;
+			sourceTree = "<group>";
+		};
 		17BCAEF22B0DFF9000A7D372 /* Niutrans */ = {
 			isa = PBXGroup;
 			children = (
@@ -2005,6 +2020,7 @@
 			isa = PBXGroup;
 			children = (
 				27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */,
+				0A057D6E2B499A0B0025C51D /* ServiceItemView.swift */,
 				27FE98072B3DD52B000AD654 /* SettingView */,
 			);
 			path = View;
@@ -2023,6 +2039,7 @@
 			isa = PBXGroup;
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
+				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
 			);
@@ -2516,6 +2533,7 @@
 				03991166292A8A4400E1B06D /* EZTitleBarMoveView.m in Sources */,
 				03542A582937CC3200C34C33 /* EZConfiguration.m in Sources */,
 				27FE98092B3DD536000AD654 /* SettingView.swift in Sources */,
+				0A057D6F2B499A0B0025C51D /* ServiceItemView.swift in Sources */,
 				035E37E72A0953120061DFAF /* EZToast.m in Sources */,
 				03542A492937B5CF00C34C33 /* EZGoogleTranslate.m in Sources */,
 				03D0435A2928C4C800E7559E /* EZWindowManager.m in Sources */,
@@ -2582,6 +2600,7 @@
 				03B0230529231FA6001C7E63 /* EZButton.m in Sources */,
 				03B0232329231FA6001C7E63 /* NSString+MM.m in Sources */,
 				036196772A000F5900806370 /* NSData+CommonCrypto.m in Sources */,
+				0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */,
 				03882F8D29D95044005B5A52 /* CTView.m in Sources */,
 				278322602B0FB0EA0026644C /* CaiyunResponse.swift in Sources */,
 				03B3B8B52925DD3D00168E8D /* EZPopButtonViewController.m in Sources */,
@@ -2648,6 +2667,7 @@
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
+				0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */,
 				036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */,
 				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
 				037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */,
