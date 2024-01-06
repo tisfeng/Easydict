@@ -49,7 +49,7 @@ struct EasydictApp: App {
                         .scaledToFit()
                 }
                 .help("Easydict 🍃")
-            }
+            }.menuBarExtraStyle(.menu)
             Settings {
                 SettingView()
             }
