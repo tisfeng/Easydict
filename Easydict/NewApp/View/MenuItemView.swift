@@ -201,7 +201,7 @@ struct MenuItemView: View {
     }
 }
 
- @available(macOS 13, *)
- #Preview {
+@available(macOS 13, *)
+#Preview {
     MenuItemView()
- }
+}

@@ -1674,9 +1674,15 @@
     },
     "menu_selectWord_Translate" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Select Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "划词翻译"
           }
         }
@@ -1684,9 +1690,15 @@
     },
     "menu_show_mini_window" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Show Mini Window"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "显示迷你窗口"
           }
         }
@@ -1694,9 +1706,15 @@
     },
     "menu_silent_screenshot_OCR" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Silent Screenshot OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "静默截图 OCR"
           }
         }
