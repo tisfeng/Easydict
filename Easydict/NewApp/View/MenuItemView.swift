@@ -12,6 +12,12 @@ import ZipArchive
 
 @available(macOS 13, *)
 struct MenuItemView: View {
+    private let updater: SPUUpdater
+
+    init(updater: SPUUpdater) {
+        self.updater = updater
+    }
+
     var body: some View {
         // ️.menuBarExtraStyle为 .menu 时某些控件可能会失效 ，只能显示内容（按照菜单项高度、图像以 template 方式渲染）无法交互 ，比如 Stepper、Slider 等，像基本的 Button、Text、Divider、Image 等还是能正常显示的。
         // Button 和Label的systemImage是不会渲染的
@@ -89,6 +95,7 @@ struct MenuItemView: View {
     private var inputItem: some View {
         Button {
             NSLog("输入翻译")
+            EZWindowManager.shared().inputTranslate()
         } label: {
             HStack {
                 Image(systemName: "keyboard")
@@ -100,7 +107,8 @@ struct MenuItemView: View {
     @ViewBuilder
     private var screenshotItem: some View {
         Button {
-            NSLog("输入翻译")
+            NSLog("截图翻译")
+            EZWindowManager.shared().snipTranslate()
         } label: {
             HStack {
                 Image(systemName: "camera.viewfinder")
@@ -113,6 +121,7 @@ struct MenuItemView: View {
     private var selectWordItem: some View {
         Button {
             NSLog("划词翻译")
+            EZWindowManager.shared().selectTextTranslate()
         } label: {
             HStack {
                 Image(systemName: "highlighter")
@@ -125,6 +134,7 @@ struct MenuItemView: View {
     private var miniWindowItem: some View {
         Button {
             NSLog("显示迷你窗口")
+            EZWindowManager.shared().showMiniFloatingWindow()
         } label: {
             HStack {
                 Image(systemName: "dock.rectangle")
@@ -137,6 +147,7 @@ struct MenuItemView: View {
     private var ocrItem: some View {
         Button {
             NSLog("静默截图OCR")
+            EZWindowManager.shared().screenshotOCR()
         } label: {
             HStack {
                 Image(systemName: "camera.metering.spot")
@@ -151,7 +162,7 @@ struct MenuItemView: View {
     private var checkUpdateItem: some View {
         Button("check_updates") {
             NSLog("检查更新")
-            SPUStandardUpdaterController(updaterDelegate: nil, userDriverDelegate: nil).checkForUpdates(nil)
+            updater.checkForUpdates()
         }
     }
 
@@ -203,5 +214,5 @@ struct MenuItemView: View {
 
 @available(macOS 13, *)
 #Preview {
-    MenuItemView()
+    MenuItemView(updater: SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil).updater)
 }
