@@ -884,10 +884,24 @@
       }
     },
     "Easydict" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "Easydict 🍃" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "enable_beta_new_app" : {
       "localizations" : {
@@ -1450,7 +1464,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "请前往服务官网注册申请个人的 API key。"
           }
         }
@@ -2562,7 +2576,14 @@
       }
     },
     "Tisfeng" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "toggle_languages" : {
       "localizations" : {
