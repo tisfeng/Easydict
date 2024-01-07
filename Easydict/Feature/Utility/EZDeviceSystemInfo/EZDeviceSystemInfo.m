@@ -57,7 +57,7 @@
 
 /// Get device UUID, 4F07896A-1580-5270-A0E8-D7FA9DFA6868
 + (NSString *)getDeviceUUID {
-    io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
+    io_service_t platformExpert = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
     CFStringRef uuidString = (CFStringRef)IORegistryEntryCreateCFProperty(platformExpert, CFSTR("IOPlatformUUID"), kCFAllocatorDefault, 0);
     NSString *uuid = (__bridge NSString *)(uuidString);
     IOObjectRelease(platformExpert);
