@@ -93,7 +93,7 @@ struct ServiceTab: View {
 
     func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
         let oldEnabledServices = enabledServices(in: services)
-        
+
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
         serviceTypes.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
