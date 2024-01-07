@@ -118,7 +118,7 @@
 感谢 [BingoKingo](https://github.com/tisfeng/Easydict/issues/1#issuecomment-1445286763) 提供的最初安装版本。
 
 ```bash
-brew install easydict
+brew install --cask easydict
 ```
 
 ### 开发者构建
