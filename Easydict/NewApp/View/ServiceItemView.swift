@@ -31,7 +31,6 @@ struct ServiceItemView: View {
     }
 }
 
-
 #Preview {
     let service = EZLocalStorage.shared().allServices(.mini).first
     return ServiceItemView(service: .constant(service ?? QueryService())) { val in

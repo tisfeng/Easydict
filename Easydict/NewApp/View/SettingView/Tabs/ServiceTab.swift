@@ -48,6 +48,9 @@ struct ServiceTab: View {
                     serviceToggled(index: index, isEnable: isEnable)
                 }
             }
+            .onMove(perform: { indices, newOffset in
+                onServiceItemMove(fromOffsets: indices, toOffset: newOffset)
+            })
         }
         .listStyle(.inset)
         .clipShape(RoundedRectangle(cornerRadius: 10.0))
@@ -79,6 +82,42 @@ struct ServiceTab: View {
         }
         let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
         EZLocalStorage.shared().setService(services[index], windowType: windowType)
+        postUpdateServiceNotification()
+    }
+
+    func enabledServices(in services: [QueryService]) -> [QueryService] {
+        services.filter(\.enabled)
+    }
+
+    func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
+        services.move(fromOffsets: fromOffsets, toOffset: toOffset)
+        serviceTypes.move(fromOffsets: fromOffsets, toOffset: toOffset)
+
+        let oldEnabledServices = enabledServices(in: services)
+        let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
+        EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
+        let newServices = EZLocalStorage.shared().allServices(windowType)
+        let newEnabledServices = enabledServices(in: newServices)
+
+        if isEnabledServicesOrderChanged(source: oldEnabledServices, dest: newEnabledServices) {
+            postUpdateServiceNotification()
+        }
+    }
+
+    func isEnabledServicesOrderChanged(
+        source: [QueryService],
+        dest: [QueryService]
+    ) -> Bool {
+        !source.elementsEqual(dest) { sItem, dItem in
+            sItem.serviceType() == dItem.serviceType() && sItem.name() == dItem.name()
+        }
+    }
+
+    func postUpdateServiceNotification() {
+        let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
+        let userInfo: [String: Any] = [EZWindowTypeKey: windowType]
+        let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(notification)
     }
 }
 
