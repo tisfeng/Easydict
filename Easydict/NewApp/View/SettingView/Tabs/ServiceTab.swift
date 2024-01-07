@@ -82,6 +82,8 @@ struct ServiceTab: View {
         }
         let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
         EZLocalStorage.shared().setService(services[index], windowType: windowType)
+        // refresh service list
+        loadService(type: windowTypeValue)
         postUpdateServiceNotification()
     }
 
@@ -90,15 +92,17 @@ struct ServiceTab: View {
     }
 
     func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
+        let oldEnabledServices = enabledServices(in: services)
+        
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
         serviceTypes.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let oldEnabledServices = enabledServices(in: services)
         let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
         let newServices = EZLocalStorage.shared().allServices(windowType)
         let newEnabledServices = enabledServices(in: newServices)
 
+        // post notification after enabled services order changed
         if isEnabledServicesOrderChanged(source: oldEnabledServices, dest: newEnabledServices) {
             postUpdateServiceNotification()
         }
@@ -114,8 +118,7 @@ struct ServiceTab: View {
     }
 
     func postUpdateServiceNotification() {
-        let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
-        let userInfo: [String: Any] = [EZWindowTypeKey: windowType]
+        let userInfo: [String: Any] = [EZWindowTypeKey: windowTypeValue]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
         NotificationCenter.default.post(notification)
     }

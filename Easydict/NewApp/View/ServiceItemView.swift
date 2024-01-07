@@ -17,7 +17,7 @@ struct ServiceItemView: View {
         HStack {
             Image(nsImage: NSImage(named: service.serviceType().rawValue) ?? NSImage())
                 .resizable()
-                .frame(maxWidth: 24.0, maxHeight: 24.0)
+                .frame(maxWidth: 18.0, maxHeight: 18.0)
 
             Text(service.name())
 
@@ -25,6 +25,7 @@ struct ServiceItemView: View {
                 toggleValueChanged(value)
             })) {}
                 .toggleStyle(.switch)
+                .controlSize(.small)
         }
 
         .padding(4.0)
