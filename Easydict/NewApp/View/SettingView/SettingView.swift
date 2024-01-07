@@ -17,7 +17,7 @@ struct SettingView: View {
                 .frame(width: 500, height: 400)
             ServiceTab()
                 .tabItem { Label("service", systemImage: "briefcase") }
-                .frame(width: 500, height: 400)
+                .frame(width: 360, height: 540)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .frame(width: 500, height: 400)
