@@ -30,6 +30,7 @@ struct ServiceTab: View {
         .pickerStyle(.segmented)
         .onChange(of: windowTypeValue) { type in
             loadService(type: type)
+            selectedIndex = nil
         }
     }
 
@@ -40,6 +41,7 @@ struct ServiceTab: View {
                     service: $services[index]
                 ) { isEnable in
                     serviceToggled(index: index, isEnable: isEnable)
+                    selectedIndex = nil
                 }
                 .frame(height: 30)
                 .tag(index)
@@ -55,6 +57,7 @@ struct ServiceTab: View {
             }
             .onMove(perform: { indices, newOffset in
                 onServiceItemMove(fromOffsets: indices, toOffset: newOffset)
+                selectedIndex = nil
             })
             .listRowSeparator(.hidden)
         }
