@@ -41,6 +41,7 @@ struct ServiceTab: View {
                 ) { isEnable in
                     serviceToggled(index: index, isEnable: isEnable)
                 }
+                .frame(height: 30)
                 .tag(index)
                 .contentShape(Rectangle())
 //                .onTapGesture {
@@ -57,6 +58,7 @@ struct ServiceTab: View {
             })
             .listRowSeparator(.hidden)
         }
+        .scrollIndicators(.hidden)
         .listStyle(.plain)
         .clipShape(RoundedRectangle(cornerRadius: 8.0))
         .padding([.horizontal, .bottom])
@@ -76,9 +78,7 @@ struct ServiceTab: View {
     func loadService(type: Int) {
         let windowType = EZWindowType(rawValue: type) ?? .none
         services = EZLocalStorage.shared().allServices(windowType)
-        serviceTypes = services.map { service in
-            service.serviceType()
-        }
+        serviceTypes = services.compactMap { $0.serviceType() }
     }
 
     func serviceToggled(index: Int, isEnable: Bool) {
