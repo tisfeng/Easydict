@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSViewController (EZWindow)
 
-- (NSWindow *)window;
+- (nullable NSWindow *)window;
 
 @end
 
