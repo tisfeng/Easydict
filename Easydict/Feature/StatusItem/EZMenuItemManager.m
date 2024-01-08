@@ -16,9 +16,6 @@
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
 
-static CGFloat const kImageMenuItemHeightRatio = 1.4;
-static CGFloat const kTitleMenuItemHeightRatio = 1.2;
-
 @interface EZMenuItemManager () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
@@ -96,9 +93,7 @@ static EZMenuItemManager *_instance;
     
     self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.versionItem.title = self.versionTitle;
-    
-    NSArray *items = @[self.versionItem, self.settingsItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
-    
+        
     [self updateVersionItem];
 }
 
