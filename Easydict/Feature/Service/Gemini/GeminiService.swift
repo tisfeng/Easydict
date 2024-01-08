@@ -23,12 +23,19 @@ public final class GeminiService: QueryService {
         NSLocalizedString("gemini_translate", comment: "The name of Gemini Translate")
     }
 
+    // https://ai.google.dev/available_regions
+    private static let unsupportedLanguages: [Language] = [.persian, .filipino, .khmer, .lao, .malay, .mongolian, .burmese, .telugu, .tamil, .urdu]
+
     override public func supportLanguagesDictionary() -> MMOrderedDictionary<AnyObject, AnyObject> {
         // TODO: Replace MMOrderedDictionary.
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
-        GeminiTranslateType.supportLanguagesDictionary.forEach { key, value in
-            orderedDict.setObject(value as NSString, forKey: key.rawValue as NSString)
+        for language in EZLanguageManager.shared().allLanguages {
+            var value = language.rawValue
+            if !GeminiService.unsupportedLanguages.contains(language) {
+                orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
+            }
         }
+
         return orderedDict
     }
 
