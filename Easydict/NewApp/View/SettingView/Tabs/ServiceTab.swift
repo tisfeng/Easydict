@@ -34,8 +34,8 @@ struct ServiceTab: View {
     }
 
     var serviceList: some View {
-        List {
-            ForEach(Array(serviceTypes.enumerated()), id: \.offset) { index, _ in
+        List(selection: $selectedIndex) {
+            ForEach(Array(zip(serviceTypes.indices, serviceTypes)), id: \.0) { index, _ in
                 ServiceItemView(
                     service: $services[index]
                 ) { isEnable in
@@ -43,14 +43,14 @@ struct ServiceTab: View {
                 }
                 .tag(index)
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    if selectedIndex == nil || selectedIndex != index {
-                        selectedIndex = index
-                    } else {
-                        selectedIndex = nil
-                    }
-                }
-                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
+//                .onTapGesture {
+//                    if selectedIndex == nil || selectedIndex != index {
+//                        selectedIndex = index
+//                    } else {
+//                        selectedIndex = nil
+//                    }
+//                }
+//                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
             }
             .onMove(perform: { indices, newOffset in
                 onServiceItemMove(fromOffsets: indices, toOffset: newOffset)
