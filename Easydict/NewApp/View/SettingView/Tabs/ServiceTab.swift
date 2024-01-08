@@ -58,6 +58,7 @@ struct ServiceTab: View {
             })
             .listRowSeparator(.hidden)
         }
+        .scrollIndicators(.hidden)
         .listStyle(.plain)
         .clipShape(RoundedRectangle(cornerRadius: 8.0))
         .padding([.horizontal, .bottom])
