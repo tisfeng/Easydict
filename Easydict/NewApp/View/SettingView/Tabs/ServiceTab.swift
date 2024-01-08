@@ -8,18 +8,12 @@
 
 import SwiftUI
 
-enum ServiceWindowType: Int {
-    case mini
-    case fixed
-    case main
-}
-
+@available(macOS 13, *)
 struct ServiceTab: View {
     @State private var windowTypeValue = EZWindowType.mini.rawValue
-
     @State private var serviceTypes: [ServiceType] = []
-
     @State private var services: [QueryService] = []
+    @State private var selectedIndex: Int?
 
     var segmentCtrl: some View {
         Picker("", selection: $windowTypeValue) {
@@ -47,13 +41,24 @@ struct ServiceTab: View {
                 ) { isEnable in
                     serviceToggled(index: index, isEnable: isEnable)
                 }
+                .tag(index)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if selectedIndex == nil || selectedIndex != index {
+                        selectedIndex = index
+                    } else {
+                        selectedIndex = nil
+                    }
+                }
+                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
             }
             .onMove(perform: { indices, newOffset in
                 onServiceItemMove(fromOffsets: indices, toOffset: newOffset)
             })
+            .listRowSeparator(.hidden)
         }
-        .listStyle(.inset)
-        .clipShape(RoundedRectangle(cornerRadius: 10.0))
+        .listStyle(.plain)
+        .clipShape(RoundedRectangle(cornerRadius: 8.0))
         .padding([.horizontal, .bottom])
     }
 
@@ -124,6 +129,7 @@ struct ServiceTab: View {
     }
 }
 
+@available(macOS 13, *)
 #Preview {
     ServiceTab()
 }

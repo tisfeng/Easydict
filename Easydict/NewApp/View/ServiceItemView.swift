@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@available(macOS 13.0, *)
 struct ServiceItemView: View {
     @Binding var service: QueryService
 
@@ -27,14 +28,14 @@ struct ServiceItemView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
         }
-
         .padding(4.0)
     }
 }
 
+@available(macOS 13, *)
 #Preview {
-    let service = EZLocalStorage.shared().allServices(.mini).first
-    return ServiceItemView(service: .constant(service ?? QueryService())) { val in
+    let service = EZLocalStorage.shared().allServices(.mini).first ?? QueryService()
+    return ServiceItemView(service: .constant(service)) { val in
         print("toggle value changed: \(val)")
     }
 }
