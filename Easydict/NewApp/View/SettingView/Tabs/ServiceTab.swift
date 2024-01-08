@@ -75,8 +75,10 @@ struct ServiceTab: View {
 
     func loadService(type: Int) {
         let windowType = EZWindowType(rawValue: type) ?? .none
-        serviceTypes = EZLocalStorage.shared().allServiceTypes(windowType)
         services = EZLocalStorage.shared().allServices(windowType)
+        serviceTypes = services.map { service in
+            service.serviceType()
+        }
     }
 
     func serviceToggled(index: Int, isEnable: Bool) {
