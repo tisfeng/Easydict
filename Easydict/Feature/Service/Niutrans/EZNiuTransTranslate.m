@@ -120,7 +120,7 @@
 }
 
 - (NSInteger)totalFreeQueryCharacterCount {
-    return 300 * 10000;
+    return 800 * 10000;
 }
 
 #pragma mark - NiuTrans API

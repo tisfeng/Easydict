@@ -20,7 +20,7 @@
 
 ## Easydict
 
-`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
+`Easydict` 是一个简洁易用的词典翻译 macOS App，能够轻松优雅地查找单词或翻译文本。Easydict 开箱即用，能自动识别输入文本语言，支持输入翻译，划词翻译和 OCR 截图翻译，可同时查询多个翻译服务结果，目前支持 [有道词典](https://www.youdao.com/)，[**🍎 苹果系统词典**](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，[🍎 **苹果系统翻译**](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)，[OpenAI (ChatGPT)](https://chat.openai.com/)，[DeepL](https://www.deepl.com/translator)，[Google](https://translate.google.com)，[腾讯](https://fanyi.qq.com/)，[Bing](https://www.bing.com/translator)，[百度](https://fanyi.baidu.com/)，[小牛翻译](https://niutrans.com/)，[彩云小译](https://fanyi.caiyunapp.com/)，[阿里翻译](https://translate.alibaba.com/) 和 [火山翻译](https://translate.volcengine.com/translate)。
 
 ![Log](https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/Log-1688378715.png)
 
@@ -42,10 +42,14 @@
 - [x] 支持系统 TTS，支持 Bing，Google，有道和百度在线 TTS 服务。
 - [x] 支持 [🍎 苹果系统词典](./docs/How-to-use-macOS-system-dictionary-in-Easydict-zh.md)，支持第三方词典，可手动导入 mdict 词典。
 - [x] 支持 macOS 系统翻译。详情请看 [如何在 Easydict 中使用 🍎 macOS 系统翻译？](./docs/How-to-use-macOS-system-translation-in-Easydict-zh.md)
-- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，腾讯，百度，小牛，彩云和火山翻译。
+- [x] 支持有道词典，OpenAI (ChatGPT)，DeepL，Google，Bing，腾讯，百度，小牛，彩云，阿里和火山翻译。
 - [x] 支持 48 种语言。
 
 **如果觉得这个应用还不错，给个 [Star](https://github.com/tisfeng/Easydict) ⭐️ 支持一下吧 (^-^)**
+
+## Swift 重构计划
+
+我们计划用 Swift 重构项目，如果你对这个开源项目感兴趣，熟悉 Swift/SwiftUI，欢迎加入我们的开发组，一起完善这个项目 [#194](https://github.com/tisfeng/Easydict/issues/194)。
 
 ---
 
@@ -53,6 +57,7 @@
 
 - [Easydict](#easydict)
 - [功能](#功能)
+- [Swift 重构计划](#swift-重构计划)
 - [目录](#目录)
 - [安装](#安装)
   - [1. 手动下载安装](#1-手动下载安装)
@@ -69,9 +74,10 @@
 - [查询服务](#查询服务)
   - [🍎 苹果系统词典](#-苹果系统词典)
   - [OpenAI（ChatGPT）翻译](#openaichatgpt翻译)
-    - [配置 APIKey](#配置-apikey)
-    - [查询模式](#查询模式)
-    - [自定义设置](#自定义设置)
+    - [使用内置 Gemini key](#使用内置-gemini-key)
+    - [配置个人的 APIKey](#配置个人的-apikey)
+    - [OpenAI 查询模式](#openai-查询模式)
+    - [OpenAI 自定义参数](#openai-自定义参数)
   - [DeepL 翻译](#deepl-翻译)
     - [配置 AuthKey](#配置-authkey)
     - [自定义 DeepL 接口地址](#自定义-deepl-接口地址)
@@ -80,6 +86,7 @@
   - [Bing 翻译](#bing-翻译)
   - [小牛翻译](#小牛翻译)
   - [彩云小译](#彩云小译)
+  - [阿里翻译](#阿里翻译)
 - [智能查询模式](#智能查询模式)
   - [应用内查询](#应用内查询)
 - [URL Scheme](#url-scheme)
@@ -337,11 +344,27 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 
 ### OpenAI（ChatGPT）翻译
 
-1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，暂时还未写界面，需要在 Easydict 的输入框中使用如下命令方式配置。
+1.3.0 版本开始支持 OpenAI 翻译，也支持 Azure OpenAI 接口，需要使用 OpenAI API key。
 
-请先确保你有 APIKey。
+如果你没有自己的 OpenAI APIKey，可以借助一些开源项目将第三方的 LLM 接口转为标准的 OpenAI 接口，这样就能直接在 `Easydict` 中使用了。
 
-#### 配置 APIKey
+例如 [one-api](https://github.com/songquanpeng/one-api)，one-api 是一个很好的 OpenAI 接口管理开源项目，支持多家 LLM 接口，包括 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元等，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。
+
+目前 GUI 方式配置 API key 功能还在开发中 [[#227](https://github.com/tisfeng/Easydict/issues/227)]，暂时需要在 Easydict 的输入框中使用命令方式配置。
+
+#### 使用内置 Gemini key
+
+目前 Google 的 Gemini API 免费，实测下来翻译效果不错，由于项目对 Gemini 支持 [#270](https://github.com/tisfeng/Easydict/issues/270) 还在开发中，可能需要一点时间，因此我内置了一个 key，方便用户直接使用 Gemini 模型来翻译。但请注意，这个 key 有一定使用限制且不稳定，因此如果有能力部署 one-api，建议优先使用自己的 APIKey。
+
+在 Beta 模式下，并且没有设置自己的 APIKey，这样就会自动使用内置的 Gemini key。
+
+写入以下命令可开启 Beta 模式
+
+```bash
+easydict://writeKeyValue?EZBetaFeatureKey=1
+```
+
+#### 配置个人的 APIKey
 
 ```bash
 easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
@@ -357,7 +380,7 @@ easydict://writeKeyValue?EZOpenAIAPIKey=sk-xxx
 easydict://readValueOfKey?EZOpenAIAPIKey
 ```
 
-#### 查询模式
+#### OpenAI 查询模式
 
 目前 OpenAI 支持三种查询模式：单词，句子和长翻译，默认都是开启的，其中单词和句子也可关闭。
 
@@ -385,7 +408,7 @@ easydict://writeKeyValue?EZOpenAISentenceKey=0
 <img width="475" alt="image" src="https://github.com/tisfeng/Easydict/assets/25194972/b8c2f0e3-a263-42fb-9cb0-efc68b8201c3">
 
 
-#### 自定义设置
+#### OpenAI 自定义参数
 
 支持设置自定义域名和模型
 
@@ -396,7 +419,7 @@ easydict://writeKeyValue?EZOpenAIDomainKey=xxx
 // xxx 是完整的请求地址，例如 https://api.ohmygpt.com/azure/v1/chat/completions
 easydict://writeKeyValue?EZOpenAIEndPointKey=xxx
 
-//  xxx 默认是 gpt-3.5-turbo
+//  xxx 默认是 gpt-3.5-turbo-1106（目前最便宜实用的模型）
 easydict://writeKeyValue?EZOpenAIModelKey=xxx
 ```
 
@@ -509,6 +532,17 @@ easydict://writeKeyValue?EZNiuTransAPIKey=xxx
 ```bash
 // xxx 彩云小译的 Token
 easydict://writeKeyValue?EZCaiyunToken=xxx
+```
+
+### 阿里翻译
+
+[阿里翻译](https://translate.alibaba.com/) 虽然目前支持网页版接口，但这个接口有一定限制，不保证一直能用。
+
+建议使用自己的 API key，阿里翻译每月免费额度一百万字符。
+
+```bash
+easydict://writeKeyValue?EZAliAccessKeyId=xxx
+easydict://writeKeyValue?EZAliAccessKeySecret=xxx
 ```
 
 ## 智能查询模式

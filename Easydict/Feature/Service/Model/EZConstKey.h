@@ -36,6 +36,9 @@ static NSString *const EZCaiyunToken = @"EZCaiyunToken";
 static NSString *const EZTencentSecretId = @"EZTencentSecretId";
 static NSString *const EZTencentSecretKey = @"EZTencentSecretKey";
 
+static NSString *const EZAliAccessKeyId = @"EZAliAccessKeyId";
+static NSString *const EZAliAccessKeySecret = @"EZAliAccessKeySecret";
+
 @interface EZConstKey : NSObject
 
 + (NSString *)constkey:(NSString *)key windowType:(EZWindowType)windowType;

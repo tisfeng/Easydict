@@ -9,7 +9,7 @@
 //#define NSLog(frmt, ...) MMLogVerbose(frmt, ##__VA_ARGS__)
 
 #import <Masonry/Masonry.h>
-#import <MJExtension/MJExtension.h>
+#import <MJExtension.h>
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <AFNetworking/AFNetworking.h>
 

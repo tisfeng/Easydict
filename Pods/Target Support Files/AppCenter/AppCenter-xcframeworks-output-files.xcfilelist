@@ -1,3 +1,0 @@
-${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics/AppCenterAnalytics.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core/AppCenter.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes/AppCenterCrashes.framework
