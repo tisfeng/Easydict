@@ -34,7 +34,9 @@ struct AboutTab: View {
             }
             .padding(.horizontal, 50)
             .padding(.vertical, 30)
+            .frame(maxWidth: .infinity)
         }
+        .scrollIndicators(.hidden)
         .task {
             let version = await EZMenuItemManager.shared().fetchRepoLatestVersion(EZGithubRepoEasydict)
             await MainActor.run {
