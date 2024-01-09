@@ -40,7 +40,9 @@ struct SettingView: View {
                 .tabItem { Label("about", systemImage: "info.bubble") }
                 .tag(SettingTab.about.rawValue)
         }
-        .background(WindowAccessor(window: $window))
+        .background(WindowAccessor(window: $window.didSet(execute: { _ in
+            resizeWindowFrame()
+        })))
     }
 
     func resizeWindowFrame() {
