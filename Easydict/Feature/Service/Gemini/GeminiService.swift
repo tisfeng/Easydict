@@ -30,7 +30,7 @@ public final class GeminiService: QueryService {
         // TODO: Replace MMOrderedDictionary.
         let orderedDict = MMOrderedDictionary<AnyObject, AnyObject>()
         for language in EZLanguageManager.shared().allLanguages {
-            var value = language.rawValue
+            let value = language.rawValue
             if !GeminiService.unsupportedLanguages.contains(language) {
                 orderedDict.setObject(value as NSString, forKey: language.rawValue as NSString)
             }
