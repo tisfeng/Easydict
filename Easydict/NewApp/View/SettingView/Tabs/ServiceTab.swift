@@ -14,6 +14,8 @@ struct ServiceTab: View {
     @State private var serviceTypes: [ServiceType] = []
     @State private var services: [QueryService] = []
     @State private var selectedIndex: Int?
+    // workaround for tap gesture conflict with onMove
+    @State private var isNeedTapHandler = true
 
     var segmentCtrl: some View {
         Picker("", selection: $windowTypeValue) {
@@ -35,25 +37,29 @@ struct ServiceTab: View {
     }
 
     var serviceList: some View {
-        List(selection: $selectedIndex) {
+        List {
             ForEach(Array(zip(serviceTypes.indices, serviceTypes)), id: \.0) { index, _ in
                 ServiceItemView(
                     service: $services[index]
                 ) { isEnable in
                     serviceToggled(index: index, isEnable: isEnable)
                     selectedIndex = nil
+                    isNeedTapHandler = false
                 }
                 .frame(height: 30)
                 .tag(index)
-                .contentShape(Rectangle())
-//                .onTapGesture {
-//                    if selectedIndex == nil || selectedIndex != index {
-//                        selectedIndex = index
-//                    } else {
-//                        selectedIndex = nil
-//                    }
-//                }
-//                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
+                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
+                .overlay(TapHandler(tapAction: {
+                    if !isNeedTapHandler {
+                        isNeedTapHandler.toggle()
+                        return
+                    }
+                    if selectedIndex == nil || selectedIndex != index {
+                        selectedIndex = index
+                    } else {
+                        selectedIndex = nil
+                    }
+                }))
             }
             .onMove(perform: { indices, newOffset in
                 onServiceItemMove(fromOffsets: indices, toOffset: newOffset)

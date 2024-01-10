@@ -41,6 +41,7 @@ struct SettingView: View {
                 .tag(SettingTab.about.rawValue)
         }
         .background(WindowAccessor(window: $window.didSet(execute: { _ in
+            // reset frame when first launch
             resizeWindowFrame()
         })))
     }

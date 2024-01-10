@@ -233,6 +233,7 @@
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
 		0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B212B4D16A500F07198 /* WindowAccessor.swift */; };
+		0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B232B4E46B300F07198 /* TapHandlerView.swift */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -699,6 +700,7 @@
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
 		0AC11B212B4D16A500F07198 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
+		0AC11B232B4E46B300F07198 /* TapHandlerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapHandlerView.swift; sourceTree = "<group>"; };
 		17BCAEF32B0DFF9000A7D372 /* EZNiuTransTranslateResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslateResponse.h; sourceTree = "<group>"; };
 		17BCAEF42B0DFF9000A7D372 /* EZNiuTransTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZNiuTransTranslate.h; sourceTree = "<group>"; };
 		17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZNiuTransTranslateResponse.m; sourceTree = "<group>"; };
@@ -2035,6 +2037,7 @@
 				27FE980A2B3DD5D1000AD654 /* MenuItemView.swift */,
 				0A057D6E2B499A0B0025C51D /* ServiceItemView.swift */,
 				0AC11B212B4D16A500F07198 /* WindowAccessor.swift */,
+				0AC11B232B4E46B300F07198 /* TapHandlerView.swift */,
 				27FE98072B3DD52B000AD654 /* SettingView */,
 			);
 			path = View;
@@ -2585,6 +2588,7 @@
 				27FE95272B3DC55F000AD654 /* EasydictApp.swift in Sources */,
 				03882F9129D95044005B5A52 /* CTCommon.m in Sources */,
 				276742082B3DC230002A2C75 /* PrivacyTab.swift in Sources */,
+				0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */,
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
 				03DC7C6A2A3CA852000BF7C9 /* EZAppCell.m in Sources */,
