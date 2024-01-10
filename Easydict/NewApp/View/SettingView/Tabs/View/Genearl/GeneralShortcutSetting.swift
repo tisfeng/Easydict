@@ -15,19 +15,19 @@ extension GeneralTab {
             Section {
                 HStack {
                     Text("input_translate")
-                    GeneralKeyHolderWrapper().frame(width: 180, height: 24)
+                    GeneralKeyHolderWrapper()
                 }
                 HStack {
                     Text("snip_translate")
-                    GeneralKeyHolderWrapper().frame(width: 180, height: 24)
+                    GeneralKeyHolderWrapper()
                 }
                 HStack {
                     Text("select_translate")
-                    GeneralKeyHolderWrapper().frame(width: 180, height: 24)
+                    GeneralKeyHolderWrapper()
                 }
                 HStack {
                     Text("silent_screenshot_ocr")
-                    GeneralKeyHolderWrapper().frame(width: 180, height: 24)
+                    GeneralKeyHolderWrapper()
                 }
             } header: {
                 Text("shortcut_setting")
