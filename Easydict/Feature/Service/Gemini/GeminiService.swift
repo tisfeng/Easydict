@@ -75,25 +75,36 @@ public final class GeminiService: QueryService {
 
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         Task {
-            // https://github.com/google/generative-ai-swift
             do {
                 var resultString = ""
                 let prompt = GeminiService.translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
                 print("gemini prompt: \(prompt)")
                 let model = GenerativeModel(name: "gemini-pro", apiKey: apiKey)
-                let outputContentStream = model.generateContentStream(prompt)
 
-                // stream response
-                for try await outputContent in outputContentStream {
+                if #available(macOS 12.0, *) {
+                    let outputContentStream = model.generateContentStream(prompt)
+
+                    // stream response
+                    for try await outputContent in outputContentStream {
+                        guard let line = outputContent.text else {
+                            return
+                        }
+
+                        print("gemini response: \(line)")
+                        resultString += line
+                    }
+                } else {
+                    let outputContent = try await model.generateContent(prompt)
                     guard let line = outputContent.text else {
                         return
                     }
 
                     print("gemini response: \(line)")
                     resultString += line
-                    result.translatedResults = [resultString]
-                    completion(result, nil)
                 }
+
+                result.translatedResults = [resultString]
+                completion(result, nil)
             } catch {
                 print(error.localizedDescription)
                 completion(result, error)
