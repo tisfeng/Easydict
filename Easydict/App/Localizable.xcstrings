@@ -2173,6 +2173,42 @@
         }
       }
     },
+    "setting.general.advance.header" : {
+
+    },
+    "setting.general.auto_copy.header" : {
+
+    },
+    "setting.general.auto_query.header" : {
+
+    },
+    "setting.general.input.header" : {
+
+    },
+    "setting.general.language.header" : {
+
+    },
+    "setting.general.mouse_query.adjust_pop_button_origin" : {
+
+    },
+    "setting.general.mouse_query.header" : {
+
+    },
+    "setting.general.quick_link.header" : {
+
+    },
+    "setting.general.voice.auto_play_word_audio" : {
+
+    },
+    "setting.general.voice.disable_empty_copy_beep_msg" : {
+
+    },
+    "setting.general.voice.header" : {
+
+    },
+    "setting.general.windows.header" : {
+
+    },
     "Settings..." : {
       "localizations" : {
         "zh-Hans" : {
