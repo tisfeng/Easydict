@@ -11,11 +11,22 @@ import SwiftUI
 import ZipArchive
 
 @available(macOS 13, *)
-struct MenuItemView: View {
-    private let updater: SPUUpdater
-
+final class MenuItemStore: ObservableObject {
+    @Published var canCheckForUpdates = false
+    var updater: SPUUpdater
     init(updater: SPUUpdater) {
         self.updater = updater
+        self.updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
+    }
+}
+
+@available(macOS 13, *)
+struct MenuItemView: View {
+    @ObservedObject var store: MenuItemStore
+
+    init(updater: SPUUpdater) {
+        store = MenuItemStore(updater: updater)
     }
 
     var body: some View {
@@ -162,8 +173,8 @@ struct MenuItemView: View {
     private var checkUpdateItem: some View {
         Button("check_updates") {
             NSLog("检查更新")
-            updater.checkForUpdates()
-        }
+            store.updater.checkForUpdates()
+        }.disabled(!store.canCheckForUpdates)
     }
 
     @ViewBuilder
