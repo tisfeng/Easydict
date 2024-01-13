@@ -16,9 +16,6 @@
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
 
-static CGFloat const kImageMenuItemHeightRatio = 1.4;
-static CGFloat const kTitleMenuItemHeightRatio = 1.2;
-
 @interface EZMenuItemManager () <NSMenuDelegate>
 
 @property (weak) IBOutlet NSMenu *menu;
@@ -96,10 +93,7 @@ static EZMenuItemManager *_instance;
     
     self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     self.versionItem.title = self.versionTitle;
-    
-    NSArray *items = @[self.versionItem, self.settingsItem, self.checkForUpdateItem, self.helpItem, self.quitItem];
-    [self increaseMenuItemsHeight:items lineHeightRatio:kTitleMenuItemHeightRatio];
-    
+        
     [self updateVersionItem];
 }
 
@@ -308,8 +302,6 @@ static EZMenuItemManager *_instance;
             item.keyEquivalent = @"";
             item.keyEquivalentModifierMask = 0;
         }
-        
-        [self increaseMenuItemHeight:item lineHeightRatio:kImageMenuItemHeightRatio];
     };
     
     configItemShortcut(self.selectionItem, EZSelectionShortcutKey);
@@ -317,24 +309,6 @@ static EZMenuItemManager *_instance;
     configItemShortcut(self.inputItem, EZInputShortcutKey);
     configItemShortcut(self.showMiniItem, EZShowMiniShortcutKey);
     configItemShortcut(self.screenshotOCRItem, EZScreenshotOCRShortcutKey);
-}
-
-#pragma mark -
-
-/// Increase menu item height. Ref: https://stackoverflow.com/questions/18031666/nsmenuitem-height
-- (void)increaseMenuItemHeight:(NSMenuItem *)item lineHeightRatio:(CGFloat)lineHeightRatio {
-    NSFont *font = [NSFont systemFontOfSize:[NSFont systemFontSize]];
-    CGFloat fontLineHeight = (font.ascender + fabs(font.descender));
-    CGFloat lineHeight = fontLineHeight * lineHeightRatio;
-    // Ref stackoverflow: https://stackoverflow.com/a/18034142/8378840 
-    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(1, lineHeight)];
-    [item setImage:image];
-}
-
-- (void)increaseMenuItemsHeight:(NSArray<NSMenuItem *> *)itmes lineHeightRatio:(CGFloat)lineHeightRatio {
-    for (NSMenuItem *item in itmes) {
-        [self increaseMenuItemHeight:item lineHeightRatio:lineHeightRatio];
-    }
 }
 
 #pragma mark - Fetch Github Repo Info
@@ -347,7 +321,6 @@ static EZMenuItemManager *_instance;
             versionTitle = [NSString stringWithFormat:@"%@  (✨ %@)", self.versionTitle, lastestVersion];
         }
         self.versionItem.title = versionTitle;
-        [self increaseMenuItemHeight:self.versionItem lineHeightRatio:kTitleMenuItemHeightRatio];
     }];
 }
 
