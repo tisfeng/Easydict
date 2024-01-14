@@ -207,13 +207,13 @@ private struct FirstAndSecondLanguageSettingView: View {
     var body: some View {
         Group {
             Picker("setting.general.language.first_language", selection: $firstLanguage) {
-                ForEach(Language.allCasesWithoutAuto, id: \.rawValue) { option in
+                ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
                     Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
                         .tag(option)
                 }
             }
             Picker("setting.general.language.second_language", selection: $secondLanguage) {
-                ForEach(Language.allCasesWithoutAuto, id: \.rawValue) { option in
+                ForEach(Language.allAvailableOptions, id: \.rawValue) { option in
                     Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
                         .tag(option)
                 }

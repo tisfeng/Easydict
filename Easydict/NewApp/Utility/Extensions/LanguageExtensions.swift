@@ -16,8 +16,8 @@ extension Language: CaseIterable {
         Language(rawValue: rawValue as String)
     }
 
-    public static let allCasesWithoutAuto: [Language] = allCases.filter { language in
-        language != .auto
+    public static let allAvailableOptions: [Language] = allCases.filter { language in
+        language != .auto && language != .classicalChinese
     }
 }
 
