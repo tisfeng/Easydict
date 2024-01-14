@@ -10,7 +10,7 @@ import Defaults
 import Foundation
 
 @available(macOS 13, *)
-enum TTSService: String, CaseIterable, CustomLocalizedStringResourceConvertible {
+enum TTSServiceType: String, CaseIterable, CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .youdao:
@@ -34,10 +34,10 @@ enum TTSService: String, CaseIterable, CustomLocalizedStringResourceConvertible 
 }
 
 @available(macOS 13, *)
-extension TTSService: Defaults.Serializable {
+extension TTSServiceType: Defaults.Serializable {
     // while in the future, ServiceType was deleted, then you can safely delete this struct and `bridge`
-    struct TTSServiceBridge: Defaults.Bridge {
-        func serialize(_ value: TTSService?) -> String? {
+    struct TTSServiceTypeBridge: Defaults.Bridge {
+        func serialize(_ value: TTSServiceType?) -> String? {
             guard let value else { return nil }
             switch value {
             case .youdao:
@@ -53,7 +53,7 @@ extension TTSService: Defaults.Serializable {
             }
         }
 
-        func deserialize(_ object: String?) -> TTSService? {
+        func deserialize(_ object: String?) -> TTSServiceType? {
             guard let object else { return nil }
             switch object {
             case "Youdao":
@@ -71,10 +71,10 @@ extension TTSService: Defaults.Serializable {
             }
         }
 
-        typealias Value = TTSService
+        typealias Value = TTSServiceType
 
         typealias Serializable = String
     }
 
-    static let bridge = TTSServiceBridge()
+    static let bridge = TTSServiceTypeBridge()
 }
