@@ -142,7 +142,7 @@ struct GeneralTab: View {
 
             Section {
                 Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
-                    ForEach(TTSService.allCases, id: \.rawValue) { option in
+                    ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
                     }
