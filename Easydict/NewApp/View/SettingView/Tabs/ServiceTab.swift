@@ -6,141 +6,171 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import SwiftUI
 
 @available(macOS 13, *)
 struct ServiceTab: View {
-    @State private var windowTypeValue = EZWindowType.mini.rawValue
-    @State private var serviceTypes: [ServiceType] = []
-    @State private var services: [QueryService] = []
-    @State private var selectedIndex: Int?
-    // workaround for tap gesture conflict with onMove
-    @State private var isNeedTapHandler = true
+    @State private var windowType = EZWindowType.mini
+    @State private var selectedService: QueryService?
 
-    var segmentCtrl: some View {
-        Picker("", selection: $windowTypeValue) {
-            Text("mini_window")
-                .tag(EZWindowType.mini.rawValue)
-
-            Text("fixed_window")
-                .tag(EZWindowType.fixed.rawValue)
-
-            Text("main_window")
-                .tag(EZWindowType.main.rawValue)
+    var body: some View {
+        HStack {
+            List(selection: $selectedService) {
+                WindowTypePicker(windowType: $windowType)
+                ServiceItems(windowType: windowType)
+            }
+            .frame(maxWidth: 300)
+            .listStyle(.sidebar)
+            .scrollIndicators(.hidden)
+            Group {
+                if let service = selectedService {
+                    Text(service.name())
+                } else {
+                    VStack {
+                        Text("setting.service.detail.no_selection")
+                    }
+                }
+            }
+            .frame(width: 500)
         }
-        .padding()
-        .pickerStyle(.segmented)
-        .onChange(of: windowTypeValue) { type in
-            loadService(type: type)
-            selectedIndex = nil
+        .onChange(of: windowType) { _ in
+            selectedService = nil
         }
     }
+}
 
-    var serviceList: some View {
-        List {
-            ForEach(Array(zip(serviceTypes.indices, serviceTypes)), id: \.0) { index, _ in
-                ServiceItemView(
-                    service: $services[index]
-                ) { isEnable in
-                    serviceToggled(index: index, isEnable: isEnable)
-                    selectedIndex = nil
-                    isNeedTapHandler = false
-                }
-                .frame(height: 30)
-                .tag(index)
-                .listRowBackground(selectedIndex == index ? Color("service_cell_highlight") : Color.clear)
-                .overlay(TapHandler(tapAction: {
-                    if !isNeedTapHandler {
-                        isNeedTapHandler.toggle()
-                        return
-                    }
-                    if selectedIndex == nil || selectedIndex != index {
-                        selectedIndex = index
-                    } else {
-                        selectedIndex = nil
-                    }
-                }))
-            }
-            .onMove(perform: { indices, newOffset in
-                onServiceItemMove(fromOffsets: indices, toOffset: newOffset)
-                selectedIndex = nil
-            })
-            .listRowSeparator(.hidden)
+@available(macOS 13.0, *)
+private struct ServiceItems: View {
+    let windowType: EZWindowType
+
+    private var services: [QueryService] {
+        EZLocalStorage.shared().allServices(windowType)
+    }
+
+    private var servicesWithID: [(QueryService, String)] {
+        services.map { service in
+            (service, "\(service.name())\(windowType)")
         }
-        .scrollIndicators(.hidden)
-        .listStyle(.plain)
-        .clipShape(RoundedRectangle(cornerRadius: 8.0))
-        .padding([.horizontal, .bottom])
     }
 
     var body: some View {
-        VStack {
-            segmentCtrl
-
-            serviceList
+        ForEach(servicesWithID, id: \.1) { service, _ in
+            ServiceItemView(service: service, windowType: windowType)
+                .tag(service)
         }
-        .onAppear {
-            loadService(type: windowTypeValue)
-        }
+        .onMove(perform: onServiceItemMove)
     }
 
-    func loadService(type: Int) {
-        let windowType = EZWindowType(rawValue: type) ?? .none
-        services = EZLocalStorage.shared().allServices(windowType)
-        serviceTypes = services.compactMap { $0.serviceType() }
-    }
-
-    func serviceToggled(index: Int, isEnable: Bool) {
-        let service = services[index]
-        service.enabled = isEnable
-        if isEnable {
-            service.enabledQuery = true
-        }
-        let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
-        EZLocalStorage.shared().setService(services[index], windowType: windowType)
-        // refresh service list
-        loadService(type: windowTypeValue)
-        postUpdateServiceNotification()
-    }
-
-    func enabledServices(in services: [QueryService]) -> [QueryService] {
-        services.filter(\.enabled)
-    }
-
-    func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
-        let oldEnabledServices = enabledServices(in: services)
+    private func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
+        var services = services
 
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
-        serviceTypes.move(fromOffsets: fromOffsets, toOffset: toOffset)
 
-        let windowType = EZWindowType(rawValue: windowTypeValue) ?? .none
+        let serviceTypes = services.map { service in
+            service.serviceType()
+        }
+
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
-        let newServices = EZLocalStorage.shared().allServices(windowType)
-        let newEnabledServices = enabledServices(in: newServices)
 
-        // post notification after enabled services order changed
-        if isEnabledServicesOrderChanged(source: oldEnabledServices, dest: newEnabledServices) {
-            postUpdateServiceNotification()
-        }
+        postUpdateServiceNotification()
+
+        // Trigger rerender to update view with new position
+        refresh.objectWillChange.send()
     }
 
-    func isEnabledServicesOrderChanged(
-        source: [QueryService],
-        dest: [QueryService]
-    ) -> Bool {
-        !source.elementsEqual(dest) { sItem, dItem in
-            sItem.serviceType() == dItem.serviceType() && sItem.name() == dItem.name()
-        }
-    }
-
-    func postUpdateServiceNotification() {
-        let userInfo: [String: Any] = [EZWindowTypeKey: windowTypeValue]
+    private func postUpdateServiceNotification() {
+        let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
         NotificationCenter.default.post(notification)
+    }
+
+    private class RefreshObservableObject: ObservableObject {}
+    @StateObject private var refresh: RefreshObservableObject = .init()
+}
+
+@available(macOS 13.0, *)
+private struct ServiceItemView: View {
+    @StateObject private var service: QueryServiceWrapper
+
+    init(service: QueryService, windowType: EZWindowType) {
+        _service = .init(wrappedValue: .init(queryService: service, windowType: windowType))
+    }
+
+    var body: some View {
+        Toggle(isOn: $service.enabled) {
+            Label {
+                Text(service.inner.name())
+            } icon: {
+                Image(service.inner.serviceType().rawValue)
+                    .resizable()
+                    .scaledToFit()
+            }
+        }
+        .toggleStyle(.switch)
+    }
+
+    private class QueryServiceWrapper: ObservableObject {
+        let windowType: EZWindowType
+        var inner: QueryService
+
+        var enabled: Bool {
+            get {
+                inner.enabled
+            } set {
+                inner.enabled = newValue
+                if newValue {
+                    inner.enabledQuery = newValue
+                }
+                save()
+            }
+        }
+
+        private var cancellables: Set<AnyCancellable> = []
+
+        init(queryService: QueryService, windowType: EZWindowType) {
+            inner = queryService
+            self.windowType = windowType
+
+            enabled = queryService.enabled
+        }
+
+        private func save() {
+            EZLocalStorage.shared().setService(inner, windowType: windowType)
+            postUpdateServiceNotification()
+        }
+
+        private func postUpdateServiceNotification() {
+            let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
+            let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
+            NotificationCenter.default.post(notification)
+        }
     }
 }
 
 @available(macOS 13, *)
-#Preview {
-    ServiceTab()
+private struct WindowTypePicker: View {
+    @Binding var windowType: EZWindowType
+
+    var body: some View {
+        Picker("", selection: $windowType) {
+            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+                Text(windowType.localizedStringResource)
+                    .tag(windowType)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+}
+
+private struct SplitView<S: View, C: View>: View {
+    @ViewBuilder let sidebar: () -> S
+    @ViewBuilder let content: () -> C
+
+    var body: some View {
+        HStack {
+            sidebar()
+            content()
+        }
+    }
 }
