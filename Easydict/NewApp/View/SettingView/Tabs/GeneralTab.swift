@@ -14,6 +14,16 @@ struct GeneralTab: View {
     var body: some View {
         Form {
             Section {
+                Picker("setting.general.appearance.light_dark_appearance", selection: $appearanceType) {
+                    ForEach(AppearenceType.allCases, id: \.rawValue) { option in
+                        Text(option.title)
+                            .tag(option)
+                    }
+                }
+            } header: {
+                Text("setting.general.appearance.header")
+            }
+            Section {
                 FirstAndSecondLanguageSettingView()
                 Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
                     ForEach(EZLanguageDetectOptimize.allCases, id: \.rawValue) { option in
@@ -95,6 +105,28 @@ struct GeneralTab: View {
             }
 
             Section {
+                let bindingFontSize = Binding<Double>(get: {
+                    Double(fontSizeOptionIndex)
+                }, set: { newValue in
+                    fontSizeOptionIndex = UInt(newValue)
+                })
+                Slider(value: bindingFontSize, in: 0.0 ... 4.0, step: 1) {
+                    Text("setting.general.font.font_size.label")
+                } minimumValueLabel: {
+                    Text("small")
+                        .font(.system(size: 10))
+                } maximumValueLabel: {
+                    Text("large")
+                        .font(.system(size: 14))
+                }
+            } header: {
+                Text("setting.general.font.header")
+            } footer: {
+                Text("hints_keyboard_shortcuts_font_size")
+                    .font(.footnote)
+            }
+
+            Section {
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup")
                 }
@@ -160,6 +192,9 @@ struct GeneralTab: View {
     @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
     @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
     @Default(.enableBetaFeature) private var enableBetaFeature
+    @Default(.appearanceType) private var appearanceType
+
+    @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
 }
 
 @available(macOS 13, *)

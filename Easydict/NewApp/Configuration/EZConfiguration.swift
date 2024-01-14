@@ -49,4 +49,7 @@ extension Defaults.Keys {
     static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
+
+    static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
+    static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
 }

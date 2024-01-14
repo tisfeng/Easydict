@@ -2202,7 +2202,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "启用 Beta 特性"
           }
         }
@@ -2220,6 +2220,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "高级"
+          }
+        }
+      }
+    },
+    "setting.general.appearance.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观"
+          }
+        }
+      }
+    },
+    "setting.general.appearance.light_dark_appearance" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观"
           }
         }
       }
@@ -2252,6 +2284,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自动查询"
+          }
+        }
+      }
+    },
+    "setting.general.font.font_size.label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font Size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小"
+          }
+        }
+      }
+    },
+    "setting.general.font.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体"
           }
         }
       }
