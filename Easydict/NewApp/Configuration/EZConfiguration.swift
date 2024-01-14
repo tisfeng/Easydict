@@ -10,7 +10,13 @@ import Defaults
 import Foundation
 
 extension Defaults.Keys {
-//    static let firstLanguage = Key<EZLanguage>("EZConfiguration_kFirstLanguageKey", default: true)
+    // rename `from`
+    static let queryFromLanguage = Key<Language>("EZConfiguration_kFromKey", default: .auto)
+    // rename `to`
+    static let queryToLanguage = Key<Language>("EZConfiguration_kToKey", default: .auto)
+
+    static let firstLanguage = Key<Language>("EZConfiguration_kFirstLanguageKey", default: EZLanguageManager.shared().systemPreferredTwoLanguages[0])
+    static let secondLanguage = Key<Language>("EZConfiguration_kSecondLanguageKey", default: EZLanguageManager.shared().systemPreferredTwoLanguages[1])
 
     static let autoSelectText = Key<Bool>("EZConfiguration_kAutoSelectTextKey", default: true)
     static let forceAutoGetSelectedText = Key<Bool>("EZConfiguration_kForceAutoGetSelectedText", default: false)
@@ -26,18 +32,21 @@ extension Defaults.Keys {
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>("EZConfiguration_kAutoCopySelectedTextKey", default: false)
     static let autoCopyFirstTranslatedText = Key<Bool>("EZConfiguration_kAutoCopyFirstTranslatedTextKey", default: false)
-//    static let languageDetectOptimize = Key<EZLanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: EZLanguageDetectOptimize.none)
-//    static let defaultTTSServiceType = Key<Bool>("EZConfiguration_kDefaultTTSServiceTypeKey", default: )
+    static let languageDetectOptimize = Key<EZLanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: EZLanguageDetectOptimize.none)
+    @available(macOS 13, *)
+    static let defaultTTSServiceType = Key<TTSService>("EZConfiguration_kDefaultTTSServiceTypeKey", default: TTSService.youdao)
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
     static let showAppleDictionaryQuickLink = Key<Bool>("EZConfiguration_kShowAppleDictionaryLinkKey", default: true)
     static let hideMenuBarIcon = Key<Bool>("EZConfiguration_kHideMenuBarIconKey", default: false)
-//    static let fixedWindowPosition = Key<Bool>("EZConfiguration_kShowFixedWindowPositionKey", default: )
-//    static let mouseSelectTranslateWindowType = Key<Bool>("EZConfiguration_kMouseSelectTranslateWindowTypeKey", default: )
-//    static let shortcutSelectTranslateWindowType = Key<Bool>("EZConfiguration_kShortcutSelectTranslateWindowTypeKey", default: )
+    static let fixedWindowPosition = Key<EZShowWindowPosition>("EZConfiguration_kShowFixedWindowPositionKey", default: .right)
+    static let mouseSelectTranslateWindowType = Key<EZWindowType>("EZConfiguration_kMouseSelectTranslateWindowTypeKey", default: .mini)
+    static let shortcutSelectTranslateWindowType = Key<EZWindowType>("EZConfiguration_kShortcutSelectTranslateWindowTypeKey", default: .fixed)
     static let adjustPopButtonOrigin = Key<Bool>("EZConfiguration_kAdjustPopButtomOriginKey", default: false)
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
     static let clearInput = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
     static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
+
+    static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)
 }

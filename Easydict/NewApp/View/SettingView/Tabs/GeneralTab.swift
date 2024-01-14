@@ -14,9 +14,13 @@ struct GeneralTab: View {
     var body: some View {
         Form {
             Section {
-                Text("first_language")
-                Text("second_language")
-                Text("language_detect_optimize")
+                FirstAndSecondLanguageSettingView()
+                Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
+                    ForEach(EZLanguageDetectOptimize.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
             } header: {
                 Text("setting.general.language.header")
             }
@@ -38,12 +42,24 @@ struct GeneralTab: View {
             }
 
             Section {
-                Toggle(isOn: $hideMainWindow) {
-                    Text("hide_main_window")
+                Picker("setting.general.window.mouse_select_translate_window_type", selection: $mouseSelectTranslateWindowType) {
+                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
                 }
-                Text("mouse_select_translate_window_type")
-                Text("shortcut_select_translate_window_type")
-                Text("fixed_window_position")
+                Picker("setting.general.window.shortcut_select_translate_window_type", selection: $shortcutSelectTranslateWindowType) {
+                    ForEach(EZWindowType.availableOptions, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+                Picker("setting.general.window.fixed_window_position", selection: $fixedWindowPosition) {
+                    ForEach(EZShowWindowPosition.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
             } header: {
                 Text("setting.general.windows.header")
             }
@@ -82,6 +98,9 @@ struct GeneralTab: View {
                 Toggle(isOn: $launchAtStartup) {
                     Text("launch_at_startup")
                 }
+                Toggle(isOn: $hideMainWindow) {
+                    Text("hide_main_window")
+                }
                 Toggle(isOn: $hideMenuBarIcon) {
                     Text("hide_menu_bar_icon")
                 }
@@ -90,7 +109,13 @@ struct GeneralTab: View {
             }
 
             Section {
-                Text("default_tts_service")
+                Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
+                    ForEach(TTSService.allCases, id: \.rawValue) { option in
+                        Text(option.localizedStringResource)
+                            .tag(option)
+                    }
+                }
+                Toggle("setting.general.advance.enable_beta_feature", isOn: $enableBetaFeature)
                 Toggle(isOn: $enableBetaNewApp) {
                     Text("enable_beta_new_app")
                 }
@@ -127,9 +152,98 @@ struct GeneralTab: View {
     @Default(.launchAtStartup) private var launchAtStartup
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon
     @Default(.enableBetaNewApp) private var enableBetaNewApp
+
+    @Default(.languageDetectOptimize) private var languageDetectOptimize
+    @Default(.defaultTTSServiceType) private var defaultTTSServiceType
+
+    @Default(.fixedWindowPosition) private var fixedWindowPosition
+    @Default(.mouseSelectTranslateWindowType) private var mouseSelectTranslateWindowType
+    @Default(.shortcutSelectTranslateWindowType) private var shortcutSelectTranslateWindowType
+    @Default(.enableBetaFeature) private var enableBetaFeature
 }
 
 @available(macOS 13, *)
 #Preview {
     GeneralTab()
+}
+
+@available(macOS 13, *)
+private struct FirstAndSecondLanguageSettingView: View {
+    var body: some View {
+        Group {
+            Picker("setting.general.language.first_language", selection: $firstLanguage) {
+                ForEach(Language.allCasesWithoutAuto, id: \.rawValue) { option in
+                    Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
+                        .tag(option)
+                }
+            }
+            Picker("setting.general.language.second_language", selection: $secondLanguage) {
+                ForEach(Language.allCasesWithoutAuto, id: \.rawValue) { option in
+                    Text(verbatim: "\(option.flagEmoji) \(option.localizedName)")
+                        .tag(option)
+                }
+            }
+        }
+        .onChange(of: firstLanguage) { [firstLanguage] newValue in
+            let oldValue = firstLanguage
+            if newValue == secondLanguage {
+                secondLanguage = oldValue
+                languageDuplicatedAlert = .init(duplicatedLanguage: newValue, setField: .second, setLanguage: oldValue)
+            }
+        }
+        .onChange(of: secondLanguage) { [secondLanguage] newValue in
+            let oldValue = secondLanguage
+            if newValue == firstLanguage {
+                firstLanguage = oldValue
+                languageDuplicatedAlert = .init(duplicatedLanguage: newValue, setField: .first, setLanguage: oldValue)
+            }
+        }
+        .alert("setting.general.language.duplicated_alert.title", isPresented: showLanguageDuplicatedAlert, presenting: languageDuplicatedAlert) { _ in
+
+        } message: { alert in
+            Text(alert.description)
+        }
+    }
+
+    @Default(.firstLanguage) private var firstLanguage
+    @Default(.secondLanguage) private var secondLanguage
+
+    private struct LanguageDuplicateAlert: CustomStringConvertible {
+        var description: String {
+            // First language should not be same as second language. (\(duplicatedLanguage))
+            // \(setField) is replaced with \(setLanguage).
+            String(localized: "setting.general.language.duplicated_alert \(duplicatedLanguage.localizedName)\(String(localized: setField.localizedStringResource))\(setLanguage.localizedName)")
+        }
+
+        let duplicatedLanguage: Language
+
+        let setField: Field
+
+        let setLanguage: Language
+
+        enum Field: CustomLocalizedStringResourceConvertible {
+            var localizedStringResource: LocalizedStringResource {
+                switch self {
+                case .first:
+                    "setting.general.language.duplicated_alert.field.first"
+                case .second:
+                    "setting.general.language.duplicated_alert.field.second"
+                }
+            }
+
+            case first
+            case second
+        }
+    }
+
+    @State private var languageDuplicatedAlert: LanguageDuplicateAlert?
+    private var showLanguageDuplicatedAlert: Binding<Bool> {
+        .init {
+            languageDuplicatedAlert != nil
+        } set: { newValue in
+            if !newValue {
+                languageDuplicatedAlert = nil
+            }
+        }
+    }
 }
