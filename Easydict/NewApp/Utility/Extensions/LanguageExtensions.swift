@@ -12,7 +12,7 @@ import Foundation
 extension Language: Defaults.Serializable {}
 
 extension Language: CaseIterable {
-    public static let allCases: [Language] = EZLanguageModel.allLanguagesDict().allKeys().map { rawValue in
+    public static let allCases: [Language] = EZLanguageModel.allLanguagesDict().sortedKeys().map { rawValue in
         Language(rawValue: rawValue as String)
     }
 
