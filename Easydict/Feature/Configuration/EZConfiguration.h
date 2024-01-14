@@ -23,6 +23,7 @@ static NSString *const EZFontSizeUpdateNotification = @"EZFontSizeUpdateNotifica
 
 static NSString *const EZIntelligentQueryModeKey = @"IntelligentQueryMode";
 
+
 typedef NS_ENUM(NSUInteger, EZLanguageDetectOptimize) {
     EZLanguageDetectOptimizeNone = 0,
     EZLanguageDetectOptimizeBaidu = 1,

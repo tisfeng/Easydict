@@ -266,6 +266,13 @@
 		DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */; };
 		DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */; };
 		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
+		EA3B81F92B5254AA004C0E8B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Configuration.swift */; };
+		EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = EA3B81FB2B52555C004C0E8B /* Defaults */; };
+		EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */; };
+		EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */; };
+		EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */; };
+		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
+		EA9943F22B5358BF00EE7B97 /* LanguageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -749,6 +756,12 @@
 		DC3C643E2B187119008EEDD8 /* ChangeFontSizeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeFontSizeView.swift; sourceTree = "<group>"; };
 		DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSizeHintView.swift; sourceTree = "<group>"; };
 		DC6D9C882B3969510055EFFC /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		EA3B81F82B5254AA004C0E8B /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
+		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
+		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
+		EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWindowPositionExtensions.swift; sourceTree = "<group>"; };
+		EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -790,6 +803,7 @@
 				03A830922B4073E700112834 /* AppCenterCrashes in Frameworks */,
 				03022F1C2B35DEBA00B63209 /* Hue in Frameworks */,
 				03A830952B4076FC00112834 /* FirebaseAnalyticsSwift in Frameworks */,
+				EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */,
 				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
@@ -2024,6 +2038,9 @@
 		27FE98032B3DCA9F000AD654 /* NewApp */ = {
 			isa = PBXGroup;
 			children = (
+				EA9943E12B534C2900EE7B97 /* Model */,
+				EA9943DD2B534BAE00EE7B97 /* Utility */,
+				EA3B81F72B52549B004C0E8B /* Configuration */,
 				27FE95262B3DC55F000AD654 /* EasydictApp.swift */,
 				27FE98042B3DCB09000AD654 /* NewAppManager.swift */,
 				27FE98062B3DD525000AD654 /* View */,
@@ -2177,6 +2194,41 @@
 			path = ChangeFontSizeView;
 			sourceTree = "<group>";
 		};
+		EA3B81F72B52549B004C0E8B /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				EA3B81F82B5254AA004C0E8B /* Configuration.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				EA9943E62B534D7C00EE7B97 /* Extensions */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		EA9943E12B534C2900EE7B97 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
+				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
+				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
+				EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2268,6 +2320,7 @@
 				038030962B4106800009230C /* CocoaLumberjackSwift */,
 				038EA1A92B41169C008A6DD1 /* ZipArchive */,
 				038EA1AC2B41282F008A6DD1 /* MJExtension */,
+				EA3B81FB2B52555C004C0E8B /* Defaults */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2326,6 +2379,7 @@
 				038030932B4106800009230C /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
+				EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -2527,6 +2581,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */,
 				030570E22ADB919900C9905E /* EZAppleScriptManager.m in Sources */,
 				03991158292927E000E1B06D /* EZTitlebar.m in Sources */,
 				03D8A65C2A433B4100D9A968 /* EZConfiguration+EZUserData.m in Sources */,
@@ -2629,6 +2684,7 @@
 				03B0233229231FA6001C7E63 /* MMLog.swift in Sources */,
 				03DC7C5E2A3ABE28000BF7C9 /* EZConstKey.m in Sources */,
 				62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */,
+				EA3B81F92B5254AA004C0E8B /* Configuration.swift in Sources */,
 				03E3E7C22ADE318800812C84 /* EZQueryMenuTextView.m in Sources */,
 				03B0231829231FA6001C7E63 /* SnipWindowController.m in Sources */,
 				03542A342936F70F00C34C33 /* EZLanguageManager.m in Sources */,
@@ -2666,6 +2722,7 @@
 				0333FDA62A035D5700891515 /* NSString+EZChineseText.m in Sources */,
 				03E02A222924E77100A10260 /* EZMenuItemManager.m in Sources */,
 				039D119929D5E26300C93F46 /* EZAudioUtils.m in Sources */,
+				EA9943F22B5358BF00EE7B97 /* LanguageExtensions.swift in Sources */,
 				03B0231729231FA6001C7E63 /* Snip.m in Sources */,
 				03BFFC6E295FE59C004E033E /* EZQueryResult+EZYoudaoDictModel.m in Sources */,
 				DC3C643F2B187119008EEDD8 /* ChangeFontSizeView.swift in Sources */,
@@ -2683,11 +2740,13 @@
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
 				03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
+				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */,
+				EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */,
 				036A0DBB2AD941F9006E6D4F /* EZReplaceTextButton.m in Sources */,
 				03DC7C662A3CA465000BF7C9 /* HWSegmentedControl.m in Sources */,
 				037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */,
@@ -2723,6 +2782,7 @@
 				DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */,
 				03B0232429231FA6001C7E63 /* NSUserDefaults+MM.m in Sources */,
 				03542A5E2938F05B00C34C33 /* EZLanguageModel.m in Sources */,
+				EA9943E82B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift in Sources */,
 				03F639952AA6CFBB009B9914 /* EZBingConfig.m in Sources */,
 				03D2A3E329F4C6F50035CED4 /* EZNetworkManager.m in Sources */,
 				0309E1ED292B439A00AFB76A /* EZTextView.m in Sources */,
@@ -3291,6 +3351,14 @@
 				minimumVersion = 5.8.1;
 			};
 		};
+		EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Defaults.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.3.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3368,6 +3436,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		EA3B81FB2B52555C004C0E8B /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
