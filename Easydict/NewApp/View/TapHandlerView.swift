@@ -24,7 +24,6 @@ class TapHandlerView: NSView {
     }
 
     override func mouseDown(with event: NSEvent) {
-        print("event: \(event)")
         super.mouseDown(with: event)
         tapAction()
     }
