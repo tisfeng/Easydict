@@ -78,7 +78,7 @@ struct MenuItemView: View {
     }
 
     private var versionString: String {
-        let defaultLabel = "Easydict \(currentVersion)"
+        let defaultLabel = "Easydict  \(currentVersion)"
         if let latestVersion,
            currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending
         {
