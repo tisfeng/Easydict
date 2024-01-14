@@ -23,3 +23,5 @@
 #import "EZConfiguration.h"
 
 #import "NSString+EZConvenience.h"
+#import "EZWindowManager.h"
+#import "NSViewController+EZWindow.h"

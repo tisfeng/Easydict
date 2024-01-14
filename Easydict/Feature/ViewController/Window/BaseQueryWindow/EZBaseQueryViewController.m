@@ -522,11 +522,11 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 - (void)focusInputTextView {
     // Fix ⚠️: ERROR: Setting <EZTextView: 0x13d82c5d0> as the first responder for window <EZFixedQueryWindow: 0x11c607800>, but it is in a different window ((null))! This would eventually crash when the view is freed. The first responder will be set to nil.
-    if (self.queryView.window == self.window) {
+    if (self.queryView.window == self.baseQueryWindow) {
         // Need to activate the current application first.
         [NSApp activateIgnoringOtherApps:YES];
         
-        [self.window makeFirstResponder:self.queryView.textView];
+        [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
     }
 }
 
@@ -1420,7 +1420,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     // ???: why set window frame will change tableView height?
     // ???: why this window animation will block cell rendering?
     //    [self.window setFrame:safeFrame display:NO animate:animateFlag];
-    [self.window setFrame:safeFrame display:NO];
+    [self.baseQueryWindow setFrame:safeFrame display:NO];
     
     // Restore tableView height.
     self.tableView.height = tableViewHeight;

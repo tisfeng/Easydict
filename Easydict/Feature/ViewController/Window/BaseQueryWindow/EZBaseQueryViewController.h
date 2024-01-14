@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *inputText;
 
 @property (nonatomic, assign) EZWindowType windowType;
-@property (nonatomic, weak) EZBaseQueryWindow *window;
+@property (nullable, nonatomic, weak) EZBaseQueryWindow *baseQueryWindow;
 
 @property (nonatomic, strong, readonly) NSArray<EZQueryService *> *services;
 

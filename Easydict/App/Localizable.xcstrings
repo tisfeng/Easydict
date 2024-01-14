@@ -1058,6 +1058,16 @@
         }
       }
     },
+    "Export Log" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出日志"
+          }
+        }
+      }
+    },
     "Failed to allocate memory" : {
       "comment" : "Error reason",
       "localizations" : {
@@ -1065,6 +1075,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : ""
+          }
+        }
+      }
+    },
+    "Feedback" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反馈问题"
           }
         }
       }
@@ -1279,6 +1299,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google 翻译"
+          }
+        }
+      }
+    },
+    "Help" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "帮助"
           }
         }
       }
@@ -1569,6 +1599,16 @@
         }
       }
     },
+    "Log Directory" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日志目录"
+          }
+        }
+      }
+    },
     "main_window" : {
       "localizations" : {
         "en" : {
@@ -1608,6 +1648,88 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "菜单栏图标:"
+          }
+        }
+      }
+    },
+    "menu_input_translate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Input Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "输入翻译"
+          }
+        }
+      }
+    },
+    "menu_screenshot_Translate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "截图翻译"
+          }
+        }
+      }
+    },
+    "menu_selectWord_Translate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "划词翻译"
+          }
+        }
+      }
+    },
+    "menu_show_mini_window" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Mini Window"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "显示迷你窗口"
+          }
+        }
+      }
+    },
+    "menu_silent_screenshot_OCR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silent Screenshot OCR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "静默截图 OCR"
           }
         }
       }
