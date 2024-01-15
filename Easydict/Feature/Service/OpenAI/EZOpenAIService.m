@@ -28,6 +28,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 
 @end
 
+
 @implementation EZOpenAIService
 
 - (instancetype)init {

@@ -272,6 +272,9 @@
 		EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */; };
 		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
 		EA9943F22B5358BF00EE7B97 /* LanguageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */; };
+		EAED41EC2B54AA920005FE0A /* ServiceConfigurationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */; };
+		EAED41EF2B54B1430005FE0A /* ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */; };
+		EAED41F22B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -760,6 +763,9 @@
 		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
 		EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWindowPositionExtensions.swift; sourceTree = "<group>"; };
 		EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageExtensions.swift; sourceTree = "<group>"; };
+		EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationSection.swift; sourceTree = "<group>"; };
+		EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableService.swift; sourceTree = "<group>"; };
+		EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpenAIService+ConfigurableService.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2069,6 +2075,7 @@
 		27FE980C2B3DD749000AD654 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
+				EAED41EA2B54A4900005FE0A /* ServiceConfiguration */,
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
@@ -2202,6 +2209,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
 			path = Utility;
@@ -2218,12 +2226,37 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
 				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
 				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
 				EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */,
 				EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		EAED41EA2B54A4900005FE0A /* ServiceConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */,
+			);
+			path = ServiceConfiguration;
+			sourceTree = "<group>";
+		};
+		EAED41ED2B54B1390005FE0A /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */ = {
+			isa = PBXGroup;
+			children = (
+				EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */,
+			);
+			path = "QueryService+ConfigurableService";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2633,6 +2666,7 @@
 				03F14A3B2956016B00CB7379 /* EZVolcanoTranslate.m in Sources */,
 				03B0230429231FA6001C7E63 /* EZHoverButton.m in Sources */,
 				0342A9812AD64924002A9F5F /* NSString+EZSplit.m in Sources */,
+				EAED41EF2B54B1430005FE0A /* ConfigurableService.swift in Sources */,
 				03BD2825294875AE00F5891A /* EZMyLabel.m in Sources */,
 				03B0233029231FA6001C7E63 /* MMCrashUncaughtExceptionHandler.m in Sources */,
 				03D5FCFF2A5EF4E400AD26BE /* EZDeviceSystemInfo.m in Sources */,
@@ -2773,6 +2807,7 @@
 				039F5508294B6E29004AB940 /* EZAboutViewController.m in Sources */,
 				03D8A6592A42A1A300D9A968 /* EZAppModel.m in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
+				EAED41EC2B54AA920005FE0A /* ServiceConfigurationSection.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */,
@@ -2788,6 +2823,7 @@
 				03008B3F29444B0A0062B821 /* NSView+EZAnimatedHidden.m in Sources */,
 				03B022FD29231FA6001C7E63 /* EZFixedQueryWindow.m in Sources */,
 				03B0232C29231FA6001C7E63 /* NSView+MM.m in Sources */,
+				EAED41F22B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift in Sources */,
 				033C31002A74CECE0095926A /* EZAppleDictionary.m in Sources */,
 				03E2BF752A298F2B00E010F3 /* NSString+EZUtils.m in Sources */,
 				03B022F529231FA6001C7E63 /* EZDetectManager.m in Sources */,

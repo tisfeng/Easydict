@@ -2285,6 +2285,92 @@
         }
       }
     },
+    "service.configuration.openai.api_key.footer" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key的一些说明或者加入链接"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.api_key.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI API Key"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.api_key.prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.api_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI API Key"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.translation.footer" : {
+
+    },
+    "service.configuration.openai.translation.header" : {
+
+    },
+    "service.configuration.openai.translation.prompt" : {
+
+    },
+    "service.configuration.openai.translation.title" : {
+
+    },
+    "service.service_configuration.reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
+          }
+        }
+      }
+    },
     "setting_general" : {
       "localizations" : {
         "en" : {
@@ -2743,8 +2829,37 @@
         }
       }
     },
+    "setting.service.detail.no_configuration %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No configuration for %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@没有可供配置的选项"
+          }
+        }
+      }
+    },
     "setting.service.detail.no_selection" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a service to show configuration"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择服务以查看配置"
+          }
+        }
+      }
     },
     "setting.tts_service.options.apple" : {
       "localizations" : {

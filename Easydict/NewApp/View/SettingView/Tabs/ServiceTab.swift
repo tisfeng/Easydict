@@ -25,7 +25,16 @@ struct ServiceTab: View {
             .scrollIndicators(.hidden)
             Group {
                 if let service = selectedService {
-                    Text(service.name())
+                    // To provide configuration options for a service, follow these steps
+                    // 1. If the Service is an object of Objc, expose it to Swift.
+                    // 2. Create a new file in the Utility - Extensions - QueryService+ConfigurableService,
+                    // 3. referring to OpenAIService+ConfigurableService, `extension` the Service as `ConfigurableService` to provide the configuration items.
+                    if let service = service as? (any ConfigurableService) {
+                        AnyView(service.configurationView())
+                    } else {
+                        // No configuration for service xxx
+                        Text("setting.service.detail.no_configuration \(service.name())")
+                    }
                 } else {
                     VStack {
                         Text("setting.service.detail.no_selection")
@@ -160,17 +169,5 @@ private struct WindowTypePicker: View {
             }
         }
         .pickerStyle(.segmented)
-    }
-}
-
-private struct SplitView<S: View, C: View>: View {
-    @ViewBuilder let sidebar: () -> S
-    @ViewBuilder let content: () -> C
-
-    var body: some View {
-        HStack {
-            sidebar()
-            content()
-        }
     }
 }
