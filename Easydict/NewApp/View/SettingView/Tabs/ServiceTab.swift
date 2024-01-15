@@ -86,7 +86,6 @@ private class ServiceTabViewModel: ObservableObject {
     }
 
     func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
-        guard fromOffsets.first != toOffset else { return }
         var services = services
 
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
