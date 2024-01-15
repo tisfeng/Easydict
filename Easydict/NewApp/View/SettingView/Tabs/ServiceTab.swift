@@ -16,13 +16,22 @@ struct ServiceTab: View {
 
     var body: some View {
         HStack {
-            List(selection: $selectedService) {
+            VStack {
                 WindowTypePicker(windowType: $windowType)
-                ServiceItems(windowType: windowType)
+                    .padding()
+                List {
+                    ServiceItems(windowType: windowType, selectedService: $selectedService)
+                }
+                .scrollContentBackground(.hidden)
+                .listItemTint(Color("service_cell_highlight"))
+                .listStyle(.plain)
+                .scrollIndicators(.never)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .background(.white, in: RoundedRectangle(cornerRadius: 10))
+                .padding(.bottom)
+                .padding(.horizontal)
             }
-            .frame(maxWidth: 300)
-            .listStyle(.sidebar)
-            .scrollIndicators(.hidden)
+            .background(Color(nsColor: .windowBackgroundColor))
             Group {
                 if let service = selectedService {
                     // To provide configuration options for a service, follow these steps
@@ -41,7 +50,7 @@ struct ServiceTab: View {
                     }
                 }
             }
-            .frame(width: 500)
+            .frame(minWidth: 500)
         }
         .onChange(of: windowType) { _ in
             selectedService = nil
@@ -52,6 +61,7 @@ struct ServiceTab: View {
 @available(macOS 13.0, *)
 private struct ServiceItems: View {
     let windowType: EZWindowType
+    @Binding var selectedService: QueryService?
 
     private var services: [QueryService] {
         EZLocalStorage.shared().allServices(windowType)
@@ -65,7 +75,7 @@ private struct ServiceItems: View {
 
     var body: some View {
         ForEach(servicesWithID, id: \.1) { service, _ in
-            ServiceItemView(service: service, windowType: windowType)
+            ServiceItemView(service: service, windowType: windowType, selectedService: $selectedService)
                 .tag(service)
         }
         .onMove(perform: onServiceItemMove)
@@ -102,21 +112,40 @@ private struct ServiceItems: View {
 private struct ServiceItemView: View {
     @StateObject private var service: QueryServiceWrapper
 
-    init(service: QueryService, windowType: EZWindowType) {
+    @Binding private var selectedService: QueryService?
+
+    init(service: QueryService, windowType: EZWindowType, selectedService: Binding<QueryService?>) {
         _service = .init(wrappedValue: .init(queryService: service, windowType: windowType))
+        _selectedService = selectedService
     }
 
     var body: some View {
         Toggle(isOn: $service.enabled) {
-            Label {
-                Text(service.inner.name())
-            } icon: {
+            HStack {
                 Image(service.inner.serviceType().rawValue)
                     .resizable()
                     .scaledToFit()
+                    .frame(width: 20.0, height: 20.0)
+                Text(service.inner.name())
+            }
+            .onTapGesture {
+                selectedService = service.inner
             }
         }
+        .padding(4.0)
         .toggleStyle(.switch)
+        .controlSize(.small)
+        .listRowSeparator(.hidden)
+        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : Color.clear)
+        .listRowInsets(.init())
+        .padding(10)
+        .background {
+            if selectedService != service.inner {
+                Color.white.onTapGesture {
+                    selectedService = service.inner
+                }
+            }
+        }
     }
 
     private class QueryServiceWrapper: ObservableObject {
@@ -162,12 +191,17 @@ private struct WindowTypePicker: View {
     @Binding var windowType: EZWindowType
 
     var body: some View {
-        Picker("", selection: $windowType) {
-            ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
-                Text(windowType.localizedStringResource)
-                    .tag(windowType)
+        HStack {
+            Picker(selection: $windowType) {
+                ForEach([EZWindowType]([.mini, .fixed, .main]), id: \.rawValue) { windowType in
+                    Text(windowType.localizedStringResource)
+                        .tag(windowType)
+                }
+            } label: {
+                EmptyView()
             }
+            .labelsHidden()
+            .pickerStyle(.segmented)
         }
-        .pickerStyle(.segmented)
     }
 }

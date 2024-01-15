@@ -12,7 +12,7 @@ import SwiftUI
 /// A service can provide configuration view in setting
 protocol ConfigurableService {
     associatedtype T: View
-    
+
     /// Items in Configuration Form. Use ServiceStringConfigurationSection or other customize view.
     @ViewBuilder
     func configurationListItems() -> T
