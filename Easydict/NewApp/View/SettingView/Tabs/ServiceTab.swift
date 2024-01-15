@@ -14,6 +14,16 @@ struct ServiceTab: View {
     @State private var windowType = EZWindowType.mini
     @State private var selectedService: QueryService?
 
+    @Environment(\.colorScheme) private var colorScheme
+
+    var bgColor: Color {
+        Color(nsColor: colorScheme == .light ? .windowBackgroundColor : .controlBackgroundColor)
+    }
+
+    var tableColor: Color {
+        Color(nsColor: colorScheme == .light ? .ez_tableRowViewBgLight() : .ez_tableRowViewBgDark())
+    }
+
     var body: some View {
         HStack {
             VStack {
@@ -23,15 +33,14 @@ struct ServiceTab: View {
                     ServiceItems(windowType: windowType, selectedService: $selectedService)
                 }
                 .scrollContentBackground(.hidden)
-                .listItemTint(Color("service_cell_highlight"))
                 .listStyle(.plain)
                 .scrollIndicators(.never)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .background(.white, in: RoundedRectangle(cornerRadius: 10))
+                .background(bgColor, in: RoundedRectangle(cornerRadius: 10))
                 .padding(.bottom)
                 .padding(.horizontal)
             }
-            .background(Color(nsColor: .windowBackgroundColor))
+            .background(bgColor)
             Group {
                 if let service = selectedService {
                     // To provide configuration options for a service, follow these steps
@@ -136,12 +145,12 @@ private struct ServiceItemView: View {
         .toggleStyle(.switch)
         .controlSize(.small)
         .listRowSeparator(.hidden)
-        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : Color.clear)
+        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
         .listRowInsets(.init())
         .padding(10)
         .background {
             if selectedService != service.inner {
-                Color.white.onTapGesture {
+                tableColor.onTapGesture {
                     selectedService = service.inner
                 }
             }
@@ -183,6 +192,12 @@ private struct ServiceItemView: View {
             let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
             NotificationCenter.default.post(notification)
         }
+    }
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var tableColor: Color {
+        Color(nsColor: colorScheme == .light ? .ez_tableRowViewBgLight() : .ez_tableRowViewBgDark())
     }
 }
 
