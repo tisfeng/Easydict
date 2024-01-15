@@ -490,9 +490,15 @@
     },
     "beta_new_app" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "[Beta] SwiftUI App mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "[Beta] SwiftUI App模式"
           }
         }
@@ -568,7 +574,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "检查更新"
           }
         }
@@ -914,9 +920,15 @@
     },
     "enable_beta_new_app" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launching in SwiftUI App mode, changes take effect upon restarting the app."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "以 SwiftUI App模式启动，重启App生效"
           }
         }
@@ -1672,7 +1684,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "输入翻译"
           }
         }
@@ -1689,7 +1701,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "截图翻译"
           }
         }
@@ -1705,7 +1717,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "划词翻译"
           }
         }
@@ -1721,7 +1733,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "显示迷你窗口"
           }
         }
@@ -1737,7 +1749,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "静默截图 OCR"
           }
         }
@@ -2194,7 +2206,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "退出"
           }
         }
@@ -2611,7 +2623,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "调整查询图标位置（避免和 PopClip 显示冲突）"
           }
         }
@@ -2659,7 +2671,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "查询英语单词后自动播放发音"
           }
         }
