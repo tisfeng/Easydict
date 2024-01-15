@@ -11,10 +11,15 @@ import SwiftUI
 
 @available(macOS 12.0, *)
 struct ServiceStringConfigurationSection<F: View>: View {
+    /// Title of text field
     let textFieldTitleKey: LocalizedStringKey
+    /// Header of section. If there is no need to add an header, just leave empty string
     let headerTitleKey: LocalizedStringKey
+    /// Defaults key for configuration. Please refer to `Configuration` - `Configuration`
     let key: Defaults.Key<String?>
+    /// Prompt of text field
     let prompt: LocalizedStringKey
+    /// Footer of section. Add comments, footnotes or links to describe the field.
     @ViewBuilder let footer: () -> F
 
     var body: some View {
