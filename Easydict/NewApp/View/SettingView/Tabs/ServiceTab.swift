@@ -11,8 +11,7 @@ import SwiftUI
 
 @available(macOS 13, *)
 struct ServiceTab: View {
-    @State private var windowType = EZWindowType.mini
-    @State private var selectedService: QueryService?
+    @StateObject private var viewModel: ServiceTabViewModel = .init()
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -27,10 +26,10 @@ struct ServiceTab: View {
     var body: some View {
         HStack {
             VStack {
-                WindowTypePicker(windowType: $windowType)
+                WindowTypePicker(windowType: $viewModel.windowType)
                     .padding()
                 List {
-                    ServiceItems(windowType: windowType, selectedService: $selectedService)
+                    ServiceItems()
                 }
                 .scrollContentBackground(.hidden)
                 .listStyle(.plain)
@@ -42,7 +41,7 @@ struct ServiceTab: View {
             }
             .background(bgColor)
             Group {
-                if let service = selectedService {
+                if let service = viewModel.selectedService {
                     // To provide configuration options for a service, follow these steps
                     // 1. If the Service is an object of Objc, expose it to Swift.
                     // 2. Create a new file in the Utility - Extensions - QueryService+ConfigurableService,
@@ -61,33 +60,33 @@ struct ServiceTab: View {
             }
             .frame(minWidth: 500)
         }
+        .environmentObject(viewModel)
     }
 }
 
-@available(macOS 13.0, *)
-private struct ServiceItems: View {
-    let windowType: EZWindowType
-    @Binding var selectedService: QueryService?
+private class ServiceTabViewModel: ObservableObject {
+    @Published var windowType = EZWindowType.mini {
+        didSet {
+            if oldValue != windowType {
+                updateServices()
+            }
+        }
+    }
 
-    private var services: [QueryService] {
+    @Published var selectedService: QueryService?
+
+    lazy var services: [QueryService] = EZLocalStorage.shared().allServices(windowType)
+
+    func updateServices() {
+        services = getServices()
+    }
+
+    func getServices() -> [QueryService] {
         EZLocalStorage.shared().allServices(windowType)
     }
 
-    private var servicesWithID: [(QueryService, String)] {
-        services.map { service in
-            (service, service.name())
-        }
-    }
-
-    var body: some View {
-        ForEach(servicesWithID, id: \.1) { service, _ in
-            ServiceItemView(service: service, windowType: windowType, selectedService: $selectedService)
-                .tag(service)
-        }
-        .onMove(perform: onServiceItemMove)
-    }
-
-    private func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
+    func onServiceItemMove(fromOffsets: IndexSet, toOffset: Int) {
+        guard fromOffsets.first != toOffset else { return }
         var services = services
 
         services.move(fromOffsets: fromOffsets, toOffset: toOffset)
@@ -100,29 +99,44 @@ private struct ServiceItems: View {
 
         postUpdateServiceNotification()
 
-        // Trigger rerender to update view with new position
-        refresh.objectWillChange.send()
+        updateServices()
+
+        objectWillChange.send()
     }
 
-    private func postUpdateServiceNotification() {
+    func postUpdateServiceNotification() {
         let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
         let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
         NotificationCenter.default.post(notification)
     }
+}
 
-    private class RefreshObservableObject: ObservableObject {}
-    @StateObject private var refresh: RefreshObservableObject = .init()
+@available(macOS 13.0, *)
+private struct ServiceItems: View {
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
+
+    private var servicesWithID: [(QueryService, String)] {
+        viewModel.services.map { service in
+            (service, service.name())
+        }
+    }
+
+    var body: some View {
+        ForEach(servicesWithID, id: \.1) { service, _ in
+            ServiceItemView(service: service, windowType: viewModel.windowType)
+                .tag(service)
+        }
+        .onMove(perform: viewModel.onServiceItemMove)
+    }
 }
 
 @available(macOS 13.0, *)
 private struct ServiceItemView: View {
     @StateObject private var service: QueryServiceWrapper
+    @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    @Binding private var selectedService: QueryService?
-
-    init(service: QueryService, windowType: EZWindowType, selectedService: Binding<QueryService?>) {
+    init(service: QueryService, windowType: EZWindowType) {
         _service = .init(wrappedValue: .init(queryService: service, windowType: windowType))
-        _selectedService = selectedService
     }
 
     var body: some View {
@@ -141,10 +155,10 @@ private struct ServiceItemView: View {
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(10)
-        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
+        .listRowBackground(viewModel.selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
         .overlay {
             TapHandler {
-                selectedService = service.inner
+                viewModel.selectedService = service.inner
             }
         }
     }
