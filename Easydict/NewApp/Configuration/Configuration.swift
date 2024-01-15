@@ -58,7 +58,7 @@ extension Defaults.Keys {
 // Service Configuration
 extension Defaults.Keys {
     // OPENAI
-    static let openAIAPI = Key<String?>("EZOpenAIAPIKey")
+    static let openAIAPIKey = Key<String?>("EZOpenAIAPIKey")
     static let openAITranslation = Key<String?>("EZOpenAITranslationKey")
     static let openAIDictionary = Key<String?>("EZOpenAIDictionaryKey")
     static let openAISentence = Key<String?>("EZOpenAISentenceKey")

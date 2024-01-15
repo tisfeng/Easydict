@@ -15,7 +15,7 @@ extension EZOpenAIService: ConfigurableService {
         ServiceStringConfigurationSection(
             textFieldTitleKey: "service.configuration.openai.api_key.header",
             headerTitleKey: "service.configuration.openai.api_key.title",
-            key: .openAIAPI,
+            key: .openAIAPIKey,
             prompt: "service.configuration.openai.api_key.prompt",
             footer: {
                 Text("service.configuration.openai.api_key.footer")
