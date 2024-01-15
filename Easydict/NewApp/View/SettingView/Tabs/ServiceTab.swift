@@ -61,9 +61,6 @@ struct ServiceTab: View {
             }
             .frame(minWidth: 500)
         }
-        .onChange(of: windowType) { _ in
-            selectedService = nil
-        }
     }
 }
 
@@ -78,7 +75,7 @@ private struct ServiceItems: View {
 
     private var servicesWithID: [(QueryService, String)] {
         services.map { service in
-            (service, "\(service.name())\(windowType)")
+            (service, service.name())
         }
     }
 
@@ -137,22 +134,17 @@ private struct ServiceItemView: View {
                     .frame(width: 20.0, height: 20.0)
                 Text(service.inner.name())
             }
-            .onTapGesture {
-                selectedService = service.inner
-            }
         }
         .padding(4.0)
         .toggleStyle(.switch)
         .controlSize(.small)
         .listRowSeparator(.hidden)
-        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
         .listRowInsets(.init())
         .padding(10)
-        .background {
-            if selectedService != service.inner {
-                tableColor.onTapGesture {
-                    selectedService = service.inner
-                }
+        .listRowBackground(selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
+        .overlay {
+            TapHandler {
+                selectedService = service.inner
             }
         }
     }
