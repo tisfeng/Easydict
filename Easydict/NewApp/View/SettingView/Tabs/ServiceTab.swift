@@ -81,7 +81,7 @@ private class ServiceTabViewModel: ObservableObject {
 
     @Published var selectedService: QueryService?
 
-    lazy var services: [QueryService] = EZLocalStorage.shared().allServices(windowType)
+    @Published private(set) var services: [QueryService] = EZLocalStorage.shared().allServices(.mini)
 
     func updateServices() {
         services = getServices()
@@ -102,11 +102,9 @@ private class ServiceTabViewModel: ObservableObject {
 
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
-//        postUpdateServiceNotification()
+        postUpdateServiceNotification()
 
         updateServices()
-
-        objectWillChange.send()
     }
 
     func postUpdateServiceNotification() {
@@ -178,13 +176,12 @@ private struct ServiceItemView: View {
             get {
                 inner.enabled
             } set {
-                if inner.enabled != newValue {
-                    inner.enabled = newValue
-                    if newValue {
-                        inner.enabledQuery = newValue
-                    }
-                    save()
+                guard inner.enabled != newValue else { return }
+                inner.enabled = newValue
+                if newValue {
+                    inner.enabledQuery = newValue
                 }
+                save()
             }
         }
 
@@ -193,13 +190,11 @@ private struct ServiceItemView: View {
         init(queryService: QueryService, windowType: EZWindowType) {
             inner = queryService
             self.windowType = windowType
-
-            enabled = queryService.enabled
         }
 
         private func save() {
             EZLocalStorage.shared().setService(inner, windowType: windowType)
-//            postUpdateServiceNotification()
+            postUpdateServiceNotification()
         }
 
         private func postUpdateServiceNotification() {
