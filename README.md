@@ -734,7 +734,7 @@ Easydict 有一些应用内快捷键，方便你在使用过程中更加高效�
 
 ## 致谢
 
-- 这个项目受 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob) 的启发，最初的版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。[Easydict](https://github.com/tisfeng/Easydict) 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
+- 这个项目的灵感来自 [saladict](https://github.com/crimx/ext-saladict) 和 [Bob](https://github.com/ripperhe/Bob)，且初始版本是以 [Bob (GPL-3.0)](https://github.com/1xiaocainiao/Bob) 为基础开发。Easydict 在原项目上进行了许多改进和优化，很多功能和 UI 都参考了 Bob。
 - 截图功能是基于 [isee15](https://github.com/isee15) 的 [Capture-Screen-For-Multi-Screens-On-Mac](https://github.com/isee15/Capture-Screen-For-Multi-Screens-On-Mac)，并在此基础上进行了优化。
 - 鼠标划词功能参考了 [PopClip](https://pilotmoon.com/popclip/)。
 
