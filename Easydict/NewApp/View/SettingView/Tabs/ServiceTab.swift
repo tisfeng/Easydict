@@ -75,6 +75,7 @@ private class ServiceTabViewModel: ObservableObject {
         didSet {
             if oldValue != windowType {
                 updateServices()
+                selectedService = nil
             }
         }
     }
