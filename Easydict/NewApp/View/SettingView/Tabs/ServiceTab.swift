@@ -170,11 +170,13 @@ private struct ServiceItemView: View {
             get {
                 inner.enabled
             } set {
-                inner.enabled = newValue
-                if newValue {
-                    inner.enabledQuery = newValue
+                if inner.enabled != newValue {
+                    inner.enabled = newValue
+                    if newValue {
+                        inner.enabledQuery = newValue
+                    }
+                    save()
                 }
-                save()
             }
         }
 
