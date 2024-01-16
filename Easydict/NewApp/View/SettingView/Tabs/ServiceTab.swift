@@ -126,7 +126,7 @@ private struct ServiceItems: View {
 
     var body: some View {
         ForEach(servicesWithID, id: \.1) { service, _ in
-            ServiceItemView(service: service, windowType: viewModel.windowType)
+            ServiceItemView(service: service)
                 .tag(service)
         }
         .onMove(perform: viewModel.onServiceItemMove)
@@ -135,21 +135,32 @@ private struct ServiceItems: View {
 
 @available(macOS 13.0, *)
 private struct ServiceItemView: View {
-    @StateObject private var service: QueryServiceWrapper
+    let service: QueryService
+
     @EnvironmentObject private var viewModel: ServiceTabViewModel
 
-    init(service: QueryService, windowType: EZWindowType) {
-        _service = .init(wrappedValue: .init(queryService: service, windowType: windowType))
+    private var enabled: Binding<Bool> {
+        .init {
+            service.enabled
+        } set: { newValue in
+            guard service.enabled != newValue else { return }
+            service.enabled = newValue
+            if newValue {
+                service.enabledQuery = newValue
+            }
+            EZLocalStorage.shared().setService(service, windowType: viewModel.windowType)
+            viewModel.postUpdateServiceNotification()
+        }
     }
 
     var body: some View {
-        Toggle(isOn: $service.enabled) {
+        Toggle(isOn: enabled) {
             HStack {
-                Image(service.inner.serviceType().rawValue)
+                Image(service.serviceType().rawValue)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 20.0, height: 20.0)
-                Text(service.inner.name())
+                Text(service.name())
                     .lineLimit(1)
                     .fixedSize()
             }
@@ -160,47 +171,11 @@ private struct ServiceItemView: View {
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(10)
-        .listRowBackground(viewModel.selectedService == service.inner ? Color("service_cell_highlight") : tableColor)
+        .listRowBackground(viewModel.selectedService == service ? Color("service_cell_highlight") : tableColor)
         .overlay {
             TapHandler {
-                viewModel.selectedService = service.inner
+                viewModel.selectedService = service
             }
-        }
-    }
-
-    private class QueryServiceWrapper: ObservableObject {
-        let windowType: EZWindowType
-        var inner: QueryService
-
-        var enabled: Bool {
-            get {
-                inner.enabled
-            } set {
-                guard inner.enabled != newValue else { return }
-                inner.enabled = newValue
-                if newValue {
-                    inner.enabledQuery = newValue
-                }
-                save()
-            }
-        }
-
-        private var cancellables: Set<AnyCancellable> = []
-
-        init(queryService: QueryService, windowType: EZWindowType) {
-            inner = queryService
-            self.windowType = windowType
-        }
-
-        private func save() {
-            EZLocalStorage.shared().setService(inner, windowType: windowType)
-            postUpdateServiceNotification()
-        }
-
-        private func postUpdateServiceNotification() {
-            let userInfo: [String: Any] = [EZWindowTypeKey: windowType.rawValue]
-            let notification = Notification(name: .serviceHasUpdated, object: nil, userInfo: userInfo)
-            NotificationCenter.default.post(notification)
         }
     }
 
