@@ -49,16 +49,22 @@ struct ServiceTab: View {
                     if let service = service as? (any ConfigurableService) {
                         AnyView(service.configurationView())
                     } else {
-                        // No configuration for service xxx
-                        Text("setting.service.detail.no_configuration \(service.name())")
+                        HStack {
+                            Spacer()
+                            // No configuration for service xxx
+                            Text("setting.service.detail.no_configuration \(service.name())")
+                            Spacer()
+                        }
                     }
                 } else {
-                    VStack {
+                    HStack {
+                        Spacer()
                         Text("setting.service.detail.no_selection")
+                        Spacer()
                     }
                 }
             }
-            .frame(minWidth: 500)
+            .layoutPriority(1)
         }
         .environmentObject(viewModel)
     }
@@ -96,7 +102,7 @@ private class ServiceTabViewModel: ObservableObject {
 
         EZLocalStorage.shared().setAllServiceTypes(serviceTypes, windowType: windowType)
 
-        postUpdateServiceNotification()
+//        postUpdateServiceNotification()
 
         updateServices()
 
@@ -146,6 +152,8 @@ private struct ServiceItemView: View {
                     .scaledToFit()
                     .frame(width: 20.0, height: 20.0)
                 Text(service.inner.name())
+                    .lineLimit(1)
+                    .fixedSize()
             }
         }
         .padding(4.0)
@@ -191,7 +199,7 @@ private struct ServiceItemView: View {
 
         private func save() {
             EZLocalStorage.shared().setService(inner, windowType: windowType)
-            postUpdateServiceNotification()
+//            postUpdateServiceNotification()
         }
 
         private func postUpdateServiceNotification() {
