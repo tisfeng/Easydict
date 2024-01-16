@@ -806,7 +806,7 @@ static EZAppleService *_instance;
         }
         
         if (@available(macOS 13.0, *)) {
-            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
+//            request.automaticallyDetectsLanguage = automaticallyDetectsLanguage;
         }
         
         if (![preferredLanguage isEqualToString:EZLanguageAuto]) {

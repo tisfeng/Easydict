@@ -30,6 +30,7 @@
         }
     } else {
         // Fallback on earlier versions
+        NSLog(@"ez_imageWithSymbolName: %@", name);
         image = [NSImage imageNamed:name];
     }
     image = [image resizeToSize:size];
