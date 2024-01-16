@@ -6,9 +6,10 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 
-@objc enum AppearenceType: Int, CaseIterable {
+@objc enum AppearenceType: Int, CaseIterable, Defaults.Serializable {
     case followSystem = 0
     case light
     case dark

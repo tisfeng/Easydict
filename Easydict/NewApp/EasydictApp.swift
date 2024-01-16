@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Sparkle
 import SwiftUI
 
 @main
@@ -17,6 +18,22 @@ enum EasydictCmpatibilityEntry {
         } else {
             _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
         }
+    }
+}
+
+class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
+    func feedURLString(for _: SPUUpdater) -> String? {
+        var feedURLString = "https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml"
+        #if DEBUG
+            feedURLString = "http://localhost:8000/appcast.xml"
+        #endif
+        return feedURLString
+    }
+}
+
+class SPUUserDriverHelper: NSObject, SPUStandardUserDriverDelegate {
+    var supportsGentleScheduledUpdateReminders: Bool {
+        true
     }
 }
 
@@ -35,10 +52,22 @@ struct EasydictApp: App {
         #endif
     }
 
+    let userDriverHelper = SPUUserDriverHelper()
+    let upadterHelper = SPUUpdaterHelper()
+
+    private let updaterController: SPUStandardUpdaterController
+
+    init() {
+        // 参考 https://sparkle-project.org/documentation/programmatic-setup/
+        // If you want to start the updater manually, pass false to startingUpdater and call .startUpdater() later
+        // This is where you can also pass an updater delegate if you need one
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: upadterHelper, userDriverDelegate: userDriverHelper)
+    }
+
     var body: some Scene {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
-                MenuItemView()
+                MenuItemView(updater: updaterController.updater)
             } label: {
                 Label {
                     Text("Easydict")
@@ -49,7 +78,7 @@ struct EasydictApp: App {
                         .scaledToFit()
                 }
                 .help("Easydict 🍃")
-            }
+            }.menuBarExtraStyle(.menu)
             Settings {
                 SettingView()
             }

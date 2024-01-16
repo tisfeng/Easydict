@@ -143,12 +143,14 @@
 }
 
 - (NSImage *)toolbarItemImage {
-    //    NSImage *privacyImage = [NSImage imageWithSystemSymbolName:@"hand.raised.square.fill" accessibilityDescription:nil];
-    //    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
-    //    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
-    
     NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
-    privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+    /**
+     SF image "hand.raised.square" require macOS 12.0
+     Fix: https://github.com/tisfeng/Easydict/pull/212#discussion_r1437951644
+     */
+    if (@available(macOS 12.0, *)) {
+        privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+    }
     privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
     
     return privacyImage;
