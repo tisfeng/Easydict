@@ -11,6 +11,7 @@ import SwiftUI
 enum SettingTab: Int {
     case general
     case service
+    case disabled
     case privacy
     case about
 }
@@ -29,6 +30,10 @@ struct SettingView: View {
             ServiceTab()
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
+
+            DisabledTab()
+                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
+                .tag(SettingTab.disabled.rawValue)
 
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
