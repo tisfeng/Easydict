@@ -267,6 +267,7 @@
 		DC46DF802B4417B900DEAE3E /* NewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* NewConfiguration.swift */; };
 		DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */; };
 		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
+		DCF176F22B57CED700CA6026 /* NewConfiguration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* NewConfiguration+UserData.swift */; };
 		EA3B81F92B5254AA004C0E8B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Configuration.swift */; };
 		EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = EA3B81FB2B52555C004C0E8B /* Defaults */; };
 		EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */; };
@@ -757,6 +758,7 @@
 		DC46DF7F2B4417B900DEAE3E /* NewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConfiguration.swift; sourceTree = "<group>"; };
 		DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSizeHintView.swift; sourceTree = "<group>"; };
 		DC6D9C882B3969510055EFFC /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		DCF176F12B57CED700CA6026 /* NewConfiguration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewConfiguration+UserData.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
 		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
@@ -1293,6 +1295,7 @@
 				03D8A65A2A433B4100D9A968 /* EZConfiguration+EZUserData.h */,
 				03D8A65B2A433B4100D9A968 /* EZConfiguration+EZUserData.m */,
 				DC46DF7F2B4417B900DEAE3E /* NewConfiguration.swift */,
+				DCF176F12B57CED700CA6026 /* NewConfiguration+UserData.swift */,
 				DC6D9C882B3969510055EFFC /* Appearance.swift */,
 			);
 			path = Configuration;
@@ -2613,6 +2616,7 @@
 				03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */,
 				03B0230729231FA6001C7E63 /* EZCommonView.m in Sources */,
 				03B0233329231FA6001C7E63 /* MMLog.m in Sources */,
+				DCF176F22B57CED700CA6026 /* NewConfiguration+UserData.swift in Sources */,
 				0309E1F4292BD6A100AFB76A /* EZQueryModel.m in Sources */,
 				03BFFC7129612E10004E033E /* NSString+EZConvenience.m in Sources */,
 				03BDA7BD2A26DA280079D04F /* XPMArguments_Coalescer_Internal.m in Sources */,
