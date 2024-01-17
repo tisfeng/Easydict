@@ -9,8 +9,16 @@
 import Defaults
 import Foundation
 
+enum TTSServiceType: String, CaseIterable {
+    case youdao
+    case bing
+    case google
+    case baidu
+    case apple
+}
+
 @available(macOS 13, *)
-enum TTSServiceType: String, CaseIterable, CustomLocalizedStringResourceConvertible {
+extension TTSServiceType: CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .youdao:
@@ -25,15 +33,8 @@ enum TTSServiceType: String, CaseIterable, CustomLocalizedStringResourceConverti
             "setting.tts_service.options.apple"
         }
     }
-
-    case youdao
-    case bing
-    case google
-    case baidu
-    case apple
 }
 
-@available(macOS 13, *)
 extension TTSServiceType: Defaults.Serializable {
     // while in the future, ServiceType was deleted, then you can safely delete this struct and `bridge`
     struct TTSServiceTypeBridge: Defaults.Bridge {
