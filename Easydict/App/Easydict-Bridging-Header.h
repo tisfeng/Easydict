@@ -29,5 +29,5 @@
 #import "EZLog.h"
 #import "EZLanguageManager.h"
 #import "DarkModeManager.h"
-#import "EZScriptExecutor.h
+#import "EZScriptExecutor.h"
 #import "EZOpenAIService.h"
