@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        }
-      }
-    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -505,7 +495,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "[Beta] SwiftUI App模式"
           }
         }
@@ -1827,7 +1817,14 @@
       }
     },
     "none_window" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "ocr_result_is_empty" : {
       "localizations" : {
@@ -3323,7 +3320,14 @@
       }
     },
     "unknown_option" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "unpin" : {
       "localizations" : {
