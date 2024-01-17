@@ -76,15 +76,8 @@ class Configuration: NSObject {
     @DefaultsWrapper(.languageDetectOptimize)
     var languageDetectOptimize: EZLanguageDetectOptimize
 
-    @available(macOS 13, *)
-    var defaultTTSServiceType: TTSServiceType {
-        get {
-            Defaults[.defaultTTSServiceType]
-        }
-        set {
-            Defaults[.defaultTTSServiceType] = newValue
-        }
-    }
+    @DefaultsWrapper(.defaultTTSServiceType)
+    var defaultTTSServiceType: TTSServiceType
 
     @DefaultsWrapper(.showGoogleQuickLink)
     var showGoogleQuickLink: Bool
@@ -208,11 +201,9 @@ class Configuration: NSObject {
             didSetLanguageDetectOptimize()
         }.tieToLifetime(of: self)
 
-        if #available(macOS 13, *) {
-            Defaults.observe(.defaultTTSServiceType) { [unowned self] _ in
-                self.self.didSetDefaultTTSServiceType()
-            }.tieToLifetime(of: self)
-        }
+        Defaults.observe(.defaultTTSServiceType) { [unowned self] _ in
+            didSetDefaultTTSServiceType()
+        }.tieToLifetime(of: self)
 
         Defaults.observe(.showGoogleQuickLink) { [unowned self] _ in
             didSetShowGoogleQuickLink()
@@ -360,10 +351,8 @@ private extension Configuration {
     }
 
     func didSetDefaultTTSServiceType() {
-        if #available(macOS 13, *) {
-            let value = defaultTTSServiceType
-            logSettings(["tts": value])
-        }
+        let value = defaultTTSServiceType
+        logSettings(["tts": value])
     }
 
     func didSetShowGoogleQuickLink() {
