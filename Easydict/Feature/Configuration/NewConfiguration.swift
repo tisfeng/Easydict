@@ -18,62 +18,62 @@ class Configuration: NSObject {
         appDelegate?.updaterController.updater
     }
 
-    @Default(.firstLanguage)
+    @DefaultsWrapper(.firstLanguage)
     var firstLanguage: Language
 
-    @Default(.secondLanguage)
+    @DefaultsWrapper(.secondLanguage)
     var secondLanguage: Language
 
-    @Default(.queryFromLanguage)
-    var from: Language
+    @DefaultsWrapper(.queryFromLanguage)
+    var fromLanguage: Language
 
-    @Default(.queryToLanguage)
-    var to: Language
+    @DefaultsWrapper(.queryToLanguage)
+    var toLanguage: Language
 
-    @Default(.autoSelectText)
+    @DefaultsWrapper(.autoSelectText)
     var autoSelectText: Bool
 
-    @Default(.forceAutoGetSelectedText)
+    @DefaultsWrapper(.forceAutoGetSelectedText)
     var forceAutoGetSelectedText: Bool
 
-    @Default(.disableEmptyCopyBeep)
+    @DefaultsWrapper(.disableEmptyCopyBeep)
     var disableEmptyCopyBeep: Bool // Some apps will beep when empty copy.
 
-    @Default(.clickQuery)
+    @DefaultsWrapper(.clickQuery)
     var clickQuery: Bool
 
-    @Default(.launchAtStartup)
+    @DefaultsWrapper(.launchAtStartup)
     var launchAtStartup: Bool
 
     var automaticallyChecksForUpdates: Bool {
         updater?.automaticallyChecksForUpdates ?? false
     }
 
-    @Default(.hideMainWindow)
+    @DefaultsWrapper(.hideMainWindow)
     var hideMainWindow: Bool
 
-    @Default(.autoQueryOCRText)
+    @DefaultsWrapper(.autoQueryOCRText)
     var autoQueryOCRText: Bool
 
-    @Default(.autoQuerySelectedText)
+    @DefaultsWrapper(.autoQuerySelectedText)
     var autoQuerySelectedText: Bool
 
-    @Default(.autoQueryPastedText)
+    @DefaultsWrapper(.autoQueryPastedText)
     var autoQueryPastedText: Bool
 
-    @Default(.autoPlayAudio)
+    @DefaultsWrapper(.autoPlayAudio)
     var autoPlayAudio: Bool
 
-    @Default(.autoCopySelectedText)
+    @DefaultsWrapper(.autoCopySelectedText)
     var autoCopySelectedText: Bool
 
-    @Default(.autoCopyOCRText)
+    @DefaultsWrapper(.autoCopyOCRText)
     var autoCopyOCRText: Bool
 
-    @Default(.autoCopyFirstTranslatedText)
+    @DefaultsWrapper(.autoCopyFirstTranslatedText)
     var autoCopyFirstTranslatedText: Bool
 
-    @Default(.languageDetectOptimize)
+    @DefaultsWrapper(.languageDetectOptimize)
     var languageDetectOptimize: EZLanguageDetectOptimize
 
     @available(macOS 13, *)
@@ -86,40 +86,40 @@ class Configuration: NSObject {
         }
     }
 
-    @Default(.showGoogleQuickLink)
+    @DefaultsWrapper(.showGoogleQuickLink)
     var showGoogleQuickLink: Bool
 
-    @Default(.showEudicQuickLink)
+    @DefaultsWrapper(.showEudicQuickLink)
     var showEudicQuickLink: Bool
 
-    @Default(.showAppleDictionaryQuickLink)
+    @DefaultsWrapper(.showAppleDictionaryQuickLink)
     var showAppleDictionaryQuickLink: Bool
 
-    @Default(.hideMenuBarIcon)
+    @DefaultsWrapper(.hideMenuBarIcon)
     var hideMenuBarIcon: Bool
 
-    @Default(.enableBetaNewApp)
+    @DefaultsWrapper(.enableBetaNewApp)
     var enableBetaNewApp: Bool
 
-    @Default(.fixedWindowPosition)
+    @DefaultsWrapper(.fixedWindowPosition)
     var fixedWindowPosition: EZShowWindowPosition
 
-    @Default(.mouseSelectTranslateWindowType)
+    @DefaultsWrapper(.mouseSelectTranslateWindowType)
     var mouseSelectTranslateWindowType: EZWindowType
 
-    @Default(.shortcutSelectTranslateWindowType)
+    @DefaultsWrapper(.shortcutSelectTranslateWindowType)
     var shortcutSelectTranslateWindowType: EZWindowType
 
-    @Default(.adjustPopButtonOrigin)
+    @DefaultsWrapper(.adjustPopButtonOrigin)
     var adjustPopButtomOrigin: Bool
 
-    @Default(.allowCrashLog)
+    @DefaultsWrapper(.allowCrashLog)
     var allowCrashLog: Bool
 
-    @Default(.allowAnalytics)
+    @DefaultsWrapper(.allowAnalytics)
     var allowAnalytics: Bool
 
-    @Default(.clearInput)
+    @DefaultsWrapper(.clearInput)
     var clearInput: Bool
 
     var disabledAutoSelect: Bool = false
@@ -132,13 +132,13 @@ class Configuration: NSObject {
         fontSizes[Int(fontSizeIndex)]
     }
 
-    @Default(.fontSizeOptionIndex)
+    @DefaultsWrapper(.fontSizeOptionIndex)
     var fontSizeIndex: UInt
 
-    @Default(.appearanceType)
+    @DefaultsWrapper(.appearanceType)
     var appearance: AppearenceType
 
-    @Default(.enableBetaFeature)
+    @DefaultsWrapper(.enableBetaFeature)
     private(set) var beta: Bool
 
     override init() {
@@ -210,7 +210,7 @@ class Configuration: NSObject {
 
         if #available(macOS 13, *) {
             Defaults.observe(.defaultTTSServiceType) { [unowned self] _ in
-                self.didSetDefaultTTSServiceType()
+                self.self.didSetDefaultTTSServiceType()
             }.tieToLifetime(of: self)
         }
 
@@ -269,41 +269,6 @@ class Configuration: NSObject {
         Defaults.observe(.appearanceType) { [unowned self] _ in
             didSetAppearance()
         }.tieToLifetime(of: self)
-
-        initialSetting()
-    }
-
-    private func initialSetting() {
-        didSetFirstLanguage()
-        didSetSecondLanguage()
-        didSetAutoSelectText()
-        didSetForceAutoGetSelectedText()
-        didSetDisableEmptyCopyBeep()
-        didSetClickQuery()
-        didSetLaunchAtStartup(false, new: launchAtStartup)
-        didSetHideMainWindow()
-        didSetAutoQueryOCRText()
-        didSetAutoQuerySelectedText()
-        didSetAutoQueryPastedText()
-        didSetAutoPlayAudio()
-        didSetAutoCopySelectedText()
-        didSetAutoCopyOCRText()
-        didSetAutoCopyFirstTranslatedText()
-        didSetLanguageDetectOptimize()
-        didSetDefaultTTSServiceType()
-        didSetShowGoogleQuickLink()
-        didSetShowEudicQuickLink()
-        didSetShowAppleDictionaryQuickLink()
-        didSetHideMenuBarIcon()
-        didSetEnableBetaNewApp()
-        didSetFixedWindowPosition()
-        didSetMouseSelectTranslateWindowType()
-        didSetShortcutSelectTranslateWindowType()
-        didSetAdjustPopButtomOrigin()
-        didSetAllowCrashLog()
-        didSetAllowAnalytics()
-        didSetClearInput()
-        didSetAppearance()
     }
 
     func enableBetaFeaturesIfNeeded() {
@@ -479,49 +444,29 @@ private extension Configuration {
 
 private extension Configuration {
     func windowFrameWithType(_ windowType: EZWindowType) -> CGRect {
-        let key = windowFrameKey(windowType: windowType)
-        let frameString = UserDefaults.standard.string(forKey: key) ?? ""
-        let frame = NSRectFromString(frameString)
-        return frame
+        Defaults[.windorFrame(for: windowType)]
     }
 
     func setWindowFrame(_ frame: CGRect, windowType: EZWindowType) {
-        let key = windowFrameKey(windowType: windowType)
-        let frameString = NSStringFromRect(frame)
-        UserDefaults.standard.set(frameString, forKey: key)
-    }
-
-    func windowFrameKey(windowType: EZWindowType) -> String {
-        let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
-        return key
+        Defaults[.windorFrame(for: windowType)] = frame
     }
 }
 
 // MARK: Intelligent Query Text Type of Service
 
-private extension Configuration {
+extension Configuration {
     func setIntelligentQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
-        let key = EZConstKey.constkey("IntelligentQueryTextType", serviceType: serviceType)
-        /**
-         easydict://writeKeyValue?Google-IntelligentQueryTextType=5
-         URL key value is string type, so we need to save vlue as string type.
-         */
-        let stringValue = "\(queryTextType)"
-        UserDefaults.standard.set(stringValue, forKey: key)
+        Defaults[.intelligentQueryTextType(for: serviceType)] = queryTextType
     }
 
     func intelligentQueryTextTypeForServiceType(_ serviceType: ServiceType) -> EZQueryTextType {
-        let key = EZConstKey.constkey("IntelligentQueryTextType", serviceType: serviceType)
-        let stringValue = UserDefaults.standard.string(forKey: key) ?? "7"
-        // Convert string to int
-        let type = (stringValue as NSString).intValue
-        return EZQueryTextType(rawValue: UInt(type))
+        Defaults[.intelligentQueryTextType(for: serviceType)]
     }
 }
 
 // MARK: Intelligent Query Mode
 
-private extension Configuration {
+extension Configuration {
     func setIntelligentQueryMode(_ enabled: Bool, windowType: EZWindowType) {
         let key = EZConstKey.constkey("IntelligentQueryMode", windowType: windowType)
         let stringValue = "\(enabled)"
@@ -581,7 +526,7 @@ private extension Configuration {
 
         let exeCommand = EZScriptExecutor()
         exeCommand.runAppleScript(script) { result, error in
-            if error != nil {
+            if let error {
                 MMLogInfo("launchAtStartup error: error: \(error)")
             } else {
                 print("launchAtStartup result:", result)

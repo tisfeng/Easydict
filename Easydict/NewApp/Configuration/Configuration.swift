@@ -52,3 +52,72 @@ extension Defaults.Keys {
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
 }
+
+extension Defaults.Keys {
+    static func intelligentQueryTextType(for serviceType: ServiceType) -> Key<EZQueryTextType> {
+        let key = EZConstKey.constkey("IntelligentQueryTextType", serviceType: serviceType)
+        return .init(key, default: EZQueryTextType(rawValue: 7))
+    }
+
+    static func windorFrame(for windowType: EZWindowType) -> Key<CGRect> {
+        let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
+        return .init(key, default: .zero)
+    }
+}
+
+extension EZQueryTextType: Defaults.Serializable {
+    public static var bridge: Bridge = .init()
+
+    public struct Bridge: Defaults.Bridge {
+        public func serialize(_ value: EZQueryTextType?) -> String? {
+            guard let value else { return "7" }
+            return "\(value.rawValue)"
+        }
+
+        public func deserialize(_ object: String?) -> EZQueryTextType? {
+            guard let object else { return nil }
+            return EZQueryTextType(rawValue: UInt(object) ?? 7)
+        }
+
+        public typealias Value = EZQueryTextType
+
+        public typealias Serializable = String
+    }
+}
+
+extension CGRect: Defaults.Serializable {
+    public static var bridge: Bridge = .init()
+
+    public struct Bridge: Defaults.Bridge {
+        public func serialize(_ value: CGRect?) -> String? {
+            let value = value ?? .zero
+            return NSStringFromRect(value)
+        }
+
+        public func deserialize(_ object: String?) -> CGRect? {
+            guard let object else { return nil }
+            return NSRectFromString(object)
+        }
+
+        public typealias Value = CGRect
+
+        public typealias Serializable = String
+    }
+}
+
+@propertyWrapper
+struct DefaultsWrapper<T: Defaults.Serializable> {
+    var wrappedValue: T {
+        get {
+            Defaults[key]
+        } set {
+            Defaults[key] = newValue
+        }
+    }
+
+    init(_ key: Defaults.Key<T>) {
+        self.key = key
+    }
+
+    let key: Defaults.Key<T>
+}
