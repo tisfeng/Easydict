@@ -154,7 +154,7 @@
     [self addSubview:clearButton];
     self.clearButton = clearButton;
     
-    NSImage *clearImage = [NSImage ez_imageWithSymbolName:@"xmark.circle.fill"];
+    NSImage *clearImage = [NSImage imageNamed:@"xmark.circle.fill"];
     clearImage = [clearImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#868686"]];
     clearButton.image = clearImage;
     

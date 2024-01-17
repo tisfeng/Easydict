@@ -840,7 +840,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     EZOpenLinkButton *linkButton = [[EZOpenLinkButton alloc] init];
     [self addSubview:linkButton];
     
-    NSImage *linkImage = [NSImage ez_imageWithSymbolName:@"link"];
+    NSImage *linkImage = [NSImage imageNamed:@"link"];
     linkButton.image = linkImage;
     
     NSString *toolTip = NSLocalizedString(@"open_web_link", nil);

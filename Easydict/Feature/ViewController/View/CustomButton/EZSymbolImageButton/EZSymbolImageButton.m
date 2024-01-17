@@ -13,7 +13,7 @@
 
 + (instancetype)buttonWithSybolImageName:(NSString *)sybolImageName {
     EZSymbolImageButton *button = [[EZSymbolImageButton alloc] init];
-    NSImage *audioImage = [NSImage ez_imageWithSymbolName:sybolImageName];
+    NSImage *audioImage = [NSImage imageNamed:@"audio"];
     button.image = audioImage;
     
     [button excuteLight:^(NSButton *button) {

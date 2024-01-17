@@ -144,7 +144,7 @@
     EZHoverButton *stopButton = [[EZHoverButton alloc] init];
     self.stopButton = stopButton;
     [self addSubview:stopButton];
-    NSImage *stopImage =  [NSImage ez_imageWithSymbolName:@"stop.circle"];
+    NSImage *stopImage =  [NSImage imageNamed:@"stop.circle"];
     stopImage = [stopImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#707070"]];
     stopButton.image = stopImage;
     stopButton.mas_key = @"stopButton";
@@ -161,7 +161,7 @@
     EZHoverButton *retryButton = [[EZHoverButton alloc] init];
     self.retryButton = retryButton;
     [self addSubview:retryButton];
-    NSImage *retryImage = [NSImage ez_imageWithSymbolName:@"arrow.clockwise.circle"];
+    NSImage *retryImage = [NSImage imageNamed:@"arrow.clockwise.circle"];
     retryButton.image = retryImage;
     retryButton.mas_key = @"retryButton";
     retryButton.toolTip = NSLocalizedString(@"retry", nil);

@@ -64,7 +64,7 @@
 //    NSImage *audioImage = [NSImage ez_imageWithSymbolName:symbolName size:CGSizeMake(15, 15)];
     
     NSImage *playImage = [NSImage imageNamed:@"audio"];
-    NSImage *pauseImage = [NSImage ez_imageWithSymbolName:@"pause.circle"];
+    NSImage *pauseImage = [NSImage imageNamed:@"pause.circle"];
 
     self.image = isPlaying ? pauseImage : playImage;
 
