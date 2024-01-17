@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import Defaults
 import Foundation
 
 @objc(EZCaiyunService)
@@ -44,7 +45,7 @@ public final class CaiyunService: QueryService {
 
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
-        let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
+        let token = Defaults[.caiyunToken]
         if let token, !token.isEmpty {
             return token
         } else {

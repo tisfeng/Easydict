@@ -9,6 +9,7 @@
 import Defaults
 import Foundation
 
+// Setting
 extension Defaults.Keys {
     // rename `from`
     static let queryFromLanguage = Key<Language>("EZConfiguration_kFromKey", default: .auto)
@@ -51,4 +52,38 @@ extension Defaults.Keys {
 
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
+}
+
+// Service Configuration
+extension Defaults.Keys {
+    // OPENAI
+    static let openAIAPIKey = Key<String?>("EZOpenAIAPIKey")
+    static let openAITranslation = Key<String?>("EZOpenAITranslationKey")
+    static let openAIDictionary = Key<String?>("EZOpenAIDictionaryKey")
+    static let openAISentence = Key<String?>("EZOpenAISentenceKey")
+    static let openAIServiceUsageStatus = Key<String?>("EZOpenAIServiceUsageStatusKey")
+    static let openAIDomain = Key<String?>("EZOpenAIDomainKey")
+    static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
+    static let openAIModel = Key<String?>("EZOpenAIModelKey")
+
+    // DEEPL
+    static let deepLAuth = Key<String?>("EZDeepLAuthKey")
+    static let deepLTranslateEndPointKey = Key<String?>("EZDeepLTranslateEndPointKey")
+
+    // BING
+    static let bingCookieKey = Key<String?>("EZBingCookieKey")
+
+    // niu
+    static let niuTransAPIKey = Key<String?>("EZNiuTransAPIKey")
+
+    // Caiyun
+    static let caiyunToken = Key<String?>("EZCaiyunToken")
+
+    // tencent
+    static let tencentSecretId = Key<String?>("EZTencentSecretId")
+    static let tencentSecretKey = Key<String?>("EZTencentSecretKey")
+
+    // ALI
+    static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
+    static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
 }
