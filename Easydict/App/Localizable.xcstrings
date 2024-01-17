@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "about" : {
       "comment" : "about",
@@ -490,9 +497,15 @@
     },
     "beta_new_app" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "[Beta] SwiftUI App mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "[Beta] SwiftUI App模式"
           }
         }
@@ -560,6 +573,12 @@
     },
     "check_updates" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for Updates"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -908,9 +927,15 @@
     },
     "enable_beta_new_app" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launching in SwiftUI App mode, changes take effect upon restarting the app."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "以 SwiftUI App模式启动，重启App生效"
           }
         }
@@ -1666,7 +1691,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "输入翻译"
           }
         }
@@ -1683,7 +1708,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "截图翻译"
           }
         }
@@ -1699,7 +1724,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "划词翻译"
           }
         }
@@ -1715,7 +1740,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "显示迷你窗口"
           }
         }
@@ -1731,7 +1756,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "静默截图 OCR"
           }
         }
@@ -2180,6 +2205,12 @@
     },
     "quit" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2599,7 +2630,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "调整查询图标位置（避免和 PopClip 显示冲突）"
           }
         }
@@ -2639,6 +2670,12 @@
     },
     "setting.general.voice.auto_play_word_audio" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto play pronunciation after querying English words"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
