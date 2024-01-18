@@ -1,5 +1,5 @@
 //
-//  DisabledTab.swift
+//  DisabledAppTab.swift
 //  Easydict
 //
 //  Created by phlpsong on 2024/1/15.
@@ -30,14 +30,23 @@ class DisabledAppViewModel: ObservableObject {
         selectedAppModels = []
     }
 
-    func newAppSelected(for url: URL) {
-        guard let newSelectApp = newDisabledApp(from: url) else { return }
-        guard !appModelList.contains(newSelectApp) else { return }
-        appModelList.append(newSelectApp)
+    func newAppURLsSelected(from urls: [URL]) {
+        urls.forEach { url in
+            let gotAccess = url.startAccessingSecurityScopedResource()
+            if !gotAccess { return }
+            appendNewDisabledApp(for: url)
+            url.stopAccessingSecurityScopedResource()
+        }
+    }
+
+    func appendNewDisabledApp(for url: URL) {
+        guard let selectAppModel = disabledAppModel(from: url) else { return }
+        guard !appModelList.contains(selectAppModel) else { return }
+        appModelList.append(selectAppModel)
         saveDisabledApps()
     }
 
-    func newDisabledApp(from url: URL) -> EZAppModel? {
+    func disabledAppModel(from url: URL) -> EZAppModel? {
         let appModel = EZAppModel()
         guard let bundle = Bundle(url: url) else { return nil }
         appModel.appBundleID = bundle.bundleIdentifier ?? ""
@@ -48,8 +57,6 @@ class DisabledAppViewModel: ObservableObject {
 
 @available(macOS 13.0, *)
 struct DisabledAppTab: View {
-    @Environment(\.colorScheme) private var colorScheme
-
     @ObservedObject var disabledAppViewModel = DisabledAppViewModel()
 
     var listToolbar: some View {
@@ -61,18 +68,13 @@ struct DisabledAppTab: View {
             ) { result in
                 switch result {
                 case let .success(urls):
-                    urls.forEach { url in
-                        let gotAccess = url.startAccessingSecurityScopedResource()
-                        if !gotAccess { return }
-                        disabledAppViewModel.newAppSelected(for: url)
-                        url.stopAccessingSecurityScopedResource()
-                    }
+                    disabledAppViewModel.newAppURLsSelected(from: urls)
                 case let .failure(error):
                     print("fileImporter error: \(error)")
                 }
             }
     }
-    
+
     var appListView: some View {
         List(selection: $disabledAppViewModel.selectedAppModels) {
             ForEach(disabledAppViewModel.appModelList, id: \.self) { app in
@@ -93,7 +95,7 @@ struct DisabledAppTab: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .padding(.bottom)
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 35)
         .onTapGesture {
             disabledAppViewModel.selectedAppModels = []
         }
@@ -106,8 +108,9 @@ struct DisabledAppTab: View {
 
             appListViewWithToolbar
         }
+        .frame(maxWidth: 500)
         .environmentObject(disabledAppViewModel)
-        .task {
+        .onAppear {
             disabledAppViewModel.fetchDisabledApps()
         }
     }
@@ -187,6 +190,7 @@ struct BlockAppItemView: View {
         }
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
+        .listRowBackground(listRowBgColor)
         .padding(.vertical, 4)
         .padding(.leading, 6)
         .task {
@@ -212,7 +216,7 @@ class AppFetcher: ObservableObject {
         let workspace = NSWorkspace.shared
         let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
         guard let appURL else { return }
-        
+
         let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
         guard let appPath else { return }
         appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
