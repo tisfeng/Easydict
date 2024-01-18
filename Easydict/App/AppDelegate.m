@@ -30,6 +30,9 @@
     
     // Capturing crash logs must be placed first.
     [MMCrash registerHandler];
+    
+    [Configuration.shared observeKeys];
+    
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
 

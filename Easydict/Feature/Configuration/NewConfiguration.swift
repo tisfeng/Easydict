@@ -151,11 +151,10 @@ import Foundation
 
     static func destroySharedInstance() {
         shared = Configuration()
+        shared.observeKeys()
     }
 
-    override init() {
-        super.init()
-
+    func observeKeys() {
         Defaults.observe(.firstLanguage) { [unowned self] _ in
             didSetFirstLanguage()
         }.tieToLifetime(of: self)
@@ -276,8 +275,15 @@ import Foundation
             didSetFontSizeIndex()
         }.tieToLifetime(of: self)
 
-        Defaults.observe(.appearanceType) { [unowned self] _ in
-            didSetAppearance()
+        
+        Defaults.observe(.appearanceType) { [unowned self] change in
+            let newValue = change.newValue
+            let oldValue = change.oldValue
+            print("update appearanceType: \(oldValue.title) -> \(newValue.title)")
+
+            if newValue != oldValue {
+                didSetAppearance()
+            }
         }.tieToLifetime(of: self)
     }
 
