@@ -1,11 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "keyboard_20.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Privacy 1.png",
+      "filename" : "keyboard (2).png",
       "idiom" : "universal",
       "scale" : "2x"
     },

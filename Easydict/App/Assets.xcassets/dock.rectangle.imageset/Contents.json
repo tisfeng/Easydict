@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "dock.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Privacy 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

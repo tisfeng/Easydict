@@ -12,10 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSImage (EZSymbolmage)
 
-+ (NSImage *)ez_imageWithSymbolName:(NSString *)name;
-
-+ (NSImage *)ez_imageWithSymbolName:(NSString *)name size:(CGSize)size;
-
 @end
 
 NS_ASSUME_NONNULL_END

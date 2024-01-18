@@ -31,11 +31,11 @@ public final class CaiyunService: QueryService {
         }
         return orderedDict
     }
-
-    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
-        NSLog("Caiyun Translate does not support OCR")
-        throw QueryServiceError.notSupported
-    }
+    
+//    override public func ocr(_: EZQueryModel) async throws -> EZOCRResult {
+//        NSLog("Caiyun Translate does not support OCR")
+//        throw QueryServiceError.notSupported
+//    }
 
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
@@ -45,7 +45,7 @@ public final class CaiyunService: QueryService {
     // easydict://writeKeyValue?EZCaiyunToken=
     private var token: String {
         let token = UserDefaults.standard.string(forKey: EZCaiyunToken)
-        if let token, !token.isEmpty {
+        if let token = token, !token.isEmpty {
             return token
         } else {
             return CaiyunService.defaultTestToken
@@ -89,8 +89,8 @@ public final class CaiyunService: QueryService {
                    headers: headers)
             .validate()
             .responseDecodable(of: CaiyunResponse.self) { [weak self] response in
-                guard let self else { return }
-                let result = self.result
+                guard let me = self else { return }
+                let result = me.result
                 switch response.result {
                 case let .success(value):
                     result.from = from

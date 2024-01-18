@@ -131,6 +131,7 @@ static NSString *const EZColumnId = @"EZColumnId";
             tableView.style = NSTableViewStylePlain;
         } else {
             // Fallback on earlier versions
+            [tableView setHeaderView:nil];
         }
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];

@@ -1,11 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "camera-metering-spot_20.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Privacy 1.png",
+      "filename" : "camera-metering-spot (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },

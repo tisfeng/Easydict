@@ -147,11 +147,12 @@
     //    privacyImage = [privacyImage imageWithTintColor:[NSColor mm_colorWithHexString:@"#1296DB"]];
     //    privacyImage = [privacyImage resizeToSize:CGSizeMake(14, 14)];
     
-    NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
-    privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
-    privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
-    
-    return privacyImage;
+//    NSImage *privacyImage = [NSImage imageNamed:@"toolbar_privacy"];
+//    privacyImage = [NSImage ez_imageWithSymbolName:@"hand.raised.square" size:CGSizeMake(18, 16)];
+//    privacyImage = [privacyImage imageWithTintColor:[NSColor ez_imageTintBlueColor]];
+//
+//    return privacyImage;
+    return [NSImage imageNamed:@"toolbar_privacy"];
 }
 
 - (BOOL)hasResizableWidth {

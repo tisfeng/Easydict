@@ -297,6 +297,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
             tableView.style = NSTableViewStylePlain;
         } else {
             // Fallback on earlier versions
+            [tableView setHeaderView:nil];
         }
         
         NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:EZColumnId];
@@ -531,7 +532,6 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [self.queryView setAlertTextHidden:YES];
     
     [self.audioPlayer stop];
-    ;
 }
 
 - (void)clearAll {
