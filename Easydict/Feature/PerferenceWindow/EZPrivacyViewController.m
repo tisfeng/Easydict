@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "NSViewController+EZWindow.h"
 #import "NSImage+EZSymbolmage.h"
+#import "Easydict-Swift.h"
 
 @interface EZPrivacyViewController ()
 
@@ -61,7 +62,7 @@
                                                       action:@selector(analyticsButtonClicked:)];
     [self.contentView addSubview:self.analyticsButton];
     
-    EZConfiguration *configuration = [EZConfiguration shared];
+    Configuration *configuration = [Configuration shared];
     self.crashLogButton.mm_isOn = configuration.allowCrashLog;
     self.analyticsButton.mm_isOn = configuration.allowAnalytics;
 }
@@ -120,16 +121,16 @@
             } else {
                 sender.mm_isOn = YES;
             }
-            EZConfiguration.shared.allowCrashLog = sender.mm_isOn;
+            Configuration.shared.allowCrashLog = sender.mm_isOn;
         }];
     } else {
-        EZConfiguration.shared.allowCrashLog = YES;
+        Configuration.shared.allowCrashLog = YES;
     }
 }
 
 
 - (void)analyticsButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.allowAnalytics = sender.mm_isOn;
+    Configuration.shared.allowAnalytics = sender.mm_isOn;
 }
 
 #pragma mark - MASPreferencesViewController

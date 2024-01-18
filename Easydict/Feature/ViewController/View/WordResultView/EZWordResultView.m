@@ -58,7 +58,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
     if (self) {
         self.wantsLayer = YES;
         self.layer.cornerRadius = EZCornerRadius_8;
-        self.fontSizeRatio = EZConfiguration.shared.fontSizeRatio;
+        self.fontSizeRatio = Configuration.shared.fontSizeRatio;
         [self.layer excuteLight:^(CALayer *layer) {
             layer.backgroundColor = [NSColor ez_resultViewBgLightColor].CGColor;
         } dark:^(CALayer *layer) {
@@ -71,7 +71,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 // TODO: This method is too long, need to refactor.
 - (void)refreshWithResult:(EZQueryResult *)result {
     self.result = result;
-    self.fontSizeRatio = EZConfiguration.shared.fontSizeRatio;
+    self.fontSizeRatio = Configuration.shared.fontSizeRatio;
 
     EZTranslateWordResult *wordResult = result.wordResult;
     self.webView = result.webViewManager.webView;
@@ -826,7 +826,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
             language = result.to;
         }
         
-        EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+        EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
         EZQueryService *defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
         
         [result.service.audioPlayer playTextAudio:text
@@ -1324,7 +1324,7 @@ static NSString *const kAppleDictionaryURIScheme = @"x-dictionary";
 }
 
 - (void)updateWebViewAllIframeFontSize {
-    CGFloat fontSize = EZConfiguration.shared.fontSizeRatio * 100;
+    CGFloat fontSize = Configuration.shared.fontSizeRatio * 100;
 
     NSString *jsCode = [NSString stringWithFormat:
     @"var iframes = document.querySelectorAll('iframe');"

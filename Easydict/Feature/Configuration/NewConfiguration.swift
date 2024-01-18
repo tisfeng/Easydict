@@ -9,7 +9,7 @@
 import Defaults
 import Foundation
 
-class Configuration: NSObject {
+@objcMembers class Configuration: NSObject {
     private(set) static var shared = Configuration()
 
     var appDelegate = NSApp.delegate as? AppDelegate
@@ -46,7 +46,13 @@ class Configuration: NSObject {
     var launchAtStartup: Bool
 
     var automaticallyChecksForUpdates: Bool {
-        updater?.automaticallyChecksForUpdates ?? false
+        get {
+            updater?.automaticallyChecksForUpdates ?? false
+        }
+        set {
+            updater?.automaticallyChecksForUpdates = newValue
+            logSettings(["automatically_checks_for_updates": newValue])
+        }
     }
 
     @DefaultsWrapper(.hideMainWindow)
@@ -76,8 +82,17 @@ class Configuration: NSObject {
     @DefaultsWrapper(.languageDetectOptimize)
     var languageDetectOptimize: EZLanguageDetectOptimize
 
-    @DefaultsWrapper(.defaultTTSServiceType)
-    var defaultTTSServiceType: TTSServiceType
+//    @DefaultsWrapper(.defaultTTSServiceType)
+//    var defaultTTSServiceType: TTSServiceType
+
+    var defaultTTSServiceType: ServiceType {
+        get {
+            ServiceType(rawValue: Defaults[.defaultTTSServiceType].rawValue)
+        }
+        set {
+            Defaults[.defaultTTSServiceType] = TTSServiceType(rawValue: newValue.rawValue) ?? .youdao
+        }
+    }
 
     @DefaultsWrapper(.showGoogleQuickLink)
     var showGoogleQuickLink: Bool
@@ -133,6 +148,10 @@ class Configuration: NSObject {
 
     @DefaultsWrapper(.enableBetaFeature)
     private(set) var beta: Bool
+
+    static func destroySharedInstance() {
+        shared = Configuration()
+    }
 
     override init() {
         super.init()
@@ -431,7 +450,7 @@ private extension Configuration {
 
 // MARK: Window Frame
 
-private extension Configuration {
+extension Configuration {
     func windowFrameWithType(_ windowType: EZWindowType) -> CGRect {
         Defaults[.windorFrame(for: windowType)]
     }
@@ -450,6 +469,18 @@ extension Configuration {
 
     func intelligentQueryTextTypeForServiceType(_ serviceType: ServiceType) -> EZQueryTextType {
         Defaults[.intelligentQueryTextType(for: serviceType)]
+    }
+}
+
+// MARK: Intelligent Query Text Type of Service
+
+extension Configuration {
+    func setQueryTextType(_ queryTextType: EZQueryTextType, serviceType: ServiceType) {
+        Defaults[.queryTextType(for: serviceType)] = queryTextType
+    }
+
+    func queryTextTypeForServiceType(_ serviceType: ServiceType) -> EZQueryTextType {
+        Defaults[.queryTextType(for: serviceType)]
     }
 }
 

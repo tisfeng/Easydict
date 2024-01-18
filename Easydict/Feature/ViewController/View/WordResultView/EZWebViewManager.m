@@ -8,6 +8,7 @@
 
 #import "EZWebViewManager.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static NSString *kObjcHandler = @"objcHandler";
 static NSString *kMethod = @"method";
@@ -57,7 +58,7 @@ static NSString *kMethod = @"method";
 #pragma mark - WebView evaluateJavaScript
 
 - (void)updateAllIframe {
-    CGFloat fontSize = EZConfiguration.shared.fontSizeRatio; // 1.4 --> 140%
+    CGFloat fontSize = Configuration.shared.fontSizeRatio; // 1.4 --> 140%
     NSString *script = [NSString stringWithFormat:@"changeIframeBodyFontSize(%.1f); updateAllIframeStyle();", fontSize];
     [self.webView evaluateJavaScript:script completionHandler:^(id _Nullable result, NSError *_Nullable error) {
         if (!error) {

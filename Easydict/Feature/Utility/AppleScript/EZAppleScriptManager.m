@@ -8,6 +8,7 @@
 
 #import "EZAppleScriptManager.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface EZAppleScriptManager ()
 
@@ -225,7 +226,7 @@ static EZAppleScriptManager *_instance = nil;
     NSString *edit;
     
     if (!appLanguage) {
-        appLanguage = EZConfiguration.shared.firstLanguage;
+        appLanguage = Configuration.shared.firstLanguage;
     }
     
     if ([appLanguage isEqualToString:EZLanguageEnglish]) {

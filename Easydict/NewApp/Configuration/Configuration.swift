@@ -60,6 +60,11 @@ extension Defaults.Keys {
         return .init(key, default: EZQueryTextType(rawValue: 7))
     }
 
+    static func queryTextType(for serviceType: ServiceType) -> Key<EZQueryTextType> {
+        let key = EZConstKey.constkey("QueryTextType", serviceType: serviceType)
+        return .init(key, default: EZQueryTextType(rawValue: 0))
+    }
+
     static func windorFrame(for windowType: EZWindowType) -> Key<CGRect> {
         let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
         return .init(key, default: .zero)
@@ -155,5 +160,4 @@ extension Defaults.Keys {
     // ALI
     static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
     static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
-
 }

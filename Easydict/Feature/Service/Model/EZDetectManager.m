@@ -12,6 +12,7 @@
 #import "EZConfiguration.h"
 #import "EZYoudaoTranslate.h"
 #import "EZConfiguration+EZUserData.h"
+#import "Easydict-Swift.h"
 
 @interface EZDetectManager ()
 
@@ -101,7 +102,7 @@
     
     [self.appleService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager.shared preferredLanguages] mutableCopy];
-        EZLanguageDetectOptimize languageDetectOptimize = EZConfiguration.shared.languageDetectOptimize;
+        EZLanguageDetectOptimize languageDetectOptimize = Configuration.shared.languageDetectOptimize;
         
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[
@@ -237,7 +238,7 @@
      Sometimes Apple OCR may fail, like Japanese text, but we have set Japanese as preferred language and OCR again when OCR result is empty, currently it seems work, but we do not guarantee it is always work in other languages.
      */
     
-    if ([EZConfiguration.shared isBeta]) {
+    if (Configuration.shared.beta) {
         [self.youdaoService ocr:self.queryModel completion:^(EZOCRResult *_Nullable youdaoOCRResult, NSError *_Nullable youdaoOCRError) {
             if (!youdaoOCRError) {
                 completion(youdaoOCRResult, nil);

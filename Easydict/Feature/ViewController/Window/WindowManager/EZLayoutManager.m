@@ -9,6 +9,7 @@
 #import "EZLayoutManager.h"
 #import "EZBaseQueryWindow.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface EZLayoutManager ()
 
@@ -46,7 +47,7 @@ static EZLayoutManager *_instance;
     self.screen = NSScreen.mainScreen;
     self.minimumWindowSize = CGSizeMake(300, 70);
     
-    EZConfiguration *configuration = [EZConfiguration shared];
+    Configuration *configuration = [Configuration shared];
     
     self.miniWindowFrame = [configuration windowFrameWithType:EZWindowTypeMini];
     if (CGRectEqualToRect(self.miniWindowFrame, CGRectZero)) {
@@ -207,7 +208,7 @@ static EZLayoutManager *_instance;
             break;
     }
     
-    [EZConfiguration.shared setWindowFrame:window.frame windowType:windowType];
+    [Configuration.shared setWindowFrame:window.frame windowType:windowType];
 }
 
 @end

@@ -49,7 +49,7 @@ singleton_m(DarkModeManager);
     BOOL isDarkMode = [self isDarkMode];
     NSLog(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     
-    AppearenceType type = (AppearenceType)EZConfiguration.shared.appearance;
+    AppearenceType type = Configuration.shared.appearance;
     switch (type) {
         case AppearenceTypeDark:
             self.systemDarkMode = true;

@@ -16,6 +16,7 @@
 #import <CoreImage/CoreImage.h>
 #import "NSString+EZUtils.h"
 #import "EZAppleDictionary.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kLineBreakText = @"\n";
 static NSString *const kParagraphBreakText = @"\n\n";
@@ -607,7 +608,7 @@ static EZAppleService *_instance;
     NLLanguage language = NLLanguageEnglish;
     // 729
     if ([text isNumbers]) {
-        EZLanguage firstLanguage = EZConfiguration.shared.firstLanguage;
+        EZLanguage firstLanguage = Configuration.shared.firstLanguage;
         language = [self appleLanguageFromLanguageEnum:firstLanguage];
     }
     

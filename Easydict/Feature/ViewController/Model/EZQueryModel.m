@@ -13,6 +13,7 @@
 #import "NSString+EZSplit.h"
 #import "EZAppleDictionary.h"
 #import "NSString+EZHandleInputText.h"
+#import "Easydict-Swift.h"
 
 @interface EZQueryModel ()
 
@@ -29,10 +30,10 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        [self.KVOController observe:EZConfiguration.shared keyPath:@"from" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, EZConfiguration *config, NSDictionary<NSString *, id> *_Nonnull change) {
+        [self.KVOController observe:Configuration.shared keyPath:@"fromLanguage" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, Configuration *config, NSDictionary<NSString *, id> *_Nonnull change) {
             queryModel.userSourceLanguage = change[NSKeyValueChangeNewKey];
         }];
-        [self.KVOController observe:EZConfiguration.shared keyPath:@"to" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, EZConfiguration *config, NSDictionary<NSString *, id> *_Nonnull change) {
+        [self.KVOController observe:Configuration.shared keyPath:@"toLanguage" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZQueryModel *queryModel, Configuration *config, NSDictionary<NSString *, id> *_Nonnull change) {
             queryModel.userTargetLanguage = change[NSKeyValueChangeNewKey];
         }];
         
@@ -198,7 +199,7 @@
         }
     }
     
-    if (EZConfiguration.shared.isBeta) {
+    if (Configuration.shared.beta) {
         // Remove prefix [//,#,*,] and join texts.
         queryText = [queryText removeCommentBlockSymbols];
     }

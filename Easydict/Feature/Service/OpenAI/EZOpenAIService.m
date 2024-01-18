@@ -57,7 +57,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
     // easydict://writeKeyValue?EZOpenAIAPIKey=
     
     NSString *apiKey = [[NSUserDefaults standardUserDefaults] stringForKey:EZOpenAIAPIKey] ?: @"";
-    if (apiKey.length == 0 && EZConfiguration.shared.isBeta) {
+    if (apiKey.length == 0 && Configuration.shared.beta) {
         apiKey = self.defaultAPIKey;
     }
     return apiKey;
@@ -135,7 +135,7 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
     return type;
 }
 
