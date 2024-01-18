@@ -229,6 +229,7 @@
 		03FD68BB2B1DC59600FD388E /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 03FD68BA2B1DC59600FD388E /* CryptoSwift */; };
 		03FD68BE2B1E151A00FD388E /* String+EncryptAES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */; };
 		0A057D6D2B499A000025C51D /* ServiceTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A057D6C2B499A000025C51D /* ServiceTab.swift */; };
+		0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */; };
 		0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */; };
 		0A2BA9642B4A3CCD002872A4 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */; };
 		0A8685C82B552A590022534F /* DisabledTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8685C72B552A590022534F /* DisabledTab.swift */; };
@@ -705,6 +706,7 @@
 		03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+EncryptAES.swift"; sourceTree = "<group>"; };
 		06E15747A7BD34D510ADC6A8 /* Pods-Easydict.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.debug.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.debug.xcconfig"; sourceTree = "<group>"; };
 		0A057D6C2B499A000025C51D /* ServiceTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceTab.swift; sourceTree = "<group>"; };
+		0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+AppInfo.swift"; sourceTree = "<group>"; };
 		0A2BA95F2B49A989002872A4 /* Binding+DidSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+DidSet.swift"; sourceTree = "<group>"; };
 		0A2BA9632B4A3CCD002872A4 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
 		0A8685C72B552A590022534F /* DisabledTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledTab.swift; sourceTree = "<group>"; };
@@ -1823,6 +1825,7 @@
 		03CF88602B137ECB0030C199 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
+				0A2A05A42B59755F00EEA142 /* Bundle */,
 				0A2BA9622B4A3CBB002872A4 /* Notification */,
 				0A2BA95E2B49A967002872A4 /* Binding */,
 				03FD68BC2B1E14B500FD388E /* String */,
@@ -2001,6 +2004,14 @@
 				03FD68BD2B1E151A00FD388E /* String+EncryptAES.swift */,
 			);
 			path = String;
+			sourceTree = "<group>";
+		};
+		0A2A05A42B59755F00EEA142 /* Bundle */ = {
+			isa = PBXGroup;
+			children = (
+				0A2A05A52B59757100EEA142 /* Bundle+AppInfo.swift */,
+			);
+			path = Bundle;
 			sourceTree = "<group>";
 		};
 		0A2BA95E2B49A967002872A4 /* Binding */ = {
@@ -2656,6 +2667,7 @@
 				9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */,
 				03BDA7BF2A26DA280079D04F /* NSScanner+EscapedScanning.m in Sources */,
 				03542A4C2937B5F100C34C33 /* EZYoudaoTranslate.m in Sources */,
+				0A2A05A62B59757100EEA142 /* Bundle+AppInfo.swift in Sources */,
 				037852B329583F5200D0E2CF /* EZServiceCell.m in Sources */,
 				03247E362968158B00AFCD67 /* EZScriptExecutor.m in Sources */,
 				03882F8E29D95044005B5A52 /* ToastWindowController.m in Sources */,

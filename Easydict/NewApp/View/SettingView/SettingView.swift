@@ -31,9 +31,9 @@ struct SettingView: View {
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
 
-            DisabledTab()
+            DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
-                .tag(SettingTab.disabled.rawValue)
+                .tag(SettingTab.disabled)
 
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
@@ -59,7 +59,7 @@ struct SettingView: View {
 
         let originalFrame = window.frame
         let newSize = switch selection {
-        case .general, .privacy, .about:
+        case .general, .privacy, .about, .disabled:
             CGSize(width: 500, height: 520)
         case .service:
             CGSize(width: 800, height: 520)

@@ -9,10 +9,10 @@
 import Combine
 import SwiftUI
 
-class DisableViewModel: ObservableObject {
+class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
 
-    @Published var selectedAppModel: EZAppModel? = nil
+    @Published var selectedAppModels: Set<EZAppModel> = []
 
     @Published var isImporting = false
 
@@ -20,19 +20,24 @@ class DisableViewModel: ObservableObject {
         appModelList = EZLocalStorage.shared().selectTextTypeAppModelList
     }
 
-    func removeDisabledApp() {
-        appModelList = appModelList.filter { $0.appBundleID != selectedAppModel?.appBundleID }
+    func saveDisabledApps() {
         EZLocalStorage.shared().selectTextTypeAppModelList = appModelList
+    }
+
+    func removeDisabledApp() {
+        appModelList = appModelList.filter { !selectedAppModels.contains($0) }
+        saveDisabledApps()
+        selectedAppModels = []
     }
 
     func newAppSelected(for url: URL) {
-        guard let newSelectApp = newBlockApps(url: url) else { return }
-
+        guard let newSelectApp = newDisabledApp(from: url) else { return }
+        guard !appModelList.contains(newSelectApp) else { return }
         appModelList.append(newSelectApp)
-        EZLocalStorage.shared().selectTextTypeAppModelList = appModelList
+        saveDisabledApps()
     }
 
-    func newBlockApps(url: URL) -> EZAppModel? {
+    func newDisabledApp(from url: URL) -> EZAppModel? {
         let appModel = EZAppModel()
         guard let bundle = Bundle(url: url) else { return nil }
         appModel.appBundleID = bundle.bundleIdentifier ?? ""
@@ -42,45 +47,56 @@ class DisableViewModel: ObservableObject {
 }
 
 @available(macOS 13.0, *)
-struct DisabledTab: View {
+struct DisabledAppTab: View {
+    @Environment(\.colorScheme) private var colorScheme
 
-    @ObservedObject var viewModel = DisableViewModel()
+    @ObservedObject var disabledAppViewModel = DisabledAppViewModel()
 
-    var appListView: some View {
-        VStack(spacing: 0) {
-            List {
-                ForEach(viewModel.appModelList, id: \.self) { app in
-                    BlockAppItemView(with: app)
-                        .tag(app)
-                        .environmentObject(viewModel)
-                }
-                .listRowSeparator(.hidden)
-            }
-            .listStyle(.plain)
-
-            ListToolbar()
-                .environmentObject(viewModel)
-                .fileImporter(
-                    isPresented: $viewModel.isImporting,
-                    allowedContentTypes: [.application],
-                    allowsMultipleSelection: true
-                ) { result in
-                    switch result {
-                    case let .success(urls):
-                        urls.forEach { url in
-                            let gotAccess = url.startAccessingSecurityScopedResource()
-                            if !gotAccess { return }
-                            viewModel.newAppSelected(for: url)
-                            url.stopAccessingSecurityScopedResource()
-                        }
-                    case let .failure(error):
-                        print("error: \(error)")
+    var listToolbar: some View {
+        ListToolbar()
+            .fileImporter(
+                isPresented: $disabledAppViewModel.isImporting,
+                allowedContentTypes: [.application],
+                allowsMultipleSelection: true
+            ) { result in
+                switch result {
+                case let .success(urls):
+                    urls.forEach { url in
+                        let gotAccess = url.startAccessingSecurityScopedResource()
+                        if !gotAccess { return }
+                        disabledAppViewModel.newAppSelected(for: url)
+                        url.stopAccessingSecurityScopedResource()
                     }
+                case let .failure(error):
+                    print("fileImporter error: \(error)")
                 }
+            }
+    }
+    
+    var appListView: some View {
+        List(selection: $disabledAppViewModel.selectedAppModels) {
+            ForEach(disabledAppViewModel.appModelList, id: \.self) { app in
+                BlockAppItemView(with: app)
+                    .tag(app)
+            }
+            .listRowSeparator(.hidden)
         }
-        .frame(maxWidth: 420)
+        .listStyle(.plain)
+        .scrollIndicators(.never)
+    }
+
+    var appListViewWithToolbar: some View {
+        VStack(spacing: 0) {
+            appListView
+
+            listToolbar
+        }
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .padding([.bottom])
+        .padding(.bottom)
+        .padding(.horizontal, 40)
+        .onTapGesture {
+            disabledAppViewModel.selectedAppModels = []
+        }
     }
 
     var body: some View {
@@ -88,41 +104,37 @@ struct DisabledTab: View {
             Text("disabled_title")
                 .padding()
 
-            appListView
+            appListViewWithToolbar
         }
+        .environmentObject(disabledAppViewModel)
         .task {
-            viewModel.fetchDisabledApps()
+            disabledAppViewModel.fetchDisabledApps()
         }
     }
 }
 
 @available(macOS 13.0, *)
 struct ListToolbar: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    @EnvironmentObject var viewModel: DisableViewModel
-
-    var bgColor: Color {
-        Color(nsColor: colorScheme == .light ? NSColor.controlBackgroundColor : NSColor.controlBackgroundColor)
-    }
+    @EnvironmentObject private var disabledAppViewModel: DisabledAppViewModel
 
     var body: some View {
         VStack(spacing: 0) {
             Divider()
             HStack(spacing: 0) {
                 ListButton(imageName: "plus") {
-                    viewModel.isImporting.toggle()
+                    disabledAppViewModel.isImporting.toggle()
                 }
                 Divider()
                 ListButton(imageName: "minus") {
-                    viewModel.removeDisabledApp()
+                    disabledAppViewModel.removeDisabledApp()
                 }
+                .disabled(disabledAppViewModel.selectedAppModels.isEmpty)
                 Spacer()
             }
             .padding(2)
         }
         .frame(height: 28)
-        .background(bgColor)
+        .background(Color(.controlBackgroundColor))
     }
 }
 
@@ -136,36 +148,37 @@ struct ListButton: View {
             action()
         }) {
             Image(systemName: imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 12, height: 12)
+                .padding(6)
+                .contentShape(Rectangle())
         }
         .buttonStyle(BorderlessButtonStyle())
-        .contentShape(Rectangle())
-        .frame(width: 24, height: 24)
     }
 }
 
 @available(macOS 13.0, *)
 struct BlockAppItemView: View {
-    var app: EZAppModel
+    @StateObject private var appFetcher: AppFetcher
 
-    @ObservedObject var appFetcher: AppFetcher
+    @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
-    @Environment(\.colorScheme) private var colorScheme
-
-    @EnvironmentObject var viewModel: DisableViewModel
-
-    private var tableColor: Color {
-        Color(nsColor: colorScheme == .light ? .ez_tableRowViewBgLight() : .ez_tableRowViewBgDark())
+    private var listRowBgColor: Color {
+        disabledAppViewModel.selectedAppModels.contains {
+            $0.appBundleID == appFetcher.appModel.appBundleID
+        } ? Color("service_cell_highlight") : .clear
     }
 
     init(with appModel: EZAppModel) {
-        app = appModel
-        appFetcher = AppFetcher(appBundleId: app.appBundleID)
+        _appFetcher = StateObject(wrappedValue: AppFetcher(appModel: appModel))
     }
 
     var body: some View {
         HStack(alignment: .center) {
             Image(nsImage: appFetcher.appIcon ?? NSImage())
                 .resizable()
+                .scaledToFit()
                 .frame(width: 24, height: 24)
 
             Text(appFetcher.appName)
@@ -175,67 +188,41 @@ struct BlockAppItemView: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .padding(.vertical, 4)
-        .overlay {
-            TapHandler {
-                let selectedAppModel = viewModel.selectedAppModel
-                if selectedAppModel == nil || selectedAppModel != app {
-                    viewModel.selectedAppModel = app
-                } else {
-                    viewModel.selectedAppModel = nil
-                }
-            }
+        .padding(.leading, 6)
+        .task {
+            appFetcher.getAppBundleInfo()
         }
-        .listRowBackground(viewModel.selectedAppModel == app ? Color("service_cell_highlight") : .clear)
     }
 }
 
 @available(macOS 13.0, *)
 class AppFetcher: ObservableObject {
     @Published var appIcon: NSImage? = nil
+
     @Published var appName = ""
 
-    init(appBundleId: String) {
-        let workspace = NSWorkspace.shared
-        guard let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId) else {
-            return
-        }
-        print("path: \(appURL.path())")
-        appIcon = getApplicationIcon(forAppBundleIdentifier: appBundleId)
+    var appModel: EZAppModel
 
-        guard let appBundle = Bundle(url: appURL) else {
-            return
-        }
+    init(appModel: EZAppModel) {
+        self.appModel = appModel
+    }
+
+    func getAppBundleInfo() {
+        let appBundleId = appModel.appBundleID
+        let workspace = NSWorkspace.shared
+        let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appURL else { return }
+        
+        let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appPath else { return }
+        appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
+
+        guard let appBundle = Bundle(url: appURL) else { return }
         appName = appBundle.applicationName
-    }
-
-    func getApplicationIcon(forAppBundleIdentifier bundleIdentifier: String) -> NSImage? {
-        let workspace = NSWorkspace.shared
-
-        // If the app is not running, try to get the icon from the app bundle
-        if let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) {
-            let icon = workspace.icon(forFile: appPath.path(percentEncoded: false))
-            return icon
-        }
-
-        return nil
-    }
-}
-
-extension Bundle {
-    var applicationName: String {
-        if let displayName: String = infoDictionary?["CFBundleDisplayName"] as? String {
-            return displayName
-        } else if let name: String = infoDictionary?["CFBundleName"] as? String {
-            return name
-        }
-        if let executableURL {
-            return executableURL.deletingLastPathComponent().lastPathComponent
-        }
-        return ""
     }
 }
 
 @available(macOS 13.0, *)
 #Preview {
-    DisabledTab()
+    DisabledAppTab()
 }
