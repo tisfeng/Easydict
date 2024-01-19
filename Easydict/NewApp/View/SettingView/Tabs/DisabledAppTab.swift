@@ -167,12 +167,6 @@ struct BlockAppItemView: View {
 
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
-    private var listRowBgColor: Color {
-        disabledAppViewModel.selectedAppModels.contains {
-            $0.appBundleID == appFetcher.appModel.appBundleID
-        } ? Color("service_cell_highlight") : .clear
-    }
-
     init(with appModel: EZAppModel) {
         _appFetcher = StateObject(wrappedValue: AppFetcher(appModel: appModel))
     }
@@ -190,7 +184,6 @@ struct BlockAppItemView: View {
         }
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
-        .listRowBackground(listRowBgColor)
         .padding(.vertical, 4)
         .padding(.leading, 6)
         .task {
