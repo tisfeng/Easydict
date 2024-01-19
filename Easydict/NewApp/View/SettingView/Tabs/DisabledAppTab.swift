@@ -170,22 +170,22 @@ private struct ListButton: View {
 
 @available(macOS 13.0, *)
 private struct BlockAppItemView: View {
-    @StateObject private var appFetcher: AppFetcher
+    @StateObject private var appItemViewModel: AppItemViewModel
 
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
     init(with appModel: EZAppModel) {
-        _appFetcher = StateObject(wrappedValue: AppFetcher(appModel: appModel))
+        _appItemViewModel = StateObject(wrappedValue: AppItemViewModel(appModel: appModel))
     }
 
     var body: some View {
         HStack(alignment: .center) {
-            Image(nsImage: appFetcher.appIcon ?? NSImage())
+            Image(nsImage: appItemViewModel.appIcon ?? NSImage())
                 .resizable()
                 .scaledToFit()
                 .frame(width: 24, height: 24)
 
-            Text(appFetcher.appName)
+            Text(appItemViewModel.appName)
 
             Spacer()
         }
@@ -193,14 +193,11 @@ private struct BlockAppItemView: View {
         .contentShape(Rectangle())
         .padding(.vertical, 4)
         .padding(.leading, 6)
-        .task {
-            appFetcher.getAppBundleInfo()
-        }
     }
 }
 
 @available(macOS 13.0, *)
-class AppFetcher: ObservableObject {
+private class AppItemViewModel: ObservableObject {
     @Published var appIcon: NSImage? = nil
 
     @Published var appName = ""
@@ -209,6 +206,7 @@ class AppFetcher: ObservableObject {
 
     init(appModel: EZAppModel) {
         self.appModel = appModel
+        getAppBundleInfo()
     }
 
     func getAppBundleInfo() {
