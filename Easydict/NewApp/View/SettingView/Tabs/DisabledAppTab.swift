@@ -88,7 +88,7 @@ struct DisabledAppTab: View {
     var appListView: some View {
         List(selection: $disabledAppViewModel.selectedAppModels) {
             ForEach(disabledAppViewModel.appModelList, id: \.self) { app in
-                BlockAppItemView(with: app)
+                BlockAppItemView(appModel: app)
                     .tag(app)
             }
             .listRowSeparator(.hidden)
@@ -170,22 +170,22 @@ private struct ListButton: View {
 
 @available(macOS 13.0, *)
 private struct BlockAppItemView: View {
-    @StateObject private var appItemViewModel: AppItemViewModel
-
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
-    init(with appModel: EZAppModel) {
-        _appItemViewModel = StateObject(wrappedValue: AppItemViewModel(appModel: appModel))
-    }
+    var appModel: EZAppModel
+
+    @State private var appIcon: NSImage = .init()
+
+    @State private var appName = ""
 
     var body: some View {
         HStack(alignment: .center) {
-            Image(nsImage: appItemViewModel.appIcon ?? NSImage())
+            Image(nsImage: appIcon)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 24, height: 24)
 
-            Text(appItemViewModel.appName)
+            Text(appName)
 
             Spacer()
         }
@@ -193,20 +193,9 @@ private struct BlockAppItemView: View {
         .contentShape(Rectangle())
         .padding(.vertical, 4)
         .padding(.leading, 6)
-    }
-}
-
-@available(macOS 13.0, *)
-private class AppItemViewModel: ObservableObject {
-    @Published var appIcon: NSImage? = nil
-
-    @Published var appName = ""
-
-    var appModel: EZAppModel
-
-    init(appModel: EZAppModel) {
-        self.appModel = appModel
-        getAppBundleInfo()
+        .onAppear {
+            getAppBundleInfo()
+        }
     }
 
     func getAppBundleInfo() {
