@@ -106,7 +106,7 @@ struct DisabledAppTab: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(content: {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color("setting_list_border"), lineWidth: 0.5)
+                .stroke(Color("list_border_color"), lineWidth: 0.5)
         })
         .padding(.bottom)
         .padding(.horizontal, 35)
@@ -148,7 +148,7 @@ private struct ListToolbar: View {
             .padding(2)
         }
         .frame(height: 28)
-        .background(Color("setting_add_minus_bg"))
+        .background(Color("add_minus_bg_color"))
     }
 }
 
@@ -164,9 +164,11 @@ private struct ListButton: View {
             Image(systemName: imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 12, height: 12)
+                .frame(width: 10, height: 10)
                 .padding(6)
                 .contentShape(Rectangle())
+                .foregroundStyle(Color(.secondaryLabelColor))
+                .font(.system(size: 14, weight: .semibold))
         }
         .buttonStyle(BorderlessButtonStyle())
     }
