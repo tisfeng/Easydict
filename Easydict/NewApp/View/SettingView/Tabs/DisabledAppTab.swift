@@ -11,11 +11,8 @@ import SwiftUI
 
 class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
-
     @Published var selectedAppModels: Set<EZAppModel> = []
-
     @Published var isImporting = false
-
     @Published var isShowImportErrorAlert = false
 
     init() {
@@ -108,8 +105,8 @@ struct DisabledAppTab: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color("list_border_color"), lineWidth: 0.5)
         })
-        .padding(.bottom)
-        .padding(.horizontal, 35)
+        .padding(.horizontal, 25)
+        .padding(.bottom, 25)
         .onTapGesture {
             disabledAppViewModel.selectedAppModels = []
         }
@@ -118,11 +115,11 @@ struct DisabledAppTab: View {
     var body: some View {
         VStack {
             Text("disabled_title")
-                .padding()
+                .padding(.top, 18)
+                .padding(.bottom, 8)
 
             appListViewWithToolbar
         }
-        .frame(maxWidth: 500)
         .environmentObject(disabledAppViewModel)
     }
 }
@@ -138,7 +135,7 @@ private struct ListToolbar: View {
                 ListButton(imageName: "plus", enabled: true) {
                     disabledAppViewModel.isImporting.toggle()
                 }
-                Divider()
+                Divider().padding(.vertical, 1)
                 let isNoSelectedApps = disabledAppViewModel.selectedAppModels.isEmpty
                 ListButton(imageName: "minus", enabled: !isNoSelectedApps) {
                     disabledAppViewModel.removeDisabledApp()
@@ -167,9 +164,9 @@ private struct ListButton: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 10, height: 10)
-                .padding(6)
+                .padding(.horizontal, 8)
                 .contentShape(Rectangle())
-                .foregroundStyle(enabled ? Color(.secondaryLabelColor) : Color(.quaternaryLabelColor))
+                .foregroundStyle(enabled ? Color(.secondaryLabelColor) : Color(.tertiaryLabelColor))
                 .font(.system(size: 14, weight: .semibold))
         }
         .buttonStyle(BorderlessButtonStyle())
