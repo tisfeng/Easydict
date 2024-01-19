@@ -104,6 +104,10 @@ struct DisabledAppTab: View {
             listToolbar
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(content: {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color("setting_list_border"), lineWidth: 0.5)
+        })
         .padding(.bottom)
         .padding(.horizontal, 35)
         .onTapGesture {
