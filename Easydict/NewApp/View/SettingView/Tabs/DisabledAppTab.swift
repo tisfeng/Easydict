@@ -135,14 +135,15 @@ private struct ListToolbar: View {
         VStack(spacing: 0) {
             Divider()
             HStack(spacing: 0) {
-                ListButton(imageName: "plus") {
+                ListButton(imageName: "plus", enabled: true) {
                     disabledAppViewModel.isImporting.toggle()
                 }
                 Divider()
-                ListButton(imageName: "minus") {
+                let isNoSelectedApps = disabledAppViewModel.selectedAppModels.isEmpty
+                ListButton(imageName: "minus", enabled: !isNoSelectedApps) {
                     disabledAppViewModel.removeDisabledApp()
                 }
-                .disabled(disabledAppViewModel.selectedAppModels.isEmpty)
+                .disabled(isNoSelectedApps)
                 Spacer()
             }
             .padding(2)
@@ -155,6 +156,7 @@ private struct ListToolbar: View {
 @available(macOS 13.0, *)
 private struct ListButton: View {
     var imageName: String
+    var enabled: Bool
     var action: () -> Void
 
     var body: some View {
@@ -167,7 +169,7 @@ private struct ListButton: View {
                 .frame(width: 10, height: 10)
                 .padding(6)
                 .contentShape(Rectangle())
-                .foregroundStyle(Color(.secondaryLabelColor))
+                .foregroundStyle(enabled ? Color(.secondaryLabelColor) : Color(.quaternaryLabelColor))
                 .font(.system(size: 14, weight: .semibold))
         }
         .buttonStyle(BorderlessButtonStyle())
