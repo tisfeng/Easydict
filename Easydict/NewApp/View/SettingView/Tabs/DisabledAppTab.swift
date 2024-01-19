@@ -88,7 +88,7 @@ struct DisabledAppTab: View {
     var appListView: some View {
         List(selection: $disabledAppViewModel.selectedAppModels) {
             ForEach(disabledAppViewModel.appModelList, id: \.self) { app in
-                BlockAppItemView(appModel: app)
+                BlockAppItemView(with: app)
                     .tag(app)
             }
             .listRowSeparator(.hidden)
@@ -172,11 +172,33 @@ private struct ListButton: View {
 private struct BlockAppItemView: View {
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
-    var appModel: EZAppModel
+    let appIcon: NSImage
+    let appName: String
 
-    @State private var appIcon: NSImage = .init()
+    init(with appModel: EZAppModel) {
+        let appBundleId = appModel.appBundleID
+        let workspace = NSWorkspace.shared
+        let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appURL else {
+            appIcon = .init()
+            appName = ""
+            return
+        }
 
-    @State private var appName = ""
+        let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appPath else {
+            appIcon = .init()
+            appName = ""
+            return
+        }
+        appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
+
+        guard let appBundle = Bundle(url: appURL) else {
+            appName = ""
+            return
+        }
+        appName = appBundle.applicationName
+    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -193,23 +215,6 @@ private struct BlockAppItemView: View {
         .contentShape(Rectangle())
         .padding(.vertical, 4)
         .padding(.leading, 6)
-        .onAppear {
-            getAppBundleInfo()
-        }
-    }
-
-    func getAppBundleInfo() {
-        let appBundleId = appModel.appBundleID
-        let workspace = NSWorkspace.shared
-        let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
-        guard let appURL else { return }
-
-        let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
-        guard let appPath else { return }
-        appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
-
-        guard let appBundle = Bundle(url: appURL) else { return }
-        appName = appBundle.applicationName
     }
 }
 
