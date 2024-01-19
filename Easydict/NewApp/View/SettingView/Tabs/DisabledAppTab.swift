@@ -16,6 +16,12 @@ class DisabledAppViewModel: ObservableObject {
 
     @Published var isImporting = false
 
+    @Published var isShowImportErrorAlert = false
+
+    init() {
+        fetchDisabledApps()
+    }
+
     func fetchDisabledApps() {
         appModelList = EZLocalStorage.shared().selectTextTypeAppModelList
     }
@@ -57,7 +63,7 @@ class DisabledAppViewModel: ObservableObject {
 
 @available(macOS 13.0, *)
 struct DisabledAppTab: View {
-    @ObservedObject var disabledAppViewModel = DisabledAppViewModel()
+    @StateObject var disabledAppViewModel = DisabledAppViewModel()
 
     var listToolbar: some View {
         ListToolbar()
@@ -71,7 +77,11 @@ struct DisabledAppTab: View {
                     disabledAppViewModel.newAppURLsSelected(from: urls)
                 case let .failure(error):
                     print("fileImporter error: \(error)")
+                    disabledAppViewModel.isShowImportErrorAlert.toggle()
                 }
+            }
+            .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
+                Alert(title: Text(""), message: Text("setting.disabled.import_app_error.message"), dismissButton: .default(Text("ok")))
             }
     }
 
@@ -110,14 +120,11 @@ struct DisabledAppTab: View {
         }
         .frame(maxWidth: 500)
         .environmentObject(disabledAppViewModel)
-        .onAppear {
-            disabledAppViewModel.fetchDisabledApps()
-        }
     }
 }
 
 @available(macOS 13.0, *)
-struct ListToolbar: View {
+private struct ListToolbar: View {
     @EnvironmentObject private var disabledAppViewModel: DisabledAppViewModel
 
     var body: some View {
@@ -142,7 +149,7 @@ struct ListToolbar: View {
 }
 
 @available(macOS 13.0, *)
-struct ListButton: View {
+private struct ListButton: View {
     var imageName: String
     var action: () -> Void
 
@@ -162,7 +169,7 @@ struct ListButton: View {
 }
 
 @available(macOS 13.0, *)
-struct BlockAppItemView: View {
+private struct BlockAppItemView: View {
     @StateObject private var appFetcher: AppFetcher
 
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
