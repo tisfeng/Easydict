@@ -10,7 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @interface DarkModeManager : NSObject
 
 @property (nonatomic, assign, readonly) BOOL systemDarkMode;
@@ -18,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)manager NS_SWIFT_NAME(sharedManager());
 - (void)excuteLight:(void (^)(void))light dark:(void (^)(void))dark;
 
-- (void)updateDarkMode;
+- (void)updateDarkMode:(NSInteger)apperance;
 
 @end
 

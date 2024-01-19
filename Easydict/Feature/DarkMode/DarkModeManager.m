@@ -42,14 +42,18 @@ singleton_m(DarkModeManager);
 
 - (void)monitor {
     NSString *const darkModeNotificationName = @"AppleInterfaceThemeChangedNotification";
-    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDarkMode) name:darkModeNotificationName object:nil];
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange) name:darkModeNotificationName object:nil];
 }
 
-- (void)updateDarkMode {
+- (void)themeDidChange {
+    [self updateDarkMode:Configuration.shared.appearance];
+}
+
+- (void)updateDarkMode:(NSInteger)apperance {
     BOOL isDarkMode = [self isDarkMode];
     NSLog(@"%@", isDarkMode ? @"深色模式" : @"浅色模式");
     
-    AppearenceType type = Configuration.shared.appearance;
+    AppearenceType type = apperance;
     switch (type) {
         case AppearenceTypeDark:
             self.systemDarkMode = true;

@@ -275,14 +275,13 @@ import Foundation
             didSetFontSizeIndex()
         }.tieToLifetime(of: self)
 
-        
         Defaults.observe(.appearanceType) { [unowned self] change in
             let newValue = change.newValue
             let oldValue = change.oldValue
             print("update appearanceType: \(oldValue.title) -> \(newValue.title)")
 
             if newValue != oldValue {
-                didSetAppearance()
+                didSetAppearance(newValue)
             }
         }.tieToLifetime(of: self)
     }
@@ -449,8 +448,8 @@ private extension Configuration {
         NotificationCenter.default.post(name: .init(ChangeFontSizeView.changeFontSizeNotificationName), object: nil)
     }
 
-    func didSetAppearance() {
-        DarkModeManager.sharedManager().updateDarkMode()
+    func didSetAppearance(_ appearance: AppearenceType) {
+        DarkModeManager.sharedManager().updateDarkMode(appearance.rawValue)
     }
 }
 
