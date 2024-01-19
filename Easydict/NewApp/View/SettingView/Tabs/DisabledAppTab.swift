@@ -144,7 +144,7 @@ private struct ListToolbar: View {
             .padding(2)
         }
         .frame(height: 28)
-        .background(Color(.controlBackgroundColor))
+        .background(Color("setting_add_minus_bg"))
     }
 }
 
