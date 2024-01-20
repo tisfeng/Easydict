@@ -115,6 +115,7 @@ struct DisabledAppTab: View {
     var body: some View {
         VStack {
             Text("disabled_title")
+                .padding(.horizontal)
                 .padding(.top, 18)
                 .padding(.bottom, 8)
 
