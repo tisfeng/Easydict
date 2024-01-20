@@ -136,13 +136,13 @@ private struct ListToolbar: View {
                 ListButton(systemName: "plus") {
                     disabledAppViewModel.isImporting.toggle()
                 }
-                .environment(\.isEnabled, true)
+                .disabled(false)
                 Divider()
                     .padding(.vertical, 1)
                 ListButton(systemName: "minus") {
                     disabledAppViewModel.removeDisabledApp()
                 }
-                .environment(\.isEnabled, !disabledAppViewModel.selectedAppModels.isEmpty)
+                .disabled(!disabledAppViewModel.selectedAppModels.isEmpty)
                 Spacer()
             }
             .padding(2)
@@ -172,7 +172,6 @@ private struct ListButton: View {
                 .font(.system(size: 14, weight: .semibold))
         }
         .buttonStyle(BorderlessButtonStyle())
-        .disabled(isEnabled)
     }
 }
 
