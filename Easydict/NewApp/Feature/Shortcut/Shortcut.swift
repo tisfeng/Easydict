@@ -21,7 +21,7 @@ enum ShortcutType: String {
 class Shortcut: NSObject {
     static let shared = Shortcut()
 
-    static func setupShortcut() {
+    @objc static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
     }

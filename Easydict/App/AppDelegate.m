@@ -39,6 +39,7 @@
     }
     
     [EZShortcut setup];
+    [Shortcut setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNedded];
     
