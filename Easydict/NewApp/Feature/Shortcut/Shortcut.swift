@@ -16,6 +16,7 @@ enum ShortcutType: String {
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
     case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
+    case showMiniWindow = "EZShowMiniShortcutKey"
 }
 
 class Shortcut: NSObject {
@@ -111,6 +112,11 @@ extension Shortcut {
                             keyCombo: keyCombo,
                             target: Shortcut.shared,
                             action: #selector(Shortcut.screenshotOCR))
+        case .showMiniWindow:
+            hotKey = HotKey(identifier: type.rawValue,
+                            keyCombo: keyCombo,
+                            target: Shortcut.shared,
+                            action: #selector(Shortcut.showMiniFloatingWindow))
         }
         hotKey.register()
     }

@@ -90,8 +90,9 @@ extension Defaults.Keys {
 
 /// shortcut
 extension Defaults.Keys {
-    static let selectionShortcutKey = Key<Data>("EZSelectionShortcutKey", default: Data())
-    static let snipShortcutKey = Key<Data>("EZSnipShortcutKey", default: Data())
-    static let inputShortcutKey = Key<Data>("EZInputShortcutKey", default: Data())
-    static let screenshotOCRShortcutKey = Key<Data>("EZScreenshotOCRShortcutKey", default: Data())
+    static let selectionShortcutKey = Key<Data>("EZSelectionShortcutKey_keyHolder", default: Data())
+    static let snipShortcutKey = Key<Data>("EZSnipShortcutKey_keyHolder", default: Data())
+    static let inputShortcutKey = Key<Data>("EZInputShortcutKey_keyHolder", default: Data())
+    static let screenshotOCRShortcutKey = Key<Data>("EZScreenshotOCRShortcutKey_keyHolder", default: Data())
+    static let showMiniWindowShortcutKey = Key<Data>("EZShowMiniShortcutKey_keyHolder", default: Data())
 }

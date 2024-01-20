@@ -71,6 +71,8 @@ extension GeneralKeyHolderWrapper {
                 data = Defaults[.selectionShortcutKey]
             case .silentScreenshotOcr:
                 data = Defaults[.screenshotOCRShortcutKey]
+            case .showMiniWindow:
+                data = Defaults[.showMiniWindowShortcutKey]
             }
             guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return }
             recordView.keyCombo = keyCombo
@@ -89,6 +91,8 @@ extension GeneralKeyHolderWrapper {
                 Defaults[.selectionShortcutKey] = data ?? Data()
             case .silentScreenshotOcr:
                 Defaults[.screenshotOCRShortcutKey] = data ?? Data()
+            case .showMiniWindow:
+                Defaults[.showMiniWindowShortcutKey] = data ?? Data()
             }
         }
     }

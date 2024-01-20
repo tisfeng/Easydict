@@ -26,6 +26,10 @@ extension GeneralTab {
                     GeneralKeyHolderWrapper(shortcutType: .selectTranslate).frame(width: 180, height: 24)
                 }
                 HStack {
+                    Text("show_mini_window")
+                    GeneralKeyHolderWrapper(shortcutType: .showMiniWindow).frame(width: 180, height: 24)
+                }
+                HStack {
                     Text("silent_screenshot_ocr")
                     GeneralKeyHolderWrapper(shortcutType: .silentScreenshotOcr).frame(width: 180, height: 24)
                 }
