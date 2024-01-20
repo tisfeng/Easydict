@@ -13,6 +13,7 @@ import SwiftUI
 struct GeneralTab: View {
     var body: some View {
         Form {
+            ShortcutSettingView()
             Section {
                 Picker("setting.general.appearance.light_dark_appearance", selection: $appearanceType) {
                     ForEach(AppearenceType.allCases, id: \.rawValue) { option in

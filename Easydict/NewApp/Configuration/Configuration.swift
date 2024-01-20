@@ -87,3 +87,11 @@ extension Defaults.Keys {
     static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
     static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
 }
+
+/// shortcut
+extension Defaults.Keys {
+    static let selectionShortcutKey = Key<Data>("EZSelectionShortcutKey", default: Data())
+    static let snipShortcutKey = Key<Data>("EZSnipShortcutKey", default: Data())
+    static let inputShortcutKey = Key<Data>("EZInputShortcutKey", default: Data())
+    static let screenshotOCRShortcutKey = Key<Data>("EZScreenshotOCRShortcutKey", default: Data())
+}
