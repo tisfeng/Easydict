@@ -142,7 +142,7 @@ private struct ListToolbar: View {
                 ListButton(systemName: "minus") {
                     disabledAppViewModel.removeDisabledApp()
                 }
-                .disabled(!disabledAppViewModel.selectedAppModels.isEmpty)
+                .disabled(disabledAppViewModel.selectedAppModels.isEmpty)
                 Spacer()
             }
             .padding(2)
