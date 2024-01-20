@@ -12,13 +12,6 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
-enum ShortcutType {
-    case inputTranslate
-    case snipTranslate
-    case selectTranslate
-    case silentScreenshotOcr
-}
-
 struct GeneralKeyHolderWrapper: NSViewRepresentable {
     func makeCoordinator() -> Coordinator {
         .init(shortcutType: type)
@@ -37,32 +30,11 @@ struct GeneralKeyHolderWrapper: NSViewRepresentable {
         recordView.layer?.masksToBounds = true
         recordView.clearButtonMode = .whenRecorded
 
-        restoreKeyCombo(context, recordView)
+        context.coordinator.restoreKeyCombo(recordView)
         return recordView
     }
 
     func updateNSView(_: NSViewType, context _: Context) {}
-
-    private func restoreKeyCombo(_ context: Context, _ recordView: RecordView) {
-        var data: Data
-        switch type {
-        case .inputTranslate:
-            data = Defaults[.inputShortcutKey]
-        case .snipTranslate:
-            data = Defaults[.snipShortcutKey]
-        case .selectTranslate:
-            data = Defaults[.selectionShortcutKey]
-        case .silentScreenshotOcr:
-            data = Defaults[.screenshotOCRShortcutKey]
-        }
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return }
-        recordView.keyCombo = keyCombo
-        let hotKey = HotKey(identifier: "KeyHolderExample",
-                            keyCombo: keyCombo,
-                            target: context.coordinator,
-                            action: #selector(context.coordinator.hotkeyCalled))
-        hotKey.register()
-    }
 }
 
 extension GeneralKeyHolderWrapper {
@@ -84,13 +56,25 @@ extension GeneralKeyHolderWrapper {
 
         func recordView(_: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
             storeKeyCombo(with: keyCombo)
-            HotKeyCenter.shared.unregisterAll()
             guard let keyCombo else { return }
-            let hotKey = HotKey(identifier: "KeyHolderExample",
-                                keyCombo: keyCombo,
-                                target: self,
-                                action: #selector(hotkeyCalled))
-            hotKey.register()
+            Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
+        }
+
+        func restoreKeyCombo(_ recordView: RecordView) {
+            var data: Data
+            switch type {
+            case .inputTranslate:
+                data = Defaults[.inputShortcutKey]
+            case .snipTranslate:
+                data = Defaults[.snipShortcutKey]
+            case .selectTranslate:
+                data = Defaults[.selectionShortcutKey]
+            case .silentScreenshotOcr:
+                data = Defaults[.screenshotOCRShortcutKey]
+            }
+            guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return }
+            recordView.keyCombo = keyCombo
+            Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
         }
 
         // shortcut
@@ -106,10 +90,6 @@ extension GeneralKeyHolderWrapper {
             case .silentScreenshotOcr:
                 Defaults[.screenshotOCRShortcutKey] = data ?? Data()
             }
-        }
-
-        @objc func hotkeyCalled() {
-            print("HotKey called!!!!")
         }
     }
 }
