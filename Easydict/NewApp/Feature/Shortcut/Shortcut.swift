@@ -60,6 +60,9 @@ extension Shortcut {
         if let screenshotOCRShortcutKeyCombo = restoreScreenshotOCRShortcutKey() {
             bindingShortCut(keyCombo: screenshotOCRShortcutKeyCombo, type: .silentScreenshotOcr)
         }
+        if let showMiniWindowShortcutKeyCombo = restoreShowMiniWindow() {
+            bindingShortCut(keyCombo: showMiniWindowShortcutKeyCombo, type: .showMiniWindow)
+        }
     }
 
     private func restoreInputTranslate() -> KeyCombo? {
@@ -82,6 +85,12 @@ extension Shortcut {
 
     private func restoreScreenshotOCRShortcutKey() -> KeyCombo? {
         let data = Defaults[.screenshotOCRShortcutKey]
+        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
+        return keyCombo
+    }
+
+    private func restoreShowMiniWindow() -> KeyCombo? {
+        let data = Defaults[.showMiniWindowShortcutKey]
         guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
         return keyCombo
     }
@@ -142,5 +151,56 @@ extension Shortcut {
 
     @objc func screenshotOCR() {
         EZWindowManager.shared().screenshotOCR()
+    }
+}
+
+// fetch shortcut string
+extension Shortcut {
+    // can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
+    // keyboardShortcut not support double modifier key
+
+//    func fetchShortcutKeyEquivalent(_ type: ShortcutType) -> String {
+//        guard let keyCombo = fetchShortcutKeyCombo(type) else { return "" }
+//        return keyCombo.keyEquivalent
+//    }
+//
+//    func fetchShortcutKeyEventModifiers(_ type: ShortcutType) -> EventModifiers {
+//        guard let keyCombo = fetchShortcutKeyCombo(type) else { return [] }
+//        return [.command, .command]
+//    }
+
+    func fetchShortcutKeyStr(_: ShortcutType) -> String {
+        guard let keyCombo = restoreInputTranslate() else { return "" }
+        return shortcutKeyStr(keyCombo)
+    }
+
+    private func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
+        switch type {
+        case .inputTranslate:
+            guard let keyCombo = restoreInputTranslate() else { return nil }
+            return keyCombo
+        case .snipTranslate:
+            guard let keyCombo = restoreSnipShortcutKey() else { return nil }
+            return keyCombo
+        case .selectTranslate:
+            guard let keyCombo = restoreSelectionShortcutKey() else { return nil }
+            return keyCombo
+        case .silentScreenshotOcr:
+            guard let keyCombo = restoreScreenshotOCRShortcutKey() else { return nil }
+            return keyCombo
+        case .showMiniWindow:
+            guard let keyCombo = restoreShowMiniWindow() else { return nil }
+            return keyCombo
+        }
+    }
+
+    private func shortcutKeyStr(_ keyCombo: KeyCombo) -> String {
+        var shortcut = ""
+        if keyCombo.doubledModifiers {
+            shortcut = keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalentModifierMaskString
+        } else {
+            shortcut = keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalent
+        }
+        return shortcut
     }
 }

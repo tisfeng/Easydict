@@ -35,7 +35,7 @@ struct MenuItemView: View {
         Group {
             versionItem
             Divider()
-            inputItem
+            inputItem.keyboardShortcut(/*@START_MENU_TOKEN@*/ .defaultAction/*@END_MENU_TOKEN@*/)
             screenshotItem
             selectWordItem
             miniWindowItem
