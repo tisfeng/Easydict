@@ -11,6 +11,7 @@ import SwiftUI
 enum SettingTab: Int {
     case general
     case service
+    case disabled
     case privacy
     case about
 }
@@ -29,6 +30,10 @@ struct SettingView: View {
             ServiceTab()
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
+
+            DisabledAppTab()
+                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
+                .tag(SettingTab.disabled)
 
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
@@ -51,7 +56,7 @@ struct SettingView: View {
 
     func resizeWindowFrame() {
         guard let window else { return }
-        
+
         // Disable zoom button, ref: https://stackoverflow.com/a/66039864/8378840
         window.standardWindowButton(.zoomButton)?.isEnabled = false
 
@@ -60,7 +65,7 @@ struct SettingView: View {
         let height = switch selection {
         case .general:
             maxWidth
-        case .service:
+        case .service, .disabled:
             500
         case .privacy:
             320
