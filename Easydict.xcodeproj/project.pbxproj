@@ -258,6 +258,7 @@
 		9627F9392B59956800B1E999 /* GeneralKeyHolderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */; };
 		9627F93A2B59956800B1E999 /* GeneralOtherSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9372B59956800B1E999 /* GeneralOtherSetting.swift */; };
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
+		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		A0B65CA0F31AC8ECFB8347CC /* Pods_EasydictTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378E73A7EA8FC8FB9C975A63 /* Pods_EasydictTests.framework */; };
 		B87AC7E36367075BA5D13234 /* Pods_Easydict.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6372B33DFF803C7096A82250 /* Pods_Easydict.framework */; };
 		C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD01E82B12B3C80025EE8E /* TencentService.swift */; };
@@ -815,6 +816,7 @@
 				EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */,
 				03CF27FE2B3DA7D500E19B57 /* Realm in Frameworks */,
 				03A830902B4073E700112834 /* AppCenterAnalytics in Frameworks */,
+				967712EA2B5B913600105E0F /* KeyHolder in Frameworks */,
 				03B63ABF2A86967800E155ED /* CoreServices.framework in Frameworks */,
 				038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */,
 				038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */,
@@ -2374,6 +2376,7 @@
 				038EA1A92B41169C008A6DD1 /* ZipArchive */,
 				038EA1AC2B41282F008A6DD1 /* MJExtension */,
 				EA3B81FB2B52555C004C0E8B /* Defaults */,
+				967712E92B5B913600105E0F /* KeyHolder */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2433,6 +2436,7 @@
 				038EA1A82B41169C008A6DD1 /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				038EA1AB2B41282F008A6DD1 /* XCRemoteSwiftPackageReference "MJExtension" */,
 				EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */,
+				967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3409,6 +3413,14 @@
 				minimumVersion = 5.8.1;
 			};
 		};
+		967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Clipy/KeyHolder.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
 		EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults.git";
@@ -3494,6 +3506,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		967712E92B5B913600105E0F /* KeyHolder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */;
+			productName = KeyHolder;
 		};
 		EA3B81FB2B52555C004C0E8B /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
