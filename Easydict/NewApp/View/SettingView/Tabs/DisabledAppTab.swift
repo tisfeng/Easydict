@@ -179,42 +179,20 @@ private struct ListButton: View {
 private struct BlockAppItemView: View {
     @EnvironmentObject var disabledAppViewModel: DisabledAppViewModel
 
-    let appIcon: NSImage
-    let appName: String
+    @StateObject private var appItemViewModel: AppItemViewModel
 
     init(with appModel: EZAppModel) {
-        let appBundleId = appModel.appBundleID
-        let workspace = NSWorkspace.shared
-        let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
-        guard let appURL else {
-            appIcon = .init()
-            appName = ""
-            return
-        }
-
-        let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
-        guard let appPath else {
-            appIcon = .init()
-            appName = ""
-            return
-        }
-        appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
-
-        guard let appBundle = Bundle(url: appURL) else {
-            appName = ""
-            return
-        }
-        appName = appBundle.applicationName
+        _appItemViewModel = StateObject(wrappedValue: AppItemViewModel(appModel: appModel))
     }
 
     var body: some View {
         HStack(alignment: .center) {
-            Image(nsImage: appIcon)
+            Image(nsImage: appItemViewModel.appIcon)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 24, height: 24)
 
-            Text(appName)
+            Text(appItemViewModel.appName)
 
             Spacer()
         }
@@ -222,6 +200,34 @@ private struct BlockAppItemView: View {
         .contentShape(Rectangle())
         .padding(.vertical, 4)
         .padding(.leading, 6)
+    }
+}
+
+@available(macOS 13.0, *)
+private class AppItemViewModel: ObservableObject {
+    @Published var appIcon = NSImage()
+
+    @Published var appName = ""
+
+    var appModel: EZAppModel
+
+    init(appModel: EZAppModel) {
+        self.appModel = appModel
+        getAppBundleInfo()
+    }
+
+    func getAppBundleInfo() {
+        let appBundleId = appModel.appBundleID
+        let workspace = NSWorkspace.shared
+        let appURL = workspace.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appURL else { return }
+
+        let appPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleId)
+        guard let appPath else { return }
+        appIcon = workspace.icon(forFile: appPath.path(percentEncoded: false))
+
+        guard let appBundle = Bundle(url: appURL) else { return }
+        appName = appBundle.applicationName
     }
 }
 
