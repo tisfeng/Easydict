@@ -51,6 +51,9 @@ struct SettingView: View {
 
     func resizeWindowFrame() {
         guard let window else { return }
+        
+        // Disable zoom button, ref: https://stackoverflow.com/a/66039864/8378840
+        window.standardWindowButton(.zoomButton)?.isEnabled = false
 
         // Keep the settings page windows all the same width to avoid strange animations.
         let maxWidth = 650
