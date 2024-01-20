@@ -25,7 +25,7 @@ class Shortcut: NSObject {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
     }
-    
+
     // Make sure the class has only one instance
     // Should not init or copy outside
     override private init() {}
@@ -119,22 +119,22 @@ extension Shortcut {
 // shortcut binding func
 extension Shortcut {
     @objc func selectTextTranslate() {
-        print("1")
+        EZWindowManager.shared().selectTextTranslate()
     }
 
     @objc func snipTranslate() {
-        print("2")
+        EZWindowManager.shared().snipTranslate()
     }
 
     @objc func inputTranslate() {
-        print("3")
+        EZWindowManager.shared().inputTranslate()
     }
 
     @objc func showMiniFloatingWindow() {
-        print("4")
+        EZWindowManager.shared().showMiniFloatingWindow()
     }
 
     @objc func screenshotOCR() {
-        print("5")
+        EZWindowManager.shared().screenshotOCR()
     }
 }
