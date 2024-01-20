@@ -9,7 +9,7 @@
 import Combine
 import SwiftUI
 
-class DisabledAppViewModel: ObservableObject {
+private class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
     @Published var selectedAppModels: Set<EZAppModel> = []
     @Published var isImporting = false
@@ -60,7 +60,7 @@ class DisabledAppViewModel: ObservableObject {
 
 @available(macOS 13.0, *)
 struct DisabledAppTab: View {
-    @StateObject var disabledAppViewModel = DisabledAppViewModel()
+    @StateObject private var disabledAppViewModel = DisabledAppViewModel()
 
     var listToolbar: some View {
         ListToolbar()
@@ -133,15 +133,16 @@ private struct ListToolbar: View {
         VStack(spacing: 0) {
             Divider()
             HStack(spacing: 0) {
-                ListButton(imageName: "plus", enabled: true) {
+                ListButton(systemName: "plus") {
                     disabledAppViewModel.isImporting.toggle()
                 }
-                Divider().padding(.vertical, 1)
-                let isNoSelectedApps = disabledAppViewModel.selectedAppModels.isEmpty
-                ListButton(imageName: "minus", enabled: !isNoSelectedApps) {
+                .environment(\.isEnabled, true)
+                Divider()
+                    .padding(.vertical, 1)
+                ListButton(systemName: "minus") {
                     disabledAppViewModel.removeDisabledApp()
                 }
-                .disabled(isNoSelectedApps)
+                .environment(\.isEnabled, !disabledAppViewModel.selectedAppModels.isEmpty)
                 Spacer()
             }
             .padding(2)
@@ -153,24 +154,25 @@ private struct ListToolbar: View {
 
 @available(macOS 13.0, *)
 private struct ListButton: View {
-    var imageName: String
-    var enabled: Bool
+    @Environment(\.isEnabled) private var isEnabled: Bool
+    var systemName: String
     var action: () -> Void
 
     var body: some View {
         Button(action: {
             action()
         }) {
-            Image(systemName: imageName)
+            Image(systemName: systemName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 10, height: 10)
                 .padding(.horizontal, 8)
                 .contentShape(Rectangle())
-                .foregroundStyle(enabled ? Color(.secondaryLabelColor) : Color(.tertiaryLabelColor))
+                .foregroundStyle(isEnabled ? Color(.secondaryLabelColor) : Color(.tertiaryLabelColor))
                 .font(.system(size: 14, weight: .semibold))
         }
         .buttonStyle(BorderlessButtonStyle())
+        .disabled(isEnabled)
     }
 }
 
