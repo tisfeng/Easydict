@@ -36,10 +36,10 @@
 
     if (!EasydictNewAppManager.shared.enable) {
         [EZMenuItemManager.shared setup];
+        [EZShortcut setup];
+    } else {
+        [Shortcut setupShortcut];
     }
-    
-    [EZShortcut setup];
-    [Shortcut setupShortcut];
 
     [EZWindowManager.shared showMainWindowIfNedded];
     
