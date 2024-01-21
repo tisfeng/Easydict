@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import Magnet
 
 // Setting
 extension Defaults.Keys {
@@ -90,9 +91,9 @@ extension Defaults.Keys {
 
 /// shortcut
 extension Defaults.Keys {
-    static let selectionShortcutKey = Key<Data>("EZSelectionShortcutKey_keyHolder", default: Data())
-    static let snipShortcutKey = Key<Data>("EZSnipShortcutKey_keyHolder", default: Data())
-    static let inputShortcutKey = Key<Data>("EZInputShortcutKey_keyHolder", default: Data())
-    static let screenshotOCRShortcutKey = Key<Data>("EZScreenshotOCRShortcutKey_keyHolder", default: Data())
-    static let showMiniWindowShortcutKey = Key<Data>("EZShowMiniShortcutKey_keyHolder", default: Data())
+    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder", default: nil)
+    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder", default: nil)
+    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder", default: nil)
+    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder", default: nil)
+    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder", default: nil)
 }

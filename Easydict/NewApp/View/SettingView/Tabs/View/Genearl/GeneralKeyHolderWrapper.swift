@@ -56,43 +56,40 @@ extension GeneralKeyHolderWrapper {
 
         func recordView(_: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
             storeKeyCombo(with: keyCombo)
-            guard let keyCombo else { return }
             Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
         }
 
         func restoreKeyCombo(_ recordView: RecordView) {
-            var data: Data
+            var keyCombo: KeyCombo?
             switch type {
             case .inputTranslate:
-                data = Defaults[.inputShortcutKey]
+                keyCombo = Defaults[.inputShortcut]
             case .snipTranslate:
-                data = Defaults[.snipShortcutKey]
+                keyCombo = Defaults[.snipShortcut]
             case .selectTranslate:
-                data = Defaults[.selectionShortcutKey]
+                keyCombo = Defaults[.selectionShortcut]
             case .silentScreenshotOcr:
-                data = Defaults[.screenshotOCRShortcutKey]
+                keyCombo = Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
-                data = Defaults[.showMiniWindowShortcutKey]
+                keyCombo = Defaults[.showMiniWindowShortcut]
             }
-            guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return }
             recordView.keyCombo = keyCombo
             Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
         }
 
         // shortcut
         func storeKeyCombo(with keyCombo: KeyCombo?) {
-            let data = try? JSONEncoder().encode(keyCombo)
             switch type {
             case .inputTranslate:
-                Defaults[.inputShortcutKey] = data ?? Data()
+                Defaults[.inputShortcut] = keyCombo
             case .snipTranslate:
-                Defaults[.snipShortcutKey] = data ?? Data()
+                Defaults[.snipShortcut] = keyCombo
             case .selectTranslate:
-                Defaults[.selectionShortcutKey] = data ?? Data()
+                Defaults[.selectionShortcut] = keyCombo
             case .silentScreenshotOcr:
-                Defaults[.screenshotOCRShortcutKey] = data ?? Data()
+                Defaults[.screenshotOCRShortcut] = keyCombo
             case .showMiniWindow:
-                Defaults[.showMiniWindowShortcutKey] = data ?? Data()
+                Defaults[.showMiniWindowShortcut] = keyCombo
             }
         }
     }

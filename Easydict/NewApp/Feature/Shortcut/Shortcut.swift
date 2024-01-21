@@ -49,57 +49,31 @@ class Shortcut: NSObject {
 // restore shortcut
 extension Shortcut {
     func restoreShortcut() {
-        if let inputTranslateKeyCombo = restoreInputTranslate() {
+        if let inputTranslateKeyCombo = Defaults[.inputShortcut] {
             bindingShortCut(keyCombo: inputTranslateKeyCombo, type: .inputTranslate)
         }
-        if let snipShortcutKeyKeyCombo = restoreSnipShortcutKey() {
+        if let snipShortcutKeyKeyCombo = Defaults[.snipShortcut] {
             bindingShortCut(keyCombo: snipShortcutKeyKeyCombo, type: .snipTranslate)
         }
-        if let selectionShortcutKeyCombo = restoreSelectionShortcutKey() {
+        if let selectionShortcutKeyCombo = Defaults[.selectionShortcut] {
             bindingShortCut(keyCombo: selectionShortcutKeyCombo, type: .selectTranslate)
         }
-        if let screenshotOCRShortcutKeyCombo = restoreScreenshotOCRShortcutKey() {
+        if let screenshotOCRShortcutKeyCombo = Defaults[.screenshotOCRShortcut] {
             bindingShortCut(keyCombo: screenshotOCRShortcutKeyCombo, type: .silentScreenshotOcr)
         }
-        if let showMiniWindowShortcutKeyCombo = restoreShowMiniWindow() {
+        if let showMiniWindowShortcutKeyCombo = Defaults[.showMiniWindowShortcut] {
             bindingShortCut(keyCombo: showMiniWindowShortcutKeyCombo, type: .showMiniWindow)
         }
-    }
-
-    private func restoreInputTranslate() -> KeyCombo? {
-        let data = Defaults[.inputShortcutKey]
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
-        return keyCombo
-    }
-
-    private func restoreSnipShortcutKey() -> KeyCombo? {
-        let data = Defaults[.snipShortcutKey]
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
-        return keyCombo
-    }
-
-    private func restoreSelectionShortcutKey() -> KeyCombo? {
-        let data = Defaults[.selectionShortcutKey]
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
-        return keyCombo
-    }
-
-    private func restoreScreenshotOCRShortcutKey() -> KeyCombo? {
-        let data = Defaults[.screenshotOCRShortcutKey]
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
-        return keyCombo
-    }
-
-    private func restoreShowMiniWindow() -> KeyCombo? {
-        let data = Defaults[.showMiniWindowShortcutKey]
-        guard let keyCombo = try? JSONDecoder().decode(KeyCombo.self, from: data) else { return nil }
-        return keyCombo
     }
 }
 
 // binding shortcut
 extension Shortcut {
-    func bindingShortCut(keyCombo: KeyCombo, type: ShortcutType) {
+    func bindingShortCut(keyCombo: KeyCombo?, type: ShortcutType) {
+        guard let keyCombo else {
+            HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
+            return
+        }
         var hotKey: HotKey
         switch type {
         case .inputTranslate:
@@ -160,30 +134,54 @@ extension Shortcut {
     public func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
         switch type {
         case .inputTranslate:
-            guard let keyCombo = restoreInputTranslate() else { return nil }
+            guard let keyCombo = Defaults[.inputShortcut] else { return nil }
             return keyCombo
         case .snipTranslate:
-            guard let keyCombo = restoreSnipShortcutKey() else { return nil }
+            guard let keyCombo = Defaults[.snipShortcut] else { return nil }
             return keyCombo
         case .selectTranslate:
-            guard let keyCombo = restoreSelectionShortcutKey() else { return nil }
+            guard let keyCombo = Defaults[.selectionShortcut] else { return nil }
             return keyCombo
         case .silentScreenshotOcr:
-            guard let keyCombo = restoreScreenshotOCRShortcutKey() else { return nil }
+            guard let keyCombo = Defaults[.screenshotOCRShortcut] else { return nil }
             return keyCombo
         case .showMiniWindow:
-            guard let keyCombo = restoreShowMiniWindow() else { return nil }
+            guard let keyCombo = Defaults[.showMiniWindowShortcut] else { return nil }
             return keyCombo
         }
     }
 }
 
-/// can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
-/// keyboardShortcut not support double modifier key but can use ⌥ as character
-extension View {
-    public func keyboardShortcut(_ type: ShortcutType) -> some View {
-        guard let keyCombo = Shortcut.shared.shortcutKeyCombo(type) else { return AnyView(self) }
-        return AnyView(keyboardShortcut(fetchShortcutKeyEquivalent(keyCombo), modifiers: fetchShortcutKeyEventModifiers(keyCombo)))
+struct KeyboardShortcut: ViewModifier {
+    init(type: ShortcutType) {
+        let key: Defaults.Key<KeyCombo?> = switch type {
+        case .inputTranslate:
+            .inputShortcut
+        case .snipTranslate:
+            .snipShortcut
+        case .selectTranslate:
+            .selectionShortcut
+        case .silentScreenshotOcr:
+            .screenshotOCRShortcut
+        case .showMiniWindow:
+            .showMiniWindowShortcut
+        }
+
+        _shortcut = .init(key)
+    }
+
+    @Default var shortcut: KeyCombo?
+
+    func body(content: Content) -> some View {
+        if let shortcut {
+            content
+                .keyboardShortcut(
+                    fetchShortcutKeyEquivalent(shortcut),
+                    modifiers: fetchShortcutKeyEventModifiers(shortcut)
+                )
+        } else {
+            content
+        }
     }
 
     private func fetchShortcutKeyEquivalent(_ keyCombo: KeyCombo) -> KeyEquivalent {
@@ -214,5 +212,14 @@ extension View {
         }
 
         return modifiers
+    }
+}
+
+/// can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
+/// keyboardShortcut not support double modifier key but can use ⌥ as character
+public extension View {
+    @ViewBuilder
+    func keyboardShortcut(_ type: ShortcutType) -> some View {
+        modifier(KeyboardShortcut(type: type))
     }
 }
