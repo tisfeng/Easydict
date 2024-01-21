@@ -36,11 +36,16 @@ struct MenuItemView: View {
             versionItem
             Divider()
             inputItem
+                .keyboardShortcut(.inputTranslate)
             screenshotItem
+                .keyboardShortcut(.snipTranslate)
             selectWordItem
+                .keyboardShortcut(.selectTranslate)
             miniWindowItem
+                .keyboardShortcut(.showMiniWindow)
             Divider()
             ocrItem
+                .keyboardShortcut(.silentScreenshotOcr)
             Divider()
             settingItem
                 .keyboardShortcut(.init(","))
@@ -104,17 +109,14 @@ struct MenuItemView: View {
 
     @ViewBuilder
     private var inputItem: some View {
-        HStack {
-            Button {
-                NSLog("输入翻译")
-                EZWindowManager.shared().inputTranslate()
-            } label: {
-                HStack {
-                    Image(systemName: "keyboard")
-                    Text("menu_input_translate")
-                }
+        Button {
+            NSLog("输入翻译")
+            EZWindowManager.shared().inputTranslate()
+        } label: {
+            HStack {
+                Image(systemName: "keyboard")
+                Text("menu_input_translate")
             }
-            Text(Shortcut.shared.fetchShortcutKeyStr(.inputTranslate))
         }
     }
 

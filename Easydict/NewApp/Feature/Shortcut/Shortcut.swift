@@ -9,9 +9,10 @@ import Defaults
 import Foundation
 import KeyHolder
 import Magnet
+import SwiftUI
 
 /// Shortcut Service
-enum ShortcutType: String {
+public enum ShortcutType: String {
     case inputTranslate = "EZInputShortcutKey"
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
@@ -154,27 +155,9 @@ extension Shortcut {
     }
 }
 
-// fetch shortcut string
+// fetch shortcut KeyCombo
 extension Shortcut {
-    // can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
-    // keyboardShortcut not support double modifier key
-
-//    func fetchShortcutKeyEquivalent(_ type: ShortcutType) -> String {
-//        guard let keyCombo = fetchShortcutKeyCombo(type) else { return "" }
-//        return keyCombo.keyEquivalent
-//    }
-//
-//    func fetchShortcutKeyEventModifiers(_ type: ShortcutType) -> EventModifiers {
-//        guard let keyCombo = fetchShortcutKeyCombo(type) else { return [] }
-//        return [.command, .command]
-//    }
-
-    func fetchShortcutKeyStr(_: ShortcutType) -> String {
-        guard let keyCombo = restoreInputTranslate() else { return "" }
-        return shortcutKeyStr(keyCombo)
-    }
-
-    private func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
+    public func shortcutKeyCombo(_ type: ShortcutType) -> KeyCombo? {
         switch type {
         case .inputTranslate:
             guard let keyCombo = restoreInputTranslate() else { return nil }
@@ -193,14 +176,43 @@ extension Shortcut {
             return keyCombo
         }
     }
+}
 
-    private func shortcutKeyStr(_ keyCombo: KeyCombo) -> String {
-        var shortcut = ""
+/// can't using keyEquivalent and EventModifiers in SwiftUI MenuItemView direct, because item
+/// keyboardShortcut not support double modifier key but can use ⌥ as character
+extension View {
+    public func keyboardShortcut(_ type: ShortcutType) -> some View {
+        guard let keyCombo = Shortcut.shared.shortcutKeyCombo(type) else { return AnyView(self) }
+        return AnyView(keyboardShortcut(fetchShortcutKeyEquivalent(keyCombo), modifiers: fetchShortcutKeyEventModifiers(keyCombo)))
+    }
+
+    private func fetchShortcutKeyEquivalent(_ keyCombo: KeyCombo) -> KeyEquivalent {
         if keyCombo.doubledModifiers {
-            shortcut = keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalentModifierMaskString
+            return KeyEquivalent(Character(keyCombo.keyEquivalentModifierMaskString))
         } else {
-            shortcut = keyCombo.keyEquivalentModifierMaskString + keyCombo.keyEquivalent
+            return KeyEquivalent(Character(keyCombo.keyEquivalent))
         }
-        return shortcut
+    }
+
+    private func fetchShortcutKeyEventModifiers(_ keyCombo: KeyCombo) -> EventModifiers {
+        var modifiers: EventModifiers = []
+
+        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.command) {
+            modifiers.update(with: EventModifiers.command)
+        }
+
+        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.control) {
+            modifiers.update(with: EventModifiers.control)
+        }
+
+        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.option) {
+            modifiers.update(with: EventModifiers.option)
+        }
+
+        if keyCombo.keyEquivalentModifierMask.contains(NSEvent.ModifierFlags.shift) {
+            modifiers.update(with: EventModifiers.shift)
+        }
+
+        return modifiers
     }
 }
