@@ -11,6 +11,7 @@ import SwiftUI
 enum SettingTab: Int {
     case general
     case service
+    case disabled
     case privacy
     case about
 }
@@ -29,6 +30,10 @@ struct SettingView: View {
             ServiceTab()
                 .tabItem { Label("service", systemImage: "briefcase") }
                 .tag(SettingTab.service)
+
+            DisabledAppTab()
+                .tabItem { Label("disabled_app_list", systemImage: "nosign") }
+                .tag(SettingTab.disabled)
 
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
@@ -52,14 +57,25 @@ struct SettingView: View {
     func resizeWindowFrame() {
         guard let window else { return }
 
-        let originalFrame = window.frame
-        let newSize = switch selection {
-        case .general, .privacy, .about:
-            CGSize(width: 500, height: 520)
-        case .service:
-            CGSize(width: 800, height: 520)
+        // Disable zoom button, ref: https://stackoverflow.com/a/66039864/8378840
+        window.standardWindowButton(.zoomButton)?.isEnabled = false
+
+        // Keep the settings page windows all the same width to avoid strange animations.
+        let maxWidth = 650
+        let height = switch selection {
+        case .general:
+            maxWidth
+        case .service, .disabled:
+            500
+        case .privacy:
+            320
+        case .about:
+            450
         }
 
+        let newSize = CGSize(width: maxWidth, height: height)
+
+        let originalFrame = window.frame
         let newY = originalFrame.origin.y + originalFrame.size.height - newSize.height
         let newRect = NSRect(origin: CGPoint(x: originalFrame.origin.x, y: newY), size: newSize)
 
