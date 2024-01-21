@@ -6,11 +6,20 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import Foundation
 
 @objcMembers class Configuration: NSObject {
     private(set) static var shared = Configuration()
+
+    override private init() {
+        super.init()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            observeKeys()
+        }
+    }
 
     var appDelegate = NSApp.delegate as? AppDelegate
 
@@ -151,140 +160,265 @@ import Foundation
 
     static func destroySharedInstance() {
         shared = Configuration()
-        shared.observeKeys()
     }
 
-    func observeKeys() {
-        Defaults.observe(.firstLanguage) { [unowned self] _ in
-            didSetFirstLanguage()
-        }.tieToLifetime(of: self)
+    private func observeKeys() {
+        cancellables.append(
+            Defaults.publisher(.firstLanguage)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetFirstLanguage()
+                }
+        )
 
-        Defaults.observe(.secondLanguage) { [unowned self] _ in
-            didSetSecondLanguage()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.secondLanguage)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetSecondLanguage()
+                }
+        )
 
-        Defaults.observe(.autoSelectText) { [unowned self] _ in
-            didSetAutoSelectText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoSelectText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoSelectText()
+                }
+        )
 
-        Defaults.observe(.forceAutoGetSelectedText) { [unowned self] _ in
-            didSetForceAutoGetSelectedText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.forceAutoGetSelectedText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetForceAutoGetSelectedText()
+                }
+        )
 
-        Defaults.observe(.disableEmptyCopyBeep) { [unowned self] _ in
-            didSetDisableEmptyCopyBeep()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.disableEmptyCopyBeep)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetDisableEmptyCopyBeep()
+                }
+        )
 
-        Defaults.observe(.clickQuery) { [unowned self] _ in
-            didSetClickQuery()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.clickQuery)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetClickQuery()
+                }
+        )
 
-        Defaults.observe(.launchAtStartup) { [unowned self] change in
-            didSetLaunchAtStartup(change.oldValue, new: change.newValue)
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.launchAtStartup)
+                .removeDuplicates()
+                .sink { [weak self] change in
+                    self?.didSetLaunchAtStartup(change.oldValue, new: change.newValue)
+                }
+        )
 
-        Defaults.observe(.hideMainWindow) { [unowned self] _ in
-            didSetHideMainWindow()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.hideMainWindow)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetHideMainWindow()
+                }
+        )
 
-        Defaults.observe(.autoQueryOCRText) { [unowned self] _ in
-            didSetAutoQueryOCRText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoQueryOCRText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoQueryOCRText()
+                }
+        )
 
-        Defaults.observe(.autoQuerySelectedText) { [unowned self] _ in
-            didSetAutoQuerySelectedText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoQuerySelectedText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoQuerySelectedText()
+                }
+        )
 
-        Defaults.observe(.autoQueryPastedText) { [unowned self] _ in
-            didSetAutoQueryPastedText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoQueryPastedText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoQueryPastedText()
+                }
+        )
 
-        Defaults.observe(.autoPlayAudio) { [unowned self] _ in
-            didSetAutoPlayAudio()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoPlayAudio)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoPlayAudio()
+                }
+        )
 
-        Defaults.observe(.autoCopySelectedText) { [unowned self] _ in
-            didSetAutoCopySelectedText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoCopySelectedText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoCopySelectedText()
+                }
+        )
 
-        Defaults.observe(.autoCopyOCRText) { [unowned self] _ in
-            didSetAutoCopyOCRText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoCopyOCRText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoCopyOCRText()
+                }
+        )
 
-        Defaults.observe(.autoCopyFirstTranslatedText) { [unowned self] _ in
-            didSetAutoCopyFirstTranslatedText()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.autoCopyFirstTranslatedText)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAutoCopyFirstTranslatedText()
+                }
+        )
 
-        Defaults.observe(.languageDetectOptimize) { [unowned self] _ in
-            didSetLanguageDetectOptimize()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.languageDetectOptimize)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetLanguageDetectOptimize()
+                }
+        )
 
-        Defaults.observe(.defaultTTSServiceType) { [unowned self] _ in
-            didSetDefaultTTSServiceType()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.defaultTTSServiceType)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetDefaultTTSServiceType()
+                }
+        )
 
-        Defaults.observe(.showGoogleQuickLink) { [unowned self] _ in
-            didSetShowGoogleQuickLink()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.showGoogleQuickLink)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShowGoogleQuickLink()
+                }
+        )
 
-        Defaults.observe(.showEudicQuickLink) { [unowned self] _ in
-            didSetShowEudicQuickLink()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.showEudicQuickLink)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShowEudicQuickLink()
+                }
+        )
 
-        Defaults.observe(.showAppleDictionaryQuickLink) { [unowned self] _ in
-            didSetShowAppleDictionaryQuickLink()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.showAppleDictionaryQuickLink)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShowAppleDictionaryQuickLink()
+                }
+        )
 
-        Defaults.observe(.hideMenuBarIcon) { [unowned self] _ in
-            didSetHideMenuBarIcon()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.hideMenuBarIcon)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetHideMenuBarIcon()
+                }
+        )
 
-        Defaults.observe(.enableBetaNewApp) { [unowned self] _ in
-            didSetEnableBetaNewApp()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.enableBetaNewApp)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetEnableBetaNewApp()
+                }
+        )
 
-        Defaults.observe(.fixedWindowPosition) { [unowned self] _ in
-            didSetFixedWindowPosition()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.fixedWindowPosition)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetFixedWindowPosition()
+                }
+        )
 
-        Defaults.observe(.mouseSelectTranslateWindowType) { [unowned self] _ in
-            didSetMouseSelectTranslateWindowType()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.mouseSelectTranslateWindowType)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetMouseSelectTranslateWindowType()
+                }
+        )
 
-        Defaults.observe(.shortcutSelectTranslateWindowType) { [unowned self] _ in
-            didSetShortcutSelectTranslateWindowType()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.shortcutSelectTranslateWindowType)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetShortcutSelectTranslateWindowType()
+                }
+        )
 
-        Defaults.observe(.adjustPopButtonOrigin) { [unowned self] _ in
-            didSetAdjustPopButtomOrigin()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.adjustPopButtonOrigin)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAdjustPopButtomOrigin()
+                }
+        )
 
-        Defaults.observe(.allowCrashLog) { [unowned self] _ in
-            didSetAllowCrashLog()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.allowCrashLog)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAllowCrashLog()
+                }
+        )
 
-        Defaults.observe(.allowAnalytics) { [unowned self] _ in
-            didSetAllowAnalytics()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.allowAnalytics)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetAllowAnalytics()
+                }
+        )
 
-        Defaults.observe(.clearInput) { [unowned self] _ in
-            didSetClearInput()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.clearInput)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetClearInput()
+                }
+        )
 
-        Defaults.observe(.fontSizeOptionIndex) { [unowned self] _ in
-            didSetFontSizeIndex()
-        }.tieToLifetime(of: self)
+        cancellables.append(
+            Defaults.publisher(.fontSizeOptionIndex)
+                .removeDuplicates()
+                .sink { [weak self] _ in
+                    self?.didSetFontSizeIndex()
+                }
+        )
 
-        Defaults.observe(.appearanceType) { [unowned self] change in
-            let newValue = change.newValue
-            let oldValue = change.oldValue
-            print("update appearanceType: \(oldValue.title) -> \(newValue.title)")
+        cancellables.append(
+            Defaults.publisher(.appearanceType)
+                .removeDuplicates()
+                .sink { [weak self] change in
+                    let newValue = change.newValue
+                    let oldValue = change.oldValue
+                    print("update appearanceType: \(oldValue.title) -> \(newValue.title)")
 
-            if newValue != oldValue {
-                didSetAppearance(newValue)
-            }
-        }.tieToLifetime(of: self)
+                    if newValue != oldValue {
+                        self?.didSetAppearance(newValue)
+                    }
+                }
+        )
     }
+
+    var cancellables: [AnyCancellable] = []
 
     func enableBetaFeaturesIfNeeded() {
         guard beta else { return }
