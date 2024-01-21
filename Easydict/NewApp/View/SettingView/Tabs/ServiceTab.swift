@@ -172,7 +172,7 @@ private struct ServiceItemView: View {
         .listRowSeparator(.hidden)
         .listRowInsets(.init())
         .padding(10)
-        .listRowBackground(viewModel.selectedService == service ? Color("service_cell_highlight") : tableColor)
+        .listRowBackground(viewModel.selectedService == service ? Color("service_cell_highlight_color") : tableColor)
         .overlay {
             TapHandler {
                 viewModel.selectedService = service

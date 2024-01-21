@@ -21,6 +21,7 @@
 #import "entry.h"
 #import "AppDelegate.h"
 #import "EZConfiguration.h"
+#import "EZAppModel.h"
 #import "EZLocalStorage.h"
 
 #import "NSString+EZConvenience.h"
