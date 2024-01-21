@@ -665,7 +665,7 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:stringValue forKey:EZBetaFeatureKey];
 }
 - (BOOL)isBeta {
-    NSString *stringValue = [NSUserDefaults mm_readString:EZBetaFeatureKey defaultValue:@"0"];
+    NSString *stringValue = [NSUserDefaults mm_read:EZBetaFeatureKey];
     BOOL isBeta = [stringValue boolValue];
     return isBeta;
 }
