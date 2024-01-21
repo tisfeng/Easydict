@@ -104,14 +104,17 @@ struct MenuItemView: View {
 
     @ViewBuilder
     private var inputItem: some View {
-        Button {
-            NSLog("输入翻译")
-            EZWindowManager.shared().inputTranslate()
-        } label: {
-            HStack {
-                Image(systemName: "keyboard")
-                Text("menu_input_translate")
+        HStack {
+            Button {
+                NSLog("输入翻译")
+                EZWindowManager.shared().inputTranslate()
+            } label: {
+                HStack {
+                    Image(systemName: "keyboard")
+                    Text("menu_input_translate")
+                }
             }
+            Text(Shortcut.shared.fetchShortcutKeyStr(.inputTranslate))
         }
     }
 
