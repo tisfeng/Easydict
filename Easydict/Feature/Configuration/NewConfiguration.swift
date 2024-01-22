@@ -91,9 +91,6 @@ import Foundation
     @DefaultsWrapper(.languageDetectOptimize)
     var languageDetectOptimize: EZLanguageDetectOptimize
 
-//    @DefaultsWrapper(.defaultTTSServiceType)
-//    var defaultTTSServiceType: TTSServiceType
-
     var defaultTTSServiceType: ServiceType {
         get {
             ServiceType(rawValue: Defaults[.defaultTTSServiceType].rawValue)
