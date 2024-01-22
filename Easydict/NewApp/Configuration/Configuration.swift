@@ -112,7 +112,7 @@ extension CGRect: Defaults.Serializable {
 }
 
 @propertyWrapper
-struct DefaultsWrapper<T: Defaults.Serializable> {
+class DefaultsWrapper<T: Defaults.Serializable> {
     var wrappedValue: T {
         get {
             Defaults[key]
