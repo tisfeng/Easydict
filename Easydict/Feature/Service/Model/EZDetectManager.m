@@ -102,7 +102,7 @@
     
     [self.appleService detectText:queryText completion:^(EZLanguage appleDetectdedLanguage, NSError *_Nullable error) {
         NSMutableArray<EZLanguage> *preferredLanguages = [[EZLanguageManager.shared preferredLanguages] mutableCopy];
-        EZLanguageDetectOptimize languageDetectOptimize = Configuration.shared.languageDetectOptimize;
+        LanguageDetectOptimize languageDetectOptimize = Configuration.shared.languageDetectOptimize;
         
         // Add English and Chinese to the preferred language list, in general, sysytem detect English and Chinese is relatively accurate, so we don't need to use google or baidu to detect again.
         [preferredLanguages addObjectsFromArray:@[
@@ -112,7 +112,7 @@
         ]];
         
         BOOL isPreferredLanguage = [preferredLanguages containsObject:appleDetectdedLanguage];
-        if (isPreferredLanguage || languageDetectOptimize == EZLanguageDetectOptimizeNone) {
+        if (isPreferredLanguage || languageDetectOptimize == LanguageDetectOptimizeNone) {
             [self handleDetectedLanguage:appleDetectdedLanguage error:error completion:completion];
             return;
         }

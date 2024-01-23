@@ -33,7 +33,7 @@ extension Defaults.Keys {
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>("EZConfiguration_kAutoCopySelectedTextKey", default: false)
     static let autoCopyFirstTranslatedText = Key<Bool>("EZConfiguration_kAutoCopyFirstTranslatedTextKey", default: false)
-    static let languageDetectOptimize = Key<EZLanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: EZLanguageDetectOptimize.none)
+    static let languageDetectOptimize = Key<LanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: LanguageDetectOptimize.none)
     static let defaultTTSServiceType = Key<TTSServiceType>("EZConfiguration_kDefaultTTSServiceTypeKey", default: TTSServiceType.youdao)
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)

@@ -26,7 +26,7 @@ struct GeneralTab: View {
             Section {
                 FirstAndSecondLanguageSettingView()
                 Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
-                    ForEach(EZLanguageDetectOptimize.allCases, id: \.rawValue) { option in
+                    ForEach(LanguageDetectOptimize.allCases, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
                     }

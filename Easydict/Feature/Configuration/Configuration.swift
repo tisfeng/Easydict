@@ -10,6 +10,15 @@ import Combine
 import Defaults
 import Foundation
 
+@objc enum LanguageDetectOptimize: Int {
+    case none = 0
+    case baidu = 1
+    case google = 2
+}
+
+let kEnableBetaNewAppKey = "EZConfiguration_kEnableBetaNewAppKey"
+let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
+
 @objcMembers class Configuration: NSObject {
     private(set) static var shared = Configuration()
 
@@ -89,7 +98,7 @@ import Foundation
     var autoCopyFirstTranslatedText: Bool
 
     @DefaultsWrapper(.languageDetectOptimize)
-    var languageDetectOptimize: EZLanguageDetectOptimize
+    var languageDetectOptimize: LanguageDetectOptimize
 
     var defaultTTSServiceType: ServiceType {
         get {
