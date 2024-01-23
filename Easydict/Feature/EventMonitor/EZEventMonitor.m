@@ -17,6 +17,7 @@
 #import "EZLocalStorage.h"
 #import "EZAppleScriptManager.h"
 #import "EZSystemUtility.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kDismissPopButtonDelayTime = 0.1;
 static NSTimeInterval const kDelayGetSelectedTextTime = 0.1;
@@ -300,7 +301,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
             self.selectTextType = EZSelectTextTypeAccessibility;
             
             // Monitor CGEventTap must be required after using Accessibility successfully.
-            if (EZConfiguration.shared.autoSelectText) {
+            if (Configuration.shared.autoSelectText) {
                 [self monitorCGEventTap];
             }
             
@@ -407,7 +408,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 }
 
 - (BOOL)enabledAutoSelectText {
-    EZConfiguration *config = [EZConfiguration shared];
+    Configuration *config = [Configuration shared];
     BOOL enabled = config.autoSelectText && !config.disabledAutoSelect;
     if (!enabled) {
         NSLog(@"disabled autoSelectText");
@@ -437,7 +438,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
     
     // If playing audio, we do not silence system volume.
     [EZAudioUtils isPlayingAudio:^(BOOL isPlaying) {
-        BOOL shouldTurnOffSoundTemporarily = EZConfiguration.shared.disableEmptyCopyBeep && !isPlaying;
+        BOOL shouldTurnOffSoundTemporarily = Configuration.shared.disableEmptyCopyBeep && !isPlaying;
         
         // Set volume to 0 to avoid system alert.
         if (shouldTurnOffSoundTemporarily) {
@@ -596,7 +597,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
 /// Check if should use simulation key to get selected text.
 - (BOOL)shouldUseSimulatedKey:(NSString *)text error:(AXError)error {
     BOOL isAutoSelectQuery = self.actionType == EZActionTypeAutoSelectQuery;
-    BOOL allowedForceAutoGetSelectedText = [EZConfiguration.shared forceAutoGetSelectedText];
+    BOOL allowedForceAutoGetSelectedText = [Configuration.shared forceAutoGetSelectedText];
     
     NSString *easydictBundleID = [[NSBundle mainBundle] bundleIdentifier];
 
@@ -610,7 +611,7 @@ CGEventRef eventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef eve
      
      FIX: https://github.com/tisfeng/Easydict/issues/192#issuecomment-1797878909
      */
-    if (isInEasydict && EZConfiguration.shared.isRecordingSelectTextShortcutKey) {
+    if (isInEasydict && Configuration.shared.isRecordingSelectTextShortcutKey) {
         return NO;
     }
     

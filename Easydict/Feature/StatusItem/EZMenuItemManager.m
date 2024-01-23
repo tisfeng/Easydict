@@ -70,7 +70,7 @@ static EZMenuItemManager *_instance;
     if (self.statusItem) {
         return;
     }
-    if (EZConfiguration.shared.hideMenuBarIcon) {
+    if (Configuration.shared.hideMenuBarIcon) {
         return;
     }
     
@@ -273,12 +273,12 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)increaseFontSizeAction:(NSMenuItem *)sender {
-    EZConfiguration.shared.fontSizeIndex += 1;
+    Configuration.shared.fontSizeIndex += 1;
     
 }
 
 - (IBAction)decreaseFontSizeAction:(NSMenuItem *)sender {
-    EZConfiguration.shared.fontSizeIndex -= 1;
+    Configuration.shared.fontSizeIndex -= 1;
     
 }
 

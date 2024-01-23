@@ -11,6 +11,7 @@
 #import "EZConfiguration.h"
 #import "NSColor+MyColors.h"
 #import "EZHoverButton.h"
+#import "Easydict-Swift.h"
 
 @interface EZSelectLanguageCell ()
 
@@ -86,8 +87,8 @@
             mm_strongify(self);
             self.queryModel.userSourceLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:EZConfiguration.shared.from]) {
-                EZConfiguration.shared.from = selectedLanguage;
+            if (![selectedLanguage isEqualToString:Configuration.shared.fromLanguage]) {
+                Configuration.shared.fromLanguage = selectedLanguage;
                 [self enterAction];
             }
         }];
@@ -103,8 +104,8 @@
             mm_strongify(self);
             self.queryModel.userTargetLanguage = selectedLanguage;
             
-            if (![selectedLanguage isEqualToString:EZConfiguration.shared.to]) {
-                EZConfiguration.shared.to = selectedLanguage;
+            if (![selectedLanguage isEqualToString:Configuration.shared.toLanguage]) {
+                Configuration.shared.toLanguage = selectedLanguage;
                 [self enterAction];
             }
         }];
@@ -164,8 +165,8 @@
     EZLanguage toLang = self.queryModel.userTargetLanguage;
     
     if (![fromLang isEqualToString:toLang]) {
-        EZConfiguration.shared.from = toLang;
-        EZConfiguration.shared.to = fromLang;
+        Configuration.shared.fromLanguage = toLang;
+        Configuration.shared.toLanguage = fromLang;
         
         [self.fromLanguageButton setSelectedLanguage:toLang];
         [self.toLanguageButton setSelectedLanguage:fromLang];
@@ -181,7 +182,7 @@
     [self setNeedsUpdateConstraints:YES];
     
     if (self.enterActionBlock) {
-        self.enterActionBlock(EZConfiguration.shared.from, EZConfiguration.shared.to);
+        self.enterActionBlock(Configuration.shared.fromLanguage, Configuration.shared.toLanguage);
     }
 }
 

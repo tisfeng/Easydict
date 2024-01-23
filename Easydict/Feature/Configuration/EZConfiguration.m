@@ -455,7 +455,7 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
     
-    [[DarkModeManager manager] updateDarkMode];
+    [[DarkModeManager manager] updateDarkMode:appearance];
 }
 
 #pragma mark - Window Frame

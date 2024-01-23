@@ -12,6 +12,7 @@
 #import "NSString+EZChineseText.h"
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 #define MethodNotImplemented()                                                                                                           \
 @throw [NSException exceptionWithName:NSInternalInconsistencyException                                                               \
@@ -54,7 +55,7 @@ userInfo:nil]
         return NO;
     }
     
-    if ([EZConfiguration.shared intelligentQueryModeForWindowType:self.windowType]) {
+    if ([Configuration.shared intelligentQueryModeForWindowType:self.windowType]) {
         // We usually don't want to lookup dictionary if text word > 1.
         EZQueryTextType queryType = [self.queryModel.queryText queryTypeWithLanguage:self.queryModel.queryFromLanguage maxWordCount:1];
         if ((queryType & self.intelligentQueryTextType) != queryType) {

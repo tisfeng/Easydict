@@ -9,14 +9,14 @@
 import Defaults
 import Foundation
 
-extension EZLanguageDetectOptimize: Defaults.Serializable {}
+extension LanguageDetectOptimize: Defaults.Serializable {}
 
-extension EZLanguageDetectOptimize: CaseIterable {
-    public static let allCases: [EZLanguageDetectOptimize] = [.none, .baidu, .google]
+extension LanguageDetectOptimize: CaseIterable {
+    public static let allCases: [LanguageDetectOptimize] = [.none, .baidu, .google]
 }
 
 @available(macOS 13, *)
-extension EZLanguageDetectOptimize: CustomLocalizedStringResourceConvertible {
+extension LanguageDetectOptimize: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {
         case .none:
