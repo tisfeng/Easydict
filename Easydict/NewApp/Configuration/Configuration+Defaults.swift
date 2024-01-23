@@ -1,5 +1,5 @@
 //
-//  Configuration.swift
+//  Configuration+Defaults.swift
 //  Easydict
 //
 //  Created by 戴藏龙 on 2024/1/12.

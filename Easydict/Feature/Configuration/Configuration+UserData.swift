@@ -1,5 +1,5 @@
 //
-//  NewConfiguration+UserData.swift
+//  Configuration+UserData.swift
 //  Easydict
 //
 //  Created by ljk on 2024/1/17.

@@ -1,5 +1,5 @@
 //
-//  NewConfiguration.swift
+//  Configuration.swift
 //  Easydict
 //
 //  Created by ljk on 2024/1/2.
