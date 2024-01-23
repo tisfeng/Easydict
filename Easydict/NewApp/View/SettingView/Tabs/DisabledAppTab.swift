@@ -12,8 +12,13 @@ import SwiftUI
 private class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
     @Published var selectedAppModels: Set<EZAppModel> = []
-    @Published var isImporting = false
     @Published var isShowImportErrorAlert = false
+    @Published var isImporting = false {
+        didSet {
+            // https://github.com/tisfeng/Easydict/issues/346
+            Configuration.shared.disabledAutoSelect = isImporting
+        }
+    }
 
     init() {
         fetchDisabledApps()
@@ -69,6 +74,7 @@ struct DisabledAppTab: View {
                 allowedContentTypes: [.application],
                 allowsMultipleSelection: true
             ) { result in
+//                Configuration.shared.disabledAutoSelect = true
                 switch result {
                 case let .success(urls):
                     disabledAppViewModel.newAppURLsSelected(from: urls)
@@ -76,6 +82,7 @@ struct DisabledAppTab: View {
                     print("fileImporter error: \(error)")
                     disabledAppViewModel.isShowImportErrorAlert.toggle()
                 }
+//                Configuration.shared.disabledAutoSelect = false
             }
             .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
                 Alert(title: Text(""), message: Text("setting.disabled.import_app_error.message"), dismissButton: .default(Text("ok")))
