@@ -414,12 +414,8 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
                 .removeDuplicates()
                 .sink { [weak self] change in
                     let newValue = change.newValue
-                    let oldValue = change.oldValue
-                    print("update appearanceType: \(oldValue.title) -> \(newValue.title)")
 
-                    if newValue != oldValue {
-                        self?.didSetAppearance(newValue)
-                    }
+                    self?.didSetAppearance(newValue)
                 }
         )
     }
