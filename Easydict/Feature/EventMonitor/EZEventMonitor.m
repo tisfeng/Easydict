@@ -143,8 +143,15 @@ static EZEventMonitor *_instance = nil;
     wechat.appBundleID = @"com.tencent.xinWeChat";
     wechat.triggerType = EZTriggerTypeDoubleClick | EZTriggerTypeTripleClick;
     
+    // https://github.com/tisfeng/Easydict/issues/346
+    // Add Easydict self as block app
+    EZAppModel *selfApp = [[EZAppModel alloc] init];
+    selfApp.appBundleID = [[NSBundle mainBundle] bundleIdentifier];
+    selfApp.triggerType = EZTriggerTypeNone;
+    
     NSArray *defaultAppModels = @[
         wechat,
+        selfApp
     ];
     
     return defaultAppModels;

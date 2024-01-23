@@ -254,9 +254,6 @@ static NSString *const EZColumnId = @"EZColumnId";
     NSArray<UTType *> *allowedTypes = @[ UTTypeApplication ];
     [openPanel setAllowedContentTypes:allowedTypes];
     
-    // ???: Since [auto select] will cause lag when dragging select apps, I don't know why 😰
-    Configuration.shared.disabledAutoSelect = YES;
-    
     NSModalResponse result = [openPanel runModal];
     if (result == NSModalResponseOK) {
         NSLog(@"selected URLs: %@", openPanel.URLs);
@@ -267,8 +264,6 @@ static NSString *const EZColumnId = @"EZColumnId";
         
         [self.tableView reloadData];
     }
-    
-    Configuration.shared.disabledAutoSelect = NO;
 }
 
 - (NSArray<EZAppModel *> *)appModelsFromBundleIDDict:(NSDictionary<NSString *, NSNumber *> *)appBundleIDDict {
