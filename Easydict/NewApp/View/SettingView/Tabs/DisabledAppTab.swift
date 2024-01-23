@@ -74,7 +74,6 @@ struct DisabledAppTab: View {
                 allowedContentTypes: [.application],
                 allowsMultipleSelection: true
             ) { result in
-//                Configuration.shared.disabledAutoSelect = true
                 switch result {
                 case let .success(urls):
                     disabledAppViewModel.newAppURLsSelected(from: urls)
@@ -82,7 +81,6 @@ struct DisabledAppTab: View {
                     print("fileImporter error: \(error)")
                     disabledAppViewModel.isShowImportErrorAlert.toggle()
                 }
-//                Configuration.shared.disabledAutoSelect = false
             }
             .alert(isPresented: $disabledAppViewModel.isShowImportErrorAlert) {
                 Alert(title: Text(""), message: Text("setting.disabled.import_app_error.message"), dismissButton: .default(Text("ok")))

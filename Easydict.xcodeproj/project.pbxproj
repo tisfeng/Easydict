@@ -70,6 +70,7 @@
 		037E006D2B3DC098006491C6 /* EZOpenAIService+EZPromptMessages.m in Sources */ = {isa = PBXBuildFile; fileRef = 03CF27FA2B3A787900E19B57 /* EZOpenAIService+EZPromptMessages.m */; };
 		038030952B4106800009230C /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 038030942B4106800009230C /* CocoaLumberjack */; };
 		038030972B4106800009230C /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 038030962B4106800009230C /* CocoaLumberjackSwift */; };
+		03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */; };
 		0383914C292FBE120009828C /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03839140292FBE120009828C /* Main.strings */; };
 		0383914D292FBE120009828C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03839143292FBE120009828C /* Assets.xcassets */; };
 		0383914E292FBE120009828C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03839144292FBE120009828C /* ViewController.m */; };
@@ -421,6 +422,7 @@
 		037852B529588EDE00D0E2CF /* EZCustomTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZCustomTableRowView.m; sourceTree = "<group>"; };
 		037852B7295D49F900D0E2CF /* EZTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZTableRowView.h; sourceTree = "<group>"; };
 		037852B8295D49F900D0E2CF /* EZTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZTableRowView.m; sourceTree = "<group>"; };
+		03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedTab.swift; sourceTree = "<group>"; };
 		03839141292FBE120009828C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		03839142292FBE120009828C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		03839143292FBE120009828C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -2099,6 +2101,7 @@
 				0A8685C72B552A590022534F /* DisabledAppTab.swift */,
 				276742042B3DC230002A2C75 /* PrivacyTab.swift */,
 				276742052B3DC230002A2C75 /* AboutTab.swift */,
+				03832F532B5F6BE200D0DC64 /* AdvancedTab.swift */,
 			);
 			path = Tabs;
 			sourceTree = "<group>";
@@ -2831,6 +2834,7 @@
 				DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */,
 				036E7D7B293F4FC8002675DF /* EZOpenLinkButton.m in Sources */,
 				EAED41EC2B54AA920005FE0A /* ServiceConfigurationSection.swift in Sources */,
+				03832F542B5F6BE200D0DC64 /* AdvancedTab.swift in Sources */,
 				276742092B3DC230002A2C75 /* AboutTab.swift in Sources */,
 				03008B2E2941956D0062B821 /* EZURLSchemeHandler.m in Sources */,
 				DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */,
