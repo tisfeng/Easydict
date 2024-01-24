@@ -12,8 +12,13 @@ import SwiftUI
 private class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
     @Published var selectedAppModels: Set<EZAppModel> = []
-    @Published var isImporting = false
     @Published var isShowImportErrorAlert = false
+    @Published var isImporting = false {
+        didSet {
+            // https://github.com/tisfeng/Easydict/issues/346
+            Configuration.shared.disabledAutoSelect = isImporting
+        }
+    }
 
     init() {
         fetchDisabledApps()
