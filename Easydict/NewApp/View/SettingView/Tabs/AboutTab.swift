@@ -21,7 +21,7 @@ struct AboutTab: View {
                     .font(.system(size: 26, weight: .semibold))
                 Text("current_version") + Text(verbatim: " \(version)")
                     .font(.system(size: 14))
-                Toggle("auto_check_update", isOn: $autoChecksForUpdates)
+                Toggle("auto_check_update", isOn: autoChecksForUpdates)
                 Text(verbatim: "(") + Text("lastest_version") + Text(verbatim: " \(lastestVersion ?? version))")
 
                 HStack {
@@ -46,7 +46,13 @@ struct AboutTab: View {
         }
     }
 
-    @Default(.autoCheckForUpdates) private var autoChecksForUpdates
+    private var autoChecksForUpdates: Binding<Bool> {
+        .init(
+            get: { Configuration.shared.automaticallyChecksForUpdates },
+            set: { newValue in Configuration.shared.automaticallyChecksForUpdates = newValue }
+        )
+    }
+
     @State
     private var lastestVersion: String?
     private var appName: String {
