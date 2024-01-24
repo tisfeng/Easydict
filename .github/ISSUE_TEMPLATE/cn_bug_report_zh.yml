@@ -1,6 +1,6 @@
 name: 反馈问题
 description: 反馈问题
-title: "🐞 反馈问题："
+title: "🐞 反馈问题：{{请填写标题，不要留空}}"
 labels: ["bug"]
 
 body:
@@ -22,8 +22,19 @@ body:
     id: description
     attributes:
       label: 问题描述
-      description: 请详细描述你所遇到的问题，确保开发者能够理解、重现该问题。如果上下文信息不足，开发者无法定位，问题会被降低优先级或忽略。
+      description: 请详细描述你所遇到的问题，确保开发者能够理解、重现该问题。如果上下文信息不足，导致开发者无法定位，问题会被降低优先级或忽略。
       placeholder: 问题描述
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reproducible
+    attributes:
+      label: 该问题是否可以稳定重现？
+      multiple: false
+      options:
+        - 可重现
+        - 不可重现
     validations:
       required: true
 
@@ -32,8 +43,9 @@ body:
     attributes:
       label: 重现步骤
       description: |
-        请描述如何重现该问题。如果该问题是偶发性的，或者需要特定的操作步骤才能重现，请一定要详细提供重现步骤，否则开发者无法定位问题。
-        （如果遇到一些很奇怪的问题，可以先尝试重启 Easydict，重启电脑，或卸载重装应用，看能否解决问题 🤔）
+        如果该问题可重现，请一定要详细提供重现步骤，否则开发者无法定位问题。
+        如果该问题是偶发性的，可以先尝试重启 Easydict，重启电脑，或卸载重装应用，看能否解决问题 🤔
+        注意：鉴于开发者精力有限，目前只会处理可稳定重现的问题。对于不可重现的问题，当前只会简单记录下来，观察后续。
       placeholder: 重现步骤
     validations:
       required: true

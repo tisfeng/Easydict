@@ -12,6 +12,7 @@ enum SettingTab: Int {
     case general
     case service
     case disabled
+    case advanced
     case privacy
     case about
 }
@@ -34,6 +35,9 @@ struct SettingView: View {
             DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
+            AdvancedTab()
+                .tabItem { Label("advanced", systemImage: "wrench.and.screwdriver") }
+                .tag(SettingTab.advanced)
 
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
@@ -71,6 +75,8 @@ struct SettingView: View {
             320
         case .about:
             450
+        default:
+            400
         }
 
         let newSize = CGSize(width: maxWidth, height: height)

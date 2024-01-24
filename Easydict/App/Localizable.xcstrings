@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "about" : {
       "comment" : "about",
@@ -33,6 +40,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调整查询图标位置:"
+          }
+        }
+      }
+    },
+    "advanced" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级"
           }
         }
       }
