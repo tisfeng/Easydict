@@ -139,21 +139,6 @@ struct GeneralTab: View {
             } header: {
                 Text("setting.general.other.header")
             }
-
-            Section {
-                Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
-                    ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-                Toggle("setting.general.advance.enable_beta_feature", isOn: $enableBetaFeature)
-                Toggle(isOn: $enableBetaNewApp) {
-                    Text("enable_beta_new_app")
-                }
-            } header: {
-                Text("setting.general.advance.header")
-            }
         }
         .formStyle(.grouped)
     }
