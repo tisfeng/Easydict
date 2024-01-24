@@ -67,6 +67,12 @@ public final class GeminiService: QueryService {
         }
     }
 
+    // Set Gemini safety level to BLOCK_NONE
+    private static let harassmentSafety = SafetySetting(harmCategory: .harassment, threshold: .blockNone)
+    private static let hateSpeechSafety = SafetySetting(harmCategory: .hateSpeech, threshold: .blockNone)
+    private static let sexuallyExplicitSafety = SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockNone)
+    private static let dangerousContentSafety = SafetySetting(harmCategory: .dangerousContent, threshold: .blockNone)
+
     private static let translationPrompt = "You are a translation expert proficient in various languages that can only translate text and cannot interpret it. You are able to accurately understand the meaning of proper nouns, idioms, metaphors, allusions or other obscure words in sentences and translate them into appropriate words by combining the context and language environment. The result of the translation should be natural and fluent, you can only return the translated text, do not show additional information and notes."
 
     override public func autoConvertTraditionalChinese() -> Bool {
@@ -79,7 +85,16 @@ public final class GeminiService: QueryService {
                 var resultString = ""
                 let prompt = GeminiService.translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
                 print("gemini prompt: \(prompt)")
-                let model = GenerativeModel(name: "gemini-pro", apiKey: apiKey)
+                let model = GenerativeModel(
+                    name: "gemini-pro",
+                    apiKey: apiKey,
+                    safetySettings: [
+                        GeminiService.harassmentSafety,
+                        GeminiService.hateSpeechSafety,
+                        GeminiService.sexuallyExplicitSafety,
+                        GeminiService.dangerousContentSafety,
+                    ]
+                )
 
                 if #available(macOS 12.0, *) {
                     let outputContentStream = model.generateContentStream(prompt)
