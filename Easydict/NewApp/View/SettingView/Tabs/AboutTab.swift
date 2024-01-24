@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import SwiftUI
 
 @available(macOS 13, *)
@@ -45,8 +46,7 @@ struct AboutTab: View {
         }
     }
 
-    @AppStorage("EZConfiguration_kAutomaticallyChecksForUpdatesKey")
-    private var autoChecksForUpdates = false
+    @Default(.autoCheckForUpdates) private var autoChecksForUpdates
     @State
     private var lastestVersion: String?
     private var appName: String {

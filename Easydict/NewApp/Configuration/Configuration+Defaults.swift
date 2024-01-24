@@ -52,6 +52,7 @@ extension Defaults.Keys {
 
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
+    static let autoCheckForUpdates = Key<Bool>("EZConfiguration_kAutomaticallyChecksForUpdatesKey", default: false)
 }
 
 extension Defaults.Keys {
