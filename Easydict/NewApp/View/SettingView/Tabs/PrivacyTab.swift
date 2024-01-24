@@ -31,6 +31,7 @@ struct PrivacyTab: View {
             }
         }
         .formStyle(.grouped)
+        .scrollDisabled(true)
     }
 
     @AppStorage("EZConfiguration_kAllowCrashLogKey")
