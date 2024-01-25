@@ -30,12 +30,6 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
         }
     }
 
-    var appDelegate = NSApp.delegate as? AppDelegate
-
-    var updater: SPUUpdater? {
-        appDelegate?.updaterController.updater
-    }
-
     @DefaultsWrapper(.firstLanguage)
     var firstLanguage: Language
 
@@ -65,10 +59,10 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
 
     var automaticallyChecksForUpdates: Bool {
         get {
-            updater?.automaticallyChecksForUpdates ?? false
+            GlobalContext.updaterController.updater.automaticallyDownloadsUpdates
         }
         set {
-            updater?.automaticallyChecksForUpdates = newValue
+            GlobalContext.updaterController.updater.automaticallyDownloadsUpdates = newValue
             logSettings(["automatically_checks_for_updates": newValue])
         }
     }

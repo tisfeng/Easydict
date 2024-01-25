@@ -147,7 +147,7 @@ static EZConfiguration *_instance;
 }
 
 - (SPUUpdater *)updater {
-    return self.appDelegate.updaterController.updater;
+    return GlobalContext.getUpdaterController.updater;
 }
 
 #pragma mark - setter
