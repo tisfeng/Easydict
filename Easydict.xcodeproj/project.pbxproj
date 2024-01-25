@@ -84,6 +84,7 @@
 		03882F9029D95044005B5A52 /* ToastWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8829D95044005B5A52 /* ToastWindowController.xib */; };
 		03882F9129D95044005B5A52 /* CTCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 03882F8929D95044005B5A52 /* CTCommon.m */; };
 		03882F9229D95044005B5A52 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 03882F8C29D95044005B5A52 /* Info.plist */; };
+		038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038A723F2B62C0B9004995E3 /* String+Regex.swift */; };
 		038EA1AA2B41169C008A6DD1 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1A92B41169C008A6DD1 /* ZipArchive */; };
 		038EA1AD2B41282F008A6DD1 /* MJExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 038EA1AC2B41282F008A6DD1 /* MJExtension */; };
 		0396D611292C932F006A11D9 /* EZSelectLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */; };
@@ -446,6 +447,7 @@
 		03882F8A29D95044005B5A52 /* CTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTView.h; sourceTree = "<group>"; };
 		03882F8B29D95044005B5A52 /* CoolToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoolToast.h; sourceTree = "<group>"; };
 		03882F8C29D95044005B5A52 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		038A723F2B62C0B9004995E3 /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		0396D60F292C932F006A11D9 /* EZSelectLanguageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZSelectLanguageCell.h; sourceTree = "<group>"; };
 		0396D610292C932F006A11D9 /* EZSelectLanguageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZSelectLanguageCell.m; sourceTree = "<group>"; };
 		0396D613292CC4C3006A11D9 /* EZLocalStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZLocalStorage.h; sourceTree = "<group>"; };
@@ -1198,6 +1200,14 @@
 				03B022D929231FA6001C7E63 /* MMOrderedDictionary.m */,
 			);
 			path = Kit;
+			sourceTree = "<group>";
+		};
+		038A723E2B62C07B004995E3 /* String */ = {
+			isa = PBXGroup;
+			children = (
+				038A723F2B62C0B9004995E3 /* String+Regex.swift */,
+			);
+			path = String;
 			sourceTree = "<group>";
 		};
 		0396D612292CBDFD006A11D9 /* Storage */ = {
@@ -2260,6 +2270,7 @@
 		EA9943E62B534D7C00EE7B97 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				038A723E2B62C07B004995E3 /* String */,
 				EAED41F02B54B1A60005FE0A /* QueryService+ConfigurableService */,
 				EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */,
 				EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */,
@@ -2773,6 +2784,7 @@
 				C415C0AD2B450D4800A9D231 /* GeminiService.swift in Sources */,
 				62A2D03F2A82967F007EEB01 /* EZBingRequest.m in Sources */,
 				03BDA7BE2A26DA280079D04F /* XPMCountedArgument.m in Sources */,
+				038A72402B62C0B9004995E3 /* String+Regex.swift in Sources */,
 				03D35DAA2AA6C49B00B023FE /* NSString+EZRegex.m in Sources */,
 				03B022FE29231FA6001C7E63 /* EZBaseQueryViewController.m in Sources */,
 				DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */,

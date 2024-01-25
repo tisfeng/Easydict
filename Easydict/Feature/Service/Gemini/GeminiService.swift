@@ -121,7 +121,18 @@ public final class GeminiService: QueryService {
                 result.translatedResults = [resultString]
                 completion(result, nil)
             } catch {
-                let ezError = EZError(type: .API, description: nil, errorDataMessage: String(describing: error))
+                /**
+                 https://github.com/google/generative-ai-swift/issues/89
+                 
+                 String(describing: error)
+                 
+                 "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
+                 */
+                let ezError = EZError(nsError: error)
+                let errorString = String(describing: error)
+                let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
+                ezError?.errorDataMessage = errorMessage
+
                 completion(result, ezError)
             }
         }
