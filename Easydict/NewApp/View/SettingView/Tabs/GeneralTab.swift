@@ -26,7 +26,7 @@ struct GeneralTab: View {
             Section {
                 FirstAndSecondLanguageSettingView()
                 Picker("setting.general.language.language_detect_optimize", selection: $languageDetectOptimize) {
-                    ForEach(EZLanguageDetectOptimize.allCases, id: \.rawValue) { option in
+                    ForEach(LanguageDetectOptimize.allCases, id: \.rawValue) { option in
                         Text(option.localizedStringResource)
                             .tag(option)
                     }
@@ -137,22 +137,7 @@ struct GeneralTab: View {
                     Text("hide_menu_bar_icon")
                 }
             } header: {
-                Text("other")
-            }
-
-            Section {
-                Picker("setting.general.advance.default_tts_service", selection: $defaultTTSServiceType) {
-                    ForEach(TTSServiceType.allCases, id: \.rawValue) { option in
-                        Text(option.localizedStringResource)
-                            .tag(option)
-                    }
-                }
-                Toggle("setting.general.advance.enable_beta_feature", isOn: $enableBetaFeature)
-                Toggle(isOn: $enableBetaNewApp) {
-                    Text("enable_beta_new_app")
-                }
-            } header: {
-                Text("setting.general.advance.header")
+                Text("setting.general.other.header")
             }
         }
         .formStyle(.grouped)

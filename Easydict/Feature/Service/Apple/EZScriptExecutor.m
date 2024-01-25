@@ -94,7 +94,7 @@ static NSString *const kEasydictTranslatShortcutName = @"Easydict-Translate-V1.2
 
 /// Use NSAppleScript to run AppleScript, faster than NSTask.
 /// !!!: Note that this method may fail due to execution permissions, it will not automatically apply for permissions when I test.
-- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError *error))completionHandler {
+- (void)runAppleScript:(NSString *)script completionHandler:(void (^)(NSString *result, EZError * _Nullable error))completionHandler {
     NSAppleScript *appleScript = [[NSAppleScript alloc] initWithSource:script];
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{

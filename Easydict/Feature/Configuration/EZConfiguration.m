@@ -455,7 +455,7 @@ static EZConfiguration *_instance;
     
     [NSUserDefaults mm_write:@(appearance) forKey:kApperanceKey];
     
-    [[DarkModeManager manager] updateDarkMode];
+    [[DarkModeManager manager] updateDarkMode:appearance];
 }
 
 #pragma mark - Window Frame
@@ -665,7 +665,7 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:stringValue forKey:EZBetaFeatureKey];
 }
 - (BOOL)isBeta {
-    NSString *stringValue = [NSUserDefaults mm_readString:EZBetaFeatureKey defaultValue:@"0"];
+    NSString *stringValue = [NSUserDefaults mm_read:EZBetaFeatureKey];
     BOOL isBeta = [stringValue boolValue];
     return isBeta;
 }

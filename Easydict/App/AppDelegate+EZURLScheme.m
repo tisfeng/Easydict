@@ -10,7 +10,7 @@
 #import <JLRoutes.h>
 #import "EZWindowManager.h"
 #import "EZSchemeParser.h"
-#import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @implementation AppDelegate (EZURLScheme)
 
@@ -70,8 +70,8 @@
 
 - (void)showFloatingWindowAndAutoQueryText:(NSString *)text {
     EZWindowManager *windowManager = [EZWindowManager shared];
-    EZWindowType windowType = EZConfiguration.shared.shortcutSelectTranslateWindowType;
-
+    EZWindowType windowType = Configuration.shared.shortcutSelectTranslateWindowType;
+    
     [windowManager showFloatingWindowType:windowType
                                 queryText:text.trim
                                 autoQuery:YES

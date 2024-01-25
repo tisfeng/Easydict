@@ -16,6 +16,7 @@
 #import "EZConfiguration.h"
 #import "NSImage+EZSymbolmage.h"
 #import "NSImage+EZResize.h"
+#import "Easydict-Swift.h"
 
 static CGFloat const kMargin = 20;
 static CGFloat const kRowHeight = 45;
@@ -254,7 +255,7 @@ static NSString *const EZColumnId = @"EZColumnId";
     [openPanel setAllowedContentTypes:allowedTypes];
     
     // ???: Since [auto select] will cause lag when dragging select apps, I don't know why 😰
-    EZConfiguration.shared.disabledAutoSelect = YES;
+    Configuration.shared.disabledAutoSelect = YES;
     
     NSModalResponse result = [openPanel runModal];
     if (result == NSModalResponseOK) {
@@ -267,7 +268,7 @@ static NSString *const EZColumnId = @"EZColumnId";
         [self.tableView reloadData];
     }
     
-    EZConfiguration.shared.disabledAutoSelect = NO;
+    Configuration.shared.disabledAutoSelect = NO;
 }
 
 - (NSArray<EZAppModel *> *)appModelsFromBundleIDDict:(NSDictionary<NSString *, NSNumber *> *)appBundleIDDict {

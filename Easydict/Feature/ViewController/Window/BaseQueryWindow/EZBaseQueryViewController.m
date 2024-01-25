@@ -192,7 +192,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     NSMutableArray *services = [NSMutableArray array];
     
     self.youdaoService = nil;
-    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     
     NSArray *allServices = [EZLocalStorage.shared allServices:self.windowType];
     for (EZQueryService *service in allServices) {
@@ -352,7 +352,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 }
 
 - (EZQueryService *)defaultTTSService {
-    EZServiceType defaultTTSServiceType = EZConfiguration.shared.defaultTTSServiceType;
+    EZServiceType defaultTTSServiceType = Configuration.shared.defaultTTSServiceType;
     if (![_defaultTTSService.serviceType isEqualToString:defaultTTSServiceType]) {
         _defaultTTSService = [EZServiceTypes.shared serviceWithType:defaultTTSServiceType];
     }
@@ -480,7 +480,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
             
-            if (EZConfiguration.shared.autoCopyOCRText) {
+            if (Configuration.shared.autoCopyOCRText) {
                 [inputText copyToPasteboardSafely];
             }
             
@@ -493,7 +493,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
                 return;
             }
             
-            BOOL autoSnipTranslate = EZConfiguration.shared.autoQueryOCRText;
+            BOOL autoSnipTranslate = Configuration.shared.autoQueryOCRText;
             if (autoSnipTranslate && queryModel.autoQuery) {
                 [self startQueryText];
             }
@@ -1199,7 +1199,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
     [queryView setPasteTextBlock:^(NSString *_Nonnull text) {
         mm_strongify(self);
         [self detectQueryText:^(NSString *_Nonnull language) {
-            if ([EZConfiguration.shared autoQueryPastedText]) {
+            if ([Configuration.shared autoQueryPastedText]) {
                 [self startQueryWithType:EZActionTypeInputQuery];
             }
         }];
@@ -1484,7 +1484,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 #pragma mark - Auto play English word
 
 - (void)autoPlayEnglishWordAudio {
-    if (!EZConfiguration.shared.autoPlayAudio) {
+    if (!Configuration.shared.autoPlayAudio) {
         return;
     }
     
@@ -1502,7 +1502,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 
 /// Auto copy translated text.
 - (void)autoCopyTranslatedTextOfService:(EZQueryService *)service {
-    if (![EZConfiguration.shared autoCopyFirstTranslatedText]) {
+    if (![Configuration.shared autoCopyFirstTranslatedText]) {
         service.autoCopyTranslatedTextBlock = nil;
         return;
     }

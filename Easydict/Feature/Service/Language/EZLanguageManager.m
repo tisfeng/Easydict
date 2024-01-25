@@ -9,6 +9,7 @@
 #import "EZLanguageManager.h"
 #import "EZAppleService.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 @interface EZLanguageManager ()
 
@@ -170,7 +171,7 @@ static EZLanguageManager *_instance;
 }
 
 - (EZLanguage)userFirstLanguage {
-    EZLanguage firstLanguage = EZConfiguration.shared.firstLanguage;
+    EZLanguage firstLanguage = Configuration.shared.firstLanguage;
     if (!firstLanguage) {
         firstLanguage = [self systemPreferredTwoLanguages][0];
     }
@@ -178,7 +179,7 @@ static EZLanguageManager *_instance;
 }
 
 - (EZLanguage)userSecondLanguage {
-    EZLanguage secondLanguage = EZConfiguration.shared.secondLanguage;
+    EZLanguage secondLanguage = Configuration.shared.secondLanguage;
     if (!secondLanguage) {
         secondLanguage = [self systemPreferredTwoLanguages][1];
     }

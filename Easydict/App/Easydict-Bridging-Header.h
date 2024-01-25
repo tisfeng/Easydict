@@ -20,11 +20,15 @@
 
 #import "entry.h"
 #import "AppDelegate.h"
-#import "EZConfiguration.h"
+
+#import "EZAppModel.h"
 #import "EZLocalStorage.h"
 
 #import "NSString+EZConvenience.h"
 #import "EZWindowManager.h"
 #import "NSViewController+EZWindow.h"
-
+#import "EZLog.h"
+#import "EZLanguageManager.h"
+#import "DarkModeManager.h"
+#import "EZScriptExecutor.h"
 #import "EZOpenAIService.h"

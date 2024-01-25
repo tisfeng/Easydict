@@ -12,6 +12,7 @@
 #import "EZBingLookupModel.h"
 #import "EZConfiguration.h"
 #import "NSString+EZUtils.h"
+#import "Easydict-Swift.h"
 
 @interface EZBingService ()
 @property (nonatomic, strong) EZBingRequest *request;
@@ -32,7 +33,7 @@
 #pragma mark - override
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
     return type;
 }
 

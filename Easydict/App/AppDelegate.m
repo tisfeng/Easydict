@@ -12,7 +12,6 @@
 #import "MMCrash.h"
 #import "EZWindowManager.h"
 #import "EZLanguageManager.h"
-#import "EZConfiguration.h"
 #import "EZLog.h"
 #import "EZSchemeParser.h"
 #import "AppDelegate+EZURLScheme.h"
@@ -31,6 +30,7 @@
     
     // Capturing crash logs must be placed first.
     [MMCrash registerHandler];
+    
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
 

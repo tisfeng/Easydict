@@ -1,5 +1,5 @@
 //
-//  Configuration.swift
+//  Configuration+Defaults.swift
 //  Easydict
 //
 //  Created by 戴藏龙 on 2024/1/12.
@@ -33,7 +33,7 @@ extension Defaults.Keys {
     static let autoCopyOCRText = Key<Bool>("EZConfiguration_kAutoCopyOCRTextKey", default: false)
     static let autoCopySelectedText = Key<Bool>("EZConfiguration_kAutoCopySelectedTextKey", default: false)
     static let autoCopyFirstTranslatedText = Key<Bool>("EZConfiguration_kAutoCopyFirstTranslatedTextKey", default: false)
-    static let languageDetectOptimize = Key<EZLanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: EZLanguageDetectOptimize.none)
+    static let languageDetectOptimize = Key<LanguageDetectOptimize>("EZConfiguration_kLanguageDetectOptimizeTypeKey", default: LanguageDetectOptimize.none)
     static let defaultTTSServiceType = Key<TTSServiceType>("EZConfiguration_kDefaultTTSServiceTypeKey", default: TTSServiceType.youdao)
     static let showGoogleQuickLink = Key<Bool>("EZConfiguration_kShowGoogleLinkKey", default: true)
     static let showEudicQuickLink = Key<Bool>("EZConfiguration_kShowEudicLinkKey", default: true)
@@ -52,6 +52,80 @@ extension Defaults.Keys {
 
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
+}
+
+extension Defaults.Keys {
+    static func intelligentQueryTextType(for serviceType: ServiceType) -> Key<EZQueryTextType> {
+        let key = EZConstKey.constkey("IntelligentQueryTextType", serviceType: serviceType)
+        return .init(key, default: EZQueryTextType(rawValue: 7))
+    }
+
+    static func queryTextType(for serviceType: ServiceType) -> Key<EZQueryTextType> {
+        let key = EZConstKey.constkey("QueryTextType", serviceType: serviceType)
+        return .init(key, default: EZQueryTextType(rawValue: 0))
+    }
+
+    static func windorFrame(for windowType: EZWindowType) -> Key<CGRect> {
+        let key = "EZConfiguration_kWindowFrameKey_\(windowType)"
+        return .init(key, default: .zero)
+    }
+}
+
+extension EZQueryTextType: Defaults.Serializable {
+    public static var bridge: Bridge = .init()
+
+    public struct Bridge: Defaults.Bridge {
+        public func serialize(_ value: EZQueryTextType?) -> String? {
+            guard let value else { return "7" }
+            return "\(value.rawValue)"
+        }
+
+        public func deserialize(_ object: String?) -> EZQueryTextType? {
+            guard let object else { return nil }
+            return EZQueryTextType(rawValue: UInt(object) ?? 7)
+        }
+
+        public typealias Value = EZQueryTextType
+
+        public typealias Serializable = String
+    }
+}
+
+extension CGRect: Defaults.Serializable {
+    public static var bridge: Bridge = .init()
+
+    public struct Bridge: Defaults.Bridge {
+        public func serialize(_ value: CGRect?) -> String? {
+            let value = value ?? .zero
+            return NSStringFromRect(value)
+        }
+
+        public func deserialize(_ object: String?) -> CGRect? {
+            guard let object else { return nil }
+            return NSRectFromString(object)
+        }
+
+        public typealias Value = CGRect
+
+        public typealias Serializable = String
+    }
+}
+
+@propertyWrapper
+class DefaultsWrapper<T: Defaults.Serializable> {
+    var wrappedValue: T {
+        get {
+            Defaults[key]
+        } set {
+            Defaults[key] = newValue
+        }
+    }
+
+    init(_ key: Defaults.Key<T>) {
+        self.key = key
+    }
+
+    let key: Defaults.Key<T>
 }
 
 // Service Configuration

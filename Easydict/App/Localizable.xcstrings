@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
     "about" : {
       "comment" : "about",
       "localizations" : {
@@ -30,6 +40,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调整查询图标位置:"
+          }
+        }
+      }
+    },
+    "advanced" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级"
           }
         }
       }
@@ -1955,16 +1975,6 @@
         }
       }
     },
-    "other" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "其他"
-          }
-        }
-      }
-    },
     "Parameter Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -2432,6 +2442,23 @@
         }
       }
     },
+    "setting.disabled.import_app_error.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to add Application"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法添加应用"
+          }
+        }
+      }
+    },
     "setting.general.advance.default_tts_service" : {
       "localizations" : {
         "en" : {
@@ -2748,6 +2775,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标查询"
+          }
+        }
+      }
+    },
+    "setting.general.other.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
           }
         }
       }

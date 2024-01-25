@@ -14,6 +14,7 @@
 #import "EZConfiguration+EZUserData.h"
 #import "EZConfiguration.h"
 #import "EZLocalStorage.h"
+#import "Easydict-Swift.h"
 
 @implementation EZSchemeParser
 
@@ -110,14 +111,14 @@
         NSString *value = keyValues[key];
         handled = [self enabledReadWriteKey:key];
         if (handled) {
-            EZConfiguration *config = [EZConfiguration shared];
-            BOOL isBeta = config.isBeta;
+            Configuration *config = [Configuration shared];
+            BOOL isBeta = config.beta;
             
             [[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
             
             // If enabling beta feature, setup beta features.
-            if (!isBeta && config.isBeta) {
-                [EZConfiguration.shared enableBetaFeaturesIfNeeded];
+            if (!isBeta && config.beta) {
+                [Configuration.shared enableBetaFeaturesIfNeeded];
             }
         }
     }
@@ -154,15 +155,15 @@
 
 - (void)resetUserDefaultsData {
     // easydict://resetUserDefaultsData
-    [EZConfiguration.shared resetUserDefaultsData];
+    [Configuration.shared resetUserDefaultsData];
     
     [EZLocalStorage destroySharedInstance];
-    [EZConfiguration destroySharedInstance];
+    [Configuration destroySharedInstance];
 }
 
 - (void)saveUserDefaultsDataToDownloadFolder {
     // easydict://saveUserDefaultsDataToDownloadFolder
-    [EZConfiguration.shared saveUserDefaultsDataToDownloadFolder];
+    [Configuration.shared saveUserDefaultsDataToDownloadFolder];
 }
 
 
