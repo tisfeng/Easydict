@@ -121,8 +121,8 @@ public final class GeminiService: QueryService {
                 result.translatedResults = [resultString]
                 completion(result, nil)
             } catch {
-                print(error.localizedDescription)
-                completion(result, error)
+                let ezError = EZError(type: .API, description: nil, errorDataMessage: String(describing: error))
+                completion(result, ezError)
             }
         }
     }
