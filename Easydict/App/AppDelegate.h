@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Sparkle/SPUStandardUpdaterController.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 

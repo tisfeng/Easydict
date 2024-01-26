@@ -63,7 +63,7 @@ NSString *const kEnableBetaNewAppKey = @"EZConfiguration_kEnableBetaNewAppKey";
 @interface EZConfiguration ()
 
 @property (nonatomic, strong) AppDelegate *appDelegate;
-@property (nonatomic, strong) SPUUpdater *updater;
+@property (nonatomic, strong, readwrite) SPUUpdater *updater;
 
 @end
 
@@ -148,6 +148,10 @@ static EZConfiguration *_instance;
 
 - (SPUUpdater *)updater {
     return GlobalContext.getUpdaterController.updater;
+}
+
+- (SPUStandardUpdaterController *)updaterController {
+    return GlobalContext.getUpdaterController;
 }
 
 #pragma mark - setter

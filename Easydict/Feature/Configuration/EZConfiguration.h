@@ -12,6 +12,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class SPUStandardUpdaterController;
+
 FOUNDATION_EXPORT NSString *const kHideMainWindowKey;
 FOUNDATION_EXPORT NSString *const kLaunchAtStartupKey;
 FOUNDATION_EXPORT NSString *const kHideMenuBarIconKey;
@@ -83,6 +85,8 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) NSInteger fontSizeIndex;
 
 @property (nonatomic, assign) EZAppearenceType appearance;
+
+@property (nonatomic, strong, readonly) SPUStandardUpdaterController *updaterController;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;
