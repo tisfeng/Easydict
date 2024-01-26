@@ -59,10 +59,10 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
 
     var automaticallyChecksForUpdates: Bool {
         get {
-            GlobalContext.updaterController.updater.automaticallyDownloadsUpdates
+            GlobalContext.shared.updaterController.updater.automaticallyDownloadsUpdates
         }
         set {
-            GlobalContext.updaterController.updater.automaticallyDownloadsUpdates = newValue
+            GlobalContext.shared.updaterController.updater.automaticallyDownloadsUpdates = newValue
             logSettings(["automatically_checks_for_updates": newValue])
         }
     }

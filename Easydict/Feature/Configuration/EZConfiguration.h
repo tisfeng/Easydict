@@ -9,10 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZLayoutManager.h"
+#import <Sparkle/SPUUpdater.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
-@class SPUStandardUpdaterController;
 
 FOUNDATION_EXPORT NSString *const kHideMainWindowKey;
 FOUNDATION_EXPORT NSString *const kLaunchAtStartupKey;
@@ -86,7 +85,7 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 
 @property (nonatomic, assign) EZAppearenceType appearance;
 
-@property (nonatomic, strong, readonly) SPUStandardUpdaterController *updaterController;
+@property (nonatomic, strong, readonly) SPUUpdater *updater;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;

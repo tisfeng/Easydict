@@ -16,6 +16,7 @@
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
 #import <Sparkle/SPUStandardUpdaterController.h>
+#import <Sparkle/SPUUpdater.h>
 
 @interface EZMenuItemManager () <NSMenuDelegate>
 
@@ -184,8 +185,7 @@ static EZMenuItemManager *_instance;
 
 - (IBAction)checkForUpdateItem:(id)sender {
     NSLog(@"checkForUpdate");
-    
-    [EZConfiguration.shared.updaterController checkForUpdates:sender];
+    [EZConfiguration.shared.updater checkForUpdates];
 }
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {

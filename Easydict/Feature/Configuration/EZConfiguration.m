@@ -142,16 +142,12 @@ static EZConfiguration *_instance;
     return launchAtStartup;
 }
 
+- (SPUUpdater *)updater {
+    return GlobalContext.shared.updaterController.updater;
+}
+
 - (BOOL)automaticallyChecksForUpdates {
     return self.updater.automaticallyChecksForUpdates;
-}
-
-- (SPUUpdater *)updater {
-    return GlobalContext.getUpdaterController.updater;
-}
-
-- (SPUStandardUpdaterController *)updaterController {
-    return GlobalContext.getUpdaterController;
 }
 
 #pragma mark - setter

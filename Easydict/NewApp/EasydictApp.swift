@@ -14,7 +14,6 @@ import SwiftUI
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
-        GlobalContext.initializeProperty()
         if NewAppManager.shared.enable {
             EasydictApp.main()
         } else {
@@ -26,7 +25,7 @@ enum EasydictCmpatibilityEntry {
 struct EasydictApp: App {
     @NSApplicationDelegateAdaptor
     private var delegate: AppDelegate
-    
+
     // Use `@Default` will cause a purple warning and continuously call `set` of it.
     // I'm not sure why. Just leave `AppStorage` here.
     @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
