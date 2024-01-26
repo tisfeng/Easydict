@@ -57,7 +57,7 @@ static NSString *const EZColumnId = @"EZColumnId";
 }
 
 - (void)setup {
-    self.appModelList = [[EZLocalStorage.shared selectTextTypeAppModelList] mutableCopy];
+    [self setupAppModelList];
     
     [self.titleTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.inset(kMargin + 5); // ???: Why is the actual inset is 18?
@@ -76,6 +76,18 @@ static NSString *const EZColumnId = @"EZColumnId";
         make.size.mas_equalTo(CGSizeMake(80, 20));
         make.bottom.equalTo(self.view).offset(-kMargin);
     }];
+}
+
+- (void)setupAppModelList {
+    self.appModelList = [[NSMutableArray alloc] init];
+    NSArray<EZAppModel *> *allAppModelList = [EZLocalStorage.shared selectTextTypeAppModelList];
+    NSWorkspace* workspace = [NSWorkspace sharedWorkspace];
+    for (EZAppModel *appModel in allAppModelList) {
+        NSURL *appURL = [workspace URLForApplicationWithBundleIdentifier:appModel.appBundleID];
+        if (appURL) {
+            [self.appModelList addObject:appModel];
+        }
+    }
 }
 
 
