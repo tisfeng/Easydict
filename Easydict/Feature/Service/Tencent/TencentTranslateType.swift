@@ -59,9 +59,8 @@ struct TencentTranslateType: Equatable {
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
-        // !!!: Tencent translate support traditionalChinese as target language if target languages contain simplifiedChinese.
         guard let targetLanguages = supportedTypes[from],
-              targetLanguages.containsChinese() || targetLanguages.contains(to) || from == to || from.isKindOfChinese()
+              targetLanguages.contains(to) || from == to
         else {
             return .unsupported
         }
