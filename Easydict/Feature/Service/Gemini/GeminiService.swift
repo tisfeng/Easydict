@@ -82,7 +82,6 @@ public final class GeminiService: QueryService {
     override public func translate(_ text: String, from: Language, to: Language, completion: @escaping (EZQueryResult, Error?) -> Void) {
         Task {
             do {
-                var resultString = ""
                 let prompt = GeminiService.translationPrompt + "Translate the following \(from.rawValue) text into \(to.rawValue): \(text)"
                 print("gemini prompt: \(prompt)")
                 let model = GenerativeModel(
@@ -97,6 +96,7 @@ public final class GeminiService: QueryService {
                 )
 
                 if #available(macOS 12.0, *) {
+                    var resultString = ""
                     let outputContentStream = model.generateContentStream(prompt)
 
                     // stream response
@@ -105,7 +105,6 @@ public final class GeminiService: QueryService {
                             return
                         }
 
-                        print("gemini response: \(line)")
                         resultString += line
                         result.translatedResults = [resultString]
                         completion(result, nil)
@@ -117,9 +116,7 @@ public final class GeminiService: QueryService {
                         return
                     }
 
-                    print("gemini response: \(line)")
-                    resultString += line
-                    result.translatedResults = [resultString]
+                    result.translatedResults = [line]
                     completion(result, nil)
                 }
             } catch {
