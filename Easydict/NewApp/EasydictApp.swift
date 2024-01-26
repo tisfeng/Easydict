@@ -26,9 +26,11 @@ enum EasydictCmpatibilityEntry {
 struct EasydictApp: App {
     @NSApplicationDelegateAdaptor
     private var delegate: AppDelegate
-
-    @Default(.hideMenuBarIcon)
-    private var hideMenuBar
+    
+    // Use `@Default` will cause a purple warning and continuously call `set` of it.
+    // I'm not sure why. Just leave `AppStorage` here.
+    @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
+    private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
     private var menuBarImage: String {
         #if DEBUG
