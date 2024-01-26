@@ -59,8 +59,16 @@ struct TencentTranslateType: Equatable {
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
+        /**
+         1. zh <--> zh-TW
+         2. zh --> zh
+
+         Tencent Translate supports Simplified Chinese and Traditional Chinese translations of each other, but the documentation doesn't mention this, so we need to handle it ourselves.
+
+         In addition, it also supports one language as both source and target language if the language is supported.
+         */
         guard let targetLanguages = supportedTypes[from],
-              targetLanguages.contains(to) || from == to
+              targetLanguages.contains(to) || from == to || EZLanguageManager.shared().onlyContainsChineseLanguages([from, to])
         else {
             return .unsupported
         }
