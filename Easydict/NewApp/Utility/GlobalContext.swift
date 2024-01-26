@@ -14,8 +14,9 @@ class GlobalContext: NSObject {
     static let shared = GlobalContext()
 
     let updaterController: SPUStandardUpdaterController
-    let updaterHelper: SPUUpdaterHelper
-    let userDriverHelper: SPUUserDriverHelper
+
+    private let updaterHelper: SPUUpdaterHelper
+    private let userDriverHelper: SPUUserDriverHelper
 
     override init() {
         updaterHelper = SPUUpdaterHelper()
