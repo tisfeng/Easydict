@@ -7,13 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "EZMenuItemManager.h"
 #import "EZShortcut.h"
 #import "MMCrash.h"
-#import "EZWindowManager.h"
-#import "EZLanguageManager.h"
-#import "EZLog.h"
-#import "EZSchemeParser.h"
 #import "AppDelegate+EZURLScheme.h"
 #import "Easydict-Swift.h"
 
