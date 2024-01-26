@@ -10,6 +10,11 @@ import Foundation
 import Sparkle
 
 @objc class GlobalContext: NSObject {
+    /// Initialized all property in global context to assure static properties life circle.
+    static func initializeProperty() {
+        let _ = Self.updaterController
+    }
+
     static let updaterController: SPUStandardUpdaterController = {
         class SPUUpdaterHelper: NSObject, SPUUpdaterDelegate {
             func feedURLString(for _: SPUUpdater) -> String? {

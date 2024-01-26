@@ -6,14 +6,15 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import Defaults
 import Sparkle
 import SwiftUI
-import Defaults
 
 @main
 enum EasydictCmpatibilityEntry {
     static func main() {
         parseArmguments()
+        GlobalContext.initializeProperty()
         if NewAppManager.shared.enable {
             EasydictApp.main()
         } else {

@@ -2070,7 +2070,6 @@
 				27FE95262B3DC55F000AD654 /* EasydictApp.swift */,
 				27FE98042B3DCB09000AD654 /* NewAppManager.swift */,
 				27FE98062B3DD525000AD654 /* View */,
-				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 			);
 			path = NewApp;
 			sourceTree = "<group>";
@@ -2233,6 +2232,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
