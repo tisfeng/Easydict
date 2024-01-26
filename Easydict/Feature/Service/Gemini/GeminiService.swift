@@ -107,7 +107,10 @@ public final class GeminiService: QueryService {
 
                         print("gemini response: \(line)")
                         resultString += line
+                        result.translatedResults = [resultString]
+                        completion(result, nil)
                     }
+
                 } else {
                     let outputContent = try await model.generateContent(prompt)
                     guard let line = outputContent.text else {
@@ -116,16 +119,15 @@ public final class GeminiService: QueryService {
 
                     print("gemini response: \(line)")
                     resultString += line
+                    result.translatedResults = [resultString]
+                    completion(result, nil)
                 }
-
-                result.translatedResults = [resultString]
-                completion(result, nil)
             } catch {
                 /**
                  https://github.com/google/generative-ai-swift/issues/89
-                 
+
                  String(describing: error)
-                 
+
                  "internalError(underlying: GoogleGenerativeAI.RPCError(httpResponseCode: 400, message: \"API key not valid. Please pass a valid API key.\", status: GoogleGenerativeAI.RPCStatus.invalidArgument))"
                  */
                 let ezError = EZError(nsError: error)
