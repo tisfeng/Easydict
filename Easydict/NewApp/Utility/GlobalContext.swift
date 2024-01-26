@@ -32,13 +32,13 @@ import Sparkle
             }
         }
         let userDriverHelper = SPUUserDriverHelper()
-        let upadterHelper = SPUUpdaterHelper()
+        let updaterHelper = SPUUpdaterHelper()
         // 参考 https://sparkle-project.org/documentation/programmatic-setup/
         // If you want to start the updater manually, pass false to startingUpdater and call .startUpdater() later
         // This is where you can also pass an updater delegate if you need one
         return SPUStandardUpdaterController(
             startingUpdater: true,
-            updaterDelegate: upadterHelper,
+            updaterDelegate: updaterHelper,
             userDriverDelegate: userDriverHelper
         )
     }()
