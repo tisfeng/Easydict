@@ -13,21 +13,19 @@ import ZipArchive
 @available(macOS 13, *)
 final class MenuItemStore: ObservableObject {
     @Published var canCheckForUpdates = false
-    var updater: SPUUpdater
-    init(updater: SPUUpdater) {
-        self.updater = updater
-        self.updater.publisher(for: \.canCheckForUpdates)
+
+    init() {
+        GlobalContext.shared
+            .updaterController
+            .updater
+            .publisher(for: \.canCheckForUpdates)
             .assign(to: &$canCheckForUpdates)
     }
 }
 
 @available(macOS 13, *)
 struct MenuItemView: View {
-    @ObservedObject var store: MenuItemStore
-
-    init(updater: SPUUpdater) {
-        store = MenuItemStore(updater: updater)
-    }
+    @ObservedObject private var store = MenuItemStore()
 
     var body: some View {
         // ️.menuBarExtraStyle为 .menu 时某些控件可能会失效 ，只能显示内容（按照菜单项高度、图像以 template 方式渲染）无法交互 ，比如 Stepper、Slider 等，像基本的 Button、Text、Divider、Image 等还是能正常显示的。
@@ -173,7 +171,7 @@ struct MenuItemView: View {
     private var checkUpdateItem: some View {
         Button("check_updates") {
             NSLog("检查更新")
-            store.updater.checkForUpdates()
+            GlobalContext.shared.updaterController.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 
@@ -225,5 +223,5 @@ struct MenuItemView: View {
 
 @available(macOS 13, *)
 #Preview {
-    MenuItemView(updater: SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil).updater)
+    MenuItemView()
 }
