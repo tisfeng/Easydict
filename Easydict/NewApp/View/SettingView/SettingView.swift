@@ -36,7 +36,7 @@ struct SettingView: View {
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
             AdvancedTab()
-                .tabItem { Label("advanced", systemImage: "wrench.and.screwdriver") }
+                .tabItem { Label("advanced", systemImage: "gearshape.2") }
                 .tag(SettingTab.advanced)
 
             PrivacyTab()

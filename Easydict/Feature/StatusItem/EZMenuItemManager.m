@@ -15,6 +15,8 @@
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
+#import <Sparkle/SPUStandardUpdaterController.h>
+#import <Sparkle/SPUUpdater.h>
 
 @interface EZMenuItemManager () <NSMenuDelegate>
 
@@ -179,6 +181,11 @@ static EZMenuItemManager *_instance;
         [Snip.shared stop];
     }
     [EZPreferencesWindowController.shared show];
+}
+
+- (IBAction)checkForUpdateItem:(id)sender {
+    NSLog(@"checkForUpdate");
+    [EZConfiguration.shared.updater checkForUpdates];
 }
 
 - (IBAction)feedbackAction:(NSMenuItem *)sender {

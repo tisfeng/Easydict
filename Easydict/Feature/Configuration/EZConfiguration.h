@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EZLanguageManager.h"
 #import "EZLayoutManager.h"
+#import <Sparkle/SPUUpdater.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -83,6 +84,8 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) NSInteger fontSizeIndex;
 
 @property (nonatomic, assign) EZAppearenceType appearance;
+
+@property (nonatomic, strong, readonly) SPUUpdater *updater;
 
 + (instancetype)shared;
 + (void)destroySharedInstance;

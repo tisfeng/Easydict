@@ -14,24 +14,24 @@ struct TencentTranslateType: Equatable {
 
     static let unsupported = TencentTranslateType(sourceLanguage: "unsupported", targetLanguage: "unsupported")
 
-    // This docs missed traditionalChinese as target language if target languages contains simplifiedChinese. https://cloud.tencent.com/document/api/551/15619
+    // https://cloud.tencent.com/document/api/551/15619
     static let supportedTypes: [Language: [Language]] = [
         .simplifiedChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
         .traditionalChinese: [.english, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay],
-        .english: [.simplifiedChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
-        .japanese: [.simplifiedChinese, .english, .korean],
-        .korean: [.simplifiedChinese, .english, .japanese],
-        .french: [.simplifiedChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
-        .spanish: [.simplifiedChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
-        .italian: [.simplifiedChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
-        .german: [.simplifiedChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
-        .turkish: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
-        .russian: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
-        .portuguese: [.simplifiedChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
-        .vietnamese: [.simplifiedChinese, .english],
-        .indonesian: [.simplifiedChinese, .english],
-        .thai: [.simplifiedChinese, .english],
-        .malay: [.simplifiedChinese, .english],
+        .english: [.simplifiedChinese, .traditionalChinese, .japanese, .korean, .french, .spanish, .italian, .german, .turkish, .russian, .portuguese, .vietnamese, .indonesian, .thai, .malay, .arabic, .hindi],
+        .japanese: [.simplifiedChinese, .traditionalChinese, .english, .korean],
+        .korean: [.simplifiedChinese, .traditionalChinese, .english, .japanese],
+        .french: [.simplifiedChinese, .traditionalChinese, .english, .spanish, .italian, .german, .turkish, .russian, .portuguese],
+        .spanish: [.simplifiedChinese, .traditionalChinese, .english, .french, .italian, .german, .turkish, .russian, .portuguese],
+        .italian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .german, .turkish, .russian, .portuguese],
+        .german: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .turkish, .russian, .portuguese],
+        .turkish: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .russian, .portuguese],
+        .russian: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .portuguese],
+        .portuguese: [.simplifiedChinese, .traditionalChinese, .english, .french, .spanish, .italian, .german, .turkish, .russian],
+        .vietnamese: [.simplifiedChinese, .traditionalChinese, .english],
+        .indonesian: [.simplifiedChinese, .traditionalChinese, .english],
+        .thai: [.simplifiedChinese, .traditionalChinese, .english],
+        .malay: [.simplifiedChinese, .traditionalChinese, .english],
         .arabic: [.english],
         .hindi: [.english],
     ]
@@ -59,9 +59,16 @@ struct TencentTranslateType: Equatable {
     ]
 
     static func transType(from: Language, to: Language) -> TencentTranslateType {
-        // !!!: Tencent translate support traditionalChinese as target language if target languages contain simplifiedChinese.
+        /**
+         1. zh <--> zh-TW
+         2. zh --> zh
+
+         Tencent Translate supports Simplified Chinese and Traditional Chinese translations of each other, but the documentation doesn't mention this, so we need to handle it ourselves.
+
+         In addition, it also supports one language as both source and target language if the language is supported.
+         */
         guard let targetLanguages = supportedTypes[from],
-              targetLanguages.containsChinese() || targetLanguages.contains(to) || from == to || from.isKindOfChinese()
+              targetLanguages.contains(to) || from == to || EZLanguageManager.shared().onlyContainsChineseLanguages([from, to])
         else {
             return .unsupported
         }

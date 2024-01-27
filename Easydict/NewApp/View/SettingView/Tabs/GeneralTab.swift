@@ -137,7 +137,7 @@ struct GeneralTab: View {
                     Text("hide_menu_bar_icon")
                 }
             } header: {
-                Text("other")
+                Text("setting.general.other.header")
             }
         }
         .formStyle(.grouped)

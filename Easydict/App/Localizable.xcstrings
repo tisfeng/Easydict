@@ -1958,16 +1958,6 @@
         }
       }
     },
-    "other" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "其他"
-          }
-        }
-      }
-    },
     "Parameter Error" : {
       "comment" : "Error description",
       "localizations" : {
@@ -2768,6 +2758,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标查询"
+          }
+        }
+      }
+    },
+    "setting.general.other.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
           }
         }
       }
