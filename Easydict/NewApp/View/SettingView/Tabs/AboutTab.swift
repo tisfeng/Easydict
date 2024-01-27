@@ -21,7 +21,7 @@ struct AboutTab: View {
                     .font(.system(size: 26, weight: .semibold))
                 Text("current_version") + Text(verbatim: " \(version)")
                     .font(.system(size: 14))
-                Toggle("auto_check_update", isOn: autoChecksForUpdates)
+                Toggle("auto_check_update", isOn: $checkUpdaterViewModel.autoChecksForUpdates)
                 Text(verbatim: "(") + Text("lastest_version") + Text(verbatim: " \(lastestVersion ?? version))")
 
                 HStack {
@@ -46,12 +46,7 @@ struct AboutTab: View {
         }
     }
 
-    private var autoChecksForUpdates: Binding<Bool> {
-        .init(
-            get: { Configuration.shared.automaticallyChecksForUpdates },
-            set: { newValue in Configuration.shared.automaticallyChecksForUpdates = newValue }
-        )
-    }
+    @StateObject private var checkUpdaterViewModel = CheckUpdaterViewModel()
 
     @State
     private var lastestVersion: String?
@@ -61,6 +56,27 @@ struct AboutTab: View {
 
     private var version: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
+    class CheckUpdaterViewModel: ObservableObject {
+        @Published var autoChecksForUpdates: Bool = false {
+            didSet {
+                GlobalContext
+                    .shared
+                    .updaterController
+                    .updater
+                    .automaticallyChecksForUpdates = autoChecksForUpdates
+            }
+        }
+
+        init() {
+            GlobalContext
+                .shared
+                .updaterController
+                .updater
+                .publisher(for: \.automaticallyChecksForUpdates)
+                .assign(to: &$autoChecksForUpdates)
+        }
     }
 }
 
