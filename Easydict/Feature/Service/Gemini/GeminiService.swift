@@ -112,11 +112,11 @@ public final class GeminiService: QueryService {
 
                 } else {
                     let outputContent = try await model.generateContent(prompt)
-                    guard let line = outputContent.text else {
+                    guard let resultString = outputContent.text else {
                         return
                     }
 
-                    result.translatedResults = [line]
+                    result.translatedResults = [resultString]
                     completion(result, nil)
                 }
             } catch {
