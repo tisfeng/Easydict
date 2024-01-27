@@ -277,6 +277,7 @@
 		EA9943EE2B5353AB00EE7B97 /* WindowTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */; };
 		EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */; };
 		EA9943F22B5358BF00EE7B97 /* LanguageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */; };
+		EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */; };
 		EAED41EC2B54AA920005FE0A /* ServiceConfigurationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */; };
 		EAED41EF2B54B1430005FE0A /* ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */; };
 		EAED41F22B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */; };
@@ -772,6 +773,7 @@
 		EA9943ED2B5353AB00EE7B97 /* WindowTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTypeExtensions.swift; sourceTree = "<group>"; };
 		EA9943EF2B5354C400EE7B97 /* ShowWindowPositionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWindowPositionExtensions.swift; sourceTree = "<group>"; };
 		EA9943F12B5358BF00EE7B97 /* LanguageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageExtensions.swift; sourceTree = "<group>"; };
+		EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
 		EAED41EB2B54AA920005FE0A /* ServiceConfigurationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationSection.swift; sourceTree = "<group>"; };
 		EAED41EE2B54B1430005FE0A /* ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableService.swift; sourceTree = "<group>"; };
 		EAED41F12B54B39D0005FE0A /* OpenAIService+ConfigurableService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpenAIService+ConfigurableService.swift"; sourceTree = "<group>"; };
@@ -2230,6 +2232,7 @@
 		EA9943DD2B534BAE00EE7B97 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				EAE3D34F2B62E9DE001EE3E3 /* GlobalContext.swift */,
 				EAED41ED2B54B1390005FE0A /* Protocol */,
 				EA9943E62B534D7C00EE7B97 /* Extensions */,
 			);
@@ -2795,6 +2798,7 @@
 				0320C5872B29F35700861B3D /* QueryServiceRecord.swift in Sources */,
 				03FC699A2B39D13A0035D2DA /* EZOpenAIChatResponse.m in Sources */,
 				03B022FA29231FA6001C7E63 /* EZServiceTypes.m in Sources */,
+				EAE3D3502B62E9DE001EE3E3 /* GlobalContext.swift in Sources */,
 				EA9943F02B5354C400EE7B97 /* ShowWindowPositionExtensions.swift in Sources */,
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
