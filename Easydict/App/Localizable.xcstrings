@@ -1308,6 +1308,23 @@
         }
       }
     },
+    "global_shortcut_setting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "全局快捷键"
+          }
+        }
+      }
+    },
     "google_translate" : {
       "localizations" : {
         "en" : {
@@ -3005,6 +3022,9 @@
         }
       }
     },
+    "shortcut" : {
+
+    },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
         "en" : {
@@ -3022,6 +3042,7 @@
       }
     },
     "shortcut_setting" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3412,9 +3433,6 @@
           }
         }
       }
-    },
-    "xx" : {
-
     },
     "Youdao" : {
       "extractionState" : "manual",

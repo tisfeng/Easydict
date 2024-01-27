@@ -12,6 +12,7 @@ enum SettingTab: Int {
     case general
     case service
     case disabled
+    case shortcut
     case privacy
     case about
 }
@@ -35,6 +36,9 @@ struct SettingView: View {
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
 
+            ShortcutTab()
+                .tabItem { Label("shortcut", systemImage: "command.square") }
+                .tag(SettingTab.shortcut)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
@@ -65,7 +69,7 @@ struct SettingView: View {
         let height = switch selection {
         case .general:
             maxWidth
-        case .service, .disabled:
+        case .service, .disabled, .shortcut:
             500
         case .privacy:
             320

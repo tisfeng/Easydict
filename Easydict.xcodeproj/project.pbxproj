@@ -2162,18 +2162,18 @@
 		9627F9332B59956800B1E999 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				9627F9342B59956800B1E999 /* Genearl */,
+				9627F9342B59956800B1E999 /* Shortcut */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		9627F9342B59956800B1E999 /* Genearl */ = {
+		9627F9342B59956800B1E999 /* Shortcut */ = {
 			isa = PBXGroup;
 			children = (
 				9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */,
 				9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */,
 			);
-			path = Genearl;
+			path = Shortcut;
 			sourceTree = "<group>";
 		};
 		967712EB2B5B93E200105E0F /* Feature */ = {
