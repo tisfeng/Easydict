@@ -35,11 +35,11 @@ struct EasydictApp: App {
     private var menuBarIcon
 
     private var menuBarImage: String {
-//        #if DEBUG
-//            MenuBarIconType.debug.imageName
-//        #else
-        menuBarIcon == MenuBarIconType.classical.rawValue ? MenuBarIconType.classical.imageName : MenuBarIconType.debug.imageName
-//        #endif
+        #if DEBUG
+            MenuBarIconType.debug.imageName
+        #else
+            menuBarIcon == MenuBarIconType.classical.rawValue ? MenuBarIconType.classical.imageName : MenuBarIconType.debug.imageName
+        #endif
     }
 
     var body: some Scene {
