@@ -57,12 +57,14 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
     @DefaultsWrapper(.launchAtStartup)
     var launchAtStartup: Bool
 
+    let updater = GlobalContext.shared.updaterController.updater
+
     var automaticallyChecksForUpdates: Bool {
         get {
-            GlobalContext.shared.updaterController.updater.automaticallyDownloadsUpdates
+            updater.automaticallyChecksForUpdates
         }
         set {
-            GlobalContext.shared.updaterController.updater.automaticallyDownloadsUpdates = newValue
+            updater.automaticallyChecksForUpdates = newValue
             logSettings(["automatically_checks_for_updates": newValue])
         }
     }
