@@ -1315,6 +1315,23 @@
         }
       }
     },
+    "gemini_translate" : {
+      "comment" : "The name of Gemini Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemini Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gemini 翻译"
+          }
+        }
+      }
+    },
     "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
