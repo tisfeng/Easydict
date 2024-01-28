@@ -2512,6 +2512,57 @@
         }
       }
     },
+    "service.configuration.niutrans.api_key.footer" : {
+
+    },
+    "service.configuration.niutrans.api_key.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译 API Key"
+          }
+        }
+      }
+    },
+    "service.configuration.niutrans.api_key.prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      }
+    },
+    "service.configuration.niutrans.api_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NiuTrans API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小牛翻译 API Key"
+          }
+        }
+      }
+    },
     "service.service_configuration.reset" : {
       "localizations" : {
         "en" : {
