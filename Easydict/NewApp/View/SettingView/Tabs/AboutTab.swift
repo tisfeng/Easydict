@@ -59,21 +59,16 @@ struct AboutTab: View {
     }
 
     class CheckUpdaterViewModel: ObservableObject {
-        @Published var autoChecksForUpdates: Bool = false {
+        private let updater = GlobalContext.shared.updaterController.updater
+
+        @Published var autoChecksForUpdates = true {
             didSet {
-                GlobalContext
-                    .shared
-                    .updaterController
-                    .updater
-                    .automaticallyChecksForUpdates = autoChecksForUpdates
+                updater.automaticallyChecksForUpdates = autoChecksForUpdates
             }
         }
 
         init() {
-            GlobalContext
-                .shared
-                .updaterController
-                .updater
+            updater
                 .publisher(for: \.automaticallyChecksForUpdates)
                 .assign(to: &$autoChecksForUpdates)
         }
