@@ -2563,6 +2563,57 @@
         }
       }
     },
+    "service.configuration.caiyun.token.footer" : {
+
+    },
+    "service.configuration.caiyun.token.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud Token"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩云小译 Token"
+          }
+        }
+      }
+    },
+    "service.configuration.caiyun.token.prompt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxxxxxxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      }
+    },
+    "service.configuration.caiyun.token.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LingoCloud Token"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩云小译 Token"
+          }
+        }
+      }
+    },
     "service.service_configuration.reset" : {
       "localizations" : {
         "en" : {
