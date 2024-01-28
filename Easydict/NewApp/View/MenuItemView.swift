@@ -15,9 +15,7 @@ final class MenuItemStore: ObservableObject {
     @Published var canCheckForUpdates = false
 
     init() {
-        GlobalContext.shared
-            .updaterController
-            .updater
+        Configuration.shared.updater
             .publisher(for: \.canCheckForUpdates)
             .assign(to: &$canCheckForUpdates)
     }
@@ -171,7 +169,7 @@ struct MenuItemView: View {
     private var checkUpdateItem: some View {
         Button("check_updates") {
             NSLog("检查更新")
-            GlobalContext.shared.updaterController.updater.checkForUpdates()
+            Configuration.shared.updater.checkForUpdates()
         }.disabled(!store.canCheckForUpdates)
     }
 

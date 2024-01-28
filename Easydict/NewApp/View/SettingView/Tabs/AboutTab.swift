@@ -59,7 +59,7 @@ struct AboutTab: View {
     }
 
     class CheckUpdaterViewModel: ObservableObject {
-        private let updater = GlobalContext.shared.updaterController.updater
+        private let updater = Configuration.shared.updater
 
         @Published var autoChecksForUpdates = true {
             didSet {
