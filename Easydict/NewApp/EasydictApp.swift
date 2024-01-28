@@ -31,12 +31,15 @@ struct EasydictApp: App {
     @AppStorage(Defaults.Key<Bool>.hideMenuBarIcon.name)
     private var hideMenuBar = Defaults.Key<Bool>.hideMenuBarIcon.defaultValue
 
+    @Default(.selectedMenuBarIcon)
+    private var menuBarIcon
+
     private var menuBarImage: String {
-        #if DEBUG
-            "status_icon_debug"
-        #else
-            "status_icon"
-        #endif
+//        #if DEBUG
+//            MenuBarIconType.debug.imageName
+//        #else
+        menuBarIcon == MenuBarIconType.classical.rawValue ? MenuBarIconType.classical.imageName : MenuBarIconType.debug.imageName
+//        #endif
     }
 
     var body: some Scene {
@@ -65,5 +68,19 @@ extension Bool {
     var toggledValue: Bool {
         get { !self }
         mutating set { self = newValue.toggledValue }
+    }
+}
+
+enum MenuBarIconType: UInt, CaseIterable {
+    case classical = 0
+    case debug = 1
+
+    var imageName: String {
+        switch self {
+        case .classical:
+            return "status_icon"
+        case .debug:
+            return "status_icon_debug"
+        }
     }
 }
