@@ -30,9 +30,10 @@ struct ServiceStringConfigurationSection<F: View>: View {
                 let value = Binding<String>.init {
                     value.wrappedValue ?? ""
                 } set: { newValue in
-                    value.wrappedValue = newValue
+                    value.wrappedValue = newValue.trimmingCharacters(in: .whitespaces)
                 }
                 TextField(textFieldTitleKey, text: value, prompt: Text(prompt))
+                    .lineLimit(1)
             },
             footer: footer
         )
