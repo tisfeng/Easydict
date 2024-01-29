@@ -38,6 +38,10 @@ public final class CaiyunService: QueryService {
         throw QueryServiceError.notSupported
     }
 
+    override public func hasPrivateAPIKey() -> Bool {
+        token != CaiyunService.defaultTestToken
+    }
+
     private var apiEndPoint = "https://api.interpreter.caiyunai.com/v1/translator"
 
     /// Official Test Token for Caiyun

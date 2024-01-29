@@ -23,12 +23,12 @@ extension AliService: ConfigurableService {
         ServiceConfigurationSectionView(headerTitleKey: "service.configuration.ali.header", service: self) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_id.title",
-                key: .caiyunToken,
+                key: .aliAccessKeyId,
                 placeholder: "service.configuration.ali.access_key_id.prompt"
             )
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_secret.title",
-                key: .caiyunToken,
+                key: .aliAccessKeySecret,
                 placeholder: "service.configuration.ali.access_key_secret.prompt"
             )
         }

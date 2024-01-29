@@ -2576,36 +2576,52 @@
       }
     },
     "service.configuration.openai.translation.prompt" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "xxxxxxxx"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "xxxxxxxx"
-            }
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxx"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "xxxxxxxx"
           }
         }
+      }
     },
     "service.configuration.openai.translation.title" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Translation"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "翻译"
-            }
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译"
           }
         }
+      }
+    },
+    "service.configuration.reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
+          }
+        }
+      }
     },
     "service.configuration.tencent.header" : {
       "localizations" : {
@@ -2687,18 +2703,50 @@
         }
       }
     },
-    "service.configuration.reset" : {
+    "service.configuration.validate" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset"
+            "value" : "Validate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重置"
+            "value" : "验证"
+          }
+        }
+      }
+    },
+    "service.configuration.validation_fail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validation failed!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证失败！"
+          }
+        }
+      }
+    },
+    "service.configuration.validation_success" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validation success!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证成功！"
           }
         }
       }
@@ -3698,25 +3746,6 @@
           }
         }
       }
-    },
-    "service.configuration.validate" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Validate"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "验证"
-            }
-          }
-        }
-    },
-    "validate success or fail" : {
-
     },
     "volcano_translate" : {
       "localizations" : {

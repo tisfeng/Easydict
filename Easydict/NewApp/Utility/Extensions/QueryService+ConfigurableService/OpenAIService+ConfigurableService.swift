@@ -13,16 +13,21 @@ import SwiftUI
 protocol ServiceSecretConfigrable {
     func resetSecret()
 
-    func validate()
+    func validate(completion: @escaping (EZQueryResult, Error?) -> Void)
 }
 
 extension ServiceSecretConfigrable {
     func resetSecret() {}
 
-    func validate() {}
+    func validate(completion _: @escaping (EZQueryResult, Error?) -> Void) {}
 }
 
-extension QueryService: ServiceSecretConfigrable {}
+extension QueryService: ServiceSecretConfigrable {
+    func validate(completion: @escaping (EZQueryResult, Error?) -> Void) {
+        resetServiceResult()
+        translate("hello world!", from: .english, to: .simplifiedChinese, completion: completion)
+    }
+}
 
 extension EZOpenAIService {
     func resetSecret() {}
@@ -32,34 +37,7 @@ extension EZOpenAIService {
 
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
-//    func resetSecret() {
-//        Defaults[.openAIAPIKey] = ""
-//        Defaults[.openAITranslation] = ""
-//    }
-//
-//    func validate() {}
-
     func configurationListItems() -> some View {
-//        ServiceStringConfigurationSection(
-//            textFieldTitleKey: "service.configuration.openai.api_key.header",
-//            headerTitleKey: "service.configuration.openai.api_key.title",
-//            key: .openAIAPIKey,
-//            prompt: "service.configuration.openai.api_key.prompt",
-//            footer: {
-//                Text("service.configuration.openai.api_key.footer")
-//            }
-//        )
-//
-//        ServiceStringConfigurationSection(
-//            textFieldTitleKey: "service.configuration.openai.translation.header",
-//            headerTitleKey: "service.configuration.openai.translation.title",
-//            key: .openAITranslation,
-//            prompt: "service.configuration.openai.translation.prompt",
-//            footer: {
-//                Text("service.configuration.openai.translation.footer")
-//            }
-//        )
-
         ServiceConfigurationSectionView(headerTitleKey: "service.configuration.openai.header", service: self) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",

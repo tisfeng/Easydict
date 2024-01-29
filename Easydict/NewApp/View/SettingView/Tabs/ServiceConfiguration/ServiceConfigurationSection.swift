@@ -68,7 +68,7 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
             HStack(alignment: .lastTextBaseline) {
                 Text(titleKey)
                 Spacer()
-                Button("service.service_configuration.reset") {
+                Button("service.configuration.reset") {
                     _value.reset()
                 }
                 .buttonStyle(.plain)
@@ -84,45 +84,79 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
     }
 }
 
+class ServiceConfigurationViewModel: ObservableObject {
+    @Published var isAlertPresented = false
+    @Published var isValidating = false
+    @Published var alertMessage: LocalizedStringKey = ""
+    @Published var isValidateEnabled = false
+}
+
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationSectionView<Content: View>: View {
     let service: QueryService
     let headerTitleKey: LocalizedStringKey
     let content: Content
 
-    @State private var isAlertPresented = false
+    @ObservedObject private var serviceConfigViewModel = ServiceConfigurationViewModel()
 
     init(headerTitleKey: LocalizedStringKey, service: QueryService, @ViewBuilder content: () -> Content) {
         self.headerTitleKey = headerTitleKey
         self.service = service
         self.content = content()
     }
+    
+    var header: some View {
+        HStack(alignment: .lastTextBaseline) {
+            Text(headerTitleKey)
+            Spacer()
+            Button("service.configuration.reset") {
+                service.resetSecret()
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color.accentColor)
+            .font(.footnote)
+        }
+    }
+    
+    var footer: some View {
+        Button {
+            validate()
+        } label: {
+            Group {
+                if serviceConfigViewModel.isValidating {
+                    ProgressView()
+                        .controlSize(.small)
+                        .progressViewStyle(.circular)
+                } else {
+                    Text("service.configuration.validate")
+                }
+            }
+        }
+        .disabled(serviceConfigViewModel.isValidating || !service.hasPrivateAPIKey())
+    }
 
     var body: some View {
         Section {
             content
         } header: {
-            HStack(alignment: .lastTextBaseline) {
-                Text(headerTitleKey)
-                Spacer()
-                Button("service.configuration.reset") {
-                    service.resetSecret()
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(Color.accentColor)
-                .font(.footnote)
-            }
+            header
         } footer: {
-            Button {
-                service.validate()
-                isAlertPresented.toggle()
-            } label: {
-                Text("service.configuration.validate")
-            }
+            footer
         }
-        .alert(isPresented: $isAlertPresented, content: {
-            Alert(title: Text("validate success or fail"))
-        })
+        .alert(isPresented: $serviceConfigViewModel.isAlertPresented) {
+            Alert(title: Text(serviceConfigViewModel.alertMessage))
+        }
+    }
+    
+    func validate() {
+        serviceConfigViewModel.isValidating.toggle()
+        service.validate { _, error in
+            serviceConfigViewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+            print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+            serviceConfigViewModel.isValidating.toggle()
+            serviceConfigViewModel.isAlertPresented.toggle()
+        }
     }
 }
 

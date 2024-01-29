@@ -23,13 +23,13 @@ extension TencentService: ConfigurableService {
         ServiceConfigurationSectionView(headerTitleKey: "service.configuration.tencent.header", service: self) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_id.title",
-                key: .caiyunToken,
+                key: .tencentSecretId,
                 placeholder: "service.configuration.tencent.secret_id.prompt"
             )
 
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_key.title",
-                key: .caiyunToken,
+                key: .tencentSecretKey,
                 placeholder: "service.configuration.tencent.secret_key.prompt"
             )
         }

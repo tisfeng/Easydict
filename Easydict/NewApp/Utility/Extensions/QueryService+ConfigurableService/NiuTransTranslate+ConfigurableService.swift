@@ -22,7 +22,7 @@ extension EZNiuTransTranslate: ConfigurableService {
         ServiceConfigurationSectionView(headerTitleKey: "service.configuration.niutrans.header", service: self) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.niutrans.api_key.title",
-                key: .caiyunToken,
+                key: .niuTransAPIKey,
                 placeholder: "service.configuration.niutrans.api_key.prompt"
             )
         }
