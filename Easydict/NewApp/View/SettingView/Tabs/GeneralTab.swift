@@ -136,7 +136,6 @@ struct GeneralTab: View {
                 Toggle(isOn: $hideMenuBarIcon) {
                     Text("hide_menu_bar_icon")
                 }
-                #if !DEBUG
                 Picker(
                     "modify_menu_bar_icon",
                     selection: $selectedMenuBarIcon) {
