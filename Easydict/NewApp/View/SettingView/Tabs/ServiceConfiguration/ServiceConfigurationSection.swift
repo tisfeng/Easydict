@@ -105,7 +105,7 @@ struct ServiceConfigurationSectionView<Content: View>: View {
             HStack(alignment: .lastTextBaseline) {
                 Text(headerTitleKey)
                 Spacer()
-                Button("service.service_configuration.reset") {
+                Button("service.configuration.reset") {
                     service.resetSecret()
                 }
                 .buttonStyle(.plain)
@@ -117,7 +117,7 @@ struct ServiceConfigurationSectionView<Content: View>: View {
                 service.validate()
                 isAlertPresented.toggle()
             } label: {
-                Text("Validate")
+                Text("service.configuration.validate")
             }
         }
         .alert(isPresented: $isAlertPresented, content: {
@@ -158,7 +158,7 @@ struct ServiceConfigurationInputCell: View {
     var body: some View {
         HStack {
             TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
-
+            // make UI consistent with secure input view
             Spacer()
         }
     }

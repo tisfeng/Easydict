@@ -2687,7 +2687,7 @@
         }
       }
     },
-    "service.service_configuration.reset" : {
+    "service.configuration.reset" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3699,8 +3699,21 @@
         }
       }
     },
-    "Validate" : {
-
+    "service.configuration.validate" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "Validate"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "验证"
+            }
+          }
+        }
     },
     "validate success or fail" : {
 
