@@ -144,7 +144,6 @@ struct GeneralTab: View {
                                 .tag(option)
                         }
                 }
-                #endif
             } header: {
                 Text("setting.general.other.header")
             }
