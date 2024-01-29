@@ -11,6 +11,8 @@ import SwiftUI
 
 @available(macOS 13, *)
 struct GeneralTab: View {
+    @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         Form {
             Section {
@@ -141,7 +143,13 @@ struct GeneralTab: View {
                     selection: $selectedMenuBarIcon
                 ) {
                     ForEach(MenuBarIconType.allCases) { option in
-                        Image(option.rawValue)
+                        if colorScheme == .light {
+                            Image(option.rawValue)
+                        } else {
+                            Image(option.rawValue)
+                                .renderingMode(.template)
+                                .foregroundStyle(.white)
+                        }
                     }
                 }
             } header: {
