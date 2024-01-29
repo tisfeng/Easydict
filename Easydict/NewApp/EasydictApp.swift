@@ -71,7 +71,9 @@ extension Bool {
     }
 }
 
-enum MenuBarIconType: UInt, CaseIterable {
+enum MenuBarIconType: UInt, CaseIterable, Identifiable {
+    var id: Self { self }
+    
     case classical = 0
     case debug = 1
 
