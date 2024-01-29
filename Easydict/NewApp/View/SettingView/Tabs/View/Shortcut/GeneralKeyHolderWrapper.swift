@@ -55,6 +55,12 @@ extension GeneralKeyHolderWrapper {
         func recordViewDidEndRecording(_: RecordView) {}
 
         func recordView(_: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
+            if let key = keyCombo {
+                // shortcut validate confict
+                if Shortcut.validateShortcut(key) {
+                    print("confict")
+                }
+            }
             storeKeyCombo(with: keyCombo)
             Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
         }

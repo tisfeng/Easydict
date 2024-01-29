@@ -21,6 +21,8 @@ public enum ShortcutType: String {
 }
 
 class Shortcut: NSObject {
+    var confictMenuItem: NSMenuItem?
+
     static let shared = Shortcut()
 
     @objc static func setupShortcut() {
