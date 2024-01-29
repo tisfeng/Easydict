@@ -34,14 +34,6 @@ struct EasydictApp: App {
     @Default(.selectedMenuBarIcon)
     private var menuBarIcon
 
-    private var menuBarImage: String {
-        #if DEBUG
-            MenuBarIconType.debug.imageName
-        #else
-            menuBarIcon == MenuBarIconType.classical.rawValue ? MenuBarIconType.classical.imageName : MenuBarIconType.debug.imageName
-        #endif
-    }
-
     var body: some Scene {
         if #available(macOS 13, *) {
             MenuBarExtra(isInserted: $hideMenuBar.toggledValue) {
@@ -50,7 +42,7 @@ struct EasydictApp: App {
                 Label {
                     Text("Easydict")
                 } icon: {
-                    Image(menuBarImage)
+                    Image(menuBarIcon.rawValue)
                         .resizable()
                         .renderingMode(.template)
                         .scaledToFit()
@@ -71,18 +63,9 @@ extension Bool {
     }
 }
 
-enum MenuBarIconType: UInt, CaseIterable, Identifiable {
+enum MenuBarIconType: String, CaseIterable, Defaults.Serializable, Identifiable {
     var id: Self { self }
-    
-    case classical = 0
-    case debug = 1
 
-    var imageName: String {
-        switch self {
-        case .classical:
-            return "status_icon"
-        case .debug:
-            return "status_icon_debug"
-        }
-    }
+    case classical = "status_icon"
+    case debug = "status_icon_debug"
 }

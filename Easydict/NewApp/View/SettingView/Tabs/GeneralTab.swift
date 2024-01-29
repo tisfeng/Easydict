@@ -137,12 +137,12 @@ struct GeneralTab: View {
                     Text("hide_menu_bar_icon")
                 }
                 Picker(
-                    "modify_menu_bar_icon",
-                    selection: $selectedMenuBarIcon) {
-                        ForEach(MenuBarIconType.allCases, id: \.rawValue) { option in
-                            Image(option.imageName)
-                                .tag(option)
-                        }
+                    "modify_menubar_icon",
+                    selection: $selectedMenuBarIcon
+                ) {
+                    ForEach(MenuBarIconType.allCases) { option in
+                        Image(option.rawValue)
+                    }
                 }
             } header: {
                 Text("setting.general.other.header")

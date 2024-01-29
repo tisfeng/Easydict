@@ -1805,7 +1805,7 @@
         }
       }
     },
-    "modify_menu_bar_icon" : {
+    "modify_menubar_icon" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1817,7 +1817,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "修改菜单栏图标"
+            "value" : "菜单栏图标"
           }
         }
       }
