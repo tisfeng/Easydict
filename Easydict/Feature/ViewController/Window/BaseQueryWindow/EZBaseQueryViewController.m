@@ -1021,32 +1021,10 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
 - (NSArray<EZQueryResult *> *)resetAllResults {
     NSMutableArray *allResults = [NSMutableArray array];
     for (EZQueryService *service in self.services) {
-        EZQueryResult *result = [self resetServiceResult:service];
+        EZQueryResult *result = [service resetServiceResult];
         [allResults addObject:result];
     }
     return allResults;
-}
-
-- (EZQueryResult *)resetServiceResult:(EZQueryService *)service {
-    EZQueryResult *result = service.result;
-    [result reset];
-    if (!result) {
-        result = [[EZQueryResult alloc] init];
-    }
-    
-    NSArray *enabledReplaceTypes = @[
-        EZActionTypeAutoSelectQuery,
-        EZActionTypeShortcutQuery,
-        EZActionTypeInvokeQuery,
-    ];
-    if ([enabledReplaceTypes containsObject:self.queryModel.actionType]) {
-        result.showReplaceButton = EZEventMonitor.shared.isSelectedTextEditable;
-    } else {
-        result.showReplaceButton = NO;
-    }
-    
-    service.result = result;
-    return result;
 }
 
 - (nullable EZResultView *)resultCellOfResult:(EZQueryResult *)result {
@@ -1292,7 +1270,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         // Make enabledQuery = YES before retry, it may be closed manually.
         service.enabledQuery = YES;
         
-        EZQueryResult *newResult = [self resetServiceResult:service];
+        EZQueryResult *newResult = [service resetServiceResult];
         [self updateCellWithResult:newResult reloadData:YES completionHandler:^{
             [self queryWithModel:self.queryModel service:service autoPlay:NO];
         }];

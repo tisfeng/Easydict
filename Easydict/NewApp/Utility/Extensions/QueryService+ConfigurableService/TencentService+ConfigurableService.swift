@@ -6,30 +6,32 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import SwiftUI
 
 @available(macOS 13.0, *)
 extension TencentService: ConfigurableService {
-    func configurationListItems() -> some View {
-        ServiceStringConfigurationSection(
-            textFieldTitleKey: "service.configuration.tencent.secret_id.header",
-            headerTitleKey: "service.configuration.tencent.secret_id.title",
-            key: .tencentSecretId,
-            prompt: "service.configuration.tencent.secret_id.prompt",
-            footer: {
-                Text("service.configuration.tencent.secret_id.footer")
-            }
-        )
+    func reset() {
+        Defaults[.tencentSecretId] = ""
+        Defaults[.tencentSecretKey] = ""
+    }
 
-        ServiceStringConfigurationSection(
-            textFieldTitleKey: "service.configuration.tencent.secret_key.header",
-            headerTitleKey: "service.configuration.tencent.secret_key.title",
-            key: .tencentSecretKey,
-            prompt: "service.configuration.tencent.secret_key.prompt",
-            footer: {
-                Text("service.configuration.tencent.secret_key.footer")
-            }
-        )
+    func validate() {}
+
+    func configurationListItems() -> some View {
+        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.tencent.header", service: self) {
+            ServiceConfigurationSecureInputCell(
+                textFieldTitleKey: "service.configuration.tencent.secret_id.title",
+                key: .caiyunToken,
+                placeholder: "service.configuration.tencent.secret_id.prompt"
+            )
+
+            ServiceConfigurationSecureInputCell(
+                textFieldTitleKey: "service.configuration.tencent.secret_key.title",
+                key: .caiyunToken,
+                placeholder: "service.configuration.tencent.secret_key.prompt"
+            )
+        }
     }
 }

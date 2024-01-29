@@ -6,20 +6,28 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import SwiftUI
 
 @available(macOS 13.0, *)
 extension CaiyunService: ConfigurableService {
+    func resetSecret() {
+        //        Defaults[.caiyunToken] = ""
+        print("CaiyunService reset")
+    }
+
+    func validate() {
+        print("CaiyunService validate")
+    }
+
     func configurationListItems() -> some View {
-        ServiceStringConfigurationSection(
-            textFieldTitleKey: "service.configuration.caiyun.token.header",
-            headerTitleKey: "service.configuration.caiyun.token.title",
-            key: .caiyunToken,
-            prompt: "service.configuration.caiyun.token.prompt",
-            footer: {
-                Text("service.configuration.caiyun.token.footer")
-            }
-        )
+        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.caiyun.header", service: self) {
+            ServiceConfigurationSecureInputCell(
+                textFieldTitleKey: "service.configuration.caiyun.token.title",
+                key: .caiyunToken,
+                placeholder: "service.configuration.caiyun.token.prompt"
+            )
+        }
     }
 }

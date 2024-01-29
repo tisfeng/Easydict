@@ -83,3 +83,83 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
         }
     }
 }
+
+@available(macOS 13.0, *)
+struct ServiceConfigurationSectionView<Content: View>: View {
+    let service: QueryService
+    let headerTitleKey: LocalizedStringKey
+    let content: Content
+
+    @State private var isAlertPresented = false
+
+    init(headerTitleKey: LocalizedStringKey, service: QueryService, @ViewBuilder content: () -> Content) {
+        self.headerTitleKey = headerTitleKey
+        self.service = service
+        self.content = content()
+    }
+
+    var body: some View {
+        Section {
+            content
+        } header: {
+            HStack(alignment: .lastTextBaseline) {
+                Text(headerTitleKey)
+                Spacer()
+                Button("service.service_configuration.reset") {
+                    service.resetSecret()
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(Color.accentColor)
+                .font(.footnote)
+            }
+        } footer: {
+            Button {
+                service.validate()
+                isAlertPresented.toggle()
+            } label: {
+                Text("Validate")
+            }
+        }
+        .alert(isPresented: $isAlertPresented, content: {
+            Alert(title: Text("validate success or fail"))
+        })
+    }
+}
+
+@available(macOS 13.0, *)
+struct ServiceConfigurationSecureInputCell: View {
+    @Default var value: String?
+    let textFieldTitleKey: LocalizedStringKey
+    let placeholder: LocalizedStringKey
+
+    init(textFieldTitleKey: LocalizedStringKey, key: Defaults.Key<String?>, placeholder: LocalizedStringKey) {
+        self.textFieldTitleKey = textFieldTitleKey
+        self.placeholder = placeholder
+        _value = .init(key)
+    }
+
+    var body: some View {
+        SecureTextField(title: textFieldTitleKey, placeholder: placeholder, text: $value)
+    }
+}
+
+@available(macOS 13.0, *)
+struct ServiceConfigurationInputCell: View {
+    @Default var value: String?
+    let textFieldTitleKey: LocalizedStringKey
+    let placeholder: LocalizedStringKey
+
+    init(textFieldTitleKey: LocalizedStringKey, key: Defaults.Key<String?>, placeholder: LocalizedStringKey) {
+        self.textFieldTitleKey = textFieldTitleKey
+        self.placeholder = placeholder
+        _value = .init(key)
+    }
+
+    var body: some View {
+        HStack {
+            TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
+
+            Spacer()
+        }
+    }
+}
