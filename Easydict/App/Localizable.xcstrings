@@ -1405,7 +1405,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hide menubar icon"
+            "value" : "Hide Menu Bar Icon"
           }
         },
         "zh-Hans" : {
@@ -1696,7 +1696,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menubar icon:"
+            "value" : "Menu bar icon:"
           }
         },
         "zh-Hans" : {
@@ -1811,7 +1811,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menubar icon"
+            "value" : "Menu bar icon"
           }
         },
         "zh-Hans" : {
