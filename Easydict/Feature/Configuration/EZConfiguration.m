@@ -52,6 +52,7 @@ static NSString *const kAdjustPopButtomOriginKey = @"EZConfiguration_kAdjustPopB
 static NSString *const kAllowCrashLogKey = @"EZConfiguration_kAllowCrashLogKey";
 static NSString *const kAllowAnalyticsKey = @"EZConfiguration_kAllowAnalyticsKey";
 static NSString *const kClearInputKey = @"EZConfiguration_kClearInputKey";
+static NSString *const kKeepPrevResultKey = @"EZConfiguration_kKeepPrevResultKey";
 static NSString *const kTranslationControllerFontKey = @"EZConfiguration_kTranslationControllerFontKey";
 static NSString *const kApperanceKey = @"EZConfiguration_kApperanceKey";
 
@@ -126,6 +127,7 @@ static EZConfiguration *_instance;
     self.allowCrashLog = [NSUserDefaults mm_readBool:kAllowCrashLogKey defaultValue:YES];
     self.allowAnalytics = [NSUserDefaults mm_readBool:kAllowAnalyticsKey defaultValue:YES];
     self.clearInput = [NSUserDefaults mm_readBool:kClearInputKey defaultValue:NO];
+    self.keepPrevResult = [NSUserDefaults mm_readBool:kKeepPrevResultKey defaultValue:YES];
     
     self.fontSizes = @[@(1), @(1.1), @(1.2), @(1.3), @(1.4)];
     [[NSUserDefaults standardUserDefaults]registerDefaults:@{kTranslationControllerFontKey: @(0)}];
@@ -430,6 +432,14 @@ static EZConfiguration *_instance;
     [NSUserDefaults mm_write:@(clearInput) forKey:kClearInputKey];
     
     [self logSettings:@{@"clear_input" : @(clearInput)}];
+}
+
+- (void)setKeepPrevResult:(BOOL)keepPrevResult {
+    _keepPrevResult = keepPrevResult;
+    
+    [NSUserDefaults mm_write:@(keepPrevResult) forKey:kKeepPrevResultKey];
+    
+    [self logSettings:@{@"keep_prev_result": @(keepPrevResult)}];
 }
 
 - (void)setFontSizeIndex:(NSInteger)fontSizeIndex {

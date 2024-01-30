@@ -141,6 +141,9 @@ let kHideMenuBarIconKey = "EZConfiguration_kHideMenuBarIconKey"
     @DefaultsWrapper(.clearInput)
     var clearInput: Bool
 
+    @DefaultsWrapper(.keepPrevResultWhenEmpty)
+    var keepPrevResultWhenEmpty: Bool
+
     var disabledAutoSelect: Bool = false
 
     var isRecordingSelectTextShortcutKey: Bool = false

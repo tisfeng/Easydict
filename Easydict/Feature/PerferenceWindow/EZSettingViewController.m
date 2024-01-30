@@ -77,6 +77,9 @@
 @property (nonatomic, strong) NSTextField *clearInputLabel;
 @property (nonatomic, strong) NSButton *clearInputButton;
 
+@property (nonatomic, strong) NSTextField *keepPrevResultLabel;
+@property (nonatomic, strong) NSButton *keepPrevResultButton;
+
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
 @property (nonatomic, strong) NSButton *autoQuerySelectedTextButton;
@@ -403,6 +406,14 @@
     NSString *clearInputTitle = NSLocalizedString(@"clear_input_when_translating", nil);
     self.clearInputButton = [NSButton checkboxWithTitle:clearInputTitle target:self action:@selector(clearInputButtonClicked:)];
     [self.contentView addSubview:self.clearInputButton];
+    
+    self.keepPrevResultLabel = [NSTextField labelWithString:NSLocalizedString(@"keep_result", nil)];
+    self.keepPrevResultLabel.font = font;
+    [self.contentView addSubview:self.keepPrevResultLabel];
+    
+    NSString *keepPrevResultTitle = NSLocalizedString(@"keep_prev_result_when_selected_text_is_empty", nil);
+    self.keepPrevResultButton = [NSButton checkboxWithTitle:keepPrevResultTitle target:self action:@selector(keepPrevResultButtonClicked:)];
+    [self.contentView addSubview:self.keepPrevResultButton];
 
     NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
     autoQueryLabel.font = font;
@@ -546,6 +557,7 @@
 
     self.autoPlayAudioButton.mm_isOn = self.config.autoPlayAudio;
     self.clearInputButton.mm_isOn = self.config.clearInput;
+    self.keepPrevResultButton.mm_isOn = self.config.keepPrevResultWhenEmpty;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = self.config.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = self.config.autoQueryOCRText;
@@ -755,11 +767,19 @@
         make.left.equalTo(self.clearInputLabel.mas_right).offset(self.horizontalPadding);
         make.centerY.equalTo(self.clearInputLabel);
     }];
-
+    
+    [self.keepPrevResultLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.clearInputLabel);
+        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.keepPrevResultButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.keepPrevResultLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.keepPrevResultLabel);
+    }];
 
     [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.keepPrevResultButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -965,6 +985,10 @@
 
 - (void)clearInputButtonClicked:(NSButton *)sender {
     self.config.clearInput = sender.mm_isOn;
+}
+
+- (void)keepPrevResultButtonClicked:(NSButton *)sender {
+    self.config.keepPrevResultWhenEmpty = sender.mm_isOn;
 }
 
 - (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {

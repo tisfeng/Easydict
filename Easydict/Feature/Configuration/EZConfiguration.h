@@ -73,6 +73,7 @@ typedef NS_ENUM(NSUInteger, EZAppearenceType) {
 @property (nonatomic, assign) BOOL allowCrashLog;
 @property (nonatomic, assign) BOOL allowAnalytics;
 @property (nonatomic, assign) BOOL clearInput;
+@property (nonatomic, assign) BOOL keepPrevResult;
 
 // TODO: Need to move them. These are read/write properties only and will not be stored locally, only for external use.
 /// Only use when showing NSOpenPanel to select disabled apps.

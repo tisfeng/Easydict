@@ -47,6 +47,7 @@ extension Defaults.Keys {
     static let allowCrashLog = Key<Bool>("EZConfiguration_kAllowCrashLogKey", default: true)
     static let allowAnalytics = Key<Bool>("EZConfiguration_kAllowAnalyticsKey", default: true)
     static let clearInput = Key<Bool>("EZConfiguration_kClearInputKey", default: true)
+    static let keepPrevResultWhenEmpty = Key<Bool>("EZConfiguration_kKeepPrevResultKey", default: true)
     static let enableBetaNewApp = Key<Bool>("EZConfiguration_kEnableBetaNewAppKey", default: false)
 
     static let enableBetaFeature = Key<Bool>("EZBetaFeatureKey", default: false)

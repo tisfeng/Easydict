@@ -527,6 +527,7 @@ static void dispatch_block_on_main_safely(dispatch_block_t block) {
         [NSApp activateIgnoringOtherApps:YES];
         
         [self.baseQueryWindow makeFirstResponder:self.queryView.textView];
+        self.queryView.textView.selectedRange = NSMakeRange(0, self.inputText.length);
     }
 }
 
