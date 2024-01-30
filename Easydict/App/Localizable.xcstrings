@@ -3065,13 +3065,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut Confict With:"
+            "value" : "Shortcut Confict With"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键冲突:"
+            "value" : "快捷键冲突"
           }
         }
       }

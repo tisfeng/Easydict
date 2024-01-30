@@ -62,7 +62,13 @@ extension GeneralKeyHolderWrapper {
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {
-                    confictAlterMessage = ShortcutConfictAlertMessage(message: "shortcut_confict_message\(String(describing: Shortcut.shared.confictMenuItem?.title))")
+                    if #available(macOS 12, *) {
+                        confictAlterMessage = ShortcutConfictAlertMessage(message: String(localized: "shortcut_confict_message") + (Shortcut.shared.confictMenuItem?.title ?? ""))
+                    } else {
+                        // Fallback on earlier versions
+                        let msg = NSLocalizedString("shortcut_confict_message", comment: "") + (Shortcut.shared.confictMenuItem?.title ?? "")
+                        confictAlterMessage = ShortcutConfictAlertMessage(message: msg)
+                    }
                     recordView.clear()
                     return
                 }
