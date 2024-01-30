@@ -70,6 +70,6 @@ extension Bool {
 enum MenuBarIconType: String, CaseIterable, Defaults.Serializable, Identifiable {
     var id: Self { self }
 
-    case square = "status_icon"
-    case rounded = "status_icon_debug"
+    case square = "square_menu_bar_icon"
+    case rounded = "rounded_menu_bar_icon"
 }
