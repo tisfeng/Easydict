@@ -143,13 +143,9 @@ struct GeneralTab: View {
                     selection: $selectedMenuBarIcon
                 ) {
                     ForEach(MenuBarIconType.allCases) { option in
-                        if colorScheme == .light {
-                            Image(option.rawValue)
-                        } else {
-                            Image(option.rawValue)
-                                .renderingMode(.template)
-                                .foregroundStyle(.white)
-                        }
+                        Image(option.rawValue)
+                            .renderingMode(.template)
+                            .foregroundStyle(.primary)
                     }
                 }
             } header: {
