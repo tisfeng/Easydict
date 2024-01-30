@@ -70,11 +70,11 @@ struct SecureTextField: View {
 struct SecureInput_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SecureTextField(title: "service.configuration.caiyun.header", placeholder: "service.configuration.caiyun.token.prompt", text: .constant("1234567"))
+            SecureTextField(title: "caiyun_translate", placeholder: "service.configuration.input.placeholder", text: .constant("1234567"))
                 .padding()
                 .previewLayout(.fixed(width: 400, height: 100))
 
-            SecureTextField(title: "service.configuration.caiyun.header", placeholder: "service.configuration.caiyun.token.prompt", text: .constant(""))
+            SecureTextField(title: "caiyun_translate", placeholder: "service.configuration.input.placeholder", text: .constant(""))
                 .padding()
                 .preferredColorScheme(.dark)
                 .previewLayout(.fixed(width: 400, height: 100))

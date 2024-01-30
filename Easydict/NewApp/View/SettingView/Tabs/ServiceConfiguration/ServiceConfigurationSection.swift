@@ -96,7 +96,7 @@ class ServiceValidationViewModel: ObservableObject {
 
     var cancellables: [AnyCancellable] = []
 
-    func observeKeys(_ keys: [Defaults.Key<String?>]) {
+    func observeInput(for keys: [Defaults.Key<String?>]) {
         cancellables.append(
             Defaults.publisher(keys: keys)
                 .sink { [weak self] _ in
@@ -124,7 +124,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         self.service = service
         self.content = content()
 
-        viewModel.observeKeys(keys)
+        viewModel.observeInput(for: keys)
     }
 
     var header: some View {

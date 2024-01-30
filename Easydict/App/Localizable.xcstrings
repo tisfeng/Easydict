@@ -2340,22 +2340,6 @@
         }
       }
     },
-    "service.configuration.ali.access_key_id.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
-          }
-        }
-      }
-    },
     "service.configuration.ali.access_key_id.title" : {
       "localizations" : {
         "en" : {
@@ -2368,22 +2352,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AccessKey ID"
-          }
-        }
-      }
-    },
-    "service.configuration.ali.access_key_secret.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
           }
         }
       }
@@ -2404,54 +2372,6 @@
         }
       }
     },
-    "service.configuration.ali.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ali Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "阿里翻译"
-          }
-        }
-      }
-    },
-    "service.configuration.caiyun.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LingoCloud"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "彩云小译"
-          }
-        }
-      }
-    },
-    "service.configuration.caiyun.token.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxx"
-          }
-        }
-      }
-    },
     "service.configuration.caiyun.token.title" : {
       "localizations" : {
         "en" : {
@@ -2468,18 +2388,18 @@
         }
       }
     },
-    "service.configuration.niutrans.api_key.prompt" : {
+    "service.configuration.input.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            "value" : "xxxxxxxxxxxxxxxx"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            "value" : "xxxxxxxxxxxxxxxx"
           }
         }
       }
@@ -2496,22 +2416,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Key"
-          }
-        }
-      }
-    },
-    "service.configuration.niutrans.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NiuTrans"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "小牛翻译"
           }
         }
       }
@@ -2543,18 +2447,18 @@
         }
       }
     },
-    "service.configuration.openai.api_key.prompt" : {
+    "service.configuration.openai.api_key.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            "value" : "sk-xxxxxxxxxxxxxxxxxxxx"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            "value" : "sk-xxxxxxxxxxxxxxxxxxxx"
           }
         }
       }
@@ -2575,82 +2479,66 @@
         }
       }
     },
-    "service.configuration.openai.domain.prompt" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "api.openai.com"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "api.openai.com"
-            }
-          }
-        }
-    },
-    "service.configuration.openai.domain.title" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Domain"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "域名"
-            }
-          }
-        }
-    },
-    "service.configuration.openai.endpoint_key.prompt" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
-            }
-          }
-        }
-    },
-    "service.configuration.openai.endpoint_key.title" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Endpoint"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "网络地址"
-            }
-          }
-        }
-    },
-    "service.configuration.openai.header" : {
+    "service.configuration.openai.domain.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OpenAI"
+            "value" : "api.openai.com"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OpenAI"
+            "value" : "api.openai.com"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.domain.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domain"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "域名"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.endpoint_key.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.endpoint_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endpoint"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网络地址"
           }
         }
       }
@@ -2671,21 +2559,8 @@
         }
       }
     },
-    "service.configuration.openai.translation.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxx"
-          }
-        }
-      }
+    "service.configuration.openai.translation.placeholder" : {
+
     },
     "service.configuration.openai.translation.title" : {
       "localizations" : {
@@ -2719,38 +2594,6 @@
         }
       }
     },
-    "service.configuration.tencent.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tencent Translate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "腾讯翻译"
-          }
-        }
-      }
-    },
-    "service.configuration.tencent.secret_id.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          }
-        }
-      }
-    },
     "service.configuration.tencent.secret_id.title" : {
       "localizations" : {
         "en" : {
@@ -2763,22 +2606,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Id"
-          }
-        }
-      }
-    },
-    "service.configuration.tencent.secret_key.prompt" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           }
         }
       }

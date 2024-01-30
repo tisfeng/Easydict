@@ -23,11 +23,11 @@ enum OpenAIModels: String, CaseIterable, Identifiable {
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "service.configuration.openai.header", service: self, keys: [.openAIAPIKey]) {
+        ServiceConfigurationSecretSectionView(headerTitleKey: "openai_translate", service: self, keys: [.openAIAPIKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
                 key: .openAIAPIKey,
-                placeholder: "service.configuration.openai.api_key.prompt"
+                placeholder: "service.configuration.openai.api_key.placeholder"
             )
         }
 
@@ -35,22 +35,26 @@ extension EZOpenAIService: ConfigurableService {
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.translation.title",
                 key: .openAITranslation,
-                placeholder: "service.configuration.openai.translation.prompt"
+                placeholder: "service.configuration.openai.translation.placeholder"
             )
             // domain
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.domain.title",
                 key: .openAIDomain,
-                placeholder: "service.configuration.openai.domain.prompt"
+                placeholder: "service.configuration.openai.domain.placeholder"
             )
             // endpoint key
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.endpoint_key.title",
                 key: .openAIEndPoint,
-                placeholder: "service.configuration.openai.endpoint_key.prompt"
+                placeholder: "service.configuration.openai.endpoint_key.placeholder"
             )
             // model
-            ServiceConfigurationPickerCell(titleKey: "service.configuration.openai.model.title", key: .openAIModel, values: OpenAIModels.allCases)
+            ServiceConfigurationPickerCell(
+                titleKey: "service.configuration.openai.model.title",
+                key: .openAIModel,
+                values: OpenAIModels.allCases
+            )
         }
     }
 }

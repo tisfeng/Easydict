@@ -12,16 +12,16 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension AliService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "service.configuration.ali.header", service: self, keys: [.aliAccessKeyId, .aliAccessKeySecret]) {
+        ServiceConfigurationSecretSectionView(headerTitleKey: "ali_translate", service: self, keys: [.aliAccessKeyId, .aliAccessKeySecret]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_id.title",
                 key: .aliAccessKeyId,
-                placeholder: "service.configuration.ali.access_key_id.prompt"
+                placeholder: "service.configuration.input.placeholder"
             )
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_secret.title",
                 key: .aliAccessKeySecret,
-                placeholder: "service.configuration.ali.access_key_secret.prompt"
+                placeholder: "service.configuration.input.placeholder"
             )
         }
     }
