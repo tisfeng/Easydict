@@ -15,6 +15,8 @@
 #import "EZRightClickDetector.h"
 #import "EZConfiguration.h"
 #import "Easydict-Swift.h"
+#import <Sparkle/SPUStandardUpdaterController.h>
+#import <Sparkle/SPUUpdater.h>
 
 @interface EZMenuItemManager () <NSMenuDelegate>
 
@@ -70,7 +72,7 @@ static EZMenuItemManager *_instance;
     if (self.statusItem) {
         return;
     }
-    if (EZConfiguration.shared.hideMenuBarIcon) {
+    if (Configuration.shared.hideMenuBarIcon) {
         return;
     }
     
@@ -181,6 +183,11 @@ static EZMenuItemManager *_instance;
     [EZPreferencesWindowController.shared show];
 }
 
+- (IBAction)checkForUpdateItem:(id)sender {
+    NSLog(@"checkForUpdate");
+    [EZConfiguration.shared.updater checkForUpdates];
+}
+
 - (IBAction)feedbackAction:(NSMenuItem *)sender {
     NSLog(@"反馈问题");
     NSString *issueURL = [NSString stringWithFormat:@"%@/issues", EZGithubRepoEasydictURL];
@@ -273,12 +280,12 @@ static EZMenuItemManager *_instance;
 }
 
 - (IBAction)increaseFontSizeAction:(NSMenuItem *)sender {
-    EZConfiguration.shared.fontSizeIndex += 1;
+    Configuration.shared.fontSizeIndex += 1;
     
 }
 
 - (IBAction)decreaseFontSizeAction:(NSMenuItem *)sender {
-    EZConfiguration.shared.fontSizeIndex -= 1;
+    Configuration.shared.fontSizeIndex -= 1;
     
 }
 

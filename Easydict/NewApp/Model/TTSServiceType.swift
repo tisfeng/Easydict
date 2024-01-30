@@ -10,11 +10,11 @@ import Defaults
 import Foundation
 
 enum TTSServiceType: String, CaseIterable {
-    case youdao
-    case bing
-    case google
-    case baidu
-    case apple
+    case youdao = "Youdao"
+    case bing = "Bing"
+    case google = "Google"
+    case baidu = "Baidu"
+    case apple = "Apple"
 }
 
 @available(macOS 13, *)

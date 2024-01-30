@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "about" : {
       "comment" : "about",
@@ -33,6 +40,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调整查询图标位置:"
+          }
+        }
+      }
+    },
+    "advanced" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级"
           }
         }
       }
@@ -1298,6 +1315,23 @@
         }
       }
     },
+    "gemini_translate" : {
+      "comment" : "The name of Gemini Translate",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemini Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gemini 翻译"
+          }
+        }
+      }
+    },
     "GitHub:" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1954,16 +1988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OpenAI 翻译"
-          }
-        }
-      }
-    },
-    "other" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "其他"
           }
         }
       }
@@ -2768,6 +2792,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标查询"
+          }
+        }
+      }
+    },
+    "setting.general.other.header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
           }
         }
       }

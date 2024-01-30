@@ -10,6 +10,7 @@
 #import "EZBlueTextButton.h"
 #import "EZConfiguration.h"
 #import "EZMenuItemManager.h"
+#import "Easydict-Swift.h"
 
 @interface EZAboutViewController ()
 
@@ -35,7 +36,7 @@
     [super viewDidLoad];
 
     [self setupUI];
-    self.autoCheckUpdateButton.mm_isOn = EZConfiguration.shared.automaticallyChecksForUpdates;
+    self.autoCheckUpdateButton.mm_isOn = Configuration.shared.automaticallyChecksForUpdates;
 
     [self updateViewSize];
 
@@ -177,7 +178,7 @@
 #pragma mark - Actions
 
 - (void)autoCheckUpdateButtonClicked:(NSButton *)sender {
-    EZConfiguration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
+    Configuration.shared.automaticallyChecksForUpdates = sender.mm_isOn;
 }
 
 - (void)updateLatestVersion {

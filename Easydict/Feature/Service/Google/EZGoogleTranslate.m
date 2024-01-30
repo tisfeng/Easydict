@@ -11,6 +11,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+EZUtils.h"
 #import "EZConfiguration.h"
+#import "Easydict-Swift.h"
 
 static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 
@@ -115,7 +116,7 @@ static NSString *const kGoogleTranslateURL = @"https://translate.google.com";
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
     return type;
 }
 

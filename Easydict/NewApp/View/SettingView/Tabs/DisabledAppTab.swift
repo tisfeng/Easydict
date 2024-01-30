@@ -12,15 +12,25 @@ import SwiftUI
 private class DisabledAppViewModel: ObservableObject {
     @Published var appModelList: [EZAppModel] = []
     @Published var selectedAppModels: Set<EZAppModel> = []
-    @Published var isImporting = false
     @Published var isShowImportErrorAlert = false
+    @Published var isImporting = false {
+        didSet {
+            // https://github.com/tisfeng/Easydict/issues/346
+            Configuration.shared.disabledAutoSelect = isImporting
+        }
+    }
 
     init() {
         fetchDisabledApps()
     }
 
     func fetchDisabledApps() {
-        appModelList = EZLocalStorage.shared().selectTextTypeAppModelList
+        let allAppModelList = EZLocalStorage.shared().selectTextTypeAppModelList
+
+        appModelList = allAppModelList.compactMap { appModel in
+            let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appModel.appBundleID)
+            return url == nil ? nil : appModel
+        }
     }
 
     func saveDisabledApps() {

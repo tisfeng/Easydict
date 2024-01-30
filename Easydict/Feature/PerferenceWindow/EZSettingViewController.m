@@ -17,7 +17,7 @@
 
 @interface EZSettingViewController () <NSComboBoxDelegate>
 
-@property (nonatomic, strong) EZConfiguration *config;
+@property (nonatomic, strong) Configuration *config;
 
 @property (nonatomic, strong) NSTextField *selectLabel;
 @property (nonatomic, strong) NSTextField *inputLabel;
@@ -153,7 +153,7 @@
     [super viewDidLoad];
     // Do view setup here.
 
-    self.config = [EZConfiguration shared];
+    self.config = [Configuration shared];
 
     [self setupUI];
 
@@ -165,7 +165,7 @@
 
     // Observe selectionShortcutView.recording status.
     [self.KVOController observe:self.selectionShortcutView keyPath:@"recording" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew block:^(EZSettingViewController *settingVC, MASShortcutView *selectionShortcutView, NSDictionary<NSString *, id> *_Nonnull change) {
-        EZConfiguration.shared.isRecordingSelectTextShortcutKey = [change[NSKeyValueChangeNewKey] boolValue];
+        Configuration.shared.isRecordingSelectTextShortcutKey = [change[NSKeyValueChangeNewKey] boolValue];
     }];
 }
 

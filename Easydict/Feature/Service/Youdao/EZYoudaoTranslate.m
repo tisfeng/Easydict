@@ -174,7 +174,7 @@ static NSString *const kYoudaoDictURL = @"https://dict.youdao.com";
 }
 
 - (EZQueryTextType)intelligentQueryTextType {
-    EZQueryTextType type = [EZConfiguration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
+    EZQueryTextType type = [Configuration.shared intelligentQueryTextTypeForServiceType:self.serviceType];
     return type;
 }
 

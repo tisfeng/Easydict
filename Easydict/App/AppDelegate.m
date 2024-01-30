@@ -7,20 +7,12 @@
 //
 
 #import "AppDelegate.h"
-#import "EZMenuItemManager.h"
 #import "EZShortcut.h"
 #import "MMCrash.h"
-#import "EZWindowManager.h"
-#import "EZLanguageManager.h"
-#import "EZConfiguration.h"
-#import "EZLog.h"
-#import "EZSchemeParser.h"
 #import "AppDelegate+EZURLScheme.h"
-#import <Sparkle/SPUUpdaterDelegate.h>
-#import <Sparkle/SPUStandardUserDriverDelegate.h>
 #import "Easydict-Swift.h"
 
-@interface AppDelegate () <SPUUpdaterDelegate, SPUStandardUserDriverDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -31,6 +23,7 @@
     
     // Capturing crash logs must be placed first.
     [MMCrash registerHandler];
+    
     [EZLog setupCrashLogService];
     [EZLog logAppInfo];
 
@@ -98,22 +91,6 @@
     [EZWindowManager.shared closeMainWindowIfNeeded];
 
     return NO;
-}
-
-#pragma mark - SUUpdaterDelegate
-
-- (NSString *)feedURLStringForUpdater:(SPUUpdater *)updater {
-    NSString *feedURLString = @"https://raw.githubusercontent.com/tisfeng/Easydict/main/appcast.xml";
-#if DEBUG
-    feedURLString = @"http://localhost:8000/appcast.xml";
-#endif
-    return feedURLString;
-}
-
-#pragma mark - SPUStandardUserDriverDelegate
-
-- (BOOL)supportsGentleScheduledUpdateReminders {
-    return YES;
 }
 
 @end
