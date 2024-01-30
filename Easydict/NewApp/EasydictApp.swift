@@ -44,7 +44,11 @@ struct EasydictApp: App {
                 } icon: {
                     Image(menuBarIcon.rawValue)
                         .resizable()
+                    #if DEBUG
+                        .renderingMode(.original)
+                    #else
                         .renderingMode(.template)
+                    #endif
                         .scaledToFit()
                 }
                 .help("Easydict 🍃")
