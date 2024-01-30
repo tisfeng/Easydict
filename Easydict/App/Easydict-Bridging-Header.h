@@ -33,3 +33,5 @@
 #import "EZScriptExecutor.h"
 #import "EZOpenAIService.h"
 #import "EZNiuTransTranslate.h"
+#import "EZDeepLTranslate.h"
+#import "EZBingService.h"

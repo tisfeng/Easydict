@@ -14,10 +14,10 @@ enum OpenAIModels: String, CaseIterable, Identifiable {
         self
     }
 
-    case gpt3_5_Turbo = "gpt-3.5-turbo-1106"
+    case gpt3_5_turbo = "gpt-3.5-turbo"
+    case gpt3_5_turbo_1106 = "gpt-3.5-turbo-1106"
     case gpt4
-    case gpt4_0613 = "gpt-4-0613"
-    case dall_e_3 = "dall-e-3"
+    case gpt4_32k = "gpt-4-32k"
 }
 
 @available(macOS 13.0, *)
@@ -29,12 +29,12 @@ extension EZOpenAIService: ConfigurableService {
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.placeholder"
             )
-
-            ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.openai.translation.title",
-                key: .openAITranslation,
-                placeholder: "service.configuration.openai.translation.placeholder"
-            )
+            // translation
+//            ServiceConfigurationInputCell(
+//                textFieldTitleKey: "service.configuration.openai.translation.title",
+//                key: .openAITranslation,
+//                placeholder: "service.configuration.openai.translation.placeholder"
+//            )
             // domain
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.domain.title",

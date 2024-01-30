@@ -2372,6 +2372,22 @@
         }
       }
     },
+    "service.configuration.bing.cookie.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cookie Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cookie Key"
+          }
+        }
+      }
+    },
     "service.configuration.caiyun.token.title" : {
       "localizations" : {
         "en" : {
@@ -2384,6 +2400,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Token"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.auth_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.endpoint.placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-free.deepl.com/v2/translate"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.endpoint.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Endpoint"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 域名"
           }
         }
       }
@@ -2505,13 +2569,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Endpoint"
+            "value" : "API Endpoint"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "网络地址"
+            "value" : "API 域名"
           }
         }
       }
@@ -2532,10 +2596,8 @@
         }
       }
     },
-    "service.configuration.openai.translation.placeholder" : {
-
-    },
     "service.configuration.openai.translation.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
