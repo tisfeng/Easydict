@@ -52,7 +52,7 @@ extension Defaults.Keys {
 
     static let appearanceType = Key<AppearenceType>("EZConfiguration_kApperanceKey", default: .followSystem)
     static let fontSizeOptionIndex = Key<UInt>("EZConfiguration_kTranslationControllerFontKey", default: 0)
-    static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .classical)
+    static let selectedMenuBarIcon = Key<MenuBarIconType>("EZConfiguration_kSelectedMenuBarIconKey", default: .square)
 }
 
 extension Defaults.Keys {
