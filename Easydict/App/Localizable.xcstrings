@@ -3064,7 +3064,20 @@
       }
     },
     "shortcut" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键"
+          }
+        }
+      }
     },
     "shortcut_confict" : {
       "extractionState" : "manual",
@@ -3129,23 +3142,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快捷键划词窗口类型:"
-          }
-        }
-      }
-    },
-    "shortcut_setting" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shortcut"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷键"
           }
         }
       }
