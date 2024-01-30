@@ -6,21 +6,13 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import SwiftUI
 
 @available(macOS 13.0, *)
 extension TencentService: ConfigurableService {
-    func reset() {
-        Defaults[.tencentSecretId] = ""
-        Defaults[.tencentSecretKey] = ""
-    }
-
-    func validate() {}
-
     func configurationListItems() -> some View {
-        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.tencent.header", service: self) {
+        ServiceConfigurationSecretSectionView(headerTitleKey: "service.configuration.tencent.header", service: self, keys: [.tencentSecretId, .tencentSecretKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.tencent.secret_id.title",
                 key: .tencentSecretId,

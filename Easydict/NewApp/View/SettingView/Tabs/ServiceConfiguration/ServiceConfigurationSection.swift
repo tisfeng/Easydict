@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Combine
 import Defaults
 import SwiftUI
 
@@ -84,47 +85,61 @@ struct ServiceConfigurationSection<T: _DefaultsSerializable, F: View, V: View>: 
     }
 }
 
-class ServiceConfigurationViewModel: ObservableObject {
-    @Published var isAlertPresented = false
+class ServiceValidationViewModel: ObservableObject {
+    @Published var isAlertAlertPresented = false
+
     @Published var isValidating = false
+
     @Published var alertMessage: LocalizedStringKey = ""
-    @Published var isValidateEnabled = false
+
+    @Published var isValidateBtnDisabled = false
+
+    var cancellables: [AnyCancellable] = []
+
+    func observeKeys(_ keys: [Defaults.Key<String?>]) {
+        cancellables.append(
+            Defaults.publisher(keys: keys)
+                .sink { [weak self] _ in
+                    let hasEmptyInput = keys.contains(where: { (Defaults[$0] ?? "").isEmpty })
+                    self?.isValidateBtnDisabled = hasEmptyInput
+                }
+        )
+    }
+
+    func didSetKeys(_ value: String) {
+        isValidateBtnDisabled = value.isEmpty
+    }
 }
 
-
 @available(macOS 13.0, *)
-struct ServiceConfigurationSectionView<Content: View>: View {
-    let service: QueryService
+struct ServiceConfigurationSecretSectionView<Content: View>: View {
+    var service: QueryService
     let headerTitleKey: LocalizedStringKey
     let content: Content
 
-    @ObservedObject private var serviceConfigViewModel = ServiceConfigurationViewModel()
+    @ObservedObject var viewModel = ServiceValidationViewModel()
 
-    init(headerTitleKey: LocalizedStringKey, service: QueryService, @ViewBuilder content: () -> Content) {
+    init(headerTitleKey: LocalizedStringKey, service: QueryService, keys: [Defaults.Key<String?>], @ViewBuilder content: () -> Content) {
         self.headerTitleKey = headerTitleKey
         self.service = service
         self.content = content()
+
+        viewModel.observeKeys(keys)
     }
-    
+
     var header: some View {
         HStack(alignment: .lastTextBaseline) {
             Text(headerTitleKey)
             Spacer()
-            Button("service.configuration.reset") {
-                service.resetSecret()
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(Color.accentColor)
-            .font(.footnote)
         }
     }
-    
+
     var footer: some View {
         Button {
             validate()
         } label: {
             Group {
-                if serviceConfigViewModel.isValidating {
+                if viewModel.isValidating {
                     ProgressView()
                         .controlSize(.small)
                         .progressViewStyle(.circular)
@@ -133,7 +148,7 @@ struct ServiceConfigurationSectionView<Content: View>: View {
                 }
             }
         }
-        .disabled(serviceConfigViewModel.isValidating || !service.hasPrivateAPIKey())
+        .disabled(viewModel.isValidateBtnDisabled)
     }
 
     var body: some View {
@@ -144,18 +159,46 @@ struct ServiceConfigurationSectionView<Content: View>: View {
         } footer: {
             footer
         }
-        .alert(isPresented: $serviceConfigViewModel.isAlertPresented) {
-            Alert(title: Text(serviceConfigViewModel.alertMessage))
+        .alert(isPresented: $viewModel.isAlertAlertPresented) {
+            Alert(title: Text(viewModel.alertMessage))
         }
     }
-    
+
     func validate() {
-        serviceConfigViewModel.isValidating.toggle()
+        viewModel.isValidating.toggle()
         service.validate { _, error in
-            serviceConfigViewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+            viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
             print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
-            serviceConfigViewModel.isValidating.toggle()
-            serviceConfigViewModel.isAlertPresented.toggle()
+            viewModel.isValidating.toggle()
+            viewModel.isAlertAlertPresented.toggle()
+        }
+    }
+}
+
+@available(macOS 13.0, *)
+struct ServiceConfigurationSectionView<Content: View>: View {
+    let service: QueryService
+    let headerTitleKey: LocalizedStringKey
+    let content: Content
+
+    init(headerTitleKey: LocalizedStringKey, service: QueryService, @ViewBuilder content: () -> Content) {
+        self.headerTitleKey = headerTitleKey
+        self.service = service
+        self.content = content()
+    }
+
+    var header: some View {
+        HStack(alignment: .lastTextBaseline) {
+            Text(headerTitleKey)
+            Spacer()
+        }
+    }
+
+    var body: some View {
+        Section {
+            content
+        } header: {
+            header
         }
     }
 }
@@ -192,8 +235,30 @@ struct ServiceConfigurationInputCell: View {
     var body: some View {
         HStack {
             TextField(textFieldTitleKey, text: $value ?? "", prompt: Text(placeholder))
-            // make UI consistent with secure input view
-            Spacer()
+        }
+    }
+}
+
+@available(macOS 13.0, *)
+struct ServiceConfigurationPickerCell<T: RawRepresentable & Hashable>: View where T.RawValue: StringProtocol {
+    @Default var value: String
+    let titleKey: LocalizedStringKey
+    let values: [T]
+
+    init(titleKey: LocalizedStringKey, key: Defaults.Key<String>, values: [T]) {
+        self.titleKey = titleKey
+        self.values = values
+        _value = .init(key)
+    }
+
+    var body: some View {
+        HStack {
+            Picker(titleKey, selection: $value) {
+                ForEach(values, id: \.rawValue) { value in
+                    Text(value.rawValue)
+                }
+            }
+            .padding(10.0)
         }
     }
 }

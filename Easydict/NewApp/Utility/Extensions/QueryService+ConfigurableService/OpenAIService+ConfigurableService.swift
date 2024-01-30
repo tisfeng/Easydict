@@ -6,49 +6,51 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import SwiftUI
 
-protocol ServiceSecretConfigrable {
-    func resetSecret()
-
-    func validate(completion: @escaping (EZQueryResult, Error?) -> Void)
-}
-
-extension ServiceSecretConfigrable {
-    func resetSecret() {}
-
-    func validate(completion _: @escaping (EZQueryResult, Error?) -> Void) {}
-}
-
-extension QueryService: ServiceSecretConfigrable {
-    func validate(completion: @escaping (EZQueryResult, Error?) -> Void) {
-        resetServiceResult()
-        translate("hello world!", from: .english, to: .simplifiedChinese, completion: completion)
+enum OpenAIModels: String, CaseIterable, Identifiable {
+    var id: Self {
+        self
     }
-}
 
-extension EZOpenAIService {
-    func resetSecret() {}
-
-    func validate() {}
+    case gpt3_5_Turbo = "gpt-3.5-turbo-1106"
+    case gpt4
+    case gpt4_0613 = "gpt-4-0613"
+    case dall_e_3 = "dall-e-3"
 }
 
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.openai.header", service: self) {
+        ServiceConfigurationSecretSectionView(headerTitleKey: "service.configuration.openai.header", service: self, keys: [.openAIAPIKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.prompt"
             )
+        }
+
+        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.openai.advanced.header", service: self) {
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.translation.title",
                 key: .openAITranslation,
                 placeholder: "service.configuration.openai.translation.prompt"
             )
+            // domain
+            ServiceConfigurationInputCell(
+                textFieldTitleKey: "service.configuration.openai.domain.title",
+                key: .openAIDomain,
+                placeholder: "service.configuration.openai.domain.prompt"
+            )
+            // endpoint key
+            ServiceConfigurationInputCell(
+                textFieldTitleKey: "service.configuration.openai.endpoint_key.title",
+                key: .openAIEndPoint,
+                placeholder: "service.configuration.openai.endpoint_key.prompt"
+            )
+            // model
+            ServiceConfigurationPickerCell(titleKey: "service.configuration.openai.model.title", key: .openAIModel, values: OpenAIModels.allCases)
         }
     }
 }

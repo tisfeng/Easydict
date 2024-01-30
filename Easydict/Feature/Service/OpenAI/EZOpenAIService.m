@@ -173,6 +173,9 @@ static NSString *const kEZLanguageWenYanWen = @"文言文";
 }
 
 - (BOOL)hasPrivateAPIKey {
+    if ([self.apiKey length] == 0) {
+        return false;
+    }
     return ![self.apiKey isEqualToString:self.defaultAPIKey];
 }
 

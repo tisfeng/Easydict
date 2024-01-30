@@ -6,21 +6,13 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
-import Defaults
 import Foundation
 import SwiftUI
 
 @available(macOS 13.0, *)
 extension AliService: ConfigurableService {
-    func reset() {
-        Defaults[.aliAccessKeyId] = ""
-        Defaults[.aliAccessKeySecret] = ""
-    }
-
-    func validate() {}
-
     func configurationListItems() -> some View {
-        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.ali.header", service: self) {
+        ServiceConfigurationSecretSectionView(headerTitleKey: "service.configuration.ali.header", service: self, keys: [.aliAccessKeyId, .aliAccessKeySecret]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.ali.access_key_id.title",
                 key: .aliAccessKeyId,

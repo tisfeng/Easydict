@@ -43,6 +43,9 @@ public final class TencentService: QueryService {
     }
 
     override public func hasPrivateAPIKey() -> Bool {
+        if secretId.isEmpty || secretKey.isEmpty {
+            return false
+        }
         if secretId == defaultSecretId, secretKey == defaultSecretKey {
             return false
         }

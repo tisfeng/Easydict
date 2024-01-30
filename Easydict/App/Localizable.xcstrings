@@ -2516,6 +2516,22 @@
         }
       }
     },
+    "service.configuration.openai.advanced.header" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI Advanced Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI 高级设置"
+          }
+        }
+      }
+    },
     "service.configuration.openai.api_key.footer" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2559,6 +2575,70 @@
         }
       }
     },
+    "service.configuration.openai.domain.prompt" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "api.openai.com"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "api.openai.com"
+            }
+          }
+        }
+    },
+    "service.configuration.openai.domain.title" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "Domain"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "域名"
+            }
+          }
+        }
+    },
+    "service.configuration.openai.endpoint_key.prompt" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
+            }
+          }
+        }
+    },
+    "service.configuration.openai.endpoint_key.title" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "Endpoint"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "网络地址"
+            }
+          }
+        }
+    },
     "service.configuration.openai.header" : {
       "localizations" : {
         "en" : {
@@ -2571,6 +2651,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OpenAI"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.model.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
           }
         }
       }
