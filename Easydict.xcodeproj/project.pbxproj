@@ -256,6 +256,7 @@
 		62E2BF4B2B4082BA00E42D38 /* AliResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF482B4082BA00E42D38 /* AliResponse.swift */; };
 		62E2BF4C2B4082BA00E42D38 /* AliTranslateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2BF492B4082BA00E42D38 /* AliTranslateType.swift */; };
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
+		960835502B6791F200C6A931 /* ShortcutValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* ShortcutValidator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
 		9627F9382B59956800B1E999 /* GeneralShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */; };
 		9627F9392B59956800B1E999 /* GeneralKeyHolderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */; };
@@ -753,6 +754,7 @@
 		62ED29A12B15F1F500901F51 /* EZWrapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZWrapView.m; sourceTree = "<group>"; };
 		6372B33DFF803C7096A82250 /* Pods_Easydict.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Easydict.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
+		9608354F2B6791F200C6A931 /* ShortcutValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutValidator.swift; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
 		9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralShortcutSetting.swift; sourceTree = "<group>"; };
 		9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralKeyHolderWrapper.swift; sourceTree = "<group>"; };
@@ -2188,6 +2190,7 @@
 			isa = PBXGroup;
 			children = (
 				967712ED2B5B943400105E0F /* Shortcut.swift */,
+				9608354F2B6791F200C6A931 /* ShortcutValidator.swift */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -2720,6 +2723,7 @@
 				03B3B8B22925D5B200168E8D /* EZPopButtonWindow.m in Sources */,
 				03B0231529231FA6001C7E63 /* SnipWindow.m in Sources */,
 				033363A0293A05D200FED9C8 /* EZSelectLanguageButton.m in Sources */,
+				960835502B6791F200C6A931 /* ShortcutValidator.swift in Sources */,
 				03542A522937B69200C34C33 /* EZYoudaoTranslateResponse.m in Sources */,
 				03B0230129231FA6001C7E63 /* EZQueryView.m in Sources */,
 				03542A3D2937AF4F00C34C33 /* EZQueryResult.m in Sources */,

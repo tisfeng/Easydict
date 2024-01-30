@@ -20,6 +20,12 @@ public enum ShortcutType: String {
     case showMiniWindow = "EZShowMiniShortcutKey"
 }
 
+// Confict Message
+public struct ShortcutConfictAlertMessage: Identifiable {
+    public var id: String { message }
+    var message: String
+}
+
 class Shortcut: NSObject {
     var confictMenuItem: NSMenuItem?
 

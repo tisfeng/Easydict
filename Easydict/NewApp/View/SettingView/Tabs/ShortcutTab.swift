@@ -12,7 +12,9 @@ import SwiftUI
 struct ShortcutTab: View {
     var body: some View {
         Form {
-            ShortcutSettingView()
+            // Global shortcut
+            GeneralShortcutSettingView()
+            // In app shortcut
         }.formStyle(.grouped)
     }
 }

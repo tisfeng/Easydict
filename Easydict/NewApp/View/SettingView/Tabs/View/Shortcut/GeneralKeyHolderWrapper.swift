@@ -14,12 +14,14 @@ import SwiftUI
 
 struct GeneralKeyHolderWrapper: NSViewRepresentable {
     func makeCoordinator() -> Coordinator {
-        .init(shortcutType: type)
+        .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)
     }
 
     private var type: ShortcutType
-    init(shortcutType: ShortcutType) {
+    @Binding var confictAlterMessage: ShortcutConfictAlertMessage
+    init(shortcutType: ShortcutType, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
         type = shortcutType
+        _confictAlterMessage = confictAlterMessage
     }
 
     func makeNSView(context: Context) -> some NSView {
@@ -40,8 +42,10 @@ struct GeneralKeyHolderWrapper: NSViewRepresentable {
 extension GeneralKeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
         private var type: ShortcutType
-        init(shortcutType: ShortcutType) {
+        @Binding var confictAlterMessage: ShortcutConfictAlertMessage
+        init(shortcutType: ShortcutType, confictAlterMessage: Binding<ShortcutConfictAlertMessage>) {
             type = shortcutType
+            _confictAlterMessage = confictAlterMessage
         }
 
         func recordViewShouldBeginRecording(_: KeyHolder.RecordView) -> Bool {
@@ -54,11 +58,13 @@ extension GeneralKeyHolderWrapper {
 
         func recordViewDidEndRecording(_: RecordView) {}
 
-        func recordView(_: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
+        func recordView(_ recordView: RecordView, didChangeKeyCombo keyCombo: KeyCombo?) {
             if let key = keyCombo {
                 // shortcut validate confict
                 if Shortcut.validateShortcut(key) {
-                    print("confict")
+                    confictAlterMessage = ShortcutConfictAlertMessage(message: "shortcut_confict_message\(String(describing: Shortcut.shared.confictMenuItem?.title))")
+                    recordView.clear()
+                    return
                 }
             }
             storeKeyCombo(with: keyCombo)
