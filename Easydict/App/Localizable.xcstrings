@@ -2420,33 +2420,6 @@
         }
       }
     },
-    "service.configuration.openai.advanced.header" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI Advanced Settings"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OpenAI 高级设置"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.api_key.footer" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key的一些说明或者加入链接"
-          }
-        }
-      }
-    },
     "service.configuration.openai.api_key.placeholder" : {
       "localizations" : {
         "en" : {

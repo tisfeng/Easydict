@@ -29,9 +29,7 @@ extension EZOpenAIService: ConfigurableService {
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.placeholder"
             )
-        }
 
-        ServiceConfigurationSectionView(headerTitleKey: "service.configuration.openai.advanced.header", service: self) {
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.translation.title",
                 key: .openAITranslation,

@@ -176,34 +176,6 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
 }
 
 @available(macOS 13.0, *)
-struct ServiceConfigurationSectionView<Content: View>: View {
-    let service: QueryService
-    let headerTitleKey: LocalizedStringKey
-    let content: Content
-
-    init(headerTitleKey: LocalizedStringKey, service: QueryService, @ViewBuilder content: () -> Content) {
-        self.headerTitleKey = headerTitleKey
-        self.service = service
-        self.content = content()
-    }
-
-    var header: some View {
-        HStack(alignment: .lastTextBaseline) {
-            Text(headerTitleKey)
-            Spacer()
-        }
-    }
-
-    var body: some View {
-        Section {
-            content
-        } header: {
-            header
-        }
-    }
-}
-
-@available(macOS 13.0, *)
 struct ServiceConfigurationSecureInputCell: View {
     @Default var value: String?
     let textFieldTitleKey: LocalizedStringKey
