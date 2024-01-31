@@ -79,7 +79,6 @@ struct ServiceConfigurationToggleCell: View {
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
         self.titleKey = titleKey
         _value = .init(key)
-        print("value: \(value), title: \(titleKey)")
         _isOn = State(initialValue: value == "1")
     }
 
@@ -87,7 +86,6 @@ struct ServiceConfigurationToggleCell: View {
         Toggle(titleKey, isOn: $isOn)
             .padding(10.0)
             .onChange(of: isOn) { newValue in
-                print("newValue: \(newValue)")
                 value = newValue ? "1" : "0"
             }
     }
