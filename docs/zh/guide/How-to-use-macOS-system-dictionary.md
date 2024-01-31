@@ -1,4 +1,4 @@
-## 苹果系统词典
+# 苹果系统词典
 
 
 macOS 词典的用力点按查询（或三指查询）功能很好用，但可惜不是每个应用都支持，因此我想把查询苹果词典的功能带到 Easydict 上，让所有应用都能够便捷地使用系统词典查询单词。
@@ -16,9 +16,9 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 另外，苹果词典也支持自定义导入词典，因此我们可以通过导入 .dictionary 格式的词典来添加第三方词典，如简明英汉字典，朗文当代高级英语辞典等。
 
 <table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png"></td>
 </table>
 
 ### 如何添加第三方词典
@@ -59,8 +59,8 @@ Easydict 自动支持词典 App 中系统自带的词典，如牛津英汉汉英
 ### 大辞海
 
 <table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001215418606-1696168458.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/aQ8tkW-1696168533.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001215418606-1696168458.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/aQ8tkW-1696168533.png"></td>
 </table>
 
 ### 朗文当代高级英语辞典

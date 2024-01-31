@@ -1,4 +1,4 @@
-## Apple Dictionary
+# Apple Dictionary
 
 
 The built-in macOS dictionary offers excellent lookup functionality activated by force touch (or tapping with three fingers); sadly, this feature is not supported on all applications. Therefore, I want to integrate the lookup feature from Apple Dictionary into Easydict, providing a swift and convenient word search using the system dictionary.
@@ -16,9 +16,9 @@ Easydict supports built-in dictionaries within Dictionary.app, including diction
 Furthermore, Apple Dictionary also supports custom import dictionaries. This means that we can add third-party dictionaries like the Concise English-Chinese Dictionary or the Longman Dictionary of Contemporary Advanced English by importing them in the .dictionary format.
 
 <table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231225548-1695913945.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20230928231345494-1695914025.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/cQmL6r-1695958154.png"></td>
 </table>
 
 ### Adding third-party dictionaries
@@ -59,8 +59,8 @@ Longman, Collins, and Oxford are three substantial yet outstanding dictionaries.
 ### Great Cictionary
 
 <table>
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001215418606-1696168458.png">
-    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/aQ8tkW-1696168533.png">
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/image-20231001215418606-1696168458.png"></td>
+    <td> <img src="https://raw.githubusercontent.com/tisfeng/ImageBed/main/uPic/aQ8tkW-1696168533.png"></td>
 </table>
 
 ### Longman Dictionary of Contemporary Advanced English
