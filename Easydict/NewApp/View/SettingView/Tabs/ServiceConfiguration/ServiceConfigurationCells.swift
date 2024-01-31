@@ -49,7 +49,9 @@ struct ServiceConfigurationInputCell: View {
 }
 
 @available(macOS 13.0, *)
-struct ServiceConfigurationPickerCell<T: RawRepresentable & Hashable>: View where T.RawValue: StringProtocol {
+struct ServiceConfigurationPickerCell<T: RawRepresentable & Hashable & EnumLocalizedStringConvertible>: View
+    where T.RawValue: StringProtocol
+{
     @Default var value: String
     let titleKey: LocalizedStringKey
     let values: [T]
@@ -63,7 +65,8 @@ struct ServiceConfigurationPickerCell<T: RawRepresentable & Hashable>: View wher
     var body: some View {
         Picker(titleKey, selection: $value) {
             ForEach(values, id: \.rawValue) { value in
-                Text(value.rawValue)
+                Text(value.title)
+                    .tag(value.rawValue)
             }
         }
         .padding(10.0)

@@ -2420,6 +2420,70 @@
         }
       }
     },
+    "service.configuration.deepl.translation.title" : {
+        "localizations" : {
+          "en" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "API Usage Priority"
+            }
+          },
+          "zh-Hans" : {
+            "stringUnit" : {
+              "state" : "translated",
+              "value" : "API 使用优先级"
+            }
+          }
+        }
+      },
+    "service.configuration.deepl.web_first.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API first"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优先使用 Web API"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.authkey_first.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key First"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优先使用 Auth Key"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.authkey_only.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Key Only"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅使用 Auth Key"
+          }
+        }
+      }
+    },
     "service.configuration.deepl.endpoint.placeholder" : {
       "localizations" : {
         "en" : {
@@ -2516,6 +2580,22 @@
         }
       }
     },
+    "service.configuration.openai.dictionary.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionary"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查单词"
+          }
+        }
+      }
+    },
     "service.configuration.openai.domain.placeholder" : {
       "localizations" : {
         "en" : {
@@ -2596,22 +2676,6 @@
         }
       }
     },
-    "service.configuration.openai.translation.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Translation"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "翻译"
-          }
-        }
-      }
-    },
     "service.configuration.openai.sentence.title" : {
       "localizations" : {
         "en" : {
@@ -2628,18 +2692,18 @@
         }
       }
     },
-    "service.configuration.openai.dictionary.title" : {
+    "service.configuration.openai.translation.title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dictionary"
+            "value" : "Translation"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查单词"
+            "value" : "翻译"
           }
         }
       }

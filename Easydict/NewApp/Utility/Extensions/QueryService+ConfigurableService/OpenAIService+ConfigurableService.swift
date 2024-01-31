@@ -9,6 +9,10 @@
 import Foundation
 import SwiftUI
 
+protocol EnumLocalizedStringConvertible {
+    var title: String { get }
+}
+
 enum OpenAIModels: String, CaseIterable, Identifiable {
     var id: Self {
         self
@@ -18,6 +22,12 @@ enum OpenAIModels: String, CaseIterable, Identifiable {
     case gpt3_5_turbo_1106 = "gpt-3.5-turbo-1106"
     case gpt4
     case gpt4_32k = "gpt-4-32k"
+}
+
+extension OpenAIModels: EnumLocalizedStringConvertible {
+    var title: String {
+        rawValue
+    }
 }
 
 @available(macOS 13.0, *)
