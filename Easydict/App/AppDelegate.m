@@ -37,6 +37,7 @@
     
     [self registerRouters];
     
+    [[DarkModeManager manager] updateDarkMode:Configuration.shared.appearance];
     // Change App icon manually.
     //    NSApplication.sharedApplication.applicationIconImage = [NSImage imageNamed:@"white-black-icon"];
 }
