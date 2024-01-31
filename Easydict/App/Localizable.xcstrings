@@ -2772,6 +2772,22 @@
         }
       }
     },
+    "service.configuration.gemini.api_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        }
+      }
+    },
     "service.configuration.validate" : {
       "localizations" : {
         "en" : {

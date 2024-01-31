@@ -161,4 +161,7 @@ extension Defaults.Keys {
     // ALI
     static let aliAccessKeyId = Key<String?>("EZAliAccessKeyId")
     static let aliAccessKeySecret = Key<String?>("EZAliAccessKeySecret")
+
+    // Gemni
+    static let geminiAPIKey = Key<String?>("EZGeminiAPIKey")
 }
