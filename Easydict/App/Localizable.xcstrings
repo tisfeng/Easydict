@@ -1510,13 +1510,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Input Translate:"
+            "value" : "Input Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入翻译:"
+            "value" : "输入翻译"
           }
         }
       }
@@ -2335,13 +2335,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Text Translate:"
+            "value" : "Select Text Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "划词翻译:"
+            "value" : "划词翻译"
           }
         }
       }
@@ -3237,13 +3237,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Mini Window:"
+            "value" : "Show Mini Window"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示迷你窗口:"
+            "value" : "显示迷你窗口"
           }
         }
       }
@@ -3253,13 +3253,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silent Screenshot OCR:"
+            "value" : "Silent Screenshot OCR"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "静默截图 OCR:"
+            "state" : "needs_review",
+            "value" : "静默截图 OCR"
           }
         }
       }
@@ -3302,13 +3302,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Snip Translate:"
+            "value" : "Snip Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截图翻译:"
+            "value" : "截图翻译"
           }
         }
       }

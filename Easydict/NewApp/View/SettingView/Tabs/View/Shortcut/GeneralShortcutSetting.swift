@@ -28,27 +28,27 @@ extension ShortcutTab {
             Section {
                 HStack {
                     Text("input_translate")
-                        .frame(minWidth: 140, alignment: .trailing)
+                    Spacer()
                     GeneralKeyHolderWrapper(shortcutType: .inputTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("snip_translate")
-                        .frame(minWidth: 140, alignment: .trailing)
+                    Spacer()
                     GeneralKeyHolderWrapper(shortcutType: .snipTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("select_translate")
-                        .frame(minWidth: 140, alignment: .trailing)
+                    Spacer()
                     GeneralKeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("show_mini_window")
-                        .frame(minWidth: 140, alignment: .trailing)
+                    Spacer()
                     GeneralKeyHolderWrapper(shortcutType: .showMiniWindow, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("silent_screenshot_ocr")
-                        .frame(minWidth: 140, alignment: .trailing)
+                    Spacer()
                     GeneralKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
             } header: {
