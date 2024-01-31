@@ -12,11 +12,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension EZNiuTransTranslate: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "niuTrans_translate", service: self, keys: [.niuTransAPIKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.niuTransAPIKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.niutrans.api_key.title",
-                key: .niuTransAPIKey,
-                placeholder: "service.configuration.input.placeholder"
+                key: .niuTransAPIKey
             )
         }
     }

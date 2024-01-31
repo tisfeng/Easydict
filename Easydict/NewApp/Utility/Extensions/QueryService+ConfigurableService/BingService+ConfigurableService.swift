@@ -12,11 +12,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension EZBingService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "bing_translate", service: self, keys: [.bingCookieKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.bingCookieKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.bing.cookie.title",
-                key: .bingCookieKey,
-                placeholder: "service.configuration.input.placeholder"
+                key: .bingCookieKey
             )
         }
     }

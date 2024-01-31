@@ -2457,13 +2457,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxx"
+            "value" : "xxxxxxxxxx"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "xxxxxxxxxxxxxxxx"
+            "value" : "xxxxxxxxxx"
           }
         }
       }
@@ -2489,13 +2489,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sk-xxxxxxxxxxxxxxxxxxxx"
+            "value" : "sk-xxxxxxxxxx"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sk-xxxxxxxxxxxxxxxxxxxx"
+            "value" : "sk-xxxxxxxxxx"
           }
         }
       }
@@ -2597,7 +2597,6 @@
       }
     },
     "service.configuration.openai.translation.title" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2609,6 +2608,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻译"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.sentence.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentence"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "句子分析"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.dictionary.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionary"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查单词"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.usage_status.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usage Status"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用状态"
           }
         }
       }

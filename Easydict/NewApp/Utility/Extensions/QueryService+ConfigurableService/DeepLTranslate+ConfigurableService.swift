@@ -12,11 +12,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension EZDeepLTranslate: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "deepL_translate", service: self, keys: [.deepLAuth]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.deepLAuth]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.deepl.auth_key.title",
-                key: .deepLAuth,
-                placeholder: "service.configuration.input.placeholder"
+                key: .deepLAuth
             )
 
             ServiceConfigurationInputCell(

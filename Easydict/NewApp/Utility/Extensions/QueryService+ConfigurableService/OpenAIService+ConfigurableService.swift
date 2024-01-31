@@ -23,18 +23,12 @@ enum OpenAIModels: String, CaseIterable, Identifiable {
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "openai_translate", service: self, keys: [.openAIAPIKey]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.openAIAPIKey]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.openai.api_key.title",
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.placeholder"
             )
-            // translation
-//            ServiceConfigurationInputCell(
-//                textFieldTitleKey: "service.configuration.openai.translation.title",
-//                key: .openAITranslation,
-//                placeholder: "service.configuration.openai.translation.placeholder"
-//            )
             // domain
             ServiceConfigurationInputCell(
                 textFieldTitleKey: "service.configuration.openai.domain.title",
@@ -52,6 +46,23 @@ extension EZOpenAIService: ConfigurableService {
                 titleKey: "service.configuration.openai.model.title",
                 key: .openAIModel,
                 values: OpenAIModels.allCases
+            )
+
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.translation.title",
+                key: .openAITranslation
+            )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.sentence.title",
+                key: .openAISentence
+            )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.dictionary.title",
+                key: .openAIDictionary
+            )
+            ServiceConfigurationToggleCell(
+                titleKey: "service.configuration.openai.usage_status.title",
+                key: .openAIServiceUsageStatus
             )
         }
     }

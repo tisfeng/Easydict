@@ -12,11 +12,10 @@ import SwiftUI
 @available(macOS 13.0, *)
 extension CaiyunService: ConfigurableService {
     func configurationListItems() -> some View {
-        ServiceConfigurationSecretSectionView(headerTitleKey: "caiyun_translate", service: self, keys: [.caiyunToken]) {
+        ServiceConfigurationSecretSectionView(service: self, observeKeys: [.caiyunToken]) {
             ServiceConfigurationSecureInputCell(
                 textFieldTitleKey: "service.configuration.caiyun.token.title",
-                key: .caiyunToken,
-                placeholder: "service.configuration.input.placeholder"
+                key: .caiyunToken
             )
         }
     }

@@ -64,6 +64,9 @@ struct ServiceTab: View {
                     }
                 }
             }
+            .onDisappear {
+                viewModel.selectedService = nil
+            }
             .layoutPriority(1)
         }
         .environmentObject(viewModel)
