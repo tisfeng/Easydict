@@ -2613,39 +2613,7 @@
         }
       }
     },
-    "service.configuration.openai.domain.placeholder" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "api.openai.com"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "api.openai.com"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.domain.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Domain"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "域名"
-          }
-        }
-      }
-    },
-    "service.configuration.openai.endpoint_key.placeholder" : {
+    "service.configuration.openai.endpoint.placeholder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2661,7 +2629,7 @@
         }
       }
     },
-    "service.configuration.openai.endpoint_key.title" : {
+    "service.configuration.openai.endpoint.title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {

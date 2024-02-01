@@ -137,7 +137,6 @@ extension Defaults.Keys {
     static let openAIDictionary = Key<String>("EZOpenAIDictionaryKey", default: "1")
     static let openAISentence = Key<String>("EZOpenAISentenceKey", default: "1")
     static let openAIServiceUsageStatus = Key<String>("EZOpenAIServiceUsageStatusKey", default: "0")
-    static let openAIDomain = Key<String?>("EZOpenAIDomainKey")
     static let openAIEndPoint = Key<String?>("EZOpenAIEndPointKey")
     static let openAIModel = Key<String>("EZOpenAIModelKey", default: OpenAIModels.gpt3_5_turbo.rawValue)
 

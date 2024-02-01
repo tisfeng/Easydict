@@ -39,17 +39,11 @@ extension EZOpenAIService: ConfigurableService {
                 key: .openAIAPIKey,
                 placeholder: "service.configuration.openai.api_key.placeholder"
             )
-            // domain
+            // endpoint
             ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.openai.domain.title",
-                key: .openAIDomain,
-                placeholder: "service.configuration.openai.domain.placeholder"
-            )
-            // endpoint key
-            ServiceConfigurationInputCell(
-                textFieldTitleKey: "service.configuration.openai.endpoint_key.title",
+                textFieldTitleKey: "service.configuration.openai.endpoint.title",
                 key: .openAIEndPoint,
-                placeholder: "service.configuration.openai.endpoint_key.placeholder"
+                placeholder: "service.configuration.openai.endpoint.placeholder"
             )
             // model
             ServiceConfigurationPickerCell(

@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import Foundation
 import GoogleGenerativeAI
 
@@ -59,7 +60,7 @@ public final class GeminiService: QueryService {
 
     // easydict://writeKeyValue?EZGeminiAPIKey=xxx
     private var apiKey: String {
-        let apiKey = UserDefaults.standard.string(forKey: EZGeminiAPIKey)
+        let apiKey = Defaults[.geminiAPIKey]
         if let apiKey, !apiKey.isEmpty {
             return apiKey
         } else {

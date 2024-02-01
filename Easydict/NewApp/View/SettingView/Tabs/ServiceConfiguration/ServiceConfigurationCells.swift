@@ -104,9 +104,9 @@ struct ServiceConfigurationToggleCell: View {
         )
 
         ServiceConfigurationInputCell(
-            textFieldTitleKey: "service.configuration.openai.domain.title",
-            key: .openAIDomain,
-            placeholder: "service.configuration.openai.domain.placeholder"
+            textFieldTitleKey: "service.configuration.openai.endpoint.title",
+            key: .openAIEndPoint,
+            placeholder: "service.configuration.openai.endpoint.placeholder"
         )
 
         // model
