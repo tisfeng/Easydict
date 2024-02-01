@@ -2650,7 +2650,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://api.ohmygpt.com/azure/v1/chat/completions"
+            "value" : "https://api.openai.com/v1/chat/completions"
           }
         },
         "zh-Hans" : {
