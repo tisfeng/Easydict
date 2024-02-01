@@ -12,7 +12,6 @@ import SwiftUI
 extension ShortcutTab {
     struct GeneralShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(message: "")
-//        @State var showAlter: Bool = false
 
         var body: some View {
             let showAlter = Binding<Bool>(

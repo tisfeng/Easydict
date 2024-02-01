@@ -57,27 +57,22 @@ class Shortcut: NSObject {
 // restore shortcut
 extension Shortcut {
     func restoreShortcut() {
-        if let inputTranslateKeyCombo = Defaults[.inputShortcut] {
-            bindingShortCut(keyCombo: inputTranslateKeyCombo, type: .inputTranslate)
-        }
-        if let snipShortcutKeyKeyCombo = Defaults[.snipShortcut] {
-            bindingShortCut(keyCombo: snipShortcutKeyKeyCombo, type: .snipTranslate)
-        }
-        if let selectionShortcutKeyCombo = Defaults[.selectionShortcut] {
-            bindingShortCut(keyCombo: selectionShortcutKeyCombo, type: .selectTranslate)
-        }
-        if let screenshotOCRShortcutKeyCombo = Defaults[.screenshotOCRShortcut] {
-            bindingShortCut(keyCombo: screenshotOCRShortcutKeyCombo, type: .silentScreenshotOcr)
-        }
-        if let showMiniWindowShortcutKeyCombo = Defaults[.showMiniWindowShortcut] {
-            bindingShortCut(keyCombo: showMiniWindowShortcutKeyCombo, type: .showMiniWindow)
-        }
+        // inputTranslate
+        bindingShortcut(keyCombo: Defaults[.inputShortcut], type: .inputTranslate)
+        // snipTranslate
+        bindingShortcut(keyCombo: Defaults[.snipShortcut], type: .snipTranslate)
+        // selectTranslate
+        bindingShortcut(keyCombo: Defaults[.selectionShortcut], type: .selectTranslate)
+        // silentScreenshotOcr
+        bindingShortcut(keyCombo: Defaults[.screenshotOCRShortcut], type: .silentScreenshotOcr)
+        // showMiniWindow
+        bindingShortcut(keyCombo: Defaults[.showMiniWindowShortcut], type: .showMiniWindow)
     }
 }
 
 // binding shortcut
 extension Shortcut {
-    func bindingShortCut(keyCombo: KeyCombo?, type: ShortcutType) {
+    func bindingShortcut(keyCombo: KeyCombo?, type: ShortcutType) {
         guard let keyCombo else {
             HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
             return

@@ -74,7 +74,7 @@ extension GeneralKeyHolderWrapper {
                 }
             }
             storeKeyCombo(with: keyCombo)
-            Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
+            Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
         }
 
         func restoreKeyCombo(_ recordView: RecordView) {
@@ -92,7 +92,7 @@ extension GeneralKeyHolderWrapper {
                 keyCombo = Defaults[.showMiniWindowShortcut]
             }
             recordView.keyCombo = keyCombo
-            Shortcut.shared.bindingShortCut(keyCombo: keyCombo, type: type)
+            Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
         }
 
         // shortcut
