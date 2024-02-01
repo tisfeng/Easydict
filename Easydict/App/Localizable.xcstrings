@@ -1805,6 +1805,23 @@
         }
       }
     },
+    "modify_menubar_icon" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu bar icon"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏图标"
+          }
+        }
+      }
+    },
     "mouse_select_translate_window_type" : {
       "localizations" : {
         "en" : {

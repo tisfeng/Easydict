@@ -83,9 +83,9 @@ static EZMenuItemManager *_instance;
     NSStatusBarButton *button = statusItem.button;
     
 #if DEBUG
-    NSImage *image = [NSImage imageNamed:@"status_icon_debug"];
+    NSImage *image = [NSImage imageNamed:@"rounded_menu_bar_icon"];
 #else
-    NSImage *image = [NSImage imageNamed:@"status_icon"];
+    NSImage *image = [NSImage imageNamed:@"square_menu_bar_icon"];
 #endif
     
     [button setImage:image];
