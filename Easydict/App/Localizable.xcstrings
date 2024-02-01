@@ -3136,19 +3136,42 @@
         }
       }
     },
-    "shortcut_confict_message" : {
+    "shortcut_confict_message (Shortcut.shared.confictMenuItem?.title ?? \"\")" : {
+
+    },
+    "shortcut_confict_message %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut Confict With"
+            "value" : "The current shortcut can't be used because it is already used \"%@\""
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键冲突"
+            "value" : "当前快捷键无法使用，因为它已被\n“%@”占用"
+          }
+        }
+      }
+    },
+    "shortcut_confict_title (keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)" : {
+
+    },
+    "shortcut_confict_title %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut Confict With \"%@\" Unable Use This"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键”%@“，无法使用"
           }
         }
       }

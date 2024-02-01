@@ -23,6 +23,7 @@ public enum ShortcutType: String {
 // Confict Message
 public struct ShortcutConfictAlertMessage: Identifiable {
     public var id: String { message }
+    var title: String
     var message: String
 }
 

@@ -11,7 +11,7 @@ import SwiftUI
 @available(macOS 13, *)
 extension ShortcutTab {
     struct GeneralShortcutSettingView: View {
-        @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(message: "")
+        @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
 
         var body: some View {
             let showAlter = Binding<Bool>(
@@ -59,7 +59,7 @@ extension ShortcutTab {
                    presenting: confictAlterMessage)
             { _ in
                 Button(String(localized: "shortcut_confict_confirm")) {
-                    confictAlterMessage = ShortcutConfictAlertMessage(message: "")
+                    confictAlterMessage = ShortcutConfictAlertMessage(title: "", message: "")
                 }
             } message: { message in
                 Text(message.message)
