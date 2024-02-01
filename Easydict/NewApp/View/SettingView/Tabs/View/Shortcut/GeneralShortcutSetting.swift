@@ -54,7 +54,7 @@ extension ShortcutTab {
                 Text("global_shortcut_setting")
             }
 
-            .alert(String(localized: "shortcut_confict"),
+            .alert(String(localized: "shortcut_confict \(confictAlterMessage.title)"),
                    isPresented: showAlter,
                    presenting: confictAlterMessage)
             { _ in

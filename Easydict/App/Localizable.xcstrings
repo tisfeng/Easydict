@@ -3102,19 +3102,19 @@
         }
       }
     },
-    "shortcut_confict" : {
+    "shortcut_confict %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut Confict"
+            "value" : "%@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键冲突"
+            "value" : "%@"
           }
         }
       }
@@ -3151,7 +3151,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前快捷键无法使用，因为它已被\n“%@”占用"
+            "value" : "当前快捷键无法使用，因为它已被\n\"%@\"占用"
           }
         }
       }
@@ -3171,7 +3171,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快捷键”%@“，无法使用"
+            "value" : "快捷键\"%@\"，无法使用"
           }
         }
       }
