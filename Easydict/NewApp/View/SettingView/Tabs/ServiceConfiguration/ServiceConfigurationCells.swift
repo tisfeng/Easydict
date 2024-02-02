@@ -73,22 +73,27 @@ struct ServiceConfigurationPickerCell<T: RawRepresentable & Hashable & EnumLocal
     }
 }
 
+class ConfigurationToggleViewModel: ObservableObject {
+    @Published var isOn = false
+}
+
 @available(macOS 13.0, *)
 struct ServiceConfigurationToggleCell: View {
     @Default var value: String
     let titleKey: LocalizedStringKey
-    @State private var isOn = false
+    
+    @ObservedObject var viewModel = ConfigurationToggleViewModel()
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {
         self.titleKey = titleKey
         _value = .init(key)
-        _isOn = State(initialValue: value == "1")
+        viewModel.isOn = value == "1"
     }
 
     var body: some View {
-        Toggle(titleKey, isOn: $isOn)
+        Toggle(titleKey, isOn: $viewModel.isOn)
             .padding(10.0)
-            .onChange(of: isOn) { newValue in
+            .onChange(of: viewModel.isOn) { newValue in
                 value = newValue ? "1" : "0"
             }
     }
