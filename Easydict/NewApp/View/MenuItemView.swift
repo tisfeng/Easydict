@@ -32,11 +32,16 @@ struct MenuItemView: View {
             versionItem
             Divider()
             inputItem
+                .keyboardShortcut(.inputTranslate)
             screenshotItem
+                .keyboardShortcut(.snipTranslate)
             selectWordItem
+                .keyboardShortcut(.selectTranslate)
             miniWindowItem
+                .keyboardShortcut(.showMiniWindow)
             Divider()
             ocrItem
+                .keyboardShortcut(.silentScreenshotOcr)
             Divider()
             settingItem
                 .keyboardShortcut(.init(","))

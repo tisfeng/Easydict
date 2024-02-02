@@ -145,12 +145,30 @@
       }
     },
     {
+      "identity" : "keyholder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/KeyHolder.git",
+      "state" : {
+        "revision" : "5da0ee06fd8709f7d812504bff1555462a3f6956",
+        "version" : "4.2.0"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
       "state" : {
         "revision" : "9d108e9112aa1d65ce508facf804674546116d9c",
         "version" : "1.22.3"
+      }
+    },
+    {
+      "identity" : "magnet",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/Magnet",
+      "state" : {
+        "revision" : "26d672a031fd33eac94887b4e19aca0ab4761f45",
+        "version" : "3.4.0"
       }
     },
     {
@@ -205,6 +223,15 @@
       "state" : {
         "revision" : "569c656a8494ad03d790fd1075338c1da92d495a",
         "version" : "10.45.2"
+      }
+    },
+    {
+      "identity" : "sauce",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Clipy/Sauce",
+      "state" : {
+        "revision" : "8f8fabaa8509c1a653d6c2c3c87396a4c493d876",
+        "version" : "2.4.0"
       }
     },
     {
