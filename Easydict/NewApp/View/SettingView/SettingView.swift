@@ -13,6 +13,7 @@ enum SettingTab: Int {
     case service
     case disabled
     case advanced
+    case shortcut
     case privacy
     case about
 }
@@ -39,6 +40,9 @@ struct SettingView: View {
                 .tabItem { Label("advanced", systemImage: "gearshape.2") }
                 .tag(SettingTab.advanced)
 
+            ShortcutTab()
+                .tabItem { Label("shortcut", systemImage: "command.square") }
+                .tag(SettingTab.shortcut)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)
@@ -71,7 +75,7 @@ struct SettingView: View {
             maxWidth - 100
         case .service:
             600
-        case .disabled:
+        case .disabled, .shortcut:
             500
         case .privacy:
             320

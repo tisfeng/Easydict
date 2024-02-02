@@ -8,6 +8,7 @@
 
 import Defaults
 import Foundation
+import Magnet
 
 // Setting
 extension Defaults.Keys {
@@ -164,4 +165,13 @@ extension Defaults.Keys {
 
     // Gemni
     static let geminiAPIKey = Key<String?>("EZGeminiAPIKey")
+}
+
+/// shortcut
+extension Defaults.Keys {
+    static let selectionShortcut = Key<KeyCombo?>("EZSelectionShortcutKey_keyHolder", default: nil)
+    static let snipShortcut = Key<KeyCombo?>("EZSnipShortcutKey_keyHolder", default: nil)
+    static let inputShortcut = Key<KeyCombo?>("EZInputShortcutKey_keyHolder", default: nil)
+    static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey_keyHolder", default: nil)
+    static let showMiniWindowShortcut = Key<KeyCombo?>("EZShowMiniShortcutKey_keyHolder", default: nil)
 }

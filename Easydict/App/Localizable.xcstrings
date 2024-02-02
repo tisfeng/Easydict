@@ -46,6 +46,12 @@
     },
     "advanced" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1326,7 +1332,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Gemini 翻译"
           }
         }
@@ -1338,6 +1344,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub:"
+          }
+        }
+      }
+    },
+    "global_shortcut_setting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全局快捷键"
           }
         }
       }
@@ -1487,13 +1510,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Input Translate:"
+            "value" : "Input Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入翻译:"
+            "value" : "输入翻译"
           }
         }
       }
@@ -2329,13 +2352,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Text Translate:"
+            "value" : "Select Text Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "划词翻译:"
+            "value" : "划词翻译"
           }
         }
       }
@@ -3441,6 +3464,96 @@
         }
       }
     },
+    "shortcut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键"
+          }
+        }
+      }
+    },
+    "shortcut_confict %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "shortcut_confict_confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定"
+          }
+        }
+      }
+    },
+    "shortcut_confict_message (Shortcut.shared.confictMenuItem?.title ?? \"\")" : {
+
+    },
+    "shortcut_confict_message %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current shortcut can't be used because it is already used \"%@\""
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前快捷键无法使用，因为它已被\n\"%@\"占用"
+          }
+        }
+      }
+    },
+    "shortcut_confict_title (keyCombo!.keyEquivalentModifierMaskString + keyCombo!.characters)" : {
+
+    },
+    "shortcut_confict_title %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut Confict With \"%@\" Unable Use This"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键\"%@\"，无法使用"
+          }
+        }
+      }
+    },
     "shortcut_select_translate_window_type" : {
       "localizations" : {
         "en" : {
@@ -3542,13 +3655,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Mini Window:"
+            "value" : "Show Mini Window"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示迷你窗口:"
+            "value" : "显示迷你窗口"
           }
         }
       }
@@ -3558,13 +3671,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silent Screenshot OCR:"
+            "value" : "Silent Screenshot OCR"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "静默截图 OCR:"
+            "value" : "静默截图 OCR"
           }
         }
       }
@@ -3607,13 +3720,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Snip Translate:"
+            "value" : "Snip Translate"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "截图翻译:"
+            "value" : "截图翻译"
           }
         }
       }
