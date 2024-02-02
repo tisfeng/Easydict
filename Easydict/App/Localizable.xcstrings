@@ -635,22 +635,6 @@
         }
       }
     },
-    "clear_input" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear Input:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清空查询内容:"
-          }
-        }
-      }
-    },
     "clear_input_when_translating" : {
       "localizations" : {
         "en" : {
@@ -2377,6 +2361,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第二语言:"
+          }
+        }
+      }
+    },
+    "select_query_text_when_window_activate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select query text when window activate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "打开窗口时自动选中文本"
           }
         }
       }
