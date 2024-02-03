@@ -2663,7 +2663,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API 域名"
+            "value" : "完整接口地址"
           }
         }
       }
