@@ -61,10 +61,8 @@ enum OpenAIModels: String, CaseIterable, Identifiable {
         self
     }
 
-    case gpt3_5_turbo = "gpt-3.5-turbo"
-    case gpt3_5_turbo_1106 = "gpt-3.5-turbo-1106"
-    case gpt4
-    case gpt4_32k = "gpt-4-32k"
+    case gpt3_5_turbo_0125 = "gpt-3.5-turbo-0125"
+    case gpt4_0125_preview = "gpt-4-0125-preview"
 }
 
 extension OpenAIModels: EnumLocalizedStringConvertible {
