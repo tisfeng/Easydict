@@ -97,6 +97,7 @@ struct MenuItemView: View {
             SettingsLink {
                 Text("Settings...")
             } preAction: {
+                NSLog("打开设置")
                 NSApp.activate(ignoringOtherApps: true)
             } postAction: {
                 // nothing to do
@@ -104,6 +105,7 @@ struct MenuItemView: View {
         } else {
             Button("Settings...") {
                 NSLog("打开设置")
+                NSApp.activate(ignoringOtherApps: true)
                 NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
             }
         }
