@@ -238,6 +238,7 @@
 		0A8685C82B552A590022534F /* DisabledAppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8685C72B552A590022534F /* DisabledAppTab.swift */; };
 		0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B212B4D16A500F07198 /* WindowAccessor.swift */; };
 		0AC11B242B4E46B300F07198 /* TapHandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC11B232B4E46B300F07198 /* TapHandlerView.swift */; };
+		0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */; };
 		17BCAEF72B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF52B0DFF9000A7D372 /* EZNiuTransTranslateResponse.m */; };
 		17BCAEF82B0DFF9000A7D372 /* EZNiuTransTranslate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17BCAEF62B0DFF9000A7D372 /* EZNiuTransTranslate.m */; };
 		2721E4D02AFE920700A059AC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2721E4CF2AFE920700A059AC /* Alamofire */; };
@@ -826,6 +827,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AC8A84F2B6DFDD4006DA5CC /* SettingsAccess in Frameworks */,
 				03022F192B3591AE00B63209 /* GoogleGenerativeAI in Frameworks */,
 				2721E4D02AFE920700A059AC /* Alamofire in Frameworks */,
 				03022F1F2B36CF3100B63209 /* SwiftShell in Frameworks */,
@@ -2463,6 +2465,7 @@
 				EA3B81FB2B52555C004C0E8B /* Defaults */,
 				967712E92B5B913600105E0F /* KeyHolder */,
 				03022F182B3591AE00B63209 /* GoogleGenerativeAI */,
+				0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */,
 			);
 			productName = Bob;
 			productReference = C99EEB182385796700FEE666 /* Easydict-debug.app */;
@@ -2524,6 +2527,7 @@
 				EA3B81FA2B52555C004C0E8B /* XCRemoteSwiftPackageReference "Defaults" */,
 				967712E82B5B913600105E0F /* XCRemoteSwiftPackageReference "KeyHolder" */,
 				03022F172B3591AE00B63209 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+				0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */,
 			);
 			productRefGroup = C99EEB192385796700FEE666 /* Products */;
 			projectDirPath = "";
@@ -3512,6 +3516,14 @@
 				minimumVersion = 1.8.0;
 			};
 		};
+		0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/SettingsAccess";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
 		2721E4CE2AFE920700A059AC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -3613,6 +3625,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 03FD68B92B1DC59600FD388E /* XCRemoteSwiftPackageReference "CryptoSwift" */;
 			productName = CryptoSwift;
+		};
+		0AC8A84E2B6DFDD4006DA5CC /* SettingsAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AC8A84D2B6DFDD4006DA5CC /* XCRemoteSwiftPackageReference "SettingsAccess" */;
+			productName = SettingsAccess;
 		};
 		2721E4CF2AFE920700A059AC /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import SettingsAccess
 import Sparkle
 import SwiftUI
 import ZipArchive
@@ -24,6 +25,7 @@ final class MenuItemStore: ObservableObject {
 @available(macOS 13, *)
 struct MenuItemView: View {
     @ObservedObject private var store = MenuItemStore()
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         // ️.menuBarExtraStyle为 .menu 时某些控件可能会失效 ，只能显示内容（按照菜单项高度、图像以 template 方式渲染）无法交互 ，比如 Stepper、Slider 等，像基本的 Button、Text、Divider、Image 等还是能正常显示的。
@@ -92,7 +94,13 @@ struct MenuItemView: View {
     @ViewBuilder
     private var settingItem: some View {
         if #available(macOS 14.0, *) {
-            SettingsLink()
+            SettingsLink {
+                Text("Settings...")
+            } preAction: {
+                NSApp.activate(ignoringOtherApps: true)
+            } postAction: {
+                // nothing to do
+            }
         } else {
             Button("Settings...") {
                 NSLog("打开设置")
