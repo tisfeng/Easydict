@@ -81,7 +81,7 @@ class ConfigurationToggleViewModel: ObservableObject {
 struct ServiceConfigurationToggleCell: View {
     @Default var value: String
     let titleKey: LocalizedStringKey
-    
+
     @ObservedObject var viewModel = ConfigurationToggleViewModel()
 
     init(titleKey: LocalizedStringKey, key: Defaults.Key<String>) {

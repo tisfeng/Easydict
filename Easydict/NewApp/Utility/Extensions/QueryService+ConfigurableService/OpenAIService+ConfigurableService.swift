@@ -9,27 +9,6 @@
 import Foundation
 import SwiftUI
 
-protocol EnumLocalizedStringConvertible {
-    var title: String { get }
-}
-
-enum OpenAIModels: String, CaseIterable, Identifiable {
-    var id: Self {
-        self
-    }
-
-    case gpt3_5_turbo = "gpt-3.5-turbo"
-    case gpt3_5_turbo_1106 = "gpt-3.5-turbo-1106"
-    case gpt4
-    case gpt4_32k = "gpt-4-32k"
-}
-
-extension OpenAIModels: EnumLocalizedStringConvertible {
-    var title: String {
-        rawValue
-    }
-}
-
 @available(macOS 13.0, *)
 extension EZOpenAIService: ConfigurableService {
     func configurationListItems() -> some View {
@@ -64,9 +43,66 @@ extension EZOpenAIService: ConfigurableService {
                 titleKey: "service.configuration.openai.dictionary.title",
                 key: .openAIDictionary
             )
-            ServiceConfigurationToggleCell(
+            ServiceConfigurationPickerCell(
                 titleKey: "service.configuration.openai.usage_status.title",
-                key: .openAIServiceUsageStatus
+                key: .openAIServiceUsageStatus,
+                values: OpenAIUsageStats.allCases
+            )
+        }
+    }
+}
+
+protocol EnumLocalizedStringConvertible {
+    var title: String { get }
+}
+
+enum OpenAIModels: String, CaseIterable, Identifiable {
+    var id: Self {
+        self
+    }
+
+    case gpt3_5_turbo = "gpt-3.5-turbo"
+    case gpt3_5_turbo_1106 = "gpt-3.5-turbo-1106"
+    case gpt4
+    case gpt4_32k = "gpt-4-32k"
+}
+
+extension OpenAIModels: EnumLocalizedStringConvertible {
+    var title: String {
+        rawValue
+    }
+}
+
+enum OpenAIUsageStats: String, CaseIterable, Identifiable {
+    var id: Self {
+        self
+    }
+
+    case `default` = "0"
+    case alwaysOff = "1"
+    case alwaysOn = "2"
+}
+
+extension OpenAIUsageStats: EnumLocalizedStringConvertible {
+    var title: String {
+        switch self {
+        case .default:
+            return NSLocalizedString(
+                "service.configuration.openai.usage_status_default.title",
+                bundle: .main,
+                comment: ""
+            )
+        case .alwaysOff:
+            return NSLocalizedString(
+                "service.configuration.openai.usage_status_always_off.title",
+                bundle: .main,
+                comment: ""
+            )
+        case .alwaysOn:
+            return NSLocalizedString(
+                "service.configuration.openai.usage_status_always_on.title",
+                bundle: .main,
+                comment: ""
             )
         }
     }

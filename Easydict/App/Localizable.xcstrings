@@ -2460,38 +2460,6 @@
         }
       }
     },
-    "service.configuration.deepl.translation.title" : {
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "API Usage Priority"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "API 使用优先级"
-            }
-          }
-        }
-      },
-    "service.configuration.deepl.web_first.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Web API first"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "优先使用 Web API"
-          }
-        }
-      }
-    },
     "service.configuration.deepl.authkey_first.title" : {
       "localizations" : {
         "en" : {
@@ -2552,6 +2520,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完整接口地址"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.translation.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Usage Priority"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 使用优先级"
+          }
+        }
+      }
+    },
+    "service.configuration.deepl.web_first.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API first"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优先使用 Web API"
+          }
+        }
+      }
+    },
+    "service.configuration.gemini.api_key.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
           }
         }
       }
@@ -2716,6 +2732,54 @@
         }
       }
     },
+    "service.configuration.openai.usage_status_always_off.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always Off"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "始终关闭"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.usage_status_always_on.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always On"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "始终打开"
+          }
+        }
+      }
+    },
+    "service.configuration.openai.usage_status_default.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认"
+          }
+        }
+      }
+    },
     "service.configuration.openai.usage_status.title" : {
       "localizations" : {
         "en" : {
@@ -2776,22 +2840,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secret Key"
-          }
-        }
-      }
-    },
-    "service.configuration.gemini.api_key.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Key"
           }
         }
       }

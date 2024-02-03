@@ -60,7 +60,7 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
         } footer: {
             footer
         }
-        .alert(isPresented: $viewModel.isAlertAlertPresented) {
+        .alert(isPresented: $viewModel.isAlertPresented) {
             Alert(title: Text(viewModel.alertMessage))
         }
     }
@@ -68,16 +68,19 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     func validate() {
         viewModel.isValidating.toggle()
         service.validate { _, error in
-            viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
-            print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
-            viewModel.isValidating.toggle()
-            viewModel.isAlertAlertPresented.toggle()
+            DispatchQueue.main.async {
+                viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+                print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+                viewModel.isValidating.toggle()
+                viewModel.isAlertPresented.toggle()
+            }
         }
     }
 }
 
+@MainActor
 private class ServiceValidationViewModel: ObservableObject {
-    @Published var isAlertAlertPresented = false
+    @Published var isAlertPresented = false
 
     @Published var isValidating = false
 
