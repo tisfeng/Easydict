@@ -68,12 +68,10 @@ struct ServiceConfigurationSecretSectionView<Content: View>: View {
     func validate() {
         viewModel.isValidating.toggle()
         service.validate { _, error in
-            DispatchQueue.main.async {
-                viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
-                print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
-                viewModel.isValidating.toggle()
-                viewModel.isAlertPresented.toggle()
-            }
+            viewModel.alertMessage = error == nil ? "service.configuration.validation_success" : "service.configuration.validation_fail"
+            print("\(service.serviceType()) validate \(error == nil ? "success" : "fail")!")
+            viewModel.isValidating.toggle()
+            viewModel.isAlertPresented.toggle()
         }
     }
 }

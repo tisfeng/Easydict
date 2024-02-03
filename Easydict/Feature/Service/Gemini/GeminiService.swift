@@ -108,7 +108,9 @@ public final class GeminiService: QueryService {
 
                         resultString += line
                         result.translatedResults = [resultString]
-                        completion(result, nil)
+                        await MainActor.run {
+                            completion(result, nil)
+                        }
                     }
 
                 } else {
@@ -118,7 +120,9 @@ public final class GeminiService: QueryService {
                     }
 
                     result.translatedResults = [resultString]
-                    completion(result, nil)
+                    await MainActor.run {
+                        completion(result, nil)
+                    }
                 }
             } catch {
                 /**
@@ -132,8 +136,9 @@ public final class GeminiService: QueryService {
                 let errorString = String(describing: error)
                 let errorMessage = errorString.extract(withPattern: "message: \"([^\"]*)\"") ?? errorString
                 ezError?.errorDataMessage = errorMessage
-
-                completion(result, ezError)
+                await MainActor.run {
+                    completion(result, ezError)
+                }
             }
         }
     }
