@@ -435,11 +435,6 @@ static EZWindowManager *_instance;
     [window.queryViewController focusInputTextView];
     
     [self updateFloatingWindowType:window.windowType];
-    
-    // mainWindow has been ordered out before, so we need to order back.
-    if ([EZMainQueryWindow isAlive]) {
-        [self.mainWindow orderBack:nil];
-    }
 }
 
 - (void)updateFloatingWindowType:(EZWindowType)floatingWindowType {
