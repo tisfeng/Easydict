@@ -41,6 +41,11 @@ extension EasyDictMainMenu {
                     Shortcut.shared.shortcutRetry()
                 }
                 .keyboardShortcut(.retry)
+                Button("toggle_languages") {
+                    Shortcut.shared.shortcutToggle()
+                }
+                .keyboardShortcut(.toggle)
+                Divider()
                 Button("pin") {
                     Shortcut.shared.shortcutPin()
                 }
@@ -57,6 +62,7 @@ extension EasyDictMainMenu {
                     Shortcut.shared.decreaseFontSize()
                 }
                 .keyboardShortcut(.decreaseFontSize)
+                Divider()
                 Button("open_in_google") {
                     Shortcut.shared.shortcutGoogle()
                 }
