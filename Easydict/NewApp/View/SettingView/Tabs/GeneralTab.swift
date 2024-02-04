@@ -78,6 +78,8 @@ struct GeneralTab: View {
 
             Section {
                 Toggle("clear_input_when_translating", isOn: $clearInput)
+                Toggle("keep_prev_result_when_selected_text_is_empty", isOn: $keepPrevResultWhenEmpty)
+                Toggle("select_query_text_when_window_activate", isOn: $selectQueryTextWhenWindowActivate)
             } header: {
                 Text("setting.general.input.header")
             }
@@ -161,6 +163,8 @@ struct GeneralTab: View {
     @Default(.adjustPopButtonOrigin) private var adjustPopButtonOrigin
 
     @Default(.clearInput) private var clearInput
+    @Default(.keepPrevResultWhenEmpty) private var keepPrevResultWhenEmpty
+    @Default(.selectQueryTextWhenWindowActivate) private var selectQueryTextWhenWindowActivate
 
     @Default(.disableEmptyCopyBeep) private var disableEmptyCopyBeep
     @Default(.autoPlayAudio) private var autoPlayAudio

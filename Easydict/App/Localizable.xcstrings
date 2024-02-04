@@ -652,22 +652,6 @@
         }
       }
     },
-    "clear_input" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear Input:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清空查询内容:"
-          }
-        }
-      }
-    },
     "clear_input_when_translating" : {
       "localizations" : {
         "en" : {
@@ -1565,6 +1549,40 @@
         }
       }
     },
+    "keep_prev_result_when_selected_text_is_empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep previous result when selected text is empty"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "划词翻译未选中文本时，保留上次结果"
+          }
+        }
+      }
+    },
+    "keep_result" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep Result:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留结果:"
+          }
+        }
+      }
+    },
     "language_detect_optimize" : {
       "localizations" : {
         "en" : {
@@ -2360,6 +2378,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第二语言:"
+          }
+        }
+      }
+    },
+    "select_query_text_when_window_activate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select query text when window activate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "打开窗口时自动选中查询文本"
           }
         }
       }
