@@ -19,19 +19,6 @@ struct ShortcutTab: View {
             AppShortcutSettingView()
         }
         .formStyle(.grouped)
-        .onAppear {
-            setDefaultAppShortcut()
-        }
-    }
-
-    func setDefaultAppShortcut() {
-        if Defaults[.firstLaunch] {
-            Defaults[.firstLaunch] = false
-            // set defalut for app shortcut
-            Shortcut.shared.setDefaultForAppShortcut()
-        } else {
-            // do nothing
-        }
     }
 }
 
