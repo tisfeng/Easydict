@@ -6,6 +6,7 @@
 //  Copyright © 2023 izual. All rights reserved.
 //
 
+import SettingsAccess
 import Sparkle
 import SwiftUI
 import ZipArchive
@@ -92,10 +93,18 @@ struct MenuItemView: View {
     @ViewBuilder
     private var settingItem: some View {
         if #available(macOS 14.0, *) {
-            SettingsLink()
+            SettingsLink {
+                Text("Settings...")
+            } preAction: {
+                NSLog("打开设置")
+                NSApp.activate(ignoringOtherApps: true)
+            } postAction: {
+                // nothing to do
+            }
         } else {
             Button("Settings...") {
                 NSLog("打开设置")
+                NSApp.activate(ignoringOtherApps: true)
                 NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
             }
         }
