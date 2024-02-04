@@ -2377,7 +2377,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "打开窗口时自动选中文本"
+            "value" : "打开窗口时自动选中查询文本"
           }
         }
       }
