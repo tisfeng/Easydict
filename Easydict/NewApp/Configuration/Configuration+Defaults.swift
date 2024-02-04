@@ -10,6 +10,12 @@ import Defaults
 import Foundation
 import Magnet
 
+/// Utils
+extension Defaults.Keys {
+    /// is first launch
+    static let firstLaunch = Key<Bool>("EZConfiguration_kFirstLaunch", default: true)
+}
+
 // Setting
 extension Defaults.Keys {
     // rename `from`
