@@ -52,7 +52,7 @@ class Shortcut: NSObject {
     @objc static func setupShortcut() {
         let shortcut = Shortcut.shared
         shortcut.restoreShortcut()
-        
+
         if Defaults[.firstLaunch] {
             Defaults[.firstLaunch] = false
             // set defalut for app shortcut
