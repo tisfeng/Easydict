@@ -6,6 +6,7 @@
 //  Copyright © 2024 izual. All rights reserved.
 //
 
+import Defaults
 import SwiftUI
 
 @available(macOS 13, *)
@@ -16,7 +17,21 @@ struct ShortcutTab: View {
             GobalShortcutSettingView()
             // In app shortcut
             AppShortcutSettingView()
-        }.formStyle(.grouped)
+        }
+        .formStyle(.grouped)
+        .onAppear {
+            setDefaultAppShortcut()
+        }
+    }
+
+    func setDefaultAppShortcut() {
+        if Defaults[.firstLaunch] {
+            Defaults[.firstLaunch] = false
+            // set defalut for app shortcut
+            Shortcut.shared.setDefaultForAppShortcut()
+        } else {
+            // do nothing
+        }
     }
 }
 
