@@ -13,11 +13,14 @@ import SwiftUI
 
 /// Shortcut Service
 public enum ShortcutType: String {
+    // Global
     case inputTranslate = "EZInputShortcutKey"
     case snipTranslate = "EZSnipShortcutKey"
     case selectTranslate = "EZSelectionShortcutKey"
     case silentScreenshotOcr = "EZScreenshotOCRShortcutKey"
     case showMiniWindow = "EZShowMiniShortcutKey"
+    // In App
+    case clearInput = "EZClearInputShortcutKey"
 }
 
 // Confict Message
@@ -78,7 +81,7 @@ extension Shortcut {
             HotKeyCenter.shared.unregisterHotKey(with: type.rawValue)
             return
         }
-        var hotKey: HotKey
+        var hotKey: HotKey?
         switch type {
         case .inputTranslate:
             hotKey = HotKey(identifier: type.rawValue,
@@ -105,12 +108,22 @@ extension Shortcut {
                             keyCombo: keyCombo,
                             target: Shortcut.shared,
                             action: #selector(Shortcut.showMiniFloatingWindow))
+        default: ()
         }
-        hotKey.register()
+
+        if hotKey != nil {
+            hotKey!.register()
+        }
     }
 }
 
-// shortcut binding func
+extension Shortcut {
+    @objc func clearInput() {
+        print("clear")
+    }
+}
+
+// global shortcut binding func
 extension Shortcut {
     @objc func selectTextTranslate() {
         EZWindowManager.shared().selectTextTranslate()
@@ -152,6 +165,9 @@ extension Shortcut {
         case .showMiniWindow:
             guard let keyCombo = Defaults[.showMiniWindowShortcut] else { return nil }
             return keyCombo
+        case .clearInput:
+            guard let keyCombo = Defaults[.clearInputShortcut] else { return nil }
+            return keyCombo
         }
     }
 }
@@ -169,6 +185,8 @@ struct KeyboardShortcut: ViewModifier {
             .screenshotOCRShortcut
         case .showMiniWindow:
             .showMiniWindowShortcut
+        case .clearInput:
+            .clearInputShortcut
         }
 
         _shortcut = .init(key)

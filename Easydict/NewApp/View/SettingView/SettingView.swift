@@ -36,13 +36,14 @@ struct SettingView: View {
             DisabledAppTab()
                 .tabItem { Label("disabled_app_list", systemImage: "nosign") }
                 .tag(SettingTab.disabled)
-            AdvancedTab()
-                .tabItem { Label("advanced", systemImage: "gearshape.2") }
-                .tag(SettingTab.advanced)
 
             ShortcutTab()
                 .tabItem { Label("shortcut", systemImage: "command.square") }
                 .tag(SettingTab.shortcut)
+
+            AdvancedTab()
+                .tabItem { Label("advanced", systemImage: "gearshape.2") }
+                .tag(SettingTab.advanced)
             PrivacyTab()
                 .tabItem { Label("privacy", systemImage: "hand.raised.square") }
                 .tag(SettingTab.privacy)

@@ -262,8 +262,9 @@
 		62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62ED29A12B15F1F500901F51 /* EZWrapView.m */; };
 		960835502B6791F200C6A931 /* ShortcutValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9608354F2B6791F200C6A931 /* ShortcutValidator.swift */; };
 		96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96099AE12B5D40330055C4DD /* ShortcutTab.swift */; };
-		9627F9382B59956800B1E999 /* GeneralShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */; };
-		9627F9392B59956800B1E999 /* GeneralKeyHolderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */; };
+		9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */; };
+		9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627F9362B59956800B1E999 /* KeyHolderWrapper.swift */; };
+		9643D9392B6F49E0000FBEA6 /* AppShortcutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9643D9382B6F49E0000FBEA6 /* AppShortcutSetting.swift */; };
 		9672D7D22B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */; };
 		967712EA2B5B913600105E0F /* KeyHolder in Frameworks */ = {isa = PBXBuildFile; productRef = 967712E92B5B913600105E0F /* KeyHolder */; };
 		967712EE2B5B943400105E0F /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967712ED2B5B943400105E0F /* Shortcut.swift */; };
@@ -279,9 +280,8 @@
 		DC46DF802B4417B900DEAE3E /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC46DF7F2B4417B900DEAE3E /* Configuration.swift */; };
 		DC6D9C872B352EBC0055EFFC /* FontSizeHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */; };
 		DC6D9C892B3969510055EFFC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6D9C882B3969510055EFFC /* Appearance.swift */; };
-		EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */; };
-		EA3B81F92B5254AA004C0E8B /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Configuration.swift */; };
 		DCF176F22B57CED700CA6026 /* Configuration+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */; };
+		EA1013442B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */; };
 		EA3B81F92B5254AA004C0E8B /* Configuration+Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */; };
 		EA3B81FC2B52555C004C0E8B /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = EA3B81FB2B52555C004C0E8B /* Defaults */; };
 		EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */; };
@@ -767,8 +767,9 @@
 		91E3E579C6DB88658B4BB102 /* Pods-Easydict.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Easydict.release.xcconfig"; path = "Target Support Files/Pods-Easydict/Pods-Easydict.release.xcconfig"; sourceTree = "<group>"; };
 		9608354F2B6791F200C6A931 /* ShortcutValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutValidator.swift; sourceTree = "<group>"; };
 		96099AE12B5D40330055C4DD /* ShortcutTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutTab.swift; sourceTree = "<group>"; };
-		9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralShortcutSetting.swift; sourceTree = "<group>"; };
-		9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralKeyHolderWrapper.swift; sourceTree = "<group>"; };
+		9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalShortcutSetting.swift; sourceTree = "<group>"; };
+		9627F9362B59956800B1E999 /* KeyHolderWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyHolderWrapper.swift; sourceTree = "<group>"; };
+		9643D9382B6F49E0000FBEA6 /* AppShortcutSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcutSetting.swift; sourceTree = "<group>"; };
 		9672D7D02B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MASShortcutBinder+EZMASShortcutBinder.h"; sourceTree = "<group>"; };
 		9672D7D12B4008B40023B8FB /* MASShortcutBinder+EZMASShortcutBinder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MASShortcutBinder+EZMASShortcutBinder.m"; sourceTree = "<group>"; };
 		967712ED2B5B943400105E0F /* Shortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
@@ -785,9 +786,8 @@
 		DC46DF7F2B4417B900DEAE3E /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DC6D9C862B352EBC0055EFFC /* FontSizeHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSizeHintView.swift; sourceTree = "<group>"; };
 		DC6D9C882B3969510055EFFC /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
-		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
-		EA3B81F82B5254AA004C0E8B /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DCF176F12B57CED700CA6026 /* Configuration+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+UserData.swift"; sourceTree = "<group>"; };
+		EA1013432B5DBDB1005E43F9 /* KeyCombo+Defaults.Serializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyCombo+Defaults.Serializable.swift"; sourceTree = "<group>"; };
 		EA3B81F82B5254AA004C0E8B /* Configuration+Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+Defaults.swift"; sourceTree = "<group>"; };
 		EA9943E22B534C3300EE7B97 /* TTSServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSServiceType.swift; sourceTree = "<group>"; };
 		EA9943E72B534D8900EE7B97 /* LanguageDetectOptimizeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectOptimizeExtensions.swift; sourceTree = "<group>"; };
@@ -2202,8 +2202,9 @@
 		9627F9342B59956800B1E999 /* Shortcut */ = {
 			isa = PBXGroup;
 			children = (
-				9627F9352B59956800B1E999 /* GeneralShortcutSetting.swift */,
-				9627F9362B59956800B1E999 /* GeneralKeyHolderWrapper.swift */,
+				9627F9352B59956800B1E999 /* GlobalShortcutSetting.swift */,
+				9627F9362B59956800B1E999 /* KeyHolderWrapper.swift */,
+				9643D9382B6F49E0000FBEA6 /* AppShortcutSetting.swift */,
 			);
 			path = Shortcut;
 			sourceTree = "<group>";
@@ -2743,7 +2744,7 @@
 				62E2BF4A2B4082BA00E42D38 /* AliService.swift in Sources */,
 				03B0233729231FA6001C7E63 /* MMMake.m in Sources */,
 				03B0232E29231FA6001C7E63 /* MMCrashSignalExceptionHandler.m in Sources */,
-				9627F9382B59956800B1E999 /* GeneralShortcutSetting.swift in Sources */,
+				9627F9382B59956800B1E999 /* GlobalShortcutSetting.swift in Sources */,
 				03BDA7C42A26DA280079D04F /* NSDictionary+RubyDescription.m in Sources */,
 				62ED29A22B15F1F500901F51 /* EZWrapView.m in Sources */,
 				C4DD01EB2B12BA250025EE8E /* TencentResponse.swift in Sources */,
@@ -2799,6 +2800,7 @@
 				03882F8F29D95044005B5A52 /* CTScreen.m in Sources */,
 				27FE980B2B3DD5D1000AD654 /* MenuItemView.swift in Sources */,
 				03DC7C6A2A3CA852000BF7C9 /* EZAppCell.m in Sources */,
+				9643D9392B6F49E0000FBEA6 /* AppShortcutSetting.swift in Sources */,
 				96099AE22B5D40330055C4DD /* ShortcutTab.swift in Sources */,
 				0399C6AC29A860AA00B4AFCC /* EZOpenAIService.m in Sources */,
 				03542A432937B45E00C34C33 /* EZBaiduTranslate.m in Sources */,
@@ -2904,7 +2906,7 @@
 				03B0233129231FA6001C7E63 /* MMCrash.m in Sources */,
 				03B0232629231FA6001C7E63 /* NSAttributedString+MM.m in Sources */,
 				03542A402937B3C900C34C33 /* EZOCRResult.m in Sources */,
-				9627F9392B59956800B1E999 /* GeneralKeyHolderWrapper.swift in Sources */,
+				9627F9392B59956800B1E999 /* KeyHolderWrapper.swift in Sources */,
 				C4DD01E92B12B3C80025EE8E /* TencentService.swift in Sources */,
 				0A2BA9602B49A989002872A4 /* Binding+DidSet.swift in Sources */,
 				EA9943E32B534C3300EE7B97 /* TTSServiceType.swift in Sources */,

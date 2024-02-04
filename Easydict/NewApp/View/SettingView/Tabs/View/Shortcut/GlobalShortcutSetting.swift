@@ -1,5 +1,5 @@
 //
-//  GeneralShortcutSetting.swift
+//  GlobalShortcutSetting.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/1/1.
@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(macOS 13, *)
 extension ShortcutTab {
-    struct GeneralShortcutSettingView: View {
+    struct GobalShortcutSettingView: View {
         @State var confictAlterMessage: ShortcutConfictAlertMessage = .init(title: "", message: "")
 
         var body: some View {
@@ -28,27 +28,27 @@ extension ShortcutTab {
                 HStack {
                     Text("input_translate")
                     Spacer()
-                    GeneralKeyHolderWrapper(shortcutType: .inputTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                    KeyHolderWrapper(shortcutType: .inputTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("snip_translate")
                     Spacer()
-                    GeneralKeyHolderWrapper(shortcutType: .snipTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                    KeyHolderWrapper(shortcutType: .snipTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("select_translate")
                     Spacer()
-                    GeneralKeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                    KeyHolderWrapper(shortcutType: .selectTranslate, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("show_mini_window")
                     Spacer()
-                    GeneralKeyHolderWrapper(shortcutType: .showMiniWindow, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                    KeyHolderWrapper(shortcutType: .showMiniWindow, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
                 HStack {
                     Text("silent_screenshot_ocr")
                     Spacer()
-                    GeneralKeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
+                    KeyHolderWrapper(shortcutType: .silentScreenshotOcr, confictAlterMessage: $confictAlterMessage).frame(width: 180, height: 24)
                 }
             } header: {
                 Text("global_shortcut_setting")

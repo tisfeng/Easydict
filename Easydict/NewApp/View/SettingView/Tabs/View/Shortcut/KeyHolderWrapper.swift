@@ -1,5 +1,5 @@
 //
-//  GeneralKeyHolderWrapper.swift
+//  KeyHolderWrapper.swift
 //  Easydict
 //
 //  Created by Sharker on 2024/1/2.
@@ -12,7 +12,7 @@ import KeyHolder
 import Magnet
 import SwiftUI
 
-struct GeneralKeyHolderWrapper: NSViewRepresentable {
+struct KeyHolderWrapper: NSViewRepresentable {
     func makeCoordinator() -> Coordinator {
         .init(shortcutType: type, confictAlterMessage: $confictAlterMessage)
     }
@@ -39,7 +39,7 @@ struct GeneralKeyHolderWrapper: NSViewRepresentable {
     func updateNSView(_: NSViewType, context _: Context) {}
 }
 
-extension GeneralKeyHolderWrapper {
+extension KeyHolderWrapper {
     class Coordinator: NSObject, RecordViewDelegate {
         private var type: ShortcutType
         @Binding var confictAlterMessage: ShortcutConfictAlertMessage
@@ -91,6 +91,7 @@ extension GeneralKeyHolderWrapper {
                 keyCombo = Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
                 keyCombo = Defaults[.showMiniWindowShortcut]
+            default: ()
             }
             recordView.keyCombo = keyCombo
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
@@ -109,6 +110,8 @@ extension GeneralKeyHolderWrapper {
                 Defaults[.screenshotOCRShortcut] = keyCombo
             case .showMiniWindow:
                 Defaults[.showMiniWindowShortcut] = keyCombo
+            case .clearInput:
+                Defaults[.clearInputShortcut] = keyCombo
             }
         }
     }
