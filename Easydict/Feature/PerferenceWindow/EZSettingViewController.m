@@ -74,8 +74,10 @@
 @property (nonatomic, strong) NSTextField *playAudioLabel;
 @property (nonatomic, strong) NSButton *autoPlayAudioButton;
 
-@property (nonatomic, strong) NSTextField *clearInputLabel;
+@property (nonatomic, strong) NSTextField *inputFieldLabel;
 @property (nonatomic, strong) NSButton *clearInputButton;
+@property (nonatomic, strong) NSButton *keepPrevResultButton;
+@property (nonatomic, strong) NSButton *selectQueryTextWhenWindowActivateButton;
 
 @property (nonatomic, strong) NSTextField *autoQueryLabel;
 @property (nonatomic, strong) NSButton *autoQueryOCRTextButton;
@@ -395,14 +397,23 @@
     self.autoPlayAudioButton = [NSButton checkboxWithTitle:autoPlayAudioTitle target:self action:@selector(autoPlayAudioButtonClicked:)];
     [self.contentView addSubview:self.autoPlayAudioButton];
 
-    NSTextField *clearInputLabel = [NSTextField labelWithString:NSLocalizedString(@"clear_input", nil)];
-    clearInputLabel.font = font;
-    [self.contentView addSubview:clearInputLabel];
-    self.clearInputLabel = clearInputLabel;
+    NSString *inputFieldLabelTitle = [NSString stringWithFormat:@"%@:", NSLocalizedString(@"setting.general.input.header", nil)];
+    NSTextField *inputFieldLabel = [NSTextField labelWithString:inputFieldLabelTitle];
+    inputFieldLabel.font = font;
+    [self.contentView addSubview:inputFieldLabel];
+    self.inputFieldLabel = inputFieldLabel;
 
     NSString *clearInputTitle = NSLocalizedString(@"clear_input_when_translating", nil);
     self.clearInputButton = [NSButton checkboxWithTitle:clearInputTitle target:self action:@selector(clearInputButtonClicked:)];
     [self.contentView addSubview:self.clearInputButton];
+    
+    NSString *keepPrevResultTitle = NSLocalizedString(@"keep_prev_result_when_selected_text_is_empty", nil);
+    self.keepPrevResultButton = [NSButton checkboxWithTitle:keepPrevResultTitle target:self action:@selector(keepPrevResultButtonClicked:)];
+    [self.contentView addSubview:self.keepPrevResultButton];
+    
+    NSString *selectQueryTextWhenWindowActivateTitle = NSLocalizedString(@"select_query_text_when_window_activate", nil);
+    self.selectQueryTextWhenWindowActivateButton = [NSButton checkboxWithTitle:selectQueryTextWhenWindowActivateTitle target:self action:@selector(selectQueryTextWhenWindowActivateButtonClicked:)];
+    [self.contentView addSubview:self.selectQueryTextWhenWindowActivateButton];
 
     NSTextField *autoQueryLabel = [NSTextField labelWithString:NSLocalizedString(@"auto_query", nil)];
     autoQueryLabel.font = font;
@@ -546,6 +557,8 @@
 
     self.autoPlayAudioButton.mm_isOn = self.config.autoPlayAudio;
     self.clearInputButton.mm_isOn = self.config.clearInput;
+    self.keepPrevResultButton.mm_isOn = self.config.keepPrevResultWhenEmpty;
+    self.selectQueryTextWhenWindowActivateButton.mm_isOn = self.config.selectQueryTextWhenWindowActivate;
     self.launchAtStartupButton.mm_isOn = self.config.launchAtStartup;
     self.hideMainWindowButton.mm_isOn = self.config.hideMainWindow;
     self.autoQueryOCRTextButton.mm_isOn = self.config.autoQueryOCRText;
@@ -747,19 +760,26 @@
     }];
 
 
-    [self.clearInputLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.inputFieldLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
         make.top.equalTo(self.autoPlayAudioButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.clearInputButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.clearInputLabel.mas_right).offset(self.horizontalPadding);
-        make.centerY.equalTo(self.clearInputLabel);
+        make.left.equalTo(self.inputFieldLabel.mas_right).offset(self.horizontalPadding);
+        make.centerY.equalTo(self.inputFieldLabel);
     }];
-
+    [self.keepPrevResultButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+    }];
+    [self.selectQueryTextWhenWindowActivateButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.clearInputButton);
+        make.top.equalTo(self.keepPrevResultButton.mas_bottom).offset(self.verticalPadding);
+    }];
 
     [self.autoQueryLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.autoGetSelectedTextLabel);
-        make.top.equalTo(self.clearInputButton.mas_bottom).offset(self.verticalPadding);
+        make.top.equalTo(self.selectQueryTextWhenWindowActivateButton.mas_bottom).offset(self.verticalPadding);
     }];
     [self.autoQueryOCRTextButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.autoQueryLabel.mas_right).offset(self.horizontalPadding);
@@ -965,6 +985,14 @@
 
 - (void)clearInputButtonClicked:(NSButton *)sender {
     self.config.clearInput = sender.mm_isOn;
+}
+
+- (void)keepPrevResultButtonClicked:(NSButton *)sender {
+    self.config.keepPrevResultWhenEmpty = sender.mm_isOn;
+}
+
+- (void)selectQueryTextWhenWindowActivateButtonClicked:(NSButton *)sender {
+    self.config.selectQueryTextWhenWindowActivate = sender.mm_isOn;
 }
 
 - (void)autoCopySelectedTextButtonClicked:(NSButton *)sender {

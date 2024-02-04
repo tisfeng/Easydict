@@ -689,9 +689,14 @@ static EZWindowManager *_instance;
     NSLog(@"selectTextTranslate windowType: %@", @(windowType));
     self.eventMonitor.actionType = EZActionTypeShortcutQuery;
     [self.eventMonitor getSelectedText:^(NSString *_Nullable text) {
-        // If text is nil, currently, we choose to clear input.
-        self.selectedText = [text trim] ?: @"";
         self.actionType = self.eventMonitor.actionType;
+        
+        // Clear query if text is nil and user don't want to keep the last result.
+        if (!text && !Configuration.shared.keepPrevResultWhenEmpty) {
+            text = @"";
+        }
+        self.selectedText = [text trim];
+        
         [self showFloatingWindowType:windowType queryText:self.selectedText];
     }];
 }
