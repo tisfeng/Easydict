@@ -91,7 +91,8 @@ extension KeyHolderWrapper {
                 keyCombo = Defaults[.screenshotOCRShortcut]
             case .showMiniWindow:
                 keyCombo = Defaults[.showMiniWindowShortcut]
-            default: ()
+            case .clearInput:
+                keyCombo = Defaults[.clearInputShortcut]
             }
             recordView.keyCombo = keyCombo
             Shortcut.shared.bindingShortcut(keyCombo: keyCombo, type: type)
